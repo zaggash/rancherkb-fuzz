@@ -1,4 +1,4 @@
-![Drone (self-hosted) with branch](https://img.shields.io/drone/build/zaggash/rancherkb-fuzz/master?label=Build&logo=drone&server=https%3A%2F%2Fci.ziggzagg.fr&style=for-the-badge)  
+![Drone (self-hosted) with branch](https://img.shields.io/drone/build/zaggash/rancherkb-fuzz/main?label=Build&logo=drone&server=https%3A%2F%2Fci.ziggzagg.fr&style=for-the-badge)  
 
 ## Fuzzy Search SUSE Rancher KBs
 
