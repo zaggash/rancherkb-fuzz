@@ -1,0 +1,52 @@
+---
+kind: pipeline
+type: kubernetes
+name: rancherKB-fuzzysearch
+
+platform:
+  arch: amd64
+  os: linux
+
+volumes:
+- name: gh-pages
+  temp: {}
+
+steps:
+- name: scrap
+  image: golang:alpine
+  commands:
+    - go run main.go
+
+- name: clone_gh-pages
+  image: alpine/git
+  volumes:
+  - name: gh-pages
+    path: /gh-pages
+  commands:
+  - git clone -b gh-pages --single-branch https://github.com/zaggash/rancherkb-fuzz.git /gh-pages
+
+- name: mkdocs_build
+  image: squidfunk/mkdocs-material
+  volumes:
+  - name: gh-pages
+    path: /gh-pages
+  commands:
+  - cd website
+  - mkdocs build -d /gh-pages
+
+- name: deploy_website
+  image: appleboy/drone-git-push
+  volumes:
+  - name: gh-pages
+    path: /gh-pages
+  settings:
+    ssh_key:
+      from_secret: CI_SSH_KEY
+    author_name: BotCI
+    author_email: bot@ci
+    remote: git@github.com:zaggash/rancherkb-fuzz.git
+    branch: gh-pages
+    path: /gh-pages
+    commit: true
+    commit_message: "Updated Scrap KBs"
+    force: true
