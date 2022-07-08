@@ -8,7 +8,7 @@ import (
 	"regexp"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
-	"github.com/gocolly/colly/v2"
+	colly "github.com/gocolly/colly/v2"
 )
 
 type Article struct {
