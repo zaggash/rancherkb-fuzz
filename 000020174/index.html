@@ -5173,13 +5173,13 @@ kubelet:
 </code></pre>
 <p>New pods created after the change will configure the node-local-dns link-local address as the nameserver in <code>/etc/resolv.conf</code>.</p>
 <h5 id="option-b-configure-workloads">Option B - Configure Workloads</h5>
-<p>Alternatively, node-local-dns can be configured on a per-workload basis by updating the workload with a <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-config"><code>dnsConfig</code></a>.</p>
+<p>Alternatively, node-local-dns can be configured on a per-workload basis by updating the workload with a <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-config"><code>dnsConfig</code></a> and <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy"><code>dnsConfig</code></a> .</p>
 <ul>
 <li>
-<p>If using the Rancher UI, edit the workload, navigate to <strong>Show advanced options &gt; Networking &gt; DNS Nameservers</strong> and add <code>169.254.20.10</code>. Additionally, adjust the <strong>DNS Policy</strong> to None.</p>
+<p>If using the Rancher UI, edit the workload, navigate to <strong>Show advanced options &gt; Networking &gt; DNS Nameservers</strong> and add <code>169.254.20.10</code>. Additionally, adjust the <strong>DNS Policy</strong> to <code>None</code>.</p>
 </li>
 <li>
-<p>If configuring by YAML, patch in the following to the pod spec to adjust the dnsPolicy and dnsConfig:</p>
+<p>If configuring by YAML, patch in the following to the pod spec to adjust the <code>dnsPolicy</code> and <code>dnsConfig</code>:</p>
 </li>
 </ul>
 <pre><code class="language-yaml">    spec:
@@ -5191,10 +5191,10 @@ kubelet:
 <h4 id="rke2-using-any-rke2-kubernetes-version">RKE2: Using any RKE2 Kubernetes version</h4>
 <p>Update the default HelmChart for CoreDNS, the nodelocal.enabled: true value will install node-local-dns in the cluster. Please see <a href="https://docs.rke2.io/networking/#nodelocal-dnscache">the documentation here</a> for more details.</p>
 <h3 id="testing">Testing</h3>
-<p>Once implemented, start a new pod to test DNS queries.</p>
+<p>Once installed, start a new pod to test DNS queries.</p>
 <pre><code class="language-bash">kubectl run --restart=Never --rm -it --image=tutum/dnsutils dns-test -- dig google.com
 </code></pre>
-<p>You should expect to see <code>169.254.20.10</code> as the server, and a successful answer to the query.</p>
+<p>Unless Option B was used to install node-local-dns, you should expect to see <code>169.254.20.10</code> as the server, and a successful answer to the query.</p>
 <p>To verify a pod or container is using node-local-dns by checking the <code>/etc/resolv.conf</code> file, for example:</p>
 <pre><code class="language-bash">kubectl exec -it &lt;pod name&gt; -- grep nameserver /etc/resolv.conf
 nameserver 169.254.20.10
@@ -5221,6 +5221,8 @@ nameserver 169.254.20.10
 <p><strong>Note</strong>: it is important to perform these steps in order, and only complete step 3 once the pods using node-local-dns have been started with the kube-dns ClusterIP configured in <code>/etc/resolv.conf</code> again.</p>
 <h3 id="additional-information">Additional Information</h3>
 <h3 id="troubleshooting">Troubleshooting</h3>
+<p>Node-local-dns will perform external lookups on behalf of pods, this lookup occurs from the node-local-dns DaemonSet pod running on the same node as the pod.</p>
+<p>For internal lookups, CoreDNS will be used, node-local-dns will cache successful queries (30s), and negative queries (5s) by default. For an architecture overview please <a href="https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/#architecture-diagram">see the diagram here</a>.</p>
 <p>In no specific order, the following can help understand a DNS issue further.</p>
 <h5 id="check-all-kube-dns-and-node-local-dns-objects">Check all kube-dns and node-local-dns objects</h5>
 <p>Ensure there are no obvious issues with scheduling CoreDNS and node-local-dns pods in the cluster.</p>
@@ -5250,21 +5252,11 @@ kubectl get configmap -n kube-system node-local-dns -o yaml
 </ul>
 <h5 id="ask-questions-to-further-eliminate-the-issue">Ask questions to further eliminate the issue</h5>
 <ul>
-<li>
-<p>Is it only DNS that is affected, or is all connectivity affected?</p>
-</li>
-<li>
-<p>Are internal, external or all DNS queries failing? * Does the issue occur when resolving outside of the cluster? * node-local-dns will perform external lookups on behalf of pods * kube-dns will be used to resolve internal lookups: * node-local-dns will cache successful queries (30s), and negative queries (5s) by default</p>
-</li>
-<li>
-<p>Are all nodes and workloads experiencing the issue, or a specific node or workload? * Nodes use the upstream DNS configured in <code>/etc/resolv.conf</code>, queries failing from a node could indicate the issue is with upstream DNS</p>
-</li>
-<li>
-<p>What is the error reported by applications? * If logs are aggregated, queries can be performed on the logs to identify timelines and impact</p>
-</li>
-<li>
-<p>Is the issue intermittent or constantly occuring? * If the issue is intermittent, configure monitoring or a loop to identify when the issue occurs, when it does - are internal, external or all queries affected?</p>
-</li>
+<li>Is it only DNS that is affected, or is all connectivity affected?</li>
+<li>Are internal, external or all DNS queries failing?</li>
+<li>Are all nodes and workloads experiencing the issue, or a specific node or workload? * Nodes use the upstream DNS configured in <code>/etc/resolv.conf</code>, queries failing from a node could indicate the issue is with upstream DNS</li>
+<li>What is the error reported by applications? * If logs are aggregated, queries can be performed on the logs to identify timelines and impact</li>
+<li>Is the issue intermittent or constantly occuring? * If the issue is intermittent, configure monitoring or a loop to identify when the issue occurs, when it does - are internal, external or all queries affected?</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>

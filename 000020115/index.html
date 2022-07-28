@@ -4863,17 +4863,17 @@
 <p>You might wish to update the Corefile configuration of CoreDNS, defined via the coredns ConfigMap in the kube-system Namespace, for example, in order to enable <a href="https://coredns.io/plugins/log/">query logging</a> or update the resolver policy. This article details how to update this ConfigMap and persist changes in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned cluster.</p>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
-<li>A Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x, using the CoreDNS dns add-on.</li>
+<li>A Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x, using the CoreDNS add-on.</li>
 <li>kubectl access to the cluster with a kubeconfig sourced for a global admin or cluster owner user.</li>
 </ul>
 <h4 id="steps">Steps</h4>
 <ol>
-<li>Capture the current coredns ConfigMap definition, with the following <code>kubectl</code> command:</li>
+<li>Capture the current CoreDNS ConfigMap definition, with the following <code>kubectl</code> command:</li>
 </ol>
-<pre><code class="language-bash">kubectl -n kube-system get configmap coredns -o go-template={{.data.Corefile}}
+<pre><code>kubectl -n kube-system get configmap coredns -o go-template={{.data.Corefile}}
 </code></pre>
 <p>The output should look like the following:</p>
-<pre><code class="language-plaintext">.:53 {
+<pre><code>.:53 {
        errors
        health
        ready
@@ -4892,42 +4892,36 @@
 }
 </code></pre>
 <ol>
-<li>Edit the cluster configuration YAML, to define a custom add-on containing the coredns ConfigMap, with your desired changes.
-    For RKE provisioned clusters, add this into the cluster.yml file.
-    For a Rancher provisioned cluster, navigate to the cluster view in the Rancher UI, open the edit cluster view and click <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/options/#cluster-config-file"><code>Edit as YAML</code></a>.</li>
+<li>Edit the cluster configuration YAML, to define a custom add-on containing the CoreDNS ConfigMap, with your desired changes. For RKE provisioned clusters, add this into the cluster.yml file. For a Rancher provisioned cluster, navigate to the cluster view in the Rancher UI, open the edit cluster view and click <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/options/#cluster-config-file"><code>Edit as YAML</code></a>.</li>
 </ol>
-<p>Create the add-on with the content below, replacing the Corefile definition with the existing configuration retrieved in step 1. Then make the desired changes, in this example the resolver policy is updated from random, in the existing configuration, to sequental.</p>
-<p><code>yaml
-     addons: |-
-         ---
-         apiVersion: v1
-         kind: ConfigMap
-         metadata:
-           name: coredns
-           namespace: kube-system
-         data:
-           Corefile: |
-             .:53 {
-                 errors
-                 health
-                 ready
-                 kubernetes cluster.local in-addr.arpa ip6.arpa {
-                   pods insecure
-                   fallthrough in-addr.arpa ip6.arpa
-                 }
-                 prometheus :9153
-                 forward . "/etc/resolv.conf" {
-                   policy sequential
-                 }
-                 cache 30
-                 loop
-                 reload
-                 loadbalance
-           }</code></p>
+<p>Create the add-on with the content below, replacing the Corefile definition with the existing configuration retrieved in step 1. Then make the desired changes, in this example the resolver policy is updated from random, in the existing configuration, to sequential.</p>
+<pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+     name: coredns
+     namespace: kube-system
+data:
+     Corefile: |
+       .:53 {
+           errors
+           health
+           ready
+           kubernetes cluster.local in-addr.arpa ip6.arpa {
+             pods insecure
+             fallthrough in-addr.arpa ip6.arpa
+           }
+           prometheus :9153
+           forward . &quot;/etc/resolv.conf&quot; {
+             policy sequential
+           }
+           cache 30
+           loop
+           reload
+           loadbalance
+       }
+</code></pre>
 <ol>
-<li>Update the cluster with the new configuration.
-    For RKE provisioned clusters, invoke <code>rke up --cluster.yml</code> ( <strong>ensure the cluster.rkestate file is present in the working directory when invoking <code>rke up</code></strong>).
-    For Rancher provisioned clusters, click <code>Save</code> in the Rancher UI <code>Edit as YAML</code> view.</li>
+<li>Update the cluster with the new configuration. For RKE provisioned clusters, invoke <code>rke up --cluster.yml</code> ( <strong>ensure the cluster.rkestate file is present in the working directory when invoking <code>rke up</code></strong>). For Rancher provisioned clusters, click <code>Save</code> in the Rancher UI <code>Edit as YAML</code> view.</li>
 </ol>
 <h4 id="further-reading">Further reading</h4>
 <ul>
