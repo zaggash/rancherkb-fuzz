@@ -2049,15 +2049,15 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
-    Steps
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
   
 </li>
       
@@ -4809,15 +4809,15 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
-    Steps
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
   
 </li>
       
@@ -4848,19 +4848,21 @@
 <h4 id="task">Task</h4>
 <p>At times a node may need to be cleaned of all state to ensure it is consistent for further use in a cluster. This article and script are for Rancher 2.x.</p>
 <blockquote>
-<p>Please note, this script will delete all containers, volumes, images, network interfaces, and directories that relate to Rancher and Kubernetes. It can also optionally flush all iptables rules. It is important to perform pre-checks, and backup the node as needed before proceeding with any steps below.</p>
+<p>Please note, this script will delete all containers, volumes, images, network interfaces, and directories that relate to Rancher and Kubernetes. It can also optionally flush all iptables rules and delete container images. It is important to perform pre-checks, and backup the node as needed before proceeding with any steps below.</p>
 </blockquote>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
-<li>A node that needs cleaning, it should no longer be a member of any cluster.</li>
+<li>A node provisioned with the RKE distribution using Rancher or the RKE CLI.</li>
+<li>The node should no longer be a member of any cluster.</li>
 <li>A copy of <a href="https://github.com/rancherlabs/support-tools/raw/master/extended-rancher-2-cleanup/extended-cleanup-rancher2.sh">the cleanup script</a>, and root/sudo access.</li>
 <li>Check the running containers or Pods, these will be forcefully deleted in the following steps.</li>
-<li>Confirm you are on the correct node and are ready to proceed with cleaning all state.</li>
+<li>Confirm you are on the correct node and are ready to proceed with cleaning all containers and all data specific to Kubernetes and Rancher/RKE.</li>
 </ul>
-<h4 id="steps">Steps</h4>
-<p>The below steps use a script to automate the clean of a node, the commands used can be <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/cleaning-cluster-nodes/#docker-containers-images-and-volumes">run manually</a> as needed, follow the steps below for an automated approach to cleaning a node.</p>
+<p><strong>Note</strong>, for RKE2 and K3s use the uninstall script deployed on the node during install.</p>
+<h3 id="resolution">Resolution</h3>
+<p>The below steps use a script to automate the clean of a node, the commands used can be run manually as needed, follow the steps below cleaning a node that has been used previously in a cluster.</p>
 <ul>
-<li>Login to the node, download the cleanup script:</li>
+<li>Login to the node and download the cleanup script:</li>
 </ul>
 <p><code>curl -sLO https://github.com/rancherlabs/support-tools/raw/master/extended-rancher-2-cleanup/extended-cleanup-rancher2.sh</code></p>
 <p>You should now have a copy of the script in the current directory.</p>
@@ -4868,8 +4870,8 @@
 <li>Run the script:</li>
 </ul>
 <p><code>sudo bash extended-cleanup-rancher2.sh</code></p>
-<p>If desired, add a <code>flush</code> argument to also flush iptables rules.</p>
-<p><code>sudo bash extended-cleanup-rancher2.sh flush</code></p>
+<p>If desired, the optional -f and -i flags can be used together or individually to flush iptables (-f) and delete container images (-i).</p>
+<p><code>sudo bash extended-cleanup-rancher2.sh -f -i</code></p>
 <ul>
 <li>Restart the node</li>
 </ul>
