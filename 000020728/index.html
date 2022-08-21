@@ -13,7 +13,7 @@
     
     
       
-        <title>The Rancher v2.x Linux log collector script (FR) - SUSE KBs</title>
+        <title>Collecte de journaux Linux Rancher v2.x - SUSE KBs</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#the-rancher-v2x-linux-log-collector-script-fr" class="md-skip">
+        <a href="#collecte-de-journaux-linux-rancher-v2x" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              The Rancher v2.x Linux log collector script (FR)
+              Collecte de journaux Linux Rancher v2.x
             
           </span>
         </div>
@@ -4689,12 +4689,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          The Rancher v2.x Linux log collector script (FR)
+          Collecte de journaux Linux Rancher v2.x
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        The Rancher v2.x Linux log collector script (FR)
+        Collecte de journaux Linux Rancher v2.x
       </a>
       
         
@@ -4713,15 +4713,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    Environment
+  <a href="#situation" class="md-nav__link">
+    Situation
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
+  <a href="#collecte-de-journaux-linux-rancher-v2x_1" class="md-nav__link">
+    Collecte de journaux Linux Rancher v2.x
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choix" class="md-nav__link">
+    Choix
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
   </a>
   
 </li>
@@ -4761,15 +4775,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    Environment
+  <a href="#situation" class="md-nav__link">
+    Situation
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
+  <a href="#collecte-de-journaux-linux-rancher-v2x_1" class="md-nav__link">
+    Collecte de journaux Linux Rancher v2.x
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choix" class="md-nav__link">
+    Choix
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
   </a>
   
 </li>
@@ -4788,17 +4816,16 @@
                 
 
 
-<h1 id="the-rancher-v2x-linux-log-collector-script-fr">The Rancher v2.x Linux log collector script (FR)</h1>
-<p>This document <strong>(000020728)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="environment">Environment</h3>
-<p>Ce document (000020191) est fourni sous réserve de la clause de non-responsabilité à la fin de ce document.</p>
-<h3 id="situation">Situation</h3>
 <h1 id="collecte-de-journaux-linux-rancher-v2x">Collecte de journaux Linux Rancher v2.x</h1>
+<p>This document <strong>(000020728)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="situation">Situation</h3>
+<h3 id="collecte-de-journaux-linux-rancher-v2x_1">Collecte de journaux Linux Rancher v2.x</h3>
 <p>Les journaux peuvent être collectés à partir d'un nœud Linux dans un cluster Rancher v2.x à l'aide du <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">script de collecte de journaux Rancher v2.x</a>.</p>
-<p><strong>Important :</strong> Ce script ne peut être utilisé que pour collecter des journaux à partir de clusters provisionnés par <a href="https://rancher.com/docs/rke/latest/en/">l'interface de ligne de commande Rancher Kubernetes Engine (RKE)</a> , de <a href="https://rancher.com/docs/k3s/latest/en/">clusters K3s</a>, de <a href="https://rancher.com/docs/rancher/v2.5/en/cluster-provisioning/rke-clusters/custom-nodes/">clusters personnalisés</a> provisionnés par Rancher et de <a href="https://rancher.com/docs/rancher/v2.5/en/cluster-provisioning/rke-clusters/node-pools/">clusters provisionnés par Rancher à l'aide d'un pilote de nœud</a>.</p>
+<p><strong>Important:</strong>Ce script ne peut être utilisé que pour collecter des journaux à partir de clusters provisionnés par <a href="https://rancher.com/docs/rke/latest/en/">l'interface de ligne de commande Rancher Kubernetes Engine (RKE)</a> , de <a href="https://rancher.com/docs/k3s/latest/en/">clusters K3s</a>, de <a href="https://rancher.com/docs/rancher/v2.5/en/cluster-provisioning/rke-clusters/custom-nodes/">clusters personnalisés</a> provisionnés par Rancher et de <a href="https://rancher.com/docs/rancher/v2.5/en/cluster-provisioning/rke-clusters/node-pools/">clusters provisionnés par Rancher à l'aide d'un pilote de nœud</a>.</p>
 <p>Ce script n'est pas adapté à la collecte de journaux à partir de clusters de fournisseurs <a href="https://rancher.com/docs/rancher/v2.5/en/cluster-provisioning/hosted-kubernetes-clusters/">Kubernetes hébergés</a>.</p>
 <p>Le script doit être téléchargé et exécuté directement sur l'hôte en utilisant l'utilisateur root ou en utilisant sudo, comme suit:</p>
 <pre><code>wget -O- https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh | sudo bash -s
+
 </code></pre>
 <p>Par défaut, la sortie sera écrite dans /tmpdans un fichier tar gzippé nommé <hostname>-<datetime>.tar.gz</p>
 <h3 id="choix"><strong>Choix</strong></h3>
