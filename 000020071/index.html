@@ -4860,7 +4860,7 @@
 <p>This document <strong>(000020071)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
 <h4 id="task">Task</h4>
-<p>In a Kubernetes cluster running an alternative container runtime, such as containerd, instead of Docker, the kubelet manages container logs. By default container logs are not rotated by the kubelet, but this can be achieved by adding flags to the kubelet process.</p>
+<p>In a Kubernetes cluster running an alternative container runtime, such as containerd, instead of Docker, the kubelet manages container logs. The kubelet default values in relation to log rotation can be found in the upstream <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/#:~:text=from%20this%20file.-,%2D%2Dcontainer%2Dlog%2Dmax%2Dfiles%20int32%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0Default%3A%205,Kubelet%27s%20%2D%2Dconfig%20flag.%20See%20kubelet%2Dconfig%2Dfile%20for%20more%20information.">kubelet | Kubernetes documentation</a>,-%2D%2Dcontainer%2Druntime%20string). These values can be adjusted by adding flags to the kubelet process.</p>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <p>These steps have been validated for a k3s cluster using the default containerd runtime, in theory these same flags should work for any Kubernetes cluster which does not use Docker as the container runtime.</p>
 <h4 id="resolution">Resolution</h4>
