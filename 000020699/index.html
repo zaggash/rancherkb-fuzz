@@ -13,7 +13,7 @@
     
     
       
-        <title>Rancher v2.x provisioned vSphere cluster nodes stuck in provisioning, with "Waiting for SSH to be available", as a result of pre-existing cloud-init configuration in VM Template - SUSE KBs</title>
+        <title>How to recreate rancher-webhook-tls secret if incorrectly deleted - SUSE KBs</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rancher-v2x-provisioned-vsphere-cluster-nodes-stuck-in-provisioning-with-waiting-for-ssh-to-be-available-as-a-result-of-pre-existing-cloud-init-configuration-in-vm-template" class="md-skip">
+        <a href="#how-to-recreate-rancher-webhook-tls-secret-if-incorrectly-deleted" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Rancher v2.x provisioned vSphere cluster nodes stuck in provisioning, with "Waiting for SSH to be available", as a result of pre-existing cloud-init configuration in VM Template
+              How to recreate rancher-webhook-tls secret if incorrectly deleted
             
           </span>
         </div>
@@ -182,118 +182,6 @@
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
       </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020041/" class="md-nav__link">
-        How can I validate network policies within a Kubernetes cluster?
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Rancher v2.x provisioned vSphere cluster nodes stuck in provisioning, with "Waiting for SSH to be available", as a result of pre-existing cloud-init configuration in VM Template
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Rancher v2.x provisioned vSphere cluster nodes stuck in provisioning, with "Waiting for SSH to be available", as a result of pre-existing cloud-init configuration in VM Template
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#root-cause" class="md-nav__link">
-    Root cause
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1388,36 +1276,6 @@
     <li class="md-nav__item">
       <a href="../000020116/" class="md-nav__link">
         How to run workloads on etcd or controlplane nodes, without the worker role, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020117/" class="md-nav__link">
-        How to override DNS results served by CoreDNS
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020118/" class="md-nav__link">
-        How to monitor NTP on Linux nodes with Cluster Monitoring in Rancher v2.2.x+
       </a>
     </li>
   
@@ -4744,6 +4602,105 @@
 
   
   
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to recreate rancher-webhook-tls secret if incorrectly deleted
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        How to recreate rancher-webhook-tls secret if incorrectly deleted
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000020710/" class="md-nav__link">
+        After Rancher 2.6.x upgrade, HTTP 403 Errors in Rancher UI
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
   
     <li class="md-nav__item">
       <a href="../000020721/" class="md-nav__link">
@@ -4795,43 +4752,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#root-cause" class="md-nav__link">
-    Root cause
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
   
 </li>
       
@@ -4856,23 +4800,26 @@
                 
 
 
-<h1 id="rancher-v2x-provisioned-vsphere-cluster-nodes-stuck-in-provisioning-with-waiting-for-ssh-to-be-available-as-a-result-of-pre-existing-cloud-init-configuration-in-vm-template">Rancher v2.x provisioned vSphere cluster nodes stuck in provisioning, with "Waiting for SSH to be available", as a result of pre-existing cloud-init configuration in VM Template</h1>
-<p>This document <strong>(000020042)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="how-to-recreate-rancher-webhook-tls-secret-if-incorrectly-deleted">How to recreate rancher-webhook-tls secret if incorrectly deleted</h1>
+<p>This document <strong>(000020699)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher 2.5.8 or higher, incorrectly deleted rancher-webhook-tls secret instead of <em>cattle-webhook-tls</em> secret</p>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>Upon launching a vSphere Node Driver cluster in Rancher v2.x, nodes within the cluster are stuck in provisioning, with the message <code>Waiting for SSH to be available</code>. Logging into the nodes via SSH and checking the auth log directly reveals failed SSH connection attempts for a missing <code>docker</code> user.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>A Rancher v2.x provisioned vSphere cluster, using the <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/node-pools/vsphere/">vSphere Node Driver</a>.</li>
-</ul>
-<h4 id="root-cause">Root cause</h4>
-<p>When provisioning a vSphere Node Driver cluster Rancher v2.x uses cloud-init to generate an ssh-keypair for the user <code>docker</code> and copy this into the Virtual Machine on initial boot.</p>
-<p>In some Linux distributions, including Ubuntu Server 18.04, the standard OS installation process generates a cloud-init configuration. Installation of the OS is performed during the intitial setup of the VM Templates, prior to cluster provisioning via Rancher, and this existing cloud-init configuration within the Template can intefere with Rancher's ability to insert its own cloud-init.</p>
-<h4 id="resolution">Resolution</h4>
-<p>Convert the Template back to a VM and run:</p>
-<pre><code class="language-bash">sudo cloud-init clean
+<p>The rancher-webhook-tls is expired on the local rancher cluster.</p>
+<p>After following the documentation to renew the certificate, the rancher-webhook pods cannot start.</p>
+<p><a href="https://rancher.com/docs/rancher/v2.6/en/troubleshooting/expired-webhook-certificates">https://rancher.com/docs/rancher/v2.6/en/troubleshooting/expired-webhook-certificates</a></p>
+<h3 id="resolution">Resolution</h3>
+<p>Trigger recreation of the rancher-webhook-tls secret:</p>
+<p>1. Remove <a href="https://rancher.cattle.io/">rancher.cattle.io</a> validating and mutating webhooks, as well as the webhook-service:</p>
+<pre><code>kubectl delete mutatingwebhookconfigurations rancher.cattle.io
+kubectl delete validatingwebhookconfigurations rancher.cattle.io
+kubectl -n cattle-system delete service webhook-service
 </code></pre>
-<p>This <a href="https://cloudinit.readthedocs.io/en/latest/topics/cli.html?highlight=%2Fvar%2Flib%2Fcloud#clean">command will clean</a> the Template of any existing cloud-inits, once complete you can convert the VM back to a template to try again.</p>
+<p>2. Navigate to Apps &amp; Marketplace in the local cluster Explorer, Installed Apps, and perform an 'upgrade'</p>
+<p>of rancher-webhook to trigger the recreation of deleted resources and a new rancher-webhook-tls</p>
+<p>certificate secret.</p>
+<h3 id="cause">Cause</h3>
+<p>Unintentionally deletion of _rancher-webhook-tls_secretinstead of_cattle-webhook-tls_secret</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
@@ -4893,7 +4840,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../000020041/" class="md-footer__link md-footer__link--prev" aria-label="Previous: How can I validate network policies within a Kubernetes cluster?" rel="prev">
+        <a href="../000020684/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Windows RKE1 EOL" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -4902,20 +4849,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              How can I validate network policies within a Kubernetes cluster?
+              Windows RKE1 EOL
             </div>
           </div>
         </a>
       
       
         
-        <a href="../000020043/" class="md-footer__link md-footer__link--next" aria-label="Next: Rancher v2.5 provisioned Kubernetes clusters, without a worker role node, display &#34;Cluster health check failed: cluster agent is not ready&#34; error" rel="next">
+        <a href="../000020710/" class="md-footer__link md-footer__link--next" aria-label="Next: After Rancher 2.6.x upgrade, HTTP 403 Errors in Rancher UI" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Rancher v2.5 provisioned Kubernetes clusters, without a worker role node, display "Cluster health check failed: cluster agent is not ready" error
+              After Rancher 2.6.x upgrade, HTTP 403 Errors in Rancher UI
             </div>
           </div>
           <div class="md-footer__button md-icon">
