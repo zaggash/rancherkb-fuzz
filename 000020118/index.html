@@ -13,7 +13,7 @@
     
     
       
-        <title>RKE errors connecting to the Docker socket whilst updating clusters with the Aqua Enforcer deployed - SUSE KBs</title>
+        <title>How to monitor NTP on Linux nodes with Cluster Monitoring in Rancher v2.2.x+ - SUSE KBs</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rke-errors-connecting-to-the-docker-socket-whilst-updating-clusters-with-the-aqua-enforcer-deployed" class="md-skip">
+        <a href="#how-to-monitor-ntp-on-linux-nodes-with-cluster-monitoring-in-rancher-v22x" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              RKE errors connecting to the Docker socket whilst updating clusters with the Aqua Enforcer deployed
+              How to monitor NTP on Linux nodes with Cluster Monitoring in Rancher v2.2.x+
             
           </span>
         </div>
@@ -1302,11 +1302,113 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../000020118/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to monitor NTP on Linux nodes with Cluster Monitoring in Rancher v2.2.x+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         How to monitor NTP on Linux nodes with Cluster Monitoring in Rancher v2.2.x+
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+    <nav class="md-nav" aria-label="Situation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task" class="md-nav__link">
+    Task
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pre-requisites" class="md-nav__link">
+    Pre-requisites
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps" class="md-nav__link">
+    Steps
+  </a>
+  
+    <nav class="md-nav" aria-label="Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enable-the-ntp-collector-on-the-node-exporter-daemonset" class="md-nav__link">
+    Enable the NTP collector on the Node Exporter DaemonSet
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-an-alert-for-ntp-time-drift" class="md-nav__link">
+    Configure an alert for NTP time drift
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    Further Reading
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2667,93 +2769,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          RKE errors connecting to the Docker socket whilst updating clusters with the Aqua Enforcer deployed
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020210/" class="md-nav__link">
         RKE errors connecting to the Docker socket whilst updating clusters with the Aqua Enforcer deployed
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#root-cause" class="md-nav__link">
-    Root cause
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4788,8 +4808,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
+  <a href="#task" class="md-nav__link">
+    Task
   </a>
   
 </li>
@@ -4802,15 +4822,35 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#root-cause" class="md-nav__link">
-    Root cause
+  <a href="#steps" class="md-nav__link">
+    Steps
+  </a>
+  
+    <nav class="md-nav" aria-label="Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enable-the-ntp-collector-on-the-node-exporter-daemonset" class="md-nav__link">
+    Enable the NTP collector on the Node Exporter DaemonSet
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
+  <a href="#configure-an-alert-for-ntp-time-drift" class="md-nav__link">
+    Configure an alert for NTP time drift
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    Further Reading
   </a>
   
 </li>
@@ -4841,22 +4881,42 @@
                 
 
 
-<h1 id="rke-errors-connecting-to-the-docker-socket-whilst-updating-clusters-with-the-aqua-enforcer-deployed">RKE errors connecting to the Docker socket whilst updating clusters with the Aqua Enforcer deployed</h1>
-<p>This document <strong>(000020210)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="how-to-monitor-ntp-on-linux-nodes-with-cluster-monitoring-in-rancher-v22x">How to monitor NTP on Linux nodes with Cluster Monitoring in Rancher v2.2.x+</h1>
+<p>This document <strong>(000020118)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>During invocations of <code>rke up</code> via the <a href="https://rancher.com/docs/rke/latest/en/">RKE CLI</a> or whilst modifying <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/">Rancher provisioned Kubernetes clusters</a>, the process fails upon attempted creation of a Kubernetes component container with an error of the following format:</p>
-<pre><code class="language-plaintext">2019-04-30T15:19:17.9826528Z time=&quot;2019-04-30T15:19:17Z&quot; level=fatal msg=&quot;[etcd] Failed to bring up Etcd Plane: Failed to create [etcd] container on host [rancher.example.com]: Failed to create [etcd] container on host [rancher.example.com]: error during connect: Post http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/create?name=etcd: EOF
-</code></pre>
+<h4 id="task">Task</h4>
+<p>Time drift between nodes in a Kubernetes cluster can create a range of issues, from a difficulty to correlate application log message timestamps across nodes, to a loss of etcd quorum (given the time sensitive nature of the consensus algorithm used in etcd).</p>
+<p>Using Rancher, you can monitor the state and processes of your cluster nodes, Kubernetes components, and software deployments through integration with Prometheus, a leading open-source monitoring solution.</p>
+<p>This article details how to monitor time drift, via the Network Time Protocol (NTP), on Linux nodes within Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned clusters.</p>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
-<li>A Kubernetes cluster provisioned via the RKE CLI or Rancher</li>
-<li>The <a href="https://www.aquasec.com/products/aqua-cloud-native-security-platform/">Aqua Enforcer</a> workload deployed in the cluster, with AQUA_RUNC_INTERCEPTION environment variable set to 0</li>
+<li>A Rancher v2.x instance, starting at v2.2.0 and above</li>
+<li>A Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster with <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/monitoring/">Cluster Monitoring</a> enabled, with Monitoring Version 0.2.0+</li>
+<li>ntp configured on Linux nodes in the cluster (refer to the documentation for your Linux distribution on enabling and configuring ntp)</li>
 </ul>
-<h4 id="root-cause">Root cause</h4>
-<p>The issue is caused by Aqua Enforcer's use of the Docker socket to perform runtime enforcement operations preventing RKE from successfully connecting to the Docker socket upon some requests.</p>
-<h4 id="resolution">Resolution</h4>
-<p>To resolve this issue set the AQUA_RUNC_INTERCEPTION environment variable on the Aqua Enforcer daemonset to 1. With this setting the Aqua Enforcer will interact directly with runC to perform runtime enforcement operations, and not with the Docker daemon via the Docker socket. This is the default behaviour in new versions of the Aqua Enforcer, as it brings stability and performance benefits. More information on this setting can be found at <a href="https://docs.aquasec.com/docs/40-ga#section-new-aqua-enforcer-architecture-for-enhanced-stability-and-performance">https://docs.aquasec.com/docs/40-ga#section-new-aqua-enforcer-architecture-for-enhanced-stability-and-performance</a></p>
+<h4 id="steps">Steps</h4>
+<h5 id="enable-the-ntp-collector-on-the-node-exporter-daemonset">Enable the NTP collector on the Node Exporter DaemonSet</h5>
+<ol>
+<li>Within the Rancher UI cluster view for the relevant cluster, navigate to Tools -&gt; Monitoring</li>
+<li>In the bottom-right corner of the form, click <code>Show advanced options</code></li>
+<li>Click <code>Add Answer</code></li>
+<li>Configure the variable <code>exporter-node.collectors.ntp.enabled</code> with value <code>true</code></li>
+<li>Click <code>Save</code></li>
+</ol>
+<h5 id="configure-an-alert-for-ntp-time-drift">Configure an alert for NTP time drift</h5>
+<ol>
+<li>Within the Rancher UI cluster view for the relevant cluster, navigate to Tools -&gt; Alerts</li>
+<li>On the <code>A set of alerts for node</code> Alert Group click <code>Add Alert Rule</code></li>
+<li>Set Name to <code>Node NTP time drift equal to or greater than 1 second</code></li>
+<li>Select <code>Expression</code> and enter <code>node_ntp_offset_seconds</code></li>
+<li>Click <code>Create</code></li>
+<li>Configure a <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/notifiers/">Notifier</a> for the <code>A set of alerts for node</code> Alert Group, by clicking the elipses for this Alert Group, and configuring the desired notifier in the <code>Alert</code> section at the bottom of the form.</li>
+</ol>
+<h4 id="further-reading">Further Reading</h4>
+<ul>
+<li><a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/monitoring/">Rancher Cluster Monitoring Documentation</a></li>
+<li><a href="https://github.com/prometheus/node_exporter">Prometheus Node Exporter README</a></li>
+</ul>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
@@ -4877,7 +4937,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../000020209/" class="md-footer__link md-footer__link--prev" aria-label="Previous: How to configure iptables on RancherOS" rel="prev">
+        <a href="../000020117/" class="md-footer__link md-footer__link--prev" aria-label="Previous: How to override DNS results served by CoreDNS" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -4886,20 +4946,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              How to configure iptables on RancherOS
+              How to override DNS results served by CoreDNS
             </div>
           </div>
         </a>
       
       
         
-        <a href="../000020211/" class="md-footer__link md-footer__link--next" aria-label="Next: Editing Rancher launched Kubernetes cluster in infrastructure provider restricted to creating user" rel="next">
+        <a href="../000020119/" class="md-footer__link md-footer__link--next" aria-label="Next: How to enable NGINX support for HTTP headers with underscores" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Editing Rancher launched Kubernetes cluster in infrastructure provider restricted to creating user
+              How to enable NGINX support for HTTP headers with underscores
             </div>
           </div>
           <div class="md-footer__button md-icon">
