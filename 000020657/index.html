@@ -13,7 +13,7 @@
     
     
       
-        <title>Resolving "Conflict. The container name is already in use" errors when updating a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster - SUSE KBs</title>
+        <title>Exclude cattle-system namespace from Dynatrace monitoring - SUSE KBs</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#resolving-conflict-the-container-name-is-already-in-use-errors-when-updating-a-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-kubernetes-cluster" class="md-skip">
+        <a href="#exclude-cattle-system-namespace-from-dynatrace-monitoring" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Resolving "Conflict. The container name is already in use" errors when updating a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
+              Exclude cattle-system namespace from Dynatrace monitoring
             
           </span>
         </div>
@@ -182,103 +182,6 @@
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
       </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Resolving "Conflict. The container name is already in use" errors when updating a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Resolving "Conflict. The container name is already in use" errors when updating a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#root-cause" class="md-nav__link">
-    Root cause
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4624,6 +4527,90 @@
 
   
   
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Exclude cattle-system namespace from Dynatrace monitoring
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Exclude cattle-system namespace from Dynatrace monitoring
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
   
     <li class="md-nav__item">
       <a href="../000020682/" class="md-nav__link">
@@ -4795,43 +4782,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#root-cause" class="md-nav__link">
-    Root cause
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
   
 </li>
       
@@ -4856,43 +4830,21 @@
                 
 
 
-<h1 id="resolving-conflict-the-container-name-is-already-in-use-errors-when-updating-a-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-kubernetes-cluster">Resolving "Conflict. The container name is already in use" errors when updating a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster</h1>
-<p>This document <strong>(000020046)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="exclude-cattle-system-namespace-from-dynatrace-monitoring">Exclude cattle-system namespace from Dynatrace monitoring</h1>
+<p>This document <strong>(000020657)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>The cattle-cluster-agent pod is stuck in a CrashLoopBackOff, logging the following messages:</p>
+<pre><code>usage: agent &lt;absolute path of static Go application&gt; [Go application arguments]
+
+</code></pre>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>When invoking <code>rke up</code>, to update a Rancher Kubernetes Engine (RKE) CLI provisioned Kubernetes cluster, or using Rancher to update a Rancher v2.x provisioned cluster, you encounter a <code>Conflict. The container name is already in use</code> error, of the following format:</p>
-<p><strong>Format of error from RKE CLI, for RKE provisioned clusters</strong></p>
-<pre><code>FATA[0219] [file-deploy] Failed to deploy file [/etc/kubernetes/audit-policy.yaml] on node [172.27.6.22]: Failed to create [file-deployer] container on host [172.27.6.22]: Failed to create Docker container [file-deployer] on host [172.27.6.22]: Error response from daemon: Conflict. The container name &quot;/file-deployer&quot; is already in use by container &quot;66b777d981aa0b0a9d6bc73e381e0f2bc8fc33ec00926aa0db51347607f8fcf8&quot;. You have to remove (or rename) that container to be able to reuse that name.
-</code></pre>
-<p><strong>Format of error in Rancher UI, for Rancher v2.x provisioned clusters</strong></p>
-<pre><code>[Failed to create Certificates deployer container on host [172.27.3.21]: Failed to create Docker container [cert-deployer] on host [172.27.3.21]: Error response from daemon: Conflict. The container name &quot;/cert-deployer&quot; is already in use by container &quot;c3b35c454d6000266098573949d021f45b13a3c7f7306d7fdb58a5766f2f3312&quot;. You have to remove (or rename) that container to be able to reuse that name.]
-</code></pre>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>A Rancher Kubernetes Engine (RKE) CLI, or Rancher v2.x provisioned Kubernetes cluster</li>
-<li>SSH access to affected node(s) and Docker CLI access</li>
-</ul>
-<h4 id="root-cause">Root cause</h4>
-<p>This error can occur when an <code>rke up</code> invocation or Rancher cluster update process is interrupted, leaving temporary cluster deployment containers on nodes.</p>
-<h4 id="resolution">Resolution</h4>
-<ol>
-<li>SSH into the node.</li>
-<li>Remove stuck containers:</li>
-</ol>
-<pre><code class="language-bash">docker rm -f file-deployer cert-deployer
-</code></pre>
-<ol>
-<li>Trigger a cluster update:</li>
-<li>For RKE CLI provisioned clusters, invoke <code>rke up</code>.</li>
-<li>For Rancher provisioned clusters:<ul>
-<li>Browse to the cluster in the Rancher UI</li>
-<li>Click <code>Edit</code> from the action menu</li>
-<li>Click <code>Edit as YAML</code></li>
-<li>Find the option <code>addon_job_timeout</code> and edit the value, incrementing it by one</li>
-<li>Click <code>Save</code></li>
-</ul>
-</li>
-</ol>
+<p>We have observed messages from downstream clusters where the cattle-cluster-agent on any Rancher version can contain no logging outputs, with messages only relating to environment variables.</p>
+<p>Running kubectl exec to access a shell on the pod and running /usr/bin/run.sh also produces the error.</p>
+<h3 id="resolution">Resolution</h3>
+<p>It is recommend to exclude the cattle-system namespace from being monitored by Dynatrace. The below documentation is specific for Dynatrace, however other solutions could have similar options.</p>
+<p>Option 3: <a href="https://www.dynatrace.com/support/help/setup-and-configuration/setup-on-container-platforms/kubernetes/get-started-with-kubernetes-monitoring/dto-config-options-k8s#annotate">https://www.dynatrace.com/support/help/setup-and-configuration/setup-on-container-platforms/kubernetes/get-started-with-kubernetes-monitoring/dto-config-options-k8s#annotate</a></p>
+<h3 id="cause">Cause</h3>
+<p>Solutions like Dynatrace can potentially inject sidecar containers alongside cattle-cluster-agent/cattle-node-agent containers, causing the agent to exit unpredictably..</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
@@ -4913,7 +4865,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Welcome to Rancher KB Alt website" rel="prev">
+        <a href="../000020632/" class="md-footer__link md-footer__link--prev" aria-label="Previous: \[Rancher\] Operational Advisory, 20220405: Rancher Kubernetes Distributions and Etcd 3.5 Updates" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -4922,20 +4874,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Welcome to Rancher KB Alt website
+              \[Rancher\] Operational Advisory, 20220405: Rancher Kubernetes Distributions and Etcd 3.5 Updates
             </div>
           </div>
         </a>
       
       
         
-        <a href="../000020047/" class="md-footer__link md-footer__link--next" aria-label="Next: How to disable Calico Telemetry in a Kubernetes cluster with the Canal or Calico CNI" rel="next">
+        <a href="../000020682/" class="md-footer__link md-footer__link--next" aria-label="Next: Azure AD API Removal" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              How to disable Calico Telemetry in a Kubernetes cluster with the Canal or Calico CNI
+              Azure AD API Removal
             </div>
           </div>
           <div class="md-footer__button md-icon">
