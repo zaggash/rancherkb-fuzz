@@ -196,21 +196,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020048/" class="md-nav__link">
-        How to increase the inotify.max\_user\_watches and inotify.max\_user\_instances sysctls on a Linux host
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020049/" class="md-nav__link">
         How to perform packet captures?
       </a>
@@ -3240,6 +3225,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../000020306/" class="md-nav__link">
+        What Desginated Name (DN) fields are used by Kubernetes when generating custom certificates from a provided CA Cert or PKI tool?
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000020328/" class="md-nav__link">
         containerd.io 1.4.4 bug advisory
       </a>
@@ -4886,11 +4886,13 @@
 <h4 id="background">Background</h4>
 <p>You may have a use case to grant permissions to a user to view cluster monitoring metrics and graphs, but don't want that same user to be able to see other information or perform any actions on your cluster. This how-to guide will show you how to achieve this.</p>
 <h4 id="solution">Solution</h4>
-<p>If you have not already, create a new user in Rancher. Go to the Global view and click on the Users menu. Click the <code>Add Users</code> button in the top right corner. Select the desired Username, Password, and Display Name. For Global Permissions, select User-Base and leave all Custom permissions unchecked. Click the <code>Create</code> button at the bottom of the form. Let's assume we are using the username <code>johndoe</code>.</p>
-<p>Go to the Security menu and select Roles. Select the Projects tab and click the <code>Add Project Role</code> button. In the name field, enter Services Proxy. Under Grant Resources, click the <code>+ Add Resource</code> button. Check the Get and List boxes and enter <code>services/proxy</code> in the Resource field. Note, you'll see it changes this to <code>serivces/proxy (Custom)</code> which is normal. Click the <code>Create</code> button at the bottom to create the new project role.</p>
-<p>Next, go to the cluster view for your cluster and select Members from the menu. Click the <code>Add Members</code> button in the top right corner. In the Members dropdown, select <code>johndoe</code> and select Member for Cluster Permissions. Click the <code>Create</code> button at the bottom of the form.</p>
-<p>Now navigate to the System project in your cluster. Go to the Members menu and click the <code>Add Member</code> button. Enter <code>johndoe</code> in the Member field and select <code>Services Proxy</code> under Project Permissions. Click the <code>Create</code> button at the bottom of the form.</p>
-<p>The <code>johndoe</code> user should now be able to log into Rancher and see the cluster dashboard with the Grafana icons. Clicking the Grafana icons should open a new browser window that will show the user various graphs and statistics for the cluster. This user should not be able to perform other operations, like view or launch new workloads in the cluster.</p>
+<ol>
+<li>If you have not already, create a new user in Rancher. Go to the Global view and click on the Users menu. Click the <code>Add Users</code> button in the top right corner. Select the desired Username, Password, and Display Name. For Global Permissions, select User-Base and leave all Custom permissions unchecked. Click the <code>Create</code> button at the bottom of the form. Let's assume we are using the username <code>johndoe</code>.</li>
+<li>Go to the Security menu and select Roles. Select the Projects tab and click the <code>Add Project Role</code> button. In the name field, enter Services Proxy. Under Grant Resources, click the <code>+ Add Resource</code> button. Check the Get and List boxes and enter <code>services/proxy</code> in the Resource field. Note, you'll see it changes this to <code>serivces/proxy (Custom)</code> which is normal. Click the <code>Create</code> button at the bottom to create the new project role.</li>
+<li>Next, go to the cluster view for your cluster and select Members from the menu. Click the <code>Add Members</code> button in the top right corner. In the Members dropdown, select <code>johndoe</code> and select Member for Cluster Permissions. Click the <code>Create</code> button at the bottom of the form.</li>
+<li>Now navigate to the System project in your cluster. Go to the Members menu and click the <code>Add Member</code> button. Enter <code>johndoe</code> in the Member field and select <code>Services Proxy</code> under Project Permissions. Click the <code>Create</code> button at the bottom of the form.</li>
+<li>The <code>johndoe</code> user should now be able to log into Rancher and see the cluster dashboard with the Grafana icons. Clicking the Grafana icons should open a new browser window that will show the user various graphs and statistics for the cluster. This user should not be able to perform other operations, like view or launch new workloads in the cluster.</li>
+</ol>
 <h4 id="further-reading">Further Reading</h4>
 <p>For more detailed information on how RBAC works in Rancher and Kubernetes, see the following links:</p>
 <ul>
