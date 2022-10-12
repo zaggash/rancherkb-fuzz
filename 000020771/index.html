@@ -13,7 +13,7 @@
     
     
       
-        <title>How to create a custom cluster role in Rancher v2.x to grant permission on the metrics endpoint of the kube-apiserver in a Rancher managed cluster - SUSE KBs</title>
+        <title>How to create seperate ETCD and Controlplane nodes in RKE2 - SUSE KBs</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-create-a-custom-cluster-role-in-rancher-v2x-to-grant-permission-on-the-metrics-endpoint-of-the-kube-apiserver-in-a-rancher-managed-cluster" class="md-skip">
+        <a href="#how-to-create-seperate-etcd-and-controlplane-nodes-in-rke2" class="md-skip">
           Skip to content
         </a>
       
@@ -95,7 +95,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to create a custom cluster role in Rancher v2.x to grant permission on the metrics endpoint of the kube-apiserver in a Rancher managed cluster
+              How to create seperate ETCD and Controlplane nodes in RKE2
             
           </span>
         </div>
@@ -194,93 +194,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          How to create a custom cluster role in Rancher v2.x to grant permission on the metrics endpoint of the kube-apiserver in a Rancher managed cluster
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        How to create a custom cluster role in Rancher v2.x to grant permission on the metrics endpoint of the kube-apiserver in a Rancher managed cluster
+    <li class="md-nav__item">
+      <a href="../000020054/" class="md-nav__link">
+        \[JP\] How to grant users access to Grafana with minimal permissions
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further reading
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4628,6 +4546,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../000020713/" class="md-nav__link">
+        Firewalld block rancher cluster dns: Weave CNI does not work with Firewalld on RHEL 8 based OSs
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000020721/" class="md-nav__link">
         How to test Rancher RC/Alpha versions
       </a>
@@ -4731,6 +4664,90 @@
 
   
   
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to create seperate ETCD and Controlplane nodes in RKE2
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        How to create seperate ETCD and Controlplane nodes in RKE2
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    Additional Information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
   
     <li class="md-nav__item">
       <a href="../000020792/" class="md-nav__link">
@@ -4767,43 +4784,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further reading
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    Additional Information
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4829,61 +4833,31 @@
                   
 
 
-<h1 id="how-to-create-a-custom-cluster-role-in-rancher-v2x-to-grant-permission-on-the-metrics-endpoint-of-the-kube-apiserver-in-a-rancher-managed-cluster">How to create a custom cluster role in Rancher v2.x to grant permission on the metrics endpoint of the kube-apiserver in a Rancher managed cluster</h1>
-<p>This document <strong>(000020052)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="how-to-create-seperate-etcd-and-controlplane-nodes-in-rke2">How to create seperate ETCD and Controlplane nodes in RKE2</h1>
+<p>This document <strong>(000020771)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>RKE2 1.21.2 and higher</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>This article details how to create a cluster role to grant users access to the <code>/metrics</code> endpoint of the Kubernetes API Server, in Rancher-managed Kubernetes clusters.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>A Rancher v2.x instance</li>
-<li>A Rancher-managed Kubernetes cluster, with <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/resource-metrics-pipeline/#metrics-server">Metrics Server</a> deployed. This is deployed by default in Rancher-provisioned clusters.</li>
-</ul>
-<h4 id="resolution">Resolution</h4>
-<blockquote>
-<p>In Rancher v2.4+ it should be possible to define a non-resource URL grant via role creation within the Rancher UI. However, this is affected by the issue tracked in <a href="https://github.com/rancher/rancher/issues/30321">Issue #30321</a> and use of the Rancher v3 API is therefore required to create the role.</p>
-</blockquote>
-<ol>
-<li>The first step is to create a custom cluster role within Rancher, that grants <code>get</code> permission on the non-resource URL <code>/metrics</code> endpoint.</li>
-</ol>
-<p>As an admin user, generate an un-scoped <a href="https://rancher.com/docs/rancher/v2.x/en/api/api-tokens/">Rancher API token</a>, and execute the following API request via cURL, to create the required role. You will need to set CATTLE_ACCESS_KEY, CATTLE_SECRET_KEY and RANCHER_URL to reflect the generated API token and your Rancher URL. You can also edit the role name, as desired, which is set to <code>kube-api metrics</code> in this example.</p>
-<pre><code class="language-bash">export CATTLE_ACCESS_KEY=token-8jn92
-export CATTLE_SECRET_KEY=l2r4nq9sx6pdhpm4bgwntvgk49qn6rvvmtsvlvkmjk9rjsfd7n65fz
-export RANCHER_URL=rancher.example.com
-curl -k -u &quot;${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot; \
-   -X POST \
-   -H 'Accept: application/json' \
-   -H 'Content-Type: application/json' \
-   -d '{&quot;context&quot;:&quot;cluster&quot;,&quot;clusterCreatorDefault&quot;:false,&quot; projectCreatorDefault&quot;:false,&quot;name&quot;:&quot;kube-api metrics&quot;,&quot;rules&quot;:[{&quot;nonResourceURLs&quot;:[&quot;/metrics&quot;],&quot;type&quot;:&quot;/v3/schemas/policyRule&quot;,&quot;verbs&quot;:[&quot;get&quot;]}]}' \
-&quot;https://${RANCHER_URL}/v3/roletemplates&quot;
+<p>As part of a HA set-up, it may be required to run RKE2 with the ETCD database split from the Control plane nodes.</p>
+<h3 id="resolution">Resolution</h3>
+<p>1. On the desired ETCD node create `/etc/rancher/rke2/config.yaml` with the following contents:</p>
+<pre><code>disable-apiserver: true
+disable-controller-manager: true
+disable-kube-proxy: false
+disable-scheduler: true
 </code></pre>
-<ol>
-<li>
-<p>After creating the cluster role, you can then grant this for a user or group. To do so, follow the steps in the Rancher documentation on <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/cluster-access/cluster-members/">assigning a cluster role to a user or group</a>.</p>
-</li>
-<li>
-<p>Once the role is granted to a user, they will be able to test their access to the <code>/metrics</code> endpoint.</p>
-</li>
-</ol>
-<p>The user can access the endpoint, with the applicable cluster id, via the Rancher proxied Kubernetes API Server endpoint, by generating a <a href="https://rancher.com/docs/rancher/v2.x/en/api/api-tokens/">cluster-scoped or un-scoped API token</a>. The user will need to set CATTLE_ACCESS_KEY, CATTLE_SECRET_KEY, RANCHER_URL and CLUSTER_ID to reflect the generated API token, Rancher URL and cluster id.</p>
-<pre><code class="language-bash">export CATTLE_ACCESS_KEY=token-8jn92
-export CATTLE_SECRET_KEY=l2r4nq9sx6pdhpm4bgwntvgk49qn6rvvmtsvlvkmjk9rjsfd7n65fz
-export RANCHER_URL=rancher.example.com
-export CLUSTER_ID=c-wwdjc
-curl -k https://${RANCHER_URL}/k8s/clusters/${CLUSTER_ID}/metrics \
-   -H &quot;Authorization: Bearer ${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot;
+<p>2. On the etcd node install rke2 `curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION="<required version of RKE2>" INSTALL_RKE2_TYPE="server" sh -` and start it `systemctl start rke2-server`</p>
+<p>3. On the controlplane node create `/etc/rancher/rke2/config.yaml` with the following contents:</p>
+<pre><code>server: https://&lt;ip of the etcd node&gt;:9345
+token: &lt;token string from /var/lib/rancher/rke2/server/node-token on the etcd node&gt;
+disable-etcd: true
+disable-kube-proxy: false
+etcd-expose-metrics: false
 </code></pre>
-<p>For Rancher-provisioned Kubernetes clusters with <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/cluster-access/ace/">Authorized Cluster Endpoint</a> enabled, the user can also query the endpoint by connecting to the Kubernetes API Server on the cluster's controlplane nodes directly, using a <a href="https://rancher.com/docs/rancher/v2.x/en/api/api-tokens/">cluster-scoped API token</a>. The user will need to set CATTLE_ACCESS_KEY, CATTLE_SECRET_KEY and AUTHORIZED_ENDPOINT_ADDRESS to reflect the generated API token, and the authorized endpoint address.</p>
-<pre><code class="language-bash">export CATTLE_ACCESS_KEY=token-d6cls
-export CATTLE_SECRET_KEY=b6gk6lmgrhsb4rjccktzkwxn5df7tm87msggq87lpmls2pkbpc5t5r
-export AUTHORIZED_ENDPOINT_ADDRESS=controlplane-01.example.com
-curl -k https://${AUTHORIZED_ENDPOINT_ADDRESS}:6443/metrics \
-   -H &quot;Authorization: Bearer ${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot;
-</code></pre>
-<h4 id="further-reading">Further reading</h4>
-<ul>
-<li><a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/default-custom-roles/#creating-a-custom-role-for-a-cluster-or-project">Rancher documentation on custom roles</a></li>
-</ul>
+<p>4. On the controlplane node install rke2 `curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION="<required version of RKE2>" INSTALL_RKE2_TYPE="server" sh -` and start it `systemctl start rke2-server`</p>
+<p>5. Add agent nodes (https://docs.rke2.io/install/ha/#5-optional-join-agent-nodes).</p>
+<h3 id="additional-information">Additional Information</h3>
+<p>This is only an example to show this configuration in a working state. In a prod environment, you should configure a fixed registration address per the documentation at https://docs.rke2.io/install/ha/#1-configure-the-fixed-registration-address</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
@@ -4906,7 +4880,7 @@ curl -k https://${AUTHORIZED_ENDPOINT_ADDRESS}:6443/metrics \
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Welcome to Rancher KB Alt website" rel="prev">
+        <a href="../000020750/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Customize Helm Chart values for RKE2 default addons" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -4915,20 +4889,20 @@ curl -k https://${AUTHORIZED_ENDPOINT_ADDRESS}:6443/metrics \
               <span class="md-footer__direction">
                 Previous
               </span>
-              Welcome to Rancher KB Alt website
+              Customize Helm Chart values for RKE2 default addons
             </div>
           </div>
         </a>
       
       
         
-        <a href="../000020055/" class="md-footer__link md-footer__link--next" aria-label="Next: How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters" rel="next">
+        <a href="../000020792/" class="md-footer__link md-footer__link--next" aria-label="Next: How to make a simple terraform API request" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters
+              How to make a simple terraform API request
             </div>
           </div>
           <div class="md-footer__button md-icon">
