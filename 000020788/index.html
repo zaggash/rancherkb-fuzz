@@ -13,7 +13,7 @@
     
     
       
-        <title>\[JP\] How to grant users access to Grafana with minimal permissions - SUSE KBs</title>
+        <title>How to clean the orphaned cluster objects from the deleted cluster namespaces. - SUSE KBs</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#jp-how-to-grant-users-access-to-grafana-with-minimal-permissions" class="md-skip">
+        <a href="#how-to-clean-the-orphaned-cluster-objects-from-the-deleted-cluster-namespaces" class="md-skip">
           Skip to content
         </a>
       
@@ -95,7 +95,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              \[JP\] How to grant users access to Grafana with minimal permissions
+              How to clean the orphaned cluster objects from the deleted cluster namespaces.
             
           </span>
         </div>
@@ -183,125 +183,6 @@
     <li class="md-nav__item">
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          \[JP\] How to grant users access to Grafana with minimal permissions
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        \[JP\] How to grant users access to Grafana with minimal permissions
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    タスク
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    事前準備
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    背景
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    解決方法
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    参考
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020055/" class="md-nav__link">
-        How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters
       </a>
     </li>
   
@@ -4755,9 +4636,115 @@
   
   
     <li class="md-nav__item">
+      <a href="../000020767/" class="md-nav__link">
+        Downstream Cluster not Available with Websockets failing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000020771/" class="md-nav__link">
         How to create seperate ETCD and Controlplane nodes in RKE2
       </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to clean the orphaned cluster objects from the deleted cluster namespaces.
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        How to clean the orphaned cluster objects from the deleted cluster namespaces.
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    Status
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -4804,50 +4791,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    タスク
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    事前準備
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    背景
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    Status
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    解決方法
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    参考
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4873,30 +4847,70 @@
                   
 
 
-<h1 id="jp-how-to-grant-users-access-to-grafana-with-minimal-permissions">[JP] How to grant users access to Grafana with minimal permissions</h1>
-<p>This document <strong>(000020054)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="how-to-clean-the-orphaned-cluster-objects-from-the-deleted-cluster-namespaces">How to clean the orphaned cluster objects from the deleted cluster namespaces.</h1>
+<p>This document <strong>(000020788)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher 2.6.x</p>
 <h3 id="situation">Situation</h3>
-<h4 id="_1">タスク</h4>
-<p>Kubernetesクラスタ内のクラスタ監視とGrafanaグラフを表示するため、以下の手順に従って、新しいユーザーを作成し、最小限の権限を付与します。</p>
-<h4 id="_2">事前準備</h4>
+<p>In some cases there may be orphaned cluster objects left behind after the in-proper deletion of a downstream cluster in Rancher. These orphaned objects could introduce a condition that causes the leader Rancher pod to enter a CrashLoop state.</p>
+<p>Examples of errors from the Rancher pod logs.</p>
+<pre><code>[ERROR] failed to call leader func: namespaces &quot;&lt;strong&gt;c-xxxxx&lt;/strong&gt;&quot; not found
+fatal error: concurrent map read and map write
+</code></pre>
+<pre><code>[ERROR] error syncing ‘&lt;strong&gt;c-xxxx/p-xxxx&lt;/strong&gt;’: handler mgmt-project-rbac-remove: failed to remove finalizer on controller.cattle.io/mgmt-project-rbac-remove, requeuing
+[ERROR] error syncing ‘&lt;strong&gt;c-xxxxx/p-xxxxx&lt;/strong&gt;’: handler mgmt-project-rbac-remove: failed to remove finalizer on controller.cattle.io/mgmt-project-rbac-remove, requeuing
+[ERROR] error syncing ‘&lt;strong&gt;c-xxxxx/p-xxxxx&lt;/strong&gt;’: handler cluster-registration-token: clusters.management.cattle.io &quot;&lt;strong&gt;c-xxxxx&lt;/strong&gt;&quot; not found, requeuing
+
+</code></pre>
+<h3 id="resolution">Resolution</h3>
+<p>Find the objects under the deleted cluster namespaces and manually delete each objects. Make sure there are no such orphaned objects or namespaces left in the local cluster.</p>
+<p>1. Set a kubeconfig for the Rancher (local) management cluster to be used with the following steps</p>
+<p>2. Verify the Active downstream clusters</p>
+<pre><code>kubectl get clusters.management.cattle.io -o custom-columns=&quot;ID:.metadata.name,NAME:.spec.displayName,K8S_VERSION:.status.version.gitVersion,CREATED:.metadata.creationTimestamp,DELETED:.metadata.deletionTimestamp,LAST_READY:.status.conditions[?(@.type == 'Ready')].lastUpdateTime,READY:.status.conditions[?(@.type == 'Ready')].status&quot; --sort-by=.metadata.creationTimestamp
+</code></pre>
+<p>3. Cross verify with the Rancher pod logs to get the deleted downstream cluster namespace and collect the details. Compare with the active list of clusters versus the cluster namespaces.</p>
+<pre><code>kubectl logs -n cattle-system -l app=rancher -c rancher
+
+</code></pre>
+<pre><code>kubectl get ns -A |grep &quot;c-&quot;
+</code></pre>
+<p>4. If there is a cluster that is stuck deleting, this may not complete. In this case, the finalizer object can be removed from the cluster.management.cattle.io object. Please note the <strong>c-xxxxx</strong> needs to be replaced with the cluster ID that is stuck deleting.</p>
+<pre><code>kubectl patch clusters.management.cattle.io &lt;strong&gt;&amp;lt;c-xxxxx&amp;gt;&lt;/strong&gt; -p '{&quot;metadata&quot;:{&quot;finalizers&quot;:[]}}' --type=merge
+</code></pre>
+<p>5. If there is a namespace for a cluster that no longer exists, get the orphaned object details under the deleted cluster namespace.</p>
+<pre><code>kubectl api-resources --verbs=list --namespaced -o name  | xargs -n 1 kubectl get --show-kind --ignore-not-found -n &lt;strong&gt;&amp;lt;c-xxxxx&amp;gt;&lt;/strong&gt;
+</code></pre>
+<p>6. Do the cleanup of orphaned objects.</p>
 <ul>
-<li>Rancher v2.x</li>
-<li>クラスタのMonitoringがenabledである</li>
+<li>Create the cluster namespace which is deleted, ignore if the cluster namespace is present</li>
 </ul>
-<h4 id="_3">背景</h4>
-<p>あるユーザにクラスタ監視のメトリクスやグラフを表示する権限を付与したいが、そのユーザが他の情報を見たりクラスタに対してアクションを実行したりすることができないようにしたい時があるかもしれません。このナレッジーベースでは、これを実現する方法を説明します。</p>
-<h4 id="_4">解決方法</h4>
-<p>ユーザがまだ作成していない場合は、Rancher で新しいのを作成してください。グローバルビューに移動し、ユーザーメニューをクリックします。右上の <code>ユーザを追加</code> ボタンをクリックします。ユーザー名、パスワード、表示名を選択します。 <code>グローバル権限</code> では User-Base を選択し、 <code>カスタム</code> はすべてチェックを外したままにします。フォームの下部にある <code>作成</code> ボタンをクリックする。ここでは、ユーザ名 <code>johndoe</code> を使用しているとします。</p>
-<p>「セキュリティ」メニューから「ロール」、さらに「Projects」タブを選択し、 <code>Project ロールを追加</code> ボタンをクリックします。 <code>名前</code> フィールドに「Services Proxy」と入力します。 <code>Grant Resources</code> の下で、 <code>+リソースの追加</code> ボタンをクリックします。 <code>取得</code> と <code>リスト</code> ボックスにチェックを入れ、 <code>リソース</code> フィールドに services/proxyと入力します。これが自動的に <code>serivces/proxy (Custom)</code> に変更されることに注意してください。下部の <code>作成</code> ボタンをクリックして新しいプロジェクトロールを作成します。</p>
-<p>次に、クラスタのクラスタビューを開き、メニューから「メンバー」を選択します。右上の <code>メンバーを追加</code> ボタンをクリックします。メンバーのドロップダウンで <code>johndoe</code> を選択し、クラスタ権限の <code>メンバー</code> を選択する。フォームの下部にある <code>作成</code> ボタンをクリックする。</p>
-<p>クラスタの <code>System</code> プロジェクトに移動し、 <code>メンバー</code> メニューから <code>メンバーを追加</code> ボタンをクリックします。 <code>メンバ</code> フィールドに johndoe と入力し、 <code>Project 権限</code> で <code>Services Proxy</code> を選択します。フォームの下部にある <code>作成</code> ボタンをクリックします。</p>
-<p>これで、 <code>johndoe</code> ユーザーは Rancher にログインし、Grafana アイコンが表示されたクラスタダッシュボードを見ることができるようになります。Grafanaアイコンをクリックすると、新しいブラウザウィンドウが開き、クラスタの様々なグラフや統計情報が表示されます。このユーザーは、クラスタ内の新しいワークロードの表示や起動などの他の操作を行うことはできません。</p>
-<h4 id="_5">参考</h4>
-<p>RancherやKubernetesでのRBACの動作方法の詳細については、以下のリンクを参照してください。</p>
+<pre><code>kubectl create ns &lt;strong&gt;&amp;lt;c-xxxxx&amp;gt;&lt;/strong&gt;
+</code></pre>
 <ul>
-<li><a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/">Role-Based Access Control (RBAC) in Rancher</a></li>
-<li><a href="https://kubernetes.io/docs/reference/access-authn-authz/rbac/">Using RBAC Authorization in Kubernetes</a></li>
+<li>Check the objects detected (in step 5) if desired, each object should have a deletion timestamp if a finalizer is preventing the object from being deleted.</li>
 </ul>
+<pre><code>kubectl -n &lt;strong&gt;&amp;lt;c-xxxxx&amp;gt;&lt;/strong&gt; get &lt;resource type&gt; &lt;name of object&gt; -o yaml
+</code></pre>
+<ul>
+<li>Remove the finalizer to unblock the deletion of the objects. The command needs to be run for each object.</li>
+</ul>
+<pre><code>kubectl -n &lt;strong&gt;&amp;lt;c-xxxxx&amp;gt;&lt;/strong&gt; patch &lt;strong&gt;&amp;lt;resource type&amp;gt; &amp;lt;name of object&amp;gt;&lt;/strong&gt; -p '{&quot;metadata&quot;:{&quot;finalizers&quot;:[]}}' --type=merge
+</code></pre>
+<ul>
+<li>Make sure there are no objects left in the namespace.</li>
+</ul>
+<pre><code>kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get --show-kind --ignore-not-found -n &lt;strong&gt;&amp;lt;c-xxxxx&amp;gt;&lt;/strong&gt;
+</code></pre>
+<ul>
+<li>Finally, delete the namespace.</li>
+</ul>
+<pre><code>kubectl delete ns &lt;strong&gt;&amp;lt;c-xxxxx&amp;gt;&lt;/strong&gt;
+</code></pre>
+<h3 id="cause">Cause</h3>
+<p>It is important to delete downstream clusters in a process to allow Rancher to delete clusters and clean nodes that are in an Active state.</p>
+<p>Downstream cluster deletion is ideally performed from the Rancher UI / API, where nodes are available and able to be gracefully removed. For example, where possible do not terminate nodes in the infrastructure before the deletion is completed.</p>
+<h3 id="status">Status</h3>
+<p>Top Issue</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
@@ -4919,7 +4933,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Welcome to Rancher KB Alt website" rel="prev">
+        <a href="../000020771/" class="md-footer__link md-footer__link--prev" aria-label="Previous: How to create seperate ETCD and Controlplane nodes in RKE2" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -4928,20 +4942,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Welcome to Rancher KB Alt website
+              How to create seperate ETCD and Controlplane nodes in RKE2
             </div>
           </div>
         </a>
       
       
         
-        <a href="../000020055/" class="md-footer__link md-footer__link--next" aria-label="Next: How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters" rel="next">
+        <a href="../000020792/" class="md-footer__link md-footer__link--next" aria-label="Next: How to make a simple terraform API request" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters
+              How to make a simple terraform API request
             </div>
           </div>
           <div class="md-footer__button md-icon">
