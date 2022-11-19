@@ -13,7 +13,7 @@
     
     
       
-        <title>How to change the kubelet root directory when provisioning a Kubernetes cluster with the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x - SUSE KBs</title>
+        <title>How to set up Alertmanager configs in Monitoring V2 in Rancher - SUSE KBs</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-change-the-kubelet-root-directory-when-provisioning-a-kubernetes-cluster-with-the-rancher-kubernetes-engine-rke-cli-or-rancher-v2x" class="md-skip">
+        <a href="#how-to-set-up-alertmanager-configs-in-monitoring-v2-in-rancher" class="md-skip">
           Skip to content
         </a>
       
@@ -95,7 +95,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to change the kubelet root directory when provisioning a Kubernetes cluster with the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x
+              How to set up Alertmanager configs in Monitoring V2 in Rancher
             
           </span>
         </div>
@@ -184,116 +184,6 @@
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
       </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          How to change the kubelet root directory when provisioning a Kubernetes cluster with the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        How to change the kubelet root directory when provisioning a Kubernetes cluster with the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#provisioning-via-rancher-v2x" class="md-nav__link">
-    Provisioning via Rancher v2.x
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#provisioning-via-the-rke-cli" class="md-nav__link">
-    Provisioning via the RKE CLI
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4684,6 +4574,83 @@
 
   
   
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to set up Alertmanager configs in Monitoring V2 in Rancher
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        How to set up Alertmanager configs in Monitoring V2 in Rancher
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
   
     <li class="md-nav__item">
       <a href="../000020747/" class="md-nav__link">
@@ -4810,56 +4777,23 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
   </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#provisioning-via-rancher-v2x" class="md-nav__link">
-    Provisioning via Rancher v2.x
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#provisioning-via-the-rke-cli" class="md-nav__link">
-    Provisioning via the RKE CLI
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4885,50 +4819,69 @@
                   
 
 
-<h1 id="how-to-change-the-kubelet-root-directory-when-provisioning-a-kubernetes-cluster-with-the-rancher-kubernetes-engine-rke-cli-or-rancher-v2x">How to change the kubelet root directory when provisioning a Kubernetes cluster with the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x</h1>
-<p>This document <strong>(000020058)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>This article details how to change the path of the kubelet root directory, which defaults to <code>/var/lib/kubelet</code>, when provisioning a Kubernetes cluster via the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x.</p>
-<blockquote>
-<p><strong>N.B. Updating the kubelet root directory is only supported on new cluster provisioning, and changing this path after initial cluster provisioning is not supported.</strong></p>
-</blockquote>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h1 id="how-to-set-up-alertmanager-configs-in-monitoring-v2-in-rancher">How to set up Alertmanager configs in Monitoring V2 in Rancher</h1>
+<p>This document <strong>(000020737)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Before we get started:</p>
 <ul>
-<li>The <a href="https://rancher.com/docs/rke/latest/en/">Rancher Kubernetes Engine (RKE) CLI</a> or a <a href="https://rancher.com/docs/rancher/v2.x/en/">Rancher v2.x</a> instance.</li>
+<li>Admin permissions are needed</li>
+<li>Gather the required information for the alerting you'd like to set up</li>
+<li>Monitoring will need to be installed</li>
 </ul>
-<h4 id="resolution">Resolution</h4>
-<p>If you wish to use a separate filesystem for the kubelet root directory, you will need to ensure that this is mounted at the desired path on nodes prior to provisioning.</p>
-<h5 id="provisioning-via-rancher-v2x">Provisioning via Rancher v2.x</h5>
-<ol>
-<li>Click <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/options/#cluster-config-file"><code>Edit as YAML</code></a> when configuring the cluster in the <code>Add Cluster</code> view.</li>
-<li>Under <a href="https://rancher.com/docs/rke/latest/en/config-options/services/"><code>kubelet</code> in the <code>services</code> block</a>, add the desired kubelet root directory path to the <code>root-dir</code> argument of the <code>extra_args</code> block, and in <code>extra_binds</code>, per the following example:</li>
-</ol>
-<pre><code class="language-yaml">services:
-     kubelet:
-       extra_args:
-         root-dir: &quot;/my/new/folder&quot;
-       extra_binds:
-    - &quot;/my/new/folder:/my/new/folder:shared,z&quot;
-</code></pre>
-<ol>
-<li>After configuring other cluster options as desired, click <code>Create</code> or <code>Next</code>, respectively for <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/node-pools/">Node Driver</a> or <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/custom-nodes/">Custom</a> clusters, to save the new cluster configuration.</li>
-</ol>
-<h4 id="provisioning-via-the-rke-cli">Provisioning via the RKE CLI</h4>
-<ol>
-<li>Open the cluster configuration YAML file for the new cluster.</li>
-<li>Under <a href="https://rancher.com/docs/rke/latest/en/config-options/services/"><code>kubelet</code> in the <code>services</code> block</a>, add the desired kubelet root directory path to the <code>root-dir</code> argument of the <code>extra_args</code> block, and in <code>extra_binds</code>, per the following example:</li>
-</ol>
-<pre><code class="language-yaml">services:
-     kubelet:
-       extra_args:
-         root-dir: &quot;/my/new/folder&quot;
-       extra_binds:
-    - &quot;/my/new/folder:/my/new/folder:shared,z&quot;
-</code></pre>
-<ol>
-<li>After configuring other cluster options as desired, provision the cluster by invoking <code>rke up --config &lt;cluster configuration YAML file&gt;</code>.</li>
-</ol>
+<p>Please note that I will set up Slack alerts in this example</p>
+<ul>
+<li>To set up Slack, add and configure the Incoming webhooks app within your Slack environment</li>
+<li>Copy the Webhook URL and paste it into a blank notepad</li>
+</ul>
+<h3 id="situation">Situation</h3>
+<h3 id="resolution">Resolution</h3>
+<ul>
+<li>
+<p>Create an <strong>Opaque Secret</strong> in the <strong>cattle-monitoring-system</strong> namespace</p>
+</li>
+<li>
+<p>Click on <strong>Projects/Namespaces</strong></p>
+</li>
+<li>Select <strong>cattle-monitoring-system</strong></li>
+<li>Then click on <strong>Secrets</strong></li>
+<li>Then select <strong>Create</strong></li>
+<li>Choose <strong>Opaque Secret</strong></li>
+<li>Specify a key name (Insert name here for the secret)</li>
+<li>Then paste the Slack Webhook URL under <strong>Value</strong></li>
+<li>Verify that the secret has been created successfully</li>
+<li>
+<p>Next, select the <strong>Monitoring</strong> tab on the left side</p>
+</li>
+<li>
+<p>Select <strong>Alerting</strong></p>
+</li>
+<li>Then create a new <strong>AlertManagerConfig</strong> in the same namespace</li>
+<li>Add a name for this configuration</li>
+<li>Then select <strong>Create</strong></li>
+<li>Once added, we will need to <strong>Edit Config</strong></li>
+<li>From there, we can add a new <strong>Receiver</strong>(This is where we can specify which type of notifications to receive)</li>
+<li>For Slack, select <strong>Add Slack</strong></li>
+<li>Under <strong>Secret with Slack Webhook URL</strong>, select the Secret name</li>
+<li>Then under <strong>the Key</strong> drop-down, we'll see the new, generated webhook secret key</li>
+<li>Next, specify the channel that the notifications will be sent to<ul>
+<li>(Optional) specify a proxy if applicable</li>
+</ul>
+</li>
+<li>Then select <strong>Create</strong></li>
+<li>After creation, a Slack receiver will be shown, pointing to the webhook URL secret</li>
+<li>Next, edit the <strong>AlertManagerConfig</strong> again and point the base route of the config to the slack receiver</li>
+<li>Under the drop-down, our receiver will show up</li>
+<li>Select the <strong>Receiver</strong></li>
+<li>
+<p>Specify <strong>Groupings</strong> <strong>and</strong> <strong>Matchers</strong> and set different intervals here</p>
+<ul>
+<li>For faster testing, change the default interval times to quicker times like 5 seconds, 10 seconds, 1 minute, etc.</li>
+<li>Then click <strong>Save</strong></li>
+<li>Under status, now we see the resulting config in the <strong>Alertmanager</strong> section in the Rancher UI</li>
+<li>Then, if everything has been set up correctly, a notification should be sent to the desired Slack channel</li>
+</ul>
+</li>
+</ul>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
@@ -4951,7 +4904,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Welcome to Rancher KB Alt website" rel="prev">
+        <a href="../000020733/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Reduce Memory and CPU footprint of Prometheus Monitoring Operator" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -4960,20 +4913,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Welcome to Rancher KB Alt website
+              Reduce Memory and CPU footprint of Prometheus Monitoring Operator
             </div>
           </div>
         </a>
       
       
         
-        <a href="../000020059/" class="md-footer__link md-footer__link--next" aria-label="Next: Who creates user accounts on SUSE Rancher Hosted?" rel="next">
+        <a href="../000020747/" class="md-footer__link md-footer__link--next" aria-label="Next: Prometheus Exporter not able to scrape filesystem metrics from nodes when SELinux is enabled." rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Who creates user accounts on SUSE Rancher Hosted?
+              Prometheus Exporter not able to scrape filesystem metrics from nodes when SELinux is enabled.
             </div>
           </div>
           <div class="md-footer__button md-icon">
