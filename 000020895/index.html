@@ -13,7 +13,7 @@
     
     
       
-        <title>How to increase the log level for Calico components in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster - SUSE KBs</title>
+        <title>Adding tolerations to components in the Rancher Logging chart - SUSE KBs</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-increase-the-log-level-for-calico-components-in-a-rancher-kubernetes-engine-rke-or-rancher-v2x-provisioned-kubernetes-cluster" class="md-skip">
+        <a href="#adding-tolerations-to-components-in-the-rancher-logging-chart" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to increase the log level for Calico components in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
+              Adding tolerations to components in the Rancher Logging chart
             
           </span>
         </div>
@@ -182,138 +182,6 @@
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
       </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020062/" class="md-nav__link">
-        How to rotate the Rancher SSL certificate with a single node Docker installation
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          How to increase the log level for Calico components in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        How to increase the log level for Calico components in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#via-the-rancher-ui" class="md-nav__link">
-    Via the Rancher UI
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#via-kubectl" class="md-nav__link">
-    Via kubectl
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further reading
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4788,6 +4656,105 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000020834/" class="md-nav__link">
+        How to define additional static pods on an RKE2 cluster node
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Adding tolerations to components in the Rancher Logging chart
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Adding tolerations to components in the Rancher Logging chart
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -4815,63 +4782,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
   </a>
   
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#via-the-rancher-ui" class="md-nav__link">
-    Via the Rancher UI
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#via-kubectl" class="md-nav__link">
-    Via kubectl
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further reading
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4897,53 +4831,38 @@
                   
 
 
-<h1 id="how-to-increase-the-log-level-for-calico-components-in-a-rancher-kubernetes-engine-rke-or-rancher-v2x-provisioned-kubernetes-cluster">How to increase the log level for Calico components in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster</h1>
-<p>This document <strong>(000020063)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="adding-tolerations-to-components-in-the-rancher-logging-chart">Adding tolerations to components in the Rancher Logging chart</h1>
+<p>This document <strong>(000020895)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>- Rancher v2.5.x, v2.6.x or v2.7.x</p>
+<p>- Rancher Logging Chart</p>
+<p>- Taints defined on cluster nodes</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>During network troubleshooting it may be useful to increase the log level of the Calico components. This article details how to set verbose debug-level Calico component logging, in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>A Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster with the Calico Network Provider</li>
-</ul>
-<h4 id="resolution">Resolution</h4>
-<blockquote>
-<p><strong>N.B.</strong> As these instructions involve editing the Calico DaemonSet directly, the change will not persist cluster update events, i.e. invocations of <code>rke up</code> for RKE CLI provisioned clusters, or changes to the cluster configuration for a Rancher provisioned cluster. As a result cluster updates should be avoided whilst collecting the debug level logs for troubleshooting.</p>
-</blockquote>
-<h5 id="via-the-rancher-ui">Via the Rancher UI</h5>
-<p>For a Rancher v2.x managed cluster, the Calico component log level can be adjusted via the Rancher UI, per the following process:</p>
-<ol>
-<li>Navigate to the <code>System</code> project of the relevant cluster within the Rancher UI.</li>
-<li>Locate the calico DaemonSet workload within the <code>kube-system</code> namespace, click the vertical elipses ( <code>⋮</code>) and select Edit.</li>
-<li>Click to Edit the <code>calico-node</code> container.</li>
-<li>Add <code>CALICO_STARTUP_LOGLEVEL = DEBUG</code> , <code>F​ELIX_LOGSEVERITYSCREEN  = Debug</code>, <code>BGP_LOGSEVERITYSCREEN = Debug</code> in Environment Variables section and click <code>Save</code>.</li>
-</ol>
-<h5 id="via-kubectl">Via kubectl</h5>
-<p>With a Kube Config file sourced for the relevant cluster, for a user with permission to edit the System project, the Calico component log level can be adjusted via kubectl, per the following process:</p>
-<ol>
-<li>Run <code>kubectl -n kube-system edit daemonset calico-node</code>.</li>
-<li>In the <code>env</code> definition for the <code>calico-node</code> container add an environment variable with the name <code>CALICO_STARTUP_LOGLEVEL</code> and value <code>DEBUG</code>, <code>F​ELIX_LOGSEVERITYSCREEN</code> and value <code>Debug</code> and <code>BGP_LOGSEVERITYSCREEN</code> and value <code>Debug</code>, e.g.:</li>
-</ol>
-<pre><code class="language-yaml">[...]
-         containers:
-      - env:
-        [...]
-        - name: CALICO_STARTUP_LOGLEVEL
-          value: DEBUG
-        - name: BGP_LOGSEVERITYSCREEN
-          value: Debug
-        - name: FELIX_LOGSEVERITYSCREEN
-          value: Debug
-[...]
+<p>When deploying the Rancher logging chart, Pods are not scheduled, where user-added <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">taints</a> are present on cluster nodes, and <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">tolerations</a> are not set on the rancher-logging chart. If only some nodes within the cluster are tainted, logs will be missing from those nodes. If all nodes are tainted, no logs will be forwarded and Pods for Deployments within the Rancher Logging will fail to schedule with an error of the following format:</p>
+<pre><code>Events:
+Type Reason Age From Message
+---- ------ ---- ---- -------
+Warning FailedScheduling &lt;unknown&gt; default-scheduler 0/3 nodes are available: 3 node(s) had taints that the pod didn't tolerate
+
 </code></pre>
-<ol>
-<li>Save the file.</li>
-</ol>
-<h4 id="further-reading">Further reading</h4>
-<ul>
-<li><a href="https://docs.projectcalico.org/reference/node/configuration">Calico configuration documentation</a></li>
-<li><a href="https://docs.projectcalico.org/maintenance/troubleshoot/component-logs">Calico component logs</a></li>
-</ul>
+<h3 id="resolution">Resolution</h3>
+<p>If there are user-added <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">taints</a> on nodes within the cluster, <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">tolerations</a> for these taints must be added in the rancher-logging chart via the tolerations value, alongside the default <a href="https://cattle.io/os=linux">cattle.io/os=linux</a> NoSchedule toleration.</p>
+<p>For example, if the taint with key=foo, value=bar and effect=NoSchedule is present on nodes within the cluster, the following tolerations should be defined in the values of the rancher-logging Chart:</p>
+<pre><code>tolerations:
+  - key: cattle.io/os
+    operator: &quot;Equal&quot;
+    value: &quot;linux&quot;
+    effect: NoSchedule
+  - key: foo
+    operator: &quot;Equal&quot;
+    value: &quot;bar&quot;
+    effect: NoSchedule
+</code></pre>
+<pre><code>
+
+</code></pre>
+<h3 id="cause">Cause</h3>
+<p>Nodes with specific taints will deny the scheduling of any pod if no matching toleration is present on the workload.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
