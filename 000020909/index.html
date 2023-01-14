@@ -9,17 +9,17 @@
       
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../000020907/">
       
       
-        <link rel="next" href="../000020067/">
+        <link rel="next" href="../000020910/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.3">
     
     
       
-        <title>nginx-ingress-controller pods failing to load configuration with "client intended to send too large body" error in nginx-ingress-controller < nginx-0.32.0-rancher1 - SUSE KBs</title>
+        <title>How to enable fluent-bit debug logging - SUSE KBs</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nginx-ingress-controller-pods-failing-to-load-configuration-with-client-intended-to-send-too-large-body-error-in-nginx-ingress-controller-nginx-0320-rancher1" class="md-skip">
+        <a href="#how-to-enable-fluent-bit-debug-logging" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              nginx-ingress-controller pods failing to load configuration with "client intended to send too large body" error in nginx-ingress-controller < nginx-0.32.0-rancher1
+              How to enable fluent-bit debug logging
             
           </span>
         </div>
@@ -189,103 +189,6 @@
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
       </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          nginx-ingress-controller pods failing to load configuration with "client intended to send too large body" error in nginx-ingress-controller < nginx-0.32.0-rancher1
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        nginx-ingress-controller pods failing to load configuration with "client intended to send too large body" error in nginx-ingress-controller < nginx-0.32.0-rancher1
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#workaround" class="md-nav__link">
-    Workaround
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4766,6 +4669,83 @@
 
   
   
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to enable fluent-bit debug logging
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        How to enable fluent-bit debug logging
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
   
     <li class="md-nav__item">
       <a href="../000020910/" class="md-nav__link">
@@ -4802,43 +4782,23 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#workaround" class="md-nav__link">
-    Workaround
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4865,33 +4825,51 @@
 
 
 
-<h1 id="nginx-ingress-controller-pods-failing-to-load-configuration-with-client-intended-to-send-too-large-body-error-in-nginx-ingress-controller-nginx-0320-rancher1">nginx-ingress-controller pods failing to load configuration with "client intended to send too large body" error in nginx-ingress-controller &lt; nginx-0.32.0-rancher1</h1>
-<p>This document <strong>(000020066)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="how-to-enable-fluent-bit-debug-logging">How to enable fluent-bit debug logging</h1>
+<p>This document <strong>(000020909)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher with Rancher-Logging chart v2</p>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p><code>nginx-ingress-controller</code> pods fail to load configuration successfully, resulting in failure for some Ingress resources. Logs of the <code>nginx-ingress-controller</code> pods reveal error messages of the following format:</p>
-<pre><code>2020-09-22T19:06:19.696272452Z 2020/09/22 19:06:19 [error] 5832#5832: *28190476 client intended to send too large body: 10696855 bytes, client: unix:, server: , request: &quot;POST /configuration/servers HTTP/1.1&quot;, host: &quot;nginx-status&quot;
-2020-09-22T19:06:19.718950185Z W0922 19:06:19.718851       8 controller.go:176] Dynamic reconfiguration failed: unexpected error code: 413
+<p>When troubleshooting the fluent-bit log level might need to be increased to debug level.</p>
+<h3 id="resolution">Resolution</h3>
+<p>Fluent-bit debug level logging can be changed by modifying the logLevel spec of the logging CRD</p>
+<p><strong>The following steps will help enable or disable debug-level logging for fluent-bit:</strong></p>
+<p>1. Edit rancher logging CRD</p>
+<pre><code>&gt; kubectl edit logging rancher-logging-root
 </code></pre>
-<p>The <code>nginx-ingress-controller</code> dynamically updates its configuration by POST'ing the data to the <code>/configuration</code> endpoint. In <code>nginx-ingress-controller</code> versions lower than <code>nginx-0.26.0</code> the <code>client_max_body_size</code> for this endpoint is hardcoded to <code>10m</code>. As a result, if the configuration data is greater than <code>10m</code> the request will fail (in the log entry above the configuration body is <code>10696855</code> bytes, which is equal to <code>~10.2m</code>). The configuration request will be repeatedly retried, resulting in increased CPU usage by the <code>nginx-ingress-controller</code> pods.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<p>2. Add logLevel debug to the fluentbit spec</p>
+<pre><code>spec:
+controlNamespace: cattle-logging-system
+fluentbit:
+    image:
+      repository: rancher/mirrored-fluent-fluent-bit
+      tag: 1.9.3
+    logLevel: debug
+</code></pre>
+<p>3. Confirm log level is set to debug</p>
+<pre><code>&gt; kubectl get pods -n cattle-logging-system -l app.kubernetes.io/name=fluentbit NAME READY STATUS RESTARTS AGE rancher-logging-root-fluentbit-gqq8l 1/1 Running 0 19s
+
+&gt; kubectl logs --tail=10 -n cattle-logging-system rancher-logging-root-fluentbit-gqq8l
+[2023/01/13 09:44:18] [debug] [input chunk] update output instances with new chunk size diff=1841
+[2023/01/13 09:44:18] [debug] [input:tail:tail.0] inode=2594165 events: IN_MODIFY
+[2023/01/13 09:44:18] [debug] [input chunk] update output instances with new chunk size diff=927
+[2023/01/13 09:44:18] [debug] [input:tail:tail.0] inode=2594165 events: IN_MODIFY
+[2023/01/13 09:44:18] [debug] [input chunk] update output instances with new chunk size diff=1840
+[2023/01/13 09:44:18] [debug] [input chunk] update output instances with new chunk size diff=1840
+[2023/01/13 09:44:18] [debug] [input:tail:tail.0] inode=2594165 events: IN_MODIFY
+[2023/01/13 09:44:18] [debug] [input chunk] update output instances with new chunk size diff=927
+[2023/01/13 09:44:18] [debug] [input:tail:tail.0] inode=2594165 events: IN_MODIFY
+[2023/01/13 09:44:18] [debug] [input chunk] update output instances with new chunk size diff=913
+</code></pre>
+<p><strong>Notes:</strong></p>
 <ul>
-<li>A Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster</li>
-<li><code>nginx-ingress-controller</code> version lower than <code>nginx-0.32.0-rancher1</code></li>
+<li>To reset the logging level to the default info, re-run the same steps and change the logLevel to info.</li>
+<li>The logLevel value is not exposed via the rancher-logging chart and cannot be configured persistently. As a result, the change will be overwritten and logLevel reset to the default of info after a rancher-logging chart upgrade.</li>
 </ul>
-<h4 id="workaround">Workaround</h4>
-<p>Remove some Ingress resources in the cluster to reduce the configuration size below the <code>10m</code> limit.</p>
-<p><strong>N.B.</strong> To remove recently added Ingress resources that pushed the configuration size over the limit of 10m, check the age of the Ingresses.</p>
-<h4 id="resolution">Resolution</h4>
-<p>In <code>ingress-nginx</code> versions <code>0.26.0</code> and above, the <a href="https://github.com/kubernetes/Ingress-nginx/blob/nginx-0.26.0/rootfs/etc/nginx/template/nginx.tmpl#L583"><code>client_max_body_size</code> for the <code>/configuration</code> endpoint is dynamic</a>.</p>
-<p>To take advantage of this fix, upgrade the Kubernetes version of the cluster to one of the below or later, which use <code>nginx-ingress-controller:nginx-0.32.0-rancher1</code> or above:</p>
+<p><strong>Reference:</strong></p>
 <ul>
-<li><code>v1.15.12-rancher1-1</code></li>
-<li><code>v1.16.10-rancher2-1</code></li>
-<li><code>v1.17.11-rancher1-1</code></li>
-<li><code>v1.18.3-rancher2-1</code></li>
+<li>https://banzaicloud.com/docs/one-eye/logging-operator/configuration/crds/v1beta1/fluentbit_types/#fluentbitspec-loglevel</li>
 </ul>
-<p>RKE CLI and Rancher v2.x provisioned Kubernetes clusters, with Kubernetes v1.19+ run a higher version of the <code>ingress-nginx</code>, which also includes the fix.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
