@@ -1,4 +1,6 @@
-![Drone (self-hosted) with branch](https://img.shields.io/drone/build/zaggash/rancherkb-fuzz/main?label=Build&logo=drone&server=https%3A%2F%2Fci.ziggzagg.fr&style=for-the-badge)  
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/zaggash/rancherkb-fuzz/schedule-rancherkb-fuzz_gh-pages.yaml?label=Scrap%20and%20BUILD&logo=github%20actions&logoColor=white&style=for-the-badge)
+![Website](https://img.shields.io/website?down_color=red&down_message=Offline&label=GH-PAGES&logo=github&style=for-the-badge&up_color=green&up_message=Online&url=https%3A%2F%2Fzaggash.github.io%2Francherkb-fuzz)
+
 
 ## Fuzzy Search SUSE Rancher KBs
 
