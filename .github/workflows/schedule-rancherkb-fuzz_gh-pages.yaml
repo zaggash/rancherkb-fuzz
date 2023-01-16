@@ -1,0 +1,20 @@
+name: Schedule - Build Search Website
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/schedule-rancherkb-fuzz_gh-pages.yaml"
+
+jobs:
+  gh-pages:
+    name: Build and Deploy KB
+    uses: zaggash/gh-workflows/.github/workflows/run-rancherkb-fuzz_gh-pages.yaml@main
+    secrets:
+      app_id: ${{ secrets.ZAGGBOT_APP_ID }}
+      app_private_key: ${{ secrets.ZAGGBOT_APP_PRIVATE_KEY }}
+  
