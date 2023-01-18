@@ -9,17 +9,17 @@
       
       
       
-        <link rel="prev" href="../000020699/">
+        <link rel="prev" href="..">
       
       
-        <link rel="next" href="../000020710/">
+        <link rel="next" href="../000020068/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.5">
     
     
       
-        <title>Switching encryption method to at-rest data encryption - SUSE KBs</title>
+        <title>Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file - SUSE KBs</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#switching-encryption-method-to-at-rest-data-encryption" class="md-skip">
+        <a href="#logs-not-forwarded-by-rancher-logging-in-rancher-v2x-when-docker-daemon-logging-driver-is-not-set-to-json-file" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Switching encryption method to at-rest data encryption
+              Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
             
           </span>
         </div>
@@ -189,6 +189,116 @@
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
       </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+    <nav class="md-nav" aria-label="Situation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue" class="md-nav__link">
+    Issue
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pre-requisites" class="md-nav__link">
+    Pre-requisites
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#centos-or-rhel-packaged-docker" class="md-nav__link">
+    CentOS or RHEL packaged Docker
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upstream-docker" class="md-nav__link">
+    Upstream Docker
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -4324,103 +4434,6 @@
 
   
   
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Switching encryption method to at-rest data encryption
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Switching encryption method to at-rest data encryption
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#if-you-already-have-encryption-enabled-use-the-following-steps" class="md-nav__link">
-    If you already have encryption enabled, use the following steps:
-  </a>
-  
-    <nav class="md-nav" aria-label="If you already have encryption enabled, use the following steps:">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#disable-the-current-encryption" class="md-nav__link">
-    Disable the current Encryption
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cleanup-and-enable-the-at-rest-data-encryption" class="md-nav__link">
-    Cleanup and enable the at-rest data encryption
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
   
     <li class="md-nav__item">
       <a href="../000020710/" class="md-nav__link">
@@ -4806,46 +4819,59 @@
     Situation
   </a>
   
+    <nav class="md-nav" aria-label="Situation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue" class="md-nav__link">
+    Issue
+  </a>
+  
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
+  <a href="#pre-requisites" class="md-nav__link">
+    Pre-requisites
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#if-you-already-have-encryption-enabled-use-the-following-steps" class="md-nav__link">
-    If you already have encryption enabled, use the following steps:
-  </a>
-  
-    <nav class="md-nav" aria-label="If you already have encryption enabled, use the following steps:">
+    <nav class="md-nav" aria-label="Resolution">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#disable-the-current-encryption" class="md-nav__link">
-    Disable the current Encryption
+  <a href="#centos-or-rhel-packaged-docker" class="md-nav__link">
+    CentOS or RHEL packaged Docker
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#cleanup-and-enable-the-at-rest-data-encryption" class="md-nav__link">
-    Cleanup and enable the at-rest data encryption
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
+  <a href="#upstream-docker" class="md-nav__link">
+    Upstream Docker
   </a>
   
 </li>
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
   
 </li>
       
@@ -4865,22 +4891,39 @@
 
 
 
-<h1 id="switching-encryption-method-to-at-rest-data-encryption">Switching encryption method to at-rest data encryption</h1>
-<p>This document <strong>(000020703)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="logs-not-forwarded-by-rancher-logging-in-rancher-v2x-when-docker-daemon-logging-driver-is-not-set-to-json-file">Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file</h1>
+<p>This document <strong>(000020067)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<p>I already have encryption enabled per the <a href="https://rancher.com/docs/rancher/v2.0-v2.4/en/security/rancher-2.2/hardening-2.2/">hardening guide</a> but I'm having trouble switching to the new at-rest data encryption method documented <a href="https://rancher.com/docs/rke/latest/en/config-options/secrets-encryption/#enable-encryption">here</a>. What needs to be done?</p>
-<h3 id="resolution">Resolution</h3>
-<h2 id="if-you-already-have-encryption-enabled-use-the-following-steps">If you already have encryption enabled, use the following steps:</h2>
-<h3 id="disable-the-current-encryption">Disable the current Encryption</h3>
-<p>1. Edit /opt/kubernetes/encryption.yaml</p>
-<p>2. Move the <strong>- identity: {}</strong> line above the <strong>- aescbc:</strong> line</p>
-<p>3. Update cluster.yaml and set <strong>secrets_encryption_config</strong> to <strong>false</strong></p>
-<p>4. Save cluster.yaml and wait for the cluster to finish decrypting</p>
-<h3 id="cleanup-and-enable-the-at-rest-data-encryption">Cleanup and enable the at-rest data encryption</h3>
-<p>1. Update cluster.yaml:</p>
-<p>- Remove <strong>extra_binds: - "/opt/kubernetes:/opt/kubernetes"</strong></p>
-<p>- Set <strong>secrets_encryption_config</strong> to <strong>true</strong></p>
-<p>2. Wait for the cluster to finish encrypting</p>
+<h4 id="issue">Issue</h4>
+<p>The <a href="https://rancher.com/docs/rancher/v2.x/en/logging/">Rancher v2.x Logging feature</a> enables you to configure log forwarding for Pods, as well as system component containers, in a cluster to a logging endpoint such as Elasticsearch or Splunk.</p>
+<p>This feature works by deploying a workload to each node in the cluster that mounts the container log directory from the host to parse the Docker container json log files. This is dependent upon use of the <a href="https://docs.docker.com/config/containers/logging/json-file/">json-file Docker logging driver</a>. In the event that the Docker daemon is configured with an alternative logging driver, the logging feature will be unable to parse the logs and will not forward these.</p>
+<p>In CentOS and RHEL packaged Docker 1.13.1, the default log driver configured is journald, which will prevent log forwarding functioning. Meanwhile, whilst json-file is the default log driver in the upstream Docker packages, if an alternative has been configured on nodes this will also prevent the correct functioning of the log forwarding.</p>
+<p>You can verify the currently configured Docker logging driver on a node by running <code>docker info | grep Logging</code>, which will show output of the following format: <code>Logging Driver: journald</code>.</p>
+<p>In the event that json-file is not the configured logging driver, the output of <code>ls -la /var/log/containers/</code> on the node should also be empty. With json-file configured this would display symoblic links to paths under <code>/var/log/pods</code>, containing symbolic links which in turn point to the Docker container json log files.</p>
+<h4 id="pre-requisites">Pre-requisites</h4>
+<ul>
+<li>Rancher v2.x managed cluster with Rancher logging enabled</li>
+</ul>
+<h4 id="resolution">Resolution</h4>
+<h5 id="centos-or-rhel-packaged-docker">CentOS or RHEL packaged Docker</h5>
+<ol>
+<li>Update <code>/etc/sysconfig/docker</code>, as shown in the screenshot below, to set <code>--log-driver=json-file</code> instead of <code>journald</code>.</li>
+</ol>
+<p><img alt="sysconfigdocker" src="https://support.rancher.com/hc/article_attachments/360073503472/sysconfigdocker.png" /></p>
+<ol>
+<li>
+<p>Restart the Docker daemon: <code>systemctl restart docker</code></p>
+</li>
+<li>
+<p>You should now see symlinked logs created under <code>/var/log/containers</code></p>
+</li>
+</ol>
+<h5 id="upstream-docker">Upstream Docker</h5>
+<ol>
+<li>Configure the json-file Docker logging driver in <code>/etc/docker/daemon.json</code> <a href="https://docs.docker.com/config/containers/logging/json-file/">per the Docker documentation</a></li>
+<li>Restart the Docker daemon: <code>systemctl restart docker</code></li>
+<li>You should now see symlinked logs created under <code>/var/log/containers</code></li>
+</ol>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
