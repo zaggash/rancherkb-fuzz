@@ -9,17 +9,17 @@
       
       
       
-        <link rel="prev" href="../000020150/">
+        <link rel="prev" href="..">
       
       
-        <link rel="next" href="../000020152/">
+        <link rel="next" href="../000020068/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
     
     
       
-        <title>How to grant users access to Grafana with minimal permissions - SUSE KBs</title>
+        <title>Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file - SUSE KBs</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-grant-users-access-to-grafana-with-minimal-permissions" class="md-skip">
+        <a href="#logs-not-forwarded-by-rancher-logging-in-rancher-v2x-when-docker-daemon-logging-driver-is-not-set-to-json-file" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to grant users access to Grafana with minimal permissions
+              Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
             
           </span>
         </div>
@@ -189,6 +189,116 @@
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
       </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+    <nav class="md-nav" aria-label="Situation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue" class="md-nav__link">
+    Issue
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pre-requisites" class="md-nav__link">
+    Pre-requisites
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#centos-or-rhel-packaged-docker" class="md-nav__link">
+    CentOS or RHEL packaged Docker
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upstream-docker" class="md-nav__link">
+    Upstream Docker
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1434,110 +1544,6 @@
       <a href="../000020150/" class="md-nav__link">
         Does SUSE Rancher Hosted provide downstream clusters?
       </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          How to grant users access to Grafana with minimal permissions
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        How to grant users access to Grafana with minimal permissions
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    Requirements
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#background" class="md-nav__link">
-    Background
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#solution" class="md-nav__link">
-    Solution
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further Reading
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4817,37 +4823,43 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
+  <a href="#issue" class="md-nav__link">
+    Issue
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    Requirements
+  <a href="#pre-requisites" class="md-nav__link">
+    Pre-requisites
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#background" class="md-nav__link">
-    Background
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#centos-or-rhel-packaged-docker" class="md-nav__link">
+    CentOS or RHEL packaged Docker
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#solution" class="md-nav__link">
-    Solution
+  <a href="#upstream-docker" class="md-nav__link">
+    Upstream Docker
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further Reading
-  </a>
+      </ul>
+    </nav>
   
 </li>
         
@@ -4879,32 +4891,39 @@
 
 
 
-<h1 id="how-to-grant-users-access-to-grafana-with-minimal-permissions">How to grant users access to Grafana with minimal permissions</h1>
-<p>This document <strong>(000020151)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="logs-not-forwarded-by-rancher-logging-in-rancher-v2x-when-docker-daemon-logging-driver-is-not-set-to-json-file">Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file</h1>
+<p>This document <strong>(000020067)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>You can follow these directions to create a new user and grant minimal permissions to view cluster monitoring and Grafana graphs in your Kubernetes cluster.</p>
-<h4 id="requirements">Requirements</h4>
+<h4 id="issue">Issue</h4>
+<p>The <a href="https://rancher.com/docs/rancher/v2.x/en/logging/">Rancher v2.x Logging feature</a> enables you to configure log forwarding for Pods, as well as system component containers, in a cluster to a logging endpoint such as Elasticsearch or Splunk.</p>
+<p>This feature works by deploying a workload to each node in the cluster that mounts the container log directory from the host to parse the Docker container json log files. This is dependent upon use of the <a href="https://docs.docker.com/config/containers/logging/json-file/">json-file Docker logging driver</a>. In the event that the Docker daemon is configured with an alternative logging driver, the logging feature will be unable to parse the logs and will not forward these.</p>
+<p>In CentOS and RHEL packaged Docker 1.13.1, the default log driver configured is journald, which will prevent log forwarding functioning. Meanwhile, whilst json-file is the default log driver in the upstream Docker packages, if an alternative has been configured on nodes this will also prevent the correct functioning of the log forwarding.</p>
+<p>You can verify the currently configured Docker logging driver on a node by running <code>docker info | grep Logging</code>, which will show output of the following format: <code>Logging Driver: journald</code>.</p>
+<p>In the event that json-file is not the configured logging driver, the output of <code>ls -la /var/log/containers/</code> on the node should also be empty. With json-file configured this would display symoblic links to paths under <code>/var/log/pods</code>, containing symbolic links which in turn point to the Docker container json log files.</p>
+<h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
-<li>Rancher v2.x</li>
-<li>Monitoring enabled in your cluster</li>
+<li>Rancher v2.x managed cluster with Rancher logging enabled</li>
 </ul>
-<h4 id="background">Background</h4>
-<p>You may have a use case to grant permissions to a user to view cluster monitoring metrics and graphs, but don't want that same user to be able to see other information or perform any actions on your cluster. This how-to guide will show you how to achieve this.</p>
-<h4 id="solution">Solution</h4>
+<h4 id="resolution">Resolution</h4>
+<h5 id="centos-or-rhel-packaged-docker">CentOS or RHEL packaged Docker</h5>
 <ol>
-<li>If you have not already, create a new user in Rancher. Go to the Global view and click on the Users menu. Click the <code>Add Users</code> button in the top right corner. Select the desired Username, Password, and Display Name. For Global Permissions, select User-Base and leave all Custom permissions unchecked. Click the <code>Create</code> button at the bottom of the form. Let's assume we are using the username <code>johndoe</code>.</li>
-<li>Go to the Security menu and select Roles. Select the Projects tab and click the <code>Add Project Role</code> button. In the name field, enter Services Proxy. Under Grant Resources, click the <code>+ Add Resource</code> button. Check the Get and List boxes and enter <code>services/proxy</code> in the Resource field. Note, you'll see it changes this to <code>serivces/proxy (Custom)</code> which is normal. Click the <code>Create</code> button at the bottom to create the new project role.</li>
-<li>Next, go to the cluster view for your cluster and select Members from the menu. Click the <code>Add Members</code> button in the top right corner. In the Members dropdown, select <code>johndoe</code> and select Member for Cluster Permissions. Click the <code>Create</code> button at the bottom of the form.</li>
-<li>Now navigate to the System project in your cluster. Go to the Members menu and click the <code>Add Member</code> button. Enter <code>johndoe</code> in the Member field and select <code>Services Proxy</code> under Project Permissions. Click the <code>Create</code> button at the bottom of the form.</li>
-<li>The <code>johndoe</code> user should now be able to log into Rancher and see the cluster dashboard with the Grafana icons. Clicking the Grafana icons should open a new browser window that will show the user various graphs and statistics for the cluster. This user should not be able to perform other operations, like view or launch new workloads in the cluster.</li>
+<li>Update <code>/etc/sysconfig/docker</code>, as shown in the screenshot below, to set <code>--log-driver=json-file</code> instead of <code>journald</code>.</li>
 </ol>
-<h4 id="further-reading">Further Reading</h4>
-<p>For more detailed information on how RBAC works in Rancher and Kubernetes, see the following links:</p>
-<ul>
-<li><a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/">Role-Based Access Control (RBAC) in Rancher</a></li>
-<li><a href="https://kubernetes.io/docs/reference/access-authn-authz/rbac/">Using RBAC Authorization in Kubernetes</a></li>
-</ul>
+<p><img alt="sysconfigdocker" src="https://support.rancher.com/hc/article_attachments/360073503472/sysconfigdocker.png" /></p>
+<ol>
+<li>
+<p>Restart the Docker daemon: <code>systemctl restart docker</code></p>
+</li>
+<li>
+<p>You should now see symlinked logs created under <code>/var/log/containers</code></p>
+</li>
+</ol>
+<h5 id="upstream-docker">Upstream Docker</h5>
+<ol>
+<li>Configure the json-file Docker logging driver in <code>/etc/docker/daemon.json</code> <a href="https://docs.docker.com/config/containers/logging/json-file/">per the Docker documentation</a></li>
+<li>Restart the Docker daemon: <code>systemctl restart docker</code></li>
+<li>You should now see symlinked logs created under <code>/var/log/containers</code></li>
+</ol>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
