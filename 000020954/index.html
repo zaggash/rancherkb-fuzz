@@ -9,17 +9,15 @@
       
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../000020951/">
       
-      
-        <link rel="next" href="../000020068/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
     
     
       
-        <title>Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file - SUSE KBs</title>
+        <title>Testing Connectivity Between Kubernetes Pods with Iperf3 - SUSE KBs</title>
       
     
     
@@ -67,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#logs-not-forwarded-by-rancher-logging-in-rancher-v2x-when-docker-daemon-logging-driver-is-not-set-to-json-file" class="md-skip">
+        <a href="#testing-connectivity-between-kubernetes-pods-with-iperf3" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
+              Testing Connectivity Between Kubernetes Pods with Iperf3
             
           </span>
         </div>
@@ -188,131 +186,6 @@
     <li class="md-nav__item">
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#centos-or-rhel-packaged-docker" class="md-nav__link">
-    CentOS or RHEL packaged Docker
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#upstream-docker" class="md-nav__link">
-    Upstream Docker
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020068/" class="md-nav__link">
-        "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
       </a>
     </li>
   
@@ -4788,6 +4661,119 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000020951/" class="md-nav__link">
+        Adding missing CAdvisor labels to k8s 1.24+
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Testing Connectivity Between Kubernetes Pods with Iperf3
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Testing Connectivity Between Kubernetes Pods with Iperf3
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-deploy-iperf3-as-a-deployment" class="md-nav__link">
+    Step 1: Deploy Iperf3 as a Deployment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-verify-the-deployment" class="md-nav__link">
+    Step 2: Verify the Deployment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-test-connectivity-between-pods" class="md-nav__link">
+    Step 3: Test Connectivity Between Pods
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -4819,52 +4805,40 @@
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
+      
+        <li class="md-nav__item">
+  <a href="#step-1-deploy-iperf3-as-a-deployment" class="md-nav__link">
+    Step 1: Deploy Iperf3 as a Deployment
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#centos-or-rhel-packaged-docker" class="md-nav__link">
-    CentOS or RHEL packaged Docker
+      
+        <li class="md-nav__item">
+  <a href="#step-2-verify-the-deployment" class="md-nav__link">
+    Step 2: Verify the Deployment
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#upstream-docker" class="md-nav__link">
-    Upstream Docker
+      
+        <li class="md-nav__item">
+  <a href="#step-3-test-connectivity-between-pods" class="md-nav__link">
+    Step 3: Test Connectivity Between Pods
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
   
 </li>
       
@@ -4891,39 +4865,107 @@
 
 
 
-<h1 id="logs-not-forwarded-by-rancher-logging-in-rancher-v2x-when-docker-daemon-logging-driver-is-not-set-to-json-file">Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file</h1>
-<p>This document <strong>(000020067)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="testing-connectivity-between-kubernetes-pods-with-iperf3">Testing Connectivity Between Kubernetes Pods with Iperf3</h1>
+<p>This document <strong>(000020954)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>The <a href="https://rancher.com/docs/rancher/v2.x/en/logging/">Rancher v2.x Logging feature</a> enables you to configure log forwarding for Pods, as well as system component containers, in a cluster to a logging endpoint such as Elasticsearch or Splunk.</p>
-<p>This feature works by deploying a workload to each node in the cluster that mounts the container log directory from the host to parse the Docker container json log files. This is dependent upon use of the <a href="https://docs.docker.com/config/containers/logging/json-file/">json-file Docker logging driver</a>. In the event that the Docker daemon is configured with an alternative logging driver, the logging feature will be unable to parse the logs and will not forward these.</p>
-<p>In CentOS and RHEL packaged Docker 1.13.1, the default log driver configured is journald, which will prevent log forwarding functioning. Meanwhile, whilst json-file is the default log driver in the upstream Docker packages, if an alternative has been configured on nodes this will also prevent the correct functioning of the log forwarding.</p>
-<p>You can verify the currently configured Docker logging driver on a node by running <code>docker info | grep Logging</code>, which will show output of the following format: <code>Logging Driver: journald</code>.</p>
-<p>In the event that json-file is not the configured logging driver, the output of <code>ls -la /var/log/containers/</code> on the node should also be empty. With json-file configured this would display symoblic links to paths under <code>/var/log/pods</code>, containing symbolic links which in turn point to the Docker container json log files.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<p>In this article, we will show you how to use iperf3 to test the connectivity between Kubernetes pods in your cluster. We will use a Deployment to ensure that iperf3 pods are running on each node in the cluster.</p>
+<h3 id="prerequisites">Prerequisites</h3>
 <ul>
-<li>Rancher v2.x managed cluster with Rancher logging enabled</li>
+<li>A running Kubernetes cluster</li>
+<li>The kubectl command-line tool installed on your local machine</li>
 </ul>
-<h4 id="resolution">Resolution</h4>
-<h5 id="centos-or-rhel-packaged-docker">CentOS or RHEL packaged Docker</h5>
-<ol>
-<li>Update <code>/etc/sysconfig/docker</code>, as shown in the screenshot below, to set <code>--log-driver=json-file</code> instead of <code>journald</code>.</li>
-</ol>
-<p><img alt="sysconfigdocker" src="https://support.rancher.com/hc/article_attachments/360073503472/sysconfigdocker.png" /></p>
-<ol>
-<li>
-<p>Restart the Docker daemon: <code>systemctl restart docker</code></p>
-</li>
-<li>
-<p>You should now see symlinked logs created under <code>/var/log/containers</code></p>
-</li>
-</ol>
-<h5 id="upstream-docker">Upstream Docker</h5>
-<ol>
-<li>Configure the json-file Docker logging driver in <code>/etc/docker/daemon.json</code> <a href="https://docs.docker.com/config/containers/logging/json-file/">per the Docker documentation</a></li>
-<li>Restart the Docker daemon: <code>systemctl restart docker</code></li>
-<li>You should now see symlinked logs created under <code>/var/log/containers</code></li>
-</ol>
+<h3 id="step-1-deploy-iperf3-as-a-deployment">Step 1: Deploy Iperf3 as a Deployment</h3>
+<p>To deploy iperf3 as a Deployment on your Kubernetes cluster, you will need to create a YAML file with the following contents:</p>
+<pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: iperf3-deployment
+spec:
+replicas: 3
+selector:
+    matchLabels:
+      app: iperf3
+template:
+    metadata:
+      labels:
+        app: iperf3
+    spec:
+      containers:
+      - name: iperf3
+        image: leodotcloud/swiss-army-knife
+        ports:
+        - containerPort: 5201
+
+</code></pre>
+<pre><code>
+</code></pre>
+<p>This YAML file creates a Deployment named <code>iperf3-deployment</code> with 3 replicas of the iperf3 container.</p>
+<p>You can then create the Deployment by running the following command:</p>
+<pre><code>kubectl apply -f iperf3-deployment.yaml
+
+</code></pre>
+<h3 id="step-2-verify-the-deployment">Step 2: Verify the Deployment</h3>
+<p>Once the Deployment is up and running, you can use the following command to check that iperf3 pods are running on all nodes in the cluster:</p>
+<pre><code>kubectl get pods
+
+</code></pre>
+<p>You should see output similar to the following:</p>
+<pre><code>NAME                             READY   STATUS    RESTARTS   AGE
+iperf3-deployment-5b7f6f5c8-5wcw5   1/1     Running   0          36s
+iperf3-deployment-5b7f6f5c8-6q4q4   1/1     Running   0          36s
+iperf3-deployment-5b7f6f5c8-8wnw7   1/1     Running   0          36s
+
+</code></pre>
+<h3 id="step-3-test-connectivity-between-pods">Step 3: Test Connectivity Between Pods</h3>
+<p>To test the connectivity between pods, you will need to use the pod's IP addresses. You can use the following command to get the IP addresses of the pods:</p>
+<pre><code>kubectl get pods -o wide
+
+</code></pre>
+<p>You should see output similar to the following:</p>
+<pre><code>NAME                             READY   STATUS    RESTARTS   AGE    IP            NODE
+iperf3-deployment-5b7f6f5c8-5wcw5   1/1     Running   0          36s   10.1.0.1      node1
+iperf3-deployment-5b7f6f5c8-6q4q4   1/1     Running   0          36s   10.1.0.2      node2
+iperf3-deployment-5b7f6f5c8-8wnw7   1/1     Running   0          36s   10.1.0.3      node3
+
+</code></pre>
+<p>Once you have the IP addresses of the pods you want to test, you can use the iperf3 command to test the connectivity. (Make sure to choose pods running on different nodes)</p>
+<p>First, choose a pod to run in server mode:</p>
+<pre><code>kubectl exec -it &lt;pod-name&gt; -- iperf3 -s -p 12345
+
+</code></pre>
+<p>Second, choose a pod to run in client mode:</p>
+<pre><code>kubectl exec -it &lt;pod-name&gt; -- iperf3 -c &lt;server pod IP address&gt; -p 12345
+
+</code></pre>
+<p>The iperf3 command will output the network performance statistics, including the bandwidth, packet loss, and jitter.</p>
+<p>This is an example output from a test cluster; please note that due to the various layers of networking involved, there is a performance impact that is expected:</p>
+<pre><code>Connecting to host 10.42.0.36, port 12345
+[  4] local 10.42.0.37 port 45568 connected to 10.42.0.36 port 12345
+[ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
+[  4]   0.00-1.00   sec  2.23 GBytes  19.1 Gbits/sec  300   2.88 MBytes
+[  4]   1.00-2.00   sec  2.49 GBytes  21.4 Gbits/sec  737   1.58 MBytes
+[  4]   2.00-3.00   sec  2.42 GBytes  20.8 Gbits/sec  524   2.33 MBytes
+[  4]   3.00-4.00   sec  2.17 GBytes  18.6 Gbits/sec  248   2.41 MBytes
+[  4]   4.00-5.00   sec  2.25 GBytes  19.3 Gbits/sec  151   2.45 MBytes
+[  4]   5.00-6.00   sec  2.36 GBytes  20.2 Gbits/sec   73   3.00 MBytes
+[  4]   6.00-7.00   sec  2.40 GBytes  20.6 Gbits/sec  181   2.84 MBytes
+[  4]   7.00-8.00   sec  2.29 GBytes  19.7 Gbits/sec   73   2.64 MBytes
+[  4]   8.00-9.00   sec  2.35 GBytes  20.2 Gbits/sec  110   2.44 MBytes
+[  4]   9.00-10.00  sec  2.27 GBytes  19.5 Gbits/sec  167   2.43 MBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-10.00  sec  23.2 GBytes  19.9 Gbits/sec  2564             sender
+[  4]   0.00-10.00  sec  23.2 GBytes  19.9 Gbits/sec                  receiver
+
+</code></pre>
+<pre><code>
+
+</code></pre>
+<h3 id="conclusion">Conclusion</h3>
+<p>In this article, we have shown you how to use iperf3 to test connectivity between Kubernetes pods in your cluster. We have used a Deployment to ensure that iperf3 pods are running on each node in the cluster. We hope that this article has helped demonstrate how to use iperf3 for testing connectivity between pods in your Kubernetes cluster.</p>
+<pre><code>
+
+</code></pre>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 

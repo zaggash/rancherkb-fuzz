@@ -9,17 +9,17 @@
       
       
       
-        <link rel="prev" href="../000020067/">
+        <link rel="prev" href="../000020910/">
       
       
-        <link rel="next" href="../000020069/">
+        <link rel="next" href="../000020954/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
     
     
       
-        <title>"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup - SUSE KBs</title>
+        <title>Adding missing CAdvisor labels to k8s 1.24+ - SUSE KBs</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#error-xfs-filesystem-at-var-has-ftype0-cannot-use-overlay-backend-error-messages-logged-by-the-docker-daemon-upon-daemon-startup" class="md-skip">
+        <a href="#adding-missing-cadvisor-labels-to-k8s-124" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+              Adding missing CAdvisor labels to k8s 1.24+
             
           </span>
         </div>
@@ -189,118 +189,6 @@
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
       </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020067/" class="md-nav__link">
-        Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further reading
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4775,6 +4663,105 @@
   
 
     
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Adding missing CAdvisor labels to k8s 1.24+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Adding missing CAdvisor labels to k8s 1.24+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000020954/" class="md-nav__link">
+        Testing Connectivity Between Kubernetes Pods with Iperf3
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -4802,43 +4789,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    Issue
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further reading
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4865,23 +4839,248 @@
 
 
 
-<h1 id="error-xfs-filesystem-at-var-has-ftype0-cannot-use-overlay-backend-error-messages-logged-by-the-docker-daemon-upon-daemon-startup">"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup</h1>
-<p>This document <strong>(000020068)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="adding-missing-cadvisor-labels-to-k8s-124">Adding missing CAdvisor labels to k8s 1.24+</h1>
+<p>This document <strong>(000020951)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>RKE1, K8s 1.24+, RKE 2.6.x</p>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>During startup of the Docker daemon, an error message of the following format is present in the system logs:</p>
-<pre><code>Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
-</code></pre>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<p>Monitoring V2 dashboards are not displaying CPU/Memory usage.</p>
+<h3 id="resolution">Resolution</h3>
+<p>Rancher Engineering team has put in place a workaround that consists of the following:</p>
 <ul>
-<li>Docker daemon with the <a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/"><code>overlay</code> or <code>overlay2</code> storage driver</a></li>
+<li>Creating a cAdvisor standalone instance</li>
+<li>Creating ServiceMonitor with some relabeling</li>
+<li>
+<p>Disabling kubelet.serviceMonitor.cAdvisor in the rancher-monitoring chart</p>
+</li>
+<li>
+<p><strong>Standalone cAdvisor instance and ServiceMonitor YAML:</strong></p>
+</li>
 </ul>
-<h4 id="resolution">Resolution</h4>
-<p>An <code>xfs</code> formatted filesystem is only supported as backing for the <code>overlay</code> or <code>overlay2</code> Docker storage drivers if formatted with <code>d_type</code> set to <code>true</code>.</p>
-<p>The <code>d_type</code> value of an <code>xfs</code> filesystem can be verified with the <code>xfs_info</code> utility. Example output for this command can be found in the <a href="https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES"><code>xfs_info</code> man pages</a>. If <code>ftype=1</code> the filesystem was formatted with <code>d_type</code> <code>true</code> and the filesystem is suitable for use as backing for the <code>overlay</code> or <code>overlay2</code> storage drivers. If the value is set to <code>0</code> the filesystem is not suitable for use with the <code>overlay</code> or <code>overlay2</code> storage drivers, and would need to be reformated with the flag <code>-n ftype=1</code>.</p>
-<p>Per the <a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites">Docker documentation</a>: "Running on XFS without d_type support now causes Docker to skip the attempt to use the <code>overlay</code> or <code>overlay2</code> driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."</p>
-<h4 id="further-reading">Further reading</h4>
-<p><a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/">Docker documentation on the <code>overlay</code> and <code>overlay2</code> storage drivers</a></p>
+<pre><code>apiVersion: v1
+kind: ServiceAccount
+metadata:
+labels:
+    app: cadvisor
+name: cadvisor
+namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+labels:
+    app: cadvisor
+name: cadvisor
+rules:
+- apiGroups:
+  - policy
+resourceNames:
+  - cadvisor
+resources:
+  - podsecuritypolicies
+verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+labels:
+    app: cadvisor
+name: cadvisor
+roleRef:
+apiGroup: rbac.authorization.k8s.io
+kind: ClusterRole
+name: cadvisor
+subjects:
+- kind: ServiceAccount
+name: cadvisor
+namespace: kube-system
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+annotations:
+    seccomp.security.alpha.kubernetes.io/pod: docker/default
+labels:
+    app: cadvisor
+name: cadvisor
+namespace: kube-system
+spec:
+selector:
+    matchLabels:
+      app: cadvisor
+      name: cadvisor
+template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: &quot;&quot;
+      labels:
+        app: cadvisor
+        name: cadvisor
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - --housekeeping_interval=10s
+        - --max_housekeeping_interval=15s
+        - --event_storage_event_limit=default=0
+        - --event_storage_age_limit=default=0
+        - --enable_metrics=app,cpu,disk,diskIO,memory,network,process
+        - --docker_only
+        - --store_container_labels=false
+        - --whitelisted_container_labels=io.kubernetes.container.name,io.kubernetes.pod.name,io.kubernetes.pod.namespace
+        image: gcr.io/cadvisor/cadvisor:v0.45.0
+        name: cadvisor
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 800m
+            memory: 2000Mi
+          requests:
+            cpu: 400m
+            memory: 400Mi
+        volumeMounts:
+        - mountPath: /rootfs
+          name: rootfs
+          readOnly: true
+        - mountPath: /var/run
+          name: var-run
+          readOnly: true
+        - mountPath: /sys
+          name: sys
+          readOnly: true
+        - mountPath: /var/lib/docker
+          name: docker
+          readOnly: true
+        - mountPath: /dev/disk
+          name: disk
+          readOnly: true
+      priorityClassName: system-node-critical
+      serviceAccountName: cadvisor
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - key: node-role.kubernetes.io/controlplane
+        value: &quot;true&quot;
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/etcd
+        value: &quot;true&quot;
+        effect: NoExecute
+      volumes:
+      - hostPath:
+          path: /
+        name: rootfs
+      - hostPath:
+          path: /var/run
+        name: var-run
+      - hostPath:
+          path: /sys
+        name: sys
+      - hostPath:
+          path: /var/lib/docker
+        name: docker
+      - hostPath:
+          path: /dev/disk
+        name: disk
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+labels:
+    app: cadvisor
+name: cadvisor
+namespace: kube-system
+spec:
+allowedHostPaths:
+  - pathPrefix: /
+  - pathPrefix: /var/run
+  - pathPrefix: /sys
+  - pathPrefix: /var/lib/docker
+  - pathPrefix: /dev/disk
+fsGroup:
+    rule: RunAsAny
+runAsUser:
+    rule: RunAsAny
+seLinux:
+    rule: RunAsAny
+supplementalGroups:
+    rule: RunAsAny
+volumes:
+  - '*'
+---
+apiVersion: v1
+kind: Service
+metadata:
+name: cadvisor
+labels:
+    app: cadvisor
+namespace: kube-system
+spec:
+selector:
+    app: cadvisor
+ports:
+  - name: cadvisor
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+labels:
+    app: cadvisor
+name: cadvisor
+namespace: kube-system
+spec:
+endpoints:
+  - metricRelabelings:
+    - sourceLabels:
+      - container_label_io_kubernetes_pod_name
+      targetLabel: pod
+    - sourceLabels:
+      - container_label_io_kubernetes_container_name
+      targetLabel: container
+    - sourceLabels:
+      - container_label_io_kubernetes_pod_namespace
+      targetLabel: namespace
+    - action: labeldrop
+      regex: container_label_io_kubernetes_pod_name
+    - action: labeldrop
+      regex: container_label_io_kubernetes_container_name
+    - action: labeldrop
+      regex: container_label_io_kubernetes_pod_namespace
+    port: cadvisor
+    relabelings:
+    - sourceLabels:
+      - __meta_kubernetes_pod_node_name
+      targetLabel: node
+    - sourceLabels:
+      - __metrics_path__
+      targetLabel: metrics_path
+      replacement: /metrics/cadvisor
+    - sourceLabels:
+      - job
+      targetLabel: job
+      replacement: kubelet
+namespaceSelector:
+    matchNames:
+    - kube-system
+selector:
+    matchLabels:
+      app: cadvisor
+</code></pre>
+<ol>
+<li><strong>On the Rancher Monitoring chart, change the kubelet.serviceMonitor.cAdvisor to false</strong></li>
+</ol>
+<pre><code>kubelet:
+serviceMonitor:
+    cAdvisor: false
+
+</code></pre>
+<h3 id="cause">Cause</h3>
+<p>This is caused by the changes on k8s 1.24, by the removal of the Dockershim</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
