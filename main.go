@@ -19,86 +19,97 @@ type Article struct {
 }
 
 func main() {
-	c := colly.NewCollector(
+	book := make([]Article, 0)
+
+	titleCollector := colly.NewCollector(
 		colly.MaxDepth(1),
 		colly.URLFilters(
-			regexp.MustCompile("www\\.suse\\.com/support/kb/(.*)/?id(.*)"),
+			regexp.MustCompile(`www.suse.com/support/kb/(.*)/?id(.*)`),
 		),
 	)
 
-	articlesCollector := c.Clone()
-	articles := make([]Article, 0)
+	articleCollector := colly.NewCollector(
+		colly.Async(true),
+		colly.MaxDepth(1),
+	)
+	articleCollector.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 5})
 
-	c.OnHTML(".result-table", func(e *colly.HTMLElement) {
-		e.ForEach(".result-cell a[href]", func(i int, h *colly.HTMLElement) {
-			articlesCollector.Visit(h.Request.AbsoluteURL(h.Attr("href")))
+	titleCollector.OnHTML(".result-table", func(titleHtmlTable *colly.HTMLElement) {
+		titleHtmlTable.ForEach(".result-cell a[href]", func(i int, titleHtmlLink *colly.HTMLElement) {
+			articleCollector.Visit(titleHtmlLink.Request.AbsoluteURL(titleHtmlLink.Attr("href")))
 		})
+		articleCollector.Wait()
 	})
 
-	articlesCollector.OnHTML(".col_one", func(e *colly.HTMLElement) {
-		item := Article{}
-		url := e.Request.URL.String()
-		title := e.ChildText("h1")
-		content, _ := e.DOM.Html()
+	articleCollector.OnHTML(".col_one", func(mainHtmlArticle *colly.HTMLElement) {
+		page := Article{}
+		url := mainHtmlArticle.Request.URL.String()
+		title := mainHtmlArticle.ChildText("h1")
+		content, _ := mainHtmlArticle.DOM.Html()
 
-		item.Id = url[len(url)-9:]
-		item.Url = url
-		item.Title = title
-		item.Content = content
-		articles = append(articles, item)
+		page.Id = url[len(url)-9:]
+		page.Url = url
+		page.Title = title
+		page.Content = content
+		book = append(book, page)
 
 		fmt.Println("-------")
-		fmt.Println("Id:", item.Id)
-		fmt.Println("Link:", item.Url)
-		fmt.Println("Title:", item.Title)
+		fmt.Println("Id:", page.Id)
+		fmt.Println("Link:", page.Url)
+		fmt.Println("Title:", page.Title)
 		//fmt.Println("Content:", item.Content)
 
 		converter := md.NewConverter("", true, nil)
-		markdown, err := converter.ConvertString(item.Content)
-
-		file, err := os.Create("./website/docs/" + item.Id + ".md")
+		markdown, err := converter.ConvertString(page.Content)
 		if err != nil {
 			fmt.Println(err)
+			os.Exit(10)
+		}
+
+		file, err := os.Create("./website/docs/" + page.Id + ".md")
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(10)
 		} else {
 			file.WriteString(markdown)
 		}
 		file.Close()
 	})
 
-	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting", r.URL.String())
+	titleCollector.OnRequest(func(response *colly.Request) {
+		fmt.Println("Visiting", response.URL.String())
 	})
-	articlesCollector.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting Article", r.URL.String())
+	articleCollector.OnRequest(func(response *colly.Request) {
+		fmt.Println("Visiting Article", response.URL.String())
 	})
-	c.OnResponse(func(r *colly.Response) {
-		fmt.Println("Got a response from", r.Request.URL)
-	})
-
-	c.OnHTML(".results_summary a[href]", func(e *colly.HTMLElement) {
-		nextPage := e.Request.AbsoluteURL(e.Attr("href"))
-		c.Visit(nextPage)
+	titleCollector.OnResponse(func(response *colly.Response) {
+		fmt.Println("Got a response from", response.Request.URL)
 	})
 
-	c.OnError(func(r *colly.Response, e error) {
-		fmt.Println("Got this error:", e)
-	})
-	articlesCollector.OnError(func(r *colly.Response, e error) {
-		fmt.Println("Got this error:", e)
+	titleCollector.OnHTML(".results_summary a[href]", func(nextPageHtmlLink *colly.HTMLElement) {
+		nextPageUrl := nextPageHtmlLink.Request.AbsoluteURL(nextPageHtmlLink.Attr("href"))
+		titleCollector.Visit(nextPageUrl)
 	})
 
-	c.OnScraped(func(r *colly.Response) {
-		fmt.Println("Finished", r.Request.URL)
-		js, err := json.MarshalIndent(articles, "", "    ")
+	titleCollector.OnError(func(response *colly.Response, err error) {
+		fmt.Println("Got this error:", err)
+	})
+	articleCollector.OnError(func(response *colly.Response, err error) {
+		fmt.Println("Got this error:", err)
+	})
+
+	titleCollector.OnScraped(func(response *colly.Response) {
+		fmt.Println("Finished", response.Request.URL)
+		js, err := json.MarshalIndent(book, "", "    ")
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println("Writing data to file")
-		if err := os.WriteFile("articles.json", js, 0664); err == nil {
+		if err := os.WriteFile("book.json", js, 0664); err == nil {
 			fmt.Println("Data written to file successfully")
 		}
 
 	})
 
-	c.Visit("https://www.suse.com/support/kb/?id=SUSE+Rancher")
+	titleCollector.Visit("https://www.suse.com/support/kb/?id=SUSE+Rancher")
 }
