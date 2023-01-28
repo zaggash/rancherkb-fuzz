@@ -9,17 +9,17 @@
       
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../000020150/">
       
       
-        <link rel="next" href="../000020070/">
+        <link rel="next" href="../000020152/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
     
     
       
-        <title>\[JP\] How to troubleshoot using the namespace of a container - SUSE KBs</title>
+        <title>How to grant users access to Grafana with minimal permissions - SUSE KBs</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#jp-how-to-troubleshoot-using-the-namespace-of-a-container" class="md-skip">
+        <a href="#how-to-grant-users-access-to-grafana-with-minimal-permissions" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              \[JP\] How to troubleshoot using the namespace of a container
+              How to grant users access to Grafana with minimal permissions
             
           </span>
         </div>
@@ -189,109 +189,6 @@
       <a href=".." class="md-nav__link">
         Welcome to Rancher KB Alt website
       </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          \[JP\] How to troubleshoot using the namespace of a container
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        \[JP\] How to troubleshoot using the namespace of a container
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    背景
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    手順
-  </a>
-  
-    <nav class="md-nav" aria-label="手順">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#sidecar-container" class="md-nav__link">
-    Sidecar container を利用
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nsenter" class="md-nav__link">
-    nsenter を利用
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1507,6 +1404,130 @@
       <a href="../000020150/" class="md-nav__link">
         Does SUSE Rancher Hosted provide downstream clusters?
       </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to grant users access to Grafana with minimal permissions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        How to grant users access to Grafana with minimal permissions
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deprecation-note" class="md-nav__link">
+    \* Deprecation note *
+  </a>
+  
+    <nav class="md-nav" aria-label="\* Deprecation note *">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#there-is-now-a-view-monitoring-role-in-monitoring-v2-which-a-user-can-be-granted-on-the-system-project-this-grants-user-monitoring-access-thus-the-article-is-deprecated-please-refer-to-this-for-more-information-on-rbac" class="md-nav__link">
+    There is now a "View Monitoring" role in Monitoring v2, which a user can be granted on the System project. This grants user monitoring access. Thus, the article is deprecated. Please, refer to this for more information on RBAC.
+  </a>
+  
+    <nav class="md-nav" aria-label="There is now a "View Monitoring" role in Monitoring v2, which a user can be granted on the System project. This grants user monitoring access. Thus, the article is deprecated. Please, refer to this for more information on RBAC.">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task" class="md-nav__link">
+    Task
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    Requirements
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#background" class="md-nav__link">
+    Background
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    Further Reading
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -4812,52 +4833,73 @@
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    背景
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    手順
-  </a>
-  
-    <nav class="md-nav" aria-label="手順">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#sidecar-container" class="md-nav__link">
-    Sidecar container を利用
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nsenter" class="md-nav__link">
-    nsenter を利用
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
+  <a href="#deprecation-note" class="md-nav__link">
+    \* Deprecation note *
+  </a>
+  
+    <nav class="md-nav" aria-label="\* Deprecation note *">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#there-is-now-a-view-monitoring-role-in-monitoring-v2-which-a-user-can-be-granted-on-the-system-project-this-grants-user-monitoring-access-thus-the-article-is-deprecated-please-refer-to-this-for-more-information-on-rbac" class="md-nav__link">
+    There is now a "View Monitoring" role in Monitoring v2, which a user can be granted on the System project. This grants user monitoring access. Thus, the article is deprecated. Please, refer to this for more information on RBAC.
+  </a>
+  
+    <nav class="md-nav" aria-label="There is now a "View Monitoring" role in Monitoring v2, which a user can be granted on the System project. This grants user monitoring access. Thus, the article is deprecated. Please, refer to this for more information on RBAC.">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task" class="md-nav__link">
+    Task
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    Requirements
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#background" class="md-nav__link">
+    Background
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    Further Reading
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     Disclaimer
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4877,50 +4919,34 @@
 
 
 
-<h1 id="jp-how-to-troubleshoot-using-the-namespace-of-a-container">[JP] How to troubleshoot using the namespace of a container</h1>
-<p>This document <strong>(000020069)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="how-to-grant-users-access-to-grafana-with-minimal-permissions">How to grant users access to Grafana with minimal permissions</h1>
+<p>This document <strong>(000020151)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<h4 id="_1">背景</h4>
-<p>問題をトラブルシューティングする場合、発生した問題と一致する再現環境が必要です。ただしコンテナー環境を利用する場合では、コンテナー内でツールとシェル環境が簡単に利用できない可能性があり再現環境の構築が困難になります。</p>
-<h4 id="_2">手順</h4>
-<p>上記の課題を解決するために以下二つの手順があります。</p>
-<h5 id="sidecar-container">Sidecar container を利用</h5>
-<p>問題を持つコンテナーが属するNamespaceで新しいsidecarコンテナーを実行すると、このsidecarコンテナーを用いてトラブルシュッティングすることができます。</p>
-<p>sidecarコンテナーは、親コンテナーと同じVolumeをAttachしながら、同じNetworkとPIDのNamespaceを使用して起動できます。</p>
+<h2 id="deprecation-note"><strong>\* Deprecation note *</strong></h2>
+<h3 id="there-is-now-a-view-monitoring-role-in-monitoring-v2-which-a-user-can-be-granted-on-the-system-project-this-grants-user-monitoring-access-thus-the-article-is-deprecated-please-refer-to-this-for-more-information-on-rbac"><strong>There is now a "View Monitoring" role in Monitoring v2, which a user can be granted on the System project. This grants user monitoring access. Thus, the article is deprecated. Please, refer to <a href="https://ranchermanager.docs.rancher.com/v2.6/integrations-in-rancher/monitoring-and-alerting/rbac-for-monitoring">this</a> for more information on RBAC.</strong></h3>
+<h4 id="task">Task</h4>
+<p>You can follow these directions to create a new user and grant minimal permissions to view cluster monitoring and Grafana graphs in your Kubernetes cluster.</p>
+<h4 id="requirements">Requirements</h4>
 <ul>
-<li>トラブルシューティングするContainerのIDまたは名前を設定します。</li>
+<li>Rancher v2.x</li>
+<li>Monitoring enabled in your cluster</li>
 </ul>
-<p><code>ID=&lt;container ID or name&gt;</code></p>
+<h4 id="background">Background</h4>
+<p>You may have a use case to grant permissions to a user to view cluster monitoring metrics and graphs, but don't want that same user to be able to see other information or perform any actions on your cluster. This how-to guide will show you how to achieve this.</p>
+<h4 id="solution">Solution</h4>
+<ol>
+<li>If you have not already, create a new user in Rancher. Go to the Global view and click on the Users menu. Click the <code>Add Users</code> button in the top right corner. Select the desired Username, Password, and Display Name. For Global Permissions, select User-Base and leave all Custom permissions unchecked. Click the <code>Create</code> button at the bottom of the form. Let's assume we are using the username <code>johndoe</code>.</li>
+<li>Go to the Security menu and select Roles. Select the Projects tab and click the <code>Add Project Role</code> button. In the name field, enter Services Proxy. Under Grant Resources, click the <code>+ Add Resource</code> button. Check the Get and List boxes and enter <code>services/proxy</code> in the Resource field. Note, you'll see it changes this to <code>serivces/proxy (Custom)</code> which is normal. Click the <code>Create</code> button at the bottom to create the new project role.</li>
+<li>Next, go to the cluster view for your cluster and select Members from the menu. Click the <code>Add Members</code> button in the top right corner. In the Members dropdown, select <code>johndoe</code> and select Member for Cluster Permissions. Click the <code>Create</code> button at the bottom of the form.</li>
+<li>Now navigate to the System project in your cluster. Go to the Members menu and click the <code>Add Member</code> button. Enter <code>johndoe</code> in the Member field and select <code>Services Proxy</code> under Project Permissions. Click the <code>Create</code> button at the bottom of the form.</li>
+<li>The <code>johndoe</code> user should now be able to log into Rancher and see the cluster dashboard with the Grafana icons. Clicking the Grafana icons should open a new browser window that will show the user various graphs and statistics for the cluster. This user should not be able to perform other operations, like view or launch new workloads in the cluster.</li>
+</ol>
+<h4 id="further-reading">Further Reading</h4>
+<p>For more detailed information on how RBAC works in Rancher and Kubernetes, see the following links:</p>
 <ul>
-<li>同じNetwork、PIDのNamespaceとVolumeを使用しsidecarコンテナーを実行します。</li>
+<li><a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/">Role-Based Access Control (RBAC) in Rancher</a></li>
+<li><a href="https://kubernetes.io/docs/reference/access-authn-authz/rbac/">Using RBAC Authorization in Kubernetes</a></li>
 </ul>
-<p><code>docker run -it --net=container:$ID --pid=container:$ID --volumes-from=$ID alpine sh</code></p>
-<ul>
-<li>これから問題があるcontainerやPodと同じコンテキスト内で、alpineコンテナーのコマンドでトラブルシュッティングをすることができます。</li>
-</ul>
-<p>例えば、Podにネットワークの問題が発生した場合、Sidecar Containerに入り、コマンドを実行しながらネットワーク環境の設定を確認したりトラブルシュッティングすることができます。</p>
-<p>必要に応じて、alpine containerを別のイメージを置き換えてください。</p>
-<blockquote>
-<p>親コンテナーと同じVolumeをAttachできますが、親コンテナーのRead／Writeレイヤのアクセスはできません。同じファイルシステムをアクセスしたい場合は下記のnsenterの例をご参考ください。</p>
-</blockquote>
-<h5 id="nsenter">nsenter を利用</h5>
-<p><code>nsenter</code> コマンドを使用して、ノード上で利用可能なコマンドを使用できます。 <code>nsenter</code> コマンドは、ほとんどのLinuxディストリビューションでデフォルト的にインストールされています。たとえば、Ubuntuでは、util-linuxパッケージによって提供されます。</p>
-<ul>
-<li>トラブルシューティングするContainerのIDまたは名前を設定します。</li>
-</ul>
-<p><code>ID=&lt;container ID or name&gt;</code></p>
-<ul>
-<li>Container内の初めてのプロセス(PID 1)の番号を取得します。</li>
-</ul>
-<p><code>PID=$(docker inspect --format '{{ .State.Pid }}' $ID)</code></p>
-<ul>
-<li>nsenterを使ってContainer/Podの全種類のNamespaceで、ノード上のコマンドを実行することができます。</li>
-</ul>
-<p><code>nsenter -a -t $PID &lt;command&gt;</code></p>
-<p>例えば、ネットワークの問題をトラブルシュッティングする時、ノード上にあるコマンド、tcpdump、curl、digやmtrなどが使用可能になります。</p>
-<blockquote>
-<p><code>-a</code> パラメータは最近の <code>nsenter</code> で利用可能だが、もしこのパラメータが使えなかったら、単独のNamespaceに入るようにパラメータをしてしてください。詳細については <code>nsenter --help</code> をご参考ください。</p>
-</blockquote>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
