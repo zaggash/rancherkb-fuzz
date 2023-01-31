@@ -1,4 +1,4 @@
-name: Schedule - Build Search Website
+name: Update KB
 
 on:
   workflow_dispatch:
@@ -8,12 +8,12 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/schedule-rancherkb-fuzz_gh-pages.yaml"
+      - ".github/workflows/run-update-kb.yaml"
 
 jobs:
   gh-pages:
-    name: Build and Deploy KB
-    uses: zaggash/gh-workflows/.github/workflows/run-rancherkb-fuzz_gh-pages.yaml@main
+    name: Scrap and Deploy KB
+    uses: zaggash/gh-workflows/.github/workflows/action_rancherkb-fuzz-gh-pages.yaml@main
     secrets:
       app_id: ${{ secrets.ZAGGBOT_APP_ID }}
       app_private_key: ${{ secrets.ZAGGBOT_APP_PRIVATE_KEY }}
