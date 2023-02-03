@@ -8,6 +8,7 @@ import (
 	"regexp"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
+	"github.com/JohannesKaufmann/html-to-markdown/plugin"
 	colly "github.com/gocolly/colly/v2"
 )
 
@@ -60,13 +61,14 @@ func main() {
 		//fmt.Println("Content:", item.Content)
 
 		converter := md.NewConverter("", true, nil)
+		converter.Use(plugin.GitHubFlavored())
 		markdown, err := converter.ConvertString(page.Content)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(10)
 		}
 
-		file, err := os.Create("./website/docs/" + page.Id + ".md")
+		file, err := os.Create("./website/docs/kbs/" + page.Id + ".md")
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(10)

@@ -1,4 +1,40 @@
 site_name: SUSE KBs
+site_description: SUSE Rancher KB website alternative
+
 theme:
   name: material
+  #logo: https://www.suse.com/assets/img/suse-white-logo-green.svg
+  #favicon: https://www.suse.com/favicon.ico
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: green
+      accent: light green
+      media: "(prefers-color-scheme: dark)"
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: green
+      accent: light green
+      media: "(prefers-color-scheme: dark)"
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - header.autohide
+    - navigation.tracking
+    - navigation.top
+    - search.highlight
+    - search.share
 
+extra:
+  generator: false
+
+markdown_extensions:
+  - pymdownx.superfences
+
+plugins:
+  - search
+  - awesome-pages

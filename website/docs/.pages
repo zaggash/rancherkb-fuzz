@@ -1,0 +1,8 @@
+nav:
+  - Home: index.md
+  - Favorite Links:
+    - 'SUSE Website': 'https://www.suse.com'
+    - 'SUSE Rancher KBs': 'https://www.suse.com/support/kb/?id=SUSE+Rancher'
+    - 'SUSE Product Lifecycle': 'https://www.suse.com/lifecycle'
+    - 'SUSE Rancher Support Matrix': 'https://www.suse.com/suse-rancher/support-matrix/'
+  - ...
