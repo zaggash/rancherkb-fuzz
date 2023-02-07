@@ -11,17 +11,15 @@
       
       
       
-        <link rel="prev" href="../..">
+        <link rel="prev" href="../000020954/">
       
-      
-        <link rel="next" href="../000020072/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.11">
     
     
       
-        <title>How to enable container log rotation with k3s or containerd - SUSE KBs</title>
+        <title>How to collect Control Plane component logs for an RKE cluster when logging based on determined or selected namespaces - SUSE KBs</title>
       
     
     
@@ -73,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-enable-container-log-rotation-with-k3s-or-containerd" class="md-skip">
+        <a href="#how-to-collect-control-plane-component-logs-for-an-rke-cluster-when-logging-based-on-determined-or-selected-namespaces" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to enable container log rotation with k3s or containerd
+              How to collect Control Plane component logs for an RKE cluster when logging based on determined or selected namespaces
             
           </span>
         </div>
@@ -344,102 +342,6 @@
           KB Articles
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          How to enable container log rotation with k3s or containerd
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        How to enable container log rotation with k3s or containerd
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further reading
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-            
           
             
               
@@ -4627,6 +4529,82 @@
 
             
           
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to collect Control Plane component logs for an RKE cluster when logging based on determined or selected namespaces
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        How to collect Control Plane component logs for an RKE cluster when logging based on determined or selected namespaces
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -4664,39 +4642,19 @@
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further reading
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4723,29 +4681,45 @@
 
 
 
-<h1 id="how-to-enable-container-log-rotation-with-k3s-or-containerd">How to enable container log rotation with k3s or containerd</h1>
-<p>This document <strong>(000020071)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="how-to-collect-control-plane-component-logs-for-an-rke-cluster-when-logging-based-on-determined-or-selected-namespaces">How to collect Control Plane component logs for an RKE cluster when logging based on determined or selected namespaces</h1>
+<p>This document <strong>(000020959)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>In a Kubernetes cluster running an alternative container runtime, such as containerd, instead of Docker, the kubelet manages container logs. The kubelet default values in relation to log rotation can be found in the upstream <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/#:~:text=from%20this%20file.-,%2D%2Dcontainer%2Dlog%2Dmax%2Dfiles%20int32%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0Default%3A%205,Kubelet%27s%20%2D%2Dconfig%20flag.%20See%20kubelet%2Dconfig%2Dfile%20for%20more%20information.">kubelet | Kubernetes documentation</a>,-%2D%2Dcontainer%2Druntime%20string). These values can be adjusted by adding flags to the kubelet process.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<p>These steps have been validated for a k3s cluster using the default containerd runtime, in theory these same flags should work for any Kubernetes cluster which does not use Docker as the container runtime.</p>
-<h4 id="resolution">Resolution</h4>
-<p>Two kubelet flags need to be added to configure log rotation, the flags will take effect only at start time.</p>
-<p>In the case of k3s, passing the needed flags can be done a number of ways, the most common perhaps is with the <code>INSTALL_K3S_EXEC</code> environment variable when installing k3s as a service. These same flags can be added to a previous install command to update the service configuration of an existing install of k3s.</p>
-<blockquote>
-<p><strong>Note</strong> When updating an existing k3s install, the following command will restart k3s.</p>
-</blockquote>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sfL<span class="w"> </span>https://get.k3s.io<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">INSTALL_K3S_EXEC</span><span class="o">=</span><span class="s2">&quot;--kubelet-arg &quot;</span>container-log-max-files<span class="o">=</span><span class="m">4</span><span class="s2">&quot; --kubelet-arg &quot;</span>container-log-max-size<span class="o">=</span>50Mi<span class="s2">&quot;&quot;</span><span class="w"> </span>sh<span class="w"> </span>-
+<p>By default, rancher-logging allows you to collect logs from all the control plane and node components for any clusters. However, you may want to select which namespaces to collect logs from, which for RKE clusters introduces an issue as the control plane components are deployed as containers and are not in any namespaces.</p>
+<h3 id="resolution">Resolution</h3>
+<p>The simplest way to resolve this is by using the container_names directive with the logging app when creating the flow. This will allow you to list all the control plane or node components deployed as containers with the RKE clusters.</p>
+<p>Below is an example of a cluster flow collecting logs based on a list of selected namespaces, which will not, without the container_names directive, collect the control plane components.</p>
+<p>For this example, we have a cluster output cattle-logging-cluster-test-output forwarding logs to an endpoint of our choice, and you will have to do the same to see the logs in your logging infrastructure.</p>
+<p><em>Note: Below is not an exhaustive list of all the RKE control plane containers and system namespaces, but the most common ones.</em></p>
+<div class="highlight"><pre><span></span><code>apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: cattle-logging-cluster-test-flow
+  namespace: cattle-logging
+spec:
+  filters:
+  match:
+    - select:
+         namespaces:
+           - kube-janitor
+           - kube-node-lease
+           - kube-public
+           - kube-system
+           - calico-system
+           - cattle-fleet-system
+           - cattle-impersonation-system
+           - cattle-system
+           - cattle-logging
+           - default
+           - opa
+         container_names:
+           - kube-apiserver
+           - etcd
+           - kubelet
+  globalOutputRefs:
+    - cattle-logging-cluster-test-output
 </code></pre></div>
-<p>However, flags can also be supplied to the k3s binary directly if a service is not being used. A restart of k3s is required, using the updated flags.</p>
-<div class="highlight"><pre><span></span><code>k3s<span class="w"> </span>server<span class="w"> </span>--kubelet-arg<span class="w"> </span>container-log-max-files<span class="o">=</span><span class="m">4</span><span class="w"> </span>--kubelet-arg<span class="w"> </span>container-log-max-size<span class="o">=</span>50Mi
-</code></pre></div>
-<blockquote>
-<p><strong>Note</strong> please adjust the values to suit your needs, for demonstration purposes the above commands used 4 log files of 50MB, allowing for 200MB of total space to be retained per container.</p>
-</blockquote>
-<h4 id="further-reading">Further reading</h4>
-<p>Please reference the <a href="https://rancher.com/docs/k3s/latest/en/installation/install-options/server-config/#customized-flags-for-kubernetes-processes">k3s</a> and <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/">kubelet</a> documentation pages to find more information on these flags.</p>
+<h3 id="cause">Cause</h3>
+<p>The control plane components are deployed as containers for an RKE cluster which makes the logging based on selected namespaces not pick their logs up.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
