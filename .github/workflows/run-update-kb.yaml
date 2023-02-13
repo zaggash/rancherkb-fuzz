@@ -17,4 +17,9 @@ jobs:
     secrets:
       app_id: ${{ secrets.ZAGGBOT_APP_ID }}
       app_private_key: ${{ secrets.ZAGGBOT_APP_PRIVATE_KEY }}
-  
+      gist_token: ${{ secrets.GIST_TOKEN }}
+      sf_url: ${{ secrets.SFURL }}
+      sf_user: ${{ secrets.SFUSER }}
+      sf_pass: ${{ secrets.SFPASS }}
+      sf_token: ${{ secrets.SFTOKEN }}
+      sf_ids_request: ${{ secrets.SFIDSREQUEST }}

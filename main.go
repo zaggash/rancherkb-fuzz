@@ -1,17 +1,30 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"regexp"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
-	"github.com/JohannesKaufmann/html-to-markdown/plugin"
+	mdPlugin "github.com/JohannesKaufmann/html-to-markdown/plugin"
 	colly "github.com/gocolly/colly/v2"
+	collyQueue "github.com/gocolly/colly/v2/queue"
+	sf "github.com/simpleforce/simpleforce"
 )
 
+var (
+	sfURL        = os.Getenv("sfURL")
+	sfAPIVersion = "56.0"
+	sfUser       = os.Getenv("sfUser")
+	sfPassword   = os.Getenv("sfPass")
+	sfToken      = os.Getenv("sfToken")
+	sfIdsRequest = os.Getenv("sfIdsRequest")
+	kbPath       = "./website/docs/kbs/"
+	logger       *log.Logger
+)
+
+// Article skeleton
 type Article struct {
 	Id      string
 	Title   string
@@ -19,28 +32,62 @@ type Article struct {
 	Content string
 }
 
+// Return simpleforce authenticated client
+func createSfClient() *sf.Client {
+	client := sf.NewClient(sfURL, sf.DefaultClientID, sfAPIVersion)
+	if client == nil {
+		logger.Fatal("error creating salesforce client")
+		return nil
+	}
+
+	err := client.LoginPassword(sfUser, sfPassword, sfToken)
+	if err != nil {
+		logger.Fatal("failed with salesforce client authentication")
+		return nil
+	}
+	return client
+}
+
+// Return SOQL Query results
+func sfQuery(q string) *sf.QueryResult {
+	sfClient := createSfClient()
+
+	result, err := sfClient.Query(q)
+	if err != nil {
+		logger.Fatal("query failed")
+	}
+
+	if result.TotalSize < 1 {
+		logger.Println("no records returned.")
+	}
+
+	return result
+}
+
+// Do Main stuff
 func main() {
+	// setup scrapper logger
+	logger = log.New(os.Stderr, "[RancherKB-Fuzz] ", log.Lmsgprefix|log.LstdFlags)
+
+	// get articles ID
+	articlesId := sfQuery(sfIdsRequest)
+
+	// setup articles list
 	book := make([]Article, 0)
 
-	titleCollector := colly.NewCollector(
-		colly.MaxDepth(1),
+	// setup GoColly Queue
+	collyQ, _ := collyQueue.New(
+		10,
+		&collyQueue.InMemoryQueueStorage{MaxSize: 10000},
+	)
+
+	// prepare articles Collector
+	articleCollector := colly.NewCollector(
 		colly.URLFilters(
 			regexp.MustCompile(`www.suse.com/support/kb/(.*)/?id(.*)`),
 		),
-	)
-
-	articleCollector := colly.NewCollector(
-		colly.Async(true),
 		colly.MaxDepth(1),
 	)
-	articleCollector.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 5})
-
-	titleCollector.OnHTML(".result-table", func(titleHtmlTable *colly.HTMLElement) {
-		titleHtmlTable.ForEach(".result-cell a[href]", func(i int, titleHtmlLink *colly.HTMLElement) {
-			articleCollector.Visit(titleHtmlLink.Request.AbsoluteURL(titleHtmlLink.Attr("href")))
-		})
-		articleCollector.Wait()
-	})
 
 	articleCollector.OnHTML(".col_one", func(mainHtmlArticle *colly.HTMLElement) {
 		page := Article{}
@@ -58,19 +105,19 @@ func main() {
 		fmt.Println("Id:", page.Id)
 		fmt.Println("Link:", page.Url)
 		fmt.Println("Title:", page.Title)
-		//fmt.Println("Content:", item.Content)
+		fmt.Println("-------")
 
 		converter := md.NewConverter("", true, nil)
-		converter.Use(plugin.GitHubFlavored())
+		converter.Use(mdPlugin.GitHubFlavored())
 		markdown, err := converter.ConvertString(page.Content)
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(10)
+			logger.Println(err)
+			os.Exit(5)
 		}
 
-		file, err := os.Create("./website/docs/kbs/" + page.Id + ".md")
+		file, err := os.Create(kbPath + page.Id + ".md")
 		if err != nil {
-			fmt.Println(err)
+			logger.Println(err)
 			os.Exit(10)
 		} else {
 			file.WriteString(markdown)
@@ -78,40 +125,24 @@ func main() {
 		file.Close()
 	})
 
-	titleCollector.OnRequest(func(response *colly.Request) {
-		fmt.Println("Visiting", response.URL.String())
-	})
 	articleCollector.OnRequest(func(response *colly.Request) {
-		fmt.Println("Visiting Article", response.URL.String())
-	})
-	titleCollector.OnResponse(func(response *colly.Response) {
-		fmt.Println("Got a response from", response.Request.URL)
+		logger.Println("visiting kb:", response.URL.String())
 	})
 
-	titleCollector.OnHTML(".results_summary a[href]", func(nextPageHtmlLink *colly.HTMLElement) {
-		nextPageUrl := nextPageHtmlLink.Request.AbsoluteURL(nextPageHtmlLink.Attr("href"))
-		titleCollector.Visit(nextPageUrl)
-	})
+	// articleCollector.OnResponse(func(response *colly.Response) {
+	// 	fmt.Println("Response received:", response.StatusCode)
+	// })
 
-	titleCollector.OnError(func(response *colly.Response, err error) {
-		fmt.Println("Got this error:", err)
-	})
 	articleCollector.OnError(func(response *colly.Response, err error) {
-		fmt.Println("Got this error:", err)
+		logger.Println("Http Code:", response.StatusCode)
+		logger.Println("got this error:", err)
+		os.Exit(15)
 	})
 
-	titleCollector.OnScraped(func(response *colly.Response) {
-		fmt.Println("Finished", response.Request.URL)
-		js, err := json.MarshalIndent(book, "", "    ")
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println("Writing data to file")
-		if err := os.WriteFile("book.json", js, 0664); err == nil {
-			fmt.Println("Data written to file successfully")
-		}
+	for _, record := range articlesId.Records {
+		id := record.StringField("ArticleNumber")
+		collyQ.AddURL("https://www.suse.com/support/kb/doc/?id=" + id)
+	}
 
-	})
-
-	titleCollector.Visit("https://www.suse.com/support/kb/?id=SUSE+Rancher")
+	collyQ.Run(articleCollector)
 }
