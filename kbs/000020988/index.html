@@ -11,17 +11,15 @@
       
       
       
-        <link rel="prev" href="../000020859/">
+        <link rel="prev" href="../000020985/">
       
-      
-        <link rel="next" href="../000020907/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
-        <title>Adding tolerations to components in the Rancher Logging chart - SUSE KBs</title>
+        <title>How to troubleshoot rancher-logging - SUSE KBs</title>
       
     
     
@@ -73,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#adding-tolerations-to-components-in-the-rancher-logging-chart" class="md-skip">
+        <a href="#how-to-troubleshoot-rancher-logging" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Adding tolerations to components in the Rancher Logging chart
+              How to troubleshoot rancher-logging
             
           </span>
         </div>
@@ -5459,80 +5457,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Adding tolerations to components in the Rancher Logging chart
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020895/" class="md-nav__link">
         Adding tolerations to components in the Rancher Logging chart
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    Environment
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    Cause
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -5696,11 +5625,66 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../000020988/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          How to troubleshoot rancher-logging
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         How to troubleshoot rancher-logging
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -5739,13 +5723,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    Environment
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
@@ -5755,13 +5732,6 @@
         <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    Cause
   </a>
   
 </li>
@@ -5788,36 +5758,57 @@
                   
 
 
-<h1 id="adding-tolerations-to-components-in-the-rancher-logging-chart">Adding tolerations to components in the Rancher Logging chart</h1>
-<p>This document <strong>(000020895)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="environment">Environment</h3>
-<p>- Rancher v2.5.x, v2.6.x or v2.7.x</p>
-<p>- Rancher Logging Chart</p>
-<p>- Taints defined on cluster nodes</p>
+<h1 id="how-to-troubleshoot-rancher-logging">How to troubleshoot rancher-logging</h1>
+<p>This document <strong>(000020988)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<p>When deploying the Rancher logging chart, Pods are not scheduled, where user-added <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">taints</a> are present on cluster nodes, and <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">tolerations</a> are not set on the rancher-logging chart. If only some nodes within the cluster are tainted, logs will be missing from those nodes. If all nodes are tainted, no logs will be forwarded and Pods for Deployments within the Rancher Logging will fail to schedule with an error of the following format:</p>
-<div class="highlight"><pre><span></span><code>Events:
-Type Reason Age From Message
----- ------ ---- ---- -------
-Warning FailedScheduling &lt;unknown&gt; default-scheduler 0/3 nodes are available: 3 node(s) had taints that the pod didn&#39;t tolerate
-</code></pre></div>
+<p>After installing the rancher-logging app and creating your resources, flows(clusterflows)/outputs(clusteroutputs), how do you troubleshoot if you are not seeing your logs at the final destination?</p>
 <h3 id="resolution">Resolution</h3>
-<p>If there are user-added <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">taints</a> on nodes within the cluster, <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">tolerations</a> for these taints must be added in the rancher-logging chart via the tolerations value, alongside the default <a href="https://cattle.io/os=linux">cattle.io/os=linux</a> NoSchedule toleration.</p>
-<p>For example, if the taint with key=foo, value=bar and effect=NoSchedule is present on nodes within the cluster, the following tolerations should be defined in the values of the rancher-logging Chart:</p>
-<div class="highlight"><pre><span></span><code>tolerations:
-  - key: cattle.io/os
-    operator: &quot;Equal&quot;
-    value: &quot;linux&quot;
-    effect: NoSchedule
-  - key: foo
-    operator: &quot;Equal&quot;
-    value: &quot;bar&quot;
-    effect: NoSchedule
+<p>The rancher-logging app troubleshooting can be divided into three phases as below:</p>
+<ol>
+<li>User resources review: The first part is to ensure there is no error for the resources you created and that they are active.</li>
+</ol>
+<div class="highlight"><pre><span></span><code>1. ClusterOutputs and Outputs review. They should be active with no errors. Please correct the errors if any
+
+kubectl get clusteroutput -A
+NAMESPACE   NAME            ACTIVE   PROBLEMS
+test-ns     test-c-output   true
+kubectl get output -A
+NAMESPACE   NAME          ACTIVE   PROBLEMS
+test-ns     test-output   true
+
+2. Clusterflows and flows review. They should be active with no errors. Please correct the errors if any
+
+kubectl get clusterflow -o wide -A
+NAMESPACE   NAME          ACTIVE   PROBLEMS
+test-ns     test-c-flow   true
+kubectl get flow -o wide -A
+NAMESPACE   NAME        ACTIVE   PROBLEMS
+test-ns     test-flow   true
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<ol>
+<li>FluentD and Fluentbit pods review: The fluentbit is a daemonset and should be running on each node, while you should have at least one FluentD pod running as the fluentbit pods will collect logs from each node and forward them to the FluentD pod to be sent to their final destination</li>
+</ol>
+<div class="highlight"><pre><span></span><code>Your output could look different depending on what type Kubernetes cluster you have. However, you should have a fluentbit pod on each node and at least one FluentD pod
+
+kubectl get pods -n cattle-logging-system
+NAME                                                READY   STATUS      RESTARTS   AGE
+rancher-logging-655578478b-7k46r                    1/1     Running     0          89s
+rancher-logging-k3s-journald-aggregator-957gz       1/1     Running     0          89s
+rancher-logging-root-fluentbit-lczl5                1/1     Running     0          70s
+rancher-logging-root-fluentd-0                      2/2     Running     0          70s
+rancher-logging-root-fluentd-configcheck-ac2d4553   0/1     Completed   0          84s
 </code></pre></div>
-<h3 id="cause">Cause</h3>
-<p>Nodes with specific taints will deny the scheduling of any pod if no matching toleration is present on the workload.</p>
+<ol>
+<li>Logs review: At this step, you review to ensure no errors in the logs for the FluentD or Fluentbit pods. For Fluentbit, you will probably need to review each if you suspect the logs are not being collected from fluentbit.</li>
+</ol>
+<p>```
+1. kubectl exec rancher-logging-root-fluentd-0 -n cattle-logging-system -- cat /fluentd/log/out</p>
+<p>This will dump the logs out of the fluentd container</p>
+<ol>
+<li>kubectl -n cattle-logging-system logs rancher-logging-root-bit-lczl5</li>
+</ol>
+<p>You should run it against each fluentbit pod if you suspect that the issue is on fluentbit
+```</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
