@@ -11,17 +11,15 @@
       
       
       
-        <link rel="prev" href="../000020959/">
+        <link rel="prev" href="../000020998/">
       
-      
-        <link rel="next" href="../000020976/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.1">
     
     
       
-        <title>Enable CSR signing on an RKE cluster so certificates are issued - SUSE KBs</title>
+        <title>Secrets in downstream clusters is repeatedly overwritten - SUSE KBs</title>
       
     
     
@@ -73,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#enable-csr-signing-on-an-rke-cluster-so-certificates-are-issued" class="md-skip">
+        <a href="#secrets-in-downstream-clusters-is-repeatedly-overwritten" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Enable CSR signing on an RKE cluster so certificates are issued
+              Secrets in downstream clusters is repeatedly overwritten
             
           </span>
         </div>
@@ -5587,66 +5585,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Enable CSR signing on an RKE cluster so certificates are issued
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020971/" class="md-nav__link">
         Enable CSR signing on an RKE cluster so certificates are issued
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -5712,11 +5655,80 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../000020999/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Secrets in downstream clusters is repeatedly overwritten
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Secrets in downstream clusters is repeatedly overwritten
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -5755,6 +5767,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
@@ -5764,6 +5783,13 @@
         <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
   </a>
   
 </li>
@@ -5790,42 +5816,19 @@
                   
 
 
-<h1 id="enable-csr-signing-on-an-rke-cluster-so-certificates-are-issued">Enable CSR signing on an RKE cluster so certificates are issued</h1>
-<p>This document <strong>(000020971)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="secrets-in-downstream-clusters-is-repeatedly-overwritten">Secrets in downstream clusters is repeatedly overwritten</h1>
+<p>This document <strong>(000020999)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Long standing setups, upgraded from Rancher versions &lt;2.6</p>
 <h3 id="situation">Situation</h3>
-<p>When creating a private key, a <strong>CertificateSigningRequest</strong>, and approving the <strong>CSR</strong>. You may notice in the output that the <strong>CSR</strong> is <strong>Approved</strong> but not <strong>Issued</strong>. For example, you may see the following:</p>
-<div class="highlight"><pre><span></span><code>kubectl get csr
-NAME                  AGE   REQUESTOR   CONDITION
-my-csr                18m   admin       Approved
-</code></pre></div>
-<p>But you actually expect to see the following:</p>
-<div class="highlight"><pre><span></span><code>kubectl get csr
-NAME                  AGE   REQUESTOR   CONDITION
-my-csr                18m   admin       Approved,Issued
-</code></pre></div>
+<p>A secret is replaced with  a new one with the same name. When "kubectl rollout restart deployment -n cattle-system rancher" is run in the management cluster the secret is replaced with the old one. Rancher also overwrites the secret every few hours, on its own.</p>
 <h3 id="resolution">Resolution</h3>
-<p>In an RKE cluster, you will need to provide the following flags for the <code>kube-controller-manager:</code> <strong><code>--cluster-signing-cert-file</code></strong> and <strong><code>--cluster-signing-key-file</code></strong></p>
-<p>In order to do this from the Rancher UI:</p>
-<ol>
-<li>Go to <strong>Cluster Management</strong></li>
-<li>Select the 3-dot menu next to the desired cluster and click <strong>Edit Config</strong></li>
-<li>Click the <strong>Edit as YAML</strong> button</li>
-<li>Under the rancher_kubernetes_engine_config.services section, replace</li>
-</ol>
-<div class="highlight"><pre><span></span><code>kube-controller: {}
-</code></pre></div>
-<pre><code>with
-</code></pre>
-<div class="highlight"><pre><span></span><code>kube-controller:
-     extra_args:
-       cluster-signing-cert-file: /etc/kubernetes/ssl/kube-ca.pem
-       cluster-signing-key-file: /etc/kubernetes/ssl/kube-ca-key.pem
-</code></pre></div>
-<ol>
-<li>Click the Save <strong>button</strong> at the bottom of the screen</li>
-<li>Once the cluster finishes reconciling, you should be able to go through the steps again and have the certificate issued</li>
-</ol>
-<p>If this is on a cluster managed using <strong>rke up</strong>, you will have to put these values in the <strong>cluster.yml</strong> file and run <strong>rke up</strong></p>
+<p>Check for a project secret having been configured for the project in the past.</p>
+<p>Navigate to the old UI (put /g behind the URL) and check for project secrets in the project(s) of the affected cluster.</p>
+<p>See also the Rancher documentation on this topic:</p>
+<p>https://ranchermanager.docs.rancher.com/v2.6/how-to-guides/new-user-guides/kubernetes-resources-setup/secrets#creating-secrets-in-projects</p>
+<h3 id="cause">Cause</h3>
+<p>"Project Secrets" was a legacy feature from older Rancher &lt;2.6 versions.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
