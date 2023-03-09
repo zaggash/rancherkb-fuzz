@@ -11,17 +11,15 @@
       
       
       
-        <link rel="prev" href="../000020025/">
+        <link rel="prev" href="../000020999/">
       
-      
-        <link rel="next" href="../000020027/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.1">
     
     
       
-        <title>What is the difference between Project and Cluster Monitoring in Rancher v2.2 - v2.4? - SUSE KBs</title>
+        <title>Cattle Cluster Agent flapping with runtime error: slice bounds out of range \[:3\] with capacity 0 - SUSE KBs</title>
       
     
     
@@ -73,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#what-is-the-difference-between-project-and-cluster-monitoring-in-rancher-v22-v24" class="md-skip">
+        <a href="#cattle-cluster-agent-flapping-with-runtime-error-slice-bounds-out-of-range-3-with-capacity-0" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              What is the difference between Project and Cluster Monitoring in Rancher v2.2 - v2.4?
+              Cattle Cluster Agent flapping with runtime error: slice bounds out of range \[:3\] with capacity 0
             
           </span>
         </div>
@@ -729,113 +727,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          What is the difference between Project and Cluster Monitoring in Rancher v2.2 - v2.4?
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020026/" class="md-nav__link">
         What is the difference between Project and Cluster Monitoring in Rancher v2.2 - v2.4?
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#question" class="md-nav__link">
-    Question
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#answer" class="md-nav__link">
-    Answer
-  </a>
-  
-    <nav class="md-nav" aria-label="Answer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#cluster-monitoring" class="md-nav__link">
-    Cluster monitoring
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#project-monitoring" class="md-nav__link">
-    Project monitoring
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further Reading
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -5801,11 +5697,87 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../000021006/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Cattle Cluster Agent flapping with runtime error: slice bounds out of range \[:3\] with capacity 0
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Cattle Cluster Agent flapping with runtime error: slice bounds out of range \[:3\] with capacity 0
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    Additional Information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -5844,63 +5816,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#question" class="md-nav__link">
-    Question
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#answer" class="md-nav__link">
-    Answer
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    Additional Information
   </a>
-  
-    <nav class="md-nav" aria-label="Answer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#cluster-monitoring" class="md-nav__link">
-    Cluster monitoring
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#project-monitoring" class="md-nav__link">
-    Project monitoring
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further Reading
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -5926,28 +5872,42 @@
                   
 
 
-<h1 id="what-is-the-difference-between-project-and-cluster-monitoring-in-rancher-v22-v24">What is the difference between Project and Cluster Monitoring in Rancher v2.2 - v2.4?</h1>
-<p>This document <strong>(000020026)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="cattle-cluster-agent-flapping-with-runtime-error-slice-bounds-out-of-range-3-with-capacity-0">Cattle Cluster Agent flapping with runtime error: slice bounds out of range [:3] with capacity 0</h1>
+<p>This document <strong>(000021006)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>This bug seems to affect all current Rancher versions as of March 2023.</p>
 <h3 id="situation">Situation</h3>
-<h4 id="question">Question</h4>
-<p>In Rancher v2.2 - v2.4 monitoring can be enabled at both the cluster and project level, this article explains the differences between the two.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>A Rancher v2.2 - v2.4 instance</li>
-</ul>
-<h4 id="answer">Answer</h4>
-<h5 id="cluster-monitoring">Cluster monitoring</h5>
-<p>Per the documentation on monitoring in Rancher v2.2 - v2.4, <a href="https://rancher.com/docs/rancher/v2.x/en/monitoring-alerting/v2.0.x-v2.4.x/cluster-monitoring/project-monitoring/#monitoring-scope">"cluster monitoring allows you to view the health of your Kubernetes cluster. Prometheus collects metrics from the cluster components below, which you can view in graphs and charts"</a>. This includes metrics for control plane components, the etcd database, and cluster nodes.</p>
-<p>With the metrics provided by cluster monitoring you can then configure <a href="https://rancher.com/docs/rancher/v2.x/en/monitoring-alerting/v2.0.x-v2.4.x/cluster-alerts/">cluster alerts</a>, for example for high node CPU or memory usage, or etcd member unavailability, etc.</p>
-<h5 id="project-monitoring">Project monitoring</h5>
-<p>Project monitoring can only be enabled with cluster monitoring enabled first.</p>
-<p>Per the documentation, <a href="https://rancher.com/docs/rancher/v2.x/en/monitoring-alerting/v2.0.x-v2.4.x/cluster-monitoring/project-monitoring/#monitoring-scope">"project monitoring allows you to view the state of pods running in a given project. Prometheus collects metrics from the project’s deployed HTTP and TCP/UDP workloads"</a>. This enables you to configure scraping of custom metrics endpoints on workloads you deploy into the cluster.</p>
-<p>With project monitoring you can then configure <a href="https://rancher.com/docs/rancher/v2.x/en/monitoring-alerting/v2.0.x-v2.4.x/cluster-alerts/project-alerts/">project alerts</a> based on the custom metrics scraped, or workloads metrics, such as a pod's memory usage exceeding its quota.</p>
-<h4 id="further-reading">Further Reading</h4>
-<ul>
-<li><a href="https://rancher.com/docs/rancher/v2.x/en/monitoring-alerting/v2.0.x-v2.4.x/">Documentation on monitoring in Rancher v2.2 - v2.4</a></li>
-<li><a href="https://rancher.com/docs/rancher/v2.x/en/monitoring-alerting/v2.5/">Documentation on monitoring in Rancher v2.5</a></li>
-</ul>
+<p>A downstream cluster flaps between Active and Unavailable. The cattle-cluster-agent logs show errors like the following:</p>
+<div class="highlight"><pre><span></span><code>0308 15:04:59.702627 55 runtime.go:78] Observed a panic: runtime.boundsError{x:3, y:0, signed:true, code:0x2} (runtime error: slice bounds out of range [:3] with capacity 0)
+goroutine 3160 [running]:
+k8s.io/apimachinery/pkg/util/runtime.logPanic({0x3cee760, 0xc00bef0660})
+/go/pkg/mod/k8s.io/apimachinery@v0.23.3/pkg/util/runtime/runtime.go:74 +0x7d
+k8s.io/apimachinery/pkg/util/runtime.HandleCrash({0x0, 0x0, 0xfffffffe})
+/go/pkg/mod/k8s.io/apimachinery@v0.23.3/pkg/util/runtime/runtime.go:48 +0x75
+panic({0x3cee760, 0xc00bef0660})
+/usr/lib64/go/1.17/src/runtime/panic.go:1038 +0x215
+github.com/rancher/rancher/pkg/catalogv2/helm.decodeHelm3({0x0, 0xc9d32d})
+/go/src/github.com/rancher/rancher/pkg/catalogv2/helm/helm3.go:124 +0x1b1
+github.com/rancher/rancher/pkg/catalogv2/helm.fromHelm3Data({0x0, 0xc004d60540}, 0x3fc4c34)
+/go/src/github.com/rancher/rancher/pkg/catalogv2/helm/helm3.go:23 +0x25
+github.com/rancher/rancher/pkg/catalogv2/helm.ToRelease({0x47b3a20, 0xc004d60540}, 0x6c696877206e6564)
+/go/src/github.com/rancher/rancher/pkg/catalogv2/helm/release.go:74 +0x3eb
+github.com/rancher/rancher/pkg/controllers/dashboard/helm.(*appHandler).OnSecretChange(0xc00baa1950, {0xc005b81080, 0x2d}, 0xc004d60540)
+/go/src/github.com/rancher/rancher/pkg/controllers/dashboard/helm/apps.go:170 +0xa5
+</code></pre></div>
+<h3 id="resolution">Resolution</h3>
+<p>This error seems to be caused by bad Helm release data on the downstream cluster. The first check should be if any releases have no release data stored. The below command will list all Helm release secrets when run against the downstream cluster. If the data column shows 0, that release secret has no release data.</p>
+<div class="highlight"><pre><span></span><code>kubectl get secrets -A | grep helm.sh/release.v1
+</code></pre></div>
+<p>All secrets with no release data on the downstream cluster need to be deleted to allow cattle-cluster-agent to start properly.</p>
+<div class="highlight"><pre><span></span><code>kubectl delete secrets -n &lt;NAMESPACE&gt; &lt;SECRET_NAME&gt;
+</code></pre></div>
+<p>Once the bad Helm release secrets are removed, cattle-cluster-agent pods should successfully start. If desired, the current cattle-cluster-agent pods in a CrashLoopBackOff can be deleted to speed up this process.</p>
+<h3 id="cause">Cause</h3>
+<p>Occasionally, Helm release secrets are improperly stored, causing the release data to not be present. cattle-cluster-agent checks the Helm data everytime it starts, but will fail if there is no release data to check</p>
+<h3 id="additional-information">Additional Information</h3>
+<p>Reported in GitHub issue 35971: https://github.com/rancher/rancher/issues/35971</p>
+<p>Per the GitHub issue, this is scheduled for the 2023-Q2 releases</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
