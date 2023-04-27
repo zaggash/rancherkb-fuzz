@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
+	"net/http"
 	"os"
 	"regexp"
+	"time"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	mdPlugin "github.com/JohannesKaufmann/html-to-markdown/plugin"
@@ -88,6 +91,18 @@ func main() {
 		),
 		colly.MaxDepth(1),
 	)
+
+	articleCollector.WithTransport(&http.Transport{
+		DisableKeepAlives: true,
+		DialContext: (&net.Dialer{
+			Timeout:   30 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 3 * time.Second,
+	})
 
 	articleCollector.OnHTML(".col_one", func(mainHtmlArticle *colly.HTMLElement) {
 		page := Article{}
