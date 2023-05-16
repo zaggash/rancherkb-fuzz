@@ -92,6 +92,11 @@ func main() {
 		colly.MaxDepth(1),
 	)
 
+	articleCollector.Limit(&colly.LimitRule{
+		Parallelism: 4,
+		RandomDelay: 5 * time.Second,
+	})
+
 	articleCollector.WithTransport(&http.Transport{
 		DisableKeepAlives: true,
 		DialContext: (&net.Dialer{
