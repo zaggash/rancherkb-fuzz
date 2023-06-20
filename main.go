@@ -98,13 +98,13 @@ func main() {
 	})
 
 	articleCollector.WithTransport(&http.Transport{
-		DisableKeepAlives: true,
+		DisableKeepAlives: false,
 		DialContext: (&net.Dialer{
 			Timeout:   30 * time.Second,
 			KeepAlive: 30 * time.Second,
 		}).DialContext,
-		MaxIdleConns:          100,
-		IdleConnTimeout:       90 * time.Second,
+		MaxIdleConns:          50,
+		IdleConnTimeout:       30 * time.Second,
 		TLSHandshakeTimeout:   10 * time.Second,
 		ExpectContinueTimeout: 3 * time.Second,
 	})
