@@ -21,7 +21,7 @@
     
     
       
-        <title>Can I move from self-managed Rancher to Rancher Hosted Prime? - SUSE KBs</title>
+        <title>Can I move from self-managed Rancher to Rancher Prime Hosted? - SUSE KBs</title>
       
     
     
@@ -73,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#can-i-move-from-self-managed-rancher-to-rancher-hosted-prime" class="md-skip">
+        <a href="#can-i-move-from-self-managed-rancher-to-rancher-prime-hosted" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Can I move from self-managed Rancher to Rancher Hosted Prime?
+              Can I move from self-managed Rancher to Rancher Prime Hosted?
             
           </span>
         </div>
@@ -943,12 +943,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Can I move from self-managed Rancher to Rancher Hosted Prime?
+          Can I move from self-managed Rancher to Rancher Prime Hosted?
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Can I move from self-managed Rancher to Rancher Hosted Prime?
+        Can I move from self-managed Rancher to Rancher Prime Hosted?
       </a>
       
         
@@ -5600,23 +5600,23 @@
                   
 
 
-<h1 id="can-i-move-from-self-managed-rancher-to-rancher-hosted-prime">Can I move from self-managed Rancher to Rancher Hosted Prime?</h1>
+<h1 id="can-i-move-from-self-managed-rancher-to-rancher-prime-hosted">Can I move from self-managed Rancher to Rancher Prime Hosted?</h1>
 <p>This document <strong>(000020040)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="resolution">Resolution</h3>
-<p>Yes, we can do a one time migration of your entire self-hosted Rancher Manager into the Rancher Hosted Prime service. Requirements for migration are:</p>
+<p>Yes, we can do a one time migration of your entire self-hosted Rancher Manager into the Rancher Prime Hosted service. Requirements for migration are:</p>
 <ol>
-<li>You must be running the latest stable version of Rancher Manager (currently v2.7.4) for at least one week.</li>
-<li>Rancher Manager cluster must be running Kubernetes v1.23 or higher for at least one week.</li>
+<li>You must be running the latest stable version of Rancher (currently v2.7.5) for at least one week.</li>
+<li>Rancher cluster must be running Kubernetes v1.23 or higher for at least one week.</li>
 <li>All managed/downstream clusters must be running Kubernetes v1.23 or higher for at least one week.</li>
 <li>Have a kubeconfig file for all your managed (downstream) Kubernetes clusters. The kubeconfig file should point directly to the cluster’s kube-apiserver endpoint and not to Rancher. For RKE clusters, see <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/access-clusters/authorized-cluster-endpoint">Authorized Cluster Endpoint</a> for setup.</li>
-<li>Authentication integration must be with a public endpoint that Rancher Hosted Prime can reach.</li>
-<li>Global and cluster catalogs must have a public endpoint that Rancher Hosted Prime can reach.</li>
-<li>Clusters provisioned using the vSphere node driver cannot be managed unless the vSphere API endpoint is made available to Rancher Hosted Prime.</li>
-<li>All downstream/managed clusters must have outbound Internet access over port 443, or at least outbound access to Rancher Hosted Prime.</li>
-<li>You must provide the output of Helm Chart values used to install Rancher Manager: <code>helm get values -n cattle-system rancher &gt; rancher-values.yaml</code></li>
-<li>You must provide a copy of the system summary report for your Rancher Manager environment. See <a href="https://www.suse.com/support/kb/doc/?id=000020192">this article</a> for instructions.</li>
+<li>Authentication integration must be with a public endpoint that Rancher Prime Hosted can reach.</li>
+<li>Global and cluster catalogs must have a public endpoint that Rancher Prime Hosted can reach.</li>
+<li>Clusters provisioned using the vSphere node driver cannot be managed unless the vSphere API endpoint is made available to Rancher Prime Hosted.</li>
+<li>All downstream/managed clusters must have outbound Internet access over port 443, or at least outbound access to Rancher Prime Hosted.</li>
+<li>You must provide the output of Helm Chart values used to install Rancher: <code>helm get values -n cattle-system rancher &gt; rancher-values.yaml</code></li>
+<li>You must provide a copy of the system summary report for your Rancher environment. See <a href="https://www.suse.com/support/kb/doc/?id=000020192">this article</a> for instructions.</li>
 </ol>
-<p>To get started on migrating to Rancher Hosted Prime, open a support case on our <a href="https://scc.suse.com">support portal</a>.</p>
+<p>To get started on migrating to Rancher Prime Hosted, open a support case on our <a href="https://scc.suse.com">support portal</a>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
