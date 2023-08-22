@@ -90,6 +90,7 @@ func main() {
 			regexp.MustCompile(`www.suse.com/support/kb/(.*)/?id(.*)`),
 		),
 		colly.MaxDepth(1),
+		colly.CheckHead(),
 	)
 
 	articleCollector.Limit(&colly.LimitRule{
