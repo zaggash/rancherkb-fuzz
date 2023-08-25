@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../000020834/">
+        <link rel="prev" href="../000020994/">
       
       
-        <link rel="next" href="../000020904/">
+        <link rel="next" href="../000021006/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Adding tolerations to components in the Rancher Logging chart - SUSE KBs</title>
+        <title>Kubernetes upgrade from v1.21.x to 1.22.x failing with error "does not recognize SELinux label" - SUSE KBs</title>
       
     
     
@@ -77,7 +77,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#adding-tolerations-to-components-in-the-rancher-logging-chart" class="md-skip">
+        <a href="#kubernetes-upgrade-from-v121x-to-122x-failing-with-error-does-not-recognize-selinux-label" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Adding tolerations to components in the Rancher Logging chart
+              Kubernetes upgrade from v1.21.x to 1.22.x failing with error "does not recognize SELinux label"
             
           </span>
         </div>
@@ -7487,29 +7487,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Adding tolerations to components in the Rancher Logging chart
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020895/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7518,61 +7498,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    Environment
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    Cause
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -7802,9 +7727,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../000020995/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Kubernetes upgrade from v1.21.x to 1.22.x failing with error "does not recognize SELinux label"
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -7813,6 +7758,75 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    Status
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    Additional Information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -7960,6 +7974,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    Status
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    Additional Information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     Disclaimer
   </a>
@@ -7981,36 +8009,43 @@
                   
 
 
-<h1 id="adding-tolerations-to-components-in-the-rancher-logging-chart">Adding tolerations to components in the Rancher Logging chart</h1>
-<p>This document <strong>(000020895)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="kubernetes-upgrade-from-v121x-to-122x-failing-with-error-does-not-recognize-selinux-label">Kubernetes upgrade from v1.21.x to 1.22.x failing with error "does not recognize SELinux label"</h1>
+<p>This document <strong>(000020995)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>- Rancher v2.5.x, v2.6.x or v2.7.x</p>
-<p>- Rancher Logging Chart</p>
-<p>- Taints defined on cluster nodes</p>
+<p>Rancher 2.6.x</p>
+<p>K8S 1.21.x</p>
+<p>RKE1 with SELinux is enabled</p>
 <h3 id="situation">Situation</h3>
-<p>When deploying the Rancher logging chart, Pods are not scheduled, where user-added <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">taints</a> are present on cluster nodes, and <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">tolerations</a> are not set on the rancher-logging chart. If only some nodes within the cluster are tainted, logs will be missing from those nodes. If all nodes are tainted, no logs will be forwarded and Pods for Deployments within the Rancher Logging will fail to schedule with an error of the following format:</p>
-<div class="highlight"><pre><span></span><code>Events:
-Type Reason Age From Message
----- ------ ---- ---- -------
-Warning FailedScheduling &lt;unknown&gt; default-scheduler 0/3 nodes are available: 3 node(s) had taints that the pod didn&#39;t tolerate
+<p>The RKE1 kubernetes version upgrade from v1.21.x to v1.22.x / latest from the Rancher UI is failing. The Rancher UI reporting the error below.</p>
+<div class="highlight"><pre><span></span><code>[[selinux] Host [xx.xx.xx.xx] does not recognize SELinux label [label=type:rke_container_t]. This is required for Kubernetes version [&gt;=1.22.0-rancher0]. Please install rancher-selinux RPM package and try again]
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
-<p>If there are user-added <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">taints</a> on nodes within the cluster, <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">tolerations</a> for these taints must be added in the rancher-logging chart via the tolerations value, alongside the default <a href="https://cattle.io/os=linux">cattle.io/os=linux</a> NoSchedule toleration.</p>
-<p>For example, if the taint with key=foo, value=bar and effect=NoSchedule is present on nodes within the cluster, the following tolerations should be defined in the values of the rancher-logging Chart:</p>
-<div class="highlight"><pre><span></span><code>tolerations:
-  - key: cattle.io/os
-    operator: &quot;Equal&quot;
-    value: &quot;linux&quot;
-    effect: NoSchedule
-  - key: foo
-    operator: &quot;Equal&quot;
-    value: &quot;bar&quot;
-    effect: NoSchedule
+<p>Make sure that the SELinux rpm is installed and updated to the latest version. The latest version is now <strong>rancher-selinux-0.2-1.el7.noarch</strong></p>
+<p>To verify the current version for Redhat based systems.</p>
+<div class="highlight"><pre><span></span><code>rpm -qa | grep rancher-selinux
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<p>The OS repository for installing / upgrading the package ( Example )</p>
+<div class="highlight"><pre><span></span><code>vi /etc/yum.repos.d/rancher.repo
+[rancher]
+name=Rancher
+baseurl=https://rpm.rancher.io/rancher/production/centos/7/noarch
+enabled=1
+gpgcheck=1
+gpgkey=https://rpm.rancher.io/public.key
+
+yum -y install rancher-selinux
+
+To upgrade if already installed the old version
+
+yum update rancher-selinux
 </code></pre></div>
 <h3 id="cause">Cause</h3>
-<p>Nodes with specific taints will deny the scheduling of any pod if no matching toleration is present on the workload.</p>
+<p>The package <strong>rancher-selinux-0.2-1.el7.noarch</strong> must be installed on all nodes if SELinux is enabled at OS level. The older <strong>rancher-selinux</strong> version are also not supported with kubernetes 1.22.x onwards.</p>
+<h3 id="status">Status</h3>
+<p>Top Issue</p>
+<h3 id="additional-information">Additional Information</h3>
+<p>GH issue : <a href="https://github.com/rancher/rancher/issues/36509">https://github.com/rancher/rancher/issues/36509</a></p>
+<p>Rancher documentation : <a href="https://ranchermanager.docs.rancher.com/v2.6/pages-for-subheaders/selinux-rpm#1-set-up-the-yum-repo">here</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
