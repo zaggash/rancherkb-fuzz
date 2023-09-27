@@ -93,8 +93,11 @@ func main() {
 		colly.CheckHead(),
 	)
 
+	articleCollector.SetRequestTimeout(30 * time.Second)
+	
 	articleCollector.Limit(&colly.LimitRule{
 		Parallelism: 4,
+		Delay: 10 * time.Second,
 		RandomDelay: 5 * time.Second,
 	})
 
