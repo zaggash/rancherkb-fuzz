@@ -8110,6 +8110,7 @@
 <h3 id="situation">Situation</h3>
 <h4 id="task">Task</h4>
 <p>During a Rancher outage or other disaster event, you may lose access to a downstream cluster via Rancher and be unable to manage your applications. This process allows to bypass Rancher and connects directly to the downstream cluster.</p>
+<p>Alternative: you have lost your original kubeconfig file from your upstream cluster and you want to retrieve it.</p>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
 <li>Rancher v2.2.x or newer</li>
@@ -8149,7 +8150,14 @@ kubectl --kubeconfig kubeconfig_admin.yaml get nodes
 <div class="highlight"><pre><span></span><code>docker run --rm --net=host -v $PWD/kubeconfig_admin.yaml:/root/.kube/config:z --entrypoint bash $(docker inspect $(docker images -q --filter=label=org.label-schema.vcs-url=https://github.com/rancher/hyperkube.git) --format=&#39;{{index .RepoTags 0}}&#39; | tail -1) -c &#39;kubectl get nodes&#39;
 </code></pre></div>
 <h5 id="script">Script</h5>
-<p>Run <code>https://raw.githubusercontent.com/rancherlabs/support-tools/master/how-to-retrieve-kubeconfig-from-custom-cluster/rke-node-kubeconfig.sh</code> and follow the instructions given.</p>
+<ul>
+<li>
+<p>Alternative 1: Run <code>https://raw.githubusercontent.com/rancherlabs/support-tools/master/how-to-retrieve-kubeconfig-from-custom-cluster/rke-node-kubeconfig.sh</code> and follow the instructions given.</p>
+</li>
+<li>
+<p>Alternative 2: Run <code>https://gist.githubusercontent.com/Oats87/9b27310f5d2937adc87a03ee97675802/raw/eca91c84e48aa0fb52248c661fdf1646d657196e/generate_new_kubeconfig.sh</code> and follow the instructions given.</p>
+</li>
+</ul>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
