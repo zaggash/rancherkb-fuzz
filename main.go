@@ -90,7 +90,6 @@ func main() {
 			regexp.MustCompile(`www.suse.com/support/kb/(.*)/?id(.*)`),
 		),
 		colly.MaxDepth(1),
-		colly.CheckHead(),
 	)
 
 	articleCollector.SetRequestTimeout(30 * time.Second)
