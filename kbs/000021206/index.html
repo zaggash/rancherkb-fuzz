@@ -11,10 +11,8 @@
       
       
       
-        <link rel="prev" href="../000020134/">
+        <link rel="prev" href="../000021198/">
       
-      
-        <link rel="next" href="../000020136/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +20,7 @@
     
     
       
-        <title>Do SUSE employees have the credentials to my “admin” account? - SUSE KBs</title>
+        <title>Configuring Rancher Backup to use GCP Cloud Storage as Remote Storage Location - SUSE KBs</title>
       
     
     
@@ -77,7 +75,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#do-suse-employees-have-the-credentials-to-my-admin-account" class="md-skip">
+        <a href="#configuring-rancher-backup-to-use-gcp-cloud-storage-as-remote-storage-location" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Do SUSE employees have the credentials to my “admin” account?
+              Configuring Rancher Backup to use GCP Cloud Storage as Remote Storage Location
             
           </span>
         </div>
@@ -3111,29 +3109,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Do SUSE employees have the credentials to my “admin” account?
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020135/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3142,40 +3120,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    Resolution
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -7925,9 +7869,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../000021206/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Configuring Rancher Backup to use GCP Cloud Storage as Remote Storage Location
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -7936,6 +7900,47 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -7975,6 +7980,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     Resolution
   </a>
@@ -8003,10 +8015,49 @@
                   
 
 
-<h1 id="do-suse-employees-have-the-credentials-to-my-admin-account">Do SUSE employees have the credentials to my “admin” account?</h1>
-<p>This document <strong>(000020135)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="configuring-rancher-backup-to-use-gcp-cloud-storage-as-remote-storage-location">Configuring Rancher Backup to use GCP Cloud Storage as Remote Storage Location</h1>
+<p>This document <strong>(000021206)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="situation">Situation</h3>
+<p>Use Google Cloud Storage as the S3 backend to store Rancher Backup Operator backups offsite.</p>
 <h3 id="resolution">Resolution</h3>
-<p>When your Rancher Hosted Prime environment is first provisioned, an admin account and password are provided to you. You will be prompted to change your password when you first log in. From this point on, SUSE employees do not have a login account for your Rancher Hosted Prime environment.</p>
+<ol>
+<li>
+<p>Create a new bucket in <a href="https://console.cloud.google.com/storage/browser?referrer=search&amp;project=elite-protocol-319303">Google Cloud Storage</a></p>
+</li>
+<li>
+<p>Create a GCP serviceaccount in <a href="https://console.cloud.google.com/iam-admin">IAM &amp; Admin</a></p>
+</li>
+<li>
+<p>Give the GCP serviceaccount permissions to read, write, and delete objects in the bucket. The serviceaccount will require the <code>roles/storage.objectAdmin</code> role to read, write, and delete objects in the bucket.</p>
+</li>
+<li>
+<p>Navigate to your <a href="https://console.cloud.google.com/storage/browser">buckets in cloud storage</a> and select your newly created bucket.</p>
+</li>
+<li>
+<p>Go to the cloud storage’s settings menu and navigate to the <a href="https://console.cloud.google.com/storage/settings;tab=interoperability">interoperability tab</a></p>
+</li>
+<li>
+<p>Scroll down to <em>Service account HMAC</em> and press <code>+ CREATE A KEY FOR A SERVICE ACCOUNT</code></p>
+</li>
+<li>
+<p>Select the GCP serviceaccount you created earlier and press <code>CREATE KEY</code></p>
+</li>
+<li>
+<p>Save the <em>Access Key</em> and <em>Secret</em>.</p>
+</li>
+<li>
+<p>Create the credentials secret using the following documentation: <a href="https://ranchermanager.docs.rancher.com/reference-guides/backup-restore-configuration/backup-configuration#example-credentialsecret">https://ranchermanager.docs.rancher.com/reference-guides/backup-restore-configuration/backup-configuration#example-credentialsecret</a></p>
+</li>
+<li>
+<p>Install the Backup Operator with a default S3 storage location. The S3 storage location yaml looks like this:</p>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code>     credentialSecretName: s3-creds
+     credentialSecretNamespace: default
+     bucketName: rancher-backups
+     region: us
+     endpoint: storage.googleapis.com
+</code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
