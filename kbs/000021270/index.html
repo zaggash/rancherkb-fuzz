@@ -11,10 +11,8 @@
       
       
       
-        <link rel="prev" href="../000020007/">
+        <link rel="prev" href="../000021247/">
       
-      
-        <link rel="next" href="../000020009/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +20,7 @@
     
     
       
-        <title>How to send logs to Amazon Web Services (AWS) CloudWatch with the new logging services available on Rancher v2.5.x - SUSE KBs</title>
+        <title>Cgroup "Misc controller" introduce instability in Kubelet - SUSE KBs</title>
       
     
     
@@ -77,7 +75,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-send-logs-to-amazon-web-services-aws-cloudwatch-with-the-new-logging-services-available-on-rancher-v25x" class="md-skip">
+        <a href="#cgroup-misc-controller-introduce-instability-in-kubelet" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to send logs to Amazon Web Services (AWS) CloudWatch with the new logging services available on Rancher v2.5.x
+              Cgroup "Misc controller" introduce instability in Kubelet
             
           </span>
         </div>
@@ -591,29 +589,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    How to send logs to Amazon Web Services (AWS) CloudWatch with the new logging services available on Rancher v2.5.x
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020008/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -622,74 +600,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    Situation
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
-    Steps
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further reading
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    Disclaimer
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -8019,9 +7929,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../000021270/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Cgroup "Misc controller" introduce instability in Kubelet
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -8030,6 +7960,61 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    Situation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    Disclaimer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -8069,43 +8054,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    Environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     Situation
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    Task
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    Resolution
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    Cause
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
-    Steps
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    Further reading
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8131,101 +8103,49 @@
                   
 
 
-<h1 id="how-to-send-logs-to-amazon-web-services-aws-cloudwatch-with-the-new-logging-services-available-on-rancher-v25x">How to send logs to Amazon Web Services (AWS) CloudWatch with the new logging services available on Rancher v2.5.x</h1>
-<p>This document <strong>(000020008)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="cgroup-misc-controller-introduce-instability-in-kubelet">Cgroup "Misc controller" introduce instability in Kubelet</h1>
+<p>This document <strong>(000021270)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p><strong>Kubernetes</strong> version build with <strong>runc library &lt; 1.1.6</strong></p>
+<p>A node running <strong>Cgroup V1</strong></p>
+<p>You can check the <strong>Runc library</strong> version of your K <strong>ubernetes version</strong> in the go.mod file in the Kubernetes repo.</p>
+<p>Eg: See the below example for Kubernetes 1.24.6 using runc 1.1.1</p>
+<p><a href="https://github.com/kubernetes/kubernetes/blob/v1.24.6/go.mod#L66">https://github.com/kubernetes/kubernetes/blob/v1.24.6/go.mod#L66</a></p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p><a href="https://rancher.com/docs/rancher/v2.5/en/logging/">New logging service</a> introduced in Rancher v2.5.x allows users to send logs to <a href="https://aws.amazon.com/cloudwatch/">Amazon Web Services (AWS) Cloudwatch</a>. This article details how to send logs to AWS CloudWatch with the new logging services available on Rancher v2.5.x, in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.5.x provisioned Kubernetes clusters.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<p>The <strong>Kubelet</strong> on the node report the following error message</p>
+<div class="highlight"><pre><span></span><code>kubelet_getters.go:300] &quot;Path does not exist&quot; path=&quot;/var/lib/kubelet/pods/&lt;ID_NUMBER&gt;/volumes&quot;
+</code></pre></div>
+<p>These lines fill up the kubelet log ending up in gigabyte of logs.</p>
+<p>This can also cause high CPU usage.</p>
+<h3 id="resolution">Resolution</h3>
+<p>To fix the issue you need to either :</p>
 <ul>
-<li>A Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster with <a href="https://rancher.com/docs/rancher/v2.5/en/logging/">Logging in Rancher 2.5</a> enabled</li>
-<li>Rancher v2.5.x</li>
-<li>AWS IAM policy with at least the following permissions, the policy is attached to either an IAM user with credentials, or an <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html">EC2 instance profile</a> which is attached to the nodes in the cluster</li>
+<li>Update the node to use Cgroup V2</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Statement&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">                </span><span class="s2">&quot;logs:PutLogEvents&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;logs:CreateLogGroup&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;logs:PutRetentionPolicy&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;logs:CreateLogStream&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;logs:DescribeLogGroups&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="s2">&quot;logs:DescribeLogStreams&quot;</span>
-<span class="w">            </span><span class="p">],</span>
-<span class="w">            </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">]</span>
-<span class="p">}</span>
-</code></pre></div>
-<h4 id="steps">Steps</h4>
-<ol>
-<li>Ensure the Rancher v2.5 logging is enabled on the cluster; visit and follow the <a href="https://rancher.com/docs/rancher/v2.5/en/logging/migrating/">Logging</a> section in the Rancher docs if it is not already enabled.</li>
-<li><strong>Optional</strong> Create a secret containing the AWS Access key ID and Secret access key in <code>cattle-logging-system</code> namespace:</li>
-</ol>
-<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">cat &lt;&lt;EOF | kubectl apply -f -</span>
-<span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
-<span class="nt">data</span><span class="p">:</span>
-<span class="w">     </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;AWS Access key ID&gt;</span>
-<span class="w">     </span><span class="nt">secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;AWS Secret access key&gt;</span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Secret</span>
-<span class="nt">metadata</span><span class="p">:</span>
-<span class="w">     </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws</span>
-<span class="w">     </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cattle-logging-system</span>
-<span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Opaque</span>
-<span class="l l-Scalar l-Scalar-Plain">EOF</span>
-</code></pre></div>
-<pre><code>\&gt; Note, this step is not required if using an EC2 instance profile
-</code></pre>
-<ol>
-<li>Create the ClusterOutput and ClusterFlow to forward the logs to the CloudWatch.</li>
-</ol>
-<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">cat &lt;&lt;EOF | kubectl apply -f -</span>
-<span class="l l-Scalar l-Scalar-Plain">apiVersion</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging.banzaicloud.io/v1beta1</span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterOutput</span>
-<span class="nt">metadata</span><span class="p">:</span>
-<span class="w">     </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cloudwatch</span>
-<span class="w">     </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cattle-logging-system</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w">     </span><span class="nt">cloudwatch</span><span class="p">:</span>
-<span class="w">       </span><span class="nt">auto_create_stream</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1">#Set to false to disable automatically create Log Stream under the Log Group</span>
-<span class="w">       </span><span class="nt">aws_key_id</span><span class="p">:</span>
-<span class="w">         </span><span class="nt">valueFrom</span><span class="p">:</span>
-<span class="w">           </span><span class="nt">secretKeyRef</span><span class="p">:</span>
-<span class="w">             </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span>
-<span class="w">             </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws</span>
-<span class="w">       </span><span class="nt">aws_sec_key</span><span class="p">:</span>
-<span class="w">         </span><span class="nt">valueFrom</span><span class="p">:</span>
-<span class="w">           </span><span class="nt">secretKeyRef</span><span class="p">:</span>
-<span class="w">             </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret</span>
-<span class="w">             </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws</span>
-<span class="w">       </span><span class="nt">buffer</span><span class="p">:</span>
-<span class="w">         </span><span class="nt">timekey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30s</span>
-<span class="w">         </span><span class="nt">timekey_use_utc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">         </span><span class="nt">timekey_wait</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30s</span>
-<span class="w">       </span><span class="nt">log_group_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;LOG GROUP NAME ON THE CLOUDWATCH&gt;</span>
-<span class="w">       </span><span class="nt">log_stream_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;LOG STREAM NAME UNDER THE LOG GROUP&gt;</span>
-<span class="w">       </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;AWS REGION&gt;</span>
-<span class="w w-Error">   </span><span class="l l-Scalar l-Scalar-Plain">---</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging.banzaicloud.io/v1beta1</span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterFlow</span>
-<span class="nt">metadata</span><span class="p">:</span>
-<span class="w">     </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging</span>
-<span class="w">     </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cattle-logging-system</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w">     </span><span class="nt">globalOutputRefs</span><span class="p">:</span>
-<span class="w w-Error">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cloudwatch</span>
-<span class="l l-Scalar l-Scalar-Plain">EOF</span>
-</code></pre></div>
-<p>&gt; Note, the <code>aws_key_id</code> and <code>aws_sec_key</code> should be removed if using an EC2 instance profile
-4. The logs will start sending to the CloudWatch once the ClusterOuput and ClusterFlow are created. You may visit the docs in the below to explore all the available configurations for the Rancher v2.5 logging.</p>
-<h4 id="further-reading">Further reading</h4>
+<p><strong>OR</strong></p>
 <ul>
-<li><a href="https://rancher.com/docs/rancher/v2.5/en/logging/">Rancher Logging Documentation</a></li>
-<li><a href="https://banzaicloud.com/docs/one-eye/logging-operator/plugins/outputs/cloudwatch/">Full Configuration of CloudWatch output plugin for Fluentd</a></li>
+<li>Upgrade to a Kubernetes version using runc libraries &gt;= 1.1.6</li>
 </ul>
+<p><em>It is recommended to upgrade your Kubernetes version.</em></p>
+<p><em>Doing a change at the Kernel level may introduce unkowns to the stability of your system.</em></p>
+<h3 id="cause">Cause</h3>
+<p>The issue comes from the integration of the so called <a href="https://docs.kernel.org/admin-guide/cgroup-v2.html#misc">Misc controller</a>  in Kernel 5.13.</p>
+<p>Problem comes from a discrepancy between the code creating the "Misc" Cgroup and the code cleaning the Cgroup that doesn't handle the "Misc" Cgroup, leaving it behind.</p>
+<ul>
+<li><strong>runc</strong> integrated a <strong>fix</strong> in <strong>1.1.6</strong>, <strong><em>HOWEVER</em></strong></li>
+<li><strong>kubelet</strong> depends on <strong>runc's cgroup libraries</strong></li>
+<li>In order to clean up pods using the new "Misc" controller, runc cgroup library need to be updated to be aware of it.</li>
+<li><strong>So even if your system run 1.1.6 but kubelet is not build with these library, the problem occurs.</strong></li>
+</ul>
+<p>Ex:</p>
+<p>Kubernetes 1.24.8 uses runc library 1.1.1</p>
+<p><a href="https://github.com/kubernetes/kubernetes/blob/v1.24.8/go.mod#L66">https://github.com/kubernetes/kubernetes/blob/v1.24.8/go.mod#L66</a></p>
+<p>The first kubernetes release with runc library 1.1.6 in k8s 1.24.x is <strong>K8s 1.24.14</strong></p>
+<p><a href="https://github.com/kubernetes/kubernetes/blob/v1.24.14/go.mod#L59">https://github.com/kubernetes/kubernetes/blob/v1.24.14/go.mod#L59</a></p>
+<p>with the help of this PR</p>
+<p><a href="https://github.com/kubernetes/kubernetes/pull/117892">https://github.com/kubernetes/kubernetes/pull/117892</a></p>
+<p>The following comment list all PR for all impacted Kubernetes minor releases</p>
+<p><a href="https://github.com/opencontainers/runc/issues/3849#issuecomment-1544519250">https://github.com/opencontainers/runc/issues/3849#issuecomment-1544519250</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
