@@ -7628,6 +7628,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8291,6 +8300,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021083/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to define routes and matchers in AlertmanagerConfigs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021114/" class="md-nav__link">
         
   
@@ -8473,6 +8503,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021286/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inability to attach/detach vSphere CNS block volumes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -8505,6 +8556,15 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
@@ -8541,10 +8601,12 @@
 
 <h1 id="rancher-upgrade-faq">Rancher upgrade FAQ</h1>
 <p>This document <strong>(000020727)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>As of writing this article, there are now two main branches that we will be working on. When you navigate to the rancher/rancher <a href="https://github.com/rancher/rancher">GitHub</a>, you will see <strong>two branches</strong>: the <strong>latest</strong> branch and the <strong>stable</strong> branch. These two branches are now different, and when upgrading Rancher, <strong>we recommend using the stable branch as our team has not verified and certified the latest branch</strong>.</p>
 <h3 id="situation">Situation</h3>
-<p>As we near the end of maintenance, end of life, and end of support for Rancher 2.5, we felt it pertinent to provide a one-stop FAQ page as customers begin to plan their upgrades.</p>
-<p>All upgrades should go from the latest to the latest. For instance, if you are on 2.5.3, you should go to 2.5.latest and then to 2.6.latest. The stop on 2.5.latest should be about a week to ensure you can catch any issues before moving forward.</p>
-<p>After the upgrade to 2.5.latest, you should then upgrade the underlying Kubernetes version to the latest supported version of the Rancher release. And again, the new Kubernetes version should be tested and verified for around one week. From there, progress to the next Rancher upgrade, test, and then Kubernetes.</p>
+<p>As we near the end of maintenance, end of life, and end of support for Rancher 2.6, we felt it pertinent to provide a one-stop FAQ page as customers begin to plan their upgrades.</p>
+<p>All upgrades should go from the latest to the latest. For instance, if you are on 2.6.10, you should go to 2.6.newest-stable and then to 2.7.newest-stable. The stop on 2.6.newest-stable should be about a week to ensure you can catch any issues before moving forward.</p>
+<p>After the upgrade to 2.7.newest-stable, you should then upgrade the underlying Kubernetes version to the latest supported version of the Rancher release. And again, the new Kubernetes version should be tested and verified for around one week. From there, progress to the next Rancher upgrade, test, and then Kubernetes.</p>
 <p>Many customers ask why we recommend one week. The 1-week recommendation is because this is often enough time for your clusters and app to be thoroughly tested and any issues flagged. We have seen customers who do less of a testing phase and only find issues when their cluster is being fully used and under normal "strain."</p>
 <p>Here are some useful links for upgrades — see link (1) below for our team's general best practices around upgrade paths.</p>
 <p>During the course of your upgrade, see link (2) for how you and your team can bump the severity of this case if there is an impacting event during your upgrade. Doing so will notify our on-call engineer, who will engage as quickly as possible.</p>

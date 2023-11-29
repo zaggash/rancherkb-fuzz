@@ -8333,6 +8333,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021083/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to define routes and matchers in AlertmanagerConfigs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021114/" class="md-nav__link">
         
   
@@ -8515,6 +8536,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021286/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inability to attach/detach vSphere CNS block volumes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -8641,14 +8683,30 @@
 <ul>
 <li>New users of v2.6.x and v2.7.x will use the new Microsoft Graph API when they register Rancher with Azure AD. There will be no need for a transition.</li>
 <li>Existing users who have Azure AD as the auth provider will see an informational notification/banner that will urge them to upgrade Rancher's auth provider before the end of 2022. Beforehand, their app in Azure will need to have the necessary permissions for Rancher to be able to work with Users and Groups in AD. To upgrade, the UI will have a button to instruct the backend to use the new authentication/authorization flow without requiring Rancher admins to reconfigure the existing auth provider.</li>
-<li>AD admins must add the necessary Microsoft Graph permissions to their apps. Specifically, User.Read.All and Group.Read.All - both must be Application (not Delegated) permissions.</li>
+<li>AD admins must add the necessary Microsoft Graph permissions to their apps:</li>
+<li>In 2.6.X, Rancher needs User.Read.All and Group.Read.All - both must be Application (not Delegated) permissions.</li>
+<li>
+<p>In 2.7.X, Rancher needs permissions that allow the following actions:</p>
+<ul>
+<li>Get a user.</li>
+<li>List all users.</li>
+<li>List groups of which a given user is a member.</li>
+<li>Get a group.</li>
+<li>List all groups.</li>
 </ul>
+</li>
+</ul>
+<p>Here are a few examples of permission combinations that satisfy Rancher's needs:</p>
+<pre><code> 1. Directory.Read.All
+2. User.Read.All and GroupMember.Read.All
+3. User.Read.All and Group.Read.All
+</code></pre>
 <h2 id="support-considerations-or-gotchas">Support Considerations or Gotchas</h2>
 <p>When you choose to upgrade the existing Azure AD auth provider configuration in Rancher, please keep in mind that all users' access tokens to the deprecated Azure AD Graph API will be deleted, since Rancher won't need them anymore because it won't be communicating with it.</p>
 <p>Instead, Rancher will store in a secret only one access token to the new Microsoft Graph API - that of the service principal associated with the App registration in Azure AD. This token is refreshed once an hour (not in the background, but when its use triggers a refresh).</p>
 <p>Additional migration instructions can be found at these links:</p>
 <p><a href="https://docs.ranchermanager.rancher.io/v2.6/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-azure-ad#migrating-from-azure-ad-graph-api-to-microsoft-graph-api">For Rancher 2.6.x</a></p>
-<p><a href="https://docs.ranchermanager.rancher.io/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-azure-ad#migrating-from-azure-ad-graph-api-to-microsoft-graph-api">For Rancher 2.7.x</a></p>
+<p><a href="https://ranchermanager.docs.rancher.com/v2.7/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-azure-ad">For Rancher 2.7.x</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
