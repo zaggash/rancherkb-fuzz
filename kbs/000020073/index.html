@@ -2000,6 +2000,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pre-requisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pre-requisites
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -2018,17 +2042,23 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      Resolution
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
+  <a href="#resolution_1" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
@@ -4158,7 +4188,7 @@
         
   
   <span class="md-ellipsis">
-    How to setup Nodelocal DNS cache on Rancher 2.x
+    How to setup Nodelocal DNS cache with Rancher, RKE1 and RKE2
   </span>
   
 
@@ -7913,6 +7943,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000020821/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to re-add a Mater node to the RKE2 HA cluster once its removed from cluster.
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000020831/" class="md-nav__link">
         
   
@@ -8612,6 +8663,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pre-requisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pre-requisites
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8630,17 +8705,23 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      Resolution
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
+  <a href="#resolution_1" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
@@ -8688,19 +8769,21 @@
 
 <h1 id="how-to-create-a-custom-project-rbac-role-to-grant-log-access-and-exec-permission-on-pods-in-a-rancher-v2x-managed-cluster">How to create a custom Project RBAC role to grant log access and exec permission on Pods, in a Rancher v2.x managed cluster</h1>
 <p>This document <strong>(000020073)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>This article details how to create a custom Project RBAC role to grant log access and exec permission on Pods, in a Rancher v2.x managed Kubernetes cluster.</p>
+<h3 id="environment">Environment</h3>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
 <li>A Rancher v2.x managed Kubernetes cluster</li>
 </ul>
-<h4 id="resolution">Resolution</h4>
+<h3 id="situation">Situation</h3>
+<h4 id="task">Task</h4>
+<p>This article details how to create a custom Project RBAC role to grant log access and exec permission on Pods, in a Rancher v2.x managed Kubernetes cluster.</p>
+<h3 id="resolution">Resolution</h3>
+<h4 id="resolution_1">Resolution</h4>
 <p>In Rancher v2.x you can create a custom Project Role that provides the permissions to enable a user to view Pods, Pod logs and to exec into Pods. You can then grant this role to users on Projects to provide them this access where necessary.</p>
 <p>Pod Reader Permissions in Rancher UI</p>
 <ol>
 <li>
-<p>Navigate to Security -&gt; Roles from the Global namespace.</p>
+<p>Navigate to Users &amp; Authentication &gt; Roles.</p>
 </li>
 <li>
 <p>From the Projects tab, select Add Project Role.</p>

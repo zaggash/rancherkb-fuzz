@@ -22,7 +22,7 @@
     
     
       
-        <title>How to setup Nodelocal DNS cache on Rancher 2.x - SUSE KBs</title>
+        <title>How to setup Nodelocal DNS cache with Rancher, RKE1 and RKE2 - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-setup-nodelocal-dns-cache-on-rancher-2x" class="md-skip">
+        <a href="#how-to-setup-nodelocal-dns-cache-with-rancher-rke1-and-rke2" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to setup Nodelocal DNS cache on Rancher 2.x
+              How to setup Nodelocal DNS cache with Rancher, RKE1 and RKE2
             
           </span>
         </div>
@@ -4067,7 +4067,7 @@
           
   
   <span class="md-ellipsis">
-    How to setup Nodelocal DNS cache on Rancher 2.x
+    How to setup Nodelocal DNS cache with Rancher, RKE1 and RKE2
   </span>
   
 
@@ -4078,7 +4078,7 @@
         
   
   <span class="md-ellipsis">
-    How to setup Nodelocal DNS cache on Rancher 2.x
+    How to setup Nodelocal DNS cache with Rancher, RKE1 and RKE2
   </span>
   
 
@@ -4152,67 +4152,34 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#rke1-using-a-rancher-version-after-v24x-or-rke-version-after-v110" class="md-nav__link">
+  <a href="#rke1" class="md-nav__link">
     <span class="md-ellipsis">
-      RKE1: Using a Rancher version after v2.4.x, or RKE version after v1.1.0
+      RKE1
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#rke1-using-a-rancher-version-before-v24x-or-rke-version-before-v110" class="md-nav__link">
+  <a href="#rke2" class="md-nav__link">
     <span class="md-ellipsis">
-      RKE1: Using a Rancher version before v2.4.x, or RKE version before v1.1.0
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="RKE1: Using a Rancher version before v2.4.x, or RKE version before v1.1.0">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#option-a-configure-the-kubelet" class="md-nav__link">
-    <span class="md-ellipsis">
-      Option A - Configure the Kubelet
+      RKE2
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#option-b-configure-workloads" class="md-nav__link">
-    <span class="md-ellipsis">
-      Option B - Configure Workloads
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rke2-using-any-rke2-kubernetes-version" class="md-nav__link">
-    <span class="md-ellipsis">
-      RKE2: Using any RKE2 Kubernetes version
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#testing" class="md-nav__link">
     <span class="md-ellipsis">
       Testing
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4227,29 +4194,24 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#using-a-rancher-version-after-v24x-or-rke-version-after-v110" class="md-nav__link">
+  <a href="#rke1_1" class="md-nav__link">
     <span class="md-ellipsis">
-      Using a Rancher version after v2.4.x, or RKE version after v1.1.0
+      RKE1
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-a-rancher-version-before-v24x-or-rke-version-before-v110" class="md-nav__link">
+  <a href="#rke2_1" class="md-nav__link">
     <span class="md-ellipsis">
-      Using a Rancher version before v2.4.x, or RKE version before v1.1.0
+      RKE2
     </span>
   </a>
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
+          <li class="md-nav__item">
   <a href="#additional-information" class="md-nav__link">
     <span class="md-ellipsis">
       Additional Information
@@ -4257,8 +4219,8 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
       Troubleshooting
@@ -4308,13 +4270,18 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -8072,6 +8039,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000020821/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to re-add a Mater node to the RKE2 HA cluster once its removed from cluster.
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000020831/" class="md-nav__link">
         
   
@@ -8823,67 +8811,34 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#rke1-using-a-rancher-version-after-v24x-or-rke-version-after-v110" class="md-nav__link">
+  <a href="#rke1" class="md-nav__link">
     <span class="md-ellipsis">
-      RKE1: Using a Rancher version after v2.4.x, or RKE version after v1.1.0
+      RKE1
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#rke1-using-a-rancher-version-before-v24x-or-rke-version-before-v110" class="md-nav__link">
+  <a href="#rke2" class="md-nav__link">
     <span class="md-ellipsis">
-      RKE1: Using a Rancher version before v2.4.x, or RKE version before v1.1.0
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="RKE1: Using a Rancher version before v2.4.x, or RKE version before v1.1.0">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#option-a-configure-the-kubelet" class="md-nav__link">
-    <span class="md-ellipsis">
-      Option A - Configure the Kubelet
+      RKE2
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#option-b-configure-workloads" class="md-nav__link">
-    <span class="md-ellipsis">
-      Option B - Configure Workloads
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rke2-using-any-rke2-kubernetes-version" class="md-nav__link">
-    <span class="md-ellipsis">
-      RKE2: Using any RKE2 Kubernetes version
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#testing" class="md-nav__link">
     <span class="md-ellipsis">
       Testing
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -8898,29 +8853,24 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#using-a-rancher-version-after-v24x-or-rke-version-after-v110" class="md-nav__link">
+  <a href="#rke1_1" class="md-nav__link">
     <span class="md-ellipsis">
-      Using a Rancher version after v2.4.x, or RKE version after v1.1.0
+      RKE1
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-a-rancher-version-before-v24x-or-rke-version-before-v110" class="md-nav__link">
+  <a href="#rke2_1" class="md-nav__link">
     <span class="md-ellipsis">
-      Using a Rancher version before v2.4.x, or RKE version before v1.1.0
+      RKE2
     </span>
   </a>
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
+          <li class="md-nav__item">
   <a href="#additional-information" class="md-nav__link">
     <span class="md-ellipsis">
       Additional Information
@@ -8928,8 +8878,8 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
       Troubleshooting
@@ -8979,13 +8929,18 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -9004,116 +8959,94 @@
                   
 
 
-<h1 id="how-to-setup-nodelocal-dns-cache-on-rancher-2x">How to setup Nodelocal DNS cache on Rancher 2.x</h1>
+<h1 id="how-to-setup-nodelocal-dns-cache-with-rancher-rke1-and-rke2">How to setup Nodelocal DNS cache with Rancher, RKE1 and RKE2</h1>
 <p>This document <strong>(000020174)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<h5 id="why-use-nodelocal-dns-cache">Why use Nodelocal DNS cache?</h5>
+<h4 id="why-use-nodelocal-dns-cache">Why use Nodelocal DNS cache?</h4>
 <p>Like many applications in a containerised architecture, CoreDNS or kube-dns runs in a distributed fashion. In certain circumstances, DNS reliability and latency can be impacted with this approach. The causes of this relate notably to conntrack race conditions or exhaustion, cloud provider limits, and the unreliable nature of the UDP protocol.</p>
 <p>A number of workarounds exist, however long term mitigation of these and other issues has resulted in a redesign of the Kubernetes DNS architecture, and the result being the <a href="https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/">Nodelocal DNS cache project</a>.</p>
-<h5 id="requirements">Requirements</h5>
+<h4 id="requirements">Requirements</h4>
 <ul>
-<li>A Kubernetes cluster of v1.15 or greater created by Rancher v2.x or RKE</li>
+<li>A Kubernetes cluster provisioned by Rancher v2.x, or directly with RKE1 and RKE2</li>
 <li>A Linux cluster, Windows is currently not supported</li>
 <li>Access to the cluster</li>
 </ul>
 <h3 id="resolution">Resolution</h3>
-<h3 id="installing">Installing</h3>
-<p>There are two installation approaches, both approaches should be non-invasive, pods that are currently running will not be modified. The DNS configuration will take effect for pods started <em>after</em> the install is complete.</p>
-<h4 id="rke1-using-a-rancher-version-after-v24x-or-rke-version-after-v110">RKE1: Using a Rancher version after v2.4.x, or RKE version after v1.1.0</h4>
-<p>Update the cluster using 'Edit as YAML' in the Rancher UI. With RKE, edit the cluster.yaml file instead.</p>
+<h2 id="installing">Installing</h2>
+<p>Once installed, pods will begin to resolve using the node-local-dns pod on the same node, below are details for RKE1 and RKE2 when provisioning using Rancher. These same steps can be applied in a similar way when directly provisioning a cluster.</p>
+<h3 id="rke1">RKE1</h3>
+<p>When provisioning or configuring an existing cluster, edit the cluster configuration in the Rancher dashboard, and click the 'Edit as YAML' button. When provisioning an RKE cluster directly, edit the cluster.yaml file instead.</p>
 <p><strong>Note</strong>: Updating the cluster using the below will create the <code>node-local-dns</code> Daemonset, and restart the <code>kubelet</code> container on each node.</p>
-<p>As <a href="https://rancher.com/docs/rke/latest/en/config-options/add-ons/dns/#nodelocal-dns">in the documentation</a>, update or add the <code>dns.nodelocal.ip_address</code> field using the following as an example:</p>
-<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">dns</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">[</span><span class="nv">..</span><span class="p p-Indicator">]</span>
-<span class="w">    </span><span class="nt">nodelocal</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">ip_address</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;169.254.20.10&quot;</span>
+<p>As <a href="https://rke.docs.rancher.com/config-options/add-ons/dns#nodelocal-dns">in the documentation</a>, update or add the <code>dns.nodelocal.ip_address</code> field using the following as an example:</p>
+<div class="highlight"><pre><span></span><code>  dns:
+  [..]
+    nodelocal:
+      ip_address: &quot;169.254.20.10&quot;
 </code></pre></div>
-<p>New pods created after the change will configure the node-local-dns link-local address as the nameserver in <code>/etc/resolv.conf</code>.</p>
-<p><strong>Note</strong>: No further action is needed to use node-local-dns (as in the option A/B below), the changes to <code>/etc/resolv.conf</code> will take effect for pods started from this point onwards.</p>
-<h4 id="rke1-using-a-rancher-version-before-v24x-or-rke-version-before-v110">RKE1: Using a Rancher version before v2.4.x, or RKE version before v1.1.0</h4>
-<p>Installing the YAML manifest by navigating to the cluster, and clicking the <code>Launch kubectl</code> button in the Rancher UI. This command can also be run from a terminal where a kubeconfig for the cluster is currently configured.</p>
-<p>Environment variables are replaced before applying the manifest, one assumption is that the cluster service discovery domain name is <code>cluster.local</code> (default), adjust the command if needed.</p>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sL<span class="w"> </span>https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/dns/nodelocaldns/nodelocaldns.yaml<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;s/__PILLAR__DNS__DOMAIN__/cluster.local/g&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;s/__PILLAR__DNS__SERVER__/</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>service<span class="w"> </span>--namespace<span class="w"> </span>kube-system<span class="w"> </span>kube-dns<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.clusterIP}&#39;</span><span class="k">)</span><span class="s2">/g&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;s/__PILLAR__LOCAL__DNS__/169.254.20.10/g&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
+<p>The kubelet will be updated to use the new IP address when configuring pod DNS resolution. Pods using the CoreDNS service address (default: 10.43.0.10) as the nameserver in <code>/etc/resolv.conf</code> will still resolve using the node-local-dns pod on the node. This is due to the way node-local-dns manages it's own interface and iptables rules.</p>
+<h3 id="rke2">RKE2</h3>
+<p>Update the default HelmChart for CoreDNS, the nodelocal.enabled: true value will install node-local-dns in the cluster.</p>
+<p>When provisioning or configuring an existing cluster, edit the cluster configuration in the Rancher dashboard, and select Add-On Config. At the bottom of the page paste the following into the Additional Manifest text area:</p>
+<div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    nodelocal:
+      enabled: true
 </code></pre></div>
-<p>Ensure the <code>node-local-dns</code> pods start successfully, a pod should start on each control plane and worker node.</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>pod<span class="w"> </span>-l<span class="w"> </span>k8s-app<span class="o">=</span>node-local-dns
-</code></pre></div>
-<p>When deploying the YAML manifest there are two options to configure the cluster to use the new node-local-dns configuration, please choose from option A or B below.</p>
-<h5 id="option-a-configure-the-kubelet">Option A - Configure the Kubelet</h5>
-<p>By default, the Kubelet will configure the <code>/etc/resolv.conf</code> of pods with the <code>kube-dns</code> Service ClusterIP as the nameserver. Configuring all new pods to query node-local-dns will require updating the Kubelet arguments.</p>
-<p><strong>Note</strong>: Updating the arguments using the below will restart the <code>kubelet</code> container on each node.</p>
-<ul>
-<li>
-<p>If the cluster was provisioned by Rancher, edit the cluster in the UI and click on <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/editing-clusters/#editing-cluster-as-yaml"><code>Edit as YAML</code></a>.</p>
-</li>
-<li>
-<p>If the cluster was provisioned by RKE, edit the cluster.yml file directly.</p>
-</li>
-</ul>
-<p>Update the <code>kubelet</code> service with the <code>cluster-dns</code> argument and IP Address. Click save, or run an <code>rke up</code> to put this change into effect.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">kubelet</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">extra_args</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">cluster-dns</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;169.254.20.10&quot;</span>
-</code></pre></div>
-<p>New pods created after the change will configure the node-local-dns link-local address as the nameserver in <code>/etc/resolv.conf</code>.</p>
-<h5 id="option-b-configure-workloads">Option B - Configure Workloads</h5>
-<p>Alternatively, node-local-dns can be configured on a per-workload basis by updating the workload with a <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-config"><code>dnsConfig</code></a> and <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy"><code>dnsConfig</code></a> .</p>
-<ul>
-<li>
-<p>If using the Rancher UI, edit the workload, navigate to <strong>Show advanced options &gt; Networking &gt; DNS Nameservers</strong> and add <code>169.254.20.10</code>. Additionally, adjust the <strong>DNS Policy</strong> to <code>None</code>.</p>
-</li>
-<li>
-<p>If configuring by YAML, patch in the following to the pod spec to adjust the <code>dnsPolicy</code> and <code>dnsConfig</code>:</p>
-</li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">spec</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">dnsPolicy</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;None&quot;</span>
-<span class="w">      </span><span class="nt">dnsConfig</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">nameservers</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">169.254.20.10</span>
-</code></pre></div>
-<h4 id="rke2-using-any-rke2-kubernetes-version">RKE2: Using any RKE2 Kubernetes version</h4>
-<p>Update the default HelmChart for CoreDNS, the nodelocal.enabled: true value will install node-local-dns in the cluster. Please see <a href="https://docs.rke2.io/networking/#nodelocal-dnscache">the documentation here</a> for more details.</p>
+<p>Save the changes, please see <a href="https://docs.rke2.io/networking/#nodelocal-dnscache">the documentation here</a> for more details.</p>
+<p>When provisioning an RKE2 cluster directly, this file can be copied into the /var/lib/rancher/rke2/server/manifests directory on each rke2-server node, manually or with user-data/configuration management.</p>
 <h3 id="testing">Testing</h3>
-<p>Once installed, start a new pod to test DNS queries.</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>run<span class="w"> </span>--restart<span class="o">=</span>Never<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>--image<span class="o">=</span>tutum/dnsutils<span class="w"> </span>dns-test<span class="w"> </span>--<span class="w"> </span>dig<span class="w"> </span>google.com
+<p>Once installed, start a new pod to test DNS queries, for example:</p>
+<div class="highlight"><pre><span></span><code>kubectl run --restart=Never --rm -it --image=tutum/dnsutils dns-test -- dig google.com
 </code></pre></div>
-<p>Unless Option B was used to install node-local-dns, you should expect to see <code>169.254.20.10</code> as the server, and a successful answer to the query.</p>
-<p>To verify a pod or container is using node-local-dns by checking the <code>/etc/resolv.conf</code> file, for example:</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>&lt;pod<span class="w"> </span>name&gt;<span class="w"> </span>--<span class="w"> </span>grep<span class="w"> </span>nameserver<span class="w"> </span>/etc/resolv.conf
-nameserver<span class="w"> </span><span class="m">169</span>.254.20.10
+<p>To verify node-local-dns is available and handling DNS queries, here are some ways to confirm:</p>
+<ul>
+<li>Check for a nodelocaldns interface on a node, for example:</li>
+</ul>
+<div class="highlight"><pre><span></span><code># ip addr show nodelocaldns
+21: nodelocaldns: &lt;BROADCAST,NOARP&gt; mtu 1500 qdisc noop state DOWN group default
+    link/ether e2:a9:45:f9:29:94 brd ff:ff:ff:ff:ff:ff
+    inet 169.254.20.10/32 scope global nodelocaldns
+       valid_lft forever preferred_lft forever
+    inet 10.43.0.10/32 scope global nodelocaldns
+       valid_lft forever preferred_lft forever
 </code></pre></div>
-<h3 id="removing-nodelocal-dns-cache">Removing Nodelocal DNS cache</h3>
-<p>To remove from a cluster, the reverse steps are needed.</p>
-<p><strong>Note</strong>: Pods created with the node-local-dns nameserver in <code>/etc/resolv.conf</code> will need to be started again to use the kube-dns service as a nameserver again.</p>
-<h4 id="using-a-rancher-version-after-v24x-or-rke-version-after-v110">Using a Rancher version after v2.4.x, or RKE version after v1.1.0</h4>
-<p>Remove the <code>dns.nodelocal</code> configuration from the cluster YAML</p>
-<h4 id="using-a-rancher-version-before-v24x-or-rke-version-before-v110">Using a Rancher version before v2.4.x, or RKE version before v1.1.0</h4>
-<ol>
+<ul>
 <li>
-<p>Remove the Kubelet configuration (Option A), or remove the dnsConfig from workloads (Option B).</p>
+<p>Temporarily enable query logging for node-local-dns:</p>
 </li>
 <li>
-<p>If Option A was taken, delete any pods in workloads that were started since the Kubelet configuration change so that they are started with the kube-dns ClusterIP again.</p>
+<p>Edit the node-local-dns ConfigMap to add the log plugin, locate and edit the ConfigMap in the kube-system namespace in the Rancher dashboard, or use kubectl edit configmap -n kube-system node-local-dns</p>
 </li>
 <li>
-<p>Remove the node-local-dns objects with the following command:</p>
+<p>Add log to the cluster.local and :53 objects in the Corefile, for example for :53 (external queries):</p>
 </li>
-</ol>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sL<span class="w"> </span>https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/dns/nodelocaldns/nodelocaldns.yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>-
-</code></pre></div>
-<p><strong>Note</strong>: it is important to perform these steps in order, and only complete step 3 once the pods using node-local-dns have been started with the kube-dns ClusterIP configured in <code>/etc/resolv.conf</code> again.</p>
+<li>
+<p><code>[...]
+          .:53 {
+              log
+              errors
+              cache 30</code></p>
+</li>
+<li>Check the node-local-dns pod logs once some DNS queries have been performed, the logs should indicate queries are being answered</li>
+<li>Perform the reverse of steps 1-2 to disable query logging</li>
+</ul>
+<h2 id="removing-nodelocal-dns-cache">Removing Nodelocal DNS cache</h2>
+<p>To remove from a cluster, the reverse steps are needed:</p>
+<h3 id="rke1_1">RKE1</h3>
+<p>Remove the <code>dns.nodelocal</code> field from the cluster configuration in the Rancher dashboard and save the change. When provisioning a cluster directly, run rke up to reconcile the change.</p>
+<h3 id="rke2_1">RKE2</h3>
+<p>Remove the additional manifest in the Rancher dashboard, or delete the manifest file from all of the rke2-server nodes when provisioning the cluster directly.</p>
 <h3 id="additional-information">Additional Information</h3>
 <h3 id="troubleshooting">Troubleshooting</h3>
-<p>Node-local-dns will perform external lookups on behalf of pods, this lookup occurs from the node-local-dns DaemonSet pod running on the same node as the pod.</p>
-<p>For internal lookups, CoreDNS will be used, node-local-dns will cache successful queries (30s), and negative queries (5s) by default. For an architecture overview please <a href="https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/#architecture-diagram">see the diagram here</a>.</p>
+<p>Nodelocal DNS will perform external lookups on behalf of pods, this lookup occurs from the node-local-dns DaemonSet pod running on the same node as the pod.</p>
+<p>For internal lookups, CoreDNS will be used, node-local-dns pods will cache successful queries (30s), and negative queries (5s) by default. For an architecture overview please <a href="https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/#architecture-diagram">see the diagram here</a>.</p>
 <p>In no specific order, the following can help understand a DNS issue further.</p>
-<h5 id="check-all-kube-dns-and-node-local-dns-objects">Check all kube-dns and node-local-dns objects</h5>
+<h4 id="check-all-kube-dns-and-node-local-dns-objects">Check all kube-dns and node-local-dns objects</h4>
 <p>Ensure there are no obvious issues with scheduling CoreDNS and node-local-dns pods in the cluster.</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>-l<span class="w"> </span>k8s-app<span class="o">=</span>node-local-dns
 kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>-l<span class="w"> </span>k8s-app<span class="o">=</span>kube-dns
@@ -9122,30 +9055,40 @@ kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>describe<span class="w"> </span>ds<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>-l<span class="w"> </span>k8s-app<span class="o">=</span>node-local-dns
 kubectl<span class="w"> </span>describe<span class="w"> </span>rs<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>-l<span class="w"> </span>k8s-app<span class="o">=</span>kube-dns
 </code></pre></div>
-<h5 id="check-the-logs-and-configmap-of-kube-dns-and-node-local-dns-pods">Check the logs and ConfigMap of kube-dns and node-local-dns pods</h5>
+<h4 id="check-the-logs-and-configmap-of-kube-dns-and-node-local-dns-pods">Check the logs and ConfigMap of kube-dns and node-local-dns pods</h4>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>logs<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>-l<span class="w"> </span>k8s-app<span class="o">=</span>kube-dns
 kubectl<span class="w"> </span>logs<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>-l<span class="w"> </span>k8s-app<span class="o">=</span>node-local-dns
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>configmap<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>coredns<span class="w"> </span>-o<span class="w"> </span>yaml
 kubectl<span class="w"> </span>get<span class="w"> </span>configmap<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>node-local-dns<span class="w"> </span>-o<span class="w"> </span>yaml
 </code></pre></div>
-<h5 id="enable-logging-and-perform-a-dns-test">Enable logging and perform a DNS test</h5>
+<h4 id="enable-logging-and-perform-a-dns-test">Enable logging and perform a DNS test</h4>
 <p>Note, query logging can increase the log output from CoreDNS, enabling this temporarily while investigating is suggested.</p>
 <ul>
+<li>Enable query logging for node-local-dns with the following steps:</li>
+<li>Edit the node-local-dns ConfigMap to add the log plugin, locate and edit the ConfigMap in the kube-system namespace in the Rancher dashboard, or use kubectl edit configmap -n kube-system node-local-dns</li>
 <li>
-<p><a href="https://rancher.com/docs/rancher/v2.x/en/troubleshooting/dns/#enable-query-logging">Enable query logging</a> to understand the pattern from workloads</p>
-</li>
-<li>
-<p><a href="https://rancher.com/docs/rancher/v2.x/en/troubleshooting/dns/#check-if-domain-names-are-resolving">Run a DaemonSet</a> to perform queries from a pod running on each node in the cluster</p>
+<p>Add log to the cluster.local and :53 objects in the Corefile, for example for :53 (external queries):</p>
+<ul>
+<li><code>[...]
+      .:53 {
+          log
+          errors
+          cache 30</code></li>
+<li>Check the node-local-dns pod logs once some DNS queries have been performed, the logs should indicate queries are being answered</li>
+<li>Perform the reverse of steps 1-2 to disable query logging</li>
+<li>Query logging for CoreDNS <a href="https://ranchermanager.docs.rancher.com/troubleshooting/other-troubleshooting-tips/dns#enable-query-logging">can be enabled</a> in a similar way, when Nodelocal DNS is enabled, this will only log internal (cluster.local) queries that were not already cached</li>
+<li><a href="https://ranchermanager.docs.rancher.com/troubleshooting/other-troubleshooting-tips/dns#check-if-domain-names-are-resolving">Run a DaemonSet</a> to perform queries from a pod running on each node in the cluster</li>
+</ul>
 </li>
 </ul>
-<h5 id="ask-questions-to-further-eliminate-the-issue">Ask questions to further eliminate the issue</h5>
+<h4 id="ask-questions-to-further-eliminate-the-issue">Ask questions to further eliminate the issue</h4>
 <ul>
 <li>Is it only DNS that is affected, or is all connectivity affected?</li>
-<li>Are internal, external or all DNS queries failing?</li>
-<li>Are all nodes and workloads experiencing the issue, or a specific node or workload? * Nodes use the upstream DNS configured in <code>/etc/resolv.conf</code>, queries failing from a node could indicate the issue is with upstream DNS</li>
-<li>What is the error reported by applications? * If logs are aggregated, queries can be performed on the logs to identify timelines and impact</li>
-<li>Is the issue intermittent or constantly occuring? * If the issue is intermittent, configure monitoring or a loop to identify when the issue occurs, when it does - are internal, external or all queries affected?</li>
+<li>Are internal, external, or all DNS queries failing?</li>
+<li>Are all nodes and workloads experiencing the issue, or a specific node or workload? Nodes use the upstream DNS configured in <code>/etc/resolv.conf</code>, queries failing from a node could indicate the issue is with upstream DNS</li>
+<li>What is the error reported by applications? If logs are aggregated, investigate the rate of the error in logs to identify timelines and impact</li>
+<li>Is the issue intermittent or constantly occurring? If the issue is intermittent, configure monitoring or a loop to identify when the issue occurs, when it does - what is the error? are internal, external or all queries affected?</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
