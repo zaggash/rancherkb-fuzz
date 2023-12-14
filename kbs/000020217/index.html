@@ -8723,23 +8723,24 @@
 <p>This document <strong>(000020217)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
 <h4 id="issue">Issue</h4>
-<p>By default the <a href="https://rancher.com/docs/rancher/v2.x/en/installation/">installation and upgrade documentation</a> references the installation of, or upgrade to, the most recently released latest or stable tagged version of Rancher. This article details how to install a specific version, both in a single node and high availability installation.</p>
-<p>For details on the difference between the latest and stable releases please see the documentation on <a href="https://rancher.com/docs/rancher/v2.x/en/installation/server-tags/">'Choosing a Version'</a>.</p>
+<p>By default the <a href="https://ranchermanager.docs.rancher.com/pages-for-subheaders/installation-and-upgrade">installation and upgrade documentation</a> references the installation of, or upgrade to, the most recently released latest or stable tagged version of Rancher. This article details how to install a specific version, both in a single node and high availability installation.</p>
+<p>For details on the difference between the latest and stable releases please see the documentation on <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/resources/choose-a-rancher-version">'Choosing a Version'</a> .</p>
 <p><em>N.B. We strongly recommend you only run product releases tagged “Stable” in your production and any other business-critical environments. Any product release with the “Latest” tag should only be used for testing the latest releases."</em></p>
 <h4 id="resolution">Resolution</h4>
 <h5 id="single-node-install">Single Node Install</h5>
-<p>To <a href="https://rancher.com/docs/rancher/v2.x/en/installation/single-node/">install</a> or <a href="https://rancher.com/docs/rancher/v2.x/en/upgrades/upgrades/single-node-upgrade/">upgrade</a> to a specific Rancher version in a single node install, you can specify the exact version number of the image to run, <code>rancher/rancher:vX.X.X</code>, i.e.:</p>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--restart<span class="o">=</span>unless-stopped<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-p<span class="w"> </span><span class="m">80</span>:80<span class="w"> </span>-p<span class="w"> </span><span class="m">443</span>:443<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>rancher/rancher:v2.2.2
+<p>To <a href="https://ranchermanager.docs.rancher.com/pages-for-subheaders/rancher-on-a-single-node-with-docker">install</a> or <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher">upgrade</a> to a specific Rancher version in a single node install, you can specify the exact version number of the image to run, <code>rancher/rancher:vX.X.X</code>, i.e.:</p>
+<div class="highlight"><pre><span></span><code>docker run -d --restart=unless-stopped \
+  -p 80:80 -p 443:443 \
+  --privileged \
+  rancher/rancher:latest  or rancher/rancher:v2.7.0
 </code></pre></div>
 <h5 id="high-availability-ha-install">High Availability (HA) Install</h5>
-<p>To <a href="https://rancher.com/docs/rancher/v2.x/en/installation/single-node/">install</a> or <a href="https://rancher.com/docs/rancher/v2.x/en/upgrades/upgrades/ha-server-upgrade-helm/">upgrade</a> to a specific version in a High Availability install, you can specify the <code>--version X.X.X</code> parameter when running the <code>helm install</code> or <code>helm upgrade</code> command, i.e.:</p>
-<div class="highlight"><pre><span></span><code>helm<span class="w"> </span>install<span class="w"> </span>rancher-stable/rancher<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="w"> </span>rancher<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--namespace<span class="w"> </span>cattle-system<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--set<span class="w"> </span><span class="nv">hostname</span><span class="o">=</span>rancher.my.org<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.2.2
+<p>To <a href="https://ranchermanager.docs.rancher.com/pages-for-subheaders/install-upgrade-on-a-kubernetes-cluster">install</a> or <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades">upgrade</a> to a specific version in a High Availability install, you can specify the <code>--version X.X.X</code> parameter when running the <code>helm install</code> or <code>helm upgrade</code> command, i.e.:</p>
+<div class="highlight"><pre><span></span><code>helm install rancher rancher-&lt;CHART_REPO&gt;/rancher \
+  --namespace cattle-system \
+  --set hostname=rancher.my.org \
+  --set bootstrapPassword=admin \
+  --version 2.7.0
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
