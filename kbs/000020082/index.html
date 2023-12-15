@@ -8737,11 +8737,15 @@
 <h4 id="background">Background</h4>
 <p>By default, K3s uses Traefik as the ingress controller for your cluster. The decision to use Traefik over NGINX was based on multi-architecture support across x86 and ARM based platforms. Normally Traefik meets the needs of most Kubernetes clusters. However, there are unique use cases where NGINX may be required or preferred. If you don't think you need NGINX, it's recommended to stick with Traefik.</p>
 <h4 id="solution">Solution</h4>
-<p>The first step to using NGINX or any alternative ingress controller is to tell K3s that you do not want to deploy Traefik. When installing K3s add the following <code>--no-deploy traefik</code> flag to the <code>INSTALL_K3S_EXEC</code> environment variable:</p>
+<p>The first step to using NGINX or any alternative ingress controller is to tell K3s that you do not want to deploy Traefik. When installing K3s add the following <code>--no-deploy traefik</code> flag to the <code>INSTALL_K3S_EXEC</code> environment variable.  Or in some cases, you may need a --disable traefik option instead:</p>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-sfL<span class="w"> </span>https://get.k3s.io<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">INSTALL_K3S_EXEC</span><span class="o">=</span><span class="s2">&quot;--no-deploy traefik&quot;</span><span class="w"> </span>sh<span class="w"> </span>-s<span class="w"> </span>-
+or
+curl<span class="w"> </span>-sfL<span class="w"> </span>https://get.k3s.io<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">INSTALL_K3S_EXEC</span><span class="o">=</span><span class="s2">&quot;--disable traefik&quot;</span><span class="w"> </span>sh<span class="w"> </span>-s<span class="w"> </span>-
 </code></pre></div>
 <p>If you have already downloaded the k3s.sh install script, you can run the following:</p>
 <div class="highlight"><pre><span></span><code><span class="nv">INSTALL_K3S_EXEC</span><span class="o">=</span><span class="s2">&quot;--no-deploy traefik&quot;</span><span class="w"> </span>k3s.sh
+or
+<span class="nv">INSTALL_K3S_EXEC</span><span class="o">=</span><span class="s2">&quot;--disable traefik&quot;</span><span class="w"> </span>k3s.sh
 </code></pre></div>
 <p>This will install the K3s server and form a single node cluster. You can confirm the cluster is operational ("Ready") by running:</p>
 <div class="highlight"><pre><span></span><code>$ kubectl get nodes
