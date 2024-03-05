@@ -18,11 +18,11 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.11">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.12">
     
     
       
-        <title>How to migrate from CentOS packaged to upstream Docker - SUSE KBs</title>
+        <title>How to migrate from CentOS/RHEL-packaged to upstream Docker - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-migrate-from-centos-packaged-to-upstream-docker" class="md-skip">
+        <a href="#how-to-migrate-from-centosrhel-packaged-to-upstream-docker" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to migrate from CentOS packaged to upstream Docker
+              How to migrate from CentOS/RHEL-packaged to upstream Docker
             
           </span>
         </div>
@@ -5134,7 +5134,7 @@
           
   
   <span class="md-ellipsis">
-    How to migrate from CentOS packaged to upstream Docker
+    How to migrate from CentOS/RHEL-packaged to upstream Docker
   </span>
   
 
@@ -5145,7 +5145,7 @@
         
   
   <span class="md-ellipsis">
-    How to migrate from CentOS packaged to upstream Docker
+    How to migrate from CentOS/RHEL-packaged to upstream Docker
   </span>
   
 
@@ -5167,34 +5167,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -5202,15 +5192,16 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#cluster-launched-by-the-rke-cli" class="md-nav__link">
     <span class="md-ellipsis">
       Cluster launched by the RKE CLI
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Cluster launched by the RKE CLI">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#create-a-backup" class="md-nav__link">
@@ -5230,28 +5221,25 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#custom-cluster-launched-by-rancher" class="md-nav__link">
     <span class="md-ellipsis">
       Custom cluster launched by Rancher
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Custom cluster launched by Rancher">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#create-a-backup_1" class="md-nav__link">
     <span class="md-ellipsis">
       Create a Backup
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#perform-migration-on-each-cluster-node-in-turn_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Perform migration on each cluster node in turn
     </span>
   </a>
   
@@ -5263,11 +5251,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#perform-migration-on-each-cluster-node-in-turn_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Perform migration on each cluster node in turn
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Perform migration on each cluster node in turn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -8353,6 +8356,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021045/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to set container log rotation with RKE2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021053/" class="md-nav__link">
         
   
@@ -8871,6 +8895,69 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021363/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CVE-2024-21626 Runc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021379/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Is Rancher Prime Hosted SOC2 compliant?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021383/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to change the downstream Rancher Webhook port on a Host Network configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -8905,34 +8992,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -8940,15 +9017,16 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#cluster-launched-by-the-rke-cli" class="md-nav__link">
     <span class="md-ellipsis">
       Cluster launched by the RKE CLI
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Cluster launched by the RKE CLI">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#create-a-backup" class="md-nav__link">
@@ -8968,28 +9046,25 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#custom-cluster-launched-by-rancher" class="md-nav__link">
     <span class="md-ellipsis">
       Custom cluster launched by Rancher
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Custom cluster launched by Rancher">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#create-a-backup_1" class="md-nav__link">
     <span class="md-ellipsis">
       Create a Backup
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#perform-migration-on-each-cluster-node-in-turn_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Perform migration on each cluster node in turn
     </span>
   </a>
   
@@ -9001,11 +9076,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#perform-migration-on-each-cluster-node-in-turn_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Perform migration on each cluster node in turn
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Perform migration on each cluster node in turn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -9024,58 +9114,55 @@
                   
 
 
-<h1 id="how-to-migrate-from-centos-packaged-to-upstream-docker">How to migrate from CentOS packaged to upstream Docker</h1>
+<h1 id="how-to-migrate-from-centosrhel-packaged-to-upstream-docker">How to migrate from CentOS/RHEL-packaged to upstream Docker</h1>
 <p>This document <strong>(000020225)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="situation">Situation</h3>
-<h5 id="task">Task</h5>
-<p>This article will describe the process by which you can migrate a CentOS node in a Rancher cluster from running the CentOS packaged Docker package to the upstream package from Docker.</p>
-<p>In order to perform this migration you will be required to first uninstall the CentOS packaged Docker, before installing the upstream version. This process is destructive, and will remove all container state from the host. As a result the process outlined below, will guide you through first removing the node from the Rancher cluster, before conducting the package migration, then finally re-adding the node to the cluster.</p>
-<h5 id="pre-requisites">Pre-requisites</h5>
+<h3 id="environment">Environment</h3>
 <ul>
-<li>A Kubernetes cluster launched with the <a href="https://rancher.com/docs/rke/latest/en/">Rancher Kubernetes Engine (RKE) CLI</a>, v0.1.x or v0.2.x, or a <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/custom-clusters/">Rancher v2.x</a> launched Kubernetes cluster on custom nodes</li>
-<li>Nodes running CentOS 7.x, with Docker installed from the CentOS extras repository.</li>
+<li>A Kubernetes cluster launched with the <a href="https://rancher.com/docs/rke/latest/en/">Rancher Kubernetes Engine (RKE) CLI</a>, or a <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/custom-clusters/">Rancher v2.x</a> launched Kubernetes cluster on custom nodes</li>
+<li>Nodes running CentOS 7.x or RHEL 7.x, with Docker installed from the CentOS/RHEL extras repository.</li>
 </ul>
-<h5 id="resolution">Resolution</h5>
-<h5 id="cluster-launched-by-the-rke-cli">Cluster launched by the RKE CLI</h5>
-<h5 id="create-a-backup">Create a Backup</h5>
-<p>As with any cluster maintenance, it is recommended that you first take an etcd snapshot of the cluster, to recover from in the event of an issue. A snapshot can be created for the cluster, per the <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/one-time-snapshots/">RKE documentation here</a> and you should copy the snapshot off an etcd node to a safe location outside the cluster.</p>
-<h5 id="perform-migration-on-each-cluster-node-in-turn">Perform migration on each cluster node in turn</h5>
+<h3 id="situation">Situation</h3>
+<p><em><strong>Deprecation notice</strong></em></p>
+<p><em>Docker is not packaged in the RHEL 8 or 9 repositories, and starting with Rancher v2.7 the RHEL-packaged version of Docker (1.13) for RHEL 7 has been removed from the <a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/rancher-v2-7-0/">Rancher Support Matrix</a>. Therefore, customers must migrate from RHEL-packaged Docker 1.13 to the upstream Docker version in their RKE clusters.</em></p>
+<p>This article will describe the process by which you can migrate a CentOS or RHEL node in an RKE cluster from running the CentOS/RHEL-packaged Docker package to the upstream package from Docker.</p>
+<p>To perform this migration you will be required to first uninstall the CentOS/RHEL packaged Docker, before installing the upstream version. This process is destructive and will remove all container state from the host. As a result, the process outlined below will guide you through first removing the node from the Rancher cluster, before conducting the package migration, then finally re-adding the node to the cluster.</p>
+<h3 id="resolution">Resolution</h3>
+<h2 id="cluster-launched-by-the-rke-cli">Cluster launched by the RKE CLI</h2>
+<h3 id="create-a-backup">Create a Backup</h3>
+<p>As with any cluster maintenance, it is recommended that you first take an etcd snapshot of the cluster, to recover from in the event of an issue. A snapshot can be created for the cluster, per the <a href="https://rke.docs.rancher.com/etcd-snapshots/one-time-snapshots">RKE documentation here</a> and you should copy the snapshot off an etcd node to a safe location outside the cluster.</p>
+<h3 id="perform-migration-on-each-cluster-node-in-turn">Perform migration on each cluster node in turn</h3>
 <ol>
 <li>Check if you should first add an additional node to the cluster, to replace the node during its migration:</li>
 </ol>
-<p><strong>Controlplane or etcd nodes</strong>
-    In the case that the node is a controlplane or etcd node, it is recommend that you first add an additional node to replace this, or add the role(s) to an existing node, to ensure that quorum is maintained in the event of failure of another node during the process. If the node is the single etcd or controlplane node in the cluster, then adding an additional node to replace it is not an optional step. Add the new etcd and/or controlplane role node to the <a href="https://rancher.com/docs/rke/latest/en/config-options/nodes/">cluster configuration YAML</a> and run <code>rke up</code> to provision this.</p>
-<p><strong>Worker nodes</strong>
-    If the worker nodes within the cluster are heavily loaded, or if the node is the sole worker role node, you should provision an additional worker node, to replace the node during the migration. Add the new worker role node to the <a href="https://rancher.com/docs/rke/latest/en/config-options/nodes/">cluster configuration YAML</a> and run <code>rke up</code> to provision this.</p>
+<p><strong>Controlplane or etcd nodes</strong> In the case that the node is a controlplane or etcd node, it is recommend that you first add an additional node to replace this, or add the role(s) to an existing node, to ensure that quorum is maintained in the event of failure of another node during the process. If the node is the single etcd or controlplane node in the cluster, then adding an additional node to replace it is not an optional step. Add the new etcd and/or controlplane role node to the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and run <code>rke up</code> to provision this.</p>
+<p><strong>Worker nodes</strong> If the worker nodes within the cluster are heavily loaded, or if the node is the sole worker role node, you should provision an additional worker node, to replace the node during the migration. Add the new worker role node to the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and run <code>rke up</code> to provision this.</p>
 <ol>
 <li>
-<p>Remove the node which you are migrating from the cluster, to do so remove the node from the <a href="https://rancher.com/docs/rke/latest/en/config-options/nodes/">cluster configuration YAML</a> and then run <code>rke up</code> to reconcile the cluster.</p>
+<p>Remove the node which you are migrating from the cluster, to do so remove the node from the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and then run <code>rke up</code> to reconcile the cluster.</p>
 </li>
 <li>
-<p>Once the <code>rke up</code> invocation in step 2. completes successfully, run the <a href="https://gist.githubusercontent.com/superseb/06539c6dcd377e118d72bfefdd444f81/raw/7d7fc0b28240c396c7cad0c25fd29bc1b5f53aa8/extended-cleanup-rancher2.sh">Extended Rancher 2 cleanup script</a> on the node that you are migrating, to clean up Rancher state.</p>
+<p>Once the <code>rke up</code> invocation in step 2. completes successfully, run the <a href="https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup">Extended Rancher 2 cleanup script</a> on the node that you are migrating, to clean up Rancher state.</p>
 </li>
-<li>Switch to the upstream Docker package on the node, by following the Docker Engine installation documentation for CentOS <a href="https://docs.docker.com/install/linux/docker-ce/centos/#uninstall-old-versions">from the section <code>Uninstall old versions</code> here</a>.</li>
-<li>Add the node back to the <a href="https://rancher.com/docs/rke/latest/en/config-options/nodes/">cluster configuration YAML</a> and run <code>rke up</code> to provision it.</li>
+<li>Switch to the upstream Docker package on the node, by following the <a href="https://docs.docker.com/engine/install/centos/#uninstall-old-versions">Docker Engine installation documentation for CentOS</a> or using the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/install-docker">Rancher installation script for Docker</a>.</li>
+<li>Add the node back to the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and run <code>rke up</code> to provision it.</li>
 </ol>
-<h5 id="custom-cluster-launched-by-rancher">Custom cluster launched by Rancher</h5>
-<h5 id="create-a-backup_1">Create a Backup</h5>
-<p>As with any cluster maintenance, it is recommended that you first take an etcd snapshot of the cluster, to recover from in the event of an issue. A snapshot can be created for the cluster, per the <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/backing-up-etcd/#one-time-snapshots">Rancher documentation here</a> and you should copy the snapshot off an etcd node to a safe location outside the cluster, if S3 backups are not configured for the cluster.</p>
-<h5 id="perform-migration-on-each-cluster-node-in-turn_1">Perform migration on each cluster node in turn</h5>
+<h2 id="custom-cluster-launched-by-rancher">Custom cluster launched by Rancher</h2>
+<h3 id="create-a-backup_1">Create a Backup</h3>
+<p>As with any cluster maintenance, it is recommended that you first take an etcd snapshot of the cluster, to recover from in the event of an issue. A snapshot can be created for the cluster, per the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher-launched-kubernetes-clusters">Rancher documentation here</a> and you should copy the snapshot off an etcd node to a safe location outside the cluster, if S3 backups are not configured for the cluster.</p>
+<h2 id="perform-migration-on-each-cluster-node-in-turn_1">Perform migration on each cluster node in turn</h2>
 <ol>
 <li>Check if you should first add an additional node to the cluster, to replace the node during its migration:</li>
 </ol>
-<p><strong>Controlplane or etcd nodes</strong>
-    In the case that the node is a controlplane or etcd node, it is recommend that you first add an additional node to replace this, to ensure that quorum is maintained in the event of failure of another node during the process. If the node is the single etcd or controlplane node in the cluster, then adding an additional node to replace it is not an optional step. Add the new etcd and/or controlplane role node by running the Rancher agent command from the 'Edit Cluster' view, with the appropriate roles, on the replacement node.</p>
-<p><strong>Worker nodes</strong>
-    If the worker nodes within the cluster are heavily loaded, or if the node is the sole worker role node, you should provision an additional worker node, to replace the node during the migration. Add the new worker role node by running the Rancher agent command from the 'Edit Cluster' view, with the worker role, on the replacement node.</p>
+<p><strong>Controlplane or etcd nodes</strong> In the case that the node is a controlplane or etcd node, it is recommended that you first add an additional node to replace this, to ensure that quorum is maintained in the event of failure of another node during the process. If the node is the single etcd or controlplane node in the cluster, then adding an additional node to replace it is not an optional step. Add the new etcd and/or controlplane role node by running the Rancher agent command from the 'Edit Cluster' view, with the appropriate roles, on the replacement node.</p>
+<p><strong>Worker nodes</strong> If the worker nodes within the cluster are heavily loaded, or if the node is the sole worker role node, you should provision an additional worker node, to replace the node during the migration. Add the new worker role node by running the Rancher agent command from the 'Edit Cluster' view, with the worker role, on the replacement node.</p>
 <ol>
 <li>
-<p>Remove the node which you are migrating from the cluster, to do so delete it from the node list for the cluster within Rancher.</p>
+<p>Remove the node that you are migrating from the cluster, to do so delete it from the node list for the cluster within Rancher.</p>
 </li>
 <li>
-<p>Once the cluster reconciliation triggered by step 2. is complete, and the cluster no longer shows as updating within Rancher, run the <a href="https://gist.githubusercontent.com/superseb/06539c6dcd377e118d72bfefdd444f81/raw/7d7fc0b28240c396c7cad0c25fd29bc1b5f53aa8/extended-cleanup-rancher2.sh">Extended Rancher 2 cleanup script</a> on the node that you are migrating to clean up Rancher state.</p>
+<p>Once the cluster reconciliation triggered by step 2. is complete, and the cluster no longer shows as updating within Rancher, run the <a href="https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup">Extended Rancher 2 cleanup script</a> on the node that you are migrating to clean up Rancher state.</p>
 </li>
-<li>Switch to the upstream Docker package on the node, by following the Docker Engine installation documentation for CentOS <a href="https://docs.docker.com/install/linux/docker-ce/centos/#uninstall-old-versions">from the section <code>Uninstall old versions</code> here</a>.</li>
+<li>Switch to the upstream Docker package on the node, by following the <a href="https://docs.docker.com/engine/install/centos/#uninstall-old-versions">Docker Engine installation documentation for CentOS</a> or using the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/install-docker">Rancher installation script for Docker</a>.</li>
 <li>Add the node back by running the Rancher agent command from the 'Edit Cluster' view, with the appropriate roles, on the node.</li>
 </ol>
 <h3 id="disclaimer">Disclaimer</h3>
@@ -9130,7 +9217,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.8fd75fb4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>

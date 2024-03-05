@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.11">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.12">
     
     
       
@@ -5125,7 +5125,7 @@
         
   
   <span class="md-ellipsis">
-    How to migrate from CentOS packaged to upstream Docker
+    How to migrate from CentOS/RHEL-packaged to upstream Docker
   </span>
   
 
@@ -5940,6 +5940,15 @@
   
     <nav class="md-nav" aria-label="Development Status">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#edit-feb-2024-rancheros-1x-has-a-new-name-and-new-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      EDIT (FEB 2024): RancherOS 1.x has a new name and new identity.
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#edit-nov-2021-rancheros-1x-is-past-its-eol-milestone-and-no-longer-maintained" class="md-nav__link">
@@ -8314,6 +8323,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021045/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to set container log rotation with RKE2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021053/" class="md-nav__link">
         
   
@@ -8832,6 +8862,69 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021363/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CVE-2024-21626 Runc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021379/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Is Rancher Prime Hosted SOC2 compliant?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021383/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to change the downstream Rancher Webhook port on a Host Network configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -8883,6 +8976,15 @@
   
     <nav class="md-nav" aria-label="Development Status">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#edit-feb-2024-rancheros-1x-has-a-new-name-and-new-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      EDIT (FEB 2024): RancherOS 1.x has a new name and new identity.
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#edit-nov-2021-rancheros-1x-is-past-its-eol-milestone-and-no-longer-maintained" class="md-nav__link">
@@ -8950,6 +9052,10 @@
 <p>This document <strong>(000020443)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="resolution">Resolution</h3>
 <h2 id="development-status"><strong>Development Status</strong></h2>
+<h3 id="edit-feb-2024-rancheros-1x-has-a-new-name-and-new-identity"><strong>EDIT (FEB 2024): RancherOS 1.x has a new name and new identity.</strong></h3>
+<p>RancherOS was re-named in July 2022&lt; <a href="https://github.com/rancher/elemental/pull/161">https://github.com/rancher/elemental/pull/161</a> &gt; and is now known as Elemental&lt; <a href="https://github.com/rancher/elemental">https://github.com/rancher/elemental</a> &gt;.</p>
+<p>It's evolved, and is now based on SLE Micro&lt; <a href="https://www.suse.com/products/micro/">https://www.suse.com/products/micro/</a> &gt; -&gt; into SLEMicro-Rancher&lt; <a href="https://github.com/rancher/elemental/issues/1008">https://github.com/rancher/elemental/issues/1008</a> &gt;.</p>
+<p>Because it’s based on SLE Micro, that is derived from SLES, it benefits from all the Security Certifications &lt; <a href="https://www.suse.com/support/security/certifications/">https://www.suse.com/support/security/certifications/</a> &gt;, hardening&lt; <a href="https://documentation.suse.com/compliance/all/html/SLES-openscap/index.html#openscap-ssg-profiles-sle15">https://documentation.suse.com/compliance/all/html/SLES-openscap/index.html#openscap-ssg-profiles-sle15</a> &gt; and hardware certifications&lt; <a href="https://www.suse.com/product-certification/yes-certified/faq/">https://www.suse.com/product-certification/yes-certified/faq/</a> &gt; of SLES.</p>
 <h3 id="edit-nov-2021-rancheros-1x-is-past-its-eol-milestone-and-no-longer-maintained"><strong>EDIT (NOV 2021): RancherOS 1.x is past its EOL milestone and no longer maintained.</strong></h3>
 <p>RancherOS 1.x is currently in a maintain-only-as-essential mode. That is to say, it is no longer being actively maintained at a code level other than addressing critical or security fixes. There are two significant reasons behind this product decision:</p>
 <p><strong>1. Docker.</strong> The current industry requirements for a container runtime is very much evolving. Container runtimes like containerd and CRIO are now being actively considered as the default choice. RancherOS 1.x, which was specifically designed around using Docker engine only, unfortunately does not lend itself, in its current design, to this new evolving requirement.</p>
@@ -9010,7 +9116,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.8fd75fb4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>

@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.11">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.12">
     
     
       
@@ -5225,7 +5225,7 @@
         
   
   <span class="md-ellipsis">
-    How to migrate from CentOS packaged to upstream Docker
+    How to migrate from CentOS/RHEL-packaged to upstream Docker
   </span>
   
 
@@ -8308,6 +8308,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021045/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to set container log rotation with RKE2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021053/" class="md-nav__link">
         
   
@@ -8826,6 +8847,69 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021363/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CVE-2024-21626 Runc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021379/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Is Rancher Prime Hosted SOC2 compliant?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021383/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to change the downstream Rancher Webhook port on a Host Network configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -8941,8 +9025,7 @@
 <p>What is the difference between a global registry versus a cluster-wide registry? Where would I use one over the other?</p>
 <h4 id="heres-the-skinny">Here's the skinny</h4>
 <h4 id="global-private-registry">Global Private Registry</h4>
-<p>Global-level private registries allow for administrators to store or proxy images through a centralized image repository. Global registries allow for air-gapped setups to pull images needed for cluster provisioning and end-user workloads without specifying the private registry server. This registry is used as the default pull location in place of DockerHub. The global private registry does not support image repositories requiring authentication. Use cluster-level registries if you need to authenticate against your image repository during cluster provisioning. Use registries within the cluster if you need to authenticate against your image repository for end-user workloads.
-<a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/config-private-registry/">Docs to Global private registry configuration</a></p>
+<p>Global-level private registries allow for administrators to store or proxy images through a centralized image repository. Global registries allow for air-gapped setups to pull images needed for cluster provisioning and end-user workloads without specifying the private registry server. This registry is used as the default pull location in place of DockerHub. The global private registry does not support image repositories requiring authentication. Use cluster-level registries if you need to authenticate against your image repository during cluster provisioning. Use registries within the cluster if you need to authenticate against your image repository for end-user workloads. <a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/config-private-registry/">Docs to Global private registry configuration</a></p>
 <h4 id="cluster-provisioning-private-registry">Cluster Provisioning Private Registry</h4>
 <p>Cluster-level private registries allow administrators to use a registry server with RKE-based clusters to provision system components required to run Kubernetes. <a href="https://rancher.com/docs/rke/latest/en/config-options/system-images/">List of system images here.</a> Administrators can pass in credentials if the registry server requires them. Outside of the RKE system-images and RKE add-ons, the Rancher agent image used in cluster provisioning will use the cluster-level registry for custom clusters. Eventually, node drivers will pull the Rancher agent image from the cluster-level registry as well. <a href="https://github.com/rancher/rancher/issues/26366">Track progress on that feature here, give it a thumbs-up and watch it if you're interested in its progress.</a>.</p>
 <p>Note: There are still specific images not covered by the cluster-level private registry that are part of the cluster provisioning process. Your cluster will need access to either DockerHub or have these images in your global registry: Busybox, shell, and pause.</p>
@@ -8998,7 +9081,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.8fd75fb4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
       
     
   </body>
