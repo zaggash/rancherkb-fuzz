@@ -816,6 +816,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#k3s-and-rke2-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      k3s and rke2 configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#systemd-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       Systemd configuration
@@ -8922,6 +8931,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#k3s-and-rke2-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      k3s and rke2 configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#systemd-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       Systemd configuration
@@ -8988,9 +9006,9 @@
 <h4 id="issue">Issue</h4>
 <p>During normal operation of a Kubernetes cluster, you may experience intermittent stability issues and the kube-apiserver logs may contain messages of the following format:</p>
 <ul>
-<li><code>clientconn.go:1208] grpc: addrConn.createTransport failed to connect to {https://x.x.x.x:2379  &lt;nil&gt; 0 &lt;nil&gt;}. Err :connection error: desc = "transport: Error while dialing dial tcp x.x.x.x:2379: socket: too many open files". Reconnecting...</code></li>
-<li><code>clientconn.go:1208] grpc: addrConn.createTransport failed to connect to {https://x.x.x.x:2379  &lt;nil&gt; 0 &lt;nil&gt;}. Err :connection error: desc = "transport: authentication handshake failed: context canceled". Reconnecting...</code></li>
-<li><code>clientconn.go:1208] grpc: addrConn.createTransport failed to connect to {https://x.x.x.x:2379  &lt;nil&gt; 0 &lt;nil&gt;}. Err :connection error: desc = "transport: authentication handshake failed: context deadline exceeded". Reconnecting...</code></li>
+<li><code>clientconn.go:1208] grpc: addrConn.createTransport failed to connect to {https://x.x.x.x:2379 &lt;nil&gt; 0 &lt;nil&gt;}. Err :connection error: desc = "transport: Error while dialing dial tcp x.x.x.x:2379: socket: too many open files". Reconnecting...</code></li>
+<li><code>clientconn.go:1208] grpc: addrConn.createTransport failed to connect to {https://x.x.x.x:2379 &lt;nil&gt; 0 &lt;nil&gt;}. Err :connection error: desc = "transport: authentication handshake failed: context canceled". Reconnecting...</code></li>
+<li><code>clientconn.go:1208] grpc: addrConn.createTransport failed to connect to {https://x.x.x.x:2379 &lt;nil&gt; 0 &lt;nil&gt;}. Err :connection error: desc = "transport: authentication handshake failed: context deadline exceeded". Reconnecting...</code></li>
 </ul>
 <h4 id="root-cause">Root Cause</h4>
 <p>These symptoms can be caused by the kube-apiserver being blocked by configuration that limits the number of files a process can have open. This limit could also affect other components and OS services.</p>
@@ -9005,6 +9023,8 @@
 </ul>
 <p>The <code>nofile</code> hard limit for the current user can be seen by running <code>ulimit -Hn</code> and the soft limit can be seen by running <code>ulimit -Sn</code>.</p>
 <p>More info on limits.conf can be found <a href="https://linux.die.net/man/5/limits.conf">here</a>.</p>
+<h5 id="k3s-and-rke2-configuration">k3s and rke2 configuration</h5>
+<p>The k3s and rke2 install scripts both define LimitNOFILE=1048576 on the respective services. If you don't use the install scripts, you may need to configure ulimits as described below.</p>
 <h5 id="systemd-configuration">Systemd configuration</h5>
 <p>By design, systemd will ignore ulimits set via <code>/etc/security/limits.conf</code>, and instead apply its own limits. These can be configured per-service or system-wide.</p>
 <p>The system-wide systemd nofile limit is defined in <code>/etc/systemd/system.conf</code> as <code>DefaultLimitNOFILE=X:Y</code>. Where X is the soft limit and Y is the hard limit.</p>
