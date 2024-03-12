@@ -1404,27 +1404,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020049/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    How to perform packet captures?
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020050/" class="md-nav__link">
         
   
@@ -3340,6 +3319,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -3376,8 +3364,23 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resolution_1" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
@@ -5974,27 +5977,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020447/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    [Rancher] How should I understand the kubernetes patch version mentioned in the support matrix under Rancher Kubernetes for a specific Rancher product version?
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020448/" class="md-nav__link">
         
   
@@ -8284,6 +8266,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021078/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    failed etcd snapshot with StorageError invalid object message
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021083/" class="md-nav__link">
         
   
@@ -8809,6 +8812,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021365/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    What is the support scope for the Kubernetes versions of a Rancher release?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021379/" class="md-nav__link">
         
   
@@ -8878,6 +8902,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8914,8 +8947,23 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resolution_1" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
@@ -8972,6 +9020,10 @@
 
 <h1 id="how-to-configure-container-log-rotation-for-the-docker-daemon">How to configure container log rotation for the Docker daemon</h1>
 <p>This document <strong>(000020141)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher 2.x</p>
+<p>RKE</p>
+<p>Docker</p>
 <h3 id="situation">Situation</h3>
 <h4 id="task">Task</h4>
 <p>As the default setting on Docker is to log using the json-file log driver, without a container log limit, this can lead to disk-fill events on nodes. This article provides steps to configure any nodes running Docker to have a limited container log size and rotate out older container logs.</p>
@@ -8980,32 +9032,33 @@
 <li>Node(s) running Docker, using the json-file log driver</li>
 <li>Permission to edit the <code>/etc/docker/daemon.json</code> and to restart the Docker daemon</li>
 </ul>
-<h4 id="warning">Warning</h4>
+<h4 id="warning"><strong>Warning</strong></h4>
 <ul>
-<li>You must restart the Docker daemon for the changes to take effect for newly created containers</li>
-<li><strong>N.B.</strong> As the container logging configuration for pre-existing container is immutable, existing containers do not use the new logging configuration and would need to be redeployed to take on this new configuration.</li>
+<li><strong>You mustrestart the Docker daemon for the changes to take effect for newly created containers</strong></li>
+<li><strong>As the container logging configuration for pre-existing container is immutable, existing containers do not use the new logging configuration and will need to be redeployed to take on this new configuration.</strong></li>
 </ul>
-<h4 id="resolution">Resolution</h4>
+<h3 id="resolution">Resolution</h3>
+<h4 id="resolution_1">Resolution</h4>
 <ol>
 <li>Edit the Docker daemon configuration file:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>vim<span class="w"> </span>/etc/docker/daemon.json
+<div class="highlight"><pre><span></span><code>$ vim /etc/docker/daemon.json
 </code></pre></div>
 <ol>
 <li>Add the following lines to the file, to configure a maximum container log file size of 10MB and maintain only 10 of these before deleting the oldest:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">     </span><span class="nt">&quot;log-driver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;json-file&quot;</span><span class="p">,</span>
-<span class="w">     </span><span class="nt">&quot;log-opts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">       </span><span class="nt">&quot;max-size&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;10m&quot;</span><span class="p">,</span>
-<span class="w">       </span><span class="nt">&quot;max-file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;10&quot;</span>
-<span class="w">     </span><span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code>{
+     &quot;log-driver&quot;: &quot;json-file&quot;,
+     &quot;log-opts&quot;: {
+       &quot;max-size&quot;: &quot;10m&quot;,
+       &quot;max-file&quot;: &quot;10&quot;
+     }
+}
 </code></pre></div>
 <ol>
 <li>Restart the docker daemon to apply the settings to new containers (see Warnings above):</li>
 </ol>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>docker
+<div class="highlight"><pre><span></span><code>$ systemctl restart docker
 </code></pre></div>
 <h4 id="tips">Tips</h4>
 <p>You could include this Docker daemon container log rotation configuration in your build/connfiguration management systems, to ensure this is automatically applied to nodes on provisioning, removing any requirement for manual configuration.</p>
