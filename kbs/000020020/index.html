@@ -5776,27 +5776,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020439/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    [Rancher] How much in advance do we need to notify Rancher Support on upgrades?
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020440/" class="md-nav__link">
         
   
@@ -8975,19 +8954,16 @@ options ndots:5
 <li>Third one being just <code>&lt;cluster domain&gt;</code></li>
 <li>The rest of the options are copied over from what's configured on the node. (options from <code>/etc/resolv.conf</code> on the node)</li>
 </ul>
-<p>The above options are helpful in the following ways:
-- When a workload tries to connect to a service in the same namespace, it can simply reference it using the destination service name. Ex: hello-world-service
-- Similarly, when it tries to connect to a service in a different namespace, it's enough to append the namespace name after the service name. Example: database-service.finance-app</p>
-<p>The above conveniences come at a cost, though! Suppose the workload tries to resolve a service name outside of the cluster. In that case, the DNS client first exhausts appending all the options to this name before finally resolving to the correct IP, this is known as search path expansion.</p>
-<p>Say the workload needs to resolve <code>login.mycompany.com</code>. The DNS client sends out a query for <code>login.mycompany.com.&lt;namespace-where-workload-is-deployed&gt;.svc.&lt;cluster domain&gt;</code>. The DNS server responds correctly with a nonexistent domain message (NXDOMAIN) as it's an invalid domain.</p>
-<p>Next, the DNS client tries to resolve <code>login.mycompany.com.svc.&lt;cluster domain&gt;</code>, followed by <code>login.mycompany.com.&lt;cluster domain&gt;</code>.</p>
-<p>As you can see, there are a lot of lookups, on top of this there is an <code>A</code> (IPv4) query, and a quad A <code>AAAA</code> (IPv6) query sent out for each of the above.</p>
-<p>All these unnecessary queries add to the network traffic and increase the load on the CoreDNS service.</p>
+<p>The above options are helpful in the following ways: - When a workload tries to connect to a service in the same namespace, it can simply reference it using the destination service name. Ex: hello-world-service - Similarly, when it tries to connect to a service in a different namespace, it's enough to append the namespace name after the service name. Example: database-service.finance-app</p>
+<p>The above conveniences come at a cost, though! Suppose the workload tries to resolve an external domain name from outside of the cluster. In that case, the DNS client first exhausts appending all the search options to this name before finally resolving to the domain name, this is known as search path expansion.</p>
+<p>Say the workload needs to resolve <code>mycompany.com</code>. The DNS client sends out a query for <code>mycompany.com.&lt;namespace&gt;.svc.&lt;cluster domain&gt;</code>. The DNS server responds correctly with a nonexistent domain message (NXDOMAIN) as it is not a known domain.</p>
+<p>Next, the DNS client tries to resolve <code>mycompany.com.svc.&lt;cluster domain&gt;</code>, followed by <code>mycompany.com.&lt;cluster domain&gt;</code>.</p>
+<p>As you can see, there are three additional queries before the search lookups added by Kubernetes are completed, on top of this there are <code>A</code> (IPv4) queries, as well as a <code>AAAA</code> (IPv6) queries sent out for each of the above.</p>
+<p>All these unnecessary queries add to the network traffic and increase the time to get the final query.</p>
 <h4 id="resolution">Resolution</h4>
-<p>To avoid DNS client cycling through each of the options specified in <code>/etc/resolv.conf</code>, add a trailing dot <code>.</code> to the name that's being resolved outside of the cluster, this ensures the DNS client performs an absolute lookup. Example: <code>login.mycompany.com.</code></p>
-<p>Similarly, when possible, use the full service name ( <code>&lt;destination-service-name&gt;.&lt;destination-namespace&gt;.svc.&lt;cluster domain&gt;</code>).
-As a further recommendation, some clusters can benefit from deploying <a href="https://rancher.com/docs/rke/latest/en/config-options/add-ons/dns/#configuring-nodelocal-dns">NodeLocal DNS</a>. This is particularly useful in a production cluster or a cluster with a high frequency of DNS queries.</p>
-<p>There are a number of ways that NodeLocal DNS improves on the reliability and scalability of CoreDNS, please see <a href="https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/">the documentation</a> for details.</p>
+<p>To avoid the DNS client iterating through each of the search options specified in <code>/etc/resolv.conf</code>, for external domain names it is helpful to add a trailing dot <code>.</code> to the name that's being resolved outside of the cluster, this ensures the DNS client performs an absolute lookup. Example: <code>login.mycompany.com.</code></p>
+<p>Similarly, when possible, use the full domain name for internal service names ( <code>&lt;destination-service-name&gt;.&lt;destination-namespace&gt;.svc.&lt;cluster domain&gt;</code>). As a further recommendation, some clusters can benefit from deploying <a href="https://rancher.com/docs/rke/latest/en/config-options/add-ons/dns/#configuring-nodelocal-dns">NodeLocal DNS</a>. This is particularly useful in a production cluster or a cluster with a high frequency of DNS queries.</p>
+<p>There are several ways that NodeLocal DNS improves the reliability and scalability of CoreDNS, please see <a href="https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/">the documentation</a> for details.</p>
 <h4 id="further-reading">Further reading</h4>
 <ul>
 <li>https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/</li>

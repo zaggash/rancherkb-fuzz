@@ -4372,6 +4372,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#download-and-run-the-script" class="md-nav__link">
     <span class="md-ellipsis">
       Download and run the script
@@ -4387,7 +4396,16 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Optional: Download and run the script in one command">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional Information">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -5757,27 +5775,6 @@
   
   <span class="md-ellipsis">
     [Rancher] We run a burst of high-profile events (e.g., big sale) that run as k8s workloads managed by Rancher. Can Rancher Support join our team remotely for the duration of these events?
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020439/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    [Rancher] How much in advance do we need to notify Rancher Support on upgrades?
   </span>
   
 
@@ -8890,6 +8887,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#download-and-run-the-script" class="md-nav__link">
     <span class="md-ellipsis">
       Download and run the script
@@ -8905,7 +8911,16 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Optional: Download and run the script in one command">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional Information">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -8950,13 +8965,14 @@
 <p>This document <strong>(000020191)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
 <h4 id="rancher-v2x-linux-log-collector">Rancher v2.x Linux log collector</h4>
+<p><strong>Note:</strong></p>
+<p><strong>This command requires curl or wget to be installed, and internet access from the node.</strong></p>
+<p><strong>This script is intended to collect logs from <a href="https://rancher.com/docs/rke/latest/en/">Rancher Kubernetes Engine (RKE) CLI</a> provisioned clusters, <a href="https://rancher.com/docs/k3s/latest/en/">K3s clusters</a>, <a href="https://docs.rke2.io/">RKE2 clusters</a>, Rancher provisioned <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-existing-nodes">Custom</a>, and <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-new-nodes-in-an-infra-provider">Node Driver</a> clusters.</strong></p>
+<p><strong>This script may not collect all necessary information when run on nodes in <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/set-up-clusters-from-hosted-kubernetes-providers">Hosted Kubernetes Provider clusters</a>.</strong></p>
 <p>Logs can be collected from a Linux node using the <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">Rancher v2.x log collector script</a>.</p>
-<blockquote>
-<p><strong>Note:</strong> This script is intended to collect logs from <a href="https://rancher.com/docs/rke/latest/en/">Rancher Kubernetes Engine (RKE) CLI</a> provisioned clusters, <a href="https://rancher.com/docs/k3s/latest/en/">K3s clusters</a>, <a href="https://docs.rke2.io/">RKE2 clusters</a>, Rancher provisioned <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-existing-nodes">Custom</a>, and <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-new-nodes-in-an-infra-provider">Node Driver</a> clusters.</p>
-<p>This script may not collect all necessary information when run on nodes in <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/set-up-clusters-from-hosted-kubernetes-providers">Hosted Kubernetes Provider clusters</a>.</p>
-</blockquote>
 <p>The script needs to be downloaded and run directly on the node, using the root user or sudo.</p>
 <p>Output will be written to <code>/tmp</code> as a tar.gz archive named <code>&lt;hostname&gt;-&lt;date&gt;.tar.gz</code>, the default output directory can be changed with the <code>-d</code> flag.</p>
+<h3 id="resolution">Resolution</h3>
 <h3 id="download-and-run-the-script">Download and run the script</h3>
 <ul>
 <li>Download the script as: <code>rancher2_logs_collector.sh</code></li>
@@ -8975,9 +8991,7 @@
 <h3 id="optional-download-and-run-the-script-in-one-command">Optional: Download and run the script in one command</h3>
 <div class="highlight"><pre><span></span><code>curl -Ls rnch.io/rancher2_logs | sudo bash
 </code></pre></div>
-<blockquote>
-<p><strong>Note:</strong> This command requires curl to be installed, and internet access from the node.</p>
-</blockquote>
+<h3 id="additional-information">Additional Information</h3>
 <h4 id="options">Options</h4>
 <p>The available flags that can be passed to the script can be found in the <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">Rancher v2.x log collector script README</a>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
