@@ -8502,7 +8502,7 @@
 <h1 id="how-to-set-the-maximum-client-body-size-for-nginx-ingress-controller">How to set the maximum client body size for nginx ingress controller</h1>
 <p>This document <strong>(000021309)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher 2.6.x , 2.7.x</p>
+<p>Rancher 2.6.x , 2.7.x, 2.8.x</p>
 <h3 id="situation">Situation</h3>
 <p>NGINX Ingress in Kubernetes may encounter a 413 error (Request Entity Too Large) when attempting to upload or send large files. This error occurs because NGINX Ingress imposes a default limit on the request body size.</p>
 <div class="highlight"><pre><span></span><code>Date [warn] 146749#146749: *2157831389 a client request body is buffered to a temporary file /tmp/nginx/client-body/0046932384,
