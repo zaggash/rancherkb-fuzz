@@ -1660,6 +1660,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -1670,24 +1679,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#the-rancher-v2x-logging-feature-enables-you-to-configure-log-forwarding-for-pods-as-well-as-system-component-containers-in-a-cluster-to-a-logging-endpoint-such-as-elasticsearch-or-splunk" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
+      The Rancher v2.x Logging feature enables you to configure log forwarding for Pods, as well as system component containers, in a cluster to a logging endpoint such as Elasticsearch or Splunk.
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
+      </ul>
+    </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -1712,11 +1717,6 @@
       Upstream Docker
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -8434,6 +8434,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8444,24 +8453,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#the-rancher-v2x-logging-feature-enables-you-to-configure-log-forwarding-for-pods-as-well-as-system-component-containers-in-a-cluster-to-a-logging-endpoint-such-as-elasticsearch-or-splunk" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
+      The Rancher v2.x Logging feature enables you to configure log forwarding for Pods, as well as system component containers, in a cluster to a logging endpoint such as Elasticsearch or Splunk.
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
+      </ul>
+    </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -8486,11 +8491,6 @@
       Upstream Docker
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -8525,32 +8525,22 @@
 
 <h1 id="logs-not-forwarded-by-rancher-logging-in-rancher-v2x-when-docker-daemon-logging-driver-is-not-set-to-json-file">Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file</h1>
 <p>This document <strong>(000020067)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher v2.x managed cluster with Rancher logging enabled</p>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>The <a href="https://rancher.com/docs/rancher/v2.x/en/logging/">Rancher v2.x Logging feature</a> enables you to configure log forwarding for Pods, as well as system component containers, in a cluster to a logging endpoint such as Elasticsearch or Splunk.</p>
+<h4 id="the-rancher-v2x-logging-feature-enables-you-to-configure-log-forwarding-for-pods-as-well-as-system-component-containers-in-a-cluster-to-a-logging-endpoint-such-as-elasticsearch-or-splunk">The <a href="https://rancher.com/docs/rancher/v2.x/en/logging/">Rancher v2.x Logging feature</a> enables you to configure log forwarding for Pods, as well as system component containers, in a cluster to a logging endpoint such as Elasticsearch or Splunk.</h4>
 <p>This feature works by deploying a workload to each node in the cluster that mounts the container log directory from the host to parse the Docker container json log files. This is dependent upon use of the <a href="https://docs.docker.com/config/containers/logging/json-file/">json-file Docker logging driver</a>. In the event that the Docker daemon is configured with an alternative logging driver, the logging feature will be unable to parse the logs and will not forward these.</p>
-<p>In CentOS and RHEL packaged Docker 1.13.1, the default log driver configured is journald, which will prevent log forwarding functioning. Meanwhile, whilst json-file is the default log driver in the upstream Docker packages, if an alternative has been configured on nodes this will also prevent the correct functioning of the log forwarding.</p>
+<p>However, under certain configurations (e.g., in CentOS and RHEL packaged Docker 1.13.1, the default log driver configured is journald), it could prevent log forwarding functioning. Meanwhile, whilst json-file is the default log driver in the upstream Docker packages, if an alternative has been configured on nodes this will also prevent the correct functioning of the log forwarding.</p>
 <p>You can verify the currently configured Docker logging driver on a node by running <code>docker info | grep Logging</code>, which will show output of the following format: <code>Logging Driver: journald</code>.</p>
 <p>In the event that json-file is not the configured logging driver, the output of <code>ls -la /var/log/containers/</code> on the node should also be empty. With json-file configured this would display symoblic links to paths under <code>/var/log/pods</code>, containing symbolic links which in turn point to the Docker container json log files.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>Rancher v2.x managed cluster with Rancher logging enabled</li>
-</ul>
-<h4 id="resolution">Resolution</h4>
-<h5 id="centos-or-rhel-packaged-docker">CentOS or RHEL packaged Docker</h5>
+<h3 id="resolution">Resolution</h3>
+<h4 id="centos-or-rhel-packaged-docker">CentOS or RHEL packaged Docker</h4>
 <ol>
-<li>Update <code>/etc/sysconfig/docker</code>, as shown in the screenshot below, to set <code>--log-driver=json-file</code> instead of <code>journald</code>.</li>
+<li>Update <code>/etc/sysconfig/docker</code>, to set <code>--log-driver=json-file</code> instead of <code>journald</code>.</li>
+<li>Restart the Docker daemon: <code>systemctl restart docker</code></li>
+<li>You should now see symlinked logs created under <code>/var/log/containers</code></li>
 </ol>
-<p><img alt="sysconfigdocker" src="https://support.rancher.com/hc/article_attachments/360073503472/sysconfigdocker.png" /></p>
-<ol>
-<li>
-<p>Restart the Docker daemon: <code>systemctl restart docker</code></p>
-</li>
-<li>
-<p>You should now see symlinked logs created under <code>/var/log/containers</code></p>
-</li>
-</ol>
-<h5 id="upstream-docker">Upstream Docker</h5>
+<h4 id="upstream-docker">Upstream Docker</h4>
 <ol>
 <li>Configure the json-file Docker logging driver in <code>/etc/docker/daemon.json</code> <a href="https://docs.docker.com/config/containers/logging/json-file/">per the Docker documentation</a></li>
 <li>Restart the Docker daemon: <code>systemctl restart docker</code></li>

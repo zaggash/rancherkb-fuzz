@@ -1387,6 +1387,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -1397,24 +1406,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#this-article-details-how-to-create-a-cluster-role-to-grant-users-access-to-the-metrics-endpoint-of-the-kubernetes-api-server-in-rancher-managed-kubernetes-clusters" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      This article details how to create a cluster role to grant users access to the /metrics endpoint of the Kubernetes API Server, in Rancher-managed Kubernetes clusters.
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
+      </ul>
+    </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -1422,6 +1427,16 @@
   </a>
   
 </li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional Information">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#further-reading" class="md-nav__link">
@@ -8419,6 +8434,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8429,24 +8453,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#this-article-details-how-to-create-a-cluster-role-to-grant-users-access-to-the-metrics-endpoint-of-the-kubernetes-api-server-in-rancher-managed-kubernetes-clusters" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      This article details how to create a cluster role to grant users access to the /metrics endpoint of the Kubernetes API Server, in Rancher-managed Kubernetes clusters.
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
+      </ul>
+    </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -8454,6 +8474,16 @@
   </a>
   
 </li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional Information">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#further-reading" class="md-nav__link">
@@ -8495,31 +8525,32 @@
 
 <h1 id="how-to-create-a-custom-cluster-role-in-rancher-v2x-to-grant-permission-on-the-metrics-endpoint-of-the-kube-apiserver-in-a-rancher-managed-cluster">How to create a custom cluster role in Rancher v2.x to grant permission on the metrics endpoint of the kube-apiserver in a Rancher managed cluster</h1>
 <p>This document <strong>(000020052)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>This article details how to create a cluster role to grant users access to the <code>/metrics</code> endpoint of the Kubernetes API Server, in Rancher-managed Kubernetes clusters.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h3 id="environment">Environment</h3>
 <ul>
 <li>A Rancher v2.x instance</li>
 <li>A Rancher-managed Kubernetes cluster, with <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/resource-metrics-pipeline/#metrics-server">Metrics Server</a> deployed. This is deployed by default in Rancher-provisioned clusters.</li>
 </ul>
-<h4 id="resolution">Resolution</h4>
-<blockquote>
-<p>In Rancher v2.4+ it should be possible to define a non-resource URL grant via role creation within the Rancher UI. However, this is affected by the issue tracked in <a href="https://github.com/rancher/rancher/issues/30321">Issue #30321</a> and use of the Rancher v3 API is therefore required to create the role.</p>
-</blockquote>
+<h3 id="situation">Situation</h3>
+<h4 id="this-article-details-how-to-create-a-cluster-role-to-grant-users-access-to-the-metrics-endpoint-of-the-kubernetes-api-server-in-rancher-managed-kubernetes-clusters">This article details how to create a cluster role to grant users access to the <code>/metrics</code> endpoint of the Kubernetes API Server, in Rancher-managed Kubernetes clusters.</h4>
+<p>In Rancher v2.4.x - v2.7.x it should be possible to define a non-resource URL grant via role creation within the Rancher UI. However, this was affected by the issue tracked in <a href="https://github.com/rancher/rancher/issues/30321">Issue #30321</a>, and use of the Rancher v3 API is therefore required to create the role. This bug was solved in Rancher v2.8.0. Then, since that version, it is possible to create the role using the UI or the Rancher API, as explained here.</p>
+<ul>
+<li>Rancher v2.4.x - v2.7.x: creating the role is only possible using the Rancher API.</li>
+<li>Rancher 2.8.x and above: it is possible to create the role using the Rancher API or the Rancher UI.</li>
+</ul>
+<h3 id="resolution">Resolution</h3>
 <ol>
 <li>The first step is to create a custom cluster role within Rancher, that grants <code>get</code> permission on the non-resource URL <code>/metrics</code> endpoint.</li>
 </ol>
 <p>As an admin user, generate an un-scoped <a href="https://rancher.com/docs/rancher/v2.x/en/api/api-tokens/">Rancher API token</a>, and execute the following API request via cURL, to create the required role. You will need to set CATTLE_ACCESS_KEY, CATTLE_SECRET_KEY and RANCHER_URL to reflect the generated API token and your Rancher URL. You can also edit the role name, as desired, which is set to <code>kube-api metrics</code> in this example.</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">CATTLE_ACCESS_KEY</span><span class="o">=</span>token-8jn92
-<span class="nb">export</span><span class="w"> </span><span class="nv">CATTLE_SECRET_KEY</span><span class="o">=</span>l2r4nq9sx6pdhpm4bgwntvgk49qn6rvvmtsvlvkmjk9rjsfd7n65fz
-<span class="nb">export</span><span class="w"> </span><span class="nv">RANCHER_URL</span><span class="o">=</span>rancher.example.com
-curl<span class="w"> </span>-k<span class="w"> </span>-u<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">CATTLE_ACCESS_KEY</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">CATTLE_SECRET_KEY</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-H<span class="w"> </span><span class="s1">&#39;Accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;context&quot;:&quot;cluster&quot;,&quot;clusterCreatorDefault&quot;:false,&quot; projectCreatorDefault&quot;:false,&quot;name&quot;:&quot;kube-api metrics&quot;,&quot;rules&quot;:[{&quot;nonResourceURLs&quot;:[&quot;/metrics&quot;],&quot;type&quot;:&quot;/v3/schemas/policyRule&quot;,&quot;verbs&quot;:[&quot;get&quot;]}]}&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">RANCHER_URL</span><span class="si">}</span><span class="s2">/v3/roletemplates&quot;</span>
+<div class="highlight"><pre><span></span><code>export CATTLE_ACCESS_KEY=token-8jn92
+export CATTLE_SECRET_KEY=l2r4nq9sx6pdhpm4bgwntvgk49qn6rvvmtsvlvkmjk9rjsfd7n65fz
+export RANCHER_URL=rancher.example.com
+curl -k -u &quot;${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot; \
+   -X POST \
+   -H &#39;Accept: application/json&#39; \
+   -H &#39;Content-Type: application/json&#39; \
+   -d &#39;{&quot;context&quot;:&quot;cluster&quot;,&quot;clusterCreatorDefault&quot;:false,&quot; projectCreatorDefault&quot;:false,&quot;name&quot;:&quot;kube-api metrics&quot;,&quot;rules&quot;:[{&quot;nonResourceURLs&quot;:[&quot;/metrics&quot;],&quot;type&quot;:&quot;/v3/schemas/policyRule&quot;,&quot;verbs&quot;:[&quot;get&quot;]}]}&#39; \
+&quot;https://${RANCHER_URL}/v3/roletemplates&quot;
 </code></pre></div>
 <ol>
 <li>
@@ -8529,21 +8560,22 @@ curl<span class="w"> </span>-k<span class="w"> </span>-u<span class="w"> </span>
 <p>Once the role is granted to a user, they will be able to test their access to the <code>/metrics</code> endpoint.</p>
 </li>
 </ol>
-<p>The user can access the endpoint, with the applicable cluster id, via the Rancher proxied Kubernetes API Server endpoint, by generating a <a href="https://rancher.com/docs/rancher/v2.x/en/api/api-tokens/">cluster-scoped or un-scoped API token</a>. The user will need to set CATTLE_ACCESS_KEY, CATTLE_SECRET_KEY, RANCHER_URL and CLUSTER_ID to reflect the generated API token, Rancher URL and cluster id.</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">CATTLE_ACCESS_KEY</span><span class="o">=</span>token-8jn92
-<span class="nb">export</span><span class="w"> </span><span class="nv">CATTLE_SECRET_KEY</span><span class="o">=</span>l2r4nq9sx6pdhpm4bgwntvgk49qn6rvvmtsvlvkmjk9rjsfd7n65fz
-<span class="nb">export</span><span class="w"> </span><span class="nv">RANCHER_URL</span><span class="o">=</span>rancher.example.com
-<span class="nb">export</span><span class="w"> </span><span class="nv">CLUSTER_ID</span><span class="o">=</span>c-wwdjc
-curl<span class="w"> </span>-k<span class="w"> </span>https://<span class="si">${</span><span class="nv">RANCHER_URL</span><span class="si">}</span>/k8s/clusters/<span class="si">${</span><span class="nv">CLUSTER_ID</span><span class="si">}</span>/metrics<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">CATTLE_ACCESS_KEY</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">CATTLE_SECRET_KEY</span><span class="si">}</span><span class="s2">&quot;</span>
+<p>The user can access the endpoint, with the applicable cluster ID, via the Rancher proxied Kubernetes API Server endpoint, by generating a <a href="https://rancher.com/docs/rancher/v2.x/en/api/api-tokens/">cluster-scoped or un-scoped API token</a>. The user will need to set CATTLE_ACCESS_KEY, CATTLE_SECRET_KEY, RANCHER_URL and CLUSTER_ID to reflect the generated API token, Rancher URL and cluster ID.</p>
+<div class="highlight"><pre><span></span><code>export CATTLE_ACCESS_KEY=token-8jn92
+export CATTLE_SECRET_KEY=l2r4nq9sx6pdhpm4bgwntvgk49qn6rvvmtsvlvkmjk9rjsfd7n65fz
+export RANCHER_URL=rancher.example.com
+export CLUSTER_ID=c-wwdjc
+curl -k https://${RANCHER_URL}/k8s/clusters/${CLUSTER_ID}/metrics \
+   -H &quot;Authorization: Bearer ${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot;
 </code></pre></div>
-<p>For Rancher-provisioned Kubernetes clusters with <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/cluster-access/ace/">Authorized Cluster Endpoint</a> enabled, the user can also query the endpoint by connecting to the Kubernetes API Server on the cluster's controlplane nodes directly, using a <a href="https://rancher.com/docs/rancher/v2.x/en/api/api-tokens/">cluster-scoped API token</a>. The user will need to set CATTLE_ACCESS_KEY, CATTLE_SECRET_KEY and AUTHORIZED_ENDPOINT_ADDRESS to reflect the generated API token, and the authorized endpoint address.</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">CATTLE_ACCESS_KEY</span><span class="o">=</span>token-d6cls
-<span class="nb">export</span><span class="w"> </span><span class="nv">CATTLE_SECRET_KEY</span><span class="o">=</span>b6gk6lmgrhsb4rjccktzkwxn5df7tm87msggq87lpmls2pkbpc5t5r
-<span class="nb">export</span><span class="w"> </span><span class="nv">AUTHORIZED_ENDPOINT_ADDRESS</span><span class="o">=</span>controlplane-01.example.com
-curl<span class="w"> </span>-k<span class="w"> </span>https://<span class="si">${</span><span class="nv">AUTHORIZED_ENDPOINT_ADDRESS</span><span class="si">}</span>:6443/metrics<span class="w"> </span><span class="se">\</span>
-<span class="w">   </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">CATTLE_ACCESS_KEY</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">CATTLE_SECRET_KEY</span><span class="si">}</span><span class="s2">&quot;</span>
+<p>For Rancher-provisioned Kubernetes clusters with <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/cluster-access/ace/">Authorized Cluster Endpoint</a> enabled, the user can also query the endpoint by connecting to the Kubernetes API Server on the cluster's control plane nodes directly, using a <a href="https://rancher.com/docs/rancher/v2.x/en/api/api-tokens/">cluster-scoped API token</a>. The user will need to set CATTLE_ACCESS_KEY, CATTLE_SECRET_KEY and AUTHORIZED_ENDPOINT_ADDRESS to reflect the generated API token, and the authorized endpoint address.</p>
+<div class="highlight"><pre><span></span><code>export CATTLE_ACCESS_KEY=token-d6cls
+export CATTLE_SECRET_KEY=b6gk6lmgrhsb4rjccktzkwxn5df7tm87msggq87lpmls2pkbpc5t5r
+export AUTHORIZED_ENDPOINT_ADDRESS=controlplane-01.example.com
+curl -k https://${AUTHORIZED_ENDPOINT_ADDRESS}:6443/metrics \
+   -H &quot;Authorization: Bearer ${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot;
 </code></pre></div>
+<h3 id="additional-information">Additional Information</h3>
 <h4 id="further-reading">Further reading</h4>
 <ul>
 <li><a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/default-custom-roles/#creating-a-custom-role-for-a-cluster-or-project">Rancher documentation on custom roles</a></li>
