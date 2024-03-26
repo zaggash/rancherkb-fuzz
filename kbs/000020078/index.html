@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.14">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.15">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.10ba22f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -1870,44 +1870,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8410,44 +8395,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8477,15 +8447,14 @@
 
 <h1 id="how-to-confirm-a-version-upgrade-of-rancher-v2x-is-completed-successfully">How to confirm a version upgrade of Rancher v2.x is completed successfully</h1>
 <p>This document <strong>(000020078)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>This article details how to confirm that a Rancher version upgrade has successfully completed.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h3 id="environment">Environment</h3>
 <ul>
-<li>A Rancher v2.x instance, either a <a href="https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/">single Docker container</a> or a <a href="https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/">Highly Available (HA) installation in Kubernetes</a></li>
-<li>A Rancher version upgrade performed per the <a href="https://rancher.com/docs/rancher/v2.x/en/installation/upgrades-rollbacks/upgrades/">Rancher upgrade documentation</a></li>
+<li>A Rancher v2.x instance, either a <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker">single Docker container</a> or a <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster">Highly Available (HA) installation in Kubernetes</a>.</li>
+<li>A Rancher version upgrade performed per the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades">Rancher upgrade documentation</a>.</li>
 </ul>
-<h4 id="resolution">Resolution</h4>
+<h3 id="situation">Situation</h3>
+<p>This article details how to confirm that a Rancher version upgrade has successfully completed.</p>
+<h3 id="resolution">Resolution</h3>
 <p>The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:</p>
 <ul>
 <li>Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.</li>
