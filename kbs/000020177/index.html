@@ -3802,68 +3802,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      Resolution
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Steps
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Steps">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#chrome" class="md-nav__link">
-    <span class="md-ellipsis">
-      Chrome
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#upload-the-har-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      Upload the HAR file
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8432,7 +8393,7 @@
         
   
   <span class="md-ellipsis">
-    Rancher Prime Release Cycle - Terminology
+    What are the definitions in the new Rancher Prime Release Cycle?
   </span>
   
 
@@ -8476,68 +8437,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      Resolution
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Steps
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Steps">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#chrome" class="md-nav__link">
-    <span class="md-ellipsis">
-      Chrome
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#upload-the-har-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      Upload the HAR file
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8567,18 +8489,22 @@
 
 <h1 id="how-to-generate-a-har-file">How to generate a HAR file</h1>
 <p>This document <strong>(000020177)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<ul>
+<li>Web Browser (Firefox or Chrome)</li>
+<li>A browser that can reproduce the issue, we've covered Chrome and Firefox in this article.</li>
+<li>The issue should be occurring or reproducible at the time of the collection to contain an example of the issue.</li>
+</ul>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
 <p>When troubleshooting an issue that is reproducible in a browser, it is sometimes necessary to have additional information about the requests and responses. You may be requested to generate a HAR file recording to capture this and attach this to a ticket for analysis.</p>
 <blockquote>
 <p>Please note, the information collected in a HAR file can contain sensitive data like content, headers, and cookies. This is not always the case, and some information is transient only. However, please check and santise the information as necessary before uploading.</p>
 </blockquote>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<p>A browser that can reproduce the issue, we've covered Chrome and Firefox in this article.</p>
-<p>The issue should be occuring or reproducible at the time of the collection to contain an example of the issue.</p>
-<h4 id="steps">Steps</h4>
+<h3 id="resolution">Resolution</h3>
 <p>Open your browser ready to reproduce the issue.</p>
-<h5 id="chrome">Chrome</h5>
+<p><strong>Shortcut</strong></p>
+<p>Using the F12 button you can quickly open the Developer Tools on FireFox and Chrome.</p>
+<p><strong>Chrome</strong></p>
 <ul>
 <li>From the menu, select <strong>View &gt; Developer &gt; Developer Tools</strong></li>
 <li>From the pane, click on the <strong>Network</strong> tab</li>
@@ -8587,14 +8513,14 @@
 <li>Follow any steps needed to reproduce the issue during the recording</li>
 <li>Once the issue has occurred, right click in the pane and select <strong>Save as HAR with Content</strong></li>
 </ul>
-<p>Firefox</p>
+<p><strong>Firefox</strong></p>
 <ul>
 <li>From the menu, select <strong>Tools &gt; Web Developer &gt; Network</strong></li>
 <li>The recording to start automatically with any further navigation in the browser</li>
 <li>Follow any steps needed to reproduce the issue with the network pane open</li>
 <li>Once the issue has occurred, right click in the pane and select <strong>Save all as HAR</strong></li>
 </ul>
-<h5 id="upload-the-har-file">Upload the HAR file</h5>
+<p><strong>Upload the HAR file</strong></p>
 <p>Generally, HAR files are small in size, however if the file are too large to upload directly to the ticket, please request or use the provided temporary upload location.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>

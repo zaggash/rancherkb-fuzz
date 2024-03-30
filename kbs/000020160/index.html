@@ -3487,6 +3487,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -3558,6 +3567,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status
+    </span>
+  </a>
   
 </li>
       
@@ -8441,7 +8459,7 @@
         
   
   <span class="md-ellipsis">
-    Rancher Prime Release Cycle - Terminology
+    What are the definitions in the new Rancher Prime Release Cycle?
   </span>
   
 
@@ -8483,6 +8501,15 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
@@ -8560,6 +8587,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -8585,6 +8621,8 @@
 
 <h1 id="how-to-run-multiple-ingress-controllers">How to run multiple ingress controllers</h1>
 <p>This document <strong>(000020160)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher, Kubernetes</p>
 <h3 id="situation">Situation</h3>
 <h4 id="why-use-multiple-ingress-controllers">Why use multiple ingress controllers?</h4>
 <p>At large numbers of ingresses and related workloads, a single ingress-controller can be a bottleneck in both throughput and reliability. It is recommended to shard ingresses across multiple ingress controllers in these scenarios.</p>
@@ -8595,25 +8633,23 @@
 <li>Helm installed and configured</li>
 </ul>
 <h4 id="overview">Overview</h4>
-<p>At a high level, the process for sharding ingresses is to build out one or more extra ingress controllers and logically separate your ingresses to evenly split the load between your ingress controllers. This separation is handled through annotations on the ingresses.
-When an nginx-ingress-controller pod starts up with an ingressClass set, it will only try to satisfy ingresses that are annotated with the same ingressClass. This allows you to run as many ingress-controllers as needed to satisfy your ingress needs.</p>
-<h5 id="creating-extra-nginx-ingress-controller-charts">Creating extra nginx-ingress-controller charts</h5>
-<p>It is recommended to use the community <a href="https://github.com/helm/charts/tree/master/stable/nginx-ingress">nginx-ingress helm chart</a> to install the extra ingress-controllers with <a href="https://kubernetes.io/docs/concepts/services-networking/service/#nodeport">NodePort</a> services.</p>
+<p>At a high level, the process for sharding ingresses is to build out one or more extra ingress controllers and logically separate your ingresses to split the load between your ingress controllers evenly. This separation is handled through annotations on the ingresses. When an nginx-ingress-controller pod starts up with an ingressClass set, it will only try to satisfy ingresses that are annotated with the same ingressClass. This allows you to run as many ingress-controllers as needed to satisfy your ingress needs.</p>
+<h5 id="creating-extra-nginx-ingress-controller-charts"><strong>Creating extra nginx-ingress-controller charts</strong></h5>
+<p>It is recommended to use the community <a href="https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx">nginx-ingress helm chart</a> to install the extra ingress-controllers with <a href="https://kubernetes.io/docs/concepts/services-networking/service/#nodeport">NodePort</a> services.</p>
 <p>This deployment method allows you to run multiple ingress controllers on a single node, as there are no conflicting ports. You are required to route traffic to the correct ingress controller ports through an external load balancer.</p>
-<p>Deploy a second default backend and ingress-controller from the nginx-ingress helm chart with the following values:
-<code>controller.ingressClass</code> - unique name of the ingress class, such as <code>ingress-nginx-2</code> <code>controller.service.type=NodePort</code></p>
-<p><code>controller.service.nodePorts.http</code> - define the NodePort between 30000-32767 you want to expose for http traffic. Optional, if not defined one will be randomly assigned</p>
+<p>Deploy a second default backend and ingress-controller from the nginx-ingress helm chart with the following values: <code>controller.ingressClass</code> - unique name of the ingress class, such as <code>ingress-nginx-2</code> <code>controller.service.type=NodePort</code></p>
+<p><code>controller.service.nodePorts.http</code> - define the NodePort between 30000-32767 you want to expose for http traffic. Optional, if not defined, one will be randomly assigned</p>
 <p><code>controller.service.nodePorts.https</code> - define the NodePort between 30000-32767 you want to expose for http traffic. Optional, if not defined one will be randomly assigned</p>
 <p><code>controller.kind=DaemonSet</code></p>
-<p>For more configuration options, see the <a href="https://github.com/helm/charts/blob/master/stable/nginx-ingress/README.md">chart readme</a>.</p>
-<p>An example daemonset install would be:</p>
+<p>For more configuration options, see the <a href="https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/README.md">chart readme</a> .</p>
+<p>An example daemon set install would be:</p>
 <div class="highlight"><pre><span></span><code>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>stable<span class="w"> </span>https://kubernetes-charts.storage.googleapis.com
 helm<span class="w"> </span>install<span class="w"> </span>nginx-ingress-second<span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span>stable/nginx-ingress<span class="w"> </span>--set<span class="w"> </span>controller.ingressClass<span class="o">=</span><span class="s2">&quot;ingress-class-2&quot;</span><span class="w"> </span>--set<span class="w"> </span>controller.service.type<span class="o">=</span>NodePort<span class="w"> </span>--set<span class="w"> </span>controller.kind<span class="o">=</span>DaemonSet
 </code></pre></div>
-<p>This will create an ingress-nginx daemonset and service. This ingress controller will handle any ingress routed to it tagged with the annotation <code>kubernetes.io/ingress.class: ingress-class-2</code></p>
-<h5 id="sharding-ingresses">Sharding Ingresses</h5>
+<p>This will create an ingress-nginx daemon set and service. This ingress controller will handle any ingress routed to it tagged with the annotation <code>kubernetes.io/ingress.class: ingress-class-2</code></p>
+<h5 id="sharding-ingresses"><strong>Sharding Ingresses</strong></h5>
 <p>It is recommended to shard (split) your ingresses in a way that evenly splits load and configuration size between ingress controllers.</p>
-<p>Sharding in this way does mean changing dns and ingress hosts so that traffic for ingresses is sent to the correct ingress controllers, typically through an external load balancer.</p>
+<p>Sharding in this way means changing DNS and ingress hosts so that traffic for ingresses is sent to the correct ingress controllers, typically through an external load balancer.</p>
 <p>The process for sharding ingresses is to tag each ingress with the ingressClass for the ingress controller you want to route them through. For example:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1beta1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ingress</span>
@@ -8627,7 +8663,7 @@ helm<span class="w"> </span>install<span class="w"> </span>nginx-ingress-second<
 <blockquote>
 <p>In the default configuration, the Rancher-provided nginx-ingress-controller will only handle ingresses that either have the default ingress.class annotation of <code>nginx</code> or do not have an ingress.class annotation at all.</p>
 </blockquote>
-<h5 id="next-steps">Next steps</h5>
+<h5 id="next-steps"><strong>Next steps</strong></h5>
 <p>From here it is just a matter of ensuring that the traffic for each ingress is routed to the correct nodePort on the nodes that the daemonset is targeted against.</p>
 <p>If you did not specify a nodePort when deploying the chart, you can determine the nodePort that was assigned by checking the service created:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>kubectl<span class="w"> </span>describe<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span>nginx-ingress-second
@@ -8656,6 +8692,8 @@ External<span class="w"> </span>Traffic<span class="w"> </span>Policy:<span clas
 Events:<span class="w">                   </span>&lt;none&gt;
 </code></pre></div>
 <p>In this example, the service is exposed on every node on ports 30155 for http and 30636 for https</p>
+<h3 id="status">Status</h3>
+<p>Top Issue</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 

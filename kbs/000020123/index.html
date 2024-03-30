@@ -2773,6 +2773,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -2790,6 +2799,21 @@
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#synopsis" class="md-nav__link">
@@ -8417,7 +8441,7 @@
         
   
   <span class="md-ellipsis">
-    Rancher Prime Release Cycle - Terminology
+    What are the definitions in the new Rancher Prime Release Cycle?
   </span>
   
 
@@ -8461,6 +8485,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8478,6 +8511,21 @@
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#synopsis" class="md-nav__link">
@@ -8537,8 +8585,11 @@
 
 <h1 id="how-to-change-etcd-cipher-suite">How to change etcd cipher suite</h1>
 <p>This document <strong>(000020123)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher</p>
 <h3 id="situation">Situation</h3>
 <h4 id="hardening-etcd-cluster-communication">Hardening ETCD cluster communication</h4>
+<h3 id="resolution">Resolution</h3>
 <h4 id="synopsis">Synopsis:</h4>
 <p>This article will walk Rancher administrators through hardening the cluster communication between etcd nodes. We'll go over configuring etcd to use specific ciphers which enable stronger encryption for securing intra-cluster etcd traffic.</p>
 <h4 id="configuring-etcd-rke-and-rancher-ui">Configuring etcd (rke and Rancher UI):</h4>
@@ -8551,7 +8602,7 @@
       heartbeat-interval: &quot;500&quot;
 </code></pre></div>
 <h4 id="note">Note:</h4>
-<p>The cipher suites defined in the example could trade off speed for stronger encryption. Consider the level of ciphers in use and how they could impact the performance of an etcd cluster. Testing should be done to factor the spec of your hosts (cpu, memory, disk, network, etc...) and the typical types of interacting with kubernetes as well as the amount of resources under management within the k8s cluster.</p>
+<p>The cipher suites defined in the example could trade off speed for stronger encryption. Consider the level of ciphers in use and how they could impact the performance of an etcd cluster. Testing should be done to factor in the spec of your hosts (CPU, memory, disk, network, etc...) and the typical types of interacting with Kubernetes as well as the number of resources under management within the k8s cluster.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
