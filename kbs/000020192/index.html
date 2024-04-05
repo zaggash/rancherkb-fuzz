@@ -2416,7 +2416,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable CoreDNS query logging in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
+    How to enable CoreDNS query logging in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned RKE cluster
   </span>
   
 
@@ -3970,26 +3970,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v2x-systems-summary" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Rancher v2.x systems summary
+      Resolution
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8266,26 +8269,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v2x-systems-summary" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Rancher v2.x systems summary
+      Resolution
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8315,12 +8321,14 @@
 
 <h1 id="the-rancher-v2x-systems-summary-script">The Rancher v2.x systems summary script</h1>
 <p>This document <strong>(000020192)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>A Rancher v2.x instance</p>
 <h3 id="situation">Situation</h3>
-<h4 id="rancher-v2x-systems-summary">Rancher v2.x systems summary</h4>
 <p>Understanding your cluster/node distribution on an on-going basis assists Rancher in sending you any prescriptive advisories related to scale and performance.</p>
 <p>System information can be collected from a Rancher v2.x server node using the <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/systems-information">Rancher v2.x systems summary script</a>.</p>
+<h3 id="resolution">Resolution</h3>
 <p>The script needs to be downloaded and run directly on a host running a Rancher server container, either as a single node install or a Rancher Pod as part of a High Availability install. The script needs to be run by a user with access to the Docker socket or using sudo, as follows:</p>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>-O-<span class="w"> </span>https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/systems-information/systems_summary.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>bash<span class="w"> </span>-s
+<div class="highlight"><pre><span></span><code>wget -O- https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/systems-information/systems_summary.sh | sudo bash -s
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>

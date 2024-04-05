@@ -2437,6 +2437,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -2447,27 +2456,33 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#in-windows-kubernetes-clusters-the-rancher-wins-service-provides-a-method-for-rancher-to-operate-the-windows-host-whilst-troubleshooting-a-windows-cluster-issue-it-may-be-necessary-to-pull-the-logs-from-this-service-as-documented-in-this-article" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      In Windows Kubernetes clusters the rancher-wins service provides a method for Rancher to operate the Windows host. Whilst troubleshooting a Windows cluster issue it may be necessary to pull the logs from this service, as documented in this article.
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      Resolution
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
+  <a href="#to-pull-the-logs-from-the-rancher-wins-service-execute-the-following-command-in-a-powershell-session-on-the-node" class="md-nav__link">
     <span class="md-ellipsis">
-      Steps
+      To pull the logs from the rancher-wins service, execute the following command in a Powershell session on the node:
     </span>
   </a>
   
@@ -2507,7 +2522,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable CoreDNS query logging in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
+    How to enable CoreDNS query logging in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned RKE cluster
   </span>
   
 
@@ -8284,6 +8299,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8294,27 +8318,33 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#in-windows-kubernetes-clusters-the-rancher-wins-service-provides-a-method-for-rancher-to-operate-the-windows-host-whilst-troubleshooting-a-windows-cluster-issue-it-may-be-necessary-to-pull-the-logs-from-this-service-as-documented-in-this-article" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      In Windows Kubernetes clusters the rancher-wins service provides a method for Rancher to operate the Windows host. Whilst troubleshooting a Windows cluster issue it may be necessary to pull the logs from this service, as documented in this article.
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      Resolution
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
+  <a href="#to-pull-the-logs-from-the-rancher-wins-service-execute-the-following-command-in-a-powershell-session-on-the-node" class="md-nav__link">
     <span class="md-ellipsis">
-      Steps
+      To pull the logs from the rancher-wins service, execute the following command in a Powershell session on the node:
     </span>
   </a>
   
@@ -8351,16 +8381,13 @@
 
 <h1 id="how-to-pull-the-logs-from-the-rancher-wins-service-on-a-windows-node-in-a-rancher-v2x-provisioned-kubernetes-cluster">How to pull the logs from the rancher-wins service on a Windows node in a Rancher v2.x provisioned Kubernetes cluster</h1>
 <p>This document <strong>(000020107)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>A Rancher v2.6+ provisioned RKE2 cluster with Windows nodes</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>In <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/windows-clusters/">Windows Kubernetes clusters</a>, available in Rancher v2.3.0 and above, the <a href="https://github.com/rancher/wins"><code>rancher-wins</code></a> service provides a method for Rancher to operate the Windows host. Whilst troubleshooting a Windows cluster issue it may be necessary to pull the logs from this service, as documented in this article.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>A Windows Kubernetes cluster provisioned by Rancher v2.3.0 and above</li>
-</ul>
-<h4 id="steps">Steps</h4>
-<p>To pull the logs from the <code>rancher-wins</code> service, execute the following command in a Powershell session on the node:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">Get-EventLog</span> <span class="n">-LogName</span> <span class="n">Application</span> <span class="n">-Source</span> <span class="n">rancher-wins</span> <span class="p">&gt;</span> <span class="n">wins</span><span class="p">.</span><span class="n">log</span>
+<h4 id="in-windows-kubernetes-clusters-the-rancher-wins-service-provides-a-method-for-rancher-to-operate-the-windows-host-whilst-troubleshooting-a-windows-cluster-issue-it-may-be-necessary-to-pull-the-logs-from-this-service-as-documented-in-this-article">In <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/use-windows-clusters">Windows Kubernetes clusters</a> the <code>rancher-wins</code> service provides a method for Rancher to operate the Windows host. Whilst troubleshooting a Windows cluster issue it may be necessary to pull the logs from this service, as documented in this article.</h4>
+<h3 id="resolution">Resolution</h3>
+<h4 id="to-pull-the-logs-from-the-rancher-wins-service-execute-the-following-command-in-a-powershell-session-on-the-node">To pull the logs from the <code>rancher-wins</code> service, execute the following command in a Powershell session on the node:</h4>
+<div class="highlight"><pre><span></span><code>Get-EventLog -LogName Application -Source &#39;rancher-wins&#39; | format-table  -Property TimeGenerated, ReplacementStrings -Wrap &gt; wins.log
 </code></pre></div>
 <p>This will write the logs to the file <code>wins.log</code> in the working directory, which you can then provide in your Rancher Support Ticket, for analysis.</p>
 <h3 id="disclaimer">Disclaimer</h3>

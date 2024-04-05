@@ -1639,34 +1639,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -1674,18 +1664,13 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Further reading
+      Additional Information
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2516,7 +2501,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable CoreDNS query logging in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
+    How to enable CoreDNS query logging in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned RKE cluster
   </span>
   
 
@@ -8293,34 +8278,24 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -8328,18 +8303,13 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Further reading
+      Additional Information
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8369,20 +8339,17 @@
 
 <h1 id="error-xfs-filesystem-at-var-has-ftype0-cannot-use-overlay-backend-error-messages-logged-by-the-docker-daemon-upon-daemon-startup">"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup</h1>
 <p>This document <strong>(000020068)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Cluster running with Docker daemon with the <a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/"><code>overlay</code> or <code>overlay2</code> storage driver</a></p>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
 <p>During startup of the Docker daemon, an error message of the following format is present in the system logs:</p>
 <div class="highlight"><pre><span></span><code>Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 </code></pre></div>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>Docker daemon with the <a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/"><code>overlay</code> or <code>overlay2</code> storage driver</a></li>
-</ul>
-<h4 id="resolution">Resolution</h4>
+<h3 id="resolution">Resolution</h3>
 <p>An <code>xfs</code> formatted filesystem is only supported as backing for the <code>overlay</code> or <code>overlay2</code> Docker storage drivers if formatted with <code>d_type</code> set to <code>true</code>.</p>
 <p>The <code>d_type</code> value of an <code>xfs</code> filesystem can be verified with the <code>xfs_info</code> utility. Example output for this command can be found in the <a href="https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES"><code>xfs_info</code> man pages</a>. If <code>ftype=1</code> the filesystem was formatted with <code>d_type</code> <code>true</code> and the filesystem is suitable for use as backing for the <code>overlay</code> or <code>overlay2</code> storage drivers. If the value is set to <code>0</code> the filesystem is not suitable for use with the <code>overlay</code> or <code>overlay2</code> storage drivers, and would need to be reformated with the flag <code>-n ftype=1</code>.</p>
 <p>Per the <a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites">Docker documentation</a>: "Running on XFS without d_type support now causes Docker to skip the attempt to use the <code>overlay</code> or <code>overlay2</code> driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."</p>
-<h4 id="further-reading">Further reading</h4>
+<h3 id="additional-information">Additional Information</h3>
 <p><a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/">Docker documentation on the <code>overlay</code> and <code>overlay2</code> storage drivers</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>

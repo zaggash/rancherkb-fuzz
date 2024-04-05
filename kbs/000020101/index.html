@@ -2311,6 +2311,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -2337,6 +2346,21 @@
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#collecting-dumps" class="md-nav__link">
@@ -2531,7 +2555,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable CoreDNS query logging in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
+    How to enable CoreDNS query logging in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned RKE cluster
   </span>
   
 
@@ -8308,6 +8332,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8334,6 +8367,21 @@
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#collecting-dumps" class="md-nav__link">
@@ -8399,6 +8447,8 @@
 
 <h1 id="how-to-create-docker-goroutine-and-memory-heap-dumps">How to create docker goroutine, and memory heap, dumps</h1>
 <p>This document <strong>(000020101)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher 2.x</p>
 <h3 id="situation">Situation</h3>
 <h4 id="task">Task</h4>
 <p>It's important to observe Docker as it operates to help drive troubleshooting an issue. Here are some commands to generate memory heap and goroutine dumps without killing the Docker process.</p>
@@ -8406,14 +8456,15 @@
 <ul>
 <li>Docker with an exposed socket (typically found at <code>/var/run/docker.sock</code>)</li>
 </ul>
+<h3 id="resolution">Resolution</h3>
 <h4 id="collecting-dumps">Collecting dumps</h4>
 <h5 id="heap-dump">Heap dump</h5>
 <p>Heap dumps report a sampling of memory allocations of live objects.</p>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>--unix-socket<span class="w"> </span>/var/run/docker.sock<span class="w"> </span>http://./debug/pprof/heap?debug<span class="o">=</span><span class="m">2</span>
+<div class="highlight"><pre><span></span><code>curl --unix-socket /var/run/docker.sock http://./debug/pprof/heap?debug=2
 </code></pre></div>
 <h5 id="goroutine-dump">Goroutine dump</h5>
 <p>The goroutine dump reports stack traces of all current goroutines for the docker process.</p>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>--unix-socket<span class="w"> </span>/var/run/docker.sock<span class="w"> </span>http://./debug/pprof/goroutine?debug<span class="o">=</span><span class="m">2</span>
+<div class="highlight"><pre><span></span><code>curl --unix-socket /var/run/docker.sock http://./debug/pprof/goroutine?debug=2
 </code></pre></div>
 <p>The output normally is output to <code>stdout</code>, where it can be redirected to a file.</p>
 <p>Depending on how Docker is configured, and where its configured to log to, the traces could end up in the <code>docker.log</code> file or with the system logs (syslog, journalctl, kern.log, messages, etc...).</p>
