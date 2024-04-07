@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.16">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
     
     
       
@@ -1177,41 +1177,31 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#question" class="md-nav__link">
-    <span class="md-ellipsis">
-      Question
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#answer" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Answer
+      Resolution
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Pre-requisites">
+    <nav class="md-nav" aria-label="Resolution">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1272,6 +1262,16 @@
     </nav>
   
 </li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional Information">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#further-reading-and-other-useful-links" class="md-nav__link">
@@ -3542,7 +3542,7 @@
         
   
   <span class="md-ellipsis">
-    How to use the calicoctl CLI in an RKE or Rancher provisioned Kubernetes cluster
+    How to use the calicoctl CLI in an RKE CLI or Rancher-provisioned RKE cluster
   </span>
   
 
@@ -8353,41 +8353,31 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#question" class="md-nav__link">
-    <span class="md-ellipsis">
-      Question
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#answer" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Answer
+      Resolution
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Pre-requisites">
+    <nav class="md-nav" aria-label="Resolution">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -8448,6 +8438,16 @@
     </nav>
   
 </li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Additional Information">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#further-reading-and-other-useful-links" class="md-nav__link">
@@ -8489,42 +8489,36 @@
 
 <h1 id="how-can-i-validate-network-policies-within-a-kubernetes-cluster">How can I validate network policies within a Kubernetes cluster?</h1>
 <p>This document <strong>(000020041)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="situation">Situation</h3>
-<h4 id="question">Question</h4>
-<p>Traffic flowing inside a kubernetes cluster is non-isolated by default so that each pod can communicate with every other pod. In some environments there is a need to ensure the proper isolation or restriction of each application in differing namespaces. Network Policies handle this microservice network segmentation and meet this need by defining the control to other entities' IP addresses (on OSI Layer 3) or network ports (on OSI Layer 4).</p>
-<p>Access for Pod communication with other entities are identified with Network Policies and defined by other pods, the relevant namespaces, and IP CIDR Blocks.
-Pods and Namespaces are specified using a selector, like <code>app=example</code> .</p>
-<p>Once the Network Policies are defined, how can a Kubernetes administrator test and validate them?</p>
-<h4 id="answer">Answer</h4>
-<p>Illuminatio is an open-source project written in Python3 by Inovex. It can run standalone, and is also available as a docker container. It creates test-cases for both the network policies and their inverse rules, generates an illuminatio-runner daemonset, tests all the cases against the defined network policies, and reports back on success or failure for each rule and inverted-rule. Illuminatio can use the current kubectl config for cluster access while working in the shell session, or designate the config file with the optional --kubeconfig flag.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h3 id="environment">Environment</h3>
 <ul>
 <li>A Kubernetes cluster v1.15.2+</li>
 <li>kubectl access to the cluster</li>
 <li>Network Plugin (CNI) which supports Network Policies</li>
 </ul>
+<h3 id="situation">Situation</h3>
+<p>Traffic flowing inside a kubernetes cluster is non-isolated by default so that each pod can communicate with every other pod. In some environments there is a need to ensure the proper isolation or restriction of each application in differing namespaces. Network Policies handle this microservice network segmentation and meet this need by defining the control to other entities' IP addresses (on OSI Layer 3) or network ports (on OSI Layer 4).</p>
+<p>Access for Pod communication with other entities are identified with Network Policies and defined by other pods, the relevant namespaces, and IP CIDR Blocks. Pods and Namespaces are specified using a selector, like <code>app=example</code> .</p>
+<p>Once the Network Policies are defined, how can a Kubernetes administrator test and validate them?</p>
+<h3 id="resolution">Resolution</h3>
+<p>Illuminatio is an open-source project written in Python3 by Inovex. It can run standalone, and is also available as a docker container. It creates test-cases for both the network policies and their inverse rules, generates an illuminatio-runner daemonset, tests all the cases against the defined network policies, and reports back on success or failure for each rule and inverted-rule. Illuminatio can use the current kubectl config for cluster access while working in the shell session, or designate the config file with the optional --kubeconfig flag.</p>
 <h5 id="basic-usage">Basic Usage</h5>
 <p>Assuming the Kubernetes admin has some network policies to test, the tool is very easy to use. It has three verbs to choose from, "clean", "generate" and, "run". The generate verb will only generate the tests, while clean removes them and run performs the test. Most users will want to use <code>illuminatio clean run</code> to start fresh, run the generated tests and report on their success. The results are also written to a configmap.</p>
-<p>The following are some common examples of Network Policies, and how Illuminatio can assist with validation. Examples are taken from <a href="https://github.com/ahmetb/kubernetes-network-policy-recipes">this network policies recipes github repo</a>, and applied to a kubernetes cluster, in the default namespace.
-Validation is performed with Illuminatio instead of a temporary pod.</p>
+<p>The following are some common examples of Network Policies, and how Illuminatio can assist with validation. Examples are taken from <a href="https://github.com/ahmetb/kubernetes-network-policy-recipes">this network policies recipes github repo</a>, and applied to a kubernetes cluster, in the default namespace. Validation is performed with Illuminatio instead of a temporary pod.</p>
 <h5 id="deny-traffic-to-an-application">Deny Traffic to an application</h5>
-<p>Save this file as <code>web-deny-all.yaml</code> and then apply the network policy with <code>kubectl -f web-deny-all.yaml</code>.
-Notice it is deploying to the default namespace. Prepare the pod for this example with a selector of app=web.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NetworkPolicy</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span>
-<span class="nt">metadata</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-deny-all</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web</span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<p>Save this file as <code>web-deny-all.yaml</code> and then apply the network policy with <code>kubectl -f web-deny-all.yaml</code>. Notice it is deploying to the default namespace. Prepare the pod for this example with a selector of app=web.</p>
+<div class="highlight"><pre><span></span><code>kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: web-deny-all
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+  ingress: []
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>run<span class="w"> </span>--generator<span class="o">=</span>run-pod/v1<span class="w"> </span>web<span class="w"> </span>--image<span class="o">=</span>nginx<span class="w"> </span>--labels<span class="w"> </span><span class="nv">app</span><span class="o">=</span>web<span class="w"> </span>--expose<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
+<div class="highlight"><pre><span></span><code>kubectl run --generator=run-pod/v1 web --image=nginx --labels app=web --expose --port 80
 </code></pre></div>
-<p>Show the current network policies, then run cases for all of them.
-Illuminatio will deploy a deamonset and run all the test cases, any passing tests show "success" in the last column of the report.
-Note: success indicates the test was successful, even if testing a connection denial.</p>
+<p>Show the current network policies, then run cases for all of them. Illuminatio will deploy a deamonset and run all the test cases, any passing tests show "success" in the last column of the report. Note: success indicates the test was successful, even if testing a connection denial.</p>
 <div class="highlight"><pre><span></span><code>$ kubectl get netpol
 NAME           POD-SELECTOR   AGE
 web-deny-all   app=web        13m
@@ -8549,20 +8543,20 @@ default:app=web  default:app=web  -*    success
 <p><code>kubectl run --generator=run-pod/v1 apiserver --image=nginx --labels app=bookstore,role=api --expose --port 80</code></p>
 <p>Save the following as api-allow.yaml and issue kubectl apply -f api-allow.yaml.</p>
 <p>Network policies are accumulative.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NetworkPolicy</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span>
-<span class="nt">metadata</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">api-allow</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookstore</span>
-<span class="w">      </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">api</span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">podSelector</span><span class="p">:</span>
-<span class="w">          </span><span class="nt">matchLabels</span><span class="p">:</span>
-<span class="w">            </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bookstore</span>
+<div class="highlight"><pre><span></span><code>kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: api-allow
+spec:
+  podSelector:
+    matchLabels:
+      app: bookstore
+      role: api
+  ingress:
+  - from:
+      - podSelector:
+          matchLabels:
+            app: bookstore
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>$ kubectl apply -f api-allow.yaml
 networkpolicy.networking.k8s.io/api-allow created
@@ -8598,17 +8592,17 @@ default:app=bookstore                                            default:app=boo
 </code></pre></div>
 <h5 id="allow-whitelisted-traffic-for-appweb">Allow whitelisted traffic for app=web</h5>
 <p>This policy will whitelist the app=web pods from the first example, with a new web-allow-all.yaml file. This Network Policy also voids the first example, by allowing all traffic. Because the traffic connections are allowed, Illuminatio recognizes this and avoids generating the negative (inverted) test cases.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NetworkPolicy</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span>
-<span class="nt">metadata</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-allow-all</span>
-<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web</span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<div class="highlight"><pre><span></span><code>kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: web-allow-all
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+  ingress:
+  - {}
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>$ kubectl apply -f web-allow-all.yaml
 networkpolicy.networking.k8s.io/web-allow-all created
@@ -8652,17 +8646,17 @@ default:app=bookstore                                            default:app=boo
 kubectl run --generator=run-pod/v1 web --namespace secondary --image=nginx \
     --labels=app=web --expose --port 80
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NetworkPolicy</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span>
-<span class="nt">metadata</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secondary</span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deny-from-other-namespaces</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">podSelector</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<div class="highlight"><pre><span></span><code>kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: secondary
+  name: deny-from-other-namespaces
+spec:
+  podSelector:
+    matchLabels:
+  ingress:
+  - from:
+    - podSelector: {}
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>$ kubectl apply -f deny-from-other-namespaces.yaml
 networkpolicy &quot;deny-from-other-namespaces&quot; created&quot;
@@ -8719,19 +8713,19 @@ kubectl create namespace prod
 kubectl label namespace/prod purpose=production
 </code></pre></div>
 <p>The contents of the web-allow-prod.yaml file.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NetworkPolicy</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span>
-<span class="nt">metadata</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web-allow-prod</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web</span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">namespaceSelector</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span>
-<span class="w">          </span><span class="nt">purpose</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
+<div class="highlight"><pre><span></span><code>kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: web-allow-prod
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          purpose: production
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>$ kubectl apply -f web-allow-prod.yaml
 networkpolicy &quot;web-allow-prod&quot; created
@@ -8817,6 +8811,7 @@ metadata:
   selfLink: /api/v1/namespaces/illuminatio/configmaps/illuminatio-runner-s87rw-results
   uid: 2c2f7434-d1ee-49c0-b77d-c11b7848f4da
 </code></pre></div>
+<h3 id="additional-information">Additional Information</h3>
 <h4 id="further-reading-and-other-useful-links">Further Reading and Other Useful Links</h4>
 <ul>
 <li><a href="https://ahmet.im/blog/kubernetes-network-policy/">Securing Kubernetes Cluster Networking</a></li>
@@ -8876,7 +8871,7 @@ metadata:
     <script id="__config" type="application/json">{"base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.bd41221c.min.js"></script>
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
       
     
   </body>
