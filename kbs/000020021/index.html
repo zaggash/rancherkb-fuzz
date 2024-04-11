@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../000020113/">
+        <link rel="prev" href="../000020020/">
       
       
-        <link rel="next" href="../000020115/">
+        <link rel="next" href="../000020022/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Error in driver during machine creation: Error launching instance: InvalidParameterValue: Invalid value 'r5.12xlarge ' for InstanceType. - SUSE KBs</title>
+        <title>How to configure expiry (TTL) on kubeconfig tokens in Rancher - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#error-in-driver-during-machine-creation-error-launching-instance-invalidparametervalue-invalid-value-r512xlarge-for-instancetype" class="md-skip">
+        <a href="#how-to-configure-expiry-ttl-on-kubeconfig-tokens-in-rancher" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Error in driver during machine creation: Error launching instance: InvalidParameterValue: Invalid value 'r5.12xlarge ' for InstanceType.
+              How to configure expiry (TTL) on kubeconfig tokens in Rancher
             
           </span>
         </div>
@@ -771,6 +771,142 @@
                 
   
   
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    How to configure expiry (TTL) on kubeconfig tokens in Rancher
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    How to configure expiry (TTL) on kubeconfig tokens in Rancher
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Situation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Situation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task" class="md-nav__link">
+    <span class="md-ellipsis">
+      Task
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pre-requisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pre-requisites
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#disable-automatic-kubeconfig-token-generation-and-configure-ttl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disable automatic kubeconfig token generation and configure TTL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authenticating-via-the-rancher-cli-with-kubectl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authenticating via the Rancher CLI with kubectl
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
@@ -1345,7 +1481,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters
+    How to enable debug level logging for the kube-auth-api DaemonSet in Rancher provisioned Kubernetes clusters
   </span>
   
 
@@ -1535,27 +1671,6 @@
   
   <span class="md-ellipsis">
     401 Unauthorized error using the Rancher2 Terraform Provider v1.4.0 with `access_key` and `secret_key` authentication
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020066/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    nginx-ingress-controller pods failing to load configuration with "client intended to send too large body" error in nginx-ingress-controller < nginx-0.32.0-rancher1
   </span>
   
 
@@ -2505,127 +2620,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Error in driver during machine creation: Error launching instance: InvalidParameterValue: Invalid value 'r5.12xlarge ' for InstanceType.
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    Error in driver during machine creation: Error launching instance: InvalidParameterValue: Invalid value 'r5.12xlarge ' for InstanceType.
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Situation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issue
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further reading
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4675,27 +4669,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020237/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Rancher 2.1.x - CIS Kubernetes v1.3.0 Benchmark Self Assessment
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020239/" class="md-nav__link">
         
   
@@ -6208,27 +6181,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020501/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    [Rancher] Our usage has exceeded the number of nodes for which we purchased a Rancher Support subscription. We now have an issue. Can we continue to get assistance from Rancher Support to troubleshoot and resolve the issue?
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020502/" class="md-nav__link">
         
   
@@ -6569,7 +6521,7 @@
         
   
   <span class="md-ellipsis">
-    RKE1 for Windows - End Of Life
+    Windows RKE1 EOL
   </span>
   
 
@@ -8303,9 +8255,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#task" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
+      Task
     </span>
   </a>
   
@@ -8327,14 +8279,29 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#disable-automatic-kubeconfig-token-generation-and-configure-ttl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disable automatic kubeconfig token generation and configure TTL
+    </span>
+  </a>
+  
 </li>
         
           <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
+  <a href="#authenticating-via-the-rancher-cli-with-kubectl" class="md-nav__link">
     <span class="md-ellipsis">
-      Further reading
+      Authenticating via the Rancher CLI with kubectl
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -8367,23 +8334,40 @@
                   
 
 
-<h1 id="error-in-driver-during-machine-creation-error-launching-instance-invalidparametervalue-invalid-value-r512xlarge-for-instancetype">Error in driver during machine creation: Error launching instance: InvalidParameterValue: Invalid value 'r5.12xlarge ' for InstanceType.</h1>
-<p>This document <strong>(000020114)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="how-to-configure-expiry-ttl-on-kubeconfig-tokens-in-rancher">How to configure expiry (TTL) on kubeconfig tokens in Rancher</h1>
+<p>This document <strong>(000020021)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>When trying to deploy a node in AWS EC2 on Rancher v1.6.x, you recieve an error like <code>Error in driver during machine creation: Error launching instance: InvalidParameterValue: Invalid value 'r5.12xlarge\t' for InstanceType.</code></p>
+<h4 id="task">Task</h4>
+<p>In Rancher it is possible to <a href="https://ranchermanager.docs.rancher.com/reference-guides/about-the-api/api-tokens#setting-ttl-on-kubeconfig-tokens">configure an expiry (TTL)</a> on Rancher-generated kubeconfig tokens for Rancher managed Kubernetes clusters. This article details how to configure kubeconfig token expiry as a Rancher administrator and how users can authenticate via <code>kubectl</code> when this is configured.</p>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
-<li>Running Rancher UI v1.6.50 or earlier (included by default in Rancher v1.6.28 or earlier)</li>
-<li>Trying to deploy an AWS EC2 node of size <code>r5.12xlarge</code>, <code>r5.24xlarge</code>, <code>r5a.12xlarge</code>, or <code>r5a.24xlarge</code></li>
+<li>A Rancher v2.x instance</li>
+<li>The <code>kubectl</code> binary and <a href="https://ranchermanager.docs.rancher.com/reference-guides/cli-with-rancher"><code>Rancher CLI</code></a> installed locally</li>
 </ul>
 <h4 id="resolution">Resolution</h4>
-<p>The fix is in rancher ui v1.6.51 which is introduced in Rancher v1.6.29.
-Upgrade to v1.6.29 or later to deploy EC2 nodes of the affected sizes. It is advised to upgrade to the latest stable Rancher v1.6.x and migrate to latest stable Rancher v2.x</p>
-<h4 id="further-reading">Further reading</h4>
-<p>The issue is a trailing tab in the name of the instance type. The commit that solves the issue can be seen here: https://github.com/rancher/ui/commit/5709e997aea949f41e299db8f519dc046d731cb9
-rancher/ui v1.6.51: https://github.com/rancher/ui/tree/v1.6.51/app/components/machine
-rancher/rancher v1.6.29: https://github.com/rancher/rancher/releases/tag/v1.6.29</p>
+<h5 id="disable-automatic-kubeconfig-token-generation-and-configure-ttl">Disable automatic kubeconfig token generation and configure TTL</h5>
+<p>As a Rancher global admin, disable automatic kubeconfig token generation and configure the expiry time (TTL) for kubeconfig tokens, per the steps in the <a href="https://ranchermanager.docs.rancher.com/reference-guides/about-the-api/api-tokens#setting-ttl-on-kubeconfig-tokens">Rancher documentation here</a> .</p>
+<h5 id="authenticating-via-the-rancher-cli-with-kubectl">Authenticating via the Rancher CLI with kubectl</h5>
+<p>Once an admin has configured the kubeconfig TTL, users will need to download the Rancher CLI to authenticate against Rancher when using Rancher-generated kubeconfig files to connect to Rancher-managed clusters.</p>
+<ol>
+<li>Download the required Rancher CLI binary per <a href="https://ranchermanager.docs.rancher.com/reference-guides/cli-with-rancher">the Rancher documentation</a> .</li>
+<li>Ensure the <code>rancher</code> CLI binary is executable and in your PATH.</li>
+<li>Download a copy of the kubeconfig file for a cluster from the Rancher UI and add it to the default ~/.kube/config file or source it with <code>KUBECONFIG=/path/to/file</code>.</li>
+<li>Execute <code>kubectl get nodes</code> and observe you will be prompted for your Rancher username and password. If you are using an <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config#external-vs-local-authentication">authentication provider</a> you will also be prompted to select this versus local authentication. You can prevent this prompt by adding the <code>--auth-provider=&lt;provider&gt;</code> argument in the kubeconfig file, per the following example:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>     args:
+    - token
+    - --auth-provider=openLdapProvider
+    - --server=rancher.example.com
+</code></pre></div>
+<ol>
+<li>After providing the username and password, the kubeconfig token will be generated and valid for the TTL ( <code>kubeconfig-token-ttl-minutes</code>) configured in Rancher.</li>
+<li>You can verify the configured expiry time of the kubeconfig token within the Rancher UI, under <code>API &amp; Keys</code>.</li>
+<li>Once the token expires, you will be prompted to log in again upon executing <code>kubectl</code> commands against the cluster, per step 4.</li>
+</ol>
+<blockquote>
+<p><strong>N.B.</strong> By default the generated kubeconfig token is cached within the directory <code>.cache</code> in the working directory from which you invoke <code>kubectl</code>, when you are prompted to log in. As a result executing <code>kubectl</code> from a different directory, will re-prompt for authentication and generate a fresh token cache under <code>.cache</code>. To prevent this behavior, you can set the token cache location with the environment variable <code>RANCHER_CONFIG_DIR</code>, e.g. <code>export RANCHER_CONFIG_DIR=~/.rancher</code> to avoid being prompted for authentication when you change the working directory.</p>
+</blockquote>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 

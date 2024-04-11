@@ -22,7 +22,7 @@
     
     
       
-        <title>How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters - SUSE KBs</title>
+        <title>How to enable debug level logging for the kube-auth-api DaemonSet in Rancher provisioned Kubernetes clusters - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-enable-debug-level-logging-for-the-kube-auth-api-daemonset-in-rancher-v23-provisioned-kubernetes-clusters" class="md-skip">
+        <a href="#how-to-enable-debug-level-logging-for-the-kube-auth-api-daemonset-in-rancher-provisioned-kubernetes-clusters" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters
+              How to enable debug level logging for the kube-auth-api DaemonSet in Rancher provisioned Kubernetes clusters
             
           </span>
         </div>
@@ -774,6 +774,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000020021/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to configure expiry (TTL) on kubeconfig tokens in Rancher
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000020022/" class="md-nav__link">
         
   
@@ -1354,7 +1375,7 @@
           
   
   <span class="md-ellipsis">
-    How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters
+    How to enable debug level logging for the kube-auth-api DaemonSet in Rancher provisioned Kubernetes clusters
   </span>
   
 
@@ -1365,7 +1386,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters
+    How to enable debug level logging for the kube-auth-api DaemonSet in Rancher provisioned Kubernetes clusters
   </span>
   
 
@@ -1635,27 +1656,6 @@
   
   <span class="md-ellipsis">
     401 Unauthorized error using the Rancher2 Terraform Provider v1.4.0 with `access_key` and `secret_key` authentication
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020066/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    nginx-ingress-controller pods failing to load configuration with "client intended to send too large body" error in nginx-ingress-controller < nginx-0.32.0-rancher1
   </span>
   
 
@@ -2601,27 +2601,6 @@
   
   <span class="md-ellipsis">
     Logging integration doesn't work if Docker Root is not default /var/lib/docker
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020114/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Error in driver during machine creation: Error launching instance: InvalidParameterValue: Invalid value 'r5.12xlarge ' for InstanceType.
   </span>
   
 
@@ -4675,27 +4654,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020237/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Rancher 2.1.x - CIS Kubernetes v1.3.0 Benchmark Self Assessment
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020239/" class="md-nav__link">
         
   
@@ -6208,27 +6166,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020501/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    [Rancher] Our usage has exceeded the number of nodes for which we purchased a Rancher Support subscription. We now have an issue. Can we continue to get assistance from Rancher Support to troubleshoot and resolve the issue?
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020502/" class="md-nav__link">
         
   
@@ -6569,7 +6506,7 @@
         
   
   <span class="md-ellipsis">
-    RKE1 for Windows - End Of Life
+    Windows RKE1 EOL
   </span>
   
 
@@ -8367,15 +8304,15 @@
                   
 
 
-<h1 id="how-to-enable-debug-level-logging-for-the-kube-auth-api-daemonset-in-rancher-v23-provisioned-kubernetes-clusters">How to enable debug level logging for the kube-auth-api DaemonSet in Rancher v2.3+ provisioned Kubernetes clusters</h1>
+<h1 id="how-to-enable-debug-level-logging-for-the-kube-auth-api-daemonset-in-rancher-provisioned-kubernetes-clusters">How to enable debug level logging for the kube-auth-api DaemonSet in Rancher provisioned Kubernetes clusters</h1>
 <p>This document <strong>(000020055)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
 <h4 id="task">Task</h4>
-<p>The <code>kube-auth-api</code> DaemonSet is deployed to controlplane nodes, in Rancher v2.3+ provisioned Kubernetes clusters, to provide user authentication functionality for the <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/cluster-access/ace">authorized cluster endpoint</a>. When troubleshooting an issue with authorized cluster endpoint authentication, it may be helpful to analyse the <code>kube-auth-api</code> logs at debug level, and this article details how to enable debug logging.</p>
+<p>The <code>kube-auth-api</code> DaemonSet is deployed to controlplane nodes, in Rancher provisioned Kubernetes clusters, to provide user authentication functionality for the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/access-clusters/authorized-cluster-endpoint">authorized cluster endpoint</a>. When troubleshooting an issue with authorized cluster endpoint authentication, it may be helpful to analyze the <code>kube-auth-api</code> logs at debug level, and this article details how to enable debug logging.</p>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
-<li>A Rancher v2.3+ instance</li>
-<li>A Rancher provisioned Kubernetes cluster, either a <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/custom-nodes/">custom cluster</a> or on nodes in an <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/node-pools/">infrastructure provider using a Node Driver</a></li>
+<li>A Rancher instance</li>
+<li>A Rancher provisioned Kubernetes cluster, either a <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/use-existing-nodes">custom cluster</a> or on nodes in an <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher#launching-kubernetes-on-new-nodes-in-an-infrastructure-provider">infrastructure provider using a Node Driver</a></li>
 </ul>
 <h4 id="resolution">Resolution</h4>
 <ol>
@@ -8383,26 +8320,29 @@
 <p>Navigate to the workloads view of the System project, within the Rancher UI, for the relevant Rancher provisioned cluster.</p>
 </li>
 <li>
-<p>Locate the <code>kube-api-auth</code> DaemonSet, within the <code>cattle-system</code> namespace, click the vertial elipses and select <code>Edit</code>, per the following screenshot:</p>
+<p>Locate the <code>kube-api-auth</code> DaemonSet, within the <code>cattle-system</code> namespace, click the three dots at the right side of the UI and select <code>Edit Config</code>, per the following screenshot:</p>
 </li>
 </ol>
-<p><img alt="Edit the kube-api-auth daemonset" src="https://support.rancher.com/hc/article_attachments/360080544212/edit.png" /></p>
+<p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000001onZ&amp;feoid=00N1i000002LdMP&amp;refid=0EMTr000002j4O5" /></p>
 <ol>
 <li>
-<p>Click <code>Show advanced options</code> in the bottom left.</p>
+<p>Select the kube-api-auth container in the main tab.</p>
 </li>
 <li>
-<p>Expand the <code>Command</code> section, enter <code>/usr/bin/kube-api-auth --debug serve</code> in the Command field, per the following screenshat, and click <code>Save</code>:</p>
+<p>Under the General section, scroll down until the Command section</p>
+</li>
+<li>
+<p>In the <code>Command</code> section, enter <code>/usr/bin/kube-api-auth, and --debug serve</code> in the Arguments field, per the following screenshot, and click <code>Save</code>:</p>
 </li>
 </ol>
-<p><img alt="Replace the command with --debug option" src="https://support.rancher.com/hc/article_attachments/360080544192/command.png" /></p>
+<p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000001onZ&amp;feoid=00N1i000002LdMP&amp;refid=0EMTr000002j4MT" /></p>
 <ol>
-<li>The <code>kube-api-auth</code> pod(s) will restart with the new debug logging configuration. Viewing the <code>kube-api-auth</code> logs you should now obeserve log messages with <code>level=debug</code>.</li>
+<li>The <code>kube-api-auth</code> pod(s) will restart with the new debug logging configuration. Viewing the <code>kube-api-auth</code> logs you should now observe log messages with <code>level=debug</code>.</li>
 </ol>
 <h4 id="further-reading">Further reading</h4>
 <ul>
-<li><a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/cluster-access/ace/#about-the-kube-api-auth-authentication-webhook">Rancher documentation on the <code>kube-api-auth</code> authentication webhook</a></li>
-<li><a href="https://rancher.com/docs/rancher/v2.x/en/overview/architecture/">Rancher Server Architecture documentation</a></li>
+<li><a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/access-clusters/authorized-cluster-endpoint#about-the-kube-api-auth-authentication-webhook">Rancher documentation on the <code>kube-api-auth</code> authentication webhook</a></li>
+<li><a href="https://ranchermanager.docs.rancher.com/reference-guides/rancher-manager-architecture">Rancher Server Architecture documentation</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
