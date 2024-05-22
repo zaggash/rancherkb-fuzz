@@ -8259,7 +8259,7 @@
 <p>In the central authentication model, Rancher is sitting in "front" of all Kubernetes clusters, acts as a central authentication proxy, and thus facilitates the authentication for multiple clusters.​</p>
 <p>A Rancher admin will configure and enable authentication against one of the integrations available for Rancher(e.g. Active Directory, OpenLdap, etc.) once, centrally on the Rancher server and manage it for all clusters. ​</p>
 <p>Users authenticate with Rancher, and Rancher redirects the user request to the specific Kubernetes cluster using standard bearer tokens and user impersonation to act as that user.​</p>
-<p><img alt="example-workflow-2.png" src="https://suse.file.force.com/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000001GziB&amp;operationContext=CHATTER&amp;contentId=05TTr000001we69" /></p>
+<p><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000001GziB&amp;operationContext=DELIVERY&amp;contentId=05TTr000001we69&amp;page=0&amp;d=/a/Tr000000moFU/DuzfuSuQesfsPv6djb6LEa_HYg_ye77Q21GGMXmtlYU&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
 <h1 id="resources-for-cattle-impersonation-system">Resources for cattle-impersonation-system​</h1>
 <p>Four resources are created to handle impersonation:​</p>
 <ol>
@@ -8297,10 +8297,8 @@
 </li>
 </ul>
 <h2 id="request-diagram">Request Diagram</h2>
-<p><img alt="example-cattle-impersonation-system-2.png" src="https://suse.file.force.com/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000001H68T&amp;operationContext=CHATTER&amp;contentId=05TTr000001wHoi" /></p>
-<h1 id="example">Example:​</h1>
-<p><img alt="example-workflow-bob.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka05q000000TPd1&amp;feoid=00N1i000002LdMP&amp;refid=0EM5q0000043W1j" /></p>
-<p>In this diagram, a user named Bob wants to see all pods running on a downstream user cluster called User Cluster. ​</p>
+<p><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000008Sf3m&amp;operationContext=DELIVERY&amp;contentId=05TTr00000BhMR8&amp;page=0&amp;d=/a/Tr000004aCbS/gTy2jxQ6pUPEwiIyvVeZzTN8O1cv5n7QSkQE7sQ4RGQ&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
+<h1 id="example-in-this-diagram-a-user-named-bob-wants-to-see-all-pods-running-on-a-downstream-user-cluster-called-user-cluster">Example:​    <img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000001H6A5&amp;operationContext=DELIVERY&amp;contentId=05TTr000001wJ0Y&amp;page=0&amp;d=/a/Tr000000mneO/aRnzDca.PK8KxIrkpIRwoH4jEa_GElcBpvXd0bIhoCY&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" />    In this diagram, a user named Bob wants to see all pods running on a downstream user cluster called User Cluster. ​</h1>
 <ol>
 <li>
 <p>From within Rancher, he can run a kubectl command to see the pods. Bob is authenticated through Rancher’s authentication proxy.​</p>
