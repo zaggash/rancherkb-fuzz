@@ -1093,6 +1093,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8173,6 +8182,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021399/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Failed ETCD snapshot restoration leads the cluster into stuck "paused" state
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021400/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Add caBundle private CA to chart repository
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021405/" class="md-nav__link">
         
   
@@ -8242,6 +8293,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8309,72 +8369,90 @@
 
 <h1 id="how-to-check-the-default-coredns-configmap-of-a-rancher-kubernetes-engine-rke-kubernetes-version">How to check the default CoreDNS configmap of a Rancher Kubernetes Engine (RKE) Kubernetes version</h1>
 <p>This document <strong>(000020036)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<ul>
+<li>Rancher 2.6.x/ 2.7/2.8.x</li>
+<li>CoreDNS default configuration</li>
+</ul>
 <h3 id="situation">Situation</h3>
 <h4 id="task">Task</h4>
-<p>You might have modified the default configmap for CoreDNS using Rancher Kubernetes Engine's (RKE) cluster configuration YAML ( <code>cluster.yml</code>). In this case, you may want to know the default configmap prior to upgrading Kubernetes. This verification step will help you to add all of the default/mandatory parameters to the modified configmap in RKE's <code>cluster.yml</code>, upon upgrade.</p>
+<p>You might have modified the default configmap for CoreDNS using Rancher Kubernetes Engine's (RKE) cluster configuration YAML ( <code>cluster.yml</code>). In this case, you may want to know the default configmap before upgrading Kubernetes. This verification step will help you to add all of the default/mandatory parameters to the modified configmap in RKE's <code>cluster.yml</code>, upon upgrade.</p>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
-<li>python2</li>
+<li>Python installed.</li>
 </ul>
 <h4 id="resolution">Resolution</h4>
 <p>Download the <a href="https://github.com/rancher/kontainer-driver-metadata"><code>kontainer-metadata</code></a> according to the Rancher version you are running.</p>
-<p>Rancher 2.4.x:</p>
-<div class="highlight"><pre><span></span><code>curl -O https://raw.githubusercontent.com/rancher/kontainer-driver-metadata/release-v2.4/data/data.json
+<p>Rancher 2.6.x:</p>
+<div class="highlight"><pre><span></span><code>curl -O https://raw.githubusercontent.com/rancher/kontainer-driver-metadata/release-v2.6/data/data.json
 </code></pre></div>
-<p>Rancher v2.5.x:</p>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-O<span class="w"> </span>https://raw.githubusercontent.com/rancher/kontainer-driver-metadata/dev-v2.5/data/data.json
+<p>Rancher v2.7.x:</p>
+<div class="highlight"><pre><span></span><code>curl -O https://raw.githubusercontent.com/rancher/kontainer-driver-metadata/dev-v2.7/data/data.json
 </code></pre></div>
-<p>Get the available template list:</p>
-<div class="highlight"><pre><span></span><code>python2<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import sys, json; d=json.load(sys.stdin)[&#39;K8sVersionedTemplates&#39;][&#39;coreDNS&#39;]; print json.dumps(d,indent=4)&quot;</span><span class="w"> </span>&lt;data.json
+<div class="highlight"><pre><span></span><code>Rancher v2.8.x:
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>curl -O https://raw.githubusercontent.com/rancher/kontainer-driver-metadata/dev-v2.8/data/data.json
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Get the available template list:
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>python -c &quot;import sys, json; d=json.load(sys.stdin)[&#39;K8sVersionedTemplates&#39;][&#39;coreDNS&#39;]; print (json.dumps(d,indent=4))&quot; &lt;data.json
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>
 </code></pre></div>
 <p>Output:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;&gt;=1.8.0-rancher0 &lt;1.16.0-alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;coredns-v1.8&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;&gt;=1.17.0-alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;coredns-v1.17&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;&gt;=1.16.0-alpha &lt;1.17.0-alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;coredns-v1.16&quot;</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code>{
+    &quot;&gt;=1.16.0-alpha &lt;1.17.0-alpha&quot;: &quot;coredns-v1.16&quot;,
+    &quot;&gt;=1.17.0-alpha &lt;1.20.15-rancher1-2&quot;: &quot;coredns-v1.17&quot;,
+    &quot;&gt;=1.20.15-rancher1-2 &lt;1.21.0-rancher1-1&quot;: &quot;coredns-v1.8.3-rancher2&quot;,
+    &quot;&gt;=1.21.0-rancher1-1 &lt;1.21.9-rancher1-2&quot;: &quot;coredns-v1.8.3&quot;,
+    &quot;&gt;=1.21.9-rancher1-2&quot;: &quot;coredns-v1.8.3-rancher2&quot;,
+    &quot;&gt;=1.8.0-rancher0 &lt;1.16.0-alpha&quot;: &quot;coredns-v1.8&quot;
+}
 </code></pre></div>
-<p>Translation of one of the entry from the list is as follows:</p>
-<div class="highlight"><pre><span></span><code>&quot;&gt;=1.8.0-rancher0 &lt;1.16.0-alpha&quot;: &quot;coredns-v1.8&quot;,
+<p>Translation of one of the entries from the list is as follows:</p>
+<div class="highlight"><pre><span></span><code>&quot;&gt;=1.21.9-rancher1-2&quot;: &quot;coredns-v1.8.3-rancher2&quot;,
 </code></pre></div>
-<p>If Kubenetes version is greater than or equal to <code>1.8.0-rancher0</code> and less than <code>1.16.0-alpha</code> ,then the CoreDNS key we have to use in next step is <code>coredns-v1.8</code></p>
-<div class="highlight"><pre><span></span><code>python2<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import sys, json; print json.load(sys.stdin)[&#39;K8sVersionedTemplates&#39;][&#39;templateKeys&#39;][&#39;coredns-v1.8&#39;]&quot;</span><span class="w"> </span>&lt;data.json
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+<p>If the Kubernetes version is <strong>greater than or equal to</strong> <em><code>1.21.9-rancher1-2</code></em> , then the CoreDNS key we have to use in the next step is <strong><em><code>coredns-v1.8.3-rancher2.</code></em></strong></p>
+<div class="highlight"><pre><span></span><code>python -c &quot;import sys, json; print (json.load(sys.stdin)[&#39;K8sVersionedTemplates&#39;][&#39;templateKeys&#39;][&#39;coredns-v1.8.3-rancher2&#39;])&quot; &lt;data.json
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>
 </code></pre></div>
 <p>The configmap will be printed on the screen along with other YAML template specs associated with CoreDNS.</p>
 <p>Sample output:</p>
-<div class="highlight"><pre><span></span><code><span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
-<span class="nn">---</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
-<span class="nt">metadata</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coredns</span>
-<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube-system</span>
-<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">addonmanager.kubernetes.io/mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EnsureExists</span>
-<span class="nt">data</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">Corefile</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<span class="w">    </span><span class="no">.:53 {</span>
-<span class="w">        </span><span class="no">errors</span>
-<span class="w">        </span><span class="no">health</span>
-<span class="w">        </span><span class="no">kubernetes {{.ClusterDomain}} {{ if .ReverseCIDRs }}{{ .ReverseCIDRs }}{{ else }}{{ &quot;in-addr.arpa ip6.arpa&quot; }}{{ end }} {</span>
-<span class="w">          </span><span class="no">pods insecure</span>
-<span class="w">          </span><span class="no">upstream</span>
-<span class="w">          </span><span class="no">fallthrough in-addr.arpa ip6.arpa</span>
-<span class="w">          </span><span class="no">ttl 30</span>
-<span class="w">        </span><span class="no">}</span>
-<span class="w">        </span><span class="no">prometheus :9153</span>
-<span class="w">    </span><span class="no">{{- if .UpstreamNameservers }}</span>
-<span class="w">        </span><span class="no">forward . {{range $i, $v := .UpstreamNameservers}}{{if $i}} {{end}}{{.}}{{end}}</span>
-<span class="w">    </span><span class="no">{{- else }}</span>
-<span class="w">        </span><span class="no">forward . &quot;/etc/resolv.conf&quot;</span>
-<span class="w">    </span><span class="no">{{- end }}</span>
-<span class="w">        </span><span class="no">cache 30</span>
-<span class="w">        </span><span class="no">loop</span>
-<span class="w">        </span><span class="no">reload</span>
-<span class="w">        </span><span class="no">loadbalance</span>
-<span class="w">    </span><span class="no">}</span>
-<span class="nn">---</span>
-<span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code>---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health {
+          lameduck 5s
+        }
+        ready
+        kubernetes {{.ClusterDomain}} {{ if .ReverseCIDRs }}{{ .ReverseCIDRs }}{{ else }}{{ &quot;in-addr.arpa ip6.arpa&quot; }}{{ end }} {
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+        }
+        prometheus :9153
+    {{- if .UpstreamNameservers }}
+        forward . {{range $i, $v := .UpstreamNameservers}}{{if $i}} {{end}}{{.}}{{end}}
+    {{- else }}
+        forward . &quot;/etc/resolv.conf&quot;
+    {{- end }}
+        cache 30
+        loop
+        reload
+        loadbalance
+    } # STUBDOMAINS - Rancher specific change
+---
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>

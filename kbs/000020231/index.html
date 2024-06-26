@@ -4537,6 +4537,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -4547,36 +4556,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#network-ingress-traffic-to-a-kubernetes-cluster-with-the-canal-network-provider-from-ip-addresses-in-the-range-1921680016-is-always-snatd-even-in-instances-where-this-is-not-desired" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#root-cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Root cause
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
+      Network ingress traffic to a Kubernetes cluster with the canal network provider, from IP addresses in the range 192.168.0.0/16, is always SNAT'd, even in instances where this is not desired.
     </span>
   </a>
   
@@ -4584,6 +4566,24 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
   
 </li>
       
@@ -8182,6 +8182,48 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021399/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Failed ETCD snapshot restoration leads the cluster into stuck "paused" state
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021400/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Add caBundle private CA to chart repository
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021405/" class="md-nav__link">
         
   
@@ -8251,6 +8293,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8261,36 +8312,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#network-ingress-traffic-to-a-kubernetes-cluster-with-the-canal-network-provider-from-ip-addresses-in-the-range-1921680016-is-always-snatd-even-in-instances-where-this-is-not-desired" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#root-cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Root cause
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
+      Network ingress traffic to a Kubernetes cluster with the canal network provider, from IP addresses in the range 192.168.0.0/16, is always SNAT'd, even in instances where this is not desired.
     </span>
   </a>
   
@@ -8298,6 +8322,24 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
   
 </li>
       
@@ -8327,20 +8369,17 @@
 
 <h1 id="network-ingress-traffic-from-1921680016-always-snatd-in-kubernetes-clusters-with-canal-network-provider">Network ingress traffic from 192.168.0.0/16 always SNAT'd in Kubernetes clusters with canal network provider</h1>
 <p>This document <strong>(000020231)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>An RKE or RKE2 cluster, using the canal network provider</p>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>Network ingress traffic to a Kubernetes cluster with the canal network provider, from IP addresses in the range <code>192.168.0.0/16</code>, is always SNAT'd, even in instances where this is not desired.</p>
+<h4 id="network-ingress-traffic-to-a-kubernetes-cluster-with-the-canal-network-provider-from-ip-addresses-in-the-range-1921680016-is-always-snatd-even-in-instances-where-this-is-not-desired">Network ingress traffic to a Kubernetes cluster with the canal network provider, from IP addresses in the range <code>192.168.0.0/16</code>, is always SNAT'd, even in instances where this is not desired.</h4>
 <p>For example on NodePort services configured with <code>externalTrafficPolicy: Local</code> the source IP should be preserved without SNAT, per the <a href="https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-nodeport">Kubernetes documentation</a>. With this issue the source IP is SNAT'd even in instances of NodePort services configured with <code>externalTrafficPolicy: Local</code>.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>A Kubernetes cluster provisioned via the RKE CLI or Rancher, using the canal network provider</li>
-</ul>
-<h4 id="root-cause">Root cause</h4>
-<p>When a cluster is provisioned with the canal network provider selected, Flannel is used for networking and Calico for network policy enforcement, and IP address management is therefore managed by Flannel.</p>
-<p>The <code>calico-node</code> container in the canal pod is still configured with an (un-used) IP pool, which defaults to <code>192.168.0.0/16</code>. By default Calico programs iptables rules in the <code>cali-nat-outgoing</code> chain of the <code>nat</code> table on cluster nodes to perform SNAT on traffic from this IP pool. The purpose of these rules is to masquerade egress traffic from pods where Calico is used for networking (and not just network policy). As a result in a canal network provider cluster, where the <code>calico-node</code> container is present for network policy enforcement, these rules are programed and any ingress traffic from the range <code>192.168.0.0/16</code> will match and be SNAT'd.</p>
-<h4 id="resolution">Resolution</h4>
-<p>The permanent solution to prevent this issue is to update the RKE deployment templates for the canal daemonset, to set the environment variable <code>CALICO_IPV4POOL_NAT_OUTGOING</code> to <code>0</code> for the <code>calico-node</code> container. This will prevent programming of the problematic <code>cali-nat-outgoing</code> iptables rules and is tracked in <a href="https://github.com/rancher/rancher/issues/20500">Rancher Issue #20500</a>.</p>
+<h3 id="resolution">Resolution</h3>
+<p>A permanent solution to prevent programming of the problematic <code>cali-nat-outgoing</code> iptables rules and is tracked in <a href="https://github.com/rancher/rancher/issues/20500">Rancher Issue #20500</a>.</p>
 <p>In order to workaround the issue in existing clusters, the Calico ippool configuration can be edited to disable outgoing nat, which removes programming of the <code>cali-nat-outgoing</code> iptables rules. To implement this workaround run kubectl against the affected to edit the <code>default-ipv4-ippool</code> object: <code>kubectl edit ippools default-ipv4-ippool</code>. Edit the line <code>natOutgoing: true</code> to set <code>natOutgoing: false</code> and save the change. Calico will detect the configuration update and remove the <code>cali-nat-outgoing</code> iptables rules.</p>
+<h3 id="cause">Cause</h3>
+<p>When a cluster is provisioned with the canal network provider selected, Flannel is used for networking and Calico for network policy enforcement. IP address management is therefore managed by Flannel.</p>
+<p>The <code>calico-node</code> container in the canal pod is still configured with an (un-used) IP pool, which defaults to <code>192.168.0.0/16</code>. By default Calico programs iptables rules in the <code>cali-nat-outgoing</code> chain of the <code>nat</code> table on cluster nodes to perform SNAT on traffic from this IP pool. The purpose of these rules is to masquerade egress traffic from pods where Calico is used for networking (and not just network policy). As a result in a canal network provider cluster, where the <code>calico-node</code> container is present for network policy enforcement, these rules are programmed and any ingress traffic from the range <code>192.168.0.0/16</code> will match and be SNAT'd.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
