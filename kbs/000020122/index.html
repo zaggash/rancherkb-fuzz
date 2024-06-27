@@ -22,7 +22,7 @@
     
     
       
-        <title>How to edit the upstream nameservers used by CoreDNS or kube-dns, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster - SUSE KBs</title>
+        <title>How to edit the upstream nameservers used by CoreDNS, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-edit-the-upstream-nameservers-used-by-coredns-or-kube-dns-in-a-rancher-kubernetes-engine-rke-or-rancher-v2x-provisioned-kubernetes-cluster" class="md-skip">
+        <a href="#how-to-edit-the-upstream-nameservers-used-by-coredns-in-a-rancher-kubernetes-engine-rke-or-rancher-v2x-provisioned-kubernetes-cluster" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to edit the upstream nameservers used by CoreDNS or kube-dns, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
+              How to edit the upstream nameservers used by CoreDNS, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
             
           </span>
         </div>
@@ -2656,7 +2656,7 @@
           
   
   <span class="md-ellipsis">
-    How to edit the upstream nameservers used by CoreDNS or kube-dns, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
+    How to edit the upstream nameservers used by CoreDNS, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
   </span>
   
 
@@ -2667,7 +2667,7 @@
         
   
   <span class="md-ellipsis">
-    How to edit the upstream nameservers used by CoreDNS or kube-dns, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
+    How to edit the upstream nameservers used by CoreDNS, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
   </span>
   
 
@@ -2695,10 +2695,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#task" class="md-nav__link">
     <span class="md-ellipsis">
       Task
@@ -2706,8 +2705,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#pre-requisites" class="md-nav__link">
     <span class="md-ellipsis">
       Pre-requisites
@@ -2715,8 +2714,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#steps" class="md-nav__link">
     <span class="md-ellipsis">
       Steps
@@ -2750,11 +2749,6 @@
       Option C: Update the node resolv.conf
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -4493,7 +4487,7 @@
         
   
   <span class="md-ellipsis">
-    Is it possible to update the Cluster (Pod) CIDR or Service CIDR for an RKE CLI or Rancher launched cluster post-provisioning?
+    Is it possible to update the Cluster (Pod) CIDR or Service CIDR for an RKE, RKE2, or K3s cluster?
   </span>
   
 
@@ -8323,10 +8317,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#task" class="md-nav__link">
     <span class="md-ellipsis">
       Task
@@ -8334,8 +8327,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#pre-requisites" class="md-nav__link">
     <span class="md-ellipsis">
       Pre-requisites
@@ -8343,8 +8336,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#steps" class="md-nav__link">
     <span class="md-ellipsis">
       Steps
@@ -8385,11 +8378,6 @@
     </nav>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
@@ -8415,28 +8403,26 @@
                   
 
 
-<h1 id="how-to-edit-the-upstream-nameservers-used-by-coredns-or-kube-dns-in-a-rancher-kubernetes-engine-rke-or-rancher-v2x-provisioned-kubernetes-cluster">How to edit the upstream nameservers used by CoreDNS or kube-dns, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster</h1>
+<h1 id="how-to-edit-the-upstream-nameservers-used-by-coredns-in-a-rancher-kubernetes-engine-rke-or-rancher-v2x-provisioned-kubernetes-cluster">How to edit the upstream nameservers used by CoreDNS, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster</h1>
 <p>This document <strong>(000020122)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>By default, CoreDNS and kube-dns Pods will inherit the nameserver configuration from the node. In certain circumstances it might be desired to override this, and use a specific set of nameservers for external queries.</p>
+<h3 id="task">Task</h3>
+<p>By default, CoreDNS pods will inherit the nameserver configuration from the node. In certain circumstances, it might be desired to override this and use a specific set of nameservers for external queries.</p>
 <blockquote>
 <p><strong>Note:</strong> These steps update the nameservers only for Pods that use either the <code>ClusterFirst</code> (default) or <code>ClusterFirstWithHostNet</code> <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pods-dns-policy">DNS policy</a>. Nameserver configuration for nodes and other Pods will not be affected.</p>
 </blockquote>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h3 id="pre-requisites">Pre-requisites</h3>
 <ul>
-<li>A Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x, with the CoreDNS or kube-dns dns addon enabled.</li>
+<li>A Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x, with the CoreDNS addon enabled.</li>
 </ul>
 <blockquote>
 <p><strong>Note:</strong> New clusters can also be created using the same steps.</p>
 </blockquote>
-<h4 id="steps">Steps</h4>
-<h5 id="option-a-update-the-clusteryaml">Option A: Update the cluster.yaml</h5>
+<h3 id="steps">Steps</h3>
+<h4 id="option-a-update-the-clusteryaml">Option A: Update the cluster.yaml</h4>
 <p>The cluster configuration YAML provides the <code>upstreamnameservers</code> option, to configure a list of upstream nameservers, per the example below:</p>
 <ol>
-<li>Add the <code>upstreamnameservers</code> option, with the list of nameservers, to the cluster configuration YAML.
-    For RKE provisioned clusters, add this into the cluster.yml file.
-    For a Rancher provisioned cluster, navigate to the cluster view in the Rancher UI, open the edit cluster view and click <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/options/#cluster-config-file"><code>Edit as YAML</code></a>.</li>
+<li>Add the <code>upstreamnameservers</code> option, with the list of nameservers, to the cluster configuration YAML. For RKE provisioned clusters, add this into the cluster.yml file. For a Rancher provisioned cluster, navigate to Cluster Management in the Rancher UI, and Edit Config of the cluster, click <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration#editing-clusters-with-yaml"><code>Edit as YAML</code></a>.</li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="nt">dns</span><span class="p">:</span>
 <span class="w">     </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coredns</span>
@@ -8445,26 +8431,22 @@
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8.8.8.8</span>
 </code></pre></div>
 <ol>
-<li>Update the cluster with the new configuration.
-    For RKE provisioned clusters, invoke <code>rke up --cluster.yml</code> ( <strong>ensure the cluster.rkestate file is present in the working directory when invoking <code>rke up</code></strong>).
-    For Rancher provisioned clusters, click <code>Save</code> in the Rancher UI <code>Edit as YAML</code> view.</li>
+<li>Update the cluster with the new configuration. For RKE provisioned clusters, invoke <code>rke up --cluster.yml</code> ( <strong>ensure the cluster.rkestate file is present in the working directory when invoking <code>rke up</code></strong>). For Rancher provisioned clusters, click <code>Save</code> in the Rancher UI <code>Edit as YAML</code> view.</li>
 </ol>
 <blockquote>
-<p><strong>Note:</strong> This option is recommended as it requires minimal change, see the <a href="https://rancher.com/docs/rke/latest/en/config-options/add-ons/dns/#upstream-nameservers">RKE add-ons documentation</a> for more information.</p>
+<p><strong>Note:</strong> This option is recommended as it requires minimal change, see the <a href="https://rke.docs.rancher.com/config-options/add-ons/dns#coredns-upstream-nameservers">RKE add-ons documentation</a> for more information.</p>
 </blockquote>
-<h5 id="option-b-update-the-kubelet-resolvconf">Option B: Update the kubelet resolv.conf</h5>
+<h4 id="option-b-update-the-kubelet-resolvconf">Option B: Update the kubelet resolv.conf</h4>
 <p>By default, the kubelet will refer to the <code>/etc/resolv.conf</code> file as the source for nameserver configuration.</p>
 <p>It is possible to override this by adding an <code>extra_args</code> option to the <code>kubelet</code> service, and this is also accomplished in the cluster configuration YAML.</p>
 <p>A custom resolv.conf file can then be used by the kubelet instead, per the example below:</p>
 <ol>
-<li>On each of the nodes in the cluster create the custom nameserver configuration file:</li>
+<li>On each of the nodes in the cluster create the custom nameserver configuration file with a nameserver IP address:</li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;nameserver 8.8.8.8&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/k8s-resolv.conf
 </code></pre></div>
 <ol>
-<li>Add <code>resolv-conf</code>, referencing the custom nameserver configuration file, to the <code>extra_args</code> option for the kubelet service, in the cluster configuration YAML.
-    For RKE provisioned clusters, add this into the cluster.yml file.
-    For a Rancher provisioned cluster, navigate to the cluster view in the Rancher UI, open the edit cluster view and click <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/options/#cluster-config-file"><code>Edit as YAML</code></a>.</li>
+<li>Add the <code>resolv-conf</code> flag to the <code>extra_args</code> option for the kubelet service, referencing the custom nameserver configuration file into the cluster configuration YAML. For RKE provisioned clusters, add this into the cluster.yml file. For a Rancher provisioned cluster, navigate to Cluster Management in the Rancher UI, and Edit Config of the cluster, click <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration#editing-clusters-with-yaml"><code>Edit as YAML</code></a>.</li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">kubelet</span><span class="p">:</span>
@@ -8472,20 +8454,18 @@
 <span class="w">      </span><span class="nt">resolv-conf</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/host/etc/k8s-resolv.conf</span>
 </code></pre></div>
 <ol>
-<li>Update the cluster with the new configuration.
-    For RKE provisioned clusters, invoke <code>rke up --cluster.yml</code> ( <strong>ensure the cluster.rkestate file is present in the working directory when invoking <code>rke up</code></strong>).
-    For Rancher provisioned clusters, click <code>Save</code> in the Rancher UI <code>Edit as YAML</code> view.</li>
+<li>Update the cluster with the new configuration. For RKE provisioned clusters, invoke <code>rke up --cluster.yml</code> ( <strong>ensure the cluster.rkestate file is present in the working directory when invoking <code>rke up</code></strong>). For Rancher provisioned clusters, click <code>Save</code> in the Rancher UI <code>Edit as YAML</code> view.</li>
 </ol>
 <p>See the <a href="https://rancher.com/docs/rke/latest/en/config-options/services/services-extras/#extra-args">RKE services documentation</a> for more information.</p>
 <blockquote>
 <p><strong>Note:</strong> kubelet flags are being updated, as such a restart of the kubelet component will occur on each node.</p>
 </blockquote>
-<h5 id="option-c-update-the-node-resolvconf">Option C: Update the node resolv.conf</h5>
-<p>If the nameserver configuration should be consistent between the OS and Kubernetes Pods, updating the node <code>/etc/resolv.conf</code> file is recommended.</p>
+<h4 id="option-c-update-the-node-resolvconf">Option C: Update the node resolv.conf</h4>
+<p>If the nameserver configuration should be consistent between the OS and Kubernetes pods, updating the node <code>/etc/resolv.conf</code> file is recommended.</p>
 <p>This could be because nameservers are changing or that the caching configuration (for example systemd-resolved) is not desired.</p>
 <p>Changes to a systemd managed resolv.conf can be dependent on the Linux distribution and you should refer to the documentation for the distribution used in the cluster.</p>
 <blockquote>
-<p><strong>Note:</strong> The kubelet component caches the <code>/etc/resolv.conf</code> file at start time, as such a restart of the kubelet component needs to occur on each node manually, after updating the configuration.</p>
+<p><strong>Note:</strong> The kubelet component caches the <code>/etc/resolv.conf</code> file at start time, as such a restart of the kubelet component needs to occur on each node manually, after updating the /etc/resolv.conf file.</p>
 <p>This can be accomplished a number of ways:</p>
 <ul>
 <li><code>docker restart kubelet</code> on each node</li>

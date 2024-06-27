@@ -2647,7 +2647,7 @@
         
   
   <span class="md-ellipsis">
-    How to edit the upstream nameservers used by CoreDNS or kube-dns, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
+    How to edit the upstream nameservers used by CoreDNS, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
   </span>
   
 
@@ -4369,7 +4369,7 @@
         
   
   <span class="md-ellipsis">
-    Is it possible to update the Cluster (Pod) CIDR or Service CIDR for an RKE CLI or Rancher launched cluster post-provisioning?
+    Is it possible to update the Cluster (Pod) CIDR or Service CIDR for an RKE, RKE2, or K3s cluster?
   </span>
   
 
@@ -7288,6 +7288,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8398,6 +8407,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8579,6 +8597,8 @@
 
 <h1 id="upgrading-your-rancher-downstream-clusters-to-kubernetes-v125">Upgrading Your Rancher Downstream Clusters to Kubernetes v1.25</h1>
 <p>This document <strong>(000021053)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>A Rancher-provisioned RKE, RKE2, or K3s cluster, which you wish to upgrade to Kubernetes v1.25</p>
 <h3 id="situation">Situation</h3>
 <p>The PodSecurityPolicy API, initially deprecated in Kubernetes v1.21, was <a href="https://kubernetes.io/blog/2022/08/04/upcoming-changes-in-kubernetes-1-25/#podsecuritypolicy-removal">entirely removed i</a> n Kubernetes v1.25. Because the API was removed, you cannot create, edit or query PodSecurityPolicy resources in a Kubernetes v1.25 cluster. Also, because its admission controller was removed, your clusters can no longer enforce any PodSecurityPolicy rules that were created in Kubernetes v1.24 and prior. Therefore, you must either migrate your workload security to the new Pod Security Admission controller, a supplemental policy engine or to a combination of both.</p>
 <p>This article discusses how to prepare your Rancher downstream clusters to Kubernetes v1.25, including how to use Rancher-specific mechanisms to apply a Pod Security Admission configuration and how to remove PodSecurityPolicies from Rancher-maintained workloads you have installed in your downstream clusters. It is structured as a semi-tutorial. Run these steps in a non-production environment to get acquainted with the process, and then determine what your production environment requires.</p>

@@ -1186,30 +1186,12 @@
           <li class="md-nav__item">
   <a href="#steps" class="md-nav__link">
     <span class="md-ellipsis">
-      Steps
+      Steps:
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Steps">
+    <nav class="md-nav" aria-label="Steps:">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#a-single-docker-container-installation-of-rancher" class="md-nav__link">
-    <span class="md-ellipsis">
-      A single Docker container installation of Rancher
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#a-highly-available-ha-installation-of-rancher-in-a-kubernetes-cluster" class="md-nav__link">
-    <span class="md-ellipsis">
-      A Highly Available (HA) installation of Rancher in a Kubernetes cluster
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#validating-the-success-of-the-stacktrace" class="md-nav__link">
@@ -2780,7 +2762,7 @@
         
   
   <span class="md-ellipsis">
-    How to edit the upstream nameservers used by CoreDNS or kube-dns, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
+    How to edit the upstream nameservers used by CoreDNS, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
   </span>
   
 
@@ -4502,7 +4484,7 @@
         
   
   <span class="md-ellipsis">
-    Is it possible to update the Cluster (Pod) CIDR or Service CIDR for an RKE CLI or Rancher launched cluster post-provisioning?
+    Is it possible to update the Cluster (Pod) CIDR or Service CIDR for an RKE, RKE2, or K3s cluster?
   </span>
   
 
@@ -8356,30 +8338,12 @@
           <li class="md-nav__item">
   <a href="#steps" class="md-nav__link">
     <span class="md-ellipsis">
-      Steps
+      Steps:
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Steps">
+    <nav class="md-nav" aria-label="Steps:">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#a-single-docker-container-installation-of-rancher" class="md-nav__link">
-    <span class="md-ellipsis">
-      A single Docker container installation of Rancher
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#a-highly-available-ha-installation-of-rancher-in-a-kubernetes-cluster" class="md-nav__link">
-    <span class="md-ellipsis">
-      A Highly Available (HA) installation of Rancher in a Kubernetes cluster
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#validating-the-success-of-the-stacktrace" class="md-nav__link">
@@ -8440,32 +8404,9 @@
 <p>During troubleshooting it may be useful to collect a stacktrace from a running Rancher instance, and this article details the steps for creating one.</p>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
-<li>A Rancher v2.x instance, either a <a href="https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/">single Docker container</a> or a <a href="https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/">Highly Available (HA) installation in Kubernetes</a></li>
+<li>A Rancher v2.x instance</li>
 </ul>
-<h4 id="steps">Steps</h4>
-<h5 id="a-single-docker-container-installation-of-rancher">A single Docker container installation of Rancher</h5>
-<ol>
-<li>
-<p>Open two shell sessions on the server running the single container installation of Rancher.</p>
-</li>
-<li>
-<p>In one of the shell sessions, run <code>docker ps</code>, to locate and note the ID or name of the Rancher server container.</p>
-</li>
-<li>
-<p>In the same shell, start streaming the Docker container logs to file with the command below, replacing <code>&lt;RANCHER_CONTAINER_ID_OR_NAME&gt;</code> with the Rancher container ID or name identified in step 2.</p>
-</li>
-</ol>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>&lt;RANCHER_CONTAINER_ID_OR_NAME&gt;<span class="w"> </span>&gt;<span class="w"> </span>rancher.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
-</code></pre></div>
-<ol>
-<li>In the other shell, send a SIGABRT signal to the rancher process in the container, to trigger a stacktrace, with the command below:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>&lt;RANCHER_CONTAINER_ID_OR_NAME&gt;<span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;kill -SIGABRT $(pgrep -x rancher)&#39;</span>
-</code></pre></div>
-<ol>
-<li>When the stacktrace generation is complete the Rancher container will restart and the <code>docker logs</code> command in step 3. will exit. You can then provide the <code>rancher.log</code> file, containing the trace, to Rancher Support.</li>
-</ol>
-<h5 id="a-highly-available-ha-installation-of-rancher-in-a-kubernetes-cluster">A Highly Available (HA) installation of Rancher in a Kubernetes cluster</h5>
+<h4 id="steps">Steps:</h4>
 <ol>
 <li>
 <p>Open two shell sessions and source an admin kubeconfig for the Rancher server cluster in both.</p>
