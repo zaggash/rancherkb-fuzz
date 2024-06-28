@@ -3718,7 +3718,7 @@
         
   
   <span class="md-ellipsis">
-    How do I edit my cluster using RKE Templates?
+    How do I edit or upgrade clusters created via RKE Templates?
   </span>
   
 
@@ -8306,7 +8306,10 @@
 <h3 id="situation">Situation</h3>
 <p>Is it possible to define additional static Pods to start on an RKE2 during RKE2 node initialization?</p>
 <h3 id="resolution">Resolution</h3>
-<p>Yes, you can define additional static Pods on an RKE2 host by placing the manifests into the directory /var/lib/rancher/rke2/agent/pod-manifests/ Any Pod manifests within this directory will be created by the kubelet, as static pods, during the RKE2 node agent startup.</p>
+<ul>
+<li>Yes, you can define additional static Pods on an RKE2 host by placing the manifests into the directory /var/lib/rancher/rke2/agent/pod-manifests/</li>
+<li>Any Pod manifests within this directory will be created by the kubelet, as static pods, during the RKE2 node agent startup.</li>
+</ul>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
