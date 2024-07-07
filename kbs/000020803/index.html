@@ -8269,7 +8269,7 @@
 <li>we also chose the same name, as it is a new instance</li>
 <li>Restore the dump, you may use <em>mysql db_name &lt; backup-file.sql</em></li>
 <li>on the first node start k3s with:</li>
-<li>curl -sfL https://get.k3s.io | sh -s - server --token <SERVER-TOKEN> --datastore-endpoint="mysql://<USERNAME>:<PASSWORD>@tcp(<INSTANE-NAME>.mysql.database.azure.com:3306)/<RESTORED-DB>?tls=true"</li>
+<li>curl -sfL https://get.k3s.io | sh -s - server --token <SERVER-TOKEN> --datastore-endpoint="mysql://<USERNAME>:<PASSWORD>@tcp(<INSTANCE-NAME>.mysql.database.azure.com:3306)/<RESTORED-DB>?tls=true"</li>
 <li>the token is retrieve from the failed cluster in <em>/var/lib/rancher/k3s/server/token</em></li>
 <li>Remove the failed nodes running:</li>
 <li>k3s kubectl get nodes</li>

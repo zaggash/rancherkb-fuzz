@@ -7036,6 +7036,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -7045,45 +7054,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Prerequisites
+      Resolution
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-1-deploy-iperf3-as-a-deployment" class="md-nav__link">
+  <a href="#step-1-deploy-iperf3-as-a-daemonset" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 1: Deploy Iperf3 as a Deployment
+      Step 1: Deploy Iperf3 as a DaemonSet
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-verify-the-deployment" class="md-nav__link">
+  <a href="#cause" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 2: Verify the Deployment
+      Cause
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-test-connectivity-between-pods" class="md-nav__link">
+  <a href="#additional-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 3: Test Connectivity Between Pods
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#conclusion" class="md-nav__link">
-    <span class="md-ellipsis">
-      Conclusion
+      Additional Information
     </span>
   </a>
   
@@ -8233,6 +8233,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8242,45 +8251,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Prerequisites
+      Resolution
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-1-deploy-iperf3-as-a-deployment" class="md-nav__link">
+  <a href="#step-1-deploy-iperf3-as-a-daemonset" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 1: Deploy Iperf3 as a Deployment
+      Step 1: Deploy Iperf3 as a DaemonSet
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-verify-the-deployment" class="md-nav__link">
+  <a href="#cause" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 2: Verify the Deployment
+      Cause
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-test-connectivity-between-pods" class="md-nav__link">
+  <a href="#additional-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 3: Test Connectivity Between Pods
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#conclusion" class="md-nav__link">
-    <span class="md-ellipsis">
-      Conclusion
+      Additional Information
     </span>
   </a>
   
@@ -8312,21 +8312,21 @@
 
 <h1 id="testing-connectivity-between-kubernetes-pods-with-iperf3">Testing Connectivity Between Kubernetes Pods with Iperf3</h1>
 <p>This document <strong>(000020954)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="situation">Situation</h3>
-<p>In this article, we will show you how to use iperf3 to test the connectivity between Kubernetes pods in your cluster. We will use a Deployment to ensure that iperf3 pods are running on each node in the cluster.</p>
-<h3 id="prerequisites">Prerequisites</h3>
+<h3 id="environment">Environment</h3>
 <ul>
 <li>A running Kubernetes cluster</li>
 <li>The kubectl command-line tool installed on your local machine</li>
 </ul>
-<h3 id="step-1-deploy-iperf3-as-a-deployment">Step 1: Deploy Iperf3 as a Deployment</h3>
+<h3 id="situation">Situation</h3>
+<p>In this article, we will show you how to use iperf3 to test the connectivity between Kubernetes pods in your cluster. We will use a Deployment to ensure that iperf3 pods are running on each node in the cluster.</p>
+<h3 id="resolution">Resolution</h3>
+<h3 id="step-1-deploy-iperf3-as-a-daemonset">Step 1: Deploy Iperf3 as a DaemonSet</h3>
 <p>To deploy iperf3 as a Deployment on your Kubernetes cluster, you will need to create a YAML file with the following contents:</p>
 <div class="highlight"><pre><span></span><code>apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
-  name: iperf3-deployment
+  name: iperf3-ds
 spec:
-  replicas: 3
   selector:
     matchLabels:
       app: iperf3
@@ -8341,41 +8341,49 @@ spec:
         ports:
         - containerPort: 5201
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code>This YAML file creates a Deployment named iperf3-ds of the iperf3 container.
 </code></pre></div>
-<p>This YAML file creates a Deployment named <code>iperf3-deployment</code> with 3 replicas of the iperf3 container.</p>
-<p>You can then create the Deployment by running the following command:</p>
-<div class="highlight"><pre><span></span><code>kubectl apply -f iperf3-deployment.yaml
+<p>You can then create the DaemonSet by running the following command:</p>
+<div class="highlight"><pre><span></span><code>kubectl apply -f iperf3-ds.yaml
 </code></pre></div>
-<h3 id="step-2-verify-the-deployment">Step 2: Verify the Deployment</h3>
-<p>Once the Deployment is up and running, you can use the following command to check that iperf3 pods are running on all nodes in the cluster:</p>
+<div class="highlight"><pre><span></span><code>Step 2: Verify the DaemonSet
+</code></pre></div>
+<p>Once the DaemonSet is up and running, you can use the following command to check that iperf3 pods are running on all nodes in the cluster:</p>
 <div class="highlight"><pre><span></span><code>kubectl get pods
 </code></pre></div>
-<p>You should see output similar to the following:</p>
-<div class="highlight"><pre><span></span><code>NAME                             READY   STATUS    RESTARTS   AGE
-iperf3-deployment-5b7f6f5c8-5wcw5   1/1     Running   0          36s
-iperf3-deployment-5b7f6f5c8-6q4q4   1/1     Running   0          36s
-iperf3-deployment-5b7f6f5c8-8wnw7   1/1     Running   0          36s
+<div class="highlight"><pre><span></span><code>You should see output similar to the following:
 </code></pre></div>
-<h3 id="step-3-test-connectivity-between-pods">Step 3: Test Connectivity Between Pods</h3>
+<div class="highlight"><pre><span></span><code>NAME                             READY   STATUS    RESTARTS   AGE
+iperf3-ds-5b7f6f5c8-5wcw5   1/1     Running   0          36s
+iperf3-ds-5b7f6f5c8-6q4q4   1/1     Running   0          36s
+iperf3-ds-5b7f6f5c8-8wnw7   1/1     Running   0          36s
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Step 3: Test Connectivity Between Pods
+</code></pre></div>
 <p>To test the connectivity between pods, you will need to use the pod's IP addresses. You can use the following command to get the IP addresses of the pods:</p>
 <div class="highlight"><pre><span></span><code>kubectl get pods -o wide
 </code></pre></div>
-<p>You should see output similar to the following:</p>
-<div class="highlight"><pre><span></span><code>NAME                             READY   STATUS    RESTARTS   AGE    IP            NODE
-iperf3-deployment-5b7f6f5c8-5wcw5   1/1     Running   0          36s   10.1.0.1      node1
-iperf3-deployment-5b7f6f5c8-6q4q4   1/1     Running   0          36s   10.1.0.2      node2
-iperf3-deployment-5b7f6f5c8-8wnw7   1/1     Running   0          36s   10.1.0.3      node3
+<div class="highlight"><pre><span></span><code>You should see output similar to the following:
 </code></pre></div>
-<p>Once you have the IP addresses of the pods you want to test, you can use the iperf3 command to test the connectivity. (Make sure to choose pods running on different nodes)</p>
-<p>First, choose a pod to run in server mode:</p>
+<div class="highlight"><pre><span></span><code>NAME                             READY   STATUS    RESTARTS   AGE    IP            NODE
+iperf3-ds-5b7f6f5c8-5wcw5   1/1     Running   0          36s   10.1.0.1      node1
+iperf3-ds-5b7f6f5c8-6q4q4   1/1     Running   0          36s   10.1.0.2      node2
+iperf3-ds-5b7f6f5c8-8wnw7   1/1     Running   0          36s   10.1.0.3      node3
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Once you have the IP addresses of the pods you want to test, you can use the iperf3 command to test the connectivity.
+
+First, choose a pod to run in server mode:
+</code></pre></div>
 <div class="highlight"><pre><span></span><code>kubectl exec -it &lt;pod-name&gt; -- iperf3 -s -p 12345
 </code></pre></div>
-<p>Second, choose a pod to run in client mode:</p>
+<div class="highlight"><pre><span></span><code>Second, choose a pod to run in client mode:
+</code></pre></div>
 <div class="highlight"><pre><span></span><code>kubectl exec -it &lt;pod-name&gt; -- iperf3 -c &lt;server pod IP address&gt; -p 12345
 </code></pre></div>
-<p>The iperf3 command will output the network performance statistics, including the bandwidth, packet loss, and jitter.</p>
-<p>This is an example output from a test cluster; please note that due to the various layers of networking involved, there is a performance impact that is expected:</p>
+<div class="highlight"><pre><span></span><code>The iperf3 command will output the network performance statistics, including the bandwidth, packet loss, and jitter.
+
+This is an example output from a test cluster; please note that due to the various layers of networking involved, there is a performance impact that is expected:
+</code></pre></div>
 <div class="highlight"><pre><span></span><code>Connecting to host 10.42.0.36, port 12345
 [  4] local 10.42.0.37 port 45568 connected to 10.42.0.36 port 12345
 [ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
@@ -8396,10 +8404,10 @@ iperf3-deployment-5b7f6f5c8-8wnw7   1/1     Running   0          36s   10.1.0.3 
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>
 </code></pre></div>
-<h3 id="conclusion">Conclusion</h3>
-<p>In this article, we have shown you how to use iperf3 to test connectivity between Kubernetes pods in your cluster. We have used a Deployment to ensure that iperf3 pods are running on each node in the cluster. We hope that this article has helped demonstrate how to use iperf3 for testing connectivity between pods in your Kubernetes cluster.</p>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
+<h3 id="cause">Cause</h3>
+<p>In this article, we have shown you how to use iperf3 to test connectivity between Kubernetes pods in your cluster. We have used a DaemonSet to ensure that iperf3 pods are running on each node in the cluster. We hope that this article has helped demonstrate how to use iperf3 for testing connectivity between pods in your Kubernetes cluster.</p>
+<h3 id="additional-information">Additional Information</h3>
+<p>https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
