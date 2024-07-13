@@ -22,7 +22,7 @@
     
     
       
-        <title>How to enable Envoy access logging in Rancher v2.3 and v2.4 deployed Istio - SUSE KBs</title>
+        <title>How to enable Envoy access logging in Rancher deployed Istio - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-enable-envoy-access-logging-in-rancher-v23-and-v24-deployed-istio" class="md-skip">
+        <a href="#how-to-enable-envoy-access-logging-in-rancher-deployed-istio" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to enable Envoy access logging in Rancher v2.3 and v2.4 deployed Istio
+              How to enable Envoy access logging in Rancher deployed Istio
             
           </span>
         </div>
@@ -1060,7 +1060,7 @@
           
   
   <span class="md-ellipsis">
-    How to enable Envoy access logging in Rancher v2.3 and v2.4 deployed Istio
+    How to enable Envoy access logging in Rancher deployed Istio
   </span>
   
 
@@ -1071,7 +1071,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable Envoy access logging in Rancher v2.3 and v2.4 deployed Istio
+    How to enable Envoy access logging in Rancher deployed Istio
   </span>
   
 
@@ -1093,6 +1093,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -1103,27 +1112,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#this-article-details-how-to-enable-envoys-access-logging-for-rancher-deployed-istio-in-rancher" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
+      This article details how to enable Envoy's access logging , for Rancher deployed Istio, in Rancher.
     </span>
   </a>
   
@@ -7279,6 +7270,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021036/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rancher-logging: how to control fluentd logs flushing frequency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021045/" class="md-nav__link">
         
   
@@ -8251,6 +8263,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8261,27 +8282,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#this-article-details-how-to-enable-envoys-access-logging-for-rancher-deployed-istio-in-rancher" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
+      This article details how to enable Envoy's access logging , for Rancher deployed Istio, in Rancher.
     </span>
   </a>
   
@@ -8325,30 +8328,59 @@
                   
 
 
-<h1 id="how-to-enable-envoy-access-logging-in-rancher-v23-and-v24-deployed-istio">How to enable Envoy access logging in Rancher v2.3 and v2.4 deployed Istio</h1>
+<h1 id="how-to-enable-envoy-access-logging-in-rancher-deployed-istio">How to enable Envoy access logging in Rancher deployed Istio</h1>
 <p>This document <strong>(000020038)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>This article details how to enable <a href="https://istio.io/v1.5/docs/tasks/observability/logs/access-log/">Envoy's access logging</a>, for <a href="https://rancher.com/docs/rancher/v2.x/en/istio/v2.3.x-v2.4.x/">Rancher deployed Istio</a>, in Rancher v2.3 and v2.4</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h3 id="environment">Environment</h3>
 <ul>
-<li>A Kubernetes cluster managed by Rancher v2.3 or v2.4, with <a href="https://rancher.com/docs/rancher/v2.x/en/istio/v2.3.x-v2.4.x/">Istio enabled</a></li>
+<li>Rancher 2.7 / 2.8</li>
+<li>A Kubernetes cluster Managed by Rancher</li>
+<li>Rancher Monitoring Stack (pre-requisite for Istio) and Rancher Istio</li>
 </ul>
-<h4 id="resolution">Resolution</h4>
-<p>Access logging can be enabled for Envoy, in Rancher deployed Istio, by setting the <code>global.proxy.accessLogFile</code> path and <code>global.proxy.accessLogEncoding</code> type via Custom Answers on the Istio configuration.</p>
-<p>Setting the <code>accessLogFile</code> path to <code>/dev/stdout</code> will route the Envoy access logs to the <code>istio-sidecar</code> container logs, exposing them via <code>kubectl logs</code> or any log forwarding endpoint you have configured in the cluster.</p>
-<p>The log format, specified in <code>accessLogEncoding</code>, can be set to JSON or TEXT.</p>
+<h3 id="situation">Situation</h3>
+<h4 id="this-article-details-how-to-enable-envoys-access-logging-for-rancher-deployed-istio-in-rancher">This article details how to enable <a href="https://istio.io/latest/docs/tasks/observability/logs/access-log/#enable-envoys-access-logging">Envoy's access logging</a> , for <a href="https://rancher.com/docs/rancher/v2.x/en/istio/v2.3.x-v2.4.x/">Rancher deployed Istio</a>, in Rancher.</h4>
+<p>Configuring Telemetry API is recommended to enable Access logging for Envoy.</p>
 <p>To enable access logging, perform the following steps:</p>
 <ol>
-<li>Navigate to the cluster view in the Rancher UI for the desired cluster and select <code>Tools</code> &gt; <code>Istio</code>.</li>
-<li>Under the <code>Custom Answers</code> section, enter the following two value pairs and click <code>Save</code> or <code>Enable</code> (the option will depend on whether you have Istio enabled in the cluster already):</li>
+<li>With a kubeconfig for the Downstream cluster, create the following Telemetry configuration:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>global.proxy.accessLogFile=/dev/stdout
-global.proxxy.accessLogEncoding=JSON
+<div class="highlight"><pre><span></span><code>apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+     name: mesh-default
+     namespace: istio-system
+spec:
+     accessLogging:
+    - providers:
+      - name: envoy
 </code></pre></div>
-<ol>
-<li>After enabling access logging, you can test the configuration with the Istio <code>sleep</code> and <code>httpbin</code> sample applications, per <a href="https://istio.io/v1.5/docs/tasks/observability/logs/access-log/">the Istio documentation</a>.</li>
-</ol>
+<p>The above uses the default <code>envoy</code> access log provider and only the default settings are configured. A similar configuration can also be applied to an individual namespace, or to an individual workload, to control logging at a fine-grained level.  For more information about using the Telemetry API, see the <a href="https://istio.io/latest/docs/tasks/observability/telemetry/">Telemetry API overview</a>.
+2. After enabling access logging, you can test the configuration with the Istio <code>sleep</code> and <code>httpbin</code> sample applications, per <a href="https://istio.io/v1.5/docs/tasks/observability/logs/access-log/">the Istio documentation</a>.  Some sample logs after enabling Envoy access logs:</p>
+<div class="highlight"><pre><span></span><code>kubectl logs -l app=sleep -c istio-proxy
+
+2024-07-10T07:58:09.579778Z     info    cache   returned workload trust anchor from cache       ttl=23h59m59.420226455s
+2024-07-10T07:58:09.580066Z     info    ads     SDS: PUSH request for node:sleep-78ff5975c6-d9zrk.default resources:1 size:1.1kB resource:ROOTCA
+2024-07-10T07:58:09.580236Z     info    cache   returned workload trust anchor from cache       ttl=23h59m59.419767231s
+2024-07-10T07:58:09.588579Z     info    cache   returned workload trust anchor from cache       ttl=23h59m59.411432603s
+2024-07-10T07:58:10.622873Z     info    Readiness succeeded in 1.46762116s
+2024-07-10T07:58:10.623674Z     info    Envoy proxy is ready
+[2024-07-10T07:58:46.673Z] &quot;GET /status/418 HTTP/1.1&quot; 418 - via_upstream - &quot;-&quot; 0 135 14 13 &quot;-&quot; &quot;curl/8.8.0&quot; &quot;62ee6bdb-0afe-495c-83e0-37bc131045c3&quot; &quot;httpbin:8000&quot; &quot;10.42.1.24:8080&quot; outbound|8000||httpbin.default.svc.cluster.local 10.42.1.23:44318 10.43.156.59:8000 10.42.1.23:42030 - default
+[2024-07-10T07:58:53.227Z] &quot;GET /status/418 HTTP/1.1&quot; 418 - via_upstream - &quot;-&quot; 0 135 10 9 &quot;-&quot; &quot;curl/8.8.0&quot; &quot;addf66ef-fb90-43bd-85e0-35763d7f0fca&quot; &quot;httpbin:8000&quot; &quot;10.42.1.24:8080&quot; outbound|8000||httpbin.default.svc.cluster.local 10.42.1.23:57372 10.43.156.59:8000 10.42.1.23:35794 - default
+[2024-07-10T08:01:56.359Z] &quot;GET /status/418 HTTP/1.1&quot; 418 - via_upstream - &quot;-&quot; 0 135 23 22 &quot;-&quot; &quot;curl/8.8.0&quot; &quot;385df7b2-9e0a-4506-811d-95d15f1da3ee&quot; &quot;httpbin:8000&quot; &quot;10.42.1.24:8080&quot; outbound|8000||httpbin.default.svc.cluster.local 10.42.1.23:60376 10.43.156.59:8000 10.42.1.23:46754 - default
+[2024-07-10T08:01:57.741Z] &quot;GET /status/418 HTTP/1.1&quot; 418 - via_upstream - &quot;-&quot; 0 135 11 10 &quot;-&quot; &quot;curl/8.8.0&quot; &quot;e0f34346-032a-4af3-a27c-a40f000e61e1&quot; &quot;httpbin:8000&quot; &quot;10.42.1.24:8080&quot; outbound|8000||httpbin.default.svc.cluster.local 10.42.1.23:35960 10.43.156.59:8000 10.42.1.23:48636 - default
+
+kubectl logs -l app=httpbin -c istio-proxy
+
+2024-07-10T07:58:16.693643Z     info    cache   returned workload certificate from cache        ttl=23h59m59.30636378s
+2024-07-10T07:58:16.693942Z     info    ads     SDS: PUSH request for node:httpbin-54b5c865df-pjjhm.default resources:1 size:4.0kB resource:default
+2024-07-10T07:58:17.883782Z     info    Readiness succeeded in 1.645029716s
+2024-07-10T07:58:17.884493Z     info    Envoy proxy is ready
+[2024-07-10T07:58:46.680Z] &quot;GET /status/418 HTTP/1.1&quot; 418 - via_upstream - &quot;-&quot; 0 135 3 2 &quot;-&quot; &quot;curl/8.8.0&quot; &quot;62ee6bdb-0afe-495c-83e0-37bc131045c3&quot; &quot;httpbin:8000&quot; &quot;10.42.1.24:8080&quot; inbound|8080|| 127.0.0.6:42839 10.42.1.24:8080 10.42.1.23:44318 outbound_.8000_._.httpbin.default.svc.cluster.local default
+[2024-07-10T07:58:53.229Z] &quot;GET /status/418 HTTP/1.1&quot; 418 - via_upstream - &quot;-&quot; 0 135 2 2 &quot;-&quot; &quot;curl/8.8.0&quot; &quot;addf66ef-fb90-43bd-85e0-35763d7f0fca&quot; &quot;httpbin:8000&quot; &quot;10.42.1.24:8080&quot; inbound|8080|| 127.0.0.6:54765 10.42.1.24:8080 10.42.1.23:57372 outbound_.8000_._.httpbin.default.svc.cluster.local default
+[2024-07-10T08:00:17.209Z] &quot;GET /status/418 HTTP/1.1&quot; 418 - via_upstream - &quot;-&quot; 0 135 3 2 &quot;-&quot; &quot;curl/8.8.0&quot; &quot;0ea867e3-4e8c-4e45-9655-057d08989f1a&quot; &quot;httpbin:8000&quot; &quot;10.42.1.24:8080&quot; inbound|8080|| 127.0.0.6:54011 10.42.1.24:8080 10.42.1.23:57372 outbound_.8000_._.httpbin.default.svc.cluster.local default
+[2024-07-10T08:00:18.779Z] &quot;GET /status/418 HTTP/1.1&quot; 418 - via_upstream - &quot;-&quot; 0 135 2 2 &quot;-&quot; &quot;curl/8.8.0&quot; &quot;3bedc3ca-345d-4fba-8269-6ce4ecb1e04b&quot; &quot;httpbin:8000&quot; &quot;10.42.1.24:8080&quot; inbound|8080|| 127.0.0.6:38727 10.42.1.24:8080 10.42.1.23:44318 outbound_.8000_._.httpbin.default.svc.cluster.local default
+[2024-07-10T08:01:56.366Z] &quot;GET /status/418 HTTP/1.1&quot; 418 - via_upstream - &quot;-&quot; 0 135 4 3 &quot;-&quot; &quot;curl/8.8.0&quot; &quot;385df7b2-9e0a-4506-811d-95d15f1da3ee&quot; &quot;httpbin:8000&quot; &quot;10.42.1.24:8080&quot; inbound|8080|| 127.0.0.6:35665 10.42.1.24:8080 10.42.1.23:60376 outbound_.8000_._.httpbin.default.svc.cluster.local default
+[2024-07-10T08:01:57.745Z] &quot;GET /status/418 HTTP/1.1&quot; 418 - via_upstream - &quot;-&quot; 0 135 2 2 &quot;-&quot; &quot;curl/8.8.0&quot; &quot;e0f34346-032a-4af3-a27c-a40f000e61e1&quot; &quot;httpbin:8000&quot; &quot;10.42.1.24:8080&quot; inbound|8080|| 127.0.0.6:47731 10.42.1.24:8080 10.42.1.23:35960 outbound_.8000_._.httpbin.default.svc.cluster.local default
+</code></pre></div>
 <h4 id="further-reading">Further reading</h4>
 <ul>
 <li><a href="https://istio.io/v1.5/docs/tasks/observability/logs/access-log/">Istio "Getting Envoy's Access Logs" Documentation</a></li>

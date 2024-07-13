@@ -1051,7 +1051,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable Envoy access logging in Rancher v2.3 and v2.4 deployed Istio
+    How to enable Envoy access logging in Rancher deployed Istio
   </span>
   
 
@@ -7303,6 +7303,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021036/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rancher-logging: how to control fluentd logs flushing frequency
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021045/" class="md-nav__link">
         
   
@@ -8392,12 +8413,81 @@
 <li>Navigate to the <code>System</code> project of the relevant cluster within the Rancher UI.</li>
 <li>Locate the canal DaemonSet workload within the <code>kube-system</code> namespace, click the vertical elipses ( <code>⋮</code>) and select Edit.</li>
 <li>Click to Edit the <code>calico-node</code> container.</li>
-<li>Add <code>CALICO_STARTUP_LOGLEVEL = DEBUG</code> in the Environment Variables section and click <code>Save</code>.</li>
-<li>Click Edit for the canal DaemonSet again.</li>
-<li>This time click to Edit the <code>kube-flannel</code> container.</li>
-<li>Click <code>Show advanced options</code>.</li>
+<li>Add <code>CALICO_STARTUP_LOGLEVEL = DEBUG</code> in the Environment Variables section, click <code>Save</code>.</li>
+</ol>
+<div class="highlight"><pre><span></span><code>         containers:
+        - env:
+            - name: DATASTORE_TYPE
+              value: kubernetes
+            - name: USE_POD_CIDR
+              value: &#39;true&#39;
+            - name: WAIT_FOR_DATASTORE
+              value: &#39;true&#39;
+            - name: NODENAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: CALICO_NETWORKING_BACKEND
+              value: none
+            - name: CLUSTER_TYPE
+              value: k8s,canal
+            - name: FELIX_IPTABLESREFRESHINTERVAL
+              value: &#39;60&#39;
+            - name: IP
+            - name: CALICO_DISABLE_FILE_LOGGING
+              value: &#39;true&#39;
+            - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
+              value: ACCEPT
+            - name: FELIX_IPV6SUPPORT
+              value: &#39;false&#39;
+            - name: FELIX_LOGFILEPATH
+              value: none
+            - name: FELIX_LOGSEVERITYSYS
+            - name: FELIX_LOGSEVERITYSCREEN
+              value: Warning
+            - name: FELIX_HEALTHENABLED
+              value: &#39;true&#39;
+            - name: FELIX_IPTABLESBACKEND
+              value: auto
+            - name: CALICO_STARTUP_LOGLEVEL
+              value: DEBUG
+          envFrom:
+            - configMapRef:
+                name: kubernetes-services-endpoint
+                optional: true
+          image: rancher/mirrored-calico-node:v3.22.0
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/calico-node
+                  - &#39;-shutdown&#39;
+          livenessProbe:
+            exec:
+              command:
+                - /bin/calico-node
+                - &#39;-felix-live&#39;
+            failureThreshold: 6
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: calico-node
+</code></pre></div>
+<ol>
+<li>Click Edit Yaml for the canal DaemonSet again.</li>
+<li>This time click Edit on the <code>kube-flannel</code> container.</li>
 <li>In the Command section add <code>--v=10</code> to the <code>Entrypoint</code> e.g.: <code>/opt/bin/flanneld --ip-masq --kube-subnet-mgr --v=10</code>, and click <code>Save</code>.</li>
 </ol>
+<p>```
+        - command:
+            - /opt/bin/flanneld
+            - '--ip-masq'
+            - '--kube-subnet-mgr'
+            - '--v=10'</p>
+<p>```</p>
 <h5 id="via-kubectl">Via kubectl</h5>
 <p>With a Kube Config file sourced for the relevant cluster, for a user with permission to edit the System project, the Canal component log level can be adjusted via kubectl, per the following process:</p>
 <ol>
@@ -8422,10 +8512,21 @@
         - --ip-masq
         - --kube-subnet-mgr
         - --v=10
-[...]</code></p>
-<ol>
-<li>Save the file.</li>
-</ol>
+[...]
+<div class="highlight"><pre><span></span><code>4. Save the file.
+
+After Setting up the Debug log level, it can be checked viewing the &#39;Canal&#39; pod logs:
+</code></pre></div>
+2024-07-10 07:11:15.447 [INFO][9] startup/startup.go 425: Early log level set to debug
+2024-07-10 07:11:15.447 [DEBUG][9] startup/load.go 124: No kubeconfig file at default path, leaving blank.
+2024-07-10 07:11:15.447 [DEBUG][9] startup/client.go 30: Using datastore type 'kubernetes'
+2024-07-10 07:11:15.450 [DEBUG][9] startup/k8s.go 628: Performing 'Get' for Node(foo)
+2024-07-10 07:11:15.450 [DEBUG][9] startup/node.go 118: Received Get request on Node type
+2024-07-10 07:11:15.483 [DEBUG][9] startup/k8s.go 98: Created k8s clientSet: &amp;{DiscoveryClient:0xc000c38ea0 admissionregistrationV1:0xc000609ad0 admissionregistrationV1beta1:0xc000609b30 internalV1alpha1:0xc000609b90 appsV1:0xc000609bf0 appsV1beta1:0xc000609c50 appsV1beta2:0xc000609cb0 authenticationV1:0xc000609d10 authenticationV1beta1:0xc000609d70 authorizationV1:0xc000609dd0 authorizationV1beta1:0xc000609e30 autoscalingV1:0xc000609f40 autoscalingV2beta1:0xc000609fc0 autoscalingV2beta2:0xc000410150 batchV1:0xc000410380 batchV1beta1:0xc0004105c0 certificatesV1:0xc0004107e0 certificatesV1beta1:0xc000410940 coordinationV1beta1:0xc000410a40 coordinationV1:0xc000410aa0 coreV1:0xc000410b00 discoveryV1:0xc000410b90 discoveryV1beta1:0xc000410bf0 eventsV1:0xc000410c50 eventsV1beta1:0xc000410cb0 extensionsV1beta1:0xc000410d30 flowcontrolV1alpha1:0xc000410d90 flowcontrolV1beta1:0xc000410e10 networkingV1:0xc000410ed0 networkingV1beta1:0xc000410f30 nodeV1:0xc000410fa0 nodeV1alpha1:0xc000411000 nodeV1beta1:0xc000411060 policyV1:0xc0004110e0 policyV1beta1:0xc000411140 rbacV1:0xc0004111c0 rbacV1beta1:0xc000411220 rbacV1alpha1:0xc000411290 schedulingV1alpha1:0xc0004112f0 schedulingV1beta1:0xc000411360 schedulingV1:0xc0004113c0 storageV1beta1:0xc000411420 storageV1:0xc000411480 storageV1alpha1:0xc0004114f0}
+2024-07-10 07:11:15.483 [DEBUG][9] startup/k8s.go 628: Performing 'Get' for ClusterInformation(default)
+2024-07-10 07:11:15.483 [DEBUG][9] startup/customresource.go 205: Get custom Kubernetes resource Key=ClusterInformation(default) Resource="ClusterInformations" Revision=""
+2024-07-10 07:11:15.483 [DEBUG][9] startup/customresource.go 216: Get custom Kubernetes resource by name Key=ClusterInformation(default) Name="default" Namespace="" Resource="ClusterInformations" Revision=""
+2024-07-10 07:11:15.487 [DEBUG][9] startup/migrate.go 820: major version is already &gt;= 3: v3.22.0</code></p>
 <h4 id="further-reading">Further reading</h4>
 <ul>
 <li><a href="https://docs.projectcalico.org/reference/node/configuration">Calico configuration documentation</a></li>
