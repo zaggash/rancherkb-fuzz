@@ -8300,7 +8300,7 @@
 <p>timekey 10m</p>
 <p>-------------------------------------------------------</p>
 <p>time range for chunk | timekey_wait | actual flush time</p>
-<p>12:00:00 - 12:09:59  | 60s                 | 12:11:00</p>
+<p>12:00:00 - 12:09:59  | 60s          | 12:11:00</p>
 <p>The two parameters are to be specified at the output/clusteroutput level to manage the logs flushing frequency from fluentd. At the creation, you have a section called <strong>Output Buffer</strong> ( <code>Logging &gt; Output &gt; Create &gt; Output Buffer</code> or <code>Logging &gt; ClusterOutput &gt; Create &gt; Output Buffer</code>) where this can be changed, or if you are using kubectl command line, then you can update the buffer as shown in the example below.</p>
 <div class="highlight"><pre><span></span><code>&lt;buffer tag,time&gt;
       @type file
