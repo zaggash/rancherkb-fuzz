@@ -22,7 +22,7 @@
     
     
       
-        <title>[Rancher] We need to run Antivirus on our cluster nodes. Would that impact the terms of service of our Rancher Support SLA? - SUSE KBs</title>
+        <title>Can we run Antivirus on our cluster nodes? - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rancher-we-need-to-run-antivirus-on-our-cluster-nodes-would-that-impact-the-terms-of-service-of-our-rancher-support-sla" class="md-skip">
+        <a href="#can-we-run-antivirus-on-our-cluster-nodes" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              [Rancher] We need to run Antivirus on our cluster nodes. Would that impact the terms of service of our Rancher Support SLA?
+              Can we run Antivirus on our cluster nodes?
             
           </span>
         </div>
@@ -4915,7 +4915,7 @@
         
   
   <span class="md-ellipsis">
-    [Rancher] What about support for Harvester, Longhorn, Rancher Desktop, Opni?
+    What about support for Harvester, Longhorn, Rancher Desktop, Opni?
   </span>
   
 
@@ -4978,7 +4978,7 @@
         
   
   <span class="md-ellipsis">
-    [Rancher] Is support for Prometheus/Grafana available only with a valid support subscription for Rancher 2.x?
+    Is support for Prometheus/Grafana available only with a valid Rancher support subscription?
   </span>
   
 
@@ -5239,7 +5239,7 @@
           
   
   <span class="md-ellipsis">
-    [Rancher] We need to run Antivirus on our cluster nodes. Would that impact the terms of service of our Rancher Support SLA?
+    Can we run Antivirus on our cluster nodes?
   </span>
   
 
@@ -5250,7 +5250,7 @@
         
   
   <span class="md-ellipsis">
-    [Rancher] We need to run Antivirus on our cluster nodes. Would that impact the terms of service of our Rancher Support SLA?
+    Can we run Antivirus on our cluster nodes?
   </span>
   
 
@@ -5275,6 +5275,15 @@
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
     </span>
   </a>
   
@@ -5435,7 +5444,7 @@
         
   
   <span class="md-ellipsis">
-    [Rancher] My clusters run on OpenStack. I do not see OpenStack listed in your Support Matrix. Does my Rancher Support cover clusters that are run on OpenStack?
+    Does Rancher Support covers OpenStack clusters?
   </span>
   
 
@@ -5540,7 +5549,7 @@
         
   
   <span class="md-ellipsis">
-    [Rancher] Can we request support for the management/upstream cluster and certain downstream clusters and not others?
+    Can we have a mix of unsupported and supported clusters at our choice/discretion?
   </span>
   
 
@@ -5582,7 +5591,7 @@
         
   
   <span class="md-ellipsis">
-    [Rancher] Is Rancher Support only for production environments?
+    Is Rancher Prime support only for production environments?
   </span>
   
 
@@ -7882,6 +7891,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -7905,13 +7923,17 @@
                   
 
 
-<h1 id="rancher-we-need-to-run-antivirus-on-our-cluster-nodes-would-that-impact-the-terms-of-service-of-our-rancher-support-sla">[Rancher] We need to run Antivirus on our cluster nodes. Would that impact the terms of service of our Rancher Support SLA?</h1>
+<h1 id="can-we-run-antivirus-on-our-cluster-nodes">Can we run Antivirus on our cluster nodes?</h1>
 <p>This document <strong>(000020477)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="resolution">Resolution</h3>
-<p>Rancher Support SLA is based on our QA validation and certification on default OS kernels for operating systems listed in the product <a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions">support matrices</a>.</p>
-<p>Antivirus software adds an unknown variable to the existing complexity of Kubernetes. Most of them have not yet kept up with newer technologies such as Kubernetes and have not reached a CNCF certified status. In environments where antivirus software had been enabled, Rancher Support has seen issues stemming from interfering actions from such software. As an example, there have been incidents where the antivirus software had pruned files in the Docker filesystem incorrectly, causing the Docker mounts to go corrupt.</p>
-<p>Issues resulting from third-party tools, such as antivirus and intrusion detection software, interfering with Docker or other necessary system calls are deemed resolved should disabling such tools restore functionality.</p>
-<p>Lastly, all certified configurations, as published in the product <a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions">support matrices</a>, are based on the default settings of individual components. Where a customer environment has deviated from certified configurations, Rancher Labs reserves the right to recommend the customer to revert to a certified configuration to resolve the reported issue.</p>
+<p><strong>Antivirus in Kubernetes: A Balancing Act</strong></p>
+<p>Running antivirus software on Kubernetes nodes introduces complexity. Traditional antivirus solutions may not be optimized for containerized environments like Kubernetes, and a lack of CNCF certification raises compatibility concerns. In some cases, Rancher has observed antivirus interfering with core functionalities like Docker, leading to issues.</p>
+<p><strong>Resolving Third-Party Tool Conflicts:</strong></p>
+<p>When troubleshooting issues in Kubernetes, consider if disabling antivirus software restores normal operation. This could indicate a conflict with essential system calls used by Docker or Kubernetes.</p>
+<p><strong>Certified Configurations: The Foundation for Stability</strong></p>
+<p>Published, certified configurations in the product <a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions">support matrices</a> provide a baseline for supported components in Kubernetes. Deviating from these configurations might require reverting back to a certified setup to ensure compatibility and resolve issues.</p>
+<h3 id="additional-information">Additional Information</h3>
+<p>faq</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
