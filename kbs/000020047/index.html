@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.29">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.30">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.76a95c52.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.3cba04c6.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -1198,6 +1198,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -1208,36 +1217,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#by-default-calico-reports-anonymous-telemetry-data-containing-the-calico-version-number-and-cluster-size-to-an-endpoint-at-projectcalicoorg-this-article-provides-details-on-how-to-disable-this-reporting" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further reading
+      By default, Calico reports anonymous telemetry data, containing the Calico version number and cluster size, to an endpoint at projectcalico.org. This article provides details on how to disable this reporting.
     </span>
   </a>
   
@@ -1245,6 +1227,24 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
   
 </li>
       
@@ -1382,7 +1382,7 @@
         
   
   <span class="md-ellipsis">
-    How to Determine the Rancher Leader, in Rancher v2.x
+    How to determine the Rancher Leader pod in Rancher v2.x
   </span>
   
 
@@ -7978,6 +7978,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -7988,36 +7997,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#by-default-calico-reports-anonymous-telemetry-data-containing-the-calico-version-number-and-cluster-size-to-an-endpoint-at-projectcalicoorg-this-article-provides-details-on-how-to-disable-this-reporting" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further reading
+      By default, Calico reports anonymous telemetry data, containing the Calico version number and cluster size, to an endpoint at projectcalico.org. This article provides details on how to disable this reporting.
     </span>
   </a>
   
@@ -8025,6 +8007,24 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
   
 </li>
       
@@ -8054,22 +8054,17 @@
 
 <h1 id="how-to-disable-calico-telemetry-in-a-kubernetes-cluster-with-the-canal-or-calico-cni">How to disable Calico Telemetry in a Kubernetes cluster with the Canal or Calico CNI</h1>
 <p>This document <strong>(000020047)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>A Kubernetes cluster, provisioned with the Calico or Canal CNI</p>
+<p>kubectl access to the cluster with a kubeconfig sourced for a global admin or cluster owner user</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>By default, Calico reports anonymous telemetry data, containing the Calico version number and cluster size, to an endpoint at projectcalico.org. This article provides details on how to disable this reporting.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>A Kubernetes cluster, provisioned with the Calico or Canal CNI</li>
-<li>kubectl access to the cluster with a kubeconfig sourced for a global admin or cluster owner user</li>
-</ul>
-<h4 id="resolution">Resolution</h4>
+<h4 id="by-default-calico-reports-anonymous-telemetry-data-containing-the-calico-version-number-and-cluster-size-to-an-endpoint-at-projectcalicoorg-this-article-provides-details-on-how-to-disable-this-reporting">By default, Calico reports anonymous telemetry data, containing the Calico version number and cluster size, to an endpoint at projectcalico.org.  This article provides details on how to disable this reporting.</h4>
+<h3 id="resolution">Resolution</h3>
 <p>To disable the Calico telemetry reporting, execute the following command against the cluster:</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>patch<span class="w"> </span>felixconfigurations.crd.projectcalico.org<span class="w"> </span>default<span class="w">  </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;usageReportingEnabled&quot;: false}}&#39;</span><span class="w"> </span>--type<span class="o">=</span>merge
+<div class="highlight"><pre><span></span><code>kubectl patch felixconfigurations.crd.projectcalico.org default  -p &#39;{&quot;spec&quot;:{&quot;usageReportingEnabled&quot;: false}}&#39; --type=merge
 </code></pre></div>
-<h4 id="further-reading">Further reading</h4>
-<ul>
-<li><a href="https://docs.projectcalico.org/reference/felix/configuration">Calico configuration documentation</a></li>
-</ul>
+<h3 id="additional-information">Additional Information</h3>
+<p><a href="https://docs.projectcalico.org/reference/felix/configuration">Calico configuration documentation</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 

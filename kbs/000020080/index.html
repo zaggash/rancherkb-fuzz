@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.29">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.30">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.76a95c52.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.3cba04c6.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -1282,7 +1282,7 @@
         
   
   <span class="md-ellipsis">
-    How to Determine the Rancher Leader, in Rancher v2.x
+    How to determine the Rancher Leader pod in Rancher v2.x
   </span>
   
 
@@ -1742,6 +1742,15 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
@@ -7969,6 +7978,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8036,6 +8054,8 @@
 
 <h1 id="how-can-i-tell-whether-my-app-is-installed-with-helm-v2-or-helm-v3">How can I tell whether my app is installed with Helm v2 or Helm v3?</h1>
 <p>This document <strong>(000020080)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher 2.7.x and 2.8.x</p>
 <h3 id="situation">Situation</h3>
 <h4 id="question">Question</h4>
 <p>How can I tell whether my app was installed with Helm v2 or Helm v3?</p>
@@ -8044,8 +8064,7 @@
 <li>kubectl access to the cluster the app is deployed in</li>
 </ul>
 <h4 id="answer">Answer</h4>
-<p>The easiest way is to check what version of Helm was used to deploy resources is to look at the <code>heritage</code> label.
-For example, to check whether Rancher was installed via Helm v2 or v3, run:</p>
+<p>The easiest way is to check what version of Helm was used to deploy resources is to look at the <code>heritage</code> label. For example, to check whether Rancher was installed via Helm v2 or v3, run:</p>
 <div class="highlight"><pre><span></span><code>kubectl get deployment -n cattle-system rancher -o yaml | grep heritage
 </code></pre></div>
 <p>The heritage version defines what version of helm was used to install this chart.</p>
