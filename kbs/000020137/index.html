@@ -22,7 +22,7 @@
     
     
       
-        <title>Why does `kubectl get` show a different API group for a resource to the group originally applied in the resource specification? - SUSE KBs</title>
+        <title>Why Does kubectl get Show a Different API Group for a Resource Than Specified? - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#why-does-kubectl-get-show-a-different-api-group-for-a-resource-to-the-group-originally-applied-in-the-resource-specification" class="md-skip">
+        <a href="#why-does-kubectl-get-show-a-different-api-group-for-a-resource-than-specified" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Why does `kubectl get` show a different API group for a resource to the group originally applied in the resource specification?
+              Why Does kubectl get Show a Different API Group for a Resource Than Specified?
             
           </span>
         </div>
@@ -2803,7 +2803,7 @@
           
   
   <span class="md-ellipsis">
-    Why does `kubectl get` show a different API group for a resource to the group originally applied in the resource specification?
+    Why Does kubectl get Show a Different API Group for a Resource Than Specified?
   </span>
   
 
@@ -2814,7 +2814,7 @@
         
   
   <span class="md-ellipsis">
-    Why does `kubectl get` show a different API group for a resource to the group originally applied in the resource specification?
+    Why Does kubectl get Show a Different API Group for a Resource Than Specified?
   </span>
   
 
@@ -2842,38 +2842,32 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#question" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Question
+      Resolution
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#answer" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
     <span class="md-ellipsis">
-      Answer
+      Cause
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Further Reading
+      Additional Information
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -7954,38 +7948,32 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#question" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Question
+      Resolution
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#answer" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
     <span class="md-ellipsis">
-      Answer
+      Cause
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Further Reading
+      Additional Information
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8013,28 +8001,29 @@
                   
 
 
-<h1 id="why-does-kubectl-get-show-a-different-api-group-for-a-resource-to-the-group-originally-applied-in-the-resource-specification">Why does `kubectl get` show a different API group for a resource to the group originally applied in the resource specification?</h1>
+<h1 id="why-does-kubectl-get-show-a-different-api-group-for-a-resource-than-specified">Why Does kubectl get Show a Different API Group for a Resource Than Specified?</h1>
 <p>This document <strong>(000020137)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<h4 id="question">Question</h4>
-<p>The Kubernetes API group and version returned for a resource from the Kubernetes API (using for example the <code>kubectl</code> CLI) may show as different to the original group and version defined in the resource specification via the <code>apiVersion</code>. For example, when creating a Deployment resource in the v1 version of the apps API group, the output of <code>kubectl get deployment -o yaml</code> may show the Deployment resource in the v1beta1 version of the extensions API group, per the below:</p>
-<p>Original Deployment YAML:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span>
-<span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
+<p>Sometimes, when you use the <code>kubectl get</code> command to retrieve Kubernetes resources, the API group and version shown may differ from what you originally specified in the resource specification. For instance, you might create a Deployment resource using the <code>apps/v1</code> API group, but when you check the resource with <code>kubectl get deployment -o yaml</code>, it appears under the <code>extensions/v1beta1</code> API group:</p>
+<p><strong>Original Deployment YAML:</strong></p>
+<div class="highlight"><pre><span></span><code>apiVersion: apps/v1
+kind: Deployment
+[...]
 </code></pre></div>
-<p>Output of <code>kubectl get deployment -o yaml</code> for this Deployment resource post-creation:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">extensions/v1beta1</span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span>
-<span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
+<div class="highlight"><pre><span></span><code>Output of &#39;kubectl get deployment -o yaml&#39;:
 </code></pre></div>
-<p>This article explains the cause of this behaviour and how to ensure resources are returned by the API under a specific API group and version.</p>
-<h4 id="answer">Answer</h4>
-<p>A Kubernetes resource type, such as Deployment, can exist within multiple API groups. Where this is the case, and no API group and version is specified in the command, <code>kubectl</code> will use the first group listed in the discovery docs published by the Kubernetes API server that you are querying. In the instance of the above example, the Deployment resource exists under boths the <code>apps/v1</code> and <code>extensions/v1beta1</code> API groups, but for backwards compatability the API server lists this first under the <code>extensions/v1beta1</code> group.</p>
-<p>To ensure that the resource retrieved is in a particular API group, you should fully qualify the resource type in the <code>kubectl</code> command, i.e. to query Deployment resources in the apps API group run <code>kubectl get deployments.apps -o yaml</code>. Additionally you can provide an explicit version of the API group, i.e. to query Deployment resources in the v1 version of the apps API group run <code>kubectl get deployments.v1.apps -o yaml</code>.</p>
-<h4 id="further-reading">Further Reading</h4>
-<p>You can find a good discussion on this behaviour in the Kubernetes GitHub Issue <a href="https://github.com/kubernetes/kubernetes/issues/58131">#58131</a>.</p>
-<p>The Kubernetes developer documentation on API resource versioning can be found <a href="https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api_changes.md">here</a>.</p>
+<div class="highlight"><pre><span></span><code>apiVersion: extensions/v1beta1
+kind: Deployment
+[...]
+</code></pre></div>
+<h3 id="resolution">Resolution</h3>
+<p>Kubernetes resources, like Deployments, can exist in multiple API groups. If you don't specify an API group and version when using <code>kubectl</code>, it defaults to the first group listed in the Kubernetes API server's discovery documentation. In the current example, the Deployment resource is available under both the <code>apps/v1</code> and <code>extensions/v1beta1</code> API groups. For backward compatibility, the API server might list <code>extensions/v1beta1</code> first.</p>
+<p>To ensure that <code>kubectl</code> retrieves the resource from the desired API group, you can fully qualify the resource type. For example, to get Deployment resources from the <code>apps</code> API group, use ' <code>kubectl get deployments.apps -o yaml'</code>. To specify a particular version, you can use ' <code>kubectl get deployments.v1.apps -o yaml'</code>.</p>
+<h3 id="cause">Cause</h3>
+<p>The issue arises because Kubernetes resources can exist in multiple API groups and versions. If you don't specify the API group and version when using <code>kubectl</code>, it defaults to the first group listed in the API server's discovery documentation. This can lead to the resource being displayed under a different API group or version than originally specified, mainly due to backward compatibility.</p>
+<h3 id="additional-information">Additional Information</h3>
+<p>For more details on this behavior, you can check the <a href="https://github.com/kubernetes/kubernetes/issues/58131">Kubernetes GitHub Issue #58131</a>.</p>
+<p>The Kubernetes developer documentation on API resource versioning provides additional insights and can be found here.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
