@@ -2458,6 +2458,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -2468,24 +2477,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#this-article-details-how-to-enable-http-headers-with-underscores-on-the-nginx-ingress-controller-in-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-kubernetes-clusters" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      This article details how to enable HTTP headers with underscores on the nginx-ingress controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters.
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
+      </ul>
+    </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -2517,9 +2522,13 @@
     </nav>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
   
 </li>
       
@@ -5303,7 +5312,7 @@
         
   
   <span class="md-ellipsis">
-    [Rancher] How (quickly) does Rancher respond to / resolve industry-reported vulnerabilities?
+    How (quickly) does Rancher respond to / resolve industry-reported vulnerabilities?
   </span>
   
 
@@ -6123,6 +6132,27 @@
   
   <span class="md-ellipsis">
     How to test Rancher RC/Alpha versions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000020724/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to set up ACE for HashiCorp Vault
   </span>
   
 
@@ -7972,6 +8002,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -7982,24 +8021,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#this-article-details-how-to-enable-http-headers-with-underscores-on-the-nginx-ingress-controller-in-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-kubernetes-clusters" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      This article details how to enable HTTP headers with underscores on the nginx-ingress controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters.
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
+      </ul>
+    </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -8031,9 +8066,13 @@
     </nav>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
   
 </li>
       
@@ -8063,52 +8102,51 @@
 
 <h1 id="how-to-enable-nginx-support-for-http-headers-with-underscores">How to enable NGINX support for HTTP headers with underscores</h1>
 <p>This document <strong>(000020119)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>This article details how to enable HTTP headers with underscores on the nginx-ingress controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h3 id="environment">Environment</h3>
 <ul>
-<li>A Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x</li>
+<li>A Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI or Rancher.</li>
 <li>For RKE provisioned clusters, you will require the RKE binary and access to the <a href="https://rancher.com/docs/rke/latest/en/config-options/">cluster configuration YAML</a>, <a href="https://rancher.com/docs/rke/latest/en/installation/#kubernetes-cluster-state">rkestate file</a> and kubectl access with the kubeconfig for the cluster sourced.</li>
-<li>For Rancher v2.x provisioned clusters, you will require <a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/cluster-project-roles/">cluster owner or global admin permissions in Rancher</a></li>
+<li>For Rancher provisioned clusters, you will require <a href="https://ranchermanager.docs.rancher.com/v2.8/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles">cluster owner or global admin permissions in Rancher</a></li>
 </ul>
-<h4 id="resolution">Resolution</h4>
-<h5 id="configuration-for-rke-provisioned-clusters">Configuration for RKE provisioned clusters</h5>
+<h3 id="situation">Situation</h3>
+<h4 id="this-article-details-how-to-enable-http-headers-with-underscores-on-the-nginx-ingress-controller-in-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-kubernetes-clusters">This article details how to enable HTTP headers with underscores on the nginx-ingress controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters.</h4>
+<h3 id="resolution">Resolution</h3>
+<h5 id="configuration-for-rke-provisioned-clusters"><strong>Configuration for RKE provisioned clusters</strong></h5>
 <ul>
-<li>Edit the cluster configuration YAML file to include the <code>enable-underscores-in-headers: true</code> option for the ingress, as follows:</li>
+<li>Edit the cluster configuration YAML file to include the " <code>enable-underscores-in-headers: true"</code> option for the ingress, as follows:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="nt">ingress</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
-<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">enable-underscores-in-headers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<div class="highlight"><pre><span></span><code>ingress:
+    provider: nginx
+    options:
+      enable-underscores-in-headers: true
 </code></pre></div>
 <ul>
-<li>Apply the changes to the cluster, by invoking <code>rke up</code>:</li>
+<li>Apply the changes to the cluster, by invoking " <code>rke up"</code>:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>rke<span class="w"> </span>up<span class="w"> </span>--config<span class="w"> </span>&lt;cluster<span class="w"> </span>configuration<span class="w"> </span>yaml<span class="w"> </span>file&gt;
+<div class="highlight"><pre><span></span><code>rke up --config &lt;cluster configuration yaml file&gt;
 </code></pre></div>
 <ul>
 <li>Recycle the nginx pods in-order to pick up new argument:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>pod<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>ingress-nginx<span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span>--no-headers<span class="w"> </span>-o<span class="w"> </span>name<span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>kubectl<span class="w"> </span>delete<span class="w"> </span><span class="nv">$pod</span><span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="p">;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Sleeping for 5 seconds&quot;</span><span class="p">;</span><span class="w"> </span>sleep<span class="w"> </span><span class="m">5</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name); do kubectl delete $pod -n ingress-nginx; echo &quot;Sleeping for 5 seconds&quot;; sleep 5; done
 </code></pre></div>
 <ul>
 <li>Verify the new configuration:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>pod<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>ingress-nginx<span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span>--no-headers<span class="w"> </span>-o<span class="w"> </span>name<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F<span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span><span class="s1">&#39;{print $2}&#39;</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;Checking </span><span class="nv">$pod</span><span class="s2"> .... &quot;</span><span class="p">;</span><span class="w"> </span>kubectl<span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$pod</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;cat /etc/nginx/nginx.conf | grep underscores_in_headers | grep on &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep underscores_in_headers | grep on &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
 </code></pre></div>
-<h5 id="configuration-for-rancher-provisioned-clusters">Configuration for Rancher provisioned clusters</h5>
+<h5 id="configuration-for-rancher-provisioned-clusters"><strong>Configuration for Rancher provisioned clusters</strong></h5>
 <ul>
 <li>Login into the Rancher UI.</li>
 <li>Go to Global -&gt; Clusters -&gt; Cluster Name</li>
 <li>From the Cluster Dashboard edit the cluster by Clicking on "⋮" then select Edit.</li>
 <li>Click "Edit as YAML".</li>
-<li>Include the <code>enable-underscores-in-headers</code> option for the ingress, as follows:</li>
+<li>Include the " <code>enable-underscores-in-headers"</code> option for the ingress, as follows:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="nt">ingress</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
-<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">enable-underscores-in-headers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<div class="highlight"><pre><span></span><code>ingress:
+    provider: nginx
+    options:
+      enable-underscores-in-headers: true
 </code></pre></div>
 <ul>
 <li>Click "Save" at the bottom of the page.</li>
@@ -8116,11 +8154,17 @@
 <li>Go back to the Cluster Dashboard and click "Launch kubectl".</li>
 <li>Run the following inside the kubectl CLI to recycle the nginx pods in-order to pick up new argument:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>pod<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>ingress-nginx<span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span>--no-headers<span class="w"> </span>-o<span class="w"> </span>name<span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>kubectl<span class="w"> </span>delete<span class="w"> </span><span class="nv">$pod</span><span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="p">;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Sleeping for 5 seconds&quot;</span><span class="p">;</span><span class="w"> </span>sleep<span class="w"> </span><span class="m">5</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name); do kubectl delete $pod -n ingress-nginx; echo &quot;Sleeping for 5 seconds&quot;; sleep 5; done
 </code></pre></div>
-<p>- Run the following inside the kubectl CLI to verify the new argument:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>pod<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>ingress-nginx<span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span>--no-headers<span class="w"> </span>-o<span class="w"> </span>name<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F<span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span><span class="s1">&#39;{print $2}&#39;</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;Checking </span><span class="nv">$pod</span><span class="s2"> .... &quot;</span><span class="p">;</span><span class="w"> </span>kubectl<span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$pod</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;cat /etc/nginx/nginx.conf | grep underscores_in_headers | grep on &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+<ul>
+<li>Run the following inside the kubectl CLI to verify the new argument:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep underscores_in_headers | grep on &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
 </code></pre></div>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+<h3 id="cause">Cause</h3>
+<p>Underscore in HTTP headers is not allowed by the Nginx Ingress by default. Refer to <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#enable-underscores-in-headers">enable-underscores-in-headers</a>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 

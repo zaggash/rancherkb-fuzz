@@ -5188,7 +5188,7 @@
         
   
   <span class="md-ellipsis">
-    [Rancher] How (quickly) does Rancher respond to / resolve industry-reported vulnerabilities?
+    How (quickly) does Rancher respond to / resolve industry-reported vulnerabilities?
   </span>
   
 
@@ -6008,6 +6008,27 @@
   
   <span class="md-ellipsis">
     How to test Rancher RC/Alpha versions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000020724/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to set up ACE for HashiCorp Vault
   </span>
   
 
@@ -8004,9 +8025,9 @@
 <h1 id="reduce-memory-and-cpu-footprint-of-prometheus-monitoring-operator">Reduce Memory and CPU footprint of Prometheus Monitoring Operator</h1>
 <p>This document <strong>(000020733)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>rancher-monitoring: <strong>100.1.3+up19.0.3</strong></p>
+<p>rancher-monitoring chart: v100.1.3+up19.0.3</p>
 <h3 id="situation">Situation</h3>
-<p>On a fresh install of rancher-monitoring, the Prometheus monitoring operator consumes high CPU and Memory resources without any custom Prometheus CRDs configured. You would notice the following error messages on the Prometheus Operator Pod very frequently.</p>
+<p>On a fresh install of rancher-monitoring, the Prometheus monitoring operator consumes high CPU and Memory resources without any custom Prometheus CRDs configured. You would notice the following messages on the Prometheus Operator Pod very frequently.</p>
 <div class="highlight"><pre><span></span><code>$ kubectl logs -n cattle-monitoring-system rancher-monitoring-operator-784c69bc54-dvndg -f
 level=info ts=2022-07-26T09:34:55.46606005Z caller=operator.go:1224 component=prometheusoperator msg=&quot;sync prometheus&quot; key=cattle-monitoring-system/rancher-monitoring-prometheus
 level=info ts=2022-07-26T09:34:55.612269913Z caller=operator.go:747 component=alertmanageroperator msg=&quot;sync alertmanager&quot; key=cattle-monitoring-system/rancher-monitoring-alertmanager
@@ -8016,7 +8037,7 @@ level=info ts=2022-07-26T09:34:59.042606472Z caller=operator.go:747 component=al
 level=info ts=2022-07-26T09:34:59.043983987Z caller=operator.go:1224 component=prometheusoperator msg=&quot;sync prometheus&quot; key=cattle-monitoring-system/rancher-monitoring-prometheus
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
-<p>Add SecretListWatchSelector to reduce memory and CPU footprint.</p>
+<p>Add <strong>SecretListWatchSelector</strong> to reduce memory and CPU footprint.</p>
 <div class="highlight"><pre><span></span><code>prometheusOperator:
    secretFieldSelector: &quot;type!=helm.sh/release.v1&quot;
 </code></pre></div>
