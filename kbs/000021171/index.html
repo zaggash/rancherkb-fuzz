@@ -7920,6 +7920,48 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021513/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RKE End of Life - what, when, why?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021518/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RKE to RKE2 replatforming - instructions and FAQs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -8007,25 +8049,11 @@
 <h1 id="enable-kube-audit-logs-for-downstream-rke2-clusters">Enable kube-audit logs for downstream RKE2 clusters</h1>
 <p>This document <strong>(000021171)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Downstream RKE2</p>
+<p>A Rancher-provisioned RKE2 cluster</p>
 <h3 id="situation">Situation</h3>
-<p>Unlike RKE1, RKE2 does not automatically enable kube-audit logs with a default policy but some environments require kube-audit logs to be enabled.</p>
+<p>Unlike RKE1, RKE2 does not automatically enable kube-audit logs with a default policy but some environments require the kube-audit logs to be enabled.</p>
 <h3 id="resolution">Resolution</h3>
-<p>Edit the RKE2 cluster config as yaml and add the option audit-policy-file followed by the json of your policy to the machineGlobalConfig to turn on auditing.</p>
-<p>Here is an example of the change:</p>
-<div class="highlight"><pre><span></span><code>    machineGlobalConfig:
-      audit-policy-file: &gt;-
-        {&quot;apiVersion&quot;:&quot;audit.k8s.io/v1&quot;,&quot;kind&quot;:&quot;Policy&quot;,&quot;omitStages&quot;:[&quot;RequestReceived&quot;],&quot;rules&quot;:[{&quot;level&quot;:&quot;RequestResponse&quot;,&quot;resources&quot;:[{&quot;group&quot;:&quot;&quot;,&quot;resources&quot;:[&quot;pods&quot;]}]},{&quot;level&quot;:&quot;Metadata&quot;,&quot;resources&quot;:[{&quot;group&quot;:&quot;&quot;,&quot;resources&quot;:[&quot;pods/log&quot;,&quot;pods/status&quot;]}]},{&quot;level&quot;:&quot;None&quot;,&quot;resources&quot;:[{&quot;group&quot;:&quot;&quot;,&quot;resources&quot;:[&quot;configmaps&quot;],&quot;resourceNames&quot;:[&quot;controller-leader&quot;]}]},{&quot;level&quot;:&quot;None&quot;,&quot;users&quot;:[&quot;system:kube-proxy&quot;],&quot;verbs&quot;:[&quot;watch&quot;],&quot;resources&quot;:[{&quot;group&quot;:&quot;&quot;,&quot;resources&quot;:[&quot;endpoints&quot;,&quot;services&quot;]}]},{&quot;level&quot;:&quot;None&quot;,&quot;userGroups&quot;:[&quot;system:authenticated&quot;],&quot;nonResourceURLs&quot;:[&quot;/api*&quot;,&quot;/version&quot;]},{&quot;level&quot;:&quot;Request&quot;,&quot;resources&quot;:[{&quot;group&quot;:&quot;&quot;,&quot;resources&quot;:[&quot;configmaps&quot;]}],&quot;namespaces&quot;:[&quot;kube-system&quot;]},{&quot;level&quot;:&quot;Metadata&quot;,&quot;resources&quot;:[{&quot;group&quot;:&quot;&quot;,&quot;resources&quot;:[&quot;secrets&quot;,&quot;configmaps&quot;]}]},{&quot;level&quot;:&quot;Request&quot;,&quot;resources&quot;:[{&quot;group&quot;:&quot;&quot;},{&quot;group&quot;:&quot;extensions&quot;}]},{&quot;level&quot;:&quot;Metadata&quot;,&quot;omitStages&quot;:[&quot;RequestReceived&quot;]}]}
-      cni: calico
-      disable-kube-proxy: false
-      etcd-expose-metrics: false
-      profile: null
-</code></pre></div>
-<p>This will add the following defaults to the kube-apiserver running on RKE2:</p>
-<div class="highlight"><pre><span></span><code>--audit-policy-file=/var/lib/rancher/rke2/etc/config-files/audit-policy-file --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log
-</code></pre></div>
-<p>The audit policy is store in /var/lib/rancher/rke2/etc/config-files/audit-policy-file. It is strongly recommended to only modify the file via the Rancher UI so that it is not overwritten next time you make other cluster changes.</p>
-<p>The audit logs can be found in /var/lib/rancher/rke2/server/logs/audit.log</p>
+<p>Details on how to enable the kube-audit logs for a downstream RKE2 cluster can be found within the Rancher documentation at https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log-in-downstream-clusters</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
