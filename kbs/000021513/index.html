@@ -5898,27 +5898,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020695/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    How to recover a cluster when all control plane nodes have failed
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020699/" class="md-nav__link">
         
   
@@ -8073,7 +8052,7 @@
 <p>As part of our ongoing efforts to ensure our technology solutions remain at the forefront of industry standards, we need to inform our customers about an important update regarding the Rancher Kubernetes Engine (RKE).</p>
 <p>RKE was first released on 25th January 2018. Now, 6 Years and 625 releases later, we’re beginning the last chapter in the journey of RKE, and for many users a new chapter using RKE2 and K3S.</p>
 <p>RKE has been a trusted solution, but the evolving landscape of <a href="https://www.suse.com/c/rancher_blog/demystifying-container-orchestration-a-beginners-guide/">container orchestration</a> requires enhanced security, scalability and simplicity</p>
-<p>With the release of <a href="https://github.com/rancher/rke">Rancher Kubernetes Engine (RKE)</a> 1.6.0, we are informing customers that RKE will be maintained for two more versions after 1.6.0, targeting the release window of July 2025. Therefore, please note that <strong>RKE will reach End of life 31st, July 2025 meaning RKE customers must re-platform to RKE2 or K3S.</strong></p>
+<p>With the release of <a href="https://github.com/rancher/rke">Rancher Kubernetes Engine (RKE)</a> 1.6.0, we are informing customers that RKE will be maintained for two more versions after 1.6.0, targeting the release window of July 2025. Therefore, please note that <strong>RKE will reach End of life 31st, July 2025 meaning RKE customers must re-platform to RKE2 or K3S.</strong></p>
 <h3 id="resolution">Resolution</h3>
 <p><strong>Transition to RKE2 or K3S</strong></p>
 <p>RKE uses Docker, which is no longer maintained as a container runtime by Kubernetes. This is critical as Docker’s removal from the Kubernetes project (as of release 1.24) necessitates a shift. RKE2 adopts containerd, providing a more secure and efficient environment. This change not only enhances the stability of container workloads but also aligns with the latest industry standards for container management. RKE2 and K3S offer a more secure, efficient, and future-proof environment for your Kubernetes needs.</p>
@@ -8094,7 +8073,7 @@
 <p>What does replatforming mean?</p>
 <p>Replatforming means that you create a new RKE2 cluster, and migrate the workloads from your existing RKE cluster to the new one.</p>
 <p>Where do I find the documentation?</p>
-<p>We have published the following official guide <a href="https://suse.my.salesforce.com/sfc/p/1i000000gLOd/a/Tr000006UIs5/ldV89wCpPcSj39lok5emN.TOUkda8zeUHFsSwAyTWyk">here</a>. It is also part of the following article: <link to RKE to RKE2 replatforming - instructions and FAQs></p>
+<p>We have published the following official guide <a href="https://suse.my.salesforce.com/sfc/p/1i000000gLOd/a/Tr000006UIs5/ldV89wCpPcSj39lok5emN.TOUkda8zeUHFsSwAyTWyk">here</a>. It is also part of the following article: <a href="https://www.suse.com/support/kb/doc/?id=000021518">RKE to RKE2 replatforming - instructions and FAQs</a></p>
 <p>Is there tooling that will help me?</p>
 <p>Currently, a tool called <a href="https://github.com/galal-hussein/cattle-drive/tree/main">cattle-drive</a> has been developed to help migrate Rancher-required objects from one downstream cluster to another.</p>
 <p>What services SUSE can offer in regards to the replatforming?</p>
