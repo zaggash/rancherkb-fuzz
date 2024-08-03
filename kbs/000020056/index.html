@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.30">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.31">
     
     
       
@@ -1515,27 +1515,6 @@
   
   <span class="md-ellipsis">
     The Rancher v2.x Windows log collector script
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020065/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    401 Unauthorized error using the Rancher2 Terraform Provider v1.4.0 with `access_key` and `secret_key` authentication
   </span>
   
 
@@ -6928,6 +6907,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021018/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to change the default helm values for the Rancher Logging operator
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021022/" class="md-nav__link">
         
   
@@ -7185,6 +7185,27 @@
   
   <span class="md-ellipsis">
     Configuring Rancher Backup to use GCP Cloud Storage as Remote Storage Location
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021207/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to upgrade an RKE2 downstream cluster using curl
   </span>
   
 
@@ -8090,15 +8111,16 @@
 <h3 id="environment">Environment</h3>
 <p>- SUSE Rancher 2.7.x</p>
 <p>- SUSE Rancher 2.8.x</p>
+<p>- SUSE Rancher 2.9.x</p>
 <h3 id="situation">Situation</h3>
 <h4 id="during-troubleshooting-it-may-be-useful-to-know-which-of-the-rancher-server-pods-running-as-part-of-the-rancher-deployment-in-the-cattle-system-namespace-is-the-current-leader-and-this-article-details-the-steps-to-determine-this">During troubleshooting it may be useful to know which of the Rancher server pods, running as part of the <code>rancher</code> Deployment in the <code>cattle-system</code> namespace, is the current leader, and this article details the steps to determine this.</h4>
 <h3 id="resolution">Resolution</h3>
 <h4 id="to-find-the-rancher-leader-pod-use-either-of-the-following-ways-from-rancher-ui">To find the Rancher leader pod use either of the following ways :     <strong>From Rancher UI :</strong></h4>
 <p>1. Navigate to the Rancher local cluster</p>
-<p>2. Click the Projects/Namespaces tab, and select the System project.</p>
-<p>3. Under the Storage section -&gt; select ConfigMaps</p>
-<p>4. Locate the <code>cattle-controllers</code> ConfigMap, under the <code>kube-system</code> namespace.</p>
-<p>5. Expand the Annotations section and note the current leader pod name in the <code>holderIdentity</code> field.</p>
+<p>2. Click the More Resources on left side menu.</p>
+<p>3. Under the Coordination section -&gt; select Leases</p>
+<p>4. Locate the <code>cattle-controllers</code> Lease, under the <code>kube-system</code> namespace.</p>
+<p>5. Expand the spec section and note the current leader pod name in the <code>holderIdentity</code> field.</p>
 <p><strong>From kubectl shell :</strong></p>
 <p>-  Execute the below script from the rancher local cluster kubectl shell :</p>
 <div class="highlight"><pre><span></span><code>curl https://raw.githubusercontent.com/rancherlabs/support-tools/master/troubleshooting-scripts/determine-leader/rancher2_determine_leader.sh | sh

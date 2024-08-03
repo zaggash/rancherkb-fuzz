@@ -14,11 +14,11 @@
         <link rel="prev" href="../000021198/">
       
       
-        <link rel="next" href="../000021213/">
+        <link rel="next" href="../000021207/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.30">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.31">
     
     
       
@@ -1409,27 +1409,6 @@
   
   <span class="md-ellipsis">
     The Rancher v2.x Windows log collector script
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020065/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    401 Unauthorized error using the Rancher2 Terraform Provider v1.4.0 with `access_key` and `secret_key` authentication
   </span>
   
 
@@ -6822,6 +6801,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021018/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to change the default helm values for the Rancher Logging operator
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021022/" class="md-nav__link">
         
   
@@ -7120,6 +7120,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -7150,6 +7159,27 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021207/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to upgrade an RKE2 downstream cluster using curl
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -7966,6 +7996,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8009,9 +8048,12 @@
 
 <h1 id="configuring-rancher-backup-to-use-gcp-cloud-storage-as-remote-storage-location">Configuring Rancher Backup to use GCP Cloud Storage as Remote Storage Location</h1>
 <p>This document <strong>(000021206)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>A Rancher v2.5+ instance</p>
 <h3 id="situation">Situation</h3>
-<p>Use Google Cloud Storage as the S3 backend to store Rancher Backup Operator backups offsite.</p>
+<p>Configuration of Google Cloud Storage as the S3 backend to store <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery">Rancher Backup Operator</a> backups.</p>
 <h3 id="resolution">Resolution</h3>
+<p>To configure the Rancher Backup Operator with Google Cloud Storage, perform the following steps:</p>
 <ol>
 <li>
 <p>Create a new bucket in <a href="https://console.cloud.google.com/storage/browser?referrer=search&amp;project=elite-protocol-319303">Google Cloud Storage</a></p>
