@@ -3676,37 +3676,46 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      Resolution
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#executing-the-test" class="md-nav__link">
     <span class="md-ellipsis">
       Executing the test
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Executing the test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
     </span>
   </a>
   
@@ -3714,15 +3723,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
   
 </li>
       
@@ -8011,37 +8011,46 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      Resolution
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#executing-the-test" class="md-nav__link">
     <span class="md-ellipsis">
       Executing the test
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Executing the test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
     </span>
   </a>
   
@@ -8049,15 +8058,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
   
 </li>
       
@@ -8078,38 +8078,36 @@
 
 <h1 id="how-to-test-websocket-connections-to-rancher-v2x">How to test websocket connections to Rancher v2.x</h1>
 <p>This document <strong>(000020189)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher v2.x</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
 <p>Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>A running instance of Rancher server v2.x, either <a href="https://rancher.com/docs/rancher/v2.x/en/installation/single-node/">a single node instance</a> or <a href="https://rancher.com/docs/rancher/v2.x/en/installation/ha/">High Availability (HA) cluster</a>.</li>
-</ul>
-<h4 id="executing-the-test">Executing the test</h4>
+<h3 id="resolution">Resolution</h3>
+<h2 id="executing-the-test">Executing the test</h2>
 <p>First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.</p>
 <p>In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">TOKEN</span><span class="o">=</span>&lt;your<span class="w"> </span>token<span class="w"> </span>here&gt;
-<span class="nb">export</span><span class="w"> </span><span class="nv">FQDN</span><span class="o">=</span>&lt;your<span class="w"> </span>Rancher<span class="w"> </span>fully<span class="w"> </span>qualified<span class="w"> </span>domain<span class="w"> </span>name<span class="w"> </span>here&gt;
+<div class="highlight"><pre><span></span><code>export TOKEN=&lt;your token here&gt;
+export FQDN=&lt;your Rancher fully qualified domain name here&gt;
 </code></pre></div>
 <p>Next execute the test using the following command:</p>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>-i<span class="w"> </span>-N<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--http1.1<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Connection: Upgrade&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Upgrade: websocket&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Sec-WebSocket-Version: 13&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Host: </span><span class="nv">$FQDN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-k<span class="w"> </span>https://<span class="nv">$FQDN</span>/v3/subscribe
+<div class="highlight"><pre><span></span><code>curl -s -i -N \
+  --http1.1 \
+  -H &quot;Connection: Upgrade&quot; \
+  -H &quot;Upgrade: websocket&quot; \
+  -H &quot;Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==&quot; \
+  -H &quot;Sec-WebSocket-Version: 13&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -H &quot;Host: $FQDN&quot; \
+  -k https://$FQDN/v3/subscribe
 </code></pre></div>
 <p>If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.</p>
 <p>The below is an example of the output from the test upon a successfully established websocket:</p>
-<div class="highlight"><pre><span></span><code><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">101</span> <span class="ne">Switching Protocols</span>
-<span class="na">Date</span><span class="o">:</span> <span class="l">Tue, 21 Jan 2020 04:54:05 GMT</span>
-<span class="na">Connection</span><span class="o">:</span> <span class="l">upgrade</span>
-<span class="na">Server</span><span class="o">:</span> <span class="l">openresty/1.15.8.1</span>
-<span class="na">Upgrade</span><span class="o">:</span> <span class="l">websocket</span>
-<span class="na">Sec-WebSocket-Accept</span><span class="o">:</span> <span class="l">qGEgH3En71di5rrssAZTmtRTyFk=</span>
+<div class="highlight"><pre><span></span><code>HTTP/1.1 101 Switching Protocols
+Date: Tue, 21 Jan 2020 04:54:05 GMT
+Connection: upgrade
+Server: openresty/1.15.8.1
+Upgrade: websocket
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
 {&quot;name&quot;:&quot;resource.change&quot;,&quot;data&quot;:{&quot;baseType&quot;:&quot;listenConfig&quot;,&quot;created&quot;:&quot;2020-01-04T22:34:26Z&quot;,&quot;createdTS&quot;:1578177266000,&quot;creatorId&quot;:null,&quot;enabled&quot;:true,&quot;generatedCerts&quot;:{&quot;local/10.42.0.7&quot;:&quot;*CERT_CONTENTS_REDACTED*&quot;},&quot;id&quot;:&quot;cli-config&quot;,&quot;keySize&quot;:0,&quot;knownIps&quot;:[&quot;10.42.0.7&quot;,&quot;10.42.0.8&quot;],&quot;labels&quot;:{&quot;cattle.io/creator&quot;:&quot;norman&quot;},&quot;links&quot;:{&quot;remove&quot;:&quot;https://yourdomain.example.com/v3/listenConfigs/cli-config&quot;,&quot;self&quot;:&quot;https://yourdomain.example.com/v3/listenConfigs/cli-config&quot;,&quot;update&quot;:&quot;https://yourdomain.example.com/v3/listenConfigs/cli-config&quot;},&quot;mode&quot;:&quot;https&quot;,&quot;tos&quot;:&quot;auto&quot;,&quot;type&quot;:&quot;listenConfig&quot;,&quot;uuid&quot;:&quot;511129ca-aa2c-4d16-a8e5-2d77cb171d61&quot;,&quot;version&quot;:0}
 </code></pre></div>
