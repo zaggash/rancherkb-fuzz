@@ -22,7 +22,7 @@
     
     
       
-        <title>How to rollback the Kubernetes version of a Rancher v2.x provisioned cluster - SUSE KBs</title>
+        <title>How to rollback the Kubernetes version of a Rancher v2.x provisioned RKE1 cluster - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-rollback-the-kubernetes-version-of-a-rancher-v2x-provisioned-cluster" class="md-skip">
+        <a href="#how-to-rollback-the-kubernetes-version-of-a-rancher-v2x-provisioned-rke1-cluster" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to rollback the Kubernetes version of a Rancher v2.x provisioned cluster
+              How to rollback the Kubernetes version of a Rancher v2.x provisioned RKE1 cluster
             
           </span>
         </div>
@@ -3748,7 +3748,7 @@
           
   
   <span class="md-ellipsis">
-    How to rollback the Kubernetes version of a Rancher v2.x provisioned cluster
+    How to rollback the Kubernetes version of a Rancher v2.x provisioned RKE1 cluster
   </span>
   
 
@@ -3759,7 +3759,7 @@
         
   
   <span class="md-ellipsis">
-    How to rollback the Kubernetes version of a Rancher v2.x provisioned cluster
+    How to rollback the Kubernetes version of a Rancher v2.x provisioned RKE1 cluster
   </span>
   
 
@@ -3781,6 +3781,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -3791,27 +3800,33 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#to-roll-back-your-kubernetes-cluster-version-upgrade-you-need-to-first-have-taken-an-etcd-snapshot-before-the-upgrade-you-should-keep-the-reference-of-the-snapshot-name-that-was-created-as-your-pre-upgrade-snapshot-in-my-cluster-which-has-cluster-id-c-q8st7-my-snapshot-name-was-c-q8st7-ml-qdxdh-our-example-upgrade-is-from-v12716-rancher1-1-to-v12812-rancher1-1" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      To roll back your Kubernetes cluster version upgrade, you need to first have taken an etcd snapshot before the upgrade. You should keep the reference of the snapshot name that was created as your "pre-upgrade" snapshot. In my cluster which has cluster ID: c-q8st7 , my snapshot name was c-q8st7-ml-qdxdh. Our example upgrade is from v1.27.16-rancher1-1 to v1.28.12-rancher1-1.
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#important-note" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Important Note:
+      Resolution
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+  <a href="#a-kubernetes-cluster-rollback-will-most-definitely-cause-downtime-in-the-cluster-as-you-are-restoring-a-snapshot-from-before-the-upgrade-and-the-cluster-will-have-to-go-through-the-process-of-reconcilation" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      A Kubernetes Cluster Rollback will most definitely cause downtime in the cluster, as you are restoring a snapshot from before the upgrade, and the cluster will have to go through the process of reconcilation.
     </span>
   </a>
   
@@ -8062,6 +8077,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8072,27 +8096,33 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+  <a href="#to-roll-back-your-kubernetes-cluster-version-upgrade-you-need-to-first-have-taken-an-etcd-snapshot-before-the-upgrade-you-should-keep-the-reference-of-the-snapshot-name-that-was-created-as-your-pre-upgrade-snapshot-in-my-cluster-which-has-cluster-id-c-q8st7-my-snapshot-name-was-c-q8st7-ml-qdxdh-our-example-upgrade-is-from-v12716-rancher1-1-to-v12812-rancher1-1" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      To roll back your Kubernetes cluster version upgrade, you need to first have taken an etcd snapshot before the upgrade. You should keep the reference of the snapshot name that was created as your "pre-upgrade" snapshot. In my cluster which has cluster ID: c-q8st7 , my snapshot name was c-q8st7-ml-qdxdh. Our example upgrade is from v1.27.16-rancher1-1 to v1.28.12-rancher1-1.
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#important-note" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Important Note:
+      Resolution
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+  <a href="#a-kubernetes-cluster-rollback-will-most-definitely-cause-downtime-in-the-cluster-as-you-are-restoring-a-snapshot-from-before-the-upgrade-and-the-cluster-will-have-to-go-through-the-process-of-reconcilation" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      A Kubernetes Cluster Rollback will most definitely cause downtime in the cluster, as you are restoring a snapshot from before the upgrade, and the cluster will have to go through the process of reconcilation.
     </span>
   </a>
   
@@ -8136,40 +8166,36 @@
                   
 
 
-<h1 id="how-to-rollback-the-kubernetes-version-of-a-rancher-v2x-provisioned-cluster">How to rollback the Kubernetes version of a Rancher v2.x provisioned cluster</h1>
+<h1 id="how-to-rollback-the-kubernetes-version-of-a-rancher-v2x-provisioned-rke1-cluster">How to rollback the Kubernetes version of a Rancher v2.x provisioned RKE1 cluster</h1>
 <p>This document <strong>(000020195)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher 2.x launched RKE1 clusters.</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>This article details how to rollback the Kubernetes version of a Rancher v2.x provisioned cluster.</p>
-<h4 id="important-note">Important Note:</h4>
-<p>A Kubernetes Cluster Rollback will most definitely cause downtime in the cluster, as you are restoring a snapshot from before the upgrade and the cluster will have to reconcile state.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h4 id="to-roll-back-your-kubernetes-cluster-version-upgrade-you-need-to-first-have-taken-an-etcd-snapshot-before-the-upgrade-you-should-keep-the-reference-of-the-snapshot-name-that-was-created-as-your-pre-upgrade-snapshot-in-my-cluster-which-has-cluster-id-c-q8st7-my-snapshot-name-was-c-q8st7-ml-qdxdh-our-example-upgrade-is-from-v12716-rancher1-1-to-v12812-rancher1-1">To roll back your Kubernetes cluster version upgrade, you need to first have taken an etcd snapshot before the upgrade. You should keep the reference of the snapshot name that was created as your "pre-upgrade" snapshot. In my cluster which has cluster ID: <code>c-q8st7</code> , my snapshot name was <code>c-q8st7-ml-qdxdh</code>. Our example upgrade is from <code>v1.27.16-rancher1-1</code> to <code>v1.28.12-rancher1-1</code>.</h4>
+<h3 id="resolution">Resolution</h3>
+<h4 id="a-kubernetes-cluster-rollback-will-most-definitely-cause-downtime-in-the-cluster-as-you-are-restoring-a-snapshot-from-before-the-upgrade-and-the-cluster-will-have-to-go-through-the-process-of-reconcilation">A Kubernetes Cluster Rollback will most definitely cause downtime in the cluster, as you are restoring a snapshot from before the upgrade, and the cluster will have to go through the process of reconcilation.</h4>
+<h4 id="rollback-operation"><strong>Rollback operation</strong></h4>
+<p>To rollback, you must:</p>
 <ul>
-<li>In order to rollback your Kubernetes cluster version upgrade, you need to have first taken an etcd snapshot from before the upgrade. You should keep the reference to the snapshot name that was created as your "pre-upgrade" snapshot. In my cluster which has cluster ID: <code>c-q8st7</code> , my snapshot name was <code>c-q8st7-ml-qdxdh</code>. Our example upgrade is from <code>v1.14.9-rancher1-2</code> to <code>v1.15.7-rancher1-1</code>.</li>
-</ul>
-<h4 id="rollback-operation">Rollback operation</h4>
-<p>In order to rollback, you must:</p>
-<ol>
-<li>Edit Cluster</li>
+<li>Edit Cluster from Cluster Management.</li>
 <li>Edit as YAML</li>
-<li>Set <code>kubernetes_version</code> back to <code>v1.14.9-rancher1-2</code> (or whatever your desired restore version is)</li>
-<li>Find the <code>restore</code> key in the YAML.</li>
-</ol>
-<p>You will need to update the following configuration:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">rancher_kubernetes_engine_config</span><span class="p">:</span>
-<span class="w">       </span><span class="nt">restore</span><span class="p">:</span>
-<span class="w">       </span><span class="nt">restore</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<li>Find the key <strong><code>kubernetes_version</code></strong> in the YAML and set it back to <code>v1.27.16-rancher1-1</code> (or whatever your desired restore version is)</li>
+<li>Find the <strong><code>restore</code></strong> key in the YAML. You will need to update the following configuration from:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>rancher_kubernetes_engine_config:
+    restore:
+    restore: false
 </code></pre></div>
-<p>You'll want to closely model the following:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">rancher_kubernetes_engine_config</span><span class="p">:</span>
-<span class="w">       </span><span class="nt">restore</span><span class="p">:</span>
-<span class="w">       </span><span class="nt">restore</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">       </span><span class="nt">snapshot_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;c-q8st7:c-q8st7-ml-qdxdh&quot;</span>
+<p>To the below configuration which instructs the cluster to use the Snapshot that was taken prior upgrade to perform a rollback:</p>
+<div class="highlight"><pre><span></span><code>rancher_kubernetes_engine_config:
+    restore:
+    restore: true
+    snapshot_name: &quot;c-q8st7:c-q8st7-ml-qdxdh&quot;
 </code></pre></div>
-<p>Note the <code>snapshot_name</code> has the cluster ID prefixed to it with a <code>:</code> .</p>
-<ol>
+<p>Note the <strong><code>snapshot_name</code></strong> has the cluster ID prefixed to it with a <strong>" <code>:"</code></strong> <code>.</code></p>
+<ul>
 <li>Finally, you can save the cluster, and observe the snapshot restore + K8s version rollback occur.</li>
-</ol>
+</ul>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
