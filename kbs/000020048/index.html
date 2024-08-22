@@ -1198,44 +1198,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#check-current-limits" class="md-nav__link">
     <span class="md-ellipsis">
       Check current limits
@@ -1243,23 +1232,13 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#update-the-limits" class="md-nav__link">
     <span class="md-ellipsis">
       Update the limits
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8077,44 +8056,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#check-current-limits" class="md-nav__link">
     <span class="md-ellipsis">
       Check current limits
@@ -8122,23 +8090,13 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#update-the-limits" class="md-nav__link">
     <span class="md-ellipsis">
       Update the limits
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8168,8 +8126,9 @@
 
 <h1 id="how-to-increase-the-inotifymax_user_watches-and-inotifymax_user_instances-sysctls-on-a-linux-host">How to increase the inotify.max_user_watches and inotify.max_user_instances sysctls on a Linux host</h1>
 <p>This document <strong>(000020048)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Linux host</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
 <p>The sysctls <code>fs.inotify.max_user_instances</code> and <code>fs.inotify.max_user_watches</code> define user limits on the number of inotify resources and inotify file watches. If these limits are reached, you may experience processes failing with error messages related to the limits, for example:</p>
 <div class="highlight"><pre><span></span><code>ENOSPC: System limit for number of file watchers reached...
 </code></pre></div>
@@ -8178,19 +8137,15 @@
 <div class="highlight"><pre><span></span><code>The default defined inotify instances (128) has been reached
 </code></pre></div>
 <p>In the context of a Kubernetes cluster, this behaviour would exhibit as failing Pods, with inotify related errors in the Pod logs similar to the above. This article details how to check the current limits configured and how to increase these.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>A Linux host</li>
-</ul>
-<h4 id="resolution">Resolution</h4>
-<h5 id="check-current-limits">Check current limits</h5>
+<h3 id="resolution">Resolution</h3>
+<h3 id="check-current-limits">Check current limits</h3>
 <p>You can check the current inotify user instance limit, with the following:</p>
 <div class="highlight"><pre><span></span><code>cat /proc/sys/fs/inotify/max_user_instances
 </code></pre></div>
 <p>Similarly, the current inotify user watch limit can be checked as follows:</p>
 <div class="highlight"><pre><span></span><code>cat /proc/sys/fs/inotify/max_user_watches
 </code></pre></div>
-<h5 id="update-the-limits">Update the limits</h5>
+<h3 id="update-the-limits">Update the limits</h3>
 <p>You can update the limits temporarily, with the following commands (setting the values to 8192 and 524288 respectively in this example):</p>
 <div class="highlight"><pre><span></span><code>sudo sysctl fs.inotify.max_user_instances=8192
 sudo sysctl fs.inotify.max_user_watches=524288
