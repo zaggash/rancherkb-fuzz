@@ -8093,6 +8093,7 @@
 <h3 id="environment">Environment</h3>
 <p>Rancher 2.6.x</p>
 <p>Rancher 2.7.x</p>
+<p>Rancher 2.8.x</p>
 <p>Logging Operator V2</p>
 <h3 id="situation">Situation</h3>
 <p>Logs may not be sent from the operator to the chosen destination (ELK, Splunk, etc)</p>
@@ -8101,10 +8102,13 @@
 <p>Check the rancher-logging-root-fluentd-configcheck pod. Its status should be `Completed`.</p>
 <p>If it is in a different state, check its logs to understand the error on your configuration.</p>
 <p>You may do so by clicking on the three dots menu and 'View Logs'.</p>
-<p>2. Check the fluentd logs. They are not written to standard output. Executing on the container rancher-logging-root-fluentd-0 navigate to</p>
-<p>/fluentd/out and check the log file there:</p>
+<p>2. Check the fluentd logs.</p>
+<p>a) When using logging-operator version +up3.17.10 and earlier, they are not written to standard output. Executing on the container rancher-logging-root-fluentd-0, navigate to /fluentd/out, and check the log file there:</p>
 <div class="highlight"><pre><span></span><code>$ kubectl -n cattle-logging-system exec -it rancher-logging-root-fluentd-0 -- sh
 $ cat /fluentd/out/log
+</code></pre></div>
+<p>b) When using logging-operator version +up4.4.0 and later, the fluentd logs are written to standard output, in the container versus a file, i.e. they are written to the fluentd Pod logs (and excluded from collection by the "fluentbit.io/exclude: 'true'" annotation on the fluentd Pod). To check the fluentd logs you can therefore check the Pod logs:</p>
+<div class="highlight"><pre><span></span><code>$ kubectl logs rancher-logging-root-fluentd-0 -n cattle-logging-system
 </code></pre></div>
 <p>If there are any errors, you can try to fix them or open a case if you need more help.</p>
 <p>3. If there are no errors in the two first steps, a simple way to check if the logs are being scrapped is to send them to a file. An output YAML would look like this:</p>

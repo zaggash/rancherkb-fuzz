@@ -8114,7 +8114,8 @@ rancher-logging-root-fluentd-configcheck-ac2d4553   0/1     Completed   0       
 <li>Logs review: At this step, you review to ensure no errors in the logs for the FluentD or Fluentbit pods. For Fluentbit, you will probably need to review each if you suspect the logs are not being collected from fluentbit.</li>
 </ol>
 <p>```
-1. kubectl exec rancher-logging-root-fluentd-0 -n cattle-logging-system -- cat /fluentd/log/out</p>
+1. kubectl exec rancher-logging-root-fluentd-0 -n cattle-logging-system -- cat /fluentd/log/out  # logging-operator version +up3.17.10 and earlier
+   kubectl logs rancher-logging-root-fluentd-0 -n cattle-logging-system #  logging-operator version +up4.4.0 and later</p>
 <p>This will dump the logs out of the fluentd container</p>
 <ol>
 <li>kubectl -n cattle-logging-system logs rancher-logging-root-bit-lczl5</li>
