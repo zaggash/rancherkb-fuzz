@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.34">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.35">
     
     
       
@@ -485,27 +485,6 @@
   
   <span class="md-ellipsis">
     Controlplane/Etcd nodes are stuck at provisioning for a new cluster
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020008/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    How to send logs to Amazon Web Services (AWS) CloudWatch with the new logging services available on Rancher v2.5.x
   </span>
   
 
@@ -1441,48 +1420,6 @@
       Resolution
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v24x-and-above" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.4.x and above
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v23x" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.3.x
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v22x" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.2.x
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v2014-v219" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.0.14+, v2.1.9+
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -3679,27 +3616,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020184/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    When will my cluster certificates expire?
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020185/" class="md-nav__link">
         
   
@@ -4377,27 +4293,6 @@
   
   <span class="md-ellipsis">
     No monitoring for etcd in the local Rancher cluster with cluster monitoring in Rancher v2.2.x
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020230/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    How to collect and share Rancher logs with Support
   </span>
   
 
@@ -8150,48 +8045,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v24x-and-above" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.4.x and above
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v23x" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.3.x
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v22x" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.2.x
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v2014-v219" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.0.14+, v2.1.9+
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
       </ul>
@@ -8238,36 +8091,9 @@
 <h4 id="resolution">Resolution</h4>
 <p>To perform the certificate rotation, please ensure a backup of the Rancher container has been completed, this can be used as a rollback in the event any previous data needs to be restored.</p>
 <p>The process is different between different versions of Rancher, please select your version below as needed and set the container ID of the Rancher container.</p>
-<h5 id="rancher-v24x-and-above">Rancher v2.4.x and above</h5>
+<p><strong>Rancher v2.4.x and above</strong></p>
 <p>If the certificate is expiring in less than 90 days, certificate rotation occurs automatically. When expiry falls within this period, certificates will be rotated on the next start of the Rancher container.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">rancher_container_id</span><span class="o">=</span>xxx
-
-docker<span class="w"> </span>restart<span class="w"> </span><span class="si">${</span><span class="nv">rancher_container_id</span><span class="si">}</span>
-</code></pre></div>
-<h5 id="rancher-v23x">Rancher v2.3.x</h5>
-<div class="highlight"><pre><span></span><code><span class="nv">rancher_container_id</span><span class="o">=</span>xxx
-
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-ti<span class="w"> </span><span class="si">${</span><span class="nv">rancher_container_id</span><span class="si">}</span><span class="w"> </span>bash
-cp<span class="w"> </span>-rp<span class="w"> </span>/var/lib/rancher/k3s/server/tls<span class="w"> </span>/var/lib/rancher/k3s/server/tls.backup
-<span class="nb">cd</span><span class="w"> </span>/var/lib/rancher/k3s/server/tls
-rm<span class="w"> </span>-rf<span class="w"> </span>*.crt<span class="w"> </span>*.key<span class="w"> </span>temporary-certs/
-cp<span class="w"> </span>-p<span class="w"> </span>/var/lib/rancher/k3s/server/tls.backup/*-ca.*<span class="w"> </span>.
-<span class="nb">exit</span>
-
-docker<span class="w"> </span>restart<span class="w"> </span><span class="si">${</span><span class="nv">rancher_container_id</span><span class="si">}</span>
-</code></pre></div>
-<h5 id="rancher-v22x">Rancher v2.2.x</h5>
-<div class="highlight"><pre><span></span><code><span class="nv">rancher_container_id</span><span class="o">=</span>xxx
-
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="si">${</span><span class="nv">rancher_container_id</span><span class="si">}</span><span class="w"> </span>mv<span class="w"> </span>/var/lib/rancher/management-state/tls/localhost.crt<span class="w"> </span>/var/lib/rancher/management-state/tls/localhost.crt.backup
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="si">${</span><span class="nv">rancher_container_id</span><span class="si">}</span><span class="w"> </span>mv<span class="w"> </span>/var/lib/rancher/management-state/tls/localhost.key<span class="w"> </span>/var/lib/rancher/management-state/tls/localhost.key.backup
-
-docker<span class="w"> </span>restart<span class="w"> </span><span class="si">${</span><span class="nv">rancher_container_id</span><span class="si">}</span>
-</code></pre></div>
-<h5 id="rancher-v2014-v219">Rancher v2.0.14+, v2.1.9+</h5>
-<div class="highlight"><pre><span></span><code><span class="nv">rancher_container_id</span><span class="o">=</span>xxx
-
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="si">${</span><span class="nv">rancher_container_id</span><span class="si">}</span><span class="w"> </span>mv<span class="w"> </span>/var/lib/rancher/management-state/certs/bundle.json<span class="w"> </span>/var/lib/rancher/management-state/certs/bundle.json.backup
 
 docker<span class="w"> </span>restart<span class="w"> </span><span class="si">${</span><span class="nv">rancher_container_id</span><span class="si">}</span>
 </code></pre></div>
@@ -8320,7 +8146,7 @@ docker<span class="w"> </span>restart<span class="w"> </span><span class="si">${
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.07f07601.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.56dfad97.min.js"></script>
