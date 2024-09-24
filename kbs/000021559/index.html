@@ -11,10 +11,8 @@
       
       
       
-        <link rel="prev" href="../000020009/">
+        <link rel="prev" href="../000021538/">
       
-      
-        <link rel="next" href="../000020012/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +20,7 @@
     
     
       
-        <title>How to check all ingresses from the NGINX ingress controller to all backend pods - SUSE KBs</title>
+        <title>Configure GitRepo with Private Key Authentication via Rancher UI - SUSE KBs</title>
       
     
     
@@ -74,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-check-all-ingresses-from-the-nginx-ingress-controller-to-all-backend-pods" class="md-skip">
+        <a href="#configure-gitrepo-with-private-key-authentication-via-rancher-ui" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to check all ingresses from the NGINX ingress controller to all backend pods
+              Configure GitRepo with Private Key Authentication via Rancher UI
             
           </span>
         </div>
@@ -519,30 +517,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    How to check all ingresses from the NGINX ingress controller to all backend pods
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020011/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -551,119 +529,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Situation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      Task
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Run script
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-output" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example output
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Example output">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#broken-pod" class="md-nav__link">
-    <span class="md-ellipsis">
-      Broken pod
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#working-pod" class="md-nav__link">
-    <span class="md-ellipsis">
-      Working pod
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -8023,10 +7888,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../000021559/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Configure GitRepo with Private Key Authentication via Rancher UI
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -8035,6 +7920,71 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Situation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -8074,86 +8024,38 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      Resolution
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      Status
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Run script
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-output" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example output
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Example output">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#broken-pod" class="md-nav__link">
-    <span class="md-ellipsis">
-      Broken pod
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#working-pod" class="md-nav__link">
-    <span class="md-ellipsis">
-      Working pod
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8181,55 +8083,38 @@
                   
 
 
-<h1 id="how-to-check-all-ingresses-from-the-nginx-ingress-controller-to-all-backend-pods">How to check all ingresses from the NGINX ingress controller to all backend pods</h1>
-<p>This document <strong>(000020011)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="configure-gitrepo-with-private-key-authentication-via-rancher-ui">Configure GitRepo with Private Key Authentication via Rancher UI</h1>
+<p>This document <strong>(000021559)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher with Fleet Continuous Delivery</p>
 <h3 id="situation">Situation</h3>
-<h4 id="task">Task</h4>
-<p>This script is designed to walk through all the ingresses in a cluster and test that it can curl the backend pods from the NGINX pods. This is mainly done to verify the overlay network is working along with checking the overall configuration.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>kubectl access to the cluster</li>
-</ul>
-<h4 id="run-script">Run script</h4>
-<div class="highlight"><pre><span></span><code>curl https://raw.githubusercontent.com/rancherlabs/support-tools/master/NGINX-to-pods-check/check.sh | bash
+<p>Configuring GitHub and Rancher Fleet Continuous Delivery for a GitRepo Using SSH Key Authentication</p>
+<h3 id="resolution">Resolution</h3>
+<p><strong>Create SSH Key Pair:</strong></p>
+<p>For private repositories, generate an SSH key pair in PEM format using the following command. Please note that the private key should not have a passphrase. It can be either an RSA or EC private key</p>
+<div class="highlight"><pre><span></span><code>ssh-keygen -t rsa -b 4096 -m pem -C &quot;user@email.com&quot;
 </code></pre></div>
-<h4 id="example-output">Example output</h4>
-<h5 id="broken-pod">Broken pod</h5>
-<div class="highlight"><pre><span></span><code>bash ./check.sh -F Table
-####################################################
-Pod: webserver-bad-85cf9ccdf8-8v4mh
-PodIP: 10.42.0.252
-Port: 80
-Endpoint: ingress-1d8af467b8b7c9682fda18c8d5053db7
-Ingress: test-bad
-Ingress Pod: nginx-ingress-controller-b2s2d
-Node: a1ubphylbp01
-Status: Fail!
-####################################################
+<p><strong>Configure Github:</strong></p>
+<p>Now that you have the private and public key pair, add the public key to your Git repository. For example, adding the public key to GitHub is demonstrated below</p>
+<p>Github &gt;&gt; Settings &gt;&gt; SSH and GPG keys &gt;&gt; Click button "New SSH key" &gt;&gt; Give Title &gt;&gt; Select the "Authentication Key" from drop down &gt;&gt; Add the public key in the text box &gt;&gt; "Add SSH key" to add it</p>
+<p>Now you will be able to use the private key to authenticate to your Github private repository</p>
+<p><strong>Create Gitrepo in Rancher</strong>:</p>
+<p>Go to the Rancher UI &gt;&gt; Continous Delivery &gt;&gt; GitRepos &gt;&gt; Add Repository</p>
+<p>Enter a name and Repository URL. For example, in the case of github, the repo URL will be similar to git@github.com:username/repository.git. Enter the Branch name corresponding to the repo</p>
+<p>In Github authentication drop-down, Select "Create a SSH Key Secret" and add your Private Key generated in the previous step. Private key alone is sufficient for authentication and you may keep the Public Key field blank.</p>
+<p>If you already have a secret created using the kubectl command in either the fleet-local or fleet-default namespace on the local cluster, you can select that secret from the dropdown. If you prefer to create the secret manually via the command line, run the following command on the local cluster</p>
+<div class="highlight"><pre><span></span><code>kubectl create secret generic ssh-key -n fleet-default --from-file=ssh-privatekey=/file/to/private/key  --type=kubernetes.io/ssh-auth
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>bash ./check.sh -F Inline
-Checking Pod webserver-bad-8v4mh PodIP 10.42.0.252 on Port 80 in endpoint ingress-bad for ingress test-bad from nginx-ingress-controller-b2s2d on node a1ubphylbp01 NOK
+<p>Note: If you want to create Gitrepo for local cluster, replace fleet-default with fleet-local</p>
+<p>If you want to verify the identity of the GitHub when you establish an SSH connection, you can collect the SSH host key using the below command and add it to the secret</p>
+<div class="highlight"><pre><span></span><code>ssh-keyscan -H github.com
 </code></pre></div>
-<h5 id="working-pod">Working pod</h5>
-<div class="highlight"><pre><span></span><code>bash ./check.sh -F Table
-####################################################
-Pod: webserver-bad-85cf9ccdf8-8v4mh
-PodIP: 10.42.0.252
-Port: 80
-Endpoint: ingress-1d8af467b8b7c9682fda18c8d5053db7
-Ingress: test-bad
-Ingress Pod: nginx-ingress-controller-b2s2d
-Node: a1ubphylbp01
-Status: Pass!
-####################################################
+<p>Get the host key line corresponding to ssh-rsa from previous command results and place it another file and create the secret as below</p>
+<div class="highlight"><pre><span></span><code>kubectl create secret generic ssh-key-known-host  -n fleet-default --from-file=ssh-privatekey=/file/to/private/key --from-file=known_hosts=/file/to/known_hosts  --type=kubernetes.io/ssh-auth
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>bash ./check.sh -F Inline
-Checking Pod webserver-good-65644cffd4-gbpkj PodIP 10.42.0.251 on Port 80 in endpoint ingress-good for ingress test-good from nginx-ingress-controller-b2s2d on node a1ubphylbp01 OK
-</code></pre></div>
-<h4 id="testing">Testing</h4>
-<p>The following commands will deploy two workloads and ingresses. One that is working with a web server that is responding on port 80. And the other will have the webserver disabled, so it will fail to connect.</p>
-<div class="highlight"><pre><span></span><code>kubectl apply -f https://raw.githubusercontent.com/rancherlabs/support-tools/master/NGINX-to-pods-check/example-deployment.yml
-</code></pre></div>
+<p>Fill in any remaining details, then click on 'Create' . The authentication to the GitHub private repository should be completed successfully</p>
+<h3 id="status">Status</h3>
+<p>Top Issue</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
