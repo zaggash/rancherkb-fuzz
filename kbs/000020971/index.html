@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../000020047/">
+        <link rel="prev" href="../000020954/">
       
       
-        <link rel="next" href="../000020051/">
+        <link rel="next" href="../000020972/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>How to increase the inotify.max_user_watches and inotify.max_user_instances sysctls on a Linux host - SUSE KBs</title>
+        <title>Enable CSR signing on an RKE cluster so certificates are issued - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-increase-the-inotifymax_user_watches-and-inotifymax_user_instances-sysctls-on-a-linux-host" class="md-skip">
+        <a href="#enable-csr-signing-on-an-rke-cluster-so-certificates-are-issued" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to increase the inotify.max_user_watches and inotify.max_user_instances sysctls on a Linux host
+              Enable CSR signing on an RKE cluster so certificates are issued
             
           </span>
         </div>
@@ -1128,30 +1128,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    How to increase the inotify.max_user_watches and inotify.max_user_instances sysctls on a Linux host
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020048/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1160,80 +1140,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      Environment
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Situation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#check-current-limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      Check current limits
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#update-the-limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      Update the limits
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -6640,10 +6546,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../000020971/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Enable CSR signing on an RKE cluster so certificates are issued
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -6652,6 +6578,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Situation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -8056,15 +8029,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      Environment
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8077,24 +8041,6 @@
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#check-current-limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      Check current limits
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#update-the-limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      Update the limits
     </span>
   </a>
   
@@ -8124,42 +8070,42 @@
                   
 
 
-<h1 id="how-to-increase-the-inotifymax_user_watches-and-inotifymax_user_instances-sysctls-on-a-linux-host">How to increase the inotify.max_user_watches and inotify.max_user_instances sysctls on a Linux host</h1>
-<p>This document <strong>(000020048)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="environment">Environment</h3>
-<p>Linux host</p>
+<h1 id="enable-csr-signing-on-an-rke-cluster-so-certificates-are-issued">Enable CSR signing on an RKE cluster so certificates are issued</h1>
+<p>This document <strong>(000020971)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
-<p>The sysctls <code>fs.inotify.max_user_instances</code> and <code>fs.inotify.max_user_watches</code> define user limits on the number of inotify resources and inotify file watches. If these limits are reached, you may experience processes failing with error messages related to the limits, for example:</p>
-<div class="highlight"><pre><span></span><code>ENOSPC: System limit for number of file watchers reached...
+<p>When creating a private key, a <strong>CertificateSigningRequest</strong>, and approving the <strong>CSR</strong>. You may notice in the output that the <strong>CSR</strong> is <strong>Approved</strong> but not <strong>Issued</strong>. For example, you may see the following:</p>
+<div class="highlight"><pre><span></span><code>kubectl get csr
+NAME                  AGE   REQUESTOR   CONDITION
+my-csr                18m   admin       Approved
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>The configured user limit (128) on the number of inotify instances has been reached
+<p>But you actually expect to see the following:</p>
+<div class="highlight"><pre><span></span><code>kubectl get csr
+NAME                  AGE   REQUESTOR   CONDITION
+my-csr                18m   admin       Approved,Issued
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>The default defined inotify instances (128) has been reached
-</code></pre></div>
-<p>In the context of a Kubernetes cluster, this behaviour would exhibit as failing Pods, with inotify related errors in the Pod logs similar to the above. This article details how to check the current limits configured and how to increase these.</p>
 <h3 id="resolution">Resolution</h3>
-<h3 id="check-current-limits">Check current limits</h3>
-<p>You can check the current inotify user instance limit, with the following:</p>
-<div class="highlight"><pre><span></span><code>cat /proc/sys/fs/inotify/max_user_instances
+<p>In an RKE cluster, you will need to provide the following flags for the <code>kube-controller-manager:</code> <strong><code>--cluster-signing-cert-file</code></strong> and <strong><code>--cluster-signing-key-file</code></strong></p>
+<p>In order to do this from the Rancher UI:</p>
+<ol>
+<li>Go to <strong>Cluster Management</strong></li>
+<li>Select the 3-dot menu next to the desired cluster and click <strong>Edit Config</strong></li>
+<li>Click the <strong>Edit as YAML</strong> button</li>
+<li>Under the rancher_kubernetes_engine_config.services section, replace</li>
+</ol>
+<div class="highlight"><pre><span></span><code>kube-controller: {}
 </code></pre></div>
-<p>Similarly, the current inotify user watch limit can be checked as follows:</p>
-<div class="highlight"><pre><span></span><code>cat /proc/sys/fs/inotify/max_user_watches
+<pre><code>with
+</code></pre>
+<div class="highlight"><pre><span></span><code>kube-controller:
+     extra_args:
+       cluster-signing-cert-file: /etc/kubernetes/ssl/kube-ca.pem
+       cluster-signing-key-file: /etc/kubernetes/ssl/kube-ca-key.pem
 </code></pre></div>
-<h3 id="update-the-limits">Update the limits</h3>
-<p>You can update the limits temporarily, with the following commands (setting the values to 8192 and 524288 respectively in this example):</p>
-<div class="highlight"><pre><span></span><code>sudo sysctl fs.inotify.max_user_instances=8192
-sudo sysctl fs.inotify.max_user_watches=524288
-sudo sysctl -p
-</code></pre></div>
-<p>In order to make the changes permanent, i.e. to persist a reboot, you can set <code>fs.inotify.max_user_instances=8192</code> and <code>fs.inotify.max_user_watches=524288</code> in the file <code>/etc/sysctl.conf</code>.</p>
-<p>After updating the limits, you can validate these on the host again, as above, with <code>cat /proc/sys/fs/inotify/max_user_instances</code> and <code>cat /proc/sys/fs/inotify/max_user_watches</code>.</p>
-<p>To check the value as reflected in a running container, exec into the container and cat the files:</p>
-<div class="highlight"><pre><span></span><code>docker exec -it &lt;CONTAINER ID&gt; cat /proc/sys/fs/inotify/max_user_instances
-</code></pre></div>
-<p>and</p>
-<div class="highlight"><pre><span></span><code>docker exec -it &lt;CONTAINER ID&gt; cat /proc/sys/fs/inotify/max_user_watches
-</code></pre></div>
-<p>If the updated limits are not reflected on a host after running <code>sysctl -p</code>, reboot the host after setting the limits in <code>/etc/sysctl.conf</code>.</p>
+<ol>
+<li>Click the Save <strong>button</strong> at the bottom of the screen</li>
+<li>Once the cluster finishes reconciling, you should be able to go through the steps again and have the certificate issued</li>
+</ol>
+<p>If this is on a cluster managed using <strong>rke up</strong>, you will have to put these values in the <strong>cluster.yml</strong> file and run <strong>rke up</strong></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
