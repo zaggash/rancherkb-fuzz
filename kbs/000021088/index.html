@@ -8091,27 +8091,66 @@
 <h1 id="get-the-list-of-available-kubernetes-versions-for-rke">Get the list of available Kubernetes versions for RKE</h1>
 <p>This document <strong>(000021088)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>RKE 1.3+</p>
-<p>Rancher 2.6.x+</p>
+<ul>
+<li>RKE 1.5/1.6+</li>
+<li>Rancher v2.8.x+</li>
+</ul>
 <h3 id="situation">Situation</h3>
 <p>One wants to install an RKE cluster without the default version of RKE or the Kubernetes version is not listed on the Rancher UI</p>
 <h3 id="resolution">Resolution</h3>
 <p>1. For RKE CLI:</p>
 <p>Through the RKE CLI, one might get the available versions of Kubernetes for that release:</p>
 <div class="highlight"><pre><span></span><code>$ rke config --list-version --all
+v1.30.2-rancher1-1
+v1.28.11-rancher1-1
+v1.29.6-rancher1-1
+v1.27.15-rancher1-1
+
+$ rke version
+rke version
+INFO[0000] Running RKE version: v1.6.0
 </code></pre></div>
 <p>Without the flag --all it will display the default version of the Kubernetes to be installed if the version is not specified on the cluster.yml. Documentation on how to do it can be found <a href="https://rke.docs.rancher.com/upgrades#prerequisites">here</a> .</p>
 <p>1.1 To get the system images available, e.g. core-dns or calico, use:</p>
 <div class="highlight"><pre><span></span><code># for the current k8s version
 $ rke config --system-images
+INFO[0000] Generating images list for version [v1.30.2-rancher1-1]:
+rancher/mirrored-coreos-etcd:v3.5.12
+rancher/rke-tools:v0.1.100
+rancher/mirrored-k8s-dns-kube-dns:1.23.0
+rancher/mirrored-k8s-dns-dnsmasq-nanny:1.23.0
+rancher/mirrored-k8s-dns-sidecar:1.23.0
+rancher/mirrored-cluster-proportional-autoscaler:v1.8.9
+rancher/mirrored-coredns-coredns:1.11.1
+rancher/mirrored-k8s-dns-node-cache:1.23.0
+rancher/hyperkube:v1.30.2-rancher1
+rancher/mirrored-flannel-flannel:v0.25.1
+rancher/flannel-cni:v1.4.1-rancher1
+rancher/mirrored-calico-node:v3.28.0
+rancher/calico-cni:v3.28.0-rancher1
+rancher/mirrored-calico-kube-controllers:v3.28.0
+rancher/mirrored-calico-ctl:v3.28.0
+rancher/mirrored-calico-pod2daemon-flexvol:v3.28.0
+rancher/mirrored-pause:3.7
+rancher/nginx-ingress-controller:nginx-1.10.1-rancher1
+rancher/mirrored-nginx-ingress-controller-defaultbackend:1.5-rancher1
+rancher/mirrored-ingress-nginx-kube-webhook-certgen:v1.4.1
+rancher/mirrored-metrics-server:v0.7.1
+noiro/cnideploy:6.0.4.2.81c2369
+noiro/aci-containers-host:6.0.4.2.81c2369
+noiro/opflex:6.0.4.2.81c2369
+noiro/openvswitch:6.0.4.2.81c2369
+noiro/aci-containers-controller:6.0.4.2.81c2369
+
 # for a specific k8s version
 $ rke config --system-images --version v1.24.13-rancher2-1
+
 # for all available k8s on the rke distribution
 $ rke config --system-images --all
 </code></pre></div>
 <p>Note: the information is also available on the RKE release page: https://github.com/rancher/rke/releases/</p>
 <p>2. For RKE Kubernetes versions available on Rancher, check the RKE k8s System Images resource:</p>
-<div class="highlight"><pre><span></span><code>kubectl get rkek8ssystemimages.management.cattle.io --namespace cattle-global-data
+<div class="highlight"><pre><span></span><code>kubectl get rkek8ssystemimages.management.cattle.io -n cattle-global-data
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
