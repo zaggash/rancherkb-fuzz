@@ -5373,27 +5373,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020497/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Can we have a mix of unsupported and supported clusters at our choice/discretion?
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020498/" class="md-nav__link">
         
   
@@ -7609,6 +7588,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -8025,6 +8013,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021575/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to configure an authenticated forward proxy for Alertmanager in rancher-monitoring
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -8086,6 +8095,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -8132,6 +8150,28 @@
 <ul>
 <li>The generated Rancher Diagnostic Package will be downloaded in your browser, which you can then share with Rancher Support via your support case.</li>
 </ul>
+<h3 id="additional-information">Additional Information</h3>
+<p>If you are interested in analysing the data yourself you can run a few jq commands against the json data in the resulting diagostic package.</p>
+<p>You will need jq installed, a JSON processor detailed here: https://jqlang.github.io/jq/</p>
+<p>You can then run the following selection of common jq queries on the diagnostic data.</p>
+<p>Top 10 resources in the local cluster:</p>
+<div class="highlight"><pre><span></span><code>jq &#39;.resourceCounts[-1].counts[0:10][] | &quot;\(.resource): \(.count)&quot;&#39; &lt; *rancher-diagnostic-data.json
+</code></pre></div>
+<p>Total resources in the local cluster:</p>
+<div class="highlight"><pre><span></span><code>jq &#39;[.resourceCounts[-1].counts[].count] | add&#39;
+</code></pre></div>
+<p>CRD count in the local cluster:</p>
+<div class="highlight"><pre><span></span><code>jq &#39;.resourceCounts[-1].counts[] | select(.resource == &quot;apiextensions.k8s.io.customresourcedefinition&quot;) | &quot;\(.resource): \(.count)&quot;&#39; &lt;  *rancher-diagnostic-data.json
+</code></pre></div>
+<p>Secrets across upstream and all downstream clusters:</p>
+<div class="highlight"><pre><span></span><code>jq &#39;[.resourceCounts[].counts[] | select(.resource == &quot;secret&quot;) | .count] | add &#39; &lt;  *rancher-diagnostic-data.json
+</code></pre></div>
+<p>Total Rancher users:</p>
+<div class="highlight"><pre><span></span><code>jq &#39;.resourceCounts[-1].counts[] | select(.resource == &quot;management.cattle.io.user&quot;)&#39;  &lt; *rancher-diagnostic-data.json
+</code></pre></div>
+<p>Total downstream cluster count:</p>
+<div class="highlight"><pre><span></span><code>jq &#39;[.resourceCounts[].id] | length - 1&#39; &lt;  *rancher-diagnostic-data.json
+</code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
