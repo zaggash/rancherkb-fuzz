@@ -3987,27 +3987,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020216/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    subPath does not work with hostPath volumes in Rancher v2.x or RKE CLI launched Kubernetes clusters
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020217/" class="md-nav__link">
         
   
@@ -4222,7 +4201,7 @@
         
   
   <span class="md-ellipsis">
-    Is it possible to perform etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
+    Is it possible to perform RKE etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
   </span>
   
 
@@ -8256,14 +8235,12 @@
 <h1 id="how-to-add-custom-labels-to-alerts-in-monitoring-v2">How to add custom labels to Alerts in Monitoring v2</h1>
 <p>This document <strong>(000020302)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher Version: v2.5.8</p>
-<p>Monitoring Chart Version: 14.5.100</p>
+<p>A Rancher v2.5+ managed cluster, with the rancher-monitoring chart installed</p>
 <h3 id="situation">Situation</h3>
-<p>Alerts in Monitoring v2 contain standard labels. But in some cases, users want to inject custom labels like Kubernetes cluster names to easily identify the environment or need the labels for further Alert routing.</p>
+<p>Alerts in Monitoring v2 contain standard labels. In some cases, users may want to inject custom labels, such as Kubernetes cluster names to easily identify the environment or other custom labels for Alert routing.</p>
 <h3 id="resolution">Resolution</h3>
-<p>Use defaultRules.additionalRuleLabels  in the Monitoring Apps's YAML spec to inject custom labels.</p>
-<p>To inject cluster name, open the Monitoring App in Apps&amp; Marketplace from Cluster explorer.</p>
-<p>Under "Edit as YAML", add the custom label as below.</p>
+<p>Use the value defaultRules.additionalRuleLabels  in the rancher-monitoring chart to inject custom labels.</p>
+<p>For example, to inject cluster name, open the Monitoring App in Apps from Cluster explorer. Under "Edit as YAML", add the custom label as below:</p>
 <div class="highlight"><pre><span></span><code>defaultRules:
   additionalRuleLabels:
     cluster: &quot;My_Test_cluster&quot;

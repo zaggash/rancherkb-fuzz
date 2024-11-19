@@ -3907,53 +3907,38 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
+      Resolution
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      Additional Information
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explanation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Explanation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further Reading
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4071,27 +4056,6 @@
   
   <span class="md-ellipsis">
     'Error: snapshot missing hash but --skip-hash-check=false' when performing `rke etcd snapshort-restore` with .zip extension included in snapshot name
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020216/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    subPath does not work with hostPath volumes in Rancher v2.x or RKE CLI launched Kubernetes clusters
   </span>
   
 
@@ -4322,7 +4286,7 @@
         
   
   <span class="md-ellipsis">
-    Is it possible to perform etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
+    Is it possible to perform RKE etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
   </span>
   
 
@@ -8209,53 +8173,38 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
+      Resolution
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      Additional Information
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explanation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Explanation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further Reading
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -8285,22 +8234,21 @@
 
 <h1 id="users-assigned-the-project-owner-or-member-role-on-a-project-are-able-to-create-namespaces-on-any-project-in-the-same-cluster-to-which-they-have-access">Users assigned the Project Owner or Member role on a project are able to create namespaces on any project, in the same cluster, to which they have access</h1>
 <p>This document <strong>(000020205)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
-<h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>A user assigned the Project Owner or Member role on one project is able to create namespaces on any project, in the same cluster, to which they have access.</p>
-<p>For example, if a user has been granted the Project Member role on a Project named Dev in a cluster, and the Read-only role on a project named Test in that cluster, they will be able to create namespaces on both the Dev and Test projects.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h3 id="environment">Environment</h3>
 <ul>
 <li>A cluster managed by Rancher v2.x</li>
 <li>A user granted the Project Member or Owner role on one project, and access e.g. the Read-only role, on another project</li>
 </ul>
-<h4 id="explanation">Explanation</h4>
-<p>Per the caveat explanation in the <a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/cluster-project-roles/#project-roles">Rancher v2.x documentation</a>:</p>
+<h3 id="situation">Situation</h3>
+<p>A user assigned the Project Owner or Member role on one project is able to create namespaces on any project, in the same cluster, to which they have access.</p>
+<p>For example, if a user has been granted the Project Member role on a Project named Dev in a cluster, and the Read-only role on a project named Test in that cluster, they will be able to create namespaces on both the Dev and Test projects.</p>
+<h3 id="resolution">Resolution</h3>
+<p>Per the caveat explanation in the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles#project-roles">Rancher v2.x documentation</a>:</p>
 <blockquote>
 <p>Users assigned the Owner or Member role for a project automatically inherit the namespace creation role. However, this role is a <a href="https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole">Kubernetes ClusterRole</a>, meaning its scope extends to all projects in the cluster. Therefore, users explicitly assigned the owner or member role for a project can create namespaces in other projects they’re assigned to, even with only the Read Only role assigned.</p>
 </blockquote>
-<h4 id="further-reading">Further Reading</h4>
-<p>Read more on Cluster and Project Roles in the <a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/cluster-project-roles/">Rancher v2.x. documentation</a>.</p>
+<h3 id="additional-information">Additional Information</h3>
+<p>Read more on Cluster and Project Roles in the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles">Rancher v2.x. documentation</a>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 

@@ -22,7 +22,7 @@
     
     
       
-        <title>Is it possible to perform etcd snapshots to an s3 endpoint with a certificate signed by a custom CA? - SUSE KBs</title>
+        <title>Is it possible to perform RKE etcd snapshots to an s3 endpoint with a certificate signed by a custom CA? - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#is-it-possible-to-perform-etcd-snapshots-to-an-s3-endpoint-with-a-certificate-signed-by-a-custom-ca" class="md-skip">
+        <a href="#is-it-possible-to-perform-rke-etcd-snapshots-to-an-s3-endpoint-with-a-certificate-signed-by-a-custom-ca" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Is it possible to perform etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
+              Is it possible to perform RKE etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
             
           </span>
         </div>
@@ -3987,27 +3987,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020216/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    subPath does not work with hostPath volumes in Rancher v2.x or RKE CLI launched Kubernetes clusters
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020217/" class="md-nav__link">
         
   
@@ -4231,7 +4210,7 @@
           
   
   <span class="md-ellipsis">
-    Is it possible to perform etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
+    Is it possible to perform RKE etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
   </span>
   
 
@@ -4242,7 +4221,7 @@
         
   
   <span class="md-ellipsis">
-    Is it possible to perform etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
+    Is it possible to perform RKE etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
   </span>
   
 
@@ -4264,86 +4243,62 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#question" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Question
+      Resolution
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#answer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Answer
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Answer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v220-v224-and-rke-cli-v020-v024" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.2.0 - v2.2.4 and RKE CLI v0.2.0 - v0.2.4
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v225" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.2.5+
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rke-v025" class="md-nav__link">
-    <span class="md-ellipsis">
-      RKE v0.2.5+
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#rancher-provisioned-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rancher-provisioned clusters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rke-cli-provisioned-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE CLI-provisioned clusters
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RKE CLI-provisioned clusters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -8233,86 +8188,62 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#question" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Question
+      Resolution
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#answer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Answer
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Answer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v220-v224-and-rke-cli-v020-v024" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.2.0 - v2.2.4 and RKE CLI v0.2.0 - v0.2.4
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v225" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.2.5+
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rke-v025" class="md-nav__link">
-    <span class="md-ellipsis">
-      RKE v0.2.5+
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#rancher-provisioned-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rancher-provisioned clusters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rke-cli-provisioned-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE CLI-provisioned clusters
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RKE CLI-provisioned clusters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -8331,24 +8262,21 @@
                   
 
 
-<h1 id="is-it-possible-to-perform-etcd-snapshots-to-an-s3-endpoint-with-a-certificate-signed-by-a-custom-ca">Is it possible to perform etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?</h1>
+<h1 id="is-it-possible-to-perform-rke-etcd-snapshots-to-an-s3-endpoint-with-a-certificate-signed-by-a-custom-ca">Is it possible to perform RKE etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?</h1>
 <p>This document <strong>(000020232)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher Kubernetes Engine (RKE) clusters provisioned via the RKE CLI or Rancher v2.x</p>
 <h3 id="situation">Situation</h3>
-<h4 id="question">Question</h4>
-<p>Is it possible to perform <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/">etcd snapshots</a> to an S3 endpoint with a certificate signed by a custom certificate authority (CA)?</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>Kubernetes clusters provisioned via the RKE CLI v0.2.x, or Rancher launched Kubernetes clusters via Rancher v2.2.x.</li>
-</ul>
-<h4 id="answer">Answer</h4>
-<h5 id="rancher-v220-v224-and-rke-cli-v020-v024">Rancher v2.2.0 - v2.2.4 and RKE CLI v0.2.0 - v0.2.4</h5>
-<p>In Rancher v2.2.0 - v2.2.4 and RKE CLI v0.2.0 - v0.2.4 it is not possible to configure etcd snapshots to use a custom CA. Attempts to perform etcd snapshots to an S3 endpoint with a certificate signed by a custom CA will fail with an error similar to the following:</p>
-<div class="highlight"><pre><span></span><code>FATA[0002] Failed to take one-time snapshot, exit code [1]: time=&quot;2019-04-29T08:37:15Z&quot; level=fatal msg=&quot;faield to set s3 server: failed to check s3 bucket:rke, err:Get https://s3.example.com/rke/?location=: x509: certificate signed by unknown authority&quot;
+<p>Is it possible to perform <a href="https://rke.docs.rancher.com/etcd-snapshots">etcd snapshots</a> to an S3 endpoint with a certificate signed by a custom certificate authority (CA)?</p>
+<div class="highlight"><pre><span></span><code>
 </code></pre></div>
-<h5 id="rancher-v225">Rancher v2.2.5+</h5>
-<p>In Rancher v2.2.5 and above it is possible to specify a custom CA for the S3 endpoint within <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/backing-up-etcd/">the S3 backup options</a>. Expanding 'Show advanced options' under the 'Edit Cluster' view, a 'Custom CA Certificate' field is shown when the s3 backup target is selected, enabling you to enter the certificate or upload this from file.</p>
-<h5 id="rke-v025">RKE v0.2.5+</h5>
-<p>With the RKE CLI v0.2.5 and above it also possible to specify a custom CA for the S3 endpoint within the <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/">S3 backup options</a>. To do you specify the certificate via the <code>custom_ca</code> field in the <code>s3backupconfig</code> block of the <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/recurring-snapshots/#configuring-the-snapshot-service-in-yaml">cluster configuration YAML</a>. The cert should be provided as string, with newlines replaced with \n, per the example below:</p>
+<h3 id="resolution">Resolution</h3>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+<h2 id="rancher-provisioned-clusters">Rancher-provisioned clusters</h2>
+<p>In Rancher v2.2.5 and above it is possible to specify a custom CA for the S3 endpoint within <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher-launched-kubernetes-clusters#s3-backup-target">the S3 backup options</a>. Expanding 'Show advanced options' under the 'Edit Cluster' view, a 'Custom CA Certificate' field is shown when the s3 backup target is selected, enabling you to enter the certificate or upload this from file.</p>
+<h2 id="rke-cli-provisioned-clusters">RKE CLI-provisioned clusters</h2>
+<p>With the RKE CLI v0.2.5 and above it also possible to specify a custom CA for the S3 endpoint within the <a href="https://rke.docs.rancher.com/etcd-snapshots">S3 backup options</a>. To do you specify the certificate via the <code>custom_ca</code> field in the <code>s3backupconfig</code> block of the <a href="https://rke.docs.rancher.com/etcd-snapshots/recurring-snapshots#configuring-the-snapshot-service-in-yaml">cluster configuration YAML</a>. The cert should be provided as string, with newlines replaced with \n, per the example below:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">etcd</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">backup_config</span><span class="p">:</span>
