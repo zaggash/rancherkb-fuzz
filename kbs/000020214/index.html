@@ -2332,7 +2332,7 @@
         
   
   <span class="md-ellipsis">
-    How to run workloads on etcd or controlplane nodes, without the worker role, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
+    How to run workloads on etcd or controlplane nodes, without the worker role, in a Rancher Kubernetes Engine (RKE) cluster
   </span>
   
 
@@ -3802,7 +3802,7 @@
         
   
   <span class="md-ellipsis">
-    Many rancher-agent containers running on Rancher v2.x provisioned Kubernetes cluster, where stopped containers are regularly deleted on hosts
+    Many rancher-agent containers running on Rancher v2.x provisioned RKE cluster, where stopped containers are regularly deleted on hosts
   </span>
   
 
@@ -4012,6 +4012,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -4022,27 +4031,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#when-performing-an-etcd-snapshot-restore-via-rke-including-the-zip-file-extension-in-the-snapshot-name-parameter-ie-rke-etcd-snapshot-restore-name-snapshotzip-and-a-snapshot-filename-of-snapshotzip-the-restoration-fails-with-an-error-of-the-following-format" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
+      When performing an etcd snapshot restore via RKE, including the .zip file extension in the snapshot name parameter, i.e. rke etcd snapshot-restore --name snapshot.zip and a snapshot filename of snapshot.zip, the restoration fails with an error of the following format:
     </span>
   </a>
   
@@ -4050,6 +4041,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
   
 </li>
       
@@ -8179,6 +8179,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8189,27 +8198,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#when-performing-an-etcd-snapshot-restore-via-rke-including-the-zip-file-extension-in-the-snapshot-name-parameter-ie-rke-etcd-snapshot-restore-name-snapshotzip-and-a-snapshot-filename-of-snapshotzip-the-restoration-fails-with-an-error-of-the-following-format" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
+      When performing an etcd snapshot restore via RKE, including the .zip file extension in the snapshot name parameter, i.e. rke etcd snapshot-restore --name snapshot.zip and a snapshot filename of snapshot.zip, the restoration fails with an error of the following format:
     </span>
   </a>
   
@@ -8217,6 +8208,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
   
 </li>
       
@@ -8246,16 +8246,15 @@
 
 <h1 id="error-snapshot-missing-hash-but-skip-hash-checkfalse-when-performing-rke-etcd-snapshort-restore-with-zip-extension-included-in-snapshot-name">'Error: snapshot missing hash but --skip-hash-check=false' when performing `rke etcd snapshort-restore` with .zip extension included in snapshot name</h1>
 <p>This document <strong>(000020214)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<ul>
+<li>A Kubernetes cluster provisioned with the Rancher Kubernetes Engine (RKE) CLI</li>
+</ul>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>When performing an etcd snapshot restore via RKE, including the <code>.zip</code> file extension in the snapshot name parameter, i.e. <code>rke etcd snapshot-restore --name snapshot.zip</code> and a snapshot filename of <code>snapshot.zip</code>, the restoration fails with an error of the following format:</p>
+<h4 id="when-performing-an-etcd-snapshot-restore-via-rke-including-the-zip-file-extension-in-the-snapshot-name-parameter-ie-rke-etcd-snapshot-restore-name-snapshotzip-and-a-snapshot-filename-of-snapshotzip-the-restoration-fails-with-an-error-of-the-following-format">When performing an etcd snapshot restore via RKE, including the <code>.zip</code> file extension in the snapshot name parameter, i.e. <code>rke etcd snapshot-restore --name snapshot.zip</code> and a snapshot filename of <code>snapshot.zip</code>, the restoration fails with an error of the following format:</h4>
 <div class="highlight"><pre><span></span><code>FATA[0020] [etcd] Failed to restore etcd snapshot: Failed to run etcd restore container, exit status is: 128, container logs: Error: snapshot missing hash but --skip-hash-check=false
 </code></pre></div>
-<h4 id="pre-requisites">Pre-requisites</h4>
-<ul>
-<li>This issue is applicable to RKE CLI v0.2.x, starting with v0.2.5, v0.3.x and v1.0.x</li>
-</ul>
-<h4 id="resolution">Resolution</h4>
+<h3 id="resolution">Resolution</h3>
 <p>This issue is caused by the incorrect inclusion of the <code>.zip</code> file extension to the snapshot name parameter.</p>
 <p>The snapshot name parameter ( <code>--name</code>) should contain the snapshot name, excluding the file extension.</p>
 <p>In the example of a snapshot filename of <code>snapshot.zip</code> the correct name parameter is therefore just <code>snapshot</code>, i.e. <code>rke etcd snapshot-restore --name snapshot</code>.</p>
