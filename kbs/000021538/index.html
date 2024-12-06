@@ -8253,7 +8253,7 @@
 <h1 id="rancher-ui-does-not-show-the-rancher-prime-logo-after-an-upgrade">Rancher UI does not show the Rancher Prime logo after an upgrade</h1>
 <p>This document <strong>(000021538)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher prime</p>
+<p>Rancher Prime</p>
 <h3 id="situation">Situation</h3>
 <p>The Rancher UI does not show the Rancher Prime logo after an upgrade.</p>
 <ol>
@@ -8268,7 +8268,7 @@
 <blockquote>
 <p>&gt; Get the current UI brand value</p>
 </blockquote>
-<div class="highlight"><pre><span></span><code>kubectl get settings ui-brand
+<div class="highlight"><pre><span></span><code>kubectl get settings.management.cattle.io ui-brand
 </code></pre></div>
 <blockquote>
 <blockquote>
@@ -8279,7 +8279,7 @@
 </code></pre></div>
 <p><strong>2. Using Rancher UI</strong></p>
 <p>Global settings &gt; settings &gt; ui-brand &gt; make sure the value is set as <strong>suse</strong></p>
-<p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000007kVx&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr000005ljRp" /></p>
+<p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000ISHB&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr000005ljRp" /></p>
 <h3 id="cause">Cause</h3>
 <p>If the Rancher UI does not show the Rancher Prime logo after an upgrade, the upgrade process might have reset some branding configurations.</p>
 <h3 id="status">Status</h3>
