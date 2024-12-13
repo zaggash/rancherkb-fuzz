@@ -7348,15 +7348,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#disclaimers" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimers
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -8239,15 +8230,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#disclaimers" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimers
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -8312,13 +8294,13 @@
 <h3 id="environment">Environment</h3>
 <p>SUSE Rancher 2.9.x</p>
 <h3 id="situation">Situation</h3>
-<p>SUSE Rancher support and engineering might propose a <strong>hotfix</strong> Rancher build, which contains a potential fix for a specific issue, for troubleshooting purposes.</p>
-<p>Hotfix images follow the naming convention: " <code>v&lt;X.Y.Z&gt;-hotfix-&lt;IDENTIFIER</code> &gt;"</p>
-<p>The Fleet version should be respected (for Fleet v0.10.3, the debug image should be v0.10.3-hotfix-ch-2-1e8d071a).</p>
+<p>SUSE Rancher support and engineering might propose a hotfix image, which contains a potential fix for a specific issue, for troubleshooting purposes.</p>
+<p>Hotfix images usually follow the naming convention: " <code>v&lt;X.Y.Z&gt;-hotfix-&lt;IDENTIFIER</code> &gt;"</p>
+<p>The Rancher version should be respected (for Rancher v2.9.3, the debug image should be v2.9.3-hotfix-XYZ).</p>
 <p>SUSE Support will give information about the content of a hotfix.</p>
-<h3 id="disclaimers">Disclaimers</h3>
-<p>Please, use a hotfix build only when instructed by SUSE Support/Engineering personnel. Hotfix builds are meant to help troubleshoot specific problems and they are not supported for general use.</p>
-<p>From a Engineering standpoint we are confident that hotfix builds will not introduce regressions, as changes target a small code region, pass reviews and a selection of automated tests as well. Nevertheless, hotfix builds do not go through full Rancher QA processes, so please be ready to revert to the original version in case unexpected behavior is noticed (instructions are provided below).</p>
+<p><strong>Disclaimers:</strong> Please, use a hotfix build only when instructed by SUSE Support/Engineering personnel. Hotfix builds are meant to help troubleshoot specific problems and they are not supported for general use.</p>
+<p>From an Engineering standpoint we are confident that hotfix builds will not introduce regressions, as changes target a small code region, pass reviews and a selection of automated tests as well. Nevertheless, hotfix builds do not go through full Rancher QA processes, so please be ready to revert to the original version in case unexpected behavior is noticed (instructions are provided below).</p>
+<p><strong>Important Upgrade Notice</strong>: This hotfix includes changes that may not be present in all subsequent Rancher releases. Therefore, to ensure a smooth upgrade process after applying this hotfix, please contact SUSE Support for guidance before upgrading to any later Rancher version. SUSE Support will indicate which versions are safe to upgrade to.</p>
 <h3 id="resolution">Resolution</h3>
 <h3 id="installation-instructions">Installation instructions</h3>
 <ul>
@@ -8336,13 +8318,13 @@ $ kubectl get configmap -n cattle-fleet-system fleet-controller -o yaml | sed -E
 <li>Edit the <code>fleet-controller</code> deployment (to change the <code>fleet-controller</code> image to the test version):</li>
 </ul>
 <div class="highlight"><pre><span></span><code>$ export TAG=v0.10.3-hotfix-ch-2-1e8d071a
-$ kubectl set image -n cattle-fleet-system deployment/fleet-controller *=registry.suse.com/rancher/fleet:$TAG
+$ kubectl set image -n cattle-fleet-system deployment/fleet-controller &quot;*=registry.suse.com/rancher/fleet:$TAG&quot;
 </code></pre></div>
 <p>Note: for air-gap setups or environments not allowing images to be pulled from SUSE Registry, one should transfer or whitelist the fleet-controller and fleet-agent images appropriately for the procedure to work.</p>
 <h3 id="uninstallation-instructions-restoring-the-original-fleet-version">Uninstallation instructions (restoring the original Fleet version)</h3>
 <div class="highlight"><pre><span></span><code>$ export TAG=v0.10.3
 $ kubectl get configmap -n cattle-fleet-system fleet-controller -o yaml | sed -E &quot;s#rancher/fleet-agent:v[0-9A-Za-z\.\-]+#rancher/fleet-agent:$TAG#g&quot; | kubectl apply -f -
-$ kubectl set image -n cattle-fleet-system deployment/fleet-controller *=registry.suse.com/rancher/fleet:$TAG
+$ kubectl set image -n cattle-fleet-system deployment/fleet-controller &quot;*=registry.suse.com/rancher/fleet:$TAG&quot;
 </code></pre></div>
 <h3 id="follow-up-instructions">Follow-up instructions</h3>
 <p>Please report if changes help with symptoms.</p>
