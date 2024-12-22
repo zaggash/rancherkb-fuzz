@@ -8271,7 +8271,7 @@ pool2: The provided value for hostsystem was not found in the list of expected v
 
 pool3: The provided value for hostsystem was not found in the list of expected values. This can happen with clusters provisioned outside of Rancher or when options for the provider have changed
 </code></pre></div>
-<p><img alt="Screenshot 2024-09-11 at 5.28.31 PM.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000Nf5h&amp;feoid=00N1i000002LdMP&amp;refid=0EMTr000006Cr3V" /></p>
+<p><img alt="image1" src=" <a href="https://suse.file.force.com/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr00000L4T4D&amp;operationContext=CHATTER&amp;contentId=05TTr00000SaiRY">https://suse.file.force.com/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINALklzzwxh:0002Png&amp;versionId=068Tr00000L4T4D&amp;operationContext=CHATTER&amp;contentId=05TTr00000SaiRY</a>" /></p>
 <ul>
 <li>Also, when we try to scale up a node, we would be able to see in Rancher that it creates a machine resource and then immediately deletes it.</li>
 <li>However, checking from vSphere side, you would not notice any VM creation or even an API call for VM creation.</li>
@@ -8283,7 +8283,7 @@ pool3: The provided value for hostsystem was not found in the list of expected v
 CreateError: Running pre-create checks... (Prod-infra-xxxxxxxx-xhxxx) Connecting to vSphere for pre-create checks... (Prod-infra-xxxxxxxx-xhxxx) Using datacenter /Kubernetes
 (Prod-infra-xxxxxxxx-xhxxx) Using Network /Kubernetes/network/Datacenter-01 LB Kubernetes Error with pre-create check: &quot;host &#39;/Kubernetes/host/K8s Prod/xxvm22.xxxxx.xxxxxxx.xx&#39; not found&quot;
 </code></pre></div>
-<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000Nf5h&amp;feoid=00N1i000002LdMP&amp;refid=0EMTr000008Tbys" /></p>
+<p><img alt="Image" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr00000L4s2k&amp;operationContext=DELIVERY&amp;contentId=05TTr00000SavQB&amp;page=0&amp;d=/a/Tr00000AO83V/_pauVXvrwMk5tlA8nHbHKqHJe7n75KgX1G4.DMLfnv0&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
 <ul>
 <li>Checking on vSphere, we could confirm that node tt <strong>vm26.xxxxx.xxxxxxx.xx</strong> existed.</li>
 <li>However, the ESXi cluster name in the error messages was <strong>"K8s Prod"</strong> but on vSphere it was changed to a different name by the vSphere admin that triggered this issue on the Rancher's downstream cluster.</li>
@@ -8292,7 +8292,7 @@ CreateError: Running pre-create checks... (Prod-infra-xxxxxxxx-xhxxx) Connecting
 <ul>
 <li>The only available option is to change the name of the ESXi cluster on vSphere back to <strong>"K8s Prod"</strong> as seen in the error message since we do not have an option to change or select the updated ESXi cluster resource from Rancher side for the existing downstream cluster.</li>
 </ul>
-<p><img alt="Screenshot 2024-09-11 123311.jpg" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000Nf5h&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr000006D1Av" /></p>
+<p><img alt="Image" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr00000L4T4D&amp;operationContext=DELIVERY&amp;contentId=05TTr00000SaiRY&amp;page=0&amp;d=/a/Tr00000AO0M6/dVzauXtOKrVFa0b46XzJQpJYdXNuQcpuivl0EOW_KmU&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
