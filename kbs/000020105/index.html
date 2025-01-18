@@ -9236,12 +9236,12 @@ done
 <li><a href="https://www.ibm.com/cloud/blog/using-fio-to-tell-whether-your-storage-is-fast-enough-for-etcd">A benchmark tool like <code>fio</code></a> can be used to accurately test the underlying disk for fsync latency. Alternatively, a basic self-test can be run on RKE and RKE2 with the respective commands below:</li>
 </ul>
 <h5 id="rke">RKE</h5>
-<div class="highlight"><pre><span></span><code>docker exec -e ETCDCTL_ENDPOINTS=$(docker exec etcd /bin/sh -c &quot;etcdctl member list | cut -d, -f5 | sed -e &#39;s/ //g&#39; | paste -sd &#39;,&#39;&quot;) etcd etcdctl check perf
+<div class="highlight"><pre><span></span><code>docker exec -e ETCDCTL_ENDPOINTS=$(docker exec etcd etcdctl member list | cut -d, -f5 | sed -e &#39;s/ //g&#39; | paste -sd &#39;,&#39;) etcd etcdctl check perf
 </code></pre></div>
 <h5 id="rke2">RKE2</h5>
 <div class="highlight"><pre><span></span><code>export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
 etcdcontainer=$(/var/lib/rancher/rke2/bin/crictl ps --label io.kubernetes.container.name=etcd --quiet)
-crictl exec $etcdcontainer sh -c &quot;ETCDCTL_CACERT=&#39;/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt&#39; ETCDCTL_CERT=&#39;/var/lib/rancher/rke2/server/tls/etcd/server-client.crt&#39; ETCDCTL_KEY=&#39;/var/lib/rancher/rke2/server/tls/etcd/server-client.key&#39; ETCDCTL_API=3 etcdctl check perf
+/var/lib/rancher/rke2/bin/crictl exec $etcdcontainer etcdctl --cert /var/lib/rancher/rke2/server/tls/etcd/server-client.crt --key /var/lib/rancher/rke2/server/tls/etcd/server-client.key --cacert /var/lib/rancher/rke2/server/tls/etcd/server-ca.crt check perf
 </code></pre></div>
 <ul>
 <li>Nodes with the <code>etcd</code> role have SSD or similar storage providing high IOPs and low latency</li>
