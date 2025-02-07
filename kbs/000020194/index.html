@@ -3090,7 +3090,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable SSL passthrough on the nginx-ingress controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters
+    How to enable SSL passthrough on the nginx-ingress controller in Rancher Kubernetes Engine (RKE) CLI, RKE2 standalone or Rancher v2.x provisioned Kubernetes clusters
     
   </span>
   
@@ -3882,59 +3882,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#question" class="md-nav__link">
-    <span class="md-ellipsis">
-      Question
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#answer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Answer
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cattle-cluster-agent-deployment" class="md-nav__link">
-    <span class="md-ellipsis">
-      cattle-cluster-agent deployment
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cattle-node-agent-daemonset" class="md-nav__link">
-    <span class="md-ellipsis">
-      cattle-node-agent daemonset
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#rancher-ha-cluster" class="md-nav__link">
@@ -3955,9 +3928,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
+  <a href="#cattle-cluster-agent-deployment" class="md-nav__link">
     <span class="md-ellipsis">
-      Further Reading
+      cattle-cluster-agent deployment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cattle-node-agent-daemonset-only-for-rke1-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      cattle-node-agent daemonset - only for RKE1 clusters
     </span>
   </a>
   
@@ -3965,6 +3947,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
   
 </li>
       
@@ -4679,7 +4670,7 @@
         
   
   <span class="md-ellipsis">
-    How to drain node from local node using docker command
+    How to drain a node in an RKE1 cluster from the local node using a docker command
     
   </span>
   
@@ -6457,6 +6448,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../000020792/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to make a request with the Rancher2 Terraform Provider
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000020803/" class="md-nav__link">
         
   
@@ -6572,6 +6585,28 @@
   
   <span class="md-ellipsis">
     How to define additional static pods on an RKE2 cluster node
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000020848/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Rancher install fails in an airgap environment with an error: no matches for kind "Issuer" in version certmanager.k8s.io/v1alpha1
     
   </span>
   
@@ -7997,6 +8032,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021328/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Misconfigured Kubewarden mutating policies together with 3rd party Kubernetes Controllers can get stuck in an infinite loop
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021334/" class="md-nav__link">
         
   
@@ -8217,6 +8274,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021401/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to set calico IP_AUTODETECTION_METHOD
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021405/" class="md-nav__link">
         
   
@@ -8266,6 +8345,50 @@
   
   <span class="md-ellipsis">
     The Repositories of Air-gapped Downstream Clusters in Rancher v2.8.3. fail to pull charts.
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021462/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RKE2 vSphere cluster provisioning failing, with failing kube-apiserver healthchecks due to inability to resolve localhost
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021469/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ManagedChart generation is X, but latest observed generation is Y
     
   </span>
   
@@ -8371,6 +8494,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021547/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to monitor Canal or Calico in RKE2 Downstream Clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021558/" class="md-nav__link">
         
   
@@ -8442,6 +8587,28 @@
   
   <span class="md-ellipsis">
     rke2 helm-install job failing with INSTALLATION FAILED: cannot re-use a name that is still in use
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021585/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -8569,11 +8736,99 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021631/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to enable debug logging for the rancher-system-agent
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021637/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cannot upgrade Rancher-provisioned RKE clusters using an RKE template
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021647/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     How to Inquire About CVEs in SUSE Rancher Prime Product
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021669/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    helm-install-rke-calico fails on downstream clusters; cannot re-use a name that is still in use
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021681/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to configure Spegel (Embedded Registry Mirror) for Rancher-provisioned RKE2/k3s clusters
     
   </span>
   
@@ -8618,59 +8873,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#question" class="md-nav__link">
-    <span class="md-ellipsis">
-      Question
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pre-requisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#answer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Answer
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cattle-cluster-agent-deployment" class="md-nav__link">
-    <span class="md-ellipsis">
-      cattle-cluster-agent deployment
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cattle-node-agent-daemonset" class="md-nav__link">
-    <span class="md-ellipsis">
-      cattle-node-agent daemonset
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#rancher-ha-cluster" class="md-nav__link">
@@ -8691,9 +8919,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
+  <a href="#cattle-cluster-agent-deployment" class="md-nav__link">
     <span class="md-ellipsis">
-      Further Reading
+      cattle-cluster-agent deployment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cattle-node-agent-daemonset-only-for-rke1-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      cattle-node-agent daemonset - only for RKE1 clusters
     </span>
   </a>
   
@@ -8701,6 +8938,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
   
 </li>
       
@@ -8731,14 +8977,11 @@
 
 <h1 id="what-is-the-process-performed-during-a-rancher-v2x-upgrade-and-what-is-the-impact-to-the-managed-downstream-kubernetes-clusters">What is the process performed during a Rancher v2.x upgrade and what is the impact to the managed downstream Kubernetes clusters?</h1>
 <p>This document <strong>(000020194)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Running Rancher v2.x HA deployed using Helm.</p>
 <h3 id="situation">Situation</h3>
-<h5 id="question">Question</h5>
 <p>What is the process performed during a Rancher v2.x upgrade and what is the impact to the managed downstream Kubernetes clusters?</p>
-<h5 id="pre-requisites">Pre-requisites</h5>
-<ul>
-<li>Running Rancher v2.x HA deployed using Helm.</li>
-</ul>
-<h5 id="answer">Answer</h5>
+<h3 id="resolution">Resolution</h3>
 <p>The bulk of the Rancher HA installation and upgrade are performed by using Helm. The core piece of the Rancher Helm Chart is the Rancher deployment. Please note the following characteristics of this Helm Chart:</p>
 <ul>
 <li>Deployment is set to a replica of 3. This means Kubernetes will attempt to run and maintain three rancher pods.</li>
@@ -8747,17 +8990,6 @@
 <li>During an update, no more than 4 pods will be running at once</li>
 <li>During an update, no fewer than 2 pods will be available at once</li>
 <li>Deployment has an anti-affinity for the node's hostname. This means Kubernetes will attempt to place each pod on a separate host. For three pods and three hosts, that means one pod on each host.</li>
-</ul>
-<p>Rancher will also apply two other important manifests to the Rancher HA cluster as well as all managed clusters. These are described below:</p>
-<h5 id="cattle-cluster-agent-deployment">cattle-cluster-agent deployment</h5>
-<ul>
-<li>Deployment is set to a replica of 1</li>
-<li>Deployment is set to do a rolling update with a max surge of 25% and a max unavailability of 25%. See Rancher's deployment description above for the behavior of these settings.</li>
-</ul>
-<h5 id="cattle-node-agent-daemonset">cattle-node-agent daemonset</h5>
-<ul>
-<li>Daemonset will deploy one agent per node</li>
-<li>Daemonset is set to a rolling update with max unavailable of 1 pod. That means during an update, one pod is updated at a time.</li>
 </ul>
 <p>Given the information above on how the manifests are defined, below is the expected sequence of events during a Rancher upgrade:</p>
 <h5 id="rancher-ha-cluster">Rancher HA cluster</h5>
@@ -8768,12 +9000,22 @@
 <li>A second old rancher pod is terminated</li>
 <li>A new third rancher pod is created</li>
 <li>A third old rancher pod is terminated</li>
-<li>The latest versions of the cattle-cluster-agent and cattle-node-agent manifests are updated and deployed on the cluster. These deployments are triggered in parallel and will result in a new cattle-cluster-agent and new cattle-node-agents running on the cluster.</li>
 </ol>
 <h5 id="downstream-clusters">Downstream clusters</h5>
-<p>Once Rancher is upgraded, Rancher will check each cluster it manages to make sure the cattle-cluster-agent and cattle-node-agents are up to date. If the cluster is not in a "Provisioning" state, meaning another cluster update is in progress, it will deploy the latest cattle-cluster-agent and cattle-node-agent manifests into the cluster. All managed clusters are updated in parallel and not sequentially.</p>
+<p>Rancher will also apply two other important manifests to all managed clusters. These are described below:</p>
+<h5 id="cattle-cluster-agent-deployment">cattle-cluster-agent deployment</h5>
+<ul>
+<li>Deployment is set to a replica of 2</li>
+<li>Deployment is set to do a rolling update with a max surge of 25% and a max unavailability of 25%. See Rancher's deployment description above for the behavior of these settings.</li>
+</ul>
+<h5 id="cattle-node-agent-daemonset-only-for-rke1-clusters">cattle-node-agent daemonset - only for RKE1 clusters</h5>
+<ul>
+<li>Daemonset will deploy one agent per node</li>
+<li>Daemonset is set to a rolling update with max unavailable of 1 pod. That means during an update, one pod is updated at a time.</li>
+</ul>
+<p>Once Rancher is upgraded, Rancher will check each cluster it manages to make sure the cattle-cluster-agent and cattle-node-agents are up to date. For RKE2/k3s clusters, if the cluster is not in a "Provisioning" state, meaning another cluster update is in progress, it will deploy the latest cattle-cluster-agent into the cluster. For RKE1, it will also deploy the latest cattle-cluster-agent and cattle-node-agent manifests into the cluster. All managed clusters are updated in parallel and not sequentially.</p>
 <p>Other workloads running in the cluster should not be impacted.</p>
-<h5 id="further-reading">Further Reading</h5>
+<h3 id="additional-information">Additional Information</h3>
 <p>Kubernetes deployments - <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></p>
 <p>Kubernetes daemonsets - <a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/</a></p>
 <h3 id="disclaimer">Disclaimer</h3>

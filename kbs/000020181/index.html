@@ -3090,7 +3090,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable SSL passthrough on the nginx-ingress controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters
+    How to enable SSL passthrough on the nginx-ingress controller in Rancher Kubernetes Engine (RKE) CLI, RKE2 standalone or Rancher v2.x provisioned Kubernetes clusters
     
   </span>
   
@@ -3706,6 +3706,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -3716,46 +3725,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#when-configuring-okta-authentication-using-the-rancher-official-documentation-in-a-rancher-ha-environment-you-encounter-501-errors-when-trying-to-verify-and-enable-the-configuration" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#assumptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Assumptions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#steps-to-resolve" class="md-nav__link">
-    <span class="md-ellipsis">
-      Steps to Resolve
+      When configuring Okta Authentication using the Rancher Official Documentation in a Rancher HA environment you encounter 501 errors when trying to verify and enable the configuration.
     </span>
   </a>
   
@@ -3763,6 +3735,34 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cause">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-rancher-to-fully-enable-okta-authenication-it-requires-a-succesful-test-of-your-configuration-to-verify-the-information-is-correct-when-the-test-request-is-sent-from-one-of-your-rancher-servers-to-okta-the-returned-verification-is-routed-through-a-load-balancer-to-a-different-rancher-server-in-the-cluster-as-the-recipient-has-not-yet-been-configured-to-service-okta-authentication-it-will-return-a-501-for-the-request-and-the-rancher-server-that-acted-as-a-requester-will-fail-to-enable-as-it-could-not-complete-the-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      For Rancher to fully enable Okta Authenication it requires a succesful test of your configuration to verify the information is correct. When the test request is sent from one of your Rancher Servers to Okta the returned verification is routed through a Load Balancer to a different Rancher Server in the cluster. As the recipient has not yet been configured to service Okta Authentication it will return a 501 for the request and the Rancher Server that acted as a requester will fail to enable as it could not complete the verification.
+    </span>
+  </a>
   
 </li>
         
@@ -4658,7 +4658,7 @@
         
   
   <span class="md-ellipsis">
-    How to drain node from local node using docker command
+    How to drain a node in an RKE1 cluster from the local node using a docker command
     
   </span>
   
@@ -6436,6 +6436,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../000020792/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to make a request with the Rancher2 Terraform Provider
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000020803/" class="md-nav__link">
         
   
@@ -6551,6 +6573,28 @@
   
   <span class="md-ellipsis">
     How to define additional static pods on an RKE2 cluster node
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000020848/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Rancher install fails in an airgap environment with an error: no matches for kind "Issuer" in version certmanager.k8s.io/v1alpha1
     
   </span>
   
@@ -7976,6 +8020,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021328/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Misconfigured Kubewarden mutating policies together with 3rd party Kubernetes Controllers can get stuck in an infinite loop
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021334/" class="md-nav__link">
         
   
@@ -8196,6 +8262,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021401/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to set calico IP_AUTODETECTION_METHOD
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021405/" class="md-nav__link">
         
   
@@ -8245,6 +8333,50 @@
   
   <span class="md-ellipsis">
     The Repositories of Air-gapped Downstream Clusters in Rancher v2.8.3. fail to pull charts.
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021462/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RKE2 vSphere cluster provisioning failing, with failing kube-apiserver healthchecks due to inability to resolve localhost
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021469/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ManagedChart generation is X, but latest observed generation is Y
     
   </span>
   
@@ -8350,6 +8482,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021547/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to monitor Canal or Calico in RKE2 Downstream Clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021558/" class="md-nav__link">
         
   
@@ -8421,6 +8575,28 @@
   
   <span class="md-ellipsis">
     rke2 helm-install job failing with INSTALLATION FAILED: cannot re-use a name that is still in use
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021585/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -8548,11 +8724,99 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021631/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to enable debug logging for the rancher-system-agent
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021637/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cannot upgrade Rancher-provisioned RKE clusters using an RKE template
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021647/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     How to Inquire About CVEs in SUSE Rancher Prime Product
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021669/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    helm-install-rke-calico fails on downstream clusters; cannot re-use a name that is still in use
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021681/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to configure Spegel (Embedded Registry Mirror) for Rancher-provisioned RKE2/k3s clusters
     
   </span>
   
@@ -8597,6 +8861,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -8607,46 +8880,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#when-configuring-okta-authentication-using-the-rancher-official-documentation-in-a-rancher-ha-environment-you-encounter-501-errors-when-trying-to-verify-and-enable-the-configuration" class="md-nav__link">
     <span class="md-ellipsis">
-      Issue
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#assumptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Assumptions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#steps-to-resolve" class="md-nav__link">
-    <span class="md-ellipsis">
-      Steps to Resolve
+      When configuring Okta Authentication using the Rancher Official Documentation in a Rancher HA environment you encounter 501 errors when trying to verify and enable the configuration.
     </span>
   </a>
   
@@ -8654,6 +8890,34 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cause">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-rancher-to-fully-enable-okta-authenication-it-requires-a-succesful-test-of-your-configuration-to-verify-the-information-is-correct-when-the-test-request-is-sent-from-one-of-your-rancher-servers-to-okta-the-returned-verification-is-routed-through-a-load-balancer-to-a-different-rancher-server-in-the-cluster-as-the-recipient-has-not-yet-been-configured-to-service-okta-authentication-it-will-return-a-501-for-the-request-and-the-rancher-server-that-acted-as-a-requester-will-fail-to-enable-as-it-could-not-complete-the-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      For Rancher to fully enable Okta Authenication it requires a succesful test of your configuration to verify the information is correct. When the test request is sent from one of your Rancher Servers to Okta the returned verification is routed through a Load Balancer to a different Rancher Server in the cluster. As the recipient has not yet been configured to service Okta Authentication it will return a 501 for the request and the Rancher Server that acted as a requester will fail to enable as it could not complete the verification.
+    </span>
+  </a>
   
 </li>
         
@@ -8689,15 +8953,11 @@
 
 <h1 id="how-to-configure-okta-auth-with-rancher-ha">How to configure Okta Auth with Rancher HA</h1>
 <p>This document <strong>(000020181)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher v2.7, v2.8</p>
 <h3 id="situation">Situation</h3>
-<h4 id="issue">Issue</h4>
-<p>When configuring Okta Authentication using the <a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/authentication/okta/">Rancher Official Documentation</a> in a Rancher HA environment you encounter 501 errors when trying to verify and enable the configuration.</p>
-<h4 id="cause">Cause</h4>
-<p>For Rancher to fully enable Okta Authenication it requires a succesful test of your configuration to verify the information is correct. When the test request is sent from one of your Rancher Servers to Okta the returned verification is routed through a Load Balancer to a different Rancher Server in the cluster. As the recipient has not yet been configured to service Okta Authentication it will return a 501 for the request and the Rancher Server that acted as a requester will fail to enable as it could not complete the verification.</p>
-<h4 id="resolution">Resolution</h4>
-<h5 id="assumptions">Assumptions</h5>
-<p>You have appropriately configured Okta Authentication according to the Rancher Official Documentation.</p>
-<h5 id="steps-to-resolve">Steps to Resolve</h5>
+<h4 id="when-configuring-okta-authentication-using-the-rancher-official-documentation-in-a-rancher-ha-environment-you-encounter-501-errors-when-trying-to-verify-and-enable-the-configuration">When configuring Okta Authentication using the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-okta-saml">Rancher Official Documentation</a> in a Rancher HA environment you encounter 501 errors when trying to verify and enable the configuration.</h4>
+<h3 id="resolution">Resolution</h3>
 <ol>
 <li>Using the Nodes Tab in your Rancher Management Cluster cordon off the nodes you are not currently connected to, this will force traffic to be returned to the Requester.</li>
 <li>Run the test and enable procedure for Okta Configuration from Rancher and verify you can now login successfully.</li>
@@ -8705,6 +8965,8 @@
 <li>Verify the cluster is working as expected by logging in using an Okta sign-in.</li>
 </ol>
 <p>(Optional) To verify the settings have been synced to all nodes in the cluster you can cordon off all but another Node, not the one you used to configure, and attempt logging in using Okta. This process can be repeated for each node.</p>
+<h3 id="cause">Cause</h3>
+<h4 id="for-rancher-to-fully-enable-okta-authenication-it-requires-a-succesful-test-of-your-configuration-to-verify-the-information-is-correct-when-the-test-request-is-sent-from-one-of-your-rancher-servers-to-okta-the-returned-verification-is-routed-through-a-load-balancer-to-a-different-rancher-server-in-the-cluster-as-the-recipient-has-not-yet-been-configured-to-service-okta-authentication-it-will-return-a-501-for-the-request-and-the-rancher-server-that-acted-as-a-requester-will-fail-to-enable-as-it-could-not-complete-the-verification">For Rancher to fully enable Okta Authenication it requires a succesful test of your configuration to verify the information is correct. When the test request is sent from one of your Rancher Servers to Okta the returned verification is routed through a Load Balancer to a different Rancher Server in the cluster. As the recipient has not yet been configured to service Okta Authentication it will return a 501 for the request and the Rancher Server that acted as a requester will fail to enable as it could not complete the verification.</h4>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
