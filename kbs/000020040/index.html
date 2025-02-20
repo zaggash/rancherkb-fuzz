@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
     
     
       
@@ -8842,9 +8842,9 @@
 <h3 id="resolution">Resolution</h3>
 <p>Yes, we can do a one-time migration of your entire self-hosted Rancher Manager into the Rancher Prime Hosted service. Requirements for migration are:</p>
 <ol>
-<li>You must be running the latest stable version of Rancher (currently v2.9.1) for at least one week.</li>
-<li>Rancher cluster must be running Kubernetes v1.27 or higher for at least one week.</li>
-<li>All managed/downstream clusters must be running Kubernetes v1.27 or higher for at least one week.</li>
+<li>You must be running the latest stable version of Rancher (currently v2.10.2) for at least one week.</li>
+<li>Rancher cluster must be running Kubernetes v1.28 or higher for at least one week.</li>
+<li>All managed/downstream clusters must be running Kubernetes v1.28 or higher for at least one week.</li>
 <li>Have a kubeconfig file for all your managed (downstream) Kubernetes clusters. The kubeconfig file should point directly to the cluster’s kube-apiserver endpoint and not to Rancher. For RKE clusters, see <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/access-clusters/authorized-cluster-endpoint">Authorized Cluster Endpoint</a> for setup.</li>
 <li>Authentication integration must be with a public endpoint that Rancher Prime Hosted can reach.</li>
 <li>Global and cluster catalogs must have a public endpoint that Rancher Prime Hosted can reach.</li>
