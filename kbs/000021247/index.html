@@ -7523,9 +7523,19 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Installation instructions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-editing-the-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1, editing the deployment
+    </span>
+  </a>
+  
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#uninstallation-instructions-restoring-the-original-rancher-version" class="md-nav__link">
     <span class="md-ellipsis">
       Uninstallation instructions (restoring the original Rancher version)
@@ -7533,8 +7543,26 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
+  <a href="#method-2-using-helm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2, using helm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uninstallation-instructions-restoring-the-original-rancher-version_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstallation instructions (restoring the original Rancher version)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#follow-up-instruction" class="md-nav__link">
     <span class="md-ellipsis">
       Follow-up instruction
@@ -7542,13 +7570,18 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -8882,9 +8915,19 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Installation instructions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-editing-the-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1, editing the deployment
+    </span>
+  </a>
+  
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#uninstallation-instructions-restoring-the-original-rancher-version" class="md-nav__link">
     <span class="md-ellipsis">
       Uninstallation instructions (restoring the original Rancher version)
@@ -8892,8 +8935,26 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
+  <a href="#method-2-using-helm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2, using helm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uninstallation-instructions-restoring-the-original-rancher-version_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstallation instructions (restoring the original Rancher version)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#follow-up-instruction" class="md-nav__link">
     <span class="md-ellipsis">
       Follow-up instruction
@@ -8901,13 +8962,18 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -8943,7 +9009,8 @@
 <p><strong>Backups</strong>: As a precaution, it's recommended to take a snapshot of the Rancher local cluster. Please see the documentation ( <a href="https://rke.docs.rancher.com/etcd-snapshots/one-time-snapshots">RKE</a>, <a href="https://docs.rke2.io/backup_restore/#creating-snapshots">RKE2</a>, <a href="https://docs.k3s.io/datastore/backup-restore">K3s</a>) for the appropriate way to take a snapshot for the Rancher installation.</p>
 <p>Alternatively the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher">rancher-backup operator</a> can be used to backup all of the related objects for restoration.</p>
 <h3 id="resolution">Resolution</h3>
-<h3 id="installation-instructions">Installation instructions</h3>
+<h2 id="installation-instructions">Installation instructions</h2>
+<h3 id="method-1-editing-the-deployment">Method 1, editing the deployment</h3>
 <ul>
 <li>from a machine with access to the upstream cluster, edit the <code>rancher</code> deployment (to change the <code>rancher</code> image to the hotfix version):</li>
 </ul>
@@ -8958,6 +9025,21 @@ kubectl<span class="w"> </span><span class="nb">set</span><span class="w"> </spa
 </ul>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">TAG</span><span class="o">=</span>v2.9.3
 kubectl<span class="w"> </span><span class="nb">set</span><span class="w"> </span>image<span class="w"> </span>-n<span class="w"> </span>cattle-system<span class="w"> </span>deployment/rancher<span class="w"> </span><span class="nv">rancher</span><span class="o">=</span>registry.rancher.com/rancher/rancher:<span class="nv">$TAG</span>
+</code></pre></div>
+<h3 id="method-2-using-helm">Method 2, using helm</h3>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">TAG</span><span class="o">=</span>v2.9.3-hotfix-XXX
+helm<span class="w"> </span>get<span class="w"> </span>values<span class="w"> </span>rancher<span class="w"> </span>-n<span class="w"> </span>cattle-system<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span>&gt;<span class="w"> </span>values.yaml
+helm<span class="w"> </span>upgrade<span class="w"> </span>rancher<span class="w"> </span>rancher-&lt;CHART-REPO&gt;/rancher<span class="w"> </span>--namespace<span class="w"> </span>cattle-system<span class="w"> </span>-f<span class="w"> </span>values.yaml<span class="w"> </span>--set<span class="w"> </span><span class="nv">rancherImageTag</span><span class="o">=</span><span class="nv">$TAG</span>
+</code></pre></div>
+<p>Note: <code>rancher-agent</code> images will be propagated downstream automatically, usually within minutes.</p>
+<p>Note: customers using air-gap setups or not allowing images being pulled from external registries should transfer or whitelist the <code>rancher</code> and <code>rancher-agent</code> images appropriately for the procedure to work.</p>
+<h3 id="uninstallation-instructions-restoring-the-original-rancher-version_1">Uninstallation instructions (restoring the original Rancher version)</h3>
+<ul>
+<li>repeat instructions above, but setting the original version tag</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">TAG</span><span class="o">=</span>v2.9.3
+helm<span class="w"> </span>get<span class="w"> </span>values<span class="w"> </span>rancher<span class="w"> </span>-n<span class="w"> </span>cattle-system<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span>&gt;<span class="w"> </span>values.yaml
+helm<span class="w"> </span>upgrade<span class="w"> </span>rancher<span class="w"> </span>rancher-&lt;CHART-REPO&gt;/rancher<span class="w"> </span>--namespace<span class="w"> </span>cattle-system<span class="w"> </span>-f<span class="w"> </span>values.yaml<span class="w"> </span>--set<span class="w"> </span><span class="nv">rancherImageTag</span><span class="o">=</span><span class="nv">$TAG</span>
 </code></pre></div>
 <h3 id="follow-up-instruction">Follow-up instruction</h3>
 <p>Please report if changes help with symptoms.</p>
