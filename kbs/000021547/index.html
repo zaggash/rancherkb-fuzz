@@ -7244,6 +7244,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021095/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exposing the ingress-nginx controller with a LoadBalancer service in RKE1 and RKE2 Kubernetes Clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021114/" class="md-nav__link">
         
   
@@ -7601,6 +7623,28 @@
   
   <span class="md-ellipsis">
     Cgroup "Misc controller" introduce instability in Kubelet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021272/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RKE2 Snaphots failing due to large configmap
     
   </span>
   
@@ -8440,15 +8484,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -8685,11 +8720,55 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021618/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to perform a rollback of Kubernetes version in an RKE2 upstream/standalone cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021631/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     How to enable debug logging for the rancher-system-agent
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021636/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Known issue deleting etcd nodes in RKE clusters managed by Rancher v2.8.6 ≤ version &lt; v2.9.0 or RKE CLI v1.5.11 ≥ version &lt; v1.5.14
     
   </span>
   
@@ -8751,11 +8830,77 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021666/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RKE2 changes to watchIngressWithoutClass: false affects previous ingress objects
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021669/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     helm-install-rke-calico fails on downstream clusters; cannot re-use a name that is still in use
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021676/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rke2 certificate check command not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021679/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Only a user logged in via external auth provider can access Rancher user and group attributes from auth provider
     
   </span>
   
@@ -8848,15 +8993,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -8884,7 +9020,7 @@
 <h3 id="situation">Situation</h3>
 <p>Canal and Calico offer metrics that can be exposed and consumed by rancher-monitoring. This article shows how to do it.</p>
 <h3 id="resolution">Resolution</h3>
-<p><strong>Prerequisite for Calico</strong></p>
+<h1 id="prerequisite-for-calico">Prerequisite for Calico</h1>
 <p>Calico's RKE2 addon does not export Prometheus metrics by default.</p>
 <p>To enable this option in the rke2-calico addon, you can go to Cluster Management &gt; Select the cluster &gt; Edit Config &gt; Add-on: Calico. And add the following options in the corresponding "felixConfiguration" and "installation" sections:</p>
 <div class="highlight"><pre><span></span><code>felixConfiguration:
@@ -8897,10 +9033,8 @@ installation:
       felixPrometheusMetricsEnabled: true
 </code></pre></div>
 <p>After this prerequisite is fulfilled, there are two steps involved to gather these metrics in Prometheus:</p>
-<p><strong>Create the Services</strong></p>
-<ul>
-<li><strong>Canal</strong>:</li>
-</ul>
+<h1 id="create-the-services">Create the Services</h1>
+<h2 id="canal">Canal</h2>
 <p>Only one service is needed to be able to extract the metrics from the canal pods through the 9091 metrics port:</p>
 <div class="highlight"><pre><span></span><code>apiVersion: v1
 kind: Service
@@ -8918,9 +9052,7 @@ spec:
   selector:
     k8s-app: canal
 </code></pre></div>
-<ul>
-<li><strong>Calico:</strong></li>
-</ul>
+<h2 id="calico">Calico</h2>
 <p>Two services are needed. One to export the calico-felix metrics and another one for the calico-typha metrics. The headless service to export metrics from the calico-kube-controllers is there by default so there is no need to create it.</p>
 <div class="highlight"><pre><span></span><code>apiVersion: v1
 kind: Service
@@ -8953,36 +9085,32 @@ spec:
     k8s-app: calico-typha
 </code></pre></div>
 <p>After the service YAMLs are applied, you can proceed to the next step:</p>
-<p><strong>Create the ServiceMonitors</strong></p>
-<ul>
-<li><strong>Canal:</strong></li>
-</ul>
+<h1 id="create-the-servicemonitors">Create the ServiceMonitors</h1>
+<h2 id="canal_1">Canal</h2>
 <div class="highlight"><pre><span></span><code>apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-    name: rancher-monitoring-canal
-    namespace: kube-system
+  name: rancher-monitoring-canal
+  namespace: kube-system
 spec:
-    selector:
-      matchLabels:
-        k8s-app: calico-felix
-    endpoints:
+  selector:
+    matchLabels:
+      k8s-app: calico-felix
+  endpoints:
   - port: metrics-port
     relabelings:
     - sourceLabels:
       - __meta_kubernetes_endpoint_node_name
       targetLabel: instance
 </code></pre></div>
-<ul>
-<li><strong>Calico:</strong></li>
-</ul>
-<p><code>apiVersion: monitoring.coreos.com/v1
-  kind: ServiceMonitor
-  metadata:
-    name: rancher-monitoring-calico
-    namespace: calico-system
-  spec:
-    endpoints:
+<h2 id="calico_1">Calico</h2>
+<div class="highlight"><pre><span></span><code>apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rancher-monitoring-calico
+  namespace: calico-system
+spec:
+  endpoints:
   - port: metrics-port
     relabelings:
     - sourceLabels:
@@ -8992,7 +9120,8 @@ spec:
     matchExpressions:
     - key: k8s-app
       operator: In
-      values: [ "calico-felix", "calico-typha","calico-kube-controllers" ]</code></p>
+      values: [ &quot;calico-felix&quot;, &quot;calico-typha&quot;,&quot;calico-kube-controllers&quot; ]
+</code></pre></div>
 <p>After both the Service and ServiceMonitors are applied, the target will appear in Prometheus, and the metrics will be scraped. Be aware that it might take a minute for Prometheus to see the new target and scrape the metrics.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
