@@ -22,7 +22,7 @@
     
     
       
-        <title>How to perform a rollback of Kubernetes version in an RKE2 upstream/standalone cluster - SUSE KBs</title>
+        <title>How to rollback the Kubernetes version of an RKE2 upstream/standalone cluster following an upgrade - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-perform-a-rollback-of-kubernetes-version-in-an-rke2-upstreamstandalone-cluster" class="md-skip">
+        <a href="#how-to-rollback-the-kubernetes-version-of-an-rke2-upstreamstandalone-cluster-following-an-upgrade" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to perform a rollback of Kubernetes version in an RKE2 upstream/standalone cluster
+              How to rollback the Kubernetes version of an RKE2 upstream/standalone cluster following an upgrade
             
           </span>
         </div>
@@ -3090,7 +3090,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable SSL passthrough on the nginx-ingress controller in Rancher Kubernetes Engine (RKE) CLI, RKE2 standalone or Rancher v2.x provisioned Kubernetes clusters
+    How to enable SSL passthrough on the nginx-ingress controller in RKE and RKE2 clusters
     
   </span>
   
@@ -7644,7 +7644,7 @@
         
   
   <span class="md-ellipsis">
-    RKE2 Snaphots failing due to large configmap
+    etcd snaphots failing to save in RKE2 &lt;v1.25.15, &lt;1.26.10, &lt;1.27.7 and &lt;1.28.3 due to large configmap error
     
   </span>
   
@@ -7688,7 +7688,7 @@
         
   
   <span class="md-ellipsis">
-    Kube-proxy not upgrading correctly
+    kube-proxy not upgraded on some nodes during RKE2 version upgrade in RKE2 &lt;1.27.12, &lt;1.28.8 and &lt;1.29.4
     
   </span>
   
@@ -8665,7 +8665,7 @@
           
   
   <span class="md-ellipsis">
-    How to perform a rollback of Kubernetes version in an RKE2 upstream/standalone cluster
+    How to rollback the Kubernetes version of an RKE2 upstream/standalone cluster following an upgrade
     
   </span>
   
@@ -8677,7 +8677,7 @@
         
   
   <span class="md-ellipsis">
-    How to perform a rollback of Kubernetes version in an RKE2 upstream/standalone cluster
+    How to rollback the Kubernetes version of an RKE2 upstream/standalone cluster following an upgrade
     
   </span>
   
@@ -8721,15 +8721,6 @@
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
     </span>
   </a>
   
@@ -8852,7 +8843,7 @@
         
   
   <span class="md-ellipsis">
-    RKE2 changes to watchIngressWithoutClass: false affects previous ingress objects
+    rke2-ingress-nginx deployed with watchIngressWithoutClass: false in v1.27.16+rke2r1, v1.28.12+rke2r1, v1.29.7+rke2r1 and v1.30.3+rke2r1
     
   </span>
   
@@ -8896,7 +8887,7 @@
         
   
   <span class="md-ellipsis">
-    rke2 certificate check command not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster
+    The `rke2 certificate check` command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster
     
   </span>
   
@@ -8941,6 +8932,50 @@
   
   <span class="md-ellipsis">
     How to configure Spegel (Embedded Registry Mirror) for Rancher-provisioned RKE2/k3s clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021706/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to change the memlock value for pods in an RKE2 or K3s cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021756/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress-nginx CVE-2025-1974
     
   </span>
   
@@ -9012,15 +9047,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -9045,48 +9071,36 @@
 
 
 
-<h1 id="how-to-perform-a-rollback-of-kubernetes-version-in-an-rke2-upstreamstandalone-cluster">How to perform a rollback of Kubernetes version in an RKE2 upstream/standalone cluster</h1>
+<h1 id="how-to-rollback-the-kubernetes-version-of-an-rke2-upstreamstandalone-cluster-following-an-upgrade">How to rollback the Kubernetes version of an RKE2 upstream/standalone cluster following an upgrade</h1>
 <p>This document <strong>(000021618)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>RKE2 upstream (Rancher local) or standalone cluster.</p>
+<p>A standalone (i.e. not Rancher-provisioned) RKE2 cluster, such as an upstream Rancher local RKE2 cluster, <a href="https://docs.rke2.io/upgrades/upgrade">that has been upgraded</a></p>
 <h3 id="situation">Situation</h3>
-<p>After a Kubernetes upgrade on the cluster, for whatever reason, you need to apply an etcd restore operation which involves the come back to a previous Kubernetes version.</p>
-<p>You need the following :</p>
+<p>Following a Kubernetes version upgrade to a standalone RKE2 cluster, it may be necessary to perform a version rollback, due to an issue encountered with the upgrade or new Kubernetes version.</p>
+<p>This requires:</p>
 <ul>
-<li>A snapshot of the cluster at a working time.</li>
-<li>The RKE2 version that was running at that time.</li>
+<li>An <a href="https://docs.rke2.io/datastore/backup_restore#creating-snapshots">RKE2 etcd snapshot</a> of the cluster prior to the version upgrade</li>
+<li>The previous RKE2 version</li>
 </ul>
 <h3 id="resolution">Resolution</h3>
-<p>The local/standalone cluster rollback process includes all the steps normally handled by Rancher for Rancher-provisioned clusters explained below.</p>
-<p>Drain the pods and stop the rke2 service on all the nodes of the cluster.</p>
-<p>This can be done using the <a href="https://docs.rke2.io/install/quickstart#server-node-installation">"rke2-killall.sh"</a> script, included in all RKE2 nodes during first setup.</p>
-<p>Manually rolling back the RKE2 binary to the previous version.</p>
-<p>This can be done using the RKE2 installation script, providing it with the desired RKE2 Kubernetes version to roll back.</p>
-<p>E.g.: <code>curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION="v1.24.6+rke2r1" sh -</code></p>
-<p>Once the cluster runs again the previous Kubernetes version, the version of the snapshot you will apply, then it will be possible to manually run an etcd snapshot restore operation on the first server node: ``</p>
-<ul>
-<li><code>``rke2 server \
-    --cluster-reset \
-    --cluster-reset-restore-path=&lt;PATH-TO-SNAPSHOT&gt;</code></li>
-</ul>
-<p>Once the restore process is completed, start the rke2-server service on the first server node as follows:</p>
-<ul>
-<li><code>systemctl start rke2-server</code></li>
-</ul>
-<p><strong>To re-join the other master nodes</strong>, you will also need to clean up the old etcd database, which can be done by:</p>
-<ul>
-<li>Take a backup of the "config.yaml" file to recover it easily afterwards.</li>
-<li>Make use of the <a href="https://docs.rke2.io/install/quickstart#server-node-installation">"rke2-uninstall.sh"</a> script</li>
-</ul>
-<p>Then <a href="https://docs.rke2.io/install/ha#3-launch-additional-server-nodes">add these master nodes</a> back as in a fresh installation.</p>
-<p>To do so, start the rke2-server service on other server nodes with the following command:</p>
-<ul>
-<li><code>systemctl start rke2-server</code></li>
-</ul>
-<p><strong>For the agent nodes</strong> (the ones that had the worker role), you'll need to manually <a href="https://docs.rke2.io/install/quickstart#linux-agent-worker-node-installation">enable and start the rke2 agents</a> on those nodes.</p>
-<h3 id="cause">Cause</h3>
-<p>Differently from RKE, RKE2 is currently unable to automatically come back to a previous working state if the Kubernetes version has been upgraded.</p>
-<p>Then, an etcd snapshot restore operation can not come back to a previous Kubernetes version, if the used snapshot was taken using a previous version of Kubernetes. It will not restore successfully, leaving the cluster in a down state.</p>
+<p>The rollback process is described below, for the purpose of this example, a rollback to RKE2 v1.30.9+rke2r1 is imagined, after an upgrade to a later version.</p>
+<ol>
+<li>If the cluster is running, with the Kubernetes API available, and you wish to gracefully stop workloads within the cluster before executing the rollback, first drain all of the nodes: `kubectl drain --ignore-daemonsets --delete-emptydir-data <NODE-ONE-NAME> <NODE-TWO-NAME> <NODE-THREE-NAME> ...`</li>
+<li>On each node, run the `rke2-killall.sh` script to stop the rke2-server or rke2-agent service (depending if it is a server or agent node) and all running Pod processes.</li>
+<li>Manually roll back the RKE2 binary to the previous version.</li>
+<li>In clusters with internet access, this can be done via the RKE2 installation script, specifying the previous RKE2 Kubernetes version via the variable <code>INSTALL_RKE2_VERSION:</code><ol>
+<li>On server nodes run `<code>curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION="v1.30.9+rke2r1" sh -</code> `</li>
+<li>On agent nodes run `<code>curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION="v1.30.9+rke2r1" INSTALL_RKE2_TYPE=agent sh -</code> `</li>
+</ol>
+</li>
+<li>In air-gapped clusters, this can be done by downloading the artefacts for the previous RKE2 version on the nodes and invoking the install script locally, per the <a href="https://docs.rke2.io/install/airgap#rke2-installsh-script-install">RKE2-airgapped installation documentation.</a></li>
+<li><code>```With the previous RKE2 binary installed on all cluster nodes, the next step is to restore an etcd snapshot taken whilst the cluster was still running this previous RKE2 version (in this example v1.30.9+rke2r1). On the first server node (i.e. the node without a \</code>server:` defined in <a href="https://docs.rke2.io/install/configuration#configuration-file">its RKE2 config file</a>), initiate the cluster restore (per step 2 of the RKE2 documentation on <a href="https://docs.rke2.io/datastore/backup_restore#restoring-a-snapshot-to-existing-nodes">Restoring a Snapshot to Existing Nodes</a>): ` <code>rke2 server --cluster-reset --cluster-reset-restore-path=&lt;PATH-TO-SNAPSHOT&gt;</code> `</li>
+<li>Once the restore process is completed, proceed through steps 3-5 of the RKE2 documentation on <a href="https://docs.rke2.io/datastore/backup_restore#restoring-a-snapshot-to-existing-nodes">Restoring a Snapshot to Existing Nodes</a>):</li>
+<li>Start the rke2-server service on the first server node as follows: ` <code>systemctl start rke2-server</code> `.</li>
+<li>Remove the rke2 db directory on the other server nodes as follows: `rm -rf /var/lib/rancher/rke2/server/db`</li>
+<li>Start the rke2-server service on other server nodes with the following command: `systemctl start rke2-server`</li>
+<li>Finally, start the rke2-agent service on any agent nodes: `systemctl start rke2-agent`</li>
+</ol>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 

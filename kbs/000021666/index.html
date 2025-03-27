@@ -22,7 +22,7 @@
     
     
       
-        <title>RKE2 changes to watchIngressWithoutClass: false affects previous ingress objects - SUSE KBs</title>
+        <title>rke2-ingress-nginx deployed with watchIngressWithoutClass: false in v1.27.16+rke2r1, v1.28.12+rke2r1, v1.29.7+rke2r1 and v1.30.3+rke2r1 - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rke2-changes-to-watchingresswithoutclass-false-affects-previous-ingress-objects" class="md-skip">
+        <a href="#rke2-ingress-nginx-deployed-with-watchingresswithoutclass-false-in-v12716rke2r1-v12812rke2r1-v1297rke2r1-and-v1303rke2r1" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              RKE2 changes to watchIngressWithoutClass: false affects previous ingress objects
+              rke2-ingress-nginx deployed with watchIngressWithoutClass: false in v1.27.16+rke2r1, v1.28.12+rke2r1, v1.29.7+rke2r1 and v1.30.3+rke2r1
             
           </span>
         </div>
@@ -3090,7 +3090,7 @@
         
   
   <span class="md-ellipsis">
-    How to enable SSL passthrough on the nginx-ingress controller in Rancher Kubernetes Engine (RKE) CLI, RKE2 standalone or Rancher v2.x provisioned Kubernetes clusters
+    How to enable SSL passthrough on the nginx-ingress controller in RKE and RKE2 clusters
     
   </span>
   
@@ -7644,7 +7644,7 @@
         
   
   <span class="md-ellipsis">
-    RKE2 Snaphots failing due to large configmap
+    etcd snaphots failing to save in RKE2 &lt;v1.25.15, &lt;1.26.10, &lt;1.27.7 and &lt;1.28.3 due to large configmap error
     
   </span>
   
@@ -7688,7 +7688,7 @@
         
   
   <span class="md-ellipsis">
-    Kube-proxy not upgrading correctly
+    kube-proxy not upgraded on some nodes during RKE2 version upgrade in RKE2 &lt;1.27.12, &lt;1.28.8 and &lt;1.29.4
     
   </span>
   
@@ -8656,7 +8656,7 @@
         
   
   <span class="md-ellipsis">
-    How to perform a rollback of Kubernetes version in an RKE2 upstream/standalone cluster
+    How to rollback the Kubernetes version of an RKE2 upstream/standalone cluster following an upgrade
     
   </span>
   
@@ -8775,7 +8775,7 @@
           
   
   <span class="md-ellipsis">
-    RKE2 changes to watchIngressWithoutClass: false affects previous ingress objects
+    rke2-ingress-nginx deployed with watchIngressWithoutClass: false in v1.27.16+rke2r1, v1.28.12+rke2r1, v1.29.7+rke2r1 and v1.30.3+rke2r1
     
   </span>
   
@@ -8787,7 +8787,7 @@
         
   
   <span class="md-ellipsis">
-    RKE2 changes to watchIngressWithoutClass: false affects previous ingress objects
+    rke2-ingress-nginx deployed with watchIngressWithoutClass: false in v1.27.16+rke2r1, v1.28.12+rke2r1, v1.29.7+rke2r1 and v1.30.3+rke2r1
     
   </span>
   
@@ -8831,6 +8831,15 @@
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
     </span>
   </a>
   
@@ -8887,7 +8896,7 @@
         
   
   <span class="md-ellipsis">
-    rke2 certificate check command not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster
+    The `rke2 certificate check` command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster
     
   </span>
   
@@ -8932,6 +8941,50 @@
   
   <span class="md-ellipsis">
     How to configure Spegel (Embedded Registry Mirror) for Rancher-provisioned RKE2/k3s clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021706/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How to change the memlock value for pods in an RKE2 or K3s cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021756/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress-nginx CVE-2025-1974
     
   </span>
   
@@ -9003,6 +9056,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -9027,29 +9089,22 @@
 
 
 
-<h1 id="rke2-changes-to-watchingresswithoutclass-false-affects-previous-ingress-objects">RKE2 changes to watchIngressWithoutClass: false affects previous ingress objects</h1>
+<h1 id="rke2-ingress-nginx-deployed-with-watchingresswithoutclass-false-in-v12716rke2r1-v12812rke2r1-v1297rke2r1-and-v1303rke2r1">rke2-ingress-nginx deployed with watchIngressWithoutClass: false in v1.27.16+rke2r1, v1.28.12+rke2r1, v1.29.7+rke2r1 and v1.30.3+rke2r1</h1>
 <p>This document <strong>(000021666)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<ul>
-<li>Suse Rancher 2.8.5 +</li>
-<li>RKE2 affected versions:</li>
-<li>1.27 lower than v1.27.16+rke2r2</li>
-<li>1.28 lower than v1.28.13+rke2r1</li>
-<li>1.29 lower than  v1.29.8+rke2r1</li>
-<li>1.30 lower than  v1.30.4+rke2r1</li>
-</ul>
+<p>An RKE2 cluster running v1.27.16+rke2r1, v1.28.12+rke2r1, v1.29.7+rke2r1 or v1.30.3+rke2r1, which was upgraded from an earlier version.</p>
 <h3 id="situation">Situation</h3>
-<ul>
-<li>After an RKE2 upgrade, the changes to the helm value <strong><em><code>watchIngressWithoutClass</code>  (false)</em></strong> for the Rke2 ingress-nginx Helm Chart, can cause the Ingress to  stop watching ingress objects that don't already define an <code>ingressClassName</code> field. This means, that all Ingresses objects created without an IngressClass name won't be watched by the Nginx Ingress, so the traffic won't flow to them.</li>
-</ul>
+<p>After an RKE2 upgrade to version v1.27.16+rke2r1, v1.28.12+rke2r1, v1.29.7+rke2r1 or v1.30.3+rke2r1, ingress-nginx will stop watching any ingress resources that do not define spec.ingressClassName: nginx. Newly created ingress resources that do not define an ingressClassName will have this value set by default. However, any existing ingress objects that were created without an ingressClassName will not be watched by ingress-nginx and traffic will not be routed to them.</p>
 <h3 id="resolution">Resolution</h3>
-<ul>
-<li>A fix is available in the following RKE2 releases: v1.27.16+rke2r2, v1.28.13+rke2r1, v1.29.8+rke2r1, v1.30.4+rke2r1. These releases include the value ' <strong><em>--watch-ingress-without-class=true</em></strong>' in the RKE2 Ingress-nginx Helm Chart</li>
-<li>There is a workaround if upgrading to a patch RKE2 release isn't an option:</li>
-<li>Recreate the ingress objects</li>
-<li>Modify your Ingress resources to set <code>spec.ingressClassName: nginx</code></li>
-<li>Override the rke2-ingress-nginx helm chart values to <em>with</em> <code>watchIngressWithoutClass: true</code></li>
-</ul>
+<p>A fix is available via the rke2-ingress-nginx chart in RKE2 v1.27.16+rke2r2, v1.28.13+rke2r1, v1.29.8+rke2r1, v1.30.4+rke2r1 and above. In these versions, ingress-nginx is deployed with ' <strong><em>--watch-ingress-without-class=true</em></strong>' by default, to ensure traffic continues to be routed to existing ingress resources without an ingressClassName. Users are encouraged to upgrade to take advantage of this fix.</p>
+<p>For the affected RKE2 versions, three possible workarounds exist:</p>
+<ol>
+<li>Delete and recreate affected ingress objects, so the default ingressClassName of nginx is applied</li>
+<li>Update affected ingress resources to set <code>spec.ingressClassName: nginx manually</code></li>
+<li><code>` Customise the rke2-ingress-nginx helm chart values, [via a HelmChartConfig resource](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig), to set</code>watchIngressWithoutClass: true`</li>
+</ol>
+<h3 id="cause">Cause</h3>
+<p>The rke2-ingress-nginx chart version 4.10.102, bundled with the affected RKE2 versions, is deployed with --watch-ingress-without-class=false. As a result, ingress resources created on older RKE2 versions, in which there was no default ingressClassName, and for which the ingressClassName attribute was not explicitly set to nginx, are not watched by ingress-nginx.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
