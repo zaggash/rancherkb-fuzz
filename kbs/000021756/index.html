@@ -8870,6 +8870,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021691/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Steps for troubleshooting the error "failed to create containerd task, failed to create shim task OCI runtime create failed, unable to start container process"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021706/" class="md-nav__link">
         
   
@@ -9124,7 +9146,7 @@
 <h3 id="situation">Situation</h3>
 <p>The upstream Kubernetes project announced, on March 24th of 2025, five different security vulnerabilities CVEs in the ingress-nginx component. One of the vulnerabilities, the CVE-2025-1974, is considered critical and users must pay attention to it. See the additional information section at the end of this document for all the relevant links for the vulnerabilities. Kubernetes also released a <a href="https://kubernetes.io/blog/2025/03/24/ingress-nginx-cve-2025-1974/">blog post</a> to provide context about the issues in question.</p>
 <h3 id="resolution">Resolution</h3>
-<p>SUSE is actively working to deliver official patches for CVE-2025-1974 within upcoming RKE1 and RKE2 releases, targeted for March. Fixes will only be in 1.29+ releases which are currently under maintenance.</p>
+<p>SUSE is actively working to deliver official patches for CVE-2025-1974 within upcoming RKE1 and RKE2 releases, targeted for March. Fixes will only be in 1.29+ releases, which are currently under maintenance.</p>
 <p>Important Note: K3s, in its default configuration, is not affected by these vulnerabilities as it does not utilize ingress-nginx.</p>
 <p><strong>Immediate Action Required: Disable Admission Webhooks</strong></p>
 <p>Until the official patches are available, SUSE strongly advises disabling the ingress-nginx admission webhooks to significantly mitigate the risk associated with CVE-2025-1974. Disabling these webhooks is a critical, albeit temporary, security measure.</p>
@@ -9136,10 +9158,10 @@ metadata:
   name: rke2-ingress-nginx
   namespace: kube-system
 spec:
-  valuesContent: |-
-controller:
-   admissionWebhooks:
-     enabled: false
+  valuesContent: |
+    controller:
+      admissionWebhooks:
+        enabled: false
 </code></pre></div>
 <p>``</p>
 <p>The HelmChartConfig can be added for clusters provisioned by Rancher when editing the cluster in Cluster Management. This may be an option called "Additional Manifests" in the left-hand list, or nested under "Add-On Config" depending on the Rancher version.</p>
@@ -9163,7 +9185,7 @@ controller:
 <p><strong>Mitigation for Directly Installed ingress-nginx:</strong></p>
 <p>If you use the upstream ingress-nginx component (not installed by RKE1 or RKE2), then update it to v1.11.5, v1.12.1, or any later version.</p>
 <p>To upgrade, follow the instructions available at <a href="https://kubernetes.github.io/ingress-nginx/deploy/upgrade/">https://kubernetes.github.io/ingress-nginx/deploy/upgrade/</a> and the specific release notes for <a href="https://github.com/kubernetes/ingress-nginx/releases/tag/controller-v1.12.1">v1.12.1</a> and <a href="https://github.com/kubernetes/ingress-nginx/releases/tag/controller-v1.11.5">v1.11.5</a>. Pay attention to the specific post-fix needed for CVE-2025-1974.</p>
-<p>If you can't upgrade right away the following steps can be followed to disable the admission webhook:</p>
+<p>If you can't upgrade right away, the following steps can be followed to disable the admission webhook:</p>
 <ul>
 <li>If you have installed ingress-nginx <a href="https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml">using Helm</a></li>
 <li>Reinstall, setting the Helm value controller.admissionWebhooks.enabled=false</li>
