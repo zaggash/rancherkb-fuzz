@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="../000021706/">
+        <link rel="prev" href="../000021709/">
       
       
       
@@ -20,7 +20,7 @@
     
     
       
-        <title>Ingress-nginx CVE-2025-1974 - SUSE KBs</title>
+        <title>Nginx "IngressNightmare" - SUSE KBs</title>
       
     
     
@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ingress-nginx-cve-2025-1974" class="md-skip">
+        <a href="#nginx-ingressnightmare" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ingress-nginx CVE-2025-1974
+              Nginx "IngressNightmare"
             
           </span>
         </div>
@@ -8911,6 +8911,28 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021709/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Why permissive profile not seen with CIS benchmark version v1.9?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -8927,7 +8949,7 @@
           
   
   <span class="md-ellipsis">
-    Ingress-nginx CVE-2025-1974
+    Nginx "IngressNightmare"
     
   </span>
   
@@ -8939,7 +8961,7 @@
         
   
   <span class="md-ellipsis">
-    Ingress-nginx CVE-2025-1974
+    Nginx "IngressNightmare"
     
   </span>
   
@@ -8974,42 +8996,6 @@
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Information
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
     </span>
   </a>
   
@@ -9075,42 +9061,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Information
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -9127,50 +9077,100 @@
 
 
 
-<h1 id="ingress-nginx-cve-2025-1974">Ingress-nginx CVE-2025-1974</h1>
+<h1 id="nginx-ingressnightmare">Nginx "IngressNightmare"</h1>
 <p>This document <strong>(000021756)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>CVE-2025-1974 is the most serious of the 05 security issues released together. It has been rated as critical with a score of 9.8 of 10 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H).</p>
 <p>The vulnerability affects the ingress-nginx component. If you do not have it installed on your cluster, then you are not affected.</p>
 <p>If you are using RKE1, you can check if you have ingress-nginx running with:</p>
-<div class="highlight"><pre><span></span><code>kubectl get pods --all-namespaces --selector app.kubernetes.io/name=ingress-nginx
-</code></pre></div>
+<p>kubectlgetpods--all-namespaces--selectorapp.kubernetes.io/name=ingress-nginx</p>
 <p>If you are using RKE2, then the command will look similar, but the name will change from ingress-nginx to rke2-ingress-nginx:</p>
-<div class="highlight"><pre><span></span><code>kubectl get pods --all-namespaces --selector app.kubernetes.io/name=rke2-ingress-nginx
-</code></pre></div>
+<p>kubectlgetpods--all-namespaces--selectorapp.kubernetes.io/name=rke2-ingress-nginx</p>
 <p>The affected versions of ingress-nginx are:</p>
 <ul>
-<li>All versions prior to v1.11.4 (included)</li>
-<li>v1.12.0</li>
+<li>
+<p>All versions prior to v1.11.4 (included)</p>
+</li>
+<li>
+<p>v1.12.0</p>
+</li>
+</ul>
+<p>Harvester Users:</p>
+<p>If you are using Harvester, please refer to this KB article here for additional information:</p>
+<ul>
+<li><a href="https://harvesterhci.io/kb/2025/03/25/cve-2025-1974/">https://harvesterhci.io/kb/2025/03/25/cve-2025-1974/</a></li>
 </ul>
 <h3 id="situation">Situation</h3>
-<p>The upstream Kubernetes project announced, on March 24th of 2025, five different security vulnerabilities CVEs in the ingress-nginx component. One of the vulnerabilities, the CVE-2025-1974, is considered critical and users must pay attention to it. See the additional information section at the end of this document for all the relevant links for the vulnerabilities. Kubernetes also released a <a href="https://kubernetes.io/blog/2025/03/24/ingress-nginx-cve-2025-1974/">blog post</a> to provide context about the issues in question.</p>
+<h1 id="context">Context</h1>
+<p>The upstream Kubernetes project announced, on March 24th of 2025, five different security vulnerabilities CVEs in the ingress-nginx component.</p>
+<p>In this KB article, we will address these five CVE’s with mitigation steps and provide information for released Kubernetes versions, containing the latest ingress-nginx version for RKE1 and RKE2.</p>
+<p>See the additional information section at the end of this document for all the relevant links for the vulnerabilities. Kubernetes also released a <a href="https://kubernetes.io/blog/2025/03/24/ingress-nginx-cve-2025-1974/">blog post</a> to provide context about the issues in question.</p>
 <h3 id="resolution">Resolution</h3>
-<p>SUSE is actively working to deliver official patches for CVE-2025-1974 within upcoming RKE1 and RKE2 releases, targeted for March. Fixes will only be in 1.29+ releases, which are currently under maintenance.</p>
+<p>Common resolution</p>
+<p>RKE2 users can upgrade to one of the following Kubernetes versions:</p>
+<ul>
+<li>
+<p>v1.32.3+rke2r1 <a href="https://github.com/rancher/rke2/releases/tag/v1.32.3%2Brke2r1">https://github.com/rancher/rke2/releases/tag/v1.32.3%2Brke2r1</a></p>
+</li>
+<li>
+<p>v1.31.7+rke2r1 <a href="https://github.com/rancher/rke2/releases/tag/v1.31.7%2Brke2r1">https://github.com/rancher/rke2/releases/tag/v1.31.7%2Brke2r1</a></p>
+</li>
+<li>
+<p>v1.30.11+rke2r1 <a href="https://github.com/rancher/rke2/releases/tag/v1.30.11%2Brke2r1">https://github.com/rancher/rke2/releases/tag/v1.30.11%2Brke2r1</a></p>
+</li>
+<li>
+<p>v1.29.15+rke2r1 <a href="https://github.com/rancher/rke2/releases/tag/v1.29.15%2Brke2r1">https://github.com/rancher/rke2/releases/tag/v1.29.15%2Brke2r1</a></p>
+</li>
+</ul>
+<p>For RKE1 CLI users, please find the following versions to include the ingress-nginx patches:</p>
+<ul>
+<li>
+<p>1.6.9: <a href="https://github.com/rancher/rke/releases/tag/v1.6.9">https://github.com/rancher/rke/releases/tag/v1.6.9</a></p>
+</li>
+<li>
+<p>1.7.5: <a href="https://github.com/rancher/rke/releases/tag/v1.7.5">https://github.com/rancher/rke/releases/tag/v1.7.5</a></p>
+</li>
+<li>
+<p>1.8.1: <a href="https://github.com/rancher/rke/releases/tag/v1.8.1">https://github.com/rancher/rke/releases/tag/v1.8.1</a></p>
+</li>
+</ul>
+<p>If you are not using the RKE1 CLI tool (binary), please ensure that you are upgrading to one of these Kubernetes versions to include the latest ingress-nginx version:</p>
+<ul>
+<li>
+<p>v1.32.3-rancher1-1 or higher</p>
+</li>
+<li>
+<p>V1.31.7-rancher1-1</p>
+</li>
+<li>
+<p>v1.30.11-rancher1-1</p>
+</li>
+<li>
+<p>v1.29.15-rancher1-1</p>
+</li>
+</ul>
 <p>Important Note: K3s, in its default configuration, is not affected by these vulnerabilities as it does not utilize ingress-nginx.</p>
+<p>If you are unable to upgrade now, SUSE strongly advises disabling the ingress-nginx admission webhooks to significantly mitigate the risk associated with CVE-2025-1974, CVE-2025-24513. Disabling these webhooks is a critical, albeit temporary, security measure.</p>
+<h2 id="workaround-for-cve-2025-1974-cve-2025-24513"><strong>Workaround for CVE-2025-1974, CVE-2025-24513</strong></h2>
 <p><strong>Immediate Action Required: Disable Admission Webhooks</strong></p>
-<p>Until the official patches are available, SUSE strongly advises disabling the ingress-nginx admission webhooks to significantly mitigate the risk associated with CVE-2025-1974. Disabling these webhooks is a critical, albeit temporary, security measure.</p>
 <p><strong>RKE2 Mitigation Steps:</strong></p>
 <p>If you are using RKE2 and the built-in chart, a HelmChartConfig can be used to disable the controller admission webhook like this example:</p>
-<div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
-metadata:
-  name: rke2-ingress-nginx
-  namespace: kube-system
-spec:
-  valuesContent: |
-    controller:
-      admissionWebhooks:
-        enabled: false
-</code></pre></div>
-<p>``</p>
+<p>apiVersion:helm.cattle.io/v1</p>
+<p>kind:HelmChartConfig</p>
+<p>metadata:</p>
+<p>name:rke2-ingress-nginx</p>
+<p>namespace:kube-system</p>
+<p>spec:</p>
+<p>valuesContent:|</p>
+<p>controller:</p>
+<p>admissionWebhooks:</p>
+<p>enabled:false</p>
 <p>The HelmChartConfig can be added for clusters provisioned by Rancher when editing the cluster in Cluster Management. This may be an option called "Additional Manifests" in the left-hand list, or nested under "Add-On Config" depending on the Rancher version.</p>
 <p>For standalone RKE2 clusters, <a href="https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig">the HelmChartConfig file can be populated on each rke2-server node</a> in the /var/lib/rancher/rke2/server/manifests directory.</p>
 <p><strong>RKE1 Mitigation Steps:</strong></p>
 <p>If you are using RKE1 and wish to disable the admission webhook, then you can perform the following:</p>
 <ul>
 <li>
-<p>Delete the ValidatingWebhookConfiguration called ingress-nginx-admission</p>
+<p>Delete the ValidatingWebhookConfiguration called ingress-nginx-admission</p>
 </li>
 <li>
 <p>Edit the ingress-nginx-controller DaemonSet, and remove the --validating-webhook argument from the controller container</p>
@@ -9184,25 +9184,66 @@ spec:
 <p>Please note that the above changes with RKE1 will be overridden next time the cluster is reconciled or upgraded.</p>
 <p><strong>Mitigation for Directly Installed ingress-nginx:</strong></p>
 <p>If you use the upstream ingress-nginx component (not installed by RKE1 or RKE2), then update it to v1.11.5, v1.12.1, or any later version.</p>
-<p>To upgrade, follow the instructions available at <a href="https://kubernetes.github.io/ingress-nginx/deploy/upgrade/">https://kubernetes.github.io/ingress-nginx/deploy/upgrade/</a> and the specific release notes for <a href="https://github.com/kubernetes/ingress-nginx/releases/tag/controller-v1.12.1">v1.12.1</a> and <a href="https://github.com/kubernetes/ingress-nginx/releases/tag/controller-v1.11.5">v1.11.5</a>. Pay attention to the specific post-fix needed for CVE-2025-1974.</p>
+<p>To upgrade, follow the instructions available at <a href="https://kubernetes.github.io/ingress-nginx/deploy/upgrade/">https://kubernetes.github.io/ingress-nginx/deploy/upgrade/</a> and the specific release notes for <a href="https://github.com/kubernetes/ingress-nginx/releases/tag/controller-v1.12.1">v1.12.1</a> and <a href="https://github.com/kubernetes/ingress-nginx/releases/tag/controller-v1.11.5">v1.11.5</a>. Pay attention to the specific post-fix needed for CVE-2025-1974.</p>
 <p>If you can't upgrade right away, the following steps can be followed to disable the admission webhook:</p>
 <ul>
 <li>If you have installed ingress-nginx <a href="https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml">using Helm</a></li>
 <li>Reinstall, setting the Helm value controller.admissionWebhooks.enabled=false</li>
 <li>If you have installed ingress-nginx manually, apply the equivalent changes to your deployment method, or manually apply the following:</li>
-<li>Delete the ValidatingWebhookConfiguration called ingress-nginx-admission</li>
-<li>Edit the ingress-nginx-controller Deployment or Daemonset, removing --validating-webhook from the controller container’s argument list</li>
+<li>
+<p>Delete the ValidatingWebhookConfiguration called ingress-nginx-admission</p>
+</li>
+<li>
+<p>Edit the ingress-nginx-controller Deployment or Daemonset, removing --validating-webhook from the controller container’s argument list</p>
+</li>
 </ul>
+<h2 id="workaround-for-cve-2025-24514"><strong>Workaround for CVE-2025-24514</strong></h2>
+<p><strong>Mitigation steps for RKE1/RKE2</strong></p>
+<p>Please check if the enable-annotation-validation argument is true by default.</p>
+<p>For RKE1</p>
+<p>kubectl-ningress-nginxexecnginx-ingress-controller-xxxxx--/nginx-ingress-controller--help2&gt;&amp;1|grepenable-annotation-validation</p>
+<p>For RKE2</p>
+<p>kubectl-nkube-systemexecrke2-ingress-nginx-controller-xxxxx--/nginx-ingress-controller--help2&gt;&amp;1|grepenable-annotation-validation</p>
+<p>If the argument is set to true by default, no further change is needed.</p>
+<p>--enable-annotation-validation</p>
+<p>Iftrue,willenabletheannotationvalidationfeature.Defaultstotrue(defaulttrue)</p>
+<p>If this is true, this issue does not affect you. If it is not true, you can mitigate this issue by setting the enable-annotation-validation argument to true with the below steps:</p>
+<p>For RKE1:</p>
+<p>kubectl-ningress-nginxeditdaemonsetnginx-ingress-controller</p>
+<p>Add the argument as below:</p>
+<p>spec:</p>
+<p>template:</p>
+<p>spec:</p>
+<p>containers:</p>
+<p>-args:</p>
+<p>-/nginx-ingress-controller</p>
+<p>...</p>
+<p>---enable-annotation-validation=true#&lt;--Addthisline</p>
+<p>For RKE2:</p>
+<p>Add a HelmChartConfig to change the argument.</p>
+<p>The HelmChartConfig can be added for clusters provisioned by Rancher when editing the cluster in Cluster Management. This may be an option called "Additional Manifests" in the left-hand list, or nested under "Add-On Config" depending on the Rancher version.</p>
+<p>For standalone RKE2 clusters, the HelmChartConfig file can be populated on each rke2-server node in the /var/lib/rancher/rke2/server/manifests directory</p>
+<p>apiVersion:helm.cattle.io/v1</p>
+<p>kind:HelmChartConfig</p>
+<p>metadata:</p>
+<p>name:rke2-ingress-nginx</p>
+<p>namespace:kube-system</p>
+<p>spec:</p>
+<p>valuesContent:|-</p>
+<p>controller:</p>
+<p>enableAnnotationValidations:true</p>
+<h2 id="workaround-for-cve-2025-1097-cve-2025-1098"><strong>Workaround for CVE-2025-1097, CVE-2025-1098</strong></h2>
+<p>There is no workaround mentioned for these CVEs. Please simply upgrade your RKE1/RKE2 version.</p>
 <h3 id="cause">Cause</h3>
 <p>Under certain conditions, an unauthenticated attacker with access to the pod network can achieve arbitrary code execution in the context of the ingress-nginx controller. This can lead to disclosure of Secrets accessible to the controller. (Note that in the default installation, the controller can access all Secrets cluster-wide.)</p>
 <p>Source: <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-1974">CVE-MITRE.org</a></p>
 <h3 id="additional-information">Additional Information</h3>
-<p><strong>Kubernetes upstream issues for the CVEs:</strong></p>
-<p>CVE-2025-24513 <a href="https://github.com/kubernetes/kubernetes/issues/131005">https://github.com/kubernetes/kubernetes/issues/131005</a></p>
-<p>CVE-2025-24514 <a href="https://github.com/kubernetes/kubernetes/issues/131006">https://github.com/kubernetes/kubernetes/issues/131006</a></p>
-<p>CVE-2025-1097 <a href="https://github.com/kubernetes/kubernetes/issues/131007">https://github.com/kubernetes/kubernetes/issues/131007</a></p>
-<p>CVE-2025-1098 <a href="https://github.com/kubernetes/kubernetes/issues/131008">https://github.com/kubernetes/kubernetes/issues/131008</a></p>
-<p>CVE-2025-1974 <a href="https://github.com/kubernetes/kubernetes/issues/131009">https://github.com/kubernetes/kubernetes/issues/131009</a></p>
+<p>Kubernetes upstream issues for the CVEs:</p>
+<p>CVE-2025-24513: <a href="https://github.com/kubernetes/kubernetes/issues/131005">https://github.com/kubernetes/kubernetes/issues/131005</a></p>
+<p>CVE-2025-24514: <a href="https://github.com/kubernetes/kubernetes/issues/131006">https://github.com/kubernetes/kubernetes/issues/131006</a></p>
+<p>CVE-2025-1097: <a href="https://github.com/kubernetes/kubernetes/issues/131007">https://github.com/kubernetes/kubernetes/issues/131007</a></p>
+<p>CVE-2025-1098: <a href="https://github.com/kubernetes/kubernetes/issues/131008">https://github.com/kubernetes/kubernetes/issues/131008</a></p>
+<p>CVE-2025-1974: <a href="https://github.com/kubernetes/kubernetes/issues/131009">https://github.com/kubernetes/kubernetes/issues/131009</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
