@@ -6329,7 +6329,7 @@
   
   
   <span class="md-ellipsis">
-    Firewalld block rancher cluster dns: Weave CNI does not work with Firewalld on RHEL 8 based OSs
+    DNS does not work with Weave CNI and Firewalld on RHEL 8 based OSs
     
   </span>
   
@@ -7612,12 +7612,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../000021171/" class="md-nav__link">
+      <a href="../000021115/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Enable kube-audit logs for downstream RKE2 clusters
+    How to forward Kubernetes events with the rancher-logging chart
     
   </span>
   
@@ -8325,6 +8325,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021332/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher Monitoring: Known Issues with NFS Persistent Storage for Prometheus
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021334/" class="md-nav__link">
         
   
@@ -8377,6 +8400,29 @@
   
   <span class="md-ellipsis">
     What is the support scope for the Kubernetes versions of a Rancher release?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021366/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    "dial tcp [::1]:6443: connect: network is unreachable" errors in kubernetes controlplane components when IPv6 is disabled on the loopback interface
     
   </span>
   
@@ -8463,6 +8509,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021377/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to monitor ingress-nginx in RKE2 with rancher-monitoring
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021379/" class="md-nav__link">
         
   
@@ -8492,6 +8561,29 @@
   
   <span class="md-ellipsis">
     How to change the downstream Rancher Webhook port on a Host Network configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021385/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    system-upgrade-controller failing with "exec /opt/rancher-system-agent-suc/run.sh: argument list too long"
     
   </span>
   
@@ -9424,6 +9516,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021719/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Failed snapshot restore for RKE2 clusters with misplaced mountpoint for the RKE2 binaries/config files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021756/" class="md-nav__link">
         
   
@@ -9589,9 +9704,10 @@
 <div class="highlight"><pre><span></span><code>Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
-<p>The workaround for this issue is to delete all of the older admission-config-psact blocks described above, which contain a different hash to the current one, from the cluster.provisioning.cattle.io resource.</p>
+<p>The issue is fixed in version v5.2.0 and above of the Rancher2 Terraform Provider. Users should upgrade the provider to a version containing the fix and which is <a href="https://github.com/rancher/terraform-provider-rancher2/blob/master/docs/compatibility-matrix.md">compatible with their Rancher instance.</a></p>
+<p>The workaround for this issue, in affected versions of the Rancher 2 Terraform Provider, is to delete all of the older admission-config-psact blocks described above, which contain a different hash to the current one, from the <code>cluster.provisioning.cattle.io</code> resource for the affected cluster.</p>
 <p>A good option is to just leave the last one generated (often the one on the bottom), so there is only one, and it is the most recent, per the example below.</p>
-<p>The cluster.provisioning.cattle.io resource can be edited by navigating to <strong>Cluster Management</strong> in the Rancher UI, and clicking <strong>Edit YAML</strong> for the relevant RKE2 cluster. After removing the older admission-config-psact blocks click <strong>Save</strong> to save the changes.</p>
+<p>The <code>cluster.provisioning.cattle.io</code> resource can be edited by navigating to <strong>Cluster Management</strong> in the Rancher UI, and clicking <strong>Edit YAML</strong> for the relevant RKE2 cluster. After removing the older admission-config-psact blocks click <strong>Save</strong> to save the changes.</p>
 <div class="highlight"><pre><span></span><code>machineSelectorFiles:
       - fileSources:
           - configMap:
@@ -9607,7 +9723,7 @@
             rke.cattle.io/control-plane-role: &#39;true&#39;
 </code></pre></div>
 <h3 id="cause">Cause</h3>
-<p>This behavior is the result of a bug that duplicates the file reference for the PSACT secret instead of overwriting it, whenever there is a change in the cluster from Terraform. This is tracked in <a href="https://github.com/rancher/terraform-provider-rancher2/issues/1426">GitHub issue #1426</a>.</p>
+<p>This behavior is the result of a bug that duplicates the file reference for the PSACT secret instead of overwriting it, whenever there is a change in the cluster from Terraform. The issue was tracked in <a href="https://github.com/rancher/terraform-provider-rancher2/issues/1426">GitHub issue #1426</a>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
