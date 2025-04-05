@@ -11,8 +11,10 @@
       
       
       
-        <link rel="prev" href="../000021719/">
+        <link rel="prev" href="../000021723/">
       
+      
+        <link rel="next" href="../000021764/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -7633,6 +7635,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021157/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create a read-only custom Global Role for Fleet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021185/" class="md-nav__link">
         
   
@@ -9447,6 +9472,29 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021723/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fleet agent fails to start with error secret fleet-agent not found
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -9557,6 +9605,52 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021764/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configure quota-backend-bytes to extend etcd keyspace limit in RKE2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021769/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cattle-cluster-agent flapping between versions
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -9711,7 +9805,8 @@
 <p>If you are unable to upgrade now, SUSE strongly advises disabling the ingress-nginx admission webhooks to significantly mitigate the risk associated with CVE-2025-1974, CVE-2025-24513. Disabling these webhooks is a critical, albeit temporary, security measure.</p>
 <p><strong>Workaround for CVE-2025-1974, CVE-2025-24513</strong></p>
 <p>Immediate Action Required: Disable Admission Webhooks</p>
-<p><strong>RKE2 Mitigation Steps:</strong> If you are using RKE2 and the built-in chart, a HelmChartConfig can be used to disable the controller admission webhook like this example:</p>
+<p><strong>RKE2 Mitigation Steps:</strong></p>
+<p>If you are using RKE2 and the built-in chart, a HelmChartConfig can be used to disable the controller admission webhook like this example:</p>
 <div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
@@ -9725,15 +9820,18 @@ spec:
 </code></pre></div>
 <p>The HelmChartConfig can be added for clusters provisioned by Rancher when editing the cluster in Cluster Management. This may be an option called "Additional Manifests" in the left-hand list, or nested under "Add-On Config" depending on the Rancher version.</p>
 <p>For standalone RKE2 clusters, <a href="https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig">the HelmChartConfig file can be populated on each rke2-server node</a> in the /var/lib/rancher/rke2/server/manifests directory.</p>
-<p><strong>RKE1 Mitigation Steps:</strong> If you are using RKE1 and wish to disable the admission webhook, then you can perform the following:</p>
+<p><strong>RKE1 Mitigation Steps:</strong></p>
+<p>If you are using RKE1 and wish to disable the admission webhook, then you can perform the following:</p>
 <p>Delete the ValidatingWebhookConfiguration called ingress-nginx-admission</p>
 <ul>
-<li>Edit the ingress-nginx-controller DaemonSet, and remove the --validating-webhook argument from the controller container</li>
+<li>Edit the ingress-nginx-controller DaemonSet, and remove the --validating-webhook argument from the controller container.</li>
 <li>To further reduce the risk and mitigate CVE-2025-24514, add the --enable-annotation-validation=true argument to the ingress-nginx-controller DaemonSet</li>
 </ul>
-<p><strong>Optional:</strong> To remove the service associated with the admission webhook, delete the service called ingress-nginx-controller-admission.</p>
-<p>Please note that the above changes with RKE1 will be overridden next time the cluster is reconciled or upgraded.</p>
-<p><strong>Mitigation for Directly Installed ingress-nginx:</strong> If you use the upstream ingress-nginx component (not installed by RKE1 or RKE2), then update it to v1.11.5, v1.12.1, or any later version.</p>
+<p><strong>Optional:</strong></p>
+<p>To remove the service associated with the admission webhook, delete the service called ingress-nginx-controller-admission.</p>
+<p>Please note that the above changes with RKE1 will be overridden the next time the cluster is reconciled or upgraded.</p>
+<p><strong>Mitigation for Directly Installed ingress-nginx:</strong></p>
+<p>If you use the upstream ingress-nginx component (not installed by RKE1 or RKE2), then update it to v1.11.5, v1.12.1, or any later version.</p>
 <p>To upgrade, follow the instructions available at <a href="https://kubernetes.github.io/ingress-nginx/deploy/upgrade/">https://kubernetes.github.io/ingress-nginx/deploy/upgrade/</a> and the specific release notes for <a href="https://github.com/kubernetes/ingress-nginx/releases/tag/controller-v1.12.1">v1.12.1</a> and <a href="https://github.com/kubernetes/ingress-nginx/releases/tag/controller-v1.11.5">v1.11.5</a>. Pay attention to the specific post-fix needed for CVE-2025-1974.</p>
 <p>If you can't upgrade right away, the following steps can be followed to disable the admission webhook:</p>
 <ul>
@@ -9747,7 +9845,8 @@ spec:
 <p>Edit the ingress-nginx-controller Deployment or Daemonset, removing --validating-webhook from the controller container’s argument list</p>
 </li>
 </ul>
-<p><strong>Workaround for CVE-2025-24514</strong> Mitigation steps for RKE1/RKE2</p>
+<p><strong>Workaround for CVE-2025-24514</strong></p>
+<p><strong>Mitigation steps for RKE1/RKE2</strong></p>
 <p>Please check if the enable-annotation-validation argument is true by default.</p>
 <p><strong>For RKE1</strong></p>
 <div class="highlight"><pre><span></span><code>kubectl -n ingress-nginx exec nginx-ingress-controller-xxxxx -- /nginx-ingress-controller --help 2&gt;&amp;1 | grep enable-annotation-validation
@@ -9775,7 +9874,7 @@ If true, will enable the annotation validation feature. Defaults to true (defaul
 </code></pre></div>
 <p><strong>For RKE2:</strong></p>
 <p>Add a HelmChartConfig to change the argument.</p>
-<p>The HelmChartConfig can be added for clusters provisioned by Rancher when editing the cluster in Cluster Management. This may be an option called "Additional Manifests" in the left-hand list, or nested under "Add-On Config" depending on the Rancher version.</p>
+<p>The HelmChartConfig can be added for clusters provisioned by Rancher when editing the cluster in Cluster Management. This may be an option called "Additional Manifests" in the left-hand list or nested under "Add-On Config" depending on the Rancher version.</p>
 <p>For standalone RKE2 clusters, the HelmChartConfig file can be populated on each rke2-server node in the /var/lib/rancher/rke2/server/manifests directory</p>
 <div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
@@ -9787,7 +9886,8 @@ spec:
     controller:
       enableAnnotationValidations: true
 </code></pre></div>
-<p><strong>Workaround for CVE-2025-1097, CVE-2025-1098</strong> There is no workaround mentioned for these CVEs. Please simply upgrade your RKE1/RKE2 version.</p>
+<p><strong>Workaround for CVE-2025-1097, CVE-2025-1098</strong></p>
+<p>There is no workaround mentioned for these CVEs. Please simply upgrade your RKE1/RKE2 version.</p>
 <h3 id="cause">Cause</h3>
 <p>Under certain conditions, an unauthenticated attacker with access to the pod network can achieve arbitrary code execution in the context of the ingress-nginx controller. This can lead to disclosure of Secrets accessible to the controller. (Note that in the default installation, the controller can access all Secrets cluster-wide.)</p>
 <p>Source: <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-1974">CVE-MITRE.org</a></p>

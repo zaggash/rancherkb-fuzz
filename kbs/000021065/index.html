@@ -7551,15 +7551,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Information
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -7705,6 +7696,29 @@
   
   <span class="md-ellipsis">
     How to forward Kubernetes events with the rancher-logging chart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021157/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create a read-only custom Global Role for Fleet
     
   </span>
   
@@ -9539,12 +9553,81 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021723/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fleet agent fails to start with error secret fleet-agent not found
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021756/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Nginx "IngressNightmare"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021764/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configure quota-backend-bytes to extend etcd keyspace limit in RKE2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021769/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cattle-cluster-agent flapping between versions
     
   </span>
   
@@ -9616,15 +9699,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Information
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -9652,30 +9726,41 @@
 <h1 id="how-to-remove-kubernetes-namespaces-stuck-in-a-terminating-state">How to remove Kubernetes namespaces stuck in a Terminating state</h1>
 <p>This document <strong>(000021065)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher 2.6/2.7/2.8</p>
+<p>A Kubernetes cluster with a Namespace stuck in a Terminating state</p>
 <h3 id="situation">Situation</h3>
-<p>This situation most frequently occurs where a resource still exists within the Namespace with a finalizer that can no longer be satisfied, e.g. a custom resource controlled by an operator, with a finalizer referencing the operator, but where the operator has already been removed from the cluster.</p>
-<p>To mitigate a namespace stuck in a terminating state, the following steps should be performed:</p>
-<p>1)  Check if any apiservice is unavailable.</p>
-<p>2)  Find all resources that still exist for this namespace and remove the finalizers.</p>
+<p>When attempting to delete a Namespace within a Kubernetes cluster, the Namespace is stuck in a Terminating state and is not being successfully removed.</p>
+<p>Some online guides for this situation instruct users to remove the kubernetes <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/">finalizer</a> from affected Namespaces, to force their deletion from the cluster. However, the kubernetes finalizer should not be manually removed from a Namespace. Whilst its removal will permit the deletion of the Namespace resource, it may leave orphaned resources within it, which will be accessible again via the Kubernetes API if a Namespace with the same name is created again, and may cause other cluster issues.</p>
+<p>This article details how to correctly identify the issue preventing deletion of a Namespace and how to safely remedy this.</p>
 <h3 id="resolution">Resolution</h3>
-<p>1) <strong>Check apiservice unavailable</strong></p>
-<p>Check if any apiservice is unavailable and hence does not serve its resources.</p>
-<div class="highlight"><pre><span></span><code> kubectl get apiservice|grep False
+<p>A Namespace stuck in a Terminating state is most frequently caused by one of two issues:</p>
+<ol>
+<li>An unavailable <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/">APIService</a>, e.g. the v1beta1.custom.metrics.k8s.io APIService was created within the cluster, but the workload backing the service that implements it has subsequently been deleted.</li>
+<li>A resource present within the Namespace, which has a <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/">finalizer</a> that can no longer be satisfied, i.e. a custom resource controlled by an operator, with a finalizer referencing the operator, but where the operator has already been removed from the cluster.</li>
+</ol>
+<p>To identify and resolve these issues, follow the instructions below.</p>
+<p><strong>Check if an APIService is unavailable</strong></p>
+<ol>
+<li>Check if any APIService is unavailable by running <code>kubectl get apiservice | grep False</code>, per the following example:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>kubectl get apiservices | grep False
+v1beta1.custom.metrics.k8s.io          cattle-monitoring-system/rancher-monitoring-prometheus-adapter   False (ServiceNotFound)   55m
 </code></pre></div>
-<p>2)<strong>Find resources and remove finalizers</strong></p>
-<p>Find all resources that still exist where "$your-ns-to-delete" is the name of the namespace stuck in a terminating state, and remove any finalizer on those resources that can no longer be met.</p>
-<div class="highlight"><pre><span></span><code>kubectl api-resources --verbs=list --namespaced -o name | xargs -I {} sh -c &#39;echo &quot;Checking for {} resources&quot;; kubectl get {} -n $your-ns-to-delete;&#39;
+<ol>
+<li>If an unavailable APIService is identified, such as v1beta1.custom.metrics.k8s.io in the example above, then take steps to resolve this:</li>
+<li>If the workload serving the API has been removed from the cluster, and the APIService is no longer expected to work, then delete it with <code>kubectl delete apiservice &lt;name&gt;</code>, e.g. <code>kubectl delete apiservice v1beta1.custom.metrics.k8s.io</code></li>
+<li>If the APIService is expected to work, then investigate why the Kubernetes Service and/or workload backing it are not working, and fix them to resolve the unavailable APIService.</li>
+</ol>
+<p><strong>Identify and remove those resources, within the Namespace, which have a finalizer that cannot be satisfied</strong></p>
+<ol>
+<li>Find all resources that still exist where <namespace> is the Namespace stuck in a terminating state:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>kubectl api-resources --verbs=list --namespaced -o name | xargs -I {} sh -c &#39;echo &quot;Checking for {} resources&quot;; kubectl get {} -n &lt;namespace&gt;;&#39;
 </code></pre></div>
-<p>To remove the finalizers, you can use the following patch on the resource.</p>
-<div class="highlight"><pre><span></span><code>kubectl -n &lt;namespace&gt; patch &lt;RessourceObject&gt; &lt;Object-name&gt; -p &#39;{&quot;metadata&quot;:{&quot;finalizers&quot;:null}}&#39; --type=merge
+<ol>
+<li>Remove the finalizers from any resources within the Namespace identified from the output of the command above:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>kubectl -n &lt;namespace&gt; patch &lt;kind&gt; &lt;name&gt; -p &#39;{&quot;metadata&quot;:{&quot;finalizers&quot;:null}}&#39; --type=merge
 </code></pre></div>
-<h3 id="additional-information">Additional Information</h3>
-<ul>
-<li>Finalizers</li>
-<li><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/">https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/</a></li>
-<li><a href="https://github.com/kubernetes/kubernetes/issues/60807">https://github.com/kubernetes/kubernetes/issues/60807</a></li>
-</ul>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 

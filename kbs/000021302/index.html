@@ -7635,6 +7635,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021157/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create a read-only custom Global Role for Fleet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021185/" class="md-nav__link">
         
   
@@ -9548,12 +9571,81 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021723/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fleet agent fails to start with error secret fleet-agent not found
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021756/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Nginx "IngressNightmare"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021764/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configure quota-backend-bytes to extend etcd keyspace limit in RKE2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021769/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cattle-cluster-agent flapping between versions
     
   </span>
   
@@ -9670,8 +9762,10 @@
 <h1 id="rancher-pods-in-crashloopbackoff-state-with-log-messages-panic-indexer-conflict-mapbypod-and-namespaces-not-found">Rancher pods in CrashLoopBackOff state with log messages "panic: indexer conflict: map[byPod:{}]" and "namespaces not found"</h1>
 <p>This document <strong>(000021302)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher v2.6.x or v2.7.x</p>
-<p>A cluster Namespace in the Rancher local cluster that has been forcibly removed by removing the Kubernetes finalizer</p>
+<ul>
+<li>Rancher v2.6+</li>
+<li>A cluster Namespace in the Rancher local cluster that has been forcibly removed by removing the Kubernetes finalizer</li>
+</ul>
 <h3 id="situation">Situation</h3>
 <p>The Rancher UI is not accessible and the Rancher pods are in a CrashLoopBackOff state due to a panic, with the log message "panic: indexer conflict: map[byPod:{}]".</p>
 <p>Rancher pods logs contain resource and namespace not found errors related to the forcibly deleted cluster Namespace:</p>
@@ -9687,14 +9781,13 @@
  [ERROR] error syncing &#39;c-g4k52/c-g4k52-rl-f62qq&#39;: handler etcdbackup-controller: failed to remove finalizer on controller.cattle.io/etcdbackup-controller, requeuing
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
-<p>Remove all of the orphaned resources in the now-deleted cluster Namespace by following the process documented at https://www.suse.com/support/kb/doc/?id=000020788</p>
+<p>Remove all of the orphaned resources in the now-deleted cluster Namespace by following the process documented at <a href="https://www.suse.com/support/kb/doc/?id=000020788">https://www.suse.com/support/kb/doc/?id=000020788</a></p>
 <p>In this example, the problematic deleted cluster identified from the Rancher logs has the cluster ID and Namespace c-g4k52.</p>
 <h3 id="cause">Cause</h3>
-<p>Orphaned resources within Namespaces for a now-deleted cluster exist as a result of the forced removal of the Kuberetes Namespace, due to the manual removal of the Kubernetes finalizer from the Namespace when it is stuck in a terminating state. The Kubernetes finalizer should never be removed from a Namespace and the following procedure can be used to remove a Namespace stuck in a terminating state:</p>
-<p><a href="https://www.suse.com/es-es/support/kb/doc/?id=000021065">https://www.suse.com/es-es/support/kb/doc/?id=000021065</a></p>
+<p>Orphaned resources within Namespaces for a now-deleted cluster exist as a result of the forced removal of the Kubernetes Namespace, due to the manual removal of the Kubernetes finalizer from the Namespace when it is stuck in a terminating state. The Kubernetes finalizer should never be removed from a Namespace and the following procedure can be used to remove a Namespace stuck in a terminating state: <a href="https://www.suse.com/support/kb/doc/?id=000021065">https://www.suse.com/support/kb/doc/?id=000021065</a></p>
 <h3 id="additional-information">Additional Information</h3>
 <ul>
-<li><strong>Remove namespace stuck in terminating state:</strong> <a href="https://www.suse.com/es-es/support/kb/doc/?id=000021065">https://www.suse.com/es-es/support/kb/doc/?id=000021065</a></li>
+<li><strong>Remove namespace stuck in terminating state:</strong> <a href="https://www.suse.com/support/kb/doc/?id=000021065">https://www.suse.com/support/kb/doc/?id=000021065</a></li>
 <li><strong>How to clean orphaned cluster objects</strong>: <a href="https://www.suse.com/support/kb/doc/?id=000020788">https://www.suse.com/support/kb/doc/?id=000020788</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>

@@ -7635,6 +7635,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021157/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create a read-only custom Global Role for Fleet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021185/" class="md-nav__link">
         
   
@@ -9548,12 +9571,81 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021723/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fleet agent fails to start with error secret fleet-agent not found
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021756/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Nginx "IngressNightmare"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021764/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configure quota-backend-bytes to extend etcd keyspace limit in RKE2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021769/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cattle-cluster-agent flapping between versions
     
   </span>
   
@@ -9672,8 +9764,8 @@
 <h3 id="environment">Environment</h3>
 <p>A Rancher v2.x instance running in an RKE or RKE2 cluster</p>
 <h3 id="situation">Situation</h3>
-<p>The <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades#steps-to-upgrade-rancher">Rancher upgrade task</a> is launched immediately after upgrading the underlying Kubernetes cluster. The Rancher upgrade fails with the following error:</p>
-<div class="highlight"><pre><span></span><code>
+<p>The <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades#steps-to-upgrade-rancher">Rancher helm chart upgrade</a> is launched immediately after upgrading the underlying Kubernetes cluster and fails with an error of the following format:</p>
+<div class="highlight"><pre><span></span><code>Internal error occurred: failed calling webhook &quot;validate.nginx.ingress.kubernetes.io&quot;: Post &quot;https://rke2-ingress-nginx-controller-admission.kube-system.svc:443/networking/v1/ingresses?time=10s&quot;: no endpoint available for service &quot;rke2-ingress-nginx-controller-admission&quot;
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
 <p>Before running a Rancher upgrade, check that ingress-nginx Pods in the local cluster are running. If the Rancher upgrade task is executed in an automated fashion, a delay should be introduced between the cluster upgrade and the Rancher helm upgrade.</p>
@@ -9689,7 +9781,7 @@ kubectl wait --for=condition=Available -n ingress-nginx nginx-ingress-controller
 kubectl wait --for=condition=Available -n kube-system rke2-ingress-nginx-controller
 </code></pre></div>
 <h3 id="cause">Cause</h3>
-<p>The 'helm upgrade --install` task for Rancher is invoked before the ingress-nginx pods in the cluster are in a running state, following the cluster upgrade. As a result, the ingress-nginx validating webhook cannot be satisfied, resulting in errors when helm attempts to patch the Rancher ingress resource.</p>
+<p>The 'helm upgrade --install' task for Rancher is invoked before the ingress-nginx pods in the cluster are running, following the cluster upgrade. As a result, the ingress-nginx validating webhook cannot be satisfied, resulting in errors when helm attempts to patch the Rancher ingress resource.</p>
 <h3 id="additional-information">Additional Information</h3>
 <ul>
 <li><strong>Rancher upgrade checklist</strong>: <a href="https://www.suse.com/es-es/support/kb/doc/?id=000020061">https://www.suse.com/es-es/support/kb/doc/?id=000020061</a></li>
