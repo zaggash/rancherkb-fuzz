@@ -22,7 +22,7 @@
     
     
       
-        <title>Recommendation against the use of --atomic flag for Rancher upgrades - SUSE KBs</title>
+        <title>Recommendation against the use of the --atomic flag for Rancher helm chart upgrades - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#recommendation-against-the-use-of-atomic-flag-for-rancher-upgrades" class="md-skip">
+        <a href="#recommendation-against-the-use-of-the-atomic-flag-for-rancher-helm-chart-upgrades" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Recommendation against the use of --atomic flag for Rancher upgrades
+              Recommendation against the use of the --atomic flag for Rancher helm chart upgrades
             
           </span>
         </div>
@@ -8224,7 +8224,7 @@
   
   
   <span class="md-ellipsis">
-    Recommendation against the use of --atomic flag for Rancher upgrades
+    Recommendation against the use of the --atomic flag for Rancher helm chart upgrades
     
   </span>
   
@@ -8237,7 +8237,7 @@
   
   
   <span class="md-ellipsis">
-    Recommendation against the use of --atomic flag for Rancher upgrades
+    Recommendation against the use of the --atomic flag for Rancher helm chart upgrades
     
   </span>
   
@@ -8290,15 +8290,6 @@
   <a href="#cause" class="md-nav__link">
     <span class="md-ellipsis">
       Cause
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Information
     </span>
   </a>
   
@@ -9893,6 +9884,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021767/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to Connect to Rancher Provisioned Clusters using CLI When Rancher is Offline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021769/" class="md-nav__link">
         
   
@@ -9979,15 +9993,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Information
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -10012,22 +10017,19 @@
 
 
 
-<h1 id="recommendation-against-the-use-of-atomic-flag-for-rancher-upgrades">Recommendation against the use of --atomic flag for Rancher upgrades</h1>
+<h1 id="recommendation-against-the-use-of-the-atomic-flag-for-rancher-helm-chart-upgrades">Recommendation against the use of the --atomic flag for Rancher helm chart upgrades</h1>
 <p>This document <strong>(000021304)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher 2.x</p>
-<p>Helm</p>
+<p>A Rancher v2.x instance <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster">installed via Helm chart</a></p>
 <h3 id="situation">Situation</h3>
-<p>Rancher upgrades using Helm</p>
+<p>Rancher upgrades using the Helm CLI</p>
 <h3 id="resolution">Resolution</h3>
-<p>Do not use of the --atomic flag for Rancher upgrades using helm</p>
+<p>Do not use the <code>--atomic</code> flag for Rancher upgrades using Helm</p>
 <h3 id="cause">Cause</h3>
-<p>Hypothetically, if the Rancher portion of the upgrade succeeds and the new Rancher Pods start running and making configuration state changes to the Rancher custom resources but then the helm upgrade fails on another part of the chart for any reason, a helm rollback is automatically performed due to the <strong>`--atomic`</strong> flag.</p>
-<p>Because Helm rollbacks are not supported for Rancher you may end up in a broken state, with partially upgraded Rancher state, but with the older Rancher version running.</p>
-<p>For Rancher rollbacks in the case of a failed upgrade you should refer to the <a href="https://rancher.com/docs/rancher/v2.6/en/installation/install-rancher-on-k8s/rollbacks/">Rancher rollback documentation</a> using the Rancher backup operator, or a <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/restoring-from-backup/">cluster-level backup</a> .</p>
-<h3 id="additional-information">Additional Information</h3>
-<p><a href="https://rancher.com/docs/rancher/v2.6/en/installation/install-rancher-on-k8s/rollbacks/">https://rancher.com/docs/rancher/v2.6/en/installation/install-rancher-on-k8s/rollbacks/</a></p>
-<p><a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/restoring-from-backup/">https://rancher.com/docs/rke/latest/en/etcd-snapshots/restoring-from-backup/</a></p>
+<p>The helm <code>--atomic</code> flag, <a href="https://helm.sh/docs/helm/helm_upgrade/#options">causes helm to rollback any changes made in case of a failed helm chart upgrade.</a></p>
+<p>Hypothetically, if the Rancher Deployment portion of the upgrade succeeds and new Rancher Pods start running, and making configuration state changes to the Rancher custom resources, but the helm upgrade then fails on another resource within the chart for any reason, a helm rollback would be automatically performed if the <code>--atomic</code> flag is used.</p>
+<p>Rancher Helm chart version rollbacks, without a restore of Rancher state, are not supported and this may result in a broken state, with partially upgraded Rancher state, but with the older Rancher version running.</p>
+<p>For Rancher rollbacks in the case of a failed Rancher upgrade you should refer to the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rollbacks">Rancher rollback documentation</a>, using the Rancher backup operator, or a cluster-level restore, using the appropriate restore method for your local Rancher cluster (per the respective <a href="https://rke.docs.rancher.com/etcd-snapshots/restoring-from-backup">RKE</a>, <a href="https://docs.rke2.io/datastore/backup_restore#restoring-a-snapshot-to-existing-nodes">RKE2</a> and <a href="https://docs.k3s.io/datastore/backup-restore">K3s</a> documentation).</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
