@@ -9850,42 +9850,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prerequisites
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#status" class="md-nav__link">
-    <span class="md-ellipsis">
-      Status
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -10024,42 +9988,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prerequisites
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#status" class="md-nav__link">
-    <span class="md-ellipsis">
-      Status
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -10083,82 +10011,143 @@
 <h3 id="situation">Situation</h3>
 <p>Starting in Rancher v2.12, the <a href="https://github.com/rancher/charts/tree/dev-v2.11/charts/rancher-istio">rancher-istio</a> chart will be deprecated. This article will provide guidance on how to replicate the functionality of the <a href="https://github.com/rancher/charts/tree/dev-v2.11/charts/rancher-istio">rancher-istio</a> chart in Rancher v2.12 and later using <a href="https://apps.rancher.io/">SUSE Application Collection</a></p>
 <h3 id="resolution">Resolution</h3>
-<h3 id="prerequisites"><strong>Prerequisites</strong></h3>
+<h1 id="h1">H1</h1>
+<h2 id="h2">H2</h2>
+<h3 id="h3">H3</h3>
+<h4 id="h4">H4</h4>
+<h5 id="h5">H5</h5>
+<h6 id="h6">H6</h6>
+<h1 id="prerequisites">Prerequisites</h1>
 <p>This document assumes you are familiar with how <a href="https://docs.apps.rancher.io/get-started/authentication/">authentication</a> works in Application Collection. It also assumes you have a running Kubernetes cluster, and kubectl and helm installed.</p>
-<p><strong>Namespace Creation</strong></p>
+<h2 id="namespace-creation">Namespace Creation</h2>
 <p>We will be installing the applications in the same namespace, in this case `istio-system`. Don't forget to also create the secret containing your Application Collection credentials. <code></code></p>
-<p><code>kubectl create ns istio-system</code></p>
-<p><code>kubectl create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=&lt;username&gt; --docker-password=&lt;your_token&gt; -n istio-system</code></p>
 <p>``</p>
-<p><strong>Installing Prometheus</strong></p>
-<p>Prometheus is a dependency of Kiali, so it needs to be installed first. You can check the compatibility <a href="https://prometheus-operator.dev/docs/getting-started/compatibility/">here</a>. You can install it using the helm chart provided by Application Collection. I.e:</p>
-<p><code>helm install prometheus oci://dp.apps.rancher.io/charts/prometheus --version 25.30.2 --set global.imagePullSecrets={application-collection} -n istio-system --wait</code></p>
-<p><strong>Installing Kiali</strong></p>
-<p>The next step is to install Kiali using Helm. You can follow the documentation from upstream, which can be found <a href="https://kiali.io/docs/installation/quick-start/">here</a>, and the compatibility matrix can be found <a href="https://kiali.io/docs/installation/installation-guide/prerequisites/#version-compatibility">here</a>.) You also need to provide the correct value in the external_services field. i.e:</p>
-<p><code>helm install kiali oci://dp.apps.rancher.io/charts/kiali --version 2.3.0 --set global.imagePullSecrets={application-collection} -n istio-system --set external_services.prometheus.custom_metrics_url="http://prometheus-server.istio-system.svc.cluster.local" \</code></p>
-<p><code>--set external_services.prometheus.url="http://prometheus-server.istio-system.svc.cluster.local" --wait</code></p>
-<p><strong>Installing Istio</strong></p>
-<p>Now you can install <a href="https://apps.rancher.io/applications/istio">Istio</a>.</p>
-<p>The reference guide can be found at: <a href="https://docs.apps.rancher.io/reference-guides/istio/">https://docs.apps.rancher.io/reference-guides/istio/</a> and the compatibility matrix can be found <a href="https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases">here</a>.</p>
-<p><strong>Installing Jaeger</strong></p>
-<p>To install Jaeger, you need to deploy the Helm Chart which will deploy the operator and then create a new Jaeger resource to deploy the Jaeger instance you want.</p>
-<p><strong>Installing Cert-manager</strong></p>
-<p><a href="https://cert-manager.io/">Cert manager</a> is a dependency of Jaeger, and as such needs to be installed first. If you already have it installed with a version later than 1.6.1, please proceed to the next step.</p>
-<p><code>kubectl create ns cert-manager</code></p>
-<p><code>kubectl create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=&lt;username&gt; --docker-password=&lt;your_password&gt; -n cert-manager</code></p>
-<p><code>helm install cert-manager oci://dp.apps.rancher.io/charts/cert-manager --namespace cert-manager --version 1.16.0 --set global.imagePullSecrets={application-collection} --set crds.enabled=true --wait</code></p>
-<p><strong>Deploy the Helm chart</strong></p>
+<div class="highlight"><pre><span></span><code>kubectl create ns istio-system
+
+kubectl create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=&lt;username&gt; --docker-password=&lt;your_token&gt; -n istio-system
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>``
+
+### Installing Prometheus
+
+Prometheus is a dependency of Kiali, so it needs to be installed first. You can check the compatibility [here](https://prometheus-operator.dev/docs/getting-started/compatibility/). You can install it using the helm chart provided by Application Collection. I.e:
+
+```
+helm install prometheus oci://dp.apps.rancher.io/charts/prometheus --version 25.30.2 --set global.imagePullSecrets={application-collection} -n istio-system --wait
+```
+
+``
+
+#### **Installing Kiali**
+
+The next step is to install Kiali using Helm. You can follow the documentation from upstream, which can be found [here](https://kiali.io/docs/installation/quick-start/), and the compatibility matrix can be found [here](https://kiali.io/docs/installation/installation-guide/prerequisites/#version-compatibility).) You also need to provide the correct value in the external\_services field. i.e:
+
+```
+helm install kiali oci://dp.apps.rancher.io/charts/kiali --version 2.3.0 --set global.imagePullSecrets={application-collection} -n istio-system --set external_services.prometheus.custom_metrics_url=&quot;http://prometheus-server.istio-system.svc.cluster.local&quot; \
+--set external_services.prometheus.url=&quot;http://prometheus-server.istio-system.svc.cluster.local&quot; --wait
+```
+
+**Installing Istio**
+
+Now you can install [Istio](https://apps.rancher.io/applications/istio).
+
+The reference guide can be found at: [https://docs.apps.rancher.io/reference-guides/istio/](https://docs.apps.rancher.io/reference-guides/istio/) and the compatibility matrix can be found [here](https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases).
+
+**Installing Jaeger**
+
+To install Jaeger, you need to deploy the Helm Chart which will deploy the operator and then create a new Jaeger resource to deploy the Jaeger instance you want.
+
+**Installing cert-manager**
+
+[Cert manager](https://cert-manager.io/) is a dependency of Jaeger, and as such needs to be installed first. If you already have it installed with a version later than 1.6.1, please proceed to the next step.
+
+``
+
+```
+kubectl create ns cert-manager
+
+kubectl create secret docker-registry application-collection --docker-server=dp.apps.rancher.io --docker-username=&lt;username&gt; --docker-password=&lt;your_password&gt; -n cert-manager
+
+helm install cert-manager oci://dp.apps.rancher.io/charts/cert-manager --namespace cert-manager --version 1.16.0 --set global.imagePullSecrets={application-collection} --set crds.enabled=true --wait
+```
+</code></pre></div>
+<p><strong>Deploy the Helm Chart</strong></p>
 <p>You can use the Helm chart provided by Application Collection. To do that, you can do the following:</p>
-<p><code>helm install jaeger oci://dp.apps.rancher.io/charts/jaeger-operator --set global.imagePullSecrets={application-collection} --set rbac.clusterRole=true -n istio-system --wait</code></p>
-<p><strong>Create a new Jaeger resource</strong></p>
+<p>``</p>
+<div class="highlight"><pre><span></span><code>helm install jaeger oci://dp.apps.rancher.io/charts/jaeger-operator --set global.imagePullSecrets={application-collection} --set rbac.clusterRole=true -n istio-system --wait
+</code></pre></div>
+<p><strong>Create a New Jaeger Resource</strong></p>
 <p>In this example, we are going to use jaeger-all-in-one which is more suitable for testing and development.</p>
 <p>The first thing needed is to create the service account that will be used.</p>
-<p><code>kubectl create sa jaeger-test-sa -n istio-system</code></p>
+<p>``</p>
+<div class="highlight"><pre><span></span><code>kubectl create sa jaeger-test-sa -n istio-system
+</code></pre></div>
 <p>Now you need to add your Application Collection token to the service account:</p>
-<p><code>kubectl patch serviceaccount -n istio-system jaeger-test-sa -p '{"imagePullSecrets": [{"name": "application-collection"}]}'</code></p>
-<p>The next step is to create the Jaeger resource:</p>
-<p><code>kubectl apply -f - &lt;&lt;EOF</code></p>
-<p><code>apiVersion: jaegertracing.io/v1</code></p>
-<p><code>kind: Jaeger</code></p>
-<p><code>metadata:</code></p>
-<p><code>name: jaeger-test</code></p>
-<p><code>namespace: istio-system</code></p>
-<p><code>spec:</code></p>
-<p><code>serviceAccount: jaeger-test-sa</code></p>
-<p><code>EOF</code></p>
 <p>``</p>
-<p>``</p>
-<p>``</p>
-<p><strong>Configuring Istio and Jaeger</strong></p>
-<p>The final step is to configure Istio and Jaeger to work together. The documentation can be found at: <a href="https://istio.io/latest/docs/tasks/observability/distributed-tracing/jaeger/">https://istio.io/latest/docs/tasks/observability/distributed-tracing/jaeger/</a>.</p>
-<p>First, create a `values.yaml` file like the following:</p>
-<p><code>istiod:</code></p>
-<p><code>meshConfig:</code></p>
-<p><code>enableTracing: true</code></p>
-<p><code>defaultConfig:</code></p>
-<p><code>tracing: {} # disable legacy MeshConfig tracing options</code></p>
-<p><code>extensionProviders:</code></p>
-<p><code>- name: jaeger</code></p>
-<p><code>opentelemetry:</code></p>
-<p><code>port: 4317</code></p>
-<p><code>service: jaeger-test-collector.istio-system.svc.cluster.local</code></p>
-<p>Now, update the Istio installation with the new values:</p>
-<p><code>helm upgrade istio oci://dp.apps.rancher.io/charts/istio \</code></p>
-<p><code>--set global.imagePullSecrets={application-collection} \</code></p>
-<p><code>--values values.yaml -n istio-system --wait</code></p>
+<div class="highlight"><pre><span></span><code>kubectl patch serviceaccount -n istio-system jaeger-test-sa -p &#39;{&quot;imagePullSecrets&quot;: [{&quot;name&quot;: &quot;application-collection&quot;}]}&#39;
+</code></pre></div>
+<p>The next step is to create the Jaeger resource: ``</p>
+<div class="highlight"><pre><span></span><code>kubectl apply -f - &lt;&lt;EOF
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+ name: jaeger-test
+ namespace: istio-system
+spec:
+ serviceAccount: jaeger-test-sa
+EOF
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>``
+
+``
+
+``
+
+**Configuring Istio and Jaeger**
+
+The final step is to configure Istio and Jaeger to work together. The documentation can be found at: [https://istio.io/latest/docs/tasks/observability/distributed-tracing/jaeger/](https://istio.io/latest/docs/tasks/observability/distributed-tracing/jaeger/).
+
+First, create a \`values.yaml\` file like the following:
+
+```
+istiod:
+meshConfig:
+enableTracing: true
+defaultConfig:
+     tracing: {} # disable legacy MeshConfig tracing options
+extensionProviders:
+   - name: jaeger
+     opentelemetry:
+       port: 4317
+       service: jaeger-test-collector.istio-system.svc.cluster.local
+```
+
+Now, update the Istio installation with the new values:
+
+``
+
+```
+helm upgrade istio oci://dp.apps.rancher.io/charts/istio \
+    --set global.imagePullSecrets={application-collection} \
+    --values values.yaml -n istio-system --wait
+```
+</code></pre></div>
 <p>Lastly, enable telemetry by creating a new telemetry resource:</p>
-<p><code>kubectl apply -f - &lt;&lt;EOF</code></p>
-<p><code>apiVersion: telemetry.istio.io/v1</code></p>
-<p><code>kind: Telemetry</code></p>
-<p><code>metadata:</code></p>
-<p><code>name: mesh-default</code></p>
-<p><code>namespace: istio-system</code></p>
-<p><code>spec:</code></p>
-<p><code>tracing:</code></p>
-<p><code>- providers:</code></p>
-<p><code>- name: jaeger</code></p>
-<p><code>EOF</code></p>
-<p><strong>NOTE</strong></p>
+<p>``</p>
+<div class="highlight"><pre><span></span><code>kubectl apply -f - &lt;&lt;EOF
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: mesh-default
+  namespace: istio-system
+spec:
+  tracing:
+  - providers:
+    - name: jaeger
+EOF
+</code></pre></div>
+<p>````</p>
+<p><strong>Note</strong></p>
 <p>Istio, Kiali, and Jaeger are third party tools which are not supported by Rancher Support.</p>
 <h3 id="cause">Cause</h3>
 <p>The <a href="https://github.com/rancher/charts/tree/dev-v2.11/charts/rancher-istio">rancher-istio</a> chart is being deprecated in Rancher v2.12 and later. The <a href="https://github.com/rancher/charts/tree/dev-v2.11/charts/rancher-istio">rancher-istio</a> chart is being replaced by <a href="https://apps.rancher.io/">SUSE Application Collection</a> which provides the same functionality as the <a href="https://github.com/rancher/charts/tree/dev-v2.11/charts/rancher-istio">rancher-istio</a> chart.</p>
