@@ -3560,21 +3560,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#when-troubleshooting-an-issue-often-a-faithful-reproduction-and-exact-environment-are-needed-this-can-be-a-challenge-in-a-containerized-environment-where-tools-and-a-shell-environment-may-not-be-easily-available-within-containers-of-a-pod" class="md-nav__link">
-    <span class="md-ellipsis">
-      When troubleshooting an issue, often a faithful reproduction and exact environment are needed. This can be a challenge in a containerized environment, where tools and a shell environment may not be easily available within containers of a Pod.
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -10056,21 +10041,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#when-troubleshooting-an-issue-often-a-faithful-reproduction-and-exact-environment-are-needed-this-can-be-a-challenge-in-a-containerized-environment-where-tools-and-a-shell-environment-may-not-be-easily-available-within-containers-of-a-pod" class="md-nav__link">
-    <span class="md-ellipsis">
-      When troubleshooting an issue, often a faithful reproduction and exact environment are needed. This can be a challenge in a containerized environment, where tools and a shell environment may not be easily available within containers of a Pod.
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -10119,52 +10089,93 @@
 <h1 id="how-to-troubleshoot-using-the-namespace-of-a-container">How to troubleshoot using the namespace of a container</h1>
 <p>This document <strong>(000020163)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>RKE environment with docker</p>
+<p>RKE2 environment with containerd and RKE environment with docker</p>
 <h3 id="situation">Situation</h3>
-<h4 id="when-troubleshooting-an-issue-often-a-faithful-reproduction-and-exact-environment-are-needed-this-can-be-a-challenge-in-a-containerized-environment-where-tools-and-a-shell-environment-may-not-be-easily-available-within-containers-of-a-pod">When troubleshooting an issue, often a faithful reproduction and exact environment are needed. This can be a challenge in a containerized environment, where tools and a shell environment may not be easily available within containers of a Pod.</h4>
+<p>When troubleshooting an issue, often a faithful reproduction and an exact environment are needed. This can be a challenge in a containerized environment, where tools and a shell environment may not be easily available within containers of a Pod.</p>
+<p>With more images going distroless, container images often don't have the necessary tools such as `dig`, `curl`, `telnet`, etc... since they not included. This can make troubleshooting a pod's networking connections very difficult, especially in an air-gapped environment.</p>
 <h3 id="resolution">Resolution</h3>
-<p>There are two approaches that can be taken:</p>
+<p><strong>RKE2 Environment</strong></p>
+<p>With crictl and nsenter, the node's OS packages can be utilised to troubleshoot the pod container's networking by entering the container's network namespace without using kubectl exec.</p>
+<p><strong>Setup</strong></p>
+<ul>
+<li>Get container ID(s) from a pod</li>
+</ul>
+<div class="highlight"><pre><span></span><code>POD_NAME=&lt;pod name&gt;
+NAMESPACE=&lt;namespace for pod&gt;
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>kubectl describe pod -n $NAMESPACE $POD_NAME | awk -F&#39;//&#39; &#39;/containerd:/ {print $2}&#39;
+</code></pre></div>
+<ul>
+<li>Copy and save the container ID for later. Next, identify the node that the pod is on</li>
+</ul>
+<div class="highlight"><pre><span></span><code>kubectl get pod -n $NAMESPACE $POD_NAME -o wide
+</code></pre></div>
+<p>If the node in the output is different from your current node, be sure to switch to a shell session on the corresponding node.</p>
+<p><strong>Using crictl</strong></p>
+<p>When using <code>critcl</code> in an RKE2 setup, you may need to run the following commands before using crictl</p>
+<div class="highlight"><pre><span></span><code>export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
+PATH=&quot;$PATH:/var/lib/rancher/rke2/bin&quot;
+</code></pre></div>
+<ul>
+<li>From the node where the pod is deployed, run the following command to get the PID of a container from the setup steps</li>
+</ul>
+<div class="highlight"><pre><span></span><code>CONTAINER_ID=&lt;container ID&gt;
+PID=$(crictl inspect -o go-template --template &#39;{{.info.pid}}&#39; $CONTAINER_ID)
+</code></pre></div>
+<p><strong>nsenter</strong></p>
+<ul>
+<li>Run commands from the node within the network namespace context of the container/Pod with <code>nsenter</code></li>
+</ul>
+<div class="highlight"><pre><span></span><code>nsenter -n -t $PID &lt;command&gt;
+</code></pre></div>
+<ul>
+<li>Run commands from the node within the context of all of the container/Pod namespaces with <code>nsenter</code></li>
+</ul>
+<div class="highlight"><pre><span></span><code>nsenter -a -t $PID &lt;command&gt;
+</code></pre></div>
+<p><strong>RKE Environment</strong></p>
+<p>Two approaches can be taken:</p>
 <p><strong>Sidecar Container</strong></p>
 <p>By running a container in the same namespaces as another, it's possible to use that container for troubleshooting.</p>
 <p>The sidecar container can be started using the same network and PID namespaces while attaching the same volumes:</p>
 <ul>
 <li>Set the ID or name of the container you wish to troubleshoot:</li>
 </ul>
-<p><code>ID=&lt;container ID or name&gt;</code></p>
+<div class="highlight"><pre><span></span><code>ID=&lt;container ID or name&gt;
+</code></pre></div>
 <ul>
 <li>Run the sidecar container using the network, PID and volumes</li>
 </ul>
-<p><code>docker run -it --net=container:$ID --pid=container:$ID --volumes-from=$ID alpine sh</code></p>
-<ul>
-<li>It is now possible to troubleshoot with commands from the alpine container, within the context of the container or Pod with the issue.</li>
-</ul>
+<div class="highlight"><pre><span></span><code>docker run -it --net=container:$ID --pid=container:$ID --volumes-from=$ID alpine sh
+</code></pre></div>
+<p>It is now possible to troubleshoot with commands from the alpine container, within the context of the container or Pod with the issue.</p>
 <p>For example, if you were experiencing a network issue from this Pod, it is now possible to use tools available in the sidecar container to simulate the connection, view the network configuration and troubleshoot interactively.</p>
 <p>Substitute the alpine container as needed with an image of your choice.</p>
-<blockquote>
 <p>Note, this will attach the same volumes as the parent container, but the parent container read/write layers will not be accesible - to access the same container filesystem, see the nsenter example below.</p>
-</blockquote>
 <p><strong>Use nsenter from the host</strong></p>
-<p>Alternatively, you can use tools available on the host for the same use case with the <code>nsenter</code> command. The <code>nsenter</code> command is standard on most Linux distributions, for example on Ubuntu, it is provided by the util-linux package.</p>
+<p>Alternatively, tools are available on the host for the same use case with the nsenter command. The nsenter command is standard on most Linux distributions, for example, on Ubuntu, it is provided by the util-linux package.</p>
 <ul>
 <li>Set the ID or name of the container you wish to troubleshoot:</li>
 </ul>
-<p><code>ID=&lt;container ID or name&gt;</code></p>
+<div class="highlight"><pre><span></span><code>ID=&lt;container ID or name&gt;
+</code></pre></div>
 <ul>
 <li>Obtain the first process in the container (PID 1):</li>
 </ul>
-<p><code>PID=$(docker inspect --format '{{ .State.Pid }}' $ID)</code></p>
+<div class="highlight"><pre><span></span><code>PID=$(docker inspect --format &#39;{{ .State.Pid }}&#39; $ID)
+</code></pre></div>
 <ul>
-<li><code></code> Run commands from the node within the network namespace context of the container/Pod with nsenter:</li>
+<li>Run commands from the node within the network namespace context of the container/Pod with nsenter:</li>
 </ul>
-<p><code>nsenter -n -t $PID &lt;command&gt;</code></p>
+<div class="highlight"><pre><span></span><code>nsenter -n -t $PID &lt;command&gt;
+</code></pre></div>
 <ul>
 <li>Run commands from the node within the context of all of the container/Pod namespaces with nsenter:</li>
 </ul>
-<p><code>nsenter -a -t $PID &lt;command&gt;</code></p>
-<p>For example, if troubleshooting a network issue, tools like tcpdump, curl, dig and mtr can be used to troubleshoot the issue interactively.</p>
-<blockquote>
-<p>Note, the <code>-a</code> flag is available in recent versions of <code>nsenter</code>, if this does not succeed, use a flag for a specific namespace, check the <code>nsenter --help</code> output.</p>
-</blockquote>
+<div class="highlight"><pre><span></span><code>nsenter -a -t $PID &lt;command&gt;
+</code></pre></div>
+<p>For example, when troubleshooting a network issue, tools like tcpdump, curl, dig, and mtr can be used to interactively troubleshoot the issue.</p>
+<p>Note, the -a flag is available in recent versions of nsenter, if this does not succeed, use a flag for a specific namespace, check the nsenter --help output.</p>
 <h3 id="status">Status</h3>
 <p>Top Issue</p>
 <h3 id="disclaimer">Disclaimer</h3>
