@@ -18,15 +18,15 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.13">
     
     
       
-        <title>Rancher managed RKE2 clusters stuck in "Waiting for probes: kube-controller-manager, kube-scheduler" - SUSE KBs</title>
+        <title>Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration - SUSE KBs</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2afb09e1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rancher-managed-rke2-clusters-stuck-in-waiting-for-probes-kube-controller-manager-kube-scheduler" class="md-skip">
+        <a href="#rancher-managed-rke2-clusters-stuck-waiting-for-kube-controller-managerkube-scheduler-probes-due-to-certificate-expiration" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Rancher managed RKE2 clusters stuck in "Waiting for probes: kube-controller-manager, kube-scheduler"
+              Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration
             
           </span>
         </div>
@@ -8500,7 +8500,7 @@
   
   
   <span class="md-ellipsis">
-    Rancher managed RKE2 clusters stuck in "Waiting for probes: kube-controller-manager, kube-scheduler"
+    Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration
     
   </span>
   
@@ -8513,7 +8513,7 @@
   
   
   <span class="md-ellipsis">
-    Rancher managed RKE2 clusters stuck in "Waiting for probes: kube-controller-manager, kube-scheduler"
+    Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration
     
   </span>
   
@@ -8566,6 +8566,15 @@
   <a href="#cause" class="md-nav__link">
     <span class="md-ellipsis">
       Cause
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
     </span>
   </a>
   
@@ -10062,6 +10071,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -10086,33 +10104,32 @@
 
 
 
-<h1 id="rancher-managed-rke2-clusters-stuck-in-waiting-for-probes-kube-controller-manager-kube-scheduler">Rancher managed RKE2 clusters stuck in "Waiting for probes: kube-controller-manager, kube-scheduler"</h1>
+<h1 id="rancher-managed-rke2-clusters-stuck-waiting-for-kube-controller-managerkube-scheduler-probes-due-to-certificate-expiration">Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration</h1>
 <p>This document <strong>(000021371)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher &lt;2.7.5</p>
-<p>RKE2</p>
+<p>SUSE Rancher &lt;2.7.5</p>
+<p>RKE2 managed cluster</p>
 <h3 id="situation">Situation</h3>
-<p>Downstream RKE2 clusters in Rancher GUI stuck with status:</p>
-<p>"Waiting for probes: kube-controller-manager, kube-scheduler"</p>
+<p>This article explains a problem where RKE2 clusters managed by Rancher get stuck in a "Waiting for probes: kube-controller-manager, kube-scheduler" state. This happens because the certificates used by the <code>kube-controller-manager</code> and <code>kube-scheduler</code> components expire.</p>
 <h3 id="resolution">Resolution</h3>
-<p>Stop the RKE2 server:</p>
-<div class="highlight"><pre><span></span><code>systemctl stop rke2-server
-</code></pre></div>
-<p>Remove the .crt and .key file in the respective tls directories:</p>
-<div class="highlight"><pre><span></span><code>rm /var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.{crt,key}
-</code></pre></div>
-<p>and</p>
-<div class="highlight"><pre><span></span><code>rm /var/lib/rancher/rke2/server/tls/kube-scheduler/kube-scheduler.{crt,key}
-</code></pre></div>
-<p>Perform a certificate rotation:</p>
-<div class="highlight"><pre><span></span><code>rke2 certificate rotate
-</code></pre></div>
-<p>Restart RKE2 server:</p>
-<div class="highlight"><pre><span></span><code>systemctl start rke2-server
-</code></pre></div>
+<p>This issue is fixed in Rancher version 2.7.5. Starting with this version, the <code>kube-controller-manager</code> and <code>kube-scheduler</code> certificates in Rancher-managed RKE2 clusters are now part of the certificate rotation. When you use <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/rotate-certificates#certificate-rotation">Rancher's Rotate Certificates feature</a>, these certificates will also be renewed, which stops the problem described earlier.</p>
+<p><strong>Workaround</strong></p>
+<p>For versions older than 2.7.5, as well as in exceptional cases, the suggested workaround would be as follows:</p>
+<ol>
+<li>Stop the RKE2 server:</li>
+<li><code>systemctl stop rke2-server</code></li>
+<li>Remove the .crt and .key file in the respective tls directories:</li>
+<li><code>rm /var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.{crt,key}</code></li>
+<li><code>rm /var/lib/rancher/rke2/server/tls/kube-scheduler/kube-scheduler.{crt,key}</code></li>
+<li>Perform a certificate rotation:</li>
+<li><code>rke2 certificate rotate</code></li>
+<li>Restart RKE2 server: ``</li>
+<li><code>systemctl start rke2-server</code></li>
+</ol>
 <h3 id="cause">Cause</h3>
-<p>This issue should be fixed in 2.7.5 as per code changes the certificates that may result in cluster getting stuck on upgrade are now also rotated when using "Rotate Certificates" feature.</p>
-<p>It's highly recommended to rotate certificates periodically (at least once a year) to ensure they do not expire.</p>
+<p>RKE2's regular certificate rotation doesn't manage the certificates for the <code>kube-controller-manager</code> and <code>kube-scheduler</code> in other clusters. Because of this, these certificates don't automatically renew when other cluster certificates are rotated. If these certificates expire, it can stop communication between these parts and the <code>kube-apiserver</code>, leading to the "Waiting for probes" state.</p>
+<h3 id="additional-information">Additional Information</h3>
+<p><a href="https://github.com/rancher/rancher/issues/41125">https://github.com/rancher/rancher/issues/41125</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
@@ -10164,10 +10181,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
     
   </body>
