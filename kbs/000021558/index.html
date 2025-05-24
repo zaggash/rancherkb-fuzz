@@ -10013,12 +10013,58 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021824/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pods stuck in terminating state due to PodDisruptionBudget
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021826/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Adding a node to RKE1 cluster fails due to SSH tunneling issues.
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021839/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rancher-logging-root-fluentd-0 pod keeps restarting continuously with exit code 137 even after increasing memory
     
   </span>
   
@@ -10117,8 +10163,8 @@
 <h1 id="unable-to-scale-up-rancher-node-pool-nodes-in-downstream-cluster-due-to-mismatch-in-cluster-name-at-vmware-vcenter">Unable to scale up Rancher node pool nodes in downstream cluster due to mismatch in cluster name at VMware vCenter</h1>
 <p>This document <strong>(000021558)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>SUSE Rancher 2.8.5 and above</p>
-<p>VMware node drivers</p>
+<p>SUSE Rancher 2.8.x and above</p>
+<p>Rancher Provisioned vSphere Clusters.</p>
 <h3 id="situation">Situation</h3>
 <ul>
 <li>After upgrading downstream cluster, we notice the below error for the cluster when we click the <strong>"Edit Config"</strong> option from Cluster Management.</li>
@@ -10129,11 +10175,10 @@ pool2: The provided value for hostsystem was not found in the list of expected v
 
 pool3: The provided value for hostsystem was not found in the list of expected values. This can happen with clusters provisioned outside of Rancher or when options for the provider have changed
 </code></pre></div>
-<p><img alt="image1" src=" <a href="https://suse.file.force.com/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr00000L4T4D&amp;operationContext=CHATTER&amp;contentId=05TTr00000SaiRY">https://suse.file.force.com/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINALklzzwxh:0002Png&amp;versionId=068Tr00000L4T4D&amp;operationContext=CHATTER&amp;contentId=05TTr00000SaiRY</a>" /></p>
 <ul>
 <li>Also, when we try to scale up a node, we would be able to see in Rancher that it creates a machine resource and then immediately deletes it.</li>
 <li>However, checking from vSphere side, you would not notice any VM creation or even an API call for VM creation.</li>
-<li>Running the <strong>"kubectl get vmwarevspheremachine -n fleet-default"</strong> command will list all the machines of the VMware clusters managed by Rancher and you would be able to see the machine that got created recently as part of the scale up process.</li>
+<li>Running the <strong>"kubectl get vmwarevspheremachine -n fleet-default"</strong> command will list all the machines of the VMware clusters managed by Rancher and you would be able to see the <strong>vmwarevspheremachine</strong> object that got created recently as part of the scale up process.</li>
 <li>Thereafter, running the <strong>"kubectl describe"</strong> command for the newly created machine will show why it was not able to provision the VM on vSphere.</li>
 <li>We were able to see that the VM did not get created on vSphere because of the following error message:</li>
 </ul>
@@ -10143,7 +10188,7 @@ CreateError: Running pre-create checks... (Prod-infra-xxxxxxxx-xhxxx) Connecting
 </code></pre></div>
 <p><img alt="Image" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr00000L4s2k&amp;operationContext=DELIVERY&amp;contentId=05TTr00000SavQB&amp;page=0&amp;d=/a/Tr00000AO83V/_pauVXvrwMk5tlA8nHbHKqHJe7n75KgX1G4.DMLfnv0&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
 <ul>
-<li>Checking on vSphere, we could confirm that node tt <strong>vm26.xxxxx.xxxxxxx.xx</strong> existed.</li>
+<li>Checking on vSphere, we could confirm that node <strong>ttvm26.xxxxx.xxxxxxx.xx</strong> existed.</li>
 <li>However, the ESXi cluster name in the error messages was <strong>"K8s Prod"</strong> but on vSphere it was changed to a different name by the vSphere admin that triggered this issue on the Rancher's downstream cluster.</li>
 </ul>
 <h3 id="resolution">Resolution</h3>
