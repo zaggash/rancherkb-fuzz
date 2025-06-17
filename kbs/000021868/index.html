@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../000021206/">
+        <link rel="prev" href="../000021862/">
       
       
-        <link rel="next" href="../000021213/">
+        <link rel="next" href="../000021869/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>How to upgrade an RKE2 downstream cluster using curl - SUSE KBs</title>
+        <title>Longhorn Node Disk Space Not Updating on UI After Expansion - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-upgrade-an-rke2-downstream-cluster-using-curl" class="md-skip">
+        <a href="#longhorn-node-disk-space-not-updating-on-ui-after-expansion" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to upgrade an RKE2 downstream cluster using curl
+              Longhorn Node Disk Space Not Updating on UI After Expansion
             
           </span>
         </div>
@@ -7724,107 +7724,6 @@
                 
   
   
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    How to upgrade an RKE2 downstream cluster using curl
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    How to upgrade an RKE2 downstream cluster using curl
-    
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      Environment
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Situation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
   
   
     <li class="md-nav__item">
@@ -10075,6 +9974,203 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021862/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE2 how to set the timezone
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Longhorn Node Disk Space Not Updating on UI After Expansion
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Longhorn Node Disk Space Not Updating on UI After Expansion
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Situation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021869/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RBAC issues in Fleet's GitRepos after upgrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021870/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Node Removal After Changing Cloud Provider to vSphere in an Existing RKE2 Cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -10136,6 +10232,33 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -10160,35 +10283,80 @@
 
 
 
-<h1 id="how-to-upgrade-an-rke2-downstream-cluster-using-curl">How to upgrade an RKE2 downstream cluster using curl</h1>
-<p>This document <strong>(000021207)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="longhorn-node-disk-space-not-updating-on-ui-after-expansion">Longhorn Node Disk Space Not Updating on UI After Expansion</h1>
+<p>This document <strong>(000021868)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<ul>
-<li>Rancher v2.7 or v2.8</li>
-<li>A Rancher-managed RKE2 cluster</li>
-</ul>
+<p>SUSE Enterprise Storage - Longhorn</p>
 <h3 id="situation">Situation</h3>
-<p>It is possible that the version of Kubernetes that you are upgrading to is not listed in the Rancher UI. Prior to Rancher v2.9, this is the case for deprecated versions, per this <a href="https://github.com/rancher/dashboard/issues/9530">GitHub issue</a>.</p>
-<h3 id="resolution">Resolution</h3>
-<p>The curl command below can be used to initiate the upgrade from the command line. You will need to set $token-bearer to a Rancher API Bearer Token, which can be created per the <a href="https://ranchermanager.docs.rancher.com/reference-guides/user-settings/api-keys#creating-an-api-key">Rancher API Key documentation</a>.</p>
-<div class="highlight"><pre><span></span><code>The format of the curl command:
-
-curl -v -u &quot;$token-bearer&quot; \
--X PUT \
--H &#39;Accept: application/json&#39; \
--H &#39;Content-Type: application/json&#39; \
--d &#39;{&quot;rke2Config&quot;: {&quot;kubernetesVersion&quot;: &quot;v1.24.15+rke2r1&quot;},&quot;name&quot;: &quot;$downstream-name&quot;}&#39; \
-&#39;$Rancher-URL-With-ClusterID&#39;
-
-Example:
-
-curl -v -u &quot;$token-bearer&quot; \
--X PUT \
--H &#39;Accept: application/json&#39; \
--H &#39;Content-Type: application/json&#39; \
--d &#39;{&quot;rke2Config&quot;: {&quot;kubernetesVersion&quot;: &quot;v1.24.15+rke2r1&quot;},&quot;name&quot;: &quot;test-rancher&quot;}&#39; \
-&#39;https://pitshou.rancher.cloud/v3/clusters/c-m-74phsk89&#39;
+<p>After expanding the disk space on a Kubernetes node, Longhorn fails to recognize and update the new disk capacity. The <code>node.longhorn.io</code> object for the affected node does not reflect the expanded size, even though the disk expansion was successful at the operating system level.</p>
+<p>Upon reviewing the <code>longhorn-manager</code> pod logs, the following recurring error is observed:</p>
+<div class="highlight"><pre><span></span><code>2025-05-24T10:27:50.565235147+02:00 time=&quot;2025-05-24T08:27:50Z&quot; level=error msg=&quot;Dropping Longhorn node out of the queue&quot; func=controller.handleReconcileErrorLogging file=&quot;utils.go:79&quot; LonghornNode=longhorn-system/node01 controller=longhorn-node error=&quot;failed to sync node for longhorn-system/node01: no node name provided to check node down or deleted&quot; node=node01
 </code></pre></div>
+<p>This error indicates that the <code>node.spec.name</code> field is missing from the respective <code>node.longhorn.io</code> object, preventing the Longhorn node controller from properly syncing the node's status, including disk information.</p>
+<h3 id="resolution">Resolution</h3>
+<p>To resolve this issue, you must manually add the <code>node.spec.name</code> field to the affected <code>node.longhorn.io</code> object.</p>
+<ol>
+<li>Identify the Longhorn Node Object(s) <strong>:</strong> First, list all <code>node.longhorn.io</code> objects in the <code>longhorn-system</code> namespace to identify the affected node(s).</li>
+</ol>
+<div class="highlight"><pre><span></span><code>kubectl get node.longhorn.io -n longhorn-system
+</code></pre></div>
+<p>Example Output:</p>
+<div class="highlight"><pre><span></span><code>NAME      READY   ALLOWSCHEDULING   SCHEDULABLE   AGE
+node01    True    true              True          46m
+node02    True    true              True          46m
+node03    True    true              True          46m
+</code></pre></div>
+<ol>
+<li>Backup the Affected Node Object (Optional but Recommended) <strong>:</strong> Before making any changes, it's good practice to take a YAML backup of the specific <code>node.longhorn.io</code> object you intend to modify. Replace <NAME> with the actual name of your Longhorn node (e.g., <code>node01</code>).</li>
+</ol>
+<div class="highlight"><pre><span></span><code>kubectl get node.longhorn.io &lt;NAME&gt; -n longhorn-system -o yaml &gt; &lt;NAME&gt;_longhorn_node_backup.yaml
+</code></pre></div>
+<ol>
+<li>Edit the Longhorn Node Object <strong>:</strong> Edit the <code>node.longhorn.io</code> resource for the problematic node. Replace <NAME> with the actual name of your Longhorn node.</li>
+</ol>
+<div class="highlight"><pre><span></span><code>kubectl edit node.longhorn.io &lt;NAME&gt; -n longhorn-system
+</code></pre></div>
+<ol>
+<li>Add <code>` node.spec.na</code>me<code>**:**  Locate the</code>spec<code>section within the YAML. Add or modify the</code>name<code>field under</code>spec<code>to match the</code>metadata.name` of the object.</li>
+</ol>
+<p>Example:</p>
+<p>Change highlighted by <code># This is the change made</code></p>
+<div class="highlight"><pre><span></span><code>apiVersion: longhorn.io/v1beta2
+kind: Node
+metadata:
+     finalizers:
+  - longhorn.io
+generation: 1
+name: node01
+namespace: longhorn-system
+resourceVersion: &quot;12713&quot;
+uid: 3c11b55d-e0633-47a2f-a525-a2f98e96df66
+spec:
+allowScheduling: true
+disks:
+    default-disk-697367c0672dc2af:
+      allowScheduling: true
+      diskDriver: &quot;&quot;
+      diskType: filesystem
+      evictionRequested: false
+      path: /var/lib/longhorn/
+      storageReserved: 150265232486
+      tags: []
+evictionRequested: false
+instanceManagerCPURequest: 0
+name: node01 # This is the change made
+tags: []
+</code></pre></div>
+<ol>
+<li>Save and Verify: Save the changes to the <code>node.longhorn.io</code> object. Once the <code>node.spec.name</code> field is correctly added, the Longhorn manager should automatically begin syncing the node. You should observe that the disk status on the <code>node.longhorn.io</code>  `` object is updated to reflect the expanded disk space.</li>
+</ol>
+<p>``</p>
+<h3 id="cause">Cause</h3>
+<p>The Longhorn <code>node-controller</code> includes a disk monitor that periodically queries the node's disk statistics and updates the <code>node.status.diskStatus</code> field of the <code>node.longhorn.io</code> object. However, if the <code>node.spec.name</code> field is absent from the <code>node.longhorn.io</code> definition, the controller cannot correctly identify and process the node, leading to sync failures and the inability to reflect updated disk sizes.</p>
+<h3 id="status">Status</h3>
+<p>Top Issue</p>
+<h3 id="additional-information">Additional Information</h3>
+<p>Ideally, the <code>node.spec.name</code> field should not be allowed to be missing or removed from <code>node.longhorn.io</code> objects. An enhancement request is open with Longhorn (refer to <a href="https://github.com/longhorn/longhorn/issues/6793">longhorn/longhorn#6793</a>) to implement stricter validation of resource <code>spec</code> and <code>status</code> fields within the validating webhook, which would prevent such issues in the future.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 

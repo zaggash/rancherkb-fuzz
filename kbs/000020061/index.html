@@ -7877,29 +7877,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000021207/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    How to upgrade an RKE2 downstream cluster using curl
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000021213/" class="md-nav__link">
         
   
@@ -10147,6 +10124,98 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021862/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE2 how to set the timezone
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021868/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Longhorn Node Disk Space Not Updating on UI After Expansion
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021869/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RBAC issues in Fleet's GitRepos after upgrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021870/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Node Removal After Changing Cloud Provider to vSphere in an Existing RKE2 Cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -10401,12 +10470,12 @@ docker logs etcd-rolling-snapshots
 <li>
 <p><strong>k3s</strong>: If Rancher is deployed on a k3s Kubernetes cluster, ensure scheduled backups are configured and working. Please see the <a href="https://docs.k3s.io/datastore/backup-restore">k3s documentation</a> pages for further information on this.</p>
 </li>
-<li><strong>RKE2:</strong> If Rancher is deployed on a RKE2 Kubernetes cluster, ensure scheduled backups are configured and working. Please see the <a href="https://docs.rke2.io/backup_restore">RKE2 documentation</a> pages for further information on this.</li>
-<li>Create a one-time datastore snapshot, please see the following documentation for <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/one-time-snapshots/">RKE</a>, <a href="https://docs.rke2.io/backup_restore">RKE2</a>, and <a href="https://docs.k3s.io/datastore/backup-restore">k3s</a> , and the <a href="https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/single-node-upgrades/#a-create-a-copy-of-the-data-from-your-rancher-server-container">single node Docker</a> install options for more information</li>
+<li><strong>RKE2:</strong> If Rancher is deployed on a RKE2 Kubernetes cluster, ensure scheduled backups are configured and working. Please see the <a href="https://docs.rke2.io/datastore/backup_restore">RKE2 documentation</a> pages for further information on this.</li>
+<li>Create a one-time datastore snapshot, please see the following documentation for <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/one-time-snapshots/">RKE</a>, <a href="https://docs.rke2.io/datastore/backup_restore">RKE2</a>, and <a href="https://docs.k3s.io/datastore/backup-restore">k3s</a> , and the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher">single node Docker</a> install options for more information</li>
 </ul>
 <h3 id="rancher-upgrade-steps">Rancher Upgrade steps</h3>
 <ul>
-<li>The Rancher upgrade process is detailed in the upgrade documentation for both <a href="https://rancher.com/docs/rancher/v2.5/en/installation/install-rancher-on-k8s/upgrades/">HA</a>, and <a href="https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/single-node-upgrades/">single node using Docker</a></li>
+<li>The Rancher upgrade process is detailed in the upgrade documentation for both <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades">HA</a>, and <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher">single node using Docker</a></li>
 </ul>
 <h3 id="rancher-reviewverify">Rancher Review/Verify</h3>
 <p>After the upgrade is completed, go through the following checklist to verify your environment is in working order.</p>
@@ -10423,14 +10492,14 @@ docker logs etcd-rolling-snapshots
 <li>
 <p>The rollout of the updated agent versions can take some time if there are a lot of downstream clusters or nodes</p>
 </li>
-<li>Create a one-time datastore snapshot, please see the following documentation for <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/one-time-snapshots/">RKE</a>,  <a href="https://docs.rke2.io/backup_restore">RKE2</a>, and <a href="https://rancher.com/docs/rancher/v2.x/en/backups/v2.0.x-v2.4.x/backup/k3s-backups/#creating-snapshots-and-restoring-databases-from-snapshots">k3s</a>, and the <a href="https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/single-node-upgrades/#a-create-a-copy-of-the-data-from-your-rancher-server-container">single node Docker</a> install options for more information</li>
+<li>Create a one-time datastore snapshot, please see the following documentation for <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/one-time-snapshots/">RKE</a>,  <a href="https://docs.rke2.io/datastore/backup_restore">RKE2</a>, and <a href="https://docs.k3s.io/datastore/backup-restore">k3s</a>, and the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher">single node Docker</a> install options for more information</li>
 </ul>
 <h3 id="rancher-rollback-steps">Rancher Rollback steps</h3>
-<p>The Rancher rollback process is detailed in the <a href="https://rancher.com/docs/rancher/v2.x/en/installation/upgrades-rollbacks/rollbacks/">rollback documentation</a>, please follow the relevant link for Rancher installed on a Kubernetes cluster, or Docker</p>
+<p>The Rancher rollback process is detailed in the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rollbacks">rollback documentation</a>, please follow the relevant link for Rancher installed on a Kubernetes cluster, or Docker</p>
 <h3 id="follow-up-tasks-optional">Follow-up tasks (optional)</h3>
 <ul>
-<li>Upgrade the Rancher management cluster, this is often a follow-up to the Rancher upgrade. Please see the <a href="https://rancher.com/docs/rke/latest/en/upgrades/">RKE</a>, <a href="https://docs.rke2.io/upgrade">RKE2</a> , and <a href="https://rancher.com/docs/k3s/latest/en/upgrades/">k3s</a> upgrade documentation for the upgrade process, as mentioned it is best to avoid skipping minor versions</li>
-<li>Upgrade the downstream clusters, please see <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/upgrading-kubernetes/">the documentation</a> for more information. A snapshot of both the local and downstream clusters before the upgrade is recommended to provides the maximum amount of recoverability options in the event of a rollback</li>
+<li>Upgrade the Rancher management cluster, this is often a follow-up to the Rancher upgrade. Please see the <a href="https://rancher.com/docs/rke/latest/en/upgrades/">RKE</a>, <a href="https://docs.rke2.io/upgrades/upgrade">RKE2</a> , and <a href="https://rancher.com/docs/k3s/latest/en/upgrades/">k3s</a> upgrade documentation for the upgrade process, as mentioned it is best to avoid skipping minor versions</li>
+<li>Upgrade the downstream clusters, please see <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/upgrade-and-roll-back-kubernetes">the documentation</a> for more information. A snapshot of both the local and downstream clusters before the upgrade is recommended to provides the maximum amount of recoverability options in the event of a rollback</li>
 <li>Docker/OS upgrades, please our article on <a href="https://www.suse.com/support/kb/doc/?id=000020084">performing rolling changes to nodes</a></li>
 </ul>
 <h3 id="other-useful-kbs">Other useful KBs</h3>
