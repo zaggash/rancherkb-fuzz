@@ -10592,6 +10592,7 @@ kubectl create secret docker-registry application-collection --docker-server=dp.
 </code></pre></div>
 <h4 id="installing-istio"><strong>Installing Istio</strong></h4>
 <p>Now you can install <a href="https://apps.rancher.io/applications/istio">Istio</a>.</p>
+<p>In the case you already have an installation of rancher-istio, it should be noted that there is no migration path from it to an installation of Istio provided by SUSE Application Collection. In that case, the recommended way is to uninstall the rancher-istio helm chart first before following the rest of this guide. The Istio CRDs that remain after the uninstallation of rancher-istio should not be removed as they preserve the Istio control plane; deletion can lead to loss of your custom Istio resources.</p>
 <p>The reference guide can be found at: <a href="https://docs.apps.rancher.io/reference-guides/istio/">https://docs.apps.rancher.io/reference-guides/istio/</a> and the compatibility matrix can be found <a href="https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases">here</a>.</p>
 <h4 id="installing-jaeger"><strong>Installing Jaeger</strong></h4>
 <p>To install Jaeger, you need to deploy the Helm Chart which will deploy the operator and then create a new Jaeger resource to deploy the Jaeger instance you want.</p>
