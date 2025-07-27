@@ -18,15 +18,15 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
     
     
       
-        <title>How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned Kubernetes clusters - SUSE KBs</title>
+        <title>How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned RKE Kubernetes clusters - SUSE KBs</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-enable-legacy-tls-versions-for-ingress-nginx-in-rancher-kubernetes-engine-rke-cli-and-rancher-v2x-provisioned-kubernetes-clusters" class="md-skip">
+        <a href="#how-to-enable-legacy-tls-versions-for-ingress-nginx-in-rancher-kubernetes-engine-rke-cli-and-rancher-v2x-provisioned-rke-kubernetes-clusters" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned Kubernetes clusters
+              How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned RKE Kubernetes clusters
             
           </span>
         </div>
@@ -1715,7 +1715,7 @@
   
   
   <span class="md-ellipsis">
-    How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned Kubernetes clusters
+    How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned RKE Kubernetes clusters
     
   </span>
   
@@ -1728,7 +1728,7 @@
   
   
   <span class="md-ellipsis">
-    How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned Kubernetes clusters
+    How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned RKE Kubernetes clusters
     
   </span>
   
@@ -1751,6 +1751,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -1761,9 +1770,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#this-article-details-how-to-enable-tls-11-on-the-ingress-nginx-controller-in-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-kubernetes-clusters" class="md-nav__link">
+  <a href="#this-article-details-how-to-enable-tls-11-on-the-ingress-nginx-controller-in-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-rke-kubernetes-clusters" class="md-nav__link">
     <span class="md-ellipsis">
-      This article details how to enable TLS 1.1 on the ingress-nginx controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters.
+      This article details how to enable TLS 1.1 on the ingress-nginx controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned RKE Kubernetes clusters.
     </span>
   </a>
   
@@ -1772,7 +1781,7 @@
           <li class="md-nav__item">
   <a href="#pre-requisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      Pre-requisites:
     </span>
   </a>
   
@@ -1793,18 +1802,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration-for-rke-provisioned-clusters" class="md-nav__link">
+  <a href="#configuration-for-rke-cli-provisioned-clusters" class="md-nav__link">
     <span class="md-ellipsis">
-      Configuration for RKE provisioned clusters
+      Configuration for RKE CLI provisioned clusters
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration-for-rancher-provisioned-clusters" class="md-nav__link">
+  <a href="#configuration-for-rancher-provisioned-rke-clusters" class="md-nav__link">
     <span class="md-ellipsis">
-      Configuration for Rancher provisioned clusters
+      Configuration for Rancher-provisioned RKE clusters
     </span>
   </a>
   
@@ -10349,6 +10358,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -10359,9 +10377,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#this-article-details-how-to-enable-tls-11-on-the-ingress-nginx-controller-in-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-kubernetes-clusters" class="md-nav__link">
+  <a href="#this-article-details-how-to-enable-tls-11-on-the-ingress-nginx-controller-in-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-rke-kubernetes-clusters" class="md-nav__link">
     <span class="md-ellipsis">
-      This article details how to enable TLS 1.1 on the ingress-nginx controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters.
+      This article details how to enable TLS 1.1 on the ingress-nginx controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned RKE Kubernetes clusters.
     </span>
   </a>
   
@@ -10370,7 +10388,7 @@
           <li class="md-nav__item">
   <a href="#pre-requisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-requisites
+      Pre-requisites:
     </span>
   </a>
   
@@ -10391,18 +10409,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration-for-rke-provisioned-clusters" class="md-nav__link">
+  <a href="#configuration-for-rke-cli-provisioned-clusters" class="md-nav__link">
     <span class="md-ellipsis">
-      Configuration for RKE provisioned clusters
+      Configuration for RKE CLI provisioned clusters
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration-for-rancher-provisioned-clusters" class="md-nav__link">
+  <a href="#configuration-for-rancher-provisioned-rke-clusters" class="md-nav__link">
     <span class="md-ellipsis">
-      Configuration for Rancher provisioned clusters
+      Configuration for Rancher-provisioned RKE clusters
     </span>
   </a>
   
@@ -10433,18 +10451,19 @@
 
 
 
-<h1 id="how-to-enable-legacy-tls-versions-for-ingress-nginx-in-rancher-kubernetes-engine-rke-cli-and-rancher-v2x-provisioned-kubernetes-clusters">How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned Kubernetes clusters</h1>
+<h1 id="how-to-enable-legacy-tls-versions-for-ingress-nginx-in-rancher-kubernetes-engine-rke-cli-and-rancher-v2x-provisioned-rke-kubernetes-clusters">How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned RKE Kubernetes clusters</h1>
 <p>This document <strong>(000020076)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x</p>
 <h3 id="situation">Situation</h3>
-<h4 id="this-article-details-how-to-enable-tls-11-on-the-ingress-nginx-controller-in-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-kubernetes-clusters">This article details how to enable TLS 1.1 on the ingress-nginx controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters.</h4>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h4 id="this-article-details-how-to-enable-tls-11-on-the-ingress-nginx-controller-in-rancher-kubernetes-engine-rke-cli-or-rancher-v2x-provisioned-rke-kubernetes-clusters">This article details how to enable TLS 1.1 on the ingress-nginx controller in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned RKE Kubernetes clusters.</h4>
+<h4 id="pre-requisites">Pre-requisites:</h4>
 <ul>
-<li>A Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x</li>
-<li>For RKE provisioned clusters, you will require the RKE binary and access to the <a href="https://rancher.com/docs/rke/latest/en/config-options/">cluster configuration YAML</a>, <a href="https://rancher.com/docs/rke/latest/en/installation/#kubernetes-cluster-state">rkestate file</a> and kubectl access with the kubeconfig for the cluster sourced</li>
-<li>For Rancher v2.x provisioned clusters, you will require <a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/cluster-project-roles/">cluster owner or global admin permissions in Rancher</a></li>
+<li>For RKE CLI provisioned clusters, you will require the RKE binary and access to the <a href="https://rancher.com/docs/rke/latest/en/config-options/">cluster configuration YAML</a>, <a href="https://rancher.com/docs/rke/latest/en/installation/#kubernetes-cluster-state">rkestate file</a> and kubectl access with the kubeconfig for the cluster sourced</li>
+<li>For Rancher v2.x provisioned RKE clusters, you will require <a href="https://ranchermanager.docs.rancher.com/v2.11/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles">cluster owner or global admin permissions in Rancher</a></li>
 </ul>
 <h3 id="resolution">Resolution</h3>
-<h3 id="configuration-for-rke-provisioned-clusters"><strong>Configuration for RKE provisioned clusters</strong></h3>
+<h3 id="configuration-for-rke-cli-provisioned-clusters"><strong>Configuration for RKE CLI provisioned clusters</strong></h3>
 <ol>
 <li>Edit the cluster configuration YAML file to include the <code>ssl-protocols</code> option for the ingress, as follows:</li>
 </ol>
@@ -10463,16 +10482,16 @@
 </ol>
 <div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep ssl_protocols | grep &#39;1.1&#39; &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
 </code></pre></div>
-<h3 id="configuration-for-rancher-provisioned-clusters"><strong>Configuration for Rancher provisioned clusters</strong></h3>
+<h3 id="configuration-for-rancher-provisioned-rke-clusters"><strong>Configuration for Rancher-provisioned RKE clusters</strong></h3>
 <ol>
 <li>
-<p>Login into the Rancher UI.</p>
+<p>Login into the Rancher UI</p>
 </li>
 <li>
-<p>Go to Global -&gt; Clusters -&gt; Cluster Name</p>
+<p>Go to <strong>Cluster Management</strong></p>
 </li>
-<li>From the Cluster Dashboard edit the cluster by Clicking on "⋮" then select Edit.</li>
-<li>Click "Edit as YAML".</li>
+<li>Click <strong>Edit Config</strong> for the relevant Rancher-provisioned RKE cluster</li>
+<li>Click <strong>Edit as YAML</strong></li>
 <li>Include the <code>ssl-protocols</code> option for the ingress, as follows:</li>
 </ol>
 <div class="highlight"><pre><span></span><code>ingress:
@@ -10482,13 +10501,13 @@
 </code></pre></div>
 <ol>
 <li>
-<p>Click "Save" at the bottom of the page.</p>
+<p>Click <strong>Save</strong> at the bottom of the page</p>
 </li>
 <li>
-<p>Wait for cluster to finish upgrading.</p>
+<p>Wait for cluster to finish upgrading</p>
 </li>
-<li>Go back to the Cluster Dashboard and click "Launch kubectl".</li>
-<li>Run the following inside the kubectl CLI to verify the new argument:</li>
+<li>Explore the cluster and launch a kubectl shell</li>
+<li>Run the following inside the kubectl shell to verify the new argument:</li>
 </ol>
 <div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep ssl_protocols | grep &#39;1.1&#39; &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
 </code></pre></div>
@@ -10546,7 +10565,7 @@
       <script id="__config" type="application/json">{"base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.50899def.min.js"></script>
       
     
   </body>
