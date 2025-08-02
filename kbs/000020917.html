@@ -1,0 +1,10513 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SUSE Rancher KB website alternative">
+      
+      
+      
+      
+        <link rel="prev" href="000020910.html">
+      
+      
+        <link rel="next" href="000020946.html">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>How to fix Azure AD authenication errors when upgrading to new graph endpoint in Rancher v2.6.7+ - SUSE KBs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-to-fix-azure-ad-authenication-errors-when-upgrading-to-new-graph-endpoint-in-rancher-v267" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="SUSE KBs" class="md-header__button md-logo" aria-label="SUSE KBs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SUSE KBs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              How to fix Azure AD authenication errors when upgrading to new graph endpoint in Rancher v2.6.7+
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="SUSE KBs" class="md-nav__button md-logo" aria-label="SUSE KBs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SUSE KBs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Favorite Links
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Favorite Links
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.suse.com" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SUSE Website
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.suse.com/support/kb/?id=SUSE+Rancher" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SUSE Rancher KBs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.suse.com/lifecycle" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SUSE Product Lifecycle
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.suse.com/suse-rancher/support-matrix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SUSE Rancher Support Matrix
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    KB Articles
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            KB Articles
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020002.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pods return to the Initializing status even though containers in the pod are running
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020004.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    I have the alert 'NodeFilesystemSpaceFillingUp ', what does this mean?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020005.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Bind on Port 80 Fails Due to Permissions in NGINX Ingress
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020006.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Controlplane/Etcd nodes are stuck at provisioning for a new cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020009.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable HA for Alertmanager in Rancher lanched Monitoring
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020011.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to check connectivity from NGINX ingress controllers to all backend pods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020012.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to add a Grafana Dashboard for Logging v2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020013.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuring a buffer with total_limit_size in Logging v2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020014.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting high ingress request times
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020015.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What is the difference between Cluster registry and Global registry?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020016.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    kube-apiserver "socket: too many open files" error messages
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020018.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to retrieve a kubeconfig from RKE v0.2.x+ or Rancher v2.2.x+
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020019.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to regenerate Service Account tokens in Kubernetes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020020.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to improve DNS resolution performance inside a kubernetes cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020021.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure expiry (TTL) on kubeconfig tokens in Rancher
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020022.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable debug logging when using Terraform?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020023.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What do I need to provide to get started on Rancher Hosted Prime?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020024.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What are the networking requirements for using Rancher Hosted Prime?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020025.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can I use my own SSL/TLS certificates with Rancher Hosted Prime?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020027.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Why longhorn volume still shows more space than the actual size after deleting the content?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020028.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Does Rancher v2.x support two-factor (2FA) or multi-factor authentication (MFA)?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020031.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to shutdown a Kubernetes cluster (Rancher Kubernetes Engine (RKE) CLI provisioned or Rancher v2.x Custom clusters)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020032.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to block specific user agents from connecting through the nginx ingress controller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020033.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to remove and replace an unresponsive control plane / etcd node in the local Rancher server cluster, provisioned by the Rancher Kubernetes Engine (RKE) CLI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020034.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Preventing LoadBalancer service traffic from flowing through control plane and etcd nodes in a Kubernetes cluster with the AWS Cloud Provider
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020035.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable IPVS proxy mode for kube-proxy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020036.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to check the default CoreDNS configmap of a Rancher Kubernetes Engine (RKE) Kubernetes version
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020038.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable Envoy access logging in Rancher deployed Istio
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020039.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to collect a stacktrace from the Rancher server process in Rancher v2.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020040.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can I move from self-managed Rancher to Rancher Prime Hosted?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020041.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How can I validate network policies within a Kubernetes cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020042.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher v2.x provisioned vSphere cluster nodes stuck in provisioning, with "Waiting for SSH to be available", as a result of pre-existing cloud-init configuration in VM Template
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020046.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resolving "Conflict. The container name is already in use" errors when updating a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020047.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to disable Calico Telemetry in a Kubernetes cluster with the Canal or Calico CNI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020048.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to increase the inotify.max_user_watches and inotify.max_user_instances sysctls on a Linux host
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020051.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [JP] How to configure container log rotation for the Docker daemon
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020052.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create a custom cluster role in Rancher v2.x to grant permission on the metrics endpoint of the kube-apiserver in a Rancher managed cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020054.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [JP] How to grant users access to Grafana with minimal permissions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020055.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable debug level logging for the kube-auth-api DaemonSet in Rancher provisioned Kubernetes clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020056.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to determine the Rancher Leader pod in Rancher v2.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020057.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [JP] How to collect and share Rancher logs with Support
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020058.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to change the kubelet root directory when provisioning a Kubernetes cluster with the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020059.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Who creates user accounts on Rancher Hosted Prime?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020061.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher Upgrade Checklist
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020062.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to rotate the Rancher SSL certificate with a single node Docker installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020063.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to increase the log level for Calico components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020064.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    The Rancher v2.x Windows log collector script
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020067.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020068.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020070.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable support for use-forwarded-headers in ingress-nginx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020071.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable container log rotation with k3s or containerd
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020072.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create an RKE template and template revision using the Rancher2 Terraform Provider
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020073.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create a custom Project RBAC role to grant log access and exec permission on Pods, in a Rancher v2.x managed cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020074.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to troubleshoot HTTP 400 response codes from ingress-nginx ingresses
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020075.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to increase the log level for Canal components in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020076.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned RKE Kubernetes clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020078.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to confirm a version upgrade of Rancher v2.x is completed successfully
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020079.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How Nginx Ingress calculates the worker_processes and worker_rlimit_nofile
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020080.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How can I tell whether my app is installed with Helm v2 or Helm v3?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020081.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting - Nodes won't join cluster or show unavailable
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020082.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to deploy Nginx instead of Traefik as your ingress controller on K3s
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020083.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to deploy the AWS EBS CSI driver on K3s
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020084.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to perform a rolling change to nodes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020085.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How is my Rancher Hosted Prime environment monitored?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020086.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How often is maintenance performed on Rancher Hosted Prime?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020087.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is it possible to have alpha, beta, or release candidate (RC) available on Rancher Hosted Prime?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020088.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can the admin password be reset if I’m locked out of my Rancher Hosted Prime environment?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020089.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Who upgrades Kubernetes on my Rancher Hosted Prime downstream clusters?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020090.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can Rancher Hosted Prime manage my on-premise clusters running on VMWare or bare metal servers?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020091.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is there any limit on the number of downstream clusters or nodes Rancher Hosted Prime can manage?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020092.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How often is Rancher Hosted Prime upgraded?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020093.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How is Rancher Hosted Prime different than the open-source Rancher I can download for free?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020094.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can I integrate Rancher Hosted Prime with my Active Directory, SAML, or LDAP based directory service?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020095.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Does Rancher Hosted Prime support multi-factor authentication (MFA)?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020096.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Do I have access to the "local" cluster in the management UI for my Rancher Hosted Prime environment?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020097.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What are the "-promoted" Cluster Roles in Rancher?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020098.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can Rancher migrate my helm2 app to helm3?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020099.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Loading the new Rancher Dashboard in an airgapped environment redirects to /fail-whale
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020100.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Slow etcd performance (performance testing and optimization)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020101.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create docker goroutine, and memory heap, dumps
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020102.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Are API audit logs enabled in Rancher Hosted Prime?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020103.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What information is stored in Rancher Hosted Prime and where is it stored?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020104.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Filesystem actions in containers fail with `Too many levels of symbolic links`
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020105.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Best Practices Rancher
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020106.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What permissions are required to grant access to manage Cluster Logging in Rancher v2.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020107.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to pull the logs from the rancher-wins service on a Windows node in a Rancher v2.x provisioned Kubernetes cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020108.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable CoreDNS query logging in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned RKE cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020109.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to use External TLS Termination with AWS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020111.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kernel crash after "unregister_netdevice: waiting for lo to become free. Usage count"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020113.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Logging integration doesn't work if Docker Root is not default /var/lib/docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020115.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to update the CoreDNS ConfigMap in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020116.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to run workloads on etcd or controlplane nodes, without the worker role, in a Rancher Kubernetes Engine (RKE) cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020117.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to override DNS results served by CoreDNS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020119.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable NGINX support for HTTP headers with underscores
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020120.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable antiAffinity for Rancher v2.x server pods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020121.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create a cluster in SUSE Rancher v2.x using the Rancher CLI or v3 API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020122.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to edit the upstream nameservers used by CoreDNS, in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020123.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to change etcd cipher suite
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020124.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to block external connectivity with Calico
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020125.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to Enable Pod Presets
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020126.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to use nginx /dbg
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020127.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Where is Rancher Hosted Prime hosted?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020128.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How is uptime measured for my Rancher Hosted Prime environment?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020129.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Does Rancher Hosted Prime offer an uptime SLA?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020130.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can I have more than one Rancher Hosted Prime environment?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020131.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Does Rancher Hosted Prime offer a support SLA?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020132.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How often are backups taken and retained on Rancher Hosted Prime?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020133.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure the CoreDNS Autoscaler in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020134.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Do SUSE employees have a login account for my Rancher Hosted Prime environment?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020135.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Do SUSE employees have the credentials to my “admin” account?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020136.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What type of cluster is Rancher Hosted Prime running on?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020137.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Why Does kubectl get Show a Different API Group for a Resource Than Specified?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020138.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How can I audit or examine RBAC Roles for different accounts within a Kubernetes cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020139.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What is the kube_config_cluster.yml file that is created after provisioning a cluster with the Rancher Kubernetes Engine (RKE) CLI?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020140.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What permissions are required for the API token when configuring the Rancher2 Terraform Provider?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020141.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure container log rotation for the Docker daemon
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020142.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure an internal Elastic Load Balancer (ELB) or Network Load Balancer (NLB) with an Istio Ingress Gateway in Rancher v2.3+
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020143.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to set server-tokens to false, to disable the the NGINX header in ingress-nginx responses, within a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020144.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable debug level logging for the Rancher Cluster/Project Alerting Alertmanager instance, in a Rancher v2.x managed cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020145.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to generate a Longhorn Support Bundle
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020146.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to add additional scrape configs to a Rancher cluster or project monitoring prometheus
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020147.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable SSL passthrough on the nginx-ingress controller in RKE and RKE2 clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020149.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resolving conntrack table full error messages: 'nf_conntrack: table full, dropping packets'
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020150.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Does Rancher Hosted Prime provide downstream clusters?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020151.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to grant users access to Grafana with minimal permissions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020152.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Updating SSL cert in Rancher v2.x with the same CA
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020154.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to troubleshoot SNI enabled endpoints with curl and openssl
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020155.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What is Rancher Prime Hosted?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020156.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can I move an existing Kubernetes cluster to Rancher Hosted Prime?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020158.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to use the calicoctl CLI in an RKE CLI or Rancher-provisioned RKE cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020160.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to run multiple ingress controllers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020161.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Why does the kubelet certificate still show as expired after performing a cluster certificate rotation in an Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020162.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to clean a Rancher 2.x RKE cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020163.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to troubleshoot using the namespace of a container
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020164.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to troubleshoot HTTP request performance with curl statistics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020166.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pod network connectivity non-functional as a result of sysctl net.ipv4.ip_forward=0
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020167.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to setup your network CIDR for a large cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020170.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to upgrade Docker using Rancher's install script
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020171.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Information to provide when logging a support case
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020172.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to setup Rancher 2.x with Active Directory external authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020174.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to setup Nodelocal DNS cache with Rancher, RKE1 and RKE2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020175.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to setup HAProxy for Rancher v2.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020176.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to collect a trace and heap from nginx ingress
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020177.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to generate a HAR file
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020179.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to conduct performance testing with Clusterloader2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020180.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How do I edit or upgrade clusters created via RKE Templates?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020181.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure Okta Auth with Rancher HA
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020185.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Why does a cluster or node show requested memory with a milli (m) unit?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020186.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How To Update CoreDNS's Resolver Policy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020187.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to update your etcd space alerts for better etcd monitoring
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020189.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to test websocket connections to Rancher v2.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020191.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    The Rancher v2.x Linux log collector script
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020192.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    The Rancher v2.x systems summary script
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020193.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What is the process performed by Rancher v2.x when upgrading a Rancher managed Kubernetes cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020194.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What is the process performed during a Rancher v2.x upgrade and what is the impact to the managed downstream Kubernetes clusters?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020195.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to rollback the Kubernetes version of a Rancher v2.x provisioned RKE1 cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020196.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    HTTP 401 "clusterID does not match" error using cluster-scoped Rancher API token in Rancher v2.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020198.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Launching kubectl for cluster within Rancher UI fails in a cluster after following the CIS Benchmark Hardening Guide for Kubernetes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020199.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to increase the log level of Kubernetes components in an RKE CLI or Rancher provisioned Kubernetes cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020201.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    "log unreadable. It is excluded and would be examined next time." warning messages, for kubelet and kube-proxy, in rancher-logging-fluentd Pod logs of worker nodes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020202.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Many rancher-agent containers running on Rancher v2.x provisioned RKE cluster, where stopped containers are regularly deleted on hosts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020203.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is it safe to update the Docker bridge IP range on hosts in an RKE or Rancher v2.x launched Kubernetes cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020204.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is it safe to disable inter-container connectivity (icc) on the Docker daemon in an RKE or Rancher v2.x launched Kubernetes cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020205.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Users assigned the Project Owner or Member role on a project are able to create namespaces on any project, in the same cluster, to which they have access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020207.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Node labels and taints reset on reboot with AWS cloudprovider in Kubernetes lower than v1.12.0
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020210.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE errors connecting to the Docker socket whilst updating clusters with the Aqua Enforcer deployed
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020211.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Editing Rancher launched Kubernetes cluster in infrastructure provider restricted to creating user
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020212.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Blank provider listed for cluster when logged in as user who did not create cluster in Rancher v2.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020214.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    'Error: snapshot missing hash but --skip-hash-check=false' when performing `rke etcd snapshort-restore` with .zip extension included in snapshot name
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020217.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to install or upgrade to a specific Rancher v2.x version
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020218.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Why are namespaces created via the kubectl CLI not assigned to a project?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020219.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    'SIGSEGV: segmentation violation' in prometheus container of the prometheus-project-monitoring-0 Pod when enabling Project monitoring on the System Project
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020220.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is it possible to migrate a Rancher launched Kubernetes cluster between Rancher instances?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020221.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is it possible to update the Cluster (Pod) CIDR or Service CIDR for an RKE, RKE2, or K3s cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020222.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    "fatal: could not read Username for 'http://host:port': No such device or address" error for pipeline Publish Catalog Template step in Rancher v2.2 when Git URL contains a port
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020225.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to migrate from CentOS/RHEL-packaged to upstream Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020226.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to rotate certificates for clusters launched by RKE v0.1.x or Rancher v2.0.x and v2.1.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020231.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Network ingress traffic from 192.168.0.0/16 always SNAT'd in Kubernetes clusters with canal network provider
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020232.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is it possible to perform RKE etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020239.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to change the log level for Rancher v2.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020241.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Istio-init container fails to start when SElinux is enabled on RHEL 7.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020243.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can I receive an application backup of my SUSE Rancher Hosted environment if I decide not to renew at the end of my term?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020296.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] How do I change severity level on an open case?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020302.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to add custom labels to Alerts in Monitoring v2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020350.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Streaming server stopped unexpectedly: listen tcp x.x.x.x:0: bind: cannot assign requested address
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020373.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to drain a node in an RKE1 cluster from the local node using a docker command
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020415.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to rotate rancher-webhook (cattle-webhook-tls) certificates?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020416.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Downstream clusters flapping between available and unavailable state
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020432.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher Support FAQ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020434.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] I filed an RFE as a support case. What should I expect on how it will be followed up on?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020437.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Can Rancher Support validate our planned upgrade?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020438.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] We run a burst of high-profile events (e.g., big sale) that run as k8s workloads managed by Rancher. Can Rancher Support join our team remotely for the duration of these events?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020440.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Can Rancher Support join me as I do my upgrade?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020441.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] We need help validating our deployment design and operational readiness, can Rancher Support help?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020442.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Can I run other, non-Rancher workloads on the same Kubernetes cluster that Rancher is installed on?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020443.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Could you help us understand the development and support status of RancherOS for 2020 and beyond?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020445.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Does Rancher support migration from single node installation to high availability installation?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020446.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Does Rancher Support cover single node installations?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020449.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] I plan to import my legacy k8s cluster into Rancher and having issues with my legacy cluster. Can Rancher Support help troubleshoot the issue?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020450.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Is Rancher Support only for RKE-provisioned clusters?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020451.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Will Rancher fix the issue and release a patch, if the problem is root-caused in Kubernetes?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020452.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] As part of a Rancher upgrade, do I need to upgrade my k8s cluster to a version listed in the support matrix for that Rancher version? If I do not, will the cluster continue to work fine as is? Will Rancher support this cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020453.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What are the Kubernetes cloud providers supported by Rancher?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020454.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What about support for Harvester, Longhorn, Rancher Desktop, Opni?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020460.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] What language(s) is Rancher Support service offered in?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020462.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Will Rancher fix the issue and release a patch, if the problem is root-caused in Prometheus and Grafana?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020463.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is support for Prometheus/Grafana available only with a valid Rancher support subscription?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020464.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Does my Rancher Support cover Prometheus/Grafana deployments that did not originate from Rancher?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020465.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Will Rancher fix the issue and release a patch, if the problem is root-caused in Jenkins?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020466.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] What is the nature of Rancher support for log aggregation services such as Elasticsearch, Splunk, Kafka, Syslog, Fluentd?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020467.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Will Rancher fix problems root-caused to be in nginx?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020468.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Will Rancher fix the issue and release a patch, if the problem is root-caused in one of the Rancher 2.x CNI plugin add-ons such as Weave, Cisco ACI, Cilium, and Calico?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020470.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Will Rancher fix the issue and release a patch, if the problem is root-caused in Flannel and Canal?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020471.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Will Rancher fix the issue and release a patch, if the problem is root-caused in Istio?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020472.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] We came across a mention of Fluentd as a software Rancher provides Support SLA on. Could you clarify what that covers?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020474.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is Rancher software itself completely free?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020475.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] How would Rancher Support troubleshoot issues on systems where any external access is not allowed, for reasons of security and compliance?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020476.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How (quickly) does Rancher respond to / resolve industry-reported vulnerabilities?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020477.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can we run Antivirus on our cluster nodes?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020478.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Would Rancher Support provide assistance if we use components that are not listed in the Rancher support matrix?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020479.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Would Rancher Support provide assistance if we change the default configurations of one or more of these components listed in Rancher support matrix?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020480.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] What are the certified integrations with persistent volume plugins covered by Rancher Support?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020481.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] What are the certified integrations with storage class provisioners covered by Rancher Support?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020482.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What are the certified integrations with authentication providers covered by Rancher Support?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020483.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Could you clarify what you generally mean by a "certified integration" to another software system or service?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020491.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Does Rancher Support covers OpenStack clusters?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020493.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    I see node drivers tagged as "Built-in". What does that mean?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020494.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    I see some node drivers tagged as "Active" when I install Rancher. What does this mean?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020495.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Does my support subscription to Rancher include support for Longhorn?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020496.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Can we have a mix of unsupported and supported nodes at our choice/discretion?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020498.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How does Rancher track our license usage?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020499.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is Rancher Prime support only for production environments?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020500.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Does my Rancher Prime Support subscription for production environment also covers testing and staging environments?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020502.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Could you illustrate the severity levels with subject lines of sample support cases?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020526.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Security vulnerability: log4j remote code execution aka log4shell CVE-2021-44228
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020536.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Operational Advisory, 20201210: Related to deprecation of dockershim in Kubernetes v1.20
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020538.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Operational Advisory, 20220113: Related to removal of dockershim in Kubernetes v1.24
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020543.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Support Advisories
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020556.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher Prime Hosted FAQ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020557.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Do you have a whitepaper available for Rancher Hosted Prime?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020558.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What can be expected during a Rancher Hosted Prime upgrade?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020559.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What if I no longer want Rancher Hosted Prime to manage my downstream clusters?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020561.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to connect your Rancher Hosted Prime network to your AWS transit gateway?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020562.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to make a VPN connection to your Rancher Hosted Prime network?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020563.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Can I get a copy of the Rancher API audit logs?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020630.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Operational Advisory, 20201105: Related to Docker Hub rate limits
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020631.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] Product Lifecycle Advisory, 20220330: 2022 EOM/EOL dates for Rancher 2.4 and 2.5
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020672.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to set multiple rules in the Rancher2 Terraform Provider Role Template resource
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020682.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Azure AD API Removal
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020684.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows RKE1 EOL
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020695.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to recover an RKE cluster when all control plane nodes have failed
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020710.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    After Rancher 2.6.x upgrade, HTTP 403 Errors in Rancher UI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020712.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is it possible use mTLS for rancher agent connectivity?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020713.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    DNS does not work with Weave CNI and Firewalld on RHEL 8 based OSs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020721.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to test Rancher RC/Alpha versions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020724.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to set up ACE for HashiCorp Vault
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020727.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher upgrade FAQ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020728.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Collecte de journaux Linux Rancher v2.x
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020731.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tuning for nodes with a high number of CPUs allocated
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020733.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reduce Memory and CPU footprint of Prometheus Monitoring Operator
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020737.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to set up Alertmanager configs in Monitoring V2 in Rancher
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020750.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Customize Helm Chart values for RKE2 default addons
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020767.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    AKS Downstream Cluster not Available with Websockets failing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020786.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Restore fails with metadata.deletionGracePeriodSeconds: Invalid value: 0: field is immutable
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020788.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to clean the orphaned cluster objects from the deleted cluster namespaces.
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020792.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to make a request with the Rancher2 Terraform Provider
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020803.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Restore k3s from MySQL dump
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020805.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher upgrade has failed with an error no matches for kind "Issuer" in version "cert-manager.io/v1alpha2"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020811.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to set the metadata config using the CATTLE prefixed extra environment variable
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020821.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to re-add a Master node to the RKE2 HA cluster once its removed from cluster.
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020831.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to troubleshoot Overlay Network Connectivity issues
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020834.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to define additional static pods on an RKE2 cluster node
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020848.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher install fails in an airgap environment with an error: no matches for kind "Issuer" in version certmanager.k8s.io/v1alpha1
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020895.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Adding tolerations to components in the Rancher Logging chart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020896.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Unable to see Rancher GUI, getting 500, 502, 503
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020904.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is it possible to change the CNI for a rke/rke2/k3s cluster or Rancher launched cluster post-provisioning?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020907.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cannot provision new RKE Cluster from Template: Unable to validate S3 backup target configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020909.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable fluent-bit debug logging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020910.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Downstream clusters in unavailable state after upgrade from Rancher v2.5 at v2.5.16 or above to Rancher v2.6 below v2.6.7
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    How to fix Azure AD authenication errors when upgrading to new graph endpoint in Rancher v2.6.7+
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="000020917.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to fix Azure AD authenication errors when upgrading to new graph endpoint in Rancher v2.6.7+
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Situation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020946.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure rancher-logging to send to a file
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020949.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE2 cluster provisioning in Rancher with profile: cis-1.6, requires parameter protect-kernel-defaults to true
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020950.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Failed to handling tunnel request from remote address x.x.x.x:42412 (X-Forwarded-For: x.x.x.x): response 400: cluster not found
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020951.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Adding missing cAdvisor labels to k8s 1.24+
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020952.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Interacting with the Rancher API using cURL
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020954.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Testing Connectivity Between Kubernetes Pods with Iperf3
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020971.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Enable CSR signing on an RKE cluster so certificates are issued
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020972.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create multiple IPPool for Calico CNI in rke2 cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020976.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure the logging app to use Custom PVC volume for Fluentd buffers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020985.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LDAP error when logging into the Rancher UI after a Rancher upgrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020988.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to troubleshoot rancher-logging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020992.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Collecting file logs with Host Tailer on the Logging Operator
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020994.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to Restore the fleet-local namespace if it gets deleted accidently
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020995.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kubernetes upgrade from v1.21.x to 1.22.x failing with error "does not recognize SELinux label"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020998.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable View in API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000020999.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Secrets in downstream clusters is repeatedly overwritten
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021006.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cattle Cluster Agent flapping with runtime error: slice bounds out of range [:3] with capacity 0
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021018.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to change the default helm values for the Rancher Logging operator
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021022.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to collect kube-api audit logs with rancher-logging for an RKE/RKE2/K3S cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021029.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to stream k3s journal logs to Cloudwatch on Rancher
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021036.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rancher-logging: how to control fluentd logs flushing frequency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021045.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to set container log rotation with RKE2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021053.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Upgrading Your Rancher Downstream Clusters to Kubernetes v1.25
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021064.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fleet cluster in Wait Applied state is missing the fleet-agent
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021065.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to remove Kubernetes namespaces stuck in a Terminating state
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021078.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    failed etcd snapshot with StorageError invalid object message
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021083.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to define routes and matchers in AlertmanagerConfigs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021084.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What information is stored from external Auth providers like Azure AD?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021088.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Get the list of available Kubernetes versions for RKE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021095.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exposing the ingress-nginx controller with a LoadBalancer service in RKE1 and RKE2 Kubernetes Clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021114.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recovering cluster.yml and cluster.rkestate files from kubeconfig - RKE clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021115.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to forward Kubernetes events with the rancher-logging chart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021157.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to create a read-only custom Global Role for Fleet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021185.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to disable autoscaler for rke2-coredns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021198.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher 2.7.6 login is disabled while migration is running
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021206.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuring Rancher Backup to use GCP Cloud Storage as Remote Storage Location
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021213.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher upgrades fails with "resource mapping not found for name" error due to deprecated api version for a resource
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021220.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    [Rancher] What is "cattle-impersonation-system" for?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021242.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher Supportability Review - Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021247.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to use a Rancher hotfix image
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021248.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable user session timeout in rancher UI ?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021250.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting x509 error when adding http repository to downstream cluster in Rancher
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021253.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher kubectl shell pod tries to pull an image from external dockerhub instead of pulling from private registry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021260.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Logging stack failing with PKey error
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021261.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ingress controller failing in RKE1 with port conflict when using port 8443
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021262.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Logging stack fails to send to splunk with error "Token disabled"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021270.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cgroup "Misc controller" introduce instability in Kubelet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021272.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    etcd snaphots failing to save in RKE2 &lt;v1.25.15, &lt;1.26.10, &lt;1.27.7 and &lt;1.28.3 due to large configmap error
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021273.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to use a Fleet hotfix image
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021284.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    kube-proxy not upgraded on some nodes during RKE2 version upgrade in RKE2 &lt;1.27.12, &lt;1.28.8 and &lt;1.29.4
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021286.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Inability to attach/detach vSphere CNS block volumes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021299.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Security Group behaviour in Rancher-provisioned EKS clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021301.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE2 OS Upgrade Process
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021302.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher pods in CrashLoopBackOff state with log messages "panic: indexer conflict: map[byPod:{}]" and "namespaces not found"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021303.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What is the correct amount of etcd nodes for my cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021304.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recommendation against the use of the --atomic flag for Rancher helm chart upgrades
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021309.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to set the maximum client body size for nginx ingress controller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021310.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to collect Rancher Diagnostic Package
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021314.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Change max-worker-connections for ingress controller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021315.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    'Internal error occurred: failed calling webhook "validate.nginx.ingress.kubernetes.io"' error when upgrading Rancher immediately after performing a local cluster Kubernetes upgrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021317.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to test rancher-logging Flows and Outputs with local file output
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021328.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Misconfigured Kubewarden mutating policies together with 3rd party Kubernetes Controllers can get stuck in an infinite loop
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021332.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher Monitoring: Known Issues with NFS Persistent Storage for Prometheus
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021334.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    EMEA Support Business Hours for Rancher Prime
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021363.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CVE-2024-21626 Runc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021365.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What is the support scope for the Kubernetes versions of a Rancher release?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021366.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    "dial tcp [::1]:6443: connect: network is unreachable" errors in kubernetes controlplane components when IPv6 is disabled on the loopback interface
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021371.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021372.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is it possible to modify the name and ID of an RKE, RKE2 or K3s cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021373.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to set cipher-suites for etcd in RKE2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021379.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is Rancher Prime Hosted SOC2 compliant?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021383.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to change the downstream Rancher Webhook port on a Host Network configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021385.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    system-upgrade-controller failing with "exec /opt/rancher-system-agent-suc/run.sh: argument list too long"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021399.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Failed ETCD snapshot restoration leads the cluster into stuck "paused" state
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021400.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Add caBundle private CA to chart repository
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021401.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to set calico IP_AUTODETECTION_METHOD
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021405.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    What are the definitions in the new Prime Release Cycle?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021426.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How can a project member create a namespace via command line (kubectl)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021440.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Is it possible to use cluster-scoped Rancher API tokens with the Rancher CLI or Terraform provider?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021441.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    The Repositories of Air-gapped Downstream Clusters in Rancher v2.8.3. fail to pull charts.
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021459.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure RKE2 Windows nodes to run behind an authenticated proxy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021462.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE2 vSphere cluster provisioning failing, with failing kube-apiserver healthchecks due to inability to resolve localhost
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021469.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ManagedChart generation is X, but latest observed generation is Y
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021513.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE End of Life - what, when, why?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021518.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE to RKE2 replatforming - instructions and FAQs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021521.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Performance considerations for a large number of CRDs in Rancher-managed clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021538.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher UI does not show the Rancher Prime logo after an upgrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021547.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to monitor Canal or Calico in RKE2 Downstream Clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021553.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Large volume of cattle impersonation token created for the same service account on downstream cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021557.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to remove worker role from a node managed by Rancher
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021558.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Unable to scale up Rancher node pool nodes in downstream cluster due to mismatch in cluster name at VMware vCenter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021559.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configure GitRepo with Private Key Authentication via Rancher UI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021575.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure an authenticated forward proxy for Alertmanager in rancher-monitoring
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021577.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    After Rancher migration, via rancher-backup operator, local cluster distro not updated
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021581.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rke2 helm-install job failing with INSTALLATION FAILED: cannot re-use a name that is still in use
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021585.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021599.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Azure AD - An error occurred logging in Server error while authenticating
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021604.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    User retains active session after its password is changed by an admin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021608.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Testing network bandwidth between local web browser and Rancher management cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021610.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installing Istio results with this error: "Invalid value: 31380: provided port is already allocated"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021612.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Using Private Registries for Custom and Imported Clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021616.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Checking Browser Health and Resource Consumption for Rancher
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021618.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to rollback the Kubernetes version of an RKE2 upstream/standalone cluster following an upgrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021631.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable debug logging for the rancher-system-agent
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021636.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Known issue deleting etcd nodes in RKE clusters managed by Rancher v2.8.6 ≤ version &lt; v2.9.0 or RKE CLI v1.5.11 ≥ version &lt; v1.5.14
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021637.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cannot upgrade Rancher-provisioned RKE clusters using an RKE template
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021647.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to Inquire About CVEs in SUSE Rancher Prime Product
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021649.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to override the cattle-agent image in troubleshooting with SUSE Rancher Support
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021666.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rke2-ingress-nginx deployed with watchIngressWithoutClass: false in v1.27.16+rke2r1, v1.28.12+rke2r1, v1.29.7+rke2r1 and v1.30.3+rke2r1
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021669.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    helm-install-rke-calico fails on downstream clusters; cannot re-use a name that is still in use
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021676.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    The `rke2 certificate check` command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021679.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Only a user logged in via external auth provider can access Rancher user and group attributes from auth provider
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021681.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure Spegel (Embedded Registry Mirror) for Rancher-provisioned RKE2/k3s clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021691.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Steps for troubleshooting the error "failed to create containerd task, failed to create shim task OCI runtime create failed, unable to start container process"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021703.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure custom kube-scheduler profiles in a Rancher-provisioned RKE2 cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021706.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to change the memlock value for pods in an RKE2 or K3s cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021708.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher-backup app stuck in uninstalling state
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021709.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Why permissive profile is not seen with CIS benchmark version v1.9?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021712.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Enabling ServiceMonitors for fluentd and fluentbit in rancher-logging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021719.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Failed snapshot restore for RKE2 clusters with misplaced mountpoint for the RKE2 binaries/config files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021723.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fleet agent fails to start with error secret fleet-agent not found
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021724.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Activating CIS on the Rancher local cluster breaks Rancher related deployments
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021736.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to query Rancher API tokens information via kubectl
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021743.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resolving "Error: Failed to install provider" with Rancher2 Provider (openpgp: unsupported feature: public key algorithm 22)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021747.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reasons to avoid PV/PVC as opposed to S3 as a storage location for the Rancher Backup Operator
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021756.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Nginx "IngressNightmare"
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021759.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to install Kiali, Istio, and Jaeger
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021764.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configure quota-backend-bytes to extend etcd keyspace limit in RKE2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021767.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to Connect to Rancher Provisioned Clusters using CLI When Rancher is Offline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021769.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cattle-cluster-agent flapping between versions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021805.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE2 certificate rotation failing on Windows worker nodes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021824.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pods stuck in terminating state due to PodDisruptionBudget
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021826.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Adding a node to RKE1 cluster fails due to SSH tunneling issues.
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021827.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fleet Git Repos stuck in "Git Updating" state due to NTP sync issues
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021839.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rancher-logging-root-fluentd-0 pod keeps restarting continuously with exit code 137 even after increasing memory
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021852.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to remove user addons or addons_include without deleting the resources
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021861.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pod level DNS resolution failed after modifying the node's dns servers on /etc/resolv.conf
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021862.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE2 how to set the timezone
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021868.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Longhorn Node Disk Space Not Updating on UI After Expansion
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021869.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RBAC issues in Fleet's GitRepos after upgrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021870.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Node Removal After Changing Cloud Provider to vSphere in an Existing RKE2 Cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021871.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Unable to delete any Projects in Rancher &gt;= 2.9 if the Legacy Feature Flag was active when the project was created in Rancher &lt; 2.9
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021878.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure custom attributes for a Rancher-provisioned vSphere cluster?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021884.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RKE2 server fails to start due to etcd metrics port conflict
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021913.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to disable Rancher System Upgrade Controller for Imported K3s and RKE2 Clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021922.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to configure Calico Node IP Autodetection with Specific CIDRs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="000021954.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System Upgrade pods fail on Windows nodes with 'service does not exist' error
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Situation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="how-to-fix-azure-ad-authenication-errors-when-upgrading-to-new-graph-endpoint-in-rancher-v267">How to fix Azure AD authenication errors when upgrading to new graph endpoint in Rancher v2.6.7+</h1>
+<p>This document <strong>(000020917)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>If you are using Rancher v2.6.7 and above and wish to set up Azure AD initially, please review our documentation <a href="https://ranchermanager.docs.rancher.com/v2.6/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-azure-ad#docusaurus_skipToContent_fallback">here</a> and enable Azure AD as your primary authentication method.</p>
+<p>For those using Rancher version(s) v2.6.6 and below, please refer to the following messages under the <strong>v2.6.0-v2.6.6</strong> section on our documentation page <a href="https://ranchermanager.docs.rancher.com/v2.6/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-azure-ad#docusaurus_skipToContent_fallback">here</a>.</p>
+<h3 id="situation">Situation</h3>
+<p>Disclaimer:</p>
+<p>There are a few issues that you may encounter when upgrading to the latest Microsoft Graph endpoint when using Azure AD. This KB Article aims to address these particular errors and provide the best solution for each scenario.</p>
+<p>If you are experiencing one of the following error messages, please continue to the corresponding numerical value.</p>
+<ol>
+<li><code>server error while authenticating: missing required permissions from Microsoft Graph: need Group.Read.All, User.Read.All</code></li>
+<li><code>"refusing to set principal on user that is already bound to another user"</code></li>
+<li>```
+Error:AADSTS9000411: The request is not properly formatted.</li>
+</ol>
+<div class="highlight"><pre><span></span><code>4. ```
+Error during login &quot;AADSTS901002: The &#39;resource&#39; request parameter is not supported&quot;
+</code></pre></div>
+<h3 id="resolution">Resolution</h3>
+<ol>
+<li>
+<p>If you are receiving this error, you likely have the incorrect type of permissions in the Azure console. When setting up Azure AD, you will need <strong>Application Permissions</strong>, NOT Delegated Permissions. For more information, please review our documentation <a href="https://ranchermanager.docs.rancher.com/v2.6/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-azure-ad#3-set-required-permissions-for-rancher">here</a>.</p>
+</li>
+<li>
+<p>If you are receiving this error in the Rancher UI, likely, you are using a different user that initially set up Azure AD to make modifications. For example, suppose you are logged in as an Azure AD user and try to disable/re-enable the authorization provider. In that case, it is likely, the local Rancher admin had initially set up the authentication provider and is bound to that admin user. So when trying to re-enable Azure AD as a local user and missing the correct permissions, you'll likely run into this error. Rancher will be aware of this user, and there is a link between the Azure Ad user and the Rancher user. There are a few solutions to this:</p>
+</li>
+<li>
+<p>In the <strong>Users &amp; Authentication</strong> section in the Rancher UI, as a local admin, you can grant the Azure AD user <strong>Configure Authentication</strong> and <strong>Manage Users</strong> permissions. Doing this should allow the Azure AD user to make changes to the authentication provider and should be able to re-enable it.</p>
+</li>
+<li>
+<p>Another way you can fix this issue is by enabling Azure AD with an Azure AD user unknown to Rancher.</p>
+</li>
+<li>
+<p>If you are receiving this <strong>Error: AADSTS9000411: The request is not properly formatted. The parameter 'response_type' is duplicated</strong>; Rancher is likely trying to send multiple requests simultaneously. You will want to verify that you are logging into Rancher with the correct URL; the URL will be <strong>https://rancher_url/dashboard.</strong></p>
+</li>
+<li>
+<p>If you are receiving this error <strong>Error</strong> <strong>during login "AADSTS901002: The 'resource' request parameter is not supported"</strong> and are running on Rancher 2.6.10 or below, the error is likely due to Conditional access policies set up in your organization. To fix this issue, upgrade to Rancher 2.6.11 or above in the 2.6.x version, or to 2.7.0 or above in the 2.7.x versions. You will also need to change the Azure AD application permissions from user.read.all and group.read.all permissions to <code>directory.read.all.</code></p>
+</li>
+</ol>
+<h3 id="disclaimer">Disclaimer</h3>
+<p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>
