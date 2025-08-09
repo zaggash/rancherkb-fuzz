@@ -6453,6 +6453,39 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="kube-proxy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rke2" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#k3s" class="md-nav__link">
+    <span class="md-ellipsis">
+      k3s
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rke1" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE1
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -6464,6 +6497,24 @@
   
     <nav class="md-nav" aria-label="ingress-nginx">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rke2_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rke1_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE1
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
@@ -10465,6 +10516,39 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="kube-proxy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rke2" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#k3s" class="md-nav__link">
+    <span class="md-ellipsis">
+      k3s
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rke1" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE1
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -10476,6 +10560,24 @@
   
     <nav class="md-nav" aria-label="ingress-nginx">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rke2_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rke1_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE1
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
@@ -10510,28 +10612,93 @@
 <h1 id="tuning-for-nodes-with-a-high-number-of-cpus-allocated">Tuning for nodes with a high number of CPUs allocated</h1>
 <p>This document <strong>(000020731)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>An RKE cluster built by Rancher, or the RKE CLI</p>
+<p>An RKE2 or k3s cluster provisioned by Rancher or as a stand-alone cluster</p>
 <h3 id="situation">Situation</h3>
 <p>Some components in a Kubernetes cluster apply a linear scaling mechanism, often based on the number of CPU cores allocated.</p>
-<p>For nodes that have a high number CPU cores allocated the defaults can create a steep scaling curve and can introduce issues.</p>
-<p>Two components provided with RKE that scale in this way are kube-proxy and ingress-nginx. However, additional workloads (like nginx) may be deployed to the cluster and also need consideration.</p>
-<p>Adjusting the scaling for these components can avoid these issues.</p>
+<p>For nodes that have a high number CPU cores allocated, the default scaling curve can be too steep and can introduce issues.</p>
+<p>Two common components are known to scale in this way: kube-proxy and ingress-nginx. However, additional workloads (such as nginx) may be deployed to the cluster and also need consideration.</p>
+<p>Adjusting the scaling for these components can be applied proactively or if there are indications of an issue.</p>
 <h3 id="resolution">Resolution</h3>
 <h2 id="kube-proxy">kube-proxy</h2>
 <p>As explained in the <a href="https://github.com/kubernetes/kubernetes/issues/72472#issuecomment-480041161">Kubernetes GitHub issue here</a>, the default scaling of the conntrack-max setting allocates 32K of memory per CPU core.</p>
-<p>This can manifest in the below events in OS logs:</p>
+<p>On a node with a high number of CPU cores this can present events like the below in OS logs:</p>
 <div class="highlight"><pre><span></span><code>kernel: nf_conntrack: falling back to vmalloc.
 </code></pre></div>
 <p>This static default can present issues with contiguous memory being allocated for the conntrack table, or reach unnecessary levels of space allocated. When observed frequently, this has been associated with network instability.</p>
-<p>As a starting point, the suggestion is to halve this amount for a cluster with affected nodes, this can be done by <a href="https://rancher.com/docs/rancher/v2.6/en/cluster-admin/editing-clusters/rke-config-reference/#editing-clusters-with-yaml">editing the cluster as YAML</a>, or <a href="https://rancher.com/docs/rke/latest/en/config-options/">the cluster.yml file</a> when using the RKE CLI.</p>
-<div class="highlight"><pre><span></span><code>kubeproxy:
-  extra_args:
-    conntrack-max-per-core: &#39;16384&#39;
+<p>As a starting point, the suggestion is to halve this amount for a cluster with affected nodes:</p>
+<h3 id="rke2">RKE2</h3>
+<p>Add the <a href="https://docs.rke2.io/reference/linux_agent_config#components">kube-proxy-arg</a> parameter to the cluster configuration.</p>
+<p><strong>Provisioned by Rancher</strong></p>
+<p>Click on Edit YAML in Cluster Management to make the change to a cluster, locate the <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineglobalconfig">machineGlobalConfig</a>, and add the parameter, using the below as an example.</p>
+<div class="highlight"><pre><span></span><code>  rkeConfig:
+    machineGlobalConfig:
+        [ ... ]
+      kube-proxy-arg:
+        - conntrack-max-per-core=16384
 </code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: The change will be applied to all nodes in the cluster. The change can also be added only to certain nodes, by instead adding the parameter within a machineSelectorConfig, more <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineselectorconfig">details are available in this documentation link</a></p>
+</blockquote>
+<p><strong>Standalone cluster</strong></p>
+<p>Edit the /etc/rancher/rke2/config.yaml file on each cluster node where the change is desired. Add the parameter and perform a restart of the appropriate rke2 service.</p>
+<div class="highlight"><pre><span></span><code>kube-proxy-arg:
+  - conntrack-max-per-core=16384
+</code></pre></div>
+<h3 id="k3s">k3s</h3>
+<p>Add the <a href="https://docs.rke2.io/reference/linux_agent_config#components">kube-proxy-arg</a> parameter to the cluster configuration.</p>
+<p><strong>Provisioned by Rancher</strong></p>
+<p>Click on Edit YAML in Cluster Management to make the change to a cluster, locate the <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/k3s-cluster-configuration#machineglobalconfig">machineGlobalConfig</a>, and add the parameter, using the below as an example.</p>
+<div class="highlight"><pre><span></span><code>  rkeConfig:
+    machineGlobalConfig:
+        [ ... ]
+      kube-proxy-arg:
+        - conntrack-max-per-core=16384
+</code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: The change will be applied to all nodes in the cluster. The change can also be added only to certain nodes, by instead adding the parameter within a machineSelectorConfig, more <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/k3s-cluster-configuration#machineselectorconfig">details are available in this documentation link</a></p>
+</blockquote>
+<p><strong>Standalone cluster</strong></p>
+<p>Edit the /etc/rancher/k3s/config.yaml file on each cluster node where the change is desired. Add the parameter and perform a restart of the appropriate k3s service.</p>
+<div class="highlight"><pre><span></span><code>kube-proxy-arg:
+  - conntrack-max-per-core=16384
+</code></pre></div>
+<h3 id="rke1">RKE1</h3>
+<p>This can be done by <a href="https://rancher.com/docs/rancher/v2.6/en/cluster-admin/editing-clusters/rke-config-reference/#editing-clusters-with-yaml">editing the cluster as YAML</a>, or <a href="https://rancher.com/docs/rke/latest/en/config-options/">the cluster.yml file</a> when using the RKE CLI.</p>
+<div class="highlight"><pre><span></span><code>services:
+  kubeproxy:
+    extra_args:
+      conntrack-max-per-core: &#39;16384&#39;
+</code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: When using the RKE CLI, an rke up command will put the changes into effect.</p>
+</blockquote>
 <h2 id="ingress-nginx">ingress-nginx</h2>
-<p>A common configuration of nginx is to set the worker_processes to auto. When set, nginx will scale the worker_processes to the number of CPU cores on the node. This can result in high numbers of PIDs and consume open files with the threads consumed (number of cores * 32 (default thread_pool size)).</p>
-<p>\* http://nginx.org/en/docs/ngx_core_module.html#worker_processes</p>
-<p>\* http://nginx.org/en/docs/ngx_core_module.html#thread_pool</p>
+<p>Modern versions of ingress-nginx perform detection to determine the worker_processes based on the number of logical CPUs allocated to the node, or the CPU resource limit amount. By default CPU resource limits are not used and should generally be used only if unless necessary.</p>
+<p>On a node with a high number of CPUs allocated this can result in an undesirable number of PIDs and open files with the threads consumed (number of cores * 32 (default thread_pool size)).</p>
+<ul>
+<li><a href="http://nginx.org/en/docs/ngx_core_module.html#worker_processes">http://nginx.org/en/docs/ngx_core_module.html#worker_processes</a></li>
+<li><a href="http://nginx.org/en/docs/ngx_core_module.html#thread_pool">http://nginx.org/en/docs/ngx_core_module.html#thread_pool</a></li>
+</ul>
+<h3 id="rke2_1">RKE2</h3>
+<p><strong>Provisioned by Rancher</strong></p>
+<p>Add a HelmChartConfig to adjust the ingress-nginx helm chart value, click on Edit Config &gt; Additional Manifest to add the HelmChartConfig in Cluster Management. An example of 8 worker_processes is used below.</p>
+<div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-ingress-nginx
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    controller:
+      config:
+        worker-processes: &quot;8&quot;
+</code></pre></div>
+<p><strong>Standalone cluster</strong></p>
+<p>Add the HelmChartConfig as a YAML file to the /var/lib/rancher/rke2/server/manifests directory on all rke2-server nodes.</p>
+<ul>
+<li><a href="https://docs.rke2.io/networking/networking_services#nginx-ingress-controller">https://docs.rke2.io/networking/networking_services#nginx-ingress-controller</a></li>
+</ul>
+<h3 id="rke1_1">RKE1</h3>
 <p>This can be adjusted by <a href="https://rancher.com/docs/rancher/v2.6/en/cluster-admin/editing-clusters/rke-config-reference/#editing-clusters-with-yaml">editing the cluster as YAML</a>, or <a href="https://rancher.com/docs/rke/latest/en/config-options/">the cluster.yml file</a> when using the RKE CLI. An example of 8 worker_processes is used below. For a nodes that may process a high amount of ingress traffic, you may wish to use a higher number.</p>
 <div class="highlight"><pre><span></span><code>ingress:
   provider: nginx
