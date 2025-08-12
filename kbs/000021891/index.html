@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../000020985/">
+        <link rel="prev" href="../000021884/">
       
       
-        <link rel="next" href="../000020992/">
+        <link rel="next" href="../000021913/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>How to troubleshoot rancher-logging - SUSE KBs</title>
+        <title>Removing 'server: istio-envoy' Header from Istio Responses - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-troubleshoot-rancher-logging" class="md-skip">
+        <a href="#removing-server-istio-envoy-header-from-istio-responses" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to troubleshoot rancher-logging
+              Removing 'server: istio-envoy' Header from Istio Responses
             
           </span>
         </div>
@@ -7103,32 +7103,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    How to troubleshoot rancher-logging
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020988/" class="md-nav__link">
         
   
   
@@ -7139,53 +7117,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Situation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -10277,10 +10208,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../000021891/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Removing 'server: istio-envoy' Header from Istio Responses
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -10291,6 +10244,71 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Situation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -10422,6 +10440,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -10434,6 +10461,15 @@
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
     </span>
   </a>
   
@@ -10464,58 +10500,53 @@
 
 
 
-<h1 id="how-to-troubleshoot-rancher-logging">How to troubleshoot rancher-logging</h1>
-<p>This document <strong>(000020988)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="removing-server-istio-envoy-header-from-istio-responses">Removing 'server: istio-envoy' Header from Istio Responses</h1>
+<p>This document <strong>(000021891)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<ul>
+<li>SUSE Rancher 2.x</li>
+<li>RKE2</li>
+<li>Rancher-istio application</li>
+</ul>
 <h3 id="situation">Situation</h3>
-<p>After installing the rancher-logging app and creating your resources, flows(clusterflows)/outputs(clusteroutputs), how do you troubleshoot if you are not seeing your logs at the final destination?</p>
+<p>When routing a web application through Istio, the HTTP responses may include the header " <code>server: istio-envoy</code>". This may be flagged by security or compliance teams during audits.</p>
 <h3 id="resolution">Resolution</h3>
-<p>The rancher-logging app troubleshooting can be divided into three phases as below:</p>
-<ol>
-<li>User resources review: The first part is to ensure there is no error for the resources you created and that they are active.</li>
-</ol>
-<div class="highlight"><pre><span></span><code>1. ClusterOutputs and Outputs review. They should be active with no errors. Please correct the errors if any
-
-kubectl get clusteroutput -A
-NAMESPACE   NAME            ACTIVE   PROBLEMS
-test-ns     test-c-output   true
-kubectl get output -A
-NAMESPACE   NAME          ACTIVE   PROBLEMS
-test-ns     test-output   true
-
-2. Clusterflows and flows review. They should be active with no errors. Please correct the errors if any
-
-kubectl get clusterflow -o wide -A
-NAMESPACE   NAME          ACTIVE   PROBLEMS
-test-ns     test-c-flow   true
-kubectl get flow -o wide -A
-NAMESPACE   NAME        ACTIVE   PROBLEMS
-test-ns     test-flow   true
+<p>To remove the <code>server</code> header from the HTTP responses, apply the following <code>EnvoyFilter</code> configuration on the <strong>affected cluster</strong>:</p>
+<div class="highlight"><pre><span></span><code>apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: ef-removeserver
+  namespace: istio-system
+spec:
+  configPatches:
+  - applyTo: NETWORK_FILTER
+    match:
+      listener:
+        filterChain:
+          filter:
+            name: &quot;envoy.filters.network.http_connection_manager&quot;
+    patch:
+      operation: MERGE
+      value:
+        typed_config:
+          &quot;@type&quot;: &quot;type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager&quot;
+          server_header_transformation: PASS_THROUGH
+  - applyTo: ROUTE_CONFIGURATION
+    patch:
+      operation: MERGE
+      value:
+        response_headers_to_remove:
+        - &quot;server&quot;
 </code></pre></div>
-<ol>
-<li>FluentD and Fluentbit pods review: The fluentbit is a daemonset and should be running on each node, while you should have at least one FluentD pod running as the fluentbit pods will collect logs from each node and forward them to the FluentD pod to be sent to their final destination</li>
-</ol>
-<div class="highlight"><pre><span></span><code>Your output could look different depending on what type Kubernetes cluster you have. However, you should have a fluentbit pod on each node and at least one FluentD pod
-
-kubectl get pods -n cattle-logging-system
-NAME                                                READY   STATUS      RESTARTS   AGE
-rancher-logging-655578478b-7k46r                    1/1     Running     0          89s
-rancher-logging-k3s-journald-aggregator-957gz       1/1     Running     0          89s
-rancher-logging-root-fluentbit-lczl5                1/1     Running     0          70s
-rancher-logging-root-fluentd-0                      2/2     Running     0          70s
-rancher-logging-root-fluentd-configcheck-ac2d4553   0/1     Completed   0          84s
-</code></pre></div>
-<ol>
-<li>Logs review: At this step, you review to ensure no errors in the logs for the FluentD or Fluentbit pods. For Fluentbit, you will probably need to review each if you suspect the logs are not being collected from fluentbit.</li>
-</ol>
-<p>```
-1. kubectl exec rancher-logging-root-fluentd-0 -n cattle-logging-system -- cat /fluentd/log/out  # logging-operator version +up3.17.10 and earlier
-   kubectl logs rancher-logging-root-fluentd-0 -n cattle-logging-system #  logging-operator version +up4.4.0 and later</p>
-<p>This will dump the logs out of the fluentd container</p>
-<ol>
-<li>kubectl -n cattle-logging-system logs rancher-logging-root-bit-lczl5</li>
-</ol>
-<p>You should run it against each fluentbit pod if you suspect that the issue is on fluentbit
-```</p>
+<ul>
+<li>Ensure this filter is applied in the <code>istio-system</code> namespace or where your ingress gateway is running, depending on your specific deployment setup.</li>
+<li>This solution uses an <a href="https://istio.io/latest/docs/reference/config/networking/envoy-filter/">EnvoyFilter</a> to remove the <code>server</code> header. The approach is based on community guidance shared in the following GitHub issue: <a href="https://github.com/istio/istio/issues/13861#issuecomment-1425116809">GitHub Issue #13861 - Remove Server Header</a></li>
+<li>The configuration uses <code>server_header_transformation: PASS_THROUGH</code> to avoid setting the default <code>istio-envoy</code> value, and explicitly removes the <code>server</code> header from response headers.</li>
+</ul>
+<h3 id="additional-information">Additional Information</h3>
+<p>The rancher-istio application is planned for deprecation in upcoming Rancher releases. It is recommended to review the official deprecation notice and plan for migration accordingly.</p>
+<p><a href="https://www.suse.com/c/rancher-istio-will-be-deprecated-in-upcoming-rancher-releases/">SUSE Blog - Rancher Istio Will Be Deprecated</a></p>
+<p><a href="https://www.suse.com/c/rancher_blog/rancher-istio-will-be-deprecated-in-upcoming-rancher-releases/">SUSE Announcement - Deprecation of Rancher Istio</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
