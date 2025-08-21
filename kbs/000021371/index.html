@@ -22,7 +22,7 @@
     
     
       
-        <title>Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration - SUSE KBs</title>
+        <title>Rancher-provisioned RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration in Rancher < v2.7.5 - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rancher-managed-rke2-clusters-stuck-waiting-for-kube-controller-managerkube-scheduler-probes-due-to-certificate-expiration" class="md-skip">
+        <a href="#rancher-provisioned-rke2-clusters-stuck-waiting-for-kube-controller-managerkube-scheduler-probes-due-to-certificate-expiration-in-rancher-v275" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration
+              Rancher-provisioned RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration in Rancher &lt; v2.7.5
             
           </span>
         </div>
@@ -8431,7 +8431,7 @@
   
   
   <span class="md-ellipsis">
-    Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration
+    Rancher-provisioned RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration in Rancher &lt; v2.7.5
     
   </span>
   
@@ -8444,7 +8444,7 @@
   
   
   <span class="md-ellipsis">
-    Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration
+    Rancher-provisioned RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration in Rancher &lt; v2.7.5
     
   </span>
   
@@ -9116,7 +9116,7 @@
   
   
   <span class="md-ellipsis">
-    After Rancher migration, via rancher-backup operator, local cluster distro not updated
+    After migration of Rancher between different Kubernetes distriubtions, via the rancher-backup operator, the local cluster distribution within Rancher is not updated
     
   </span>
   
@@ -10771,13 +10771,15 @@
 
 
 
-<h1 id="rancher-managed-rke2-clusters-stuck-waiting-for-kube-controller-managerkube-scheduler-probes-due-to-certificate-expiration">Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration</h1>
+<h1 id="rancher-provisioned-rke2-clusters-stuck-waiting-for-kube-controller-managerkube-scheduler-probes-due-to-certificate-expiration-in-rancher-v275">Rancher-provisioned RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration in Rancher &lt; v2.7.5</h1>
 <p>This document <strong>(000021371)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>SUSE Rancher &lt;2.7.5</p>
-<p>RKE2 managed cluster</p>
+<ul>
+<li>SUSE Rancher &lt; v2.7.5</li>
+<li>A Rancher-provisioned RKE2 cluster</li>
+</ul>
 <h3 id="situation">Situation</h3>
-<p>This article explains a problem where RKE2 clusters managed by Rancher get stuck in a "Waiting for probes: kube-controller-manager, kube-scheduler" state. This happens because the certificates used by the <code>kube-controller-manager</code> and <code>kube-scheduler</code> components expire.</p>
+<p>This article explains a problem where a Rancher-provisioned RKE2 cluster gets stuck in a "Waiting for probes: kube-controller-manager, kube-scheduler" state, when running Rancher &lt; v2.7.5. This happens because the certificates used by the <code>kube-controller-manager</code> and <code>kube-scheduler</code> components expire.</p>
 <h3 id="resolution">Resolution</h3>
 <p>This issue is fixed in Rancher version 2.7.5. Starting with this version, the <code>kube-controller-manager</code> and <code>kube-scheduler</code> certificates in Rancher-managed RKE2 clusters are now part of the certificate rotation. When you use <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/rotate-certificates#certificate-rotation">Rancher's Rotate Certificates feature</a>, these certificates will also be renewed, which stops the problem described earlier.</p>
 <p><strong>Workaround</strong></p>
@@ -10794,7 +10796,7 @@
 <li><code>systemctl start rke2-server</code></li>
 </ol>
 <h3 id="cause">Cause</h3>
-<p>RKE2's regular certificate rotation doesn't manage the certificates for the <code>kube-controller-manager</code> and <code>kube-scheduler</code> in other clusters. Because of this, these certificates don't automatically renew when other cluster certificates are rotated. If these certificates expire, it can stop communication between these parts and the <code>kube-apiserver</code>, leading to the "Waiting for probes" state.</p>
+<p>RKE2's regular certificate rotation doesn't manage the certificates for the <code>kube-controller-manager</code> and <code>kube-scheduler</code> in Rancher-provisioned RKE2 clusters. Because of an issue in Rancher versions before v2.7.5, these certificates were not automatically renewed when other cluster certificates were rotated. If these certificates expire, it can stop communication between these cluster components and the <code>kube-apiserver</code>, leading to the "Waiting for probes" state.</p>
 <h3 id="additional-information">Additional Information</h3>
 <p><a href="https://github.com/rancher/rancher/issues/41125">https://github.com/rancher/rancher/issues/41125</a></p>
 <h3 id="disclaimer">Disclaimer</h3>

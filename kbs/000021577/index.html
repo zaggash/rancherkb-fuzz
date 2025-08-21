@@ -22,7 +22,7 @@
     
     
       
-        <title>After Rancher migration, via rancher-backup operator, local cluster distro not updated - SUSE KBs</title>
+        <title>After migration of Rancher between different Kubernetes distriubtions, via the rancher-backup operator, the local cluster distribution within Rancher is not updated - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#after-rancher-migration-via-rancher-backup-operator-local-cluster-distro-not-updated" class="md-skip">
+        <a href="#after-migration-of-rancher-between-different-kubernetes-distriubtions-via-the-rancher-backup-operator-the-local-cluster-distribution-within-rancher-is-not-updated" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              After Rancher migration, via rancher-backup operator, local cluster distro not updated
+              After migration of Rancher between different Kubernetes distriubtions, via the rancher-backup operator, the local cluster distribution within Rancher is not updated
             
           </span>
         </div>
@@ -8422,7 +8422,7 @@
   
   
   <span class="md-ellipsis">
-    Rancher managed RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration
+    Rancher-provisioned RKE2 clusters stuck "Waiting for kube-controller-manager/kube-scheduler probes" due to certificate expiration in Rancher &lt; v2.7.5
     
   </span>
   
@@ -9029,7 +9029,7 @@
   
   
   <span class="md-ellipsis">
-    After Rancher migration, via rancher-backup operator, local cluster distro not updated
+    After migration of Rancher between different Kubernetes distriubtions, via the rancher-backup operator, the local cluster distribution within Rancher is not updated
     
   </span>
   
@@ -9042,7 +9042,7 @@
   
   
   <span class="md-ellipsis">
-    After Rancher migration, via rancher-backup operator, local cluster distro not updated
+    After migration of Rancher between different Kubernetes distriubtions, via the rancher-backup operator, the local cluster distribution within Rancher is not updated
     
   </span>
   
@@ -10753,54 +10753,16 @@
 
 
 
-<h1 id="after-rancher-migration-via-rancher-backup-operator-local-cluster-distro-not-updated">After Rancher migration, via rancher-backup operator, local cluster distro not updated</h1>
+<h1 id="after-migration-of-rancher-between-different-kubernetes-distriubtions-via-the-rancher-backup-operator-the-local-cluster-distribution-within-rancher-is-not-updated">After migration of Rancher between different Kubernetes distriubtions, via the rancher-backup operator, the local cluster distribution within Rancher is not updated</h1>
 <p>This document <strong>(000021577)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
 <p>Rancher 2.5+</p>
 <h3 id="situation">Situation</h3>
-<p>Migration of the local Rancher cluster from one Kubernetes distribution to another, e.g. RKE, K3s to RKE2, using the Rancher Backup Operator ( <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery">https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery</a>).</p>
+<p>Migration of Rancher from one Kubernetes distribution to another, e.g. from K3s to RKE2, using the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/migrate-rancher-to-new-cluster">Rancher Backup Operator</a>.</p>
 <h3 id="resolution">Resolution</h3>
-<p>The workaround involves manually updating the local cluster.management.cattle.io resource in the Rancher local cluster.</p>
-<p>On the Rancher local cluster execute the following:</p>
-<div class="highlight"><pre><span></span><code>kubectl edit cluster.management.cattle.io local
-</code></pre></div>
-<p>Update the following fields to reflect the new local cluster distribution after the upgrade, i.e. rke, rke2 or k3s:</p>
-<ul>
-<li>status.provider</li>
-<li>status.driver</li>
-<li>provider.cattle.io in metadata.labels</li>
-</ul>
-<p>Within the resource, these appear as follows for an rke2 cluster:</p>
-<div class="highlight"><pre><span></span><code>apiVersion: management.cattle.io/v3
-kind: Cluster
-metadata:
-[...]
-  labels:
-    provider.cattle.io: rke2
-[...]
-spec:
-[...]
-status:
-[...]
-  driver: rke2
-[...]
-  provider: rke2
-[...]
-</code></pre></div>
-<p>Remove the following blocks entirely:</p>
-<div class="highlight"><pre><span></span><code>status.conditions - type: Upgrade
-spec.k3sConfig
-</code></pre></div>
-<p>:</p>
-<div class="highlight"><pre><span></span><code>delete the system-upgrade-controller Deployment from cattle-system Namespace
-delete any apply-k3s Job(s) from cattle-system Namespace
-</code></pre></div>
-<p>as well as the following plans:</p>
-<div class="highlight"><pre><span></span><code>kubectl delete plans.upgrade.cattle.io -n cattle-system k3s-master-plan
-kubectl delete plans.upgrade.cattle.io -n cattle-system k3s-worker-plan
-</code></pre></div>
+<p>Follow the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/migrate-rancher-to-new-cluster#2-restore-from-backup-using-a-restore-custom-resource:~:text=and%20Rancher%20installation.-,IMPORTANT,-%3A">documented steps</a> at the end of point <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/migrate-rancher-to-new-cluster#2-restore-from-backup-using-a-restore-custom-resource">2. Restore from backup using a Restore custom resource</a> in the Rancher migration documentation, to update the distribution version of the Rancher local cluster within the Rancher state.</p>
 <h3 id="cause">Cause</h3>
-<p>The rancher-backup operator performs a restore of Rancher configuration resources, without manipulating any of these in the process. As a result, when migrating Rancher between different cluster types, there are a few values that are not updated in the local cluster.management.cattle.io resource to reflect the changed distribution. There is an open GitHub issue tracking this at <a href="https://github.com/rancher/rancher/issues/42158">https://github.com/rancher/rancher/issues/42158</a></p>
+<p>The rancher-backup operator performs a restore of Rancher configuration resources, without manipulating any of these in the process. As a result, when migrating Rancher between different cluster types, values within the local cluster.management.cattle.io resource need to be manually updated to to reflect the change in distribution. Further details can be found in the GitHub issue at <a href="https://github.com/rancher/rancher/issues/42158">https://github.com/rancher/rancher/issues/42158</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
