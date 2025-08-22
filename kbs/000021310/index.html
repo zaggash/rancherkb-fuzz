@@ -10390,6 +10390,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021906/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    New downstream clusters are picking up the old default registry, even though the system default registry has been modified.
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021913/" class="md-nav__link">
         
   
@@ -10784,7 +10807,7 @@
 <div class="highlight"><pre><span></span><code>jq &#39;.resourceCounts[-1].counts[0:10][] | &quot;\(.resource): \(.count)&quot;&#39; &lt; *rancher-diagnostic-data.json
 </code></pre></div>
 <p>Total resources in the local cluster:</p>
-<div class="highlight"><pre><span></span><code>jq &#39;[.resourceCounts[-1].counts[].count] | add&#39;
+<div class="highlight"><pre><span></span><code>jq &#39;[.resourceCounts[-1].counts[].count] | add&#39; &lt;  *rancher-diagnostic-data.json
 </code></pre></div>
 <p>CRD count in the local cluster:</p>
 <div class="highlight"><pre><span></span><code>jq &#39;.resourceCounts[-1].counts[] | select(.resource == &quot;apiextensions.k8s.io.customresourcedefinition&quot;) | &quot;\(.resource): \(.count)&quot;&#39; &lt;  *rancher-diagnostic-data.json
