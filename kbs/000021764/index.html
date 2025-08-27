@@ -10881,10 +10881,11 @@
 </code></pre></div>
 <p>For a cluster managed by Rancher, go to Rancher, Cluster Management -&gt; select the cluster and edit the yaml ( which you will get from the 3 dots).</p>
 <p>Add quota-backend-bytes under machineSelectorConfig.config.etcd-arg.  For example:</p>
-<div class="highlight"><pre><span></span><code>204▼        machineSelectorConfig:
-205▼          - config:
-206▼              etcd-arg:
-207             quota-backend-bytes: 158993459
+<div class="highlight"><pre><span></span><code> machineSelectorConfig:
+      - config:
+          etcd-arg: quota-backend-bytes=8589934592
+        matchLabels:
+          rke.cattle.io/etcd-role: &#39;true&#39;
 </code></pre></div>
 <p>Increasing the etcd database size can help mitigate etcd storage consumption issues and ensure the cluster remains stable and responsive.</p>
 <h3 id="cause">Cause</h3>
