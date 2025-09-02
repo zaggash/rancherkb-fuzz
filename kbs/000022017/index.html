@@ -11,10 +11,8 @@
       
       
       
-        <link rel="prev" href="../000020189/">
+        <link rel="prev" href="../000021994/">
       
-      
-        <link rel="next" href="../000020192/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +20,7 @@
     
     
       
-        <title>The Rancher v2.x Linux log collector script - SUSE KBs</title>
+        <title>Resolving Uneven Pod Distribution Using Anti-Affinity - SUSE KBs</title>
       
     
     
@@ -74,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#the-rancher-v2x-linux-log-collector-script" class="md-skip">
+        <a href="#resolving-uneven-pod-distribution-using-anti-affinity" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              The Rancher v2.x Linux log collector script
+              Resolving Uneven Pod Distribution Using Anti-Affinity
             
           </span>
         </div>
@@ -3906,32 +3904,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    The Rancher v2.x Linux log collector script
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000020191/" class="md-nav__link">
         
   
   
@@ -3942,110 +3918,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Situation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v2x-linux-log-collector" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.x Linux log collector
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#download-and-run-the-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Download and run the script
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#optional-download-and-run-the-script-in-one-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      Optional: Download and run the script in one command
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Information
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Additional Information">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#options" class="md-nav__link">
-    <span class="md-ellipsis">
-      Options
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disclaimer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Disclaimer
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -10840,10 +10712,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../000022017/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Resolving Uneven Pod Distribution Using Anti-Affinity
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -10854,6 +10748,80 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Situation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -10893,26 +10861,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rancher-v2x-linux-log-collector" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rancher v2.x Linux log collector
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -10926,18 +10888,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#download-and-run-the-script" class="md-nav__link">
+  <a href="#cause" class="md-nav__link">
     <span class="md-ellipsis">
-      Download and run the script
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#optional-download-and-run-the-script-in-one-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      Optional: Download and run the script in one command
+      Cause
     </span>
   </a>
   
@@ -10949,21 +10902,6 @@
       Additional Information
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Additional Information">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#options" class="md-nav__link">
-    <span class="md-ellipsis">
-      Options
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -10992,39 +10930,65 @@
 
 
 
-<h1 id="the-rancher-v2x-linux-log-collector-script">The Rancher v2.x Linux log collector script</h1>
-<p>This document <strong>(000020191)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h1 id="resolving-uneven-pod-distribution-using-anti-affinity">Resolving Uneven Pod Distribution Using Anti-Affinity</h1>
+<p>This document <strong>(000022017)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>RKE2</p>
+<p>K3S</p>
 <h3 id="situation">Situation</h3>
-<h4 id="rancher-v2x-linux-log-collector">Rancher v2.x Linux log collector</h4>
-<p><strong>Note:</strong></p>
-<p><strong>This command requires curl or wget to be installed, and internet access from the node.</strong></p>
-<p><strong>This script is intended to collect logs from <a href="https://rancher.com/docs/rke/latest/en/">Rancher Kubernetes Engine (RKE) CLI</a> provisioned clusters, <a href="https://rancher.com/docs/k3s/latest/en/">K3s clusters</a>, <a href="https://docs.rke2.io/">RKE2 clusters</a>, Rancher provisioned <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-existing-nodes">Custom</a>, and <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-new-nodes-in-an-infra-provider">Node Driver</a> clusters.</strong></p>
-<p><strong>This script may not collect all necessary information when run on nodes in <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/set-up-clusters-from-hosted-kubernetes-providers">Hosted Kubernetes Provider clusters</a>.</strong></p>
-<p>Logs can be collected from a Linux node using the <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">Rancher v2.x log collector script</a>.</p>
-<p>The script needs to be downloaded and run directly on the node, using the root user or sudo.</p>
-<p>Output will be written to <code>/tmp</code> as a tar.gz archive named <code>&lt;hostname&gt;-&lt;date&gt;.tar.gz</code>, the default output directory can be changed with the <code>-d</code> flag.</p>
+<p>When a large number of pods are deployed in a Kubernetes cluster, it's common for them to be packed onto a few nodes, leaving other nodes with very little workload. This creates a situation where some nodes are overloaded, while others are underutilized, leading to performance problems and a higher risk of service disruption if an overloaded node fails.</p>
 <h3 id="resolution">Resolution</h3>
-<h3 id="download-and-run-the-script">Download and run the script</h3>
+<p>There are multiple ways to control pod placement, and anti-affinity is one of the most effective methods for solving this problem.</p>
+<p>This is a feature that gives the scheduler a rule to follow, telling it to actively avoid placing a new pod on a node that already has a pod of the same type.</p>
+<p>Here is a simple example of how to use anti-affinity in a Kubernetes Deployment. The configuration ensures that all pods of the same application are spread across different nodes</p>
+<div class="highlight"><pre><span></span><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: example-app
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      containers:
+      - name: example-app-container
+        image: nginx:latest
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - example-app
+            topologyKey: &quot;kubernetes.io/hostname&quot;
+</code></pre></div>
+<p>In this file:</p>
 <ul>
-<li>Download the script as: <code>rancher2_logs_collector.sh</code></li>
+<li>
+<p><strong><code>podAntiAffinity</code></strong>: This is the rule for repelling pods.</p>
+</li>
+<li>
+<p><strong><code>requiredDuringSchedulingIgnoredDuringExecution</code></strong>: This ensures the rule must be followed for the pod to be scheduled.</p>
+</li>
+<li>
+<p><strong><code>labelSelector</code></strong>: The scheduler looks for any pod with the label <code>app: example-app</code>.</p>
+</li>
+<li>
+<p><strong><code>topologyKey: "kubernetes.io/hostname"</code></strong>: This tells the scheduler to consider each individual node as a separate location. This ensures that no two pods with the label <code>app: example-app</code> are placed on the same node</p>
+</li>
 </ul>
-<p>Using <code>wget</code>:</p>
-<div class="highlight"><pre><span></span><code>wget --backups https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh
-</code></pre></div>
-<p>Using <code>curl</code>:</p>
-<div class="highlight"><pre><span></span><code>curl -OLs https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh
-</code></pre></div>
-<ul>
-<li>Run the script:</li>
-</ul>
-<div class="highlight"><pre><span></span><code>sudo bash rancher2_logs_collector.sh
-</code></pre></div>
-<h3 id="optional-download-and-run-the-script-in-one-command">Optional: Download and run the script in one command</h3>
-<div class="highlight"><pre><span></span><code>curl -Ls rnch.io/rancher2_logs | sudo bash
-</code></pre></div>
+<p>By using this configuration, an application with three replicas will be automatically placed on three separate nodes, which distributes the workload and improves overall reliability.</p>
+<h3 id="cause">Cause</h3>
+<p>The default Kubernetes scheduler is designed to find a suitable node for each new pod as it comes. It focuses on finding a node with enough available resources (like CPU and memory). However, it does not prioritise distributing pods evenly across all available nodes</p>
 <h3 id="additional-information">Additional Information</h3>
-<h4 id="options">Options</h4>
-<p>The available flags that can be passed to the script can be found in the <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">Rancher v2.x log collector script README</a>.</p>
+<p>Please refer to this link - <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity">https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
