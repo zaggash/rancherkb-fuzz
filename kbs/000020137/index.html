@@ -9153,7 +9153,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10969,7 +10969,7 @@
 kind: Deployment
 [...]
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Output of &#39;kubectl get deployment -o yaml&#39;:
+<div class="highlight"><pre><span></span><code>Output of &#39;kubectl get deployment -o yaml&#39; :
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>apiVersion: extensions/v1beta1
 kind: Deployment
@@ -10977,13 +10977,14 @@ kind: Deployment
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
 <p>Kubernetes resources, like Deployments, can exist in multiple API groups. If you don't specify an API group and version when using <code>kubectl</code>, it defaults to the first group listed in the Kubernetes API server's discovery documentation. In the current example, the Deployment resource is available under both the <code>apps/v1</code> and <code>extensions/v1beta1</code> API groups. For backward compatibility, the API server might list <code>extensions/v1beta1</code> first.</p>
-<p>To ensure that <code>kubectl</code> retrieves the resource from the desired API group, you can fully qualify the resource type. For example, to get Deployment resources from the <code>apps</code> API group, use ' <code>kubectl get deployments.apps -o yaml'</code>. To specify a particular version, you can use ' <code>kubectl get deployments.v1.apps -o yaml'</code>.</p>
+<p>To ensure that <code>kubectl</code> retrieves the resource from the desired API group, you can fully qualify the resource type. For example, to get Deployment resources from the <code>apps</code> API group, use '<code>kubectl get deployments.apps -o yaml'</code>. To specify a particular version, you can use '<code>kubectl get deployments.v1.apps -o yaml'</code>.</p>
 <h3 id="cause">Cause</h3>
 <p>The issue arises because Kubernetes resources can exist in multiple API groups and versions. If you don't specify the API group and version when using <code>kubectl</code>, it defaults to the first group listed in the API server's discovery documentation. This can lead to the resource being displayed under a different API group or version than originally specified, mainly due to backward compatibility.</p>
 <h3 id="additional-information">Additional Information</h3>
-<p>For more details on this behavior, you can check the <a href="https://github.com/kubernetes/kubernetes/issues/58131">Kubernetes GitHub Issue #58131</a>.</p>
-<p>The Kubernetes developer documentation on API resource versioning provides additional insights and can be found here.</p>
+<p>For more details on this behavior, you can check the <a href="https://github.com/kubernetes/kubernetes/issues/58131">Kubernetes GitHub Issue #58131</a>.<br />
+The Kubernetes developer documentation on API resource versioning provides additional insights and can be found <a href="">here</a>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

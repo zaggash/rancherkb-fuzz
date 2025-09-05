@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10989,19 +10989,19 @@
 <ul>
 <li>Kubernetes nodes can be scheduled to <code>Capacity</code>. Pods can consume all the available capacity on a node by default. This is an issue because nodes typically run quite a few system daemons that power the OS and Kubernetes itself. Unless resources are set aside for these system daemons, pods and system daemons compete for resources and lead to resource starvation issues on the node.</li>
 <li>The scheduler treats 'Allocatable' as available <code>capacity</code> for pods</li>
-<li>The <code>kubelet</code> exposes a feature named ' <strong>Node Allocatable</strong>' that helps to reserve compute resources for system daemons. Kubernetes recommends that cluster administrators configure 'Node Allocatable' based on their workload density on each node.</li>
-<li>' <strong>Allocatable</strong>' on a Kubernetes node is defined as the amount of compute resources that are available for pods (Allocatable = Total node capacity - kube-reserved - system-reserved). . The scheduler does not over-subscribe 'Allocatable'. 'CPU', 'memory', and 'ephemeral-storage' are supported values.</li>
+<li>The <code>kubelet</code> exposes a feature named '<strong>Node Allocatable</strong>' that helps to reserve compute resources for system daemons. Kubernetes recommends that cluster administrators configure 'Node Allocatable' based on their workload density on each node.</li>
+<li>'<strong>Allocatable</strong>' on a Kubernetes node is defined as the amount of compute resources that are available for pods (Allocatable = Total node capacity - kube-reserved - system-reserved). . The scheduler does not over-subscribe 'Allocatable'. 'CPU', 'memory', and 'ephemeral-storage' are supported values.</li>
 </ul>
 <h3 id="kube-reserved">Kube Reserved:</h3>
 <ul>
-<li><strong>KubeletConfiguration Setting</strong>: <code>kubeReserved: {}</code>. Example value <code>{cpu: 100m, memory: 100Mi, ephemeral-storage: 1Gi, pid=1000}</code> ``</li>
+<li><strong>KubeletConfiguration Setting</strong>: <code>kubeReserved: {}</code>. Example value <code>{cpu: 100m, memory: 100Mi, ephemeral-storage: 1Gi, pid=1000}</code></li>
 <li><code>kubeReserved</code> is meant to capture resource reservation for Kubernetes system daemons like the <code>kubelet</code>, <code>container runtime</code>, etc.</li>
 <li>In addition to <code>cpu</code>, <code>memory</code>, and <code>ephemeral-storage</code>, <code>pid</code> may be specified to reserve the specified number of process IDs for Kubernetes system daemons.</li>
 </ul>
-<h3 id="system-reserved">System Reserved</h3>
+<h3 id="system-reserved">System Reserved<a href="https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#system-reserved"></a></h3>
 <ul>
-<li><strong>KubeletConfiguration Setting</strong>: <code>systemReserved: {}</code>. Example value <code>{cpu: 100m, memory: 100Mi, ephemeral-storage: 1Gi, pid=1000}</code> ``</li>
-<li><strong><code>systemReserved</code></strong> is meant to capture resource reservation for OS system daemons like <code>sshd</code>, <code>udev</code>, etc. <code>systemReserved</code> should reserve <code>memory</code> for the <code>kernel</code> too since <code>kernel</code> memory is not accounted to pods in Kubernetes at this time. Reserving resources for user login sessions is also recommended ( <code>user.slice</code> in systemd world).</li>
+<li><strong>KubeletConfiguration Setting</strong>: <code>systemReserved: {}</code>. Example value <code>{cpu: 100m, memory: 100Mi, ephemeral-storage: 1Gi, pid=1000}</code></li>
+<li><strong><code>systemReserved</code></strong> is meant to capture resource reservation for OS system daemons like <code>sshd</code>, <code>udev</code>, etc. <code>systemReserved</code> should reserve <code>memory</code> for the <code>kernel</code> too since <code>kernel</code> memory is not accounted to pods in Kubernetes at this time. Reserving resources for user login sessions is also recommended (<code>user.slice</code> in systemd world).</li>
 <li>In addition to <code>cpu</code>, <code>memory</code>, and <code>ephemeral-storage</code>, <code>pid</code> may be specified to reserve the specified number of process IDs for OS system daemons.</li>
 <li>Be careful while enforcing <code>system-reserved</code> reservation, since it can lead to critical system services being CPU starved, OOM killed, or unable to fork on the node. The recommendation is to enforce <code>system-reserved</code> only if a user has profiled their nodes exhaustively to come up with precise estimates and is confident in their ability to recover if any process in that group is oom-killed</li>
 </ul>
@@ -11011,27 +11011,25 @@
 <ul>
 <li><strong>RKE2 cluster:</strong> In the Rancher UI go to Cluster management -&gt; Select your RKE2 cluster -&gt; Edit Config -&gt; Advanced, then specify the parameters as 'Additional Kubelet Args'. Add the following lines (sample), click on Save to apply.</li>
 </ul>
-<p><code>kube-reserved=cpu=1,memory=2Gi,ephemeral-storage=5Gi</code></p>
-<p><code>system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi</code></p>
+<p><code>kube-reserved=cpu=1,memory=2Gi,ephemeral-storage=5Gi</code><br />
+<code>system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi</code></p>
 <p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000oMa1&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000DCKeb" /></p>
 <ul>
 <li><strong>K3s cluster</strong>:  In the Rancher UI go to Cluster management -&gt; Select your K3s cluster -&gt; Edit Config -&gt; Advanced, then specify the parameters as 'Additional Kubelet Args'. Add the following lines ( these are a sample), click on Save to apply.</li>
 </ul>
-<p><code>kube-reserved=cpu=1,memory=2Gi,ephemeral-storage=5Gi</code></p>
-<p><code>system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi</code></p>
-<ul>
-<li><strong>RKE1 cluster</strong>: In the Rancher UI go to Cluster management -&gt; Select your RKE cluster -&gt; Edit Config -&gt; Edit as YAML, and under the 'Services' -&gt; 'Kubelet' -&gt; 'extra_args',  add the following lines (these are a sample), click on Save to apply.</li>
-</ul>
-<div class="highlight"><pre><span></span><code>    kubelet:
-      extra_args:
-        kube-reserved: &quot;cpu=1,memory=1Gi,ephemeral-storage=1Gi&quot;
-        system-reserved: &quot;cpu=500m,memory=1Gi,ephemeral-storage=1Gi&quot;
+<p><code>kube-reserved=cpu=1,memory=2Gi,ephemeral-storage=5Gi</code><br />
+<code>system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi</code>
+- <strong>RKE1 cluster</strong>: In the Rancher UI go to Cluster management -&gt; Select your RKE cluster -&gt; Edit Config -&gt; Edit as YAML, and under the 'Services' -&gt; 'Kubelet' -&gt; 'extra_args',  add the following lines (these are a sample), click on Save to apply. </p>
+<div class="highlight"><pre><span></span><code>  kubelet:
+    extra_args:
+      kube-reserved: &quot;cpu=1,memory=1Gi,ephemeral-storage=1Gi&quot;
+      system-reserved: &quot;cpu=500m,memory=1Gi,ephemeral-storage=1Gi&quot;
 </code></pre></div>
 <p>Standalone clusters:</p>
 <ul>
-<li><strong>RKE2 cluster</strong>: Specify the system-reserved and kube-reserved parameters under the configuration file available in the path /etc/rancher/rke2/config.yaml. Here is a sample /etc/rancher/rke2/config.yaml config for a worker (agent) node:</li>
+<li><strong>RKE2 cluster</strong>: Specify the system-reserved and kube-reserved parameters under the configuration file available in the path /etc/rancher/rke2/config.yaml. Here is a sample /etc/rancher/rke2/config.yaml config for a worker (agent) node:  </li>
 </ul>
-<div class="highlight"><pre><span></span><code>token:  rASpGladPp
+<p><div class="highlight"><pre><span></span><code>token:  rASpGladPp
 node-name: wk1.cluster.local
 node-ip: 10.10.24.1
 cluster-domain: cluster.local
@@ -11049,12 +11047,10 @@ kubelet-arg:
   - eviction-hard=memory.available&lt;500Mi,nodefs.available&lt;4%
 cni: calico
 </code></pre></div>
-<ul>
-<li><strong>K3s cluster</strong>:  Specify the system-reserved and kube-reserved settings under the configuration file available in /etc/rancher/h3s/config.yaml. Here is a sample /etc/rancher/k3s/config.yaml config for a worker(agent) node.</li>
-</ul>
-<p><code>token:  xxxxxxxxx
-  cluster-domain: k3s.local
-  tls-san:
+- <strong>K3s cluster</strong>:  Specify the system-reserved and kube-reserved settings under the configuration file available in /etc/rancher/h3s/config.yaml. Here is a sample /etc/rancher/k3s/config.yaml config for a worker(agent) node.  </p>
+<p><div class="highlight"><pre><span></span><code>token:  xxxxxxxxx
+cluster-domain: k3s.local
+tls-san:
   - k3s.local
 kube-apiserver-arg:
   - request-timeout=2m
@@ -11062,9 +11058,9 @@ kubelet-arg:
   - kube-reserved=cpu=1,memory=2Gi,ephemeral-storage=5Gi
   - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
   - eviction-hard=memory.available&lt;500Mi,nodefs.available&lt;4%
-<div class="highlight"><pre><span></span><code>- **RKE1 cluster**:  Speficy the system-reserved and kube-reserved settings as &#39;extra\_args&#39; for the kubelet in the cluster configuration file &#39;cluster.yml&#39;. Here is a sample cluster.yml config file:
 </code></pre></div>
-nodes:
+- <strong>RKE1 cluster</strong>:  Speficy the system-reserved and kube-reserved settings as 'extra_args' for the kubelet in the cluster configuration file 'cluster.yml'. Here is a sample cluster.yml config file: </p>
+<div class="highlight"><pre><span></span><code>nodes:
   - address: 192.168.100.41
     internal_address: 192.168.100.41
     user: root
@@ -11084,25 +11080,27 @@ nodes:
 cluster_name: rke-sample
 kubernetes_version: v1.26.15-rancher1-1
 services:
-etcd:
+  etcd:
     backup_config:
       interval_hours: 6
       retention: 30
-kube-api:
+  kube-api:
     service_cluster_ip_range: 10.41.0.0/16
-kube-controller:
+  kube-controller:
     cluster_cidr: 10.40.0.0/16
     service_cluster_ip_range: 10.41.0.0/16
-kubelet:
+  kubelet:
     cluster_dns_server: 10.41.0.10
     extra_args:
-      enforce-node-allocatable: "pods,kube-reserved,system-reserved"
-      kube-reserved: "cpu=1,memory=1Gi,ephemeral-storage=1Gi"
-      system-reserved: "cpu=500m,memory=1Gi,ephemeral-storage=1Gi"
+      enforce-node-allocatable: &quot;pods,kube-reserved,system-reserved&quot;
+      kube-reserved: &quot;cpu=1,memory=1Gi,ephemeral-storage=1Gi&quot;
+      system-reserved: &quot;cpu=500m,memory=1Gi,ephemeral-storage=1Gi&quot;
       kube-reserved-cgroup: /kube.slice
       system-reserved-cgroup: /system.slice
-      eviction-hard: "memory.available&lt;500Mi,imagefs.available&lt;10%,nodefs.available&lt;10%,nodefs.inodesFree&lt;5%"</code></p>
+      eviction-hard: &quot;memory.available&lt;500Mi,imagefs.available&lt;10%,nodefs.available&lt;10%,nodefs.inodesFree&lt;5%&quot;
+</code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

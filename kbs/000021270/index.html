@@ -9153,7 +9153,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10963,17 +10963,17 @@
 <h1 id="cgroup-misc-controller-introduce-instability-in-kubelet">Cgroup "Misc controller" introduce instability in Kubelet</h1>
 <p>This document <strong>(000021270)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p><strong>Kubernetes</strong> version build with <strong>runc library &lt; 1.1.6</strong></p>
-<p>A node running <strong>Cgroup V1</strong></p>
-<p>You can check the <strong>Runc library</strong> version of your <strong>Kubernetes version</strong> in the go.mod file in the Kubernetes repo.</p>
-<p>Eg: See the below example for Kubernetes 1.24.6 using runc 1.1.1</p>
-<p><a href="https://github.com/kubernetes/kubernetes/blob/v1.24.6/go.mod#L66">https://github.com/kubernetes/kubernetes/blob/v1.24.6/go.mod#L66</a></p>
+<p><strong>Kubernetes</strong> version build with <strong>runc library &lt; 1.1.6</strong><br />
+A node running <strong>Cgroup V1</strong></p>
+<p>You can check the <strong>Runc library</strong> version of your <strong>Kubernetes version</strong> in the go.mod file in the Kubernetes repo.<br />
+Eg: See the below example for Kubernetes 1.24.6 using runc 1.1.1<br />
+<a href="https://github.com/kubernetes/kubernetes/blob/v1.24.6/go.mod#L66">https://github.com/kubernetes/kubernetes/blob/v1.24.6/go.mod#L66</a></p>
 <h3 id="situation">Situation</h3>
 <p>The <strong>Kubelet</strong> on the node report the following error message</p>
 <div class="highlight"><pre><span></span><code>kubelet_getters.go:300] &quot;Path does not exist&quot; path=&quot;/var/lib/kubelet/pods/&lt;ID_NUMBER&gt;/volumes&quot;
 </code></pre></div>
-<p>These lines fill up the kubelet log ending up in gigabyte of logs.</p>
-<p>This can also cause high CPU usage.</p>
+<p>These lines fill up the kubelet log ending up in gigabyte of logs.<br />
+This can also cause high CPU usage.</p>
 <h3 id="resolution">Resolution</h3>
 <p>To fix the issue you need to either :</p>
 <ul>
@@ -10983,27 +10983,29 @@
 <ul>
 <li>Upgrade to a Kubernetes version using runc libraries &gt;= 1.1.6</li>
 </ul>
-<p><em>It is recommended to upgrade your Kubernetes version.</em></p>
-<p><em>Doing a change at the Kernel level may introduce unkowns to the stability of your system.</em></p>
+<p><em>It is recommended to upgrade your Kubernetes version.</em><br />
+<em>Doing a change at the Kernel level may introduce unkowns to the stability of your system.</em><br />
+</p>
 <h3 id="cause">Cause</h3>
-<p>The issue comes from the integration of the so called <a href="https://docs.kernel.org/admin-guide/cgroup-v2.html#misc">Misc controller</a>  in Kernel 5.13.</p>
-<p>Problem comes from a discrepancy between the code creating the "Misc" Cgroup and the code cleaning the Cgroup that doesn't handle the "Misc" Cgroup, leaving it behind.</p>
+<p>The issue comes from the integration of the so called <a href="https://docs.kernel.org/admin-guide/cgroup-v2.html#misc">Misc controller</a>  in Kernel 5.13.<br />
+Problem comes from a discrepancy between the code creating the "Misc" Cgroup and the code cleaning the Cgroup that doesn't handle the "Misc" Cgroup, leaving it behind.</p>
 <ul>
 <li><strong>runc</strong> integrated a <strong>fix</strong> in <strong>1.1.6</strong>, <strong><em>HOWEVER</em></strong></li>
 <li><strong>kubelet</strong> depends on <strong>runc's cgroup libraries</strong></li>
 <li>In order to clean up pods using the new "Misc" controller, runc cgroup library need to be updated to be aware of it.</li>
 <li><strong>So even if your system run 1.1.6 but kubelet is not build with these library, the problem occurs.</strong></li>
 </ul>
-<p>Ex:</p>
-<p>Kubernetes 1.24.8 uses runc library 1.1.1</p>
-<p><a href="https://github.com/kubernetes/kubernetes/blob/v1.24.8/go.mod#L66">https://github.com/kubernetes/kubernetes/blob/v1.24.8/go.mod#L66</a></p>
-<p>The first kubernetes release with runc library 1.1.6 in k8s 1.24.x is <strong>K8s 1.24.14</strong></p>
-<p><a href="https://github.com/kubernetes/kubernetes/blob/v1.24.14/go.mod#L59">https://github.com/kubernetes/kubernetes/blob/v1.24.14/go.mod#L59</a></p>
-<p>with the help of this PR</p>
-<p><a href="https://github.com/kubernetes/kubernetes/pull/117892">https://github.com/kubernetes/kubernetes/pull/117892</a></p>
-<p>The following comment list all PR for all impacted Kubernetes minor releases</p>
-<p><a href="https://github.com/opencontainers/runc/issues/3849#issuecomment-1544519250">https://github.com/opencontainers/runc/issues/3849#issuecomment-1544519250</a></p>
+<p>Ex:<br />
+Kubernetes 1.24.8 uses runc library 1.1.1<br />
+<a href="https://github.com/kubernetes/kubernetes/blob/v1.24.8/go.mod#L66">https://github.com/kubernetes/kubernetes/blob/v1.24.8/go.mod#L66</a></p>
+<p>The first kubernetes release with runc library 1.1.6 in k8s 1.24.x is <strong>K8s 1.24.14</strong><br />
+<a href="https://github.com/kubernetes/kubernetes/blob/v1.24.14/go.mod#L59">https://github.com/kubernetes/kubernetes/blob/v1.24.14/go.mod#L59</a><br />
+with the help of this PR<br />
+<a href="https://github.com/kubernetes/kubernetes/pull/117892">https://github.com/kubernetes/kubernetes/pull/117892</a></p>
+<p>The following comment list all PR for all impacted Kubernetes minor releases<br />
+<a href="https://github.com/opencontainers/runc/issues/3849#issuecomment-1544519250">https://github.com/opencontainers/runc/issues/3849#issuecomment-1544519250</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

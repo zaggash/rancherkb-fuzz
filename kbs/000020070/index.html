@@ -9207,7 +9207,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11084,19 +11084,15 @@
 <ol>
 <li>Edit the cluster configuration YAML file to include the <code>use-forwarded-headers: true</code> option for the ingress, as follows:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>ingress:
-     provider: nginx
-     options:
-       use-forwarded-headers: true
+<p><div class="highlight"><pre><span></span><code>ingress:
+  provider: nginx
+  options:
+    use-forwarded-headers: true
 </code></pre></div>
-<ol>
-<li>Apply the changes to the cluster, by invoking <code>rke up</code>:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>rke up --config &lt;cluster configuration yaml file&gt;
+2. Apply the changes to the cluster, by invoking <code>rke up</code>:</p>
+<p><div class="highlight"><pre><span></span><code>rke up --config &lt;cluster configuration yaml file&gt;
 </code></pre></div>
-<ol>
-<li>Verify the new configuration:</li>
-</ol>
+3. Verify the new configuration:</p>
 <div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep use_forwarded_headers | grep true &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
 </code></pre></div>
 <h5 id="configuration-for-rancher-v2x-provisioned-clusters">Configuration for Rancher v2.x provisioned clusters</h5>
@@ -11107,21 +11103,15 @@
 <li>Click "Edit as YAML".</li>
 <li>Include the <code>use-forwarded-headers</code> option for the ingress, as follows:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>ingress:
-     provider: nginx
-     options:
-       use-forwarded-headers: true
+<p><div class="highlight"><pre><span></span><code>ingress:
+  provider: nginx
+  options:
+    use-forwarded-headers: true
 </code></pre></div>
-<ol>
-<li>
-<p>Click "Save" at the bottom of the page.</p>
-</li>
-<li>
-<p>Wait for cluster to finish upgrading.</p>
-</li>
-<li>Go back to the Cluster Dashboard and click "Launch kubectl".</li>
-<li>Run the following inside the kubectl CLI to verify the new argument:</li>
-</ol>
+6. Click "Save" at the bottom of the page.
+7. Wait for cluster to finish upgrading.
+8. Go back to the Cluster Dashboard and click "Launch kubectl".
+9. Run the following inside the kubectl CLI to verify the new argument:</p>
 <div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep use_forwarded_headers | grep true &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
 </code></pre></div>
 <h3 id="additional-information">Additional Information</h3>
@@ -11130,6 +11120,7 @@
 <li><a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#use-forwarded-headers">ingress-nginx ConfigMap configuration documentation</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

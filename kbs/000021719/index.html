@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10963,7 +10963,7 @@
 <h1 id="failed-snapshot-restore-for-rke2-clusters-with-misplaced-mountpoint-for-the-rke2-binariesconfig-files">Failed snapshot restore for RKE2 clusters with misplaced mountpoint for the RKE2 binaries/config files</h1>
 <p>This document <strong>(000021719)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>A standalone or Rancher-provisioned RKE2 cluster, in which a rollback is performed from:</p>
+<p>A standalone or Rancher-provisioned RKE2 cluster, in which a rollback is performed from: </p>
 <ul>
 <li>a v1.22 patch version &gt;= v1.22.16+rke2r1,</li>
 <li>a v1.23 patch version &gt;= v1.23.15+rke2r1,</li>
@@ -10992,10 +10992,11 @@ systemctl daemon-reload
 <li>The RKE2 install script for v1.24.4 does not install to <strong>/opt/rke2</strong> if <strong>/usr/local</strong> is on a separate mount.</li>
 <li>The RKE2 install script for v1.24.17 does install to <strong>/opt/rke2</strong> if <strong>/usr/local</strong> is on a separate mount.</li>
 <li>As part of the copy process, the systemd unit files are stored into an override in <strong>/etc/system/systemd</strong>, with <strong>/opt/rke2</strong> defined in the exec path</li>
-<li>When you rollback from v1.24.17 to v1.24.4, the binaries are written to <strong>/usr/local</strong>, but the systemd unit file override remains in place pointing to /opt/rke2 and the v1.24.17 binaries. The restore will fail as a result of not finding the right binaries and systemd config files.</li>
+<li>When you rollback from v1.24.17 to v1.24.4, the binaries are written to <strong>/usr/local</strong>, but the systemd unit file override remains in place pointing to /opt/rke2 and the v1.24.17 binaries. The restore will fail as a result of not finding the right binaries and systemd config files.<a href="https://github.com/rancher/system-agent-installer-rke2/blob/v1.24.9%2Brke2r1/package/run.sh%29."></a></li>
 <li>This behaviour is the result of an earlier bug in the RKE2 install <a href="https://github.com/rancher/system-agent-installer-rke2/blob/v1.24.4%2Brke2r1/package/run.sh#L9">script</a> that was fixed in the following <a href="https://github.com/rancher/system-agent-installer-rke2/blob/v1.24.9%2Brke2r1/package/run.sh">script</a>.</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

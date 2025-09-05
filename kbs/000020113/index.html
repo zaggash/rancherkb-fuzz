@@ -9159,7 +9159,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10986,24 +10986,12 @@
 <h4 id="workaround">Workaround</h4>
 <p>These steps will assume you have the Docker data root set to <code>/other-docker-root</code>. Change <code>/other-docker-root</code> to whatever your custom path is:</p>
 <ol>
-<li>
-<p>Rancher UI -&gt; Cluster -&gt; System Project -&gt; Workloads -&gt; cattle-logging Namespace</p>
-</li>
-<li>
-<p>Find workload rancher-logging-fluentd-linux</p>
-</li>
-<li>
-<p>Edit YAML</p>
-</li>
-<li>
-<p>Edit volume dockerroot</p>
-</li>
-<li>
-<p>Change "Path on the Node" from <code>/var/lib/docker</code> to <code>/other-docker-root</code></p>
-</li>
-<li>
-<p>Add volume (with the following details):</p>
-</li>
+<li>Rancher UI -&gt; Cluster -&gt; System Project -&gt; Workloads -&gt; cattle-logging Namespace</li>
+<li>Find workload rancher-logging-fluentd-linux</li>
+<li>Edit YAML</li>
+<li>Edit volume dockerroot</li>
+<li>Change "Path on the Node" from <code>/var/lib/docker</code> to <code>/other-docker-root</code></li>
+<li>Add volume (with the following details):</li>
 </ol>
 <div class="highlight"><pre><span></span><code>Volume Name: dockerrootcustom
 Type: bind-mount
@@ -11015,6 +11003,7 @@ Mount Point: /other-docker-root
 </ol>
 <p>At this point logging should be working with your non-default Docker root directory. You should be able to verify this on your logging target. Keep in mind it may take a few minutes for logs to show up there as fluentd is configured to clear its buffer every 60 seconds by default.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

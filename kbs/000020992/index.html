@@ -9162,7 +9162,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10981,14 +10981,14 @@
 <h1 id="collecting-file-logs-with-host-tailer-on-the-logging-operator">Collecting file logs with Host Tailer on the Logging Operator</h1>
 <p>This document <strong>(000020992)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>SUSE Rancher 2.6.9</p>
-<p>SUSE Rancher 2.7.x</p>
+<p>SUSE Rancher 2.6.9<br />
+SUSE Rancher 2.7.x</p>
 <h3 id="situation">Situation</h3>
 <p><strong>Pre-requisites</strong></p>
 <ul>
 <li><a href="https://ranchermanager.docs.rancher.com/pages-for-subheaders/logging">Rancher Logging operator</a></li>
 </ul>
-<p>To retrieve logs not written to the stdout (e.g. kube-audit logs), one can use the Banzai  <a href="https://banzaicloud.com/docs/one-eye/logging-operator/configuration/extensions/kubernetes-host-tailer/#host-file-tailer">Host Tailer</a> CRD provided by <a href="https://banzaicloud.com/">https://banzaicloud.com/</a>.  From the documentation: " <em>HostTailer’s main goal is to tail custom files and transmit their changes to stdout</em>" <code>.</code> This way, the logging-operator can process them. Example usage is <a href="https://banzaicloud.com/docs/one-eye/logging-operator/configuration/extensions/kubernetes-host-tailer/">here</a>. Similarly, you can use the <a href="https://banzaicloud.com/docs/one-eye/logging-operator/configuration/extensions/kubernetes-host-tailer/#create-file-tailer">file-tailer</a> if you know the log file name.</p>
+<p>To retrieve logs not written to the stdout (e.g. kube-audit logs), one can use the Banzai  <a href="https://banzaicloud.com/docs/one-eye/logging-operator/configuration/extensions/kubernetes-host-tailer/#host-file-tailer">Host Tailer</a> CRD provided by <a href="https://banzaicloud.com/">https://banzaicloud.com/</a>.  From the documentation: "<em>HostTailer’s main goal is to tail custom files and transmit their changes to stdout</em>"<code>.</code> This way, the logging-operator can process them. Example usage is <a href="https://banzaicloud.com/docs/one-eye/logging-operator/configuration/extensions/kubernetes-host-tailer/">here</a>. Similarly, you can use the <a href="https://banzaicloud.com/docs/one-eye/logging-operator/configuration/extensions/kubernetes-host-tailer/#create-file-tailer">file-tailer</a> if you know the log file name.</p>
 <h3 id="resolution">Resolution</h3>
 <p>1. Create a HostTailer to retrieve the audit logs</p>
 <div class="highlight"><pre><span></span><code>apiVersion: logging-extensions.banzaicloud.io/v1alpha1
@@ -11006,7 +11006,7 @@ spec:
 <div class="highlight"><pre><span></span><code>kubectl get hosttailer -n  default
 </code></pre></div>
 <p>1.3  Verify  the daemonset created by the HostTailer</p>
-<div class="highlight"><pre><span></span><code>kubectl get daemonsets -n default
+<div class="highlight"><pre><span></span><code>kubectl get daemonsets -n default 
 </code></pre></div>
 <p>1.4  Verify the HostTailer pod labels</p>
 <div class="highlight"><pre><span></span><code>$ kubectl get pods --show-labels -n default | grep -i hosttailer
@@ -11052,16 +11052,18 @@ spec:
 <ul>
 <li><a href="https://ranchermanager.docs.rancher.com/v2.7/pages-for-subheaders/logging">https://ranchermanager.docs.rancher.com/v2.7/pages-for-subheaders/logging</a></li>
 </ul>
-<p><strong>Flow and Outputs</strong></p>
+<p><strong>Flow and Outputs</strong><br />
+</p>
 <ul>
 <li><a href="https://ranchermanager.docs.rancher.com/v2.7/integrations-in-rancher/logging/custom-resource-configuration/flows-and-clusterflows">https://ranchermanager.docs.rancher.com/v2.7/integrations-in-rancher/logging/custom-resource-configuration/flows-and-clusterflows</a></li>
 <li><a href="https://ranchermanager.docs.rancher.com/v2.7/integrations-in-rancher/logging/custom-resource-configuration/outputs-and-clusteroutputs">https://ranchermanager.docs.rancher.com/v2.7/integrations-in-rancher/logging/custom-resource-configuration/outputs-and-clusteroutputs</a></li>
 </ul>
 <p><strong>RKE2 Kube-audit logs</strong></p>
 <ul>
-<li><a href="https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log-in-downstream-clusters">https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log-in-downstream-clusters</a></li>
+<li><a href="https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log-in-downstream-clusters">https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log-in-downstream-clusters</a><a href="https://www.suse.com/support/kb/doc/?id=000021171"></a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

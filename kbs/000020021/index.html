@@ -9183,7 +9183,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11041,20 +11041,19 @@
 <li>Download a copy of the kubeconfig file for a cluster from the Rancher UI and add it to the default ~/.kube/config file or source it with <code>KUBECONFIG=/path/to/file</code>.</li>
 <li>Execute <code>kubectl get nodes</code> and observe you will be prompted for your Rancher username and password. If you are using an <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config#external-vs-local-authentication">authentication provider</a> you will also be prompted to select this versus local authentication. You can prevent this prompt by adding the <code>--auth-provider=&lt;provider&gt;</code> argument in the kubeconfig file, per the following example:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>     args:
+<p><div class="highlight"><pre><span></span><code>  args:
     - token
     - --auth-provider=openLdapProvider
     - --server=rancher.example.com
 </code></pre></div>
-<ol>
-<li>After providing the username and password, the kubeconfig token will be generated and valid for the TTL ( <code>kubeconfig-token-ttl-minutes</code>) configured in Rancher.</li>
-<li>You can verify the configured expiry time of the kubeconfig token within the Rancher UI, under <code>API &amp; Keys</code>.</li>
-<li>Once the token expires, you will be prompted to log in again upon executing <code>kubectl</code> commands against the cluster, per step 4.</li>
-</ol>
+5. After providing the username and password, the kubeconfig token will be generated and valid for the TTL (<code>kubeconfig-token-ttl-minutes</code>) configured in Rancher.
+6. You can verify the configured expiry time of the kubeconfig token within the Rancher UI, under <code>API &amp; Keys</code>.
+7. Once the token expires, you will be prompted to log in again upon executing <code>kubectl</code> commands against the cluster, per step 4.</p>
 <blockquote>
 <p><strong>N.B.</strong> By default the generated kubeconfig token is cached within the directory <code>.cache</code> in the working directory from which you invoke <code>kubectl</code>, when you are prompted to log in. As a result executing <code>kubectl</code> from a different directory, will re-prompt for authentication and generate a fresh token cache under <code>.cache</code>. To prevent this behavior, you can set the token cache location with the environment variable <code>RANCHER_CONFIG_DIR</code>, e.g. <code>export RANCHER_CONFIG_DIR=~/.rancher</code> to avoid being prompted for authentication when you change the working directory.</p>
 </blockquote>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

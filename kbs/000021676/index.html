@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11022,15 +11022,24 @@ INFO[0000] /var/lib/rancher/rke2/server/tls/etcd/peer-server-client.crt: certifi
 <h3 id="cause">Cause</h3>
 <p>In a Rancher-provisioned RKE2 cluster, there are two new certificates not managed by RKE2 itself:</p>
 <ul>
-<li><strong>/var/lib/rancher/rke2/server/tls/kube-scheduler/</strong></li>
-<li>kube-scheduler.key</li>
+<li>
+<p><strong>/var/lib/rancher/rke2/server/tls/kube-scheduler/</strong></p>
+</li>
+<li>
+<p>kube-scheduler.key</p>
+</li>
 <li>kube-scheduler.crt</li>
-<li><strong>/var/lib/rancher/rke2/server/tls/kube-controller-manager/</strong></li>
-<li>kube-controller-manager.crt</li>
+<li>
+<p><strong>/var/lib/rancher/rke2/server/tls/kube-controller-manager/</strong></p>
+</li>
+<li>
+<p>kube-controller-manager.crt</p>
+</li>
 <li>kube-controller-manager.key</li>
 </ul>
 <p>These certificates are not created and managed by the RKE2 supervisor process. Instead, they are managed by custom kube-controller-manager and kube-scheduler args added by Rancher that instruct the controller-manager and kube-scheduler to create self-signed certs in these locations.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

@@ -9168,7 +9168,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11013,12 +11013,14 @@
 <li>SSH into the node.</li>
 <li>Remove stuck containers:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>file-deployer<span class="w"> </span>cert-deployer
+<p><div class="highlight"><pre><span></span><code>docker<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>file-deployer<span class="w"> </span>cert-deployer
 </code></pre></div>
-<ol>
-<li>Trigger a cluster update:</li>
+3. Trigger a cluster update:</p>
+<ul>
 <li>For RKE CLI provisioned clusters, invoke <code>rke up</code>.</li>
-<li>For Rancher provisioned clusters:<ul>
+<li>
+<p>For Rancher provisioned clusters:</p>
+<ul>
 <li>Browse to the cluster in the Rancher UI</li>
 <li>Click <code>Edit</code> from the action menu</li>
 <li>Click <code>Edit as YAML</code></li>
@@ -11026,8 +11028,9 @@
 <li>Click <code>Save</code></li>
 </ul>
 </li>
-</ol>
+</ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

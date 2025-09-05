@@ -9153,7 +9153,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10976,19 +10976,18 @@
 <li>Reduce the etcd snapshots retention on the downstream cluster configuration and disable S3 backups temporarily.</li>
 <li>Edit the 'rke2-etcd-snapshots' ConfigMap in the 'kube-system' namespace on the downstream cluster and remove the values beneath the data field:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>kubectl edit ConfigMap -n kube-system rke2-etcd-snapshots
+<p><div class="highlight"><pre><span></span><code>kubectl edit ConfigMap -n kube-system rke2-etcd-snapshots
 </code></pre></div>
-<ul>
-<li>After saving the edits above, Fleet should trigger all of the snapshots it missed.</li>
-<li>Change the snapshot schedule to every 5 minutes to allow it to apply its retention settings and clean up the snapshots. This will happen after waiting for the 5-minute period.</li>
-<li>Clean the on-demand snapshots since they are not automatically cleaned by the retention settings. To do this, delete them on each node's local filesystem. After a few minutes, Rancher will reconcile the changes, and the old on-demand snapshots will be removed from the UI.</li>
-<li>Re-enable S3 snapshots and verify if new snapshots are being saved there.</li>
-<li>Update the cluster configuration to re-enable the original cron schedule and retention settings.</li>
-</ul>
+- After saving the edits above, Fleet should trigger all of the snapshots it missed.
+- Change the snapshot schedule to every 5 minutes to allow it to apply its retention settings and clean up the snapshots. This will happen after waiting for the 5-minute period.
+- Clean the on-demand snapshots since they are not automatically cleaned by the retention settings. To do this, delete them on each node's local filesystem. After a few minutes, Rancher will reconcile the changes, and the old on-demand snapshots will be removed from the UI.
+- Re-enable S3 snapshots and verify if new snapshots are being saved there.
+- Update the cluster configuration to re-enable the original cron schedule and retention settings.</p>
 <h3 id="cause">Cause</h3>
 <p>If the number of etcd nodes and snapshot retention count is too high, the rke2-etcd-snapshots configmap will grow too large and eventually the rke2-server process will be unable to save the configmap as it has grown over 1MB.</p>
 <p>This issue was tracked in https://github.com/rancher/rke2/issues/4495</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

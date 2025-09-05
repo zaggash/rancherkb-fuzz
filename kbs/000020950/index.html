@@ -9162,7 +9162,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10989,9 +10989,9 @@
 <div class="highlight"><pre><span></span><code>[ERROR] Failed to handling tunnel request from remote address x.x.x.x:42412 (X-Forwarded-For: x.x.x.x): response 400: cluster not found
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
-<p>The error message " <strong><em>Failed to handling tunnel request from remote address x.x.x.x:42412 (X-Forwarded-For: x.x.x.x): response 400: cluster not found</em></strong>"  indicates that on some hosts from now-deleted clusters, there are Rancher agent containers/Pods that are still running and attempting to connect to Rancher.</p>
+<p>The error message "<strong><em>Failed to handling tunnel request from remote address x.x.x.x:42412 (X-Forwarded-For: x.x.x.x): response 400: cluster not found</em></strong>"  indicates that on some hosts from now-deleted clusters, there are Rancher agent containers/Pods that are still running and attempting to connect to Rancher.</p>
 <p>To locate these instances and stop the running containers or hosts to prevent these messages:</p>
-<p>Suppose your load-balancer is performing Layer-7 load-balancing and setting the X-Forwarded-For header itself. In that case, you could enable use-forwarded-headers on the ingress-nginx controller in the Rancher local cluster ( <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#use-forwarded-headers">https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#use-forwarded-headers</a>).</p>
+<p>Suppose your load-balancer is performing Layer-7 load-balancing and setting the X-Forwarded-For header itself. In that case, you could enable use-forwarded-headers on the ingress-nginx controller in the Rancher local cluster (<a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#use-forwarded-headers">https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#use-forwarded-headers</a>).</p>
 <p>This would pass through the X-Forwarded-For header from the loadbalancer, enabling you to identify the hosts from which these requests originate within the Rancher Pod logs.</p>
 <h3 id="cause">Cause</h3>
 <p>Remaining nodes from deleted clusters trying to connect to Rancher.</p>
@@ -11002,6 +11002,7 @@
 <li>the X-Forwarded-For address is the load-balancer forwarding the requests to the cluster.</li>
 </ol>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

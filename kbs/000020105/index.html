@@ -9501,7 +9501,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11672,7 +11672,7 @@
 <li>Confirm the OS is covered in the <a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/">supported versions</a></li>
 <li>Resource needs can vary based on cluster size and workload, however, in general, no less than 8GB of memory and 2 vCPUs is recommended</li>
 <li>SSD storage is recommended, and should be considered a minimum requirement for server nodes, or nodes with the <code>etcd</code> role</li>
-<li>Firewall rules allow connectivity for nodes ( <a href="https://rke.docs.rancher.com/os#ports">RKE,</a> <a href="https://docs.rke2.io/install/requirements#networking">RKE2</a>, <a href="https://rancher.com/docs/k3s/latest/en/installation/installation-requirements/#networking">k3s</a>)</li>
+<li>Firewall rules allow connectivity for nodes (<a href="https://rke.docs.rancher.com/os#ports">RKE,</a> <a href="https://docs.rke2.io/install/requirements#networking">RKE2</a>, <a href="https://rancher.com/docs/k3s/latest/en/installation/installation-requirements/#networking">k3s</a>)</li>
 <li>A static IP for all nodes is required, if using DHCP, all nodes should have a reserved address</li>
 <li>Swap is disabled on the nodes</li>
 <li>Unique hostnames are used for every node within a cluster</li>
@@ -11682,8 +11682,8 @@
 <p>The Rancher management cluster should be dedicated to running the Rancher deployment, additional workloads added to the cluster can contend for resources and impact the performance and predictability of Rancher.</p>
 <p>Applications that are part of the rancher catalog (e.g. rancher-monitoring, rancher-logging, neuvector, rancher-cis-benchmark) may be deployed into the Rancher Management Cluster as well, but it is important to ensure there are sufficient resources (cpu, memory, disk, network).</p>
 <p>This is also important to consider in downstream clusters, the <a href="https://rancher.com/docs/rancher/v2.x/en/overview/concepts/#etcd-nodes">etcd</a> and <a href="https://rancher.com/docs/rancher/v2.x/en/overview/concepts/#controlplane-nodes">control plane</a> nodes (RKE), and <a href="https://rancher.com/docs/rancher/v2.x/en/overview/architecture-recommendations/#k3s-kubernetes-cluster-installations">server nodes</a> (RKE2/k3s) should be dedicated to the purpose. For large clusters it may also be appropriate that each node <a href="https://ranchermanager.docs.rancher.com/reference-guides/rancher-manager-architecture/architecture-recommendations#contrasting-rke-cluster-architecture-for-rancher-server-and-for-downstream-kubernetes-clusters">has a single role</a>, for example, separate nodes for the etcd and control plane roles.</p>
-<p>Checks</p>
-<p>Using the following commands on each cluster, check and confirm for any unexpected workloads running on the Rancher management cluster, or running on the server or etcd/control plane nodes of a downstream cluster.</p>
+<p>Checks<br />
+Using the following commands on each cluster, check and confirm for any unexpected workloads running on the Rancher management cluster, or running on the server or etcd/control plane nodes of a downstream cluster.</p>
 <h5 id="rancher-management-local-cluster">Rancher management (local) cluster</h5>
 <ul>
 <li>Check for any unexpected pods running in the cluster: <code>kubectl get pods --all-namespaces</code></li>
@@ -11729,103 +11729,14 @@ done
 <ul>
 <li>When deploying the Rancher management (local) cluster it is recommended to use the following configuration:</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th>Distribution</th>
-<th>Recommendation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>RKE</td>
-<td>3 nodes with all roles</td>
-</tr>
-<tr>
-<td>RKE2</td>
-<td>3 server nodes (all roles)</td>
-</tr>
-<tr>
-<td>k3s (external datastore)</td>
-<td>2 server nodes</td>
-</tr>
-<tr>
-<td>k3s (embedded etcd)</td>
-<td>3 server nodes (all roles)</td>
-</tr>
-</tbody>
-</table>
+<p>DistributionRecommendationRKE3 nodes with all rolesRKE23 server nodes (all roles)k3s (external datastore)2 server nodesk3s (embedded etcd)3 server nodes (all roles)</p>
 <ul>
 <li>Confirm the components of all clusters and external datastores (k3s) are satisfying minimum HA requirements:</li>
 </ul>
 <p>RKE / RKE2</p>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Minimum</th>
-<th>Recommended</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>etcd nodes</td>
-<td>3</td>
-<td>3</td>
-<td>To maintain quorum it is important to have an uneven # of nodes, and to provide tolerance for at least 1 node failure</td>
-</tr>
-<tr>
-<td>control plane nodes</td>
-<td>2</td>
-<td>2</td>
-<td>Allow tolerance for at least 1 node failure</td>
-</tr>
-<tr>
-<td>worker nodes</td>
-<td>2</td>
-<td>N/A</td>
-<td>Allow tolerance for at least 1 worker node failure, scale up to meet the workload needs</td>
-</tr>
-</tbody>
-</table>
+<p>ComponentMinimumRecommendedNotesetcd nodes33To maintain quorum it is important to have an uneven # of nodes, and to provide tolerance for at least 1 node failurecontrol plane nodes22Allow tolerance for at least 1 node failureworker nodes2N/AAllow tolerance for at least 1 worker node failure, scale up to meet the workload needs</p>
 <p>k3s</p>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Minimum</th>
-<th>Recommended</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>external datastore</td>
-<td>2</td>
-<td>2 or greater</td>
-<td>(optional) The external datastore should provide failover to a standby using the <a href="https://docs.k3s.io/datastore#external-datastore-configuration-parameters">datastore-endpoint</a></td>
-</tr>
-<tr>
-<td>server nodes</td>
-<td>2</td>
-<td>2 or greater</td>
-<td>(external datastore) Allow tolerance for at least 1 server node failure</td>
-</tr>
-<tr>
-<td>server nodes</td>
-<td>3</td>
-<td>3</td>
-<td>(embedded etcd) To maintain quorum it is important to have an uneven # of nodes, and to provide tolerance for at least 1 node failure</td>
-</tr>
-<tr>
-<td>agent nodes</td>
-<td>2</td>
-<td>N/A</td>
-<td>Allow tolerance for at least 1 agent node failure, scale up to meet the workload needs</td>
-</tr>
-</tbody>
-</table>
+<p>ComponentMinimumRecommendedNotesexternal datastore22 or greater(optional) The external datastore should provide failover to a standby using the <a href="https://docs.k3s.io/datastore#external-datastore-configuration-parameters">datastore-endpoint</a>server nodes22 or greater(external datastore) Allow tolerance for at least 1 server node failureserver nodes33(embedded etcd) To maintain quorum it is important to have an uneven # of nodes, and to provide tolerance for at least 1 node failureagent nodes2N/AAllow tolerance for at least 1 agent node failure, scale up to meet the workload needs</p>
 <blockquote>
 <p>K3s allows for external (SQL) and embedded (etcd) datastore options, please refer to the appropriate notes in the table.</p>
 </blockquote>
@@ -11844,28 +11755,7 @@ done
 <li>For high availability, with all Rancher management nodes configured as upstream targets</li>
 <li>With a <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/infrastructure-setup/amazon-elb-load-balancer#health-check-paths-for-nginx-ingress-and-traefik-ingresses">health check</a> to one of the following paths:</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th>Distribution</th>
-<th>Health check path</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>RKE</td>
-<td><code>/healthz</code></td>
-</tr>
-<tr>
-<td>RKE2</td>
-<td><code>/healthz</code></td>
-</tr>
-<tr>
-<td>k3s (traefik)</td>
-<td><code>/ping</code></td>
-</tr>
-</tbody>
-</table>
+<p>DistributionHealth check pathRKE<code>/healthz</code>RKE2<code>/healthz</code>k3s (traefik)<code>/ping</code></p>
 <blockquote>
 <p>A health check interval is generally recommended at 30 seconds or less</p>
 </blockquote>
@@ -11921,29 +11811,8 @@ etcdcontainer=$(/var/lib/rancher/rke2/bin/crictl ps --label io.kubernetes.contai
 <ul>
 <li>The default CIDR ranges do not overlap with any area of the network that needs to be routable from clusters</li>
 </ul>
-<p>The default CIDRs are below which often don't need to be changed, to ensure the are no issues with routing from pods you may wish to adjust the range and/or mask when creating clusters ( <a href="https://rancher.com/docs/rke/latest/en/config-options/services/#kubernetes-controller-manager">RKE</a>, <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#cluster-cidr">RKE2</a>, <a href="https://docs.k3s.io/cli/server#networking">k3s</a>).</p>
-<table>
-<thead>
-<tr>
-<th>Network</th>
-<th>Default CIDR</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Cluster</td>
-<td>10.42.0.0/16</td>
-</tr>
-<tr>
-<td>Service</td>
-<td>10.43.0.0/16</td>
-</tr>
-<tr>
-<td>Node Mask</td>
-<td>/24</td>
-</tr>
-</tbody>
-</table>
+<p>The default CIDRs are below which often don't need to be changed, to ensure the are no issues with routing from pods you may wish to adjust the range and/or mask when creating clusters (<a href="https://rancher.com/docs/rke/latest/en/config-options/services/#kubernetes-controller-manager">RKE</a>, <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#cluster-cidr">RKE2</a>, <a href="https://docs.k3s.io/cli/server#networking">k3s</a>).</p>
+<p>NetworkDefault CIDRCluster10.42.0.0/16Service10.43.0.0/16Node Mask/24</p>
 <blockquote>
 <p>Reducing the CIDR mask can lower the number of IPs available and therefore total number of pods and services in the cluster, or on each node. In a large cluster, the CIDR ranges <a href="https://www.suse.com/support/kb/doc/?id=000020167">may need to be increased</a>.</p>
 </blockquote>
@@ -11971,31 +11840,17 @@ etcdcontainer=$(/var/lib/rancher/rke2/bin/crictl ps --label io.kubernetes.contai
 <ul>
 <li>Verify that nodes in the Rancher management cluster meet at least the minimum requirements:</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th>Resource</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://ranchermanager.docs.rancher.com/pages-for-subheaders/installation-requirements#hardware-requirements">CPU/Memory</a></td>
-</tr>
-<tr>
-<td><a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/port-requirements">Port requirements</a></td>
-</tr>
-</tbody>
-</table>
+<p>Resource<a href="https://ranchermanager.docs.rancher.com/pages-for-subheaders/installation-requirements#hardware-requirements">CPU/Memory</a><a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/port-requirements">Port requirements</a></p>
 <h4 id="23-chart-options">2.3 Chart options</h4>
 <p>When installing the Rancher helm chart, the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options">default options</a> may not always be the best fit for specific environments.</p>
 <p>Checks</p>
 <ul>
-<li>
-<p>The Rancher helm chart is installed with the desired options</p>
-</li>
-<li>
-<p><code>replicas</code> - the default number of Rancher replicas ( <code>3</code>) may not suit your cluster, for example, a k3s cluster with an external datastore may only need a <code>replicas</code> value of <code>2</code> to ensure only one Rancher pod is running per k3s server node.</p>
-</li>
+<li>The Rancher helm chart is installed with the desired options</li>
+</ul>
+<!--THE END-->
+
+<ul>
+<li><code>replicas</code> - the default number of Rancher replicas (<code>3</code>) may not suit your cluster, for example, a k3s cluster with an external datastore may only need a <code>replicas</code> value of <code>2</code> to ensure only one Rancher pod is running per k3s server node.</li>
 </ul>
 <blockquote>
 <p>Note: it is generally recommended to not configure more than 3 Rancher replicas</p>
@@ -12022,32 +11877,7 @@ etcdcontainer=$(/var/lib/rancher/rke2/bin/crictl ps --label io.kubernetes.contai
 <ul>
 <li>Recurring snapshots are configured for the distribution in use</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th>Distribution</th>
-<th>Configuration</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>RKE</td>
-<td>Confirm <a href="https://rke.docs.rancher.com/etcd-snapshots/recurring-snapshots">recurring snapshots</a> are enabled with an S3 compatible endpoint for off-node copies</td>
-</tr>
-<tr>
-<td>RKE2</td>
-<td>Confirm <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#automatic-snapshots">recurring snapshots</a> are enabled with an S3 compatible endpoint for off-node copies</td>
-</tr>
-<tr>
-<td>k3s (embedded etcd)</td>
-<td>Confirm <a href="https://docs.k3s.io/cli/etcd-snapshot#options">recurring snapshots</a> are enabled with an S3 compatible endpoint for off-node copies</td>
-</tr>
-<tr>
-<td>k3s (external datastore)</td>
-<td>Confirm <a href="https://docs.k3s.io/datastore/backup-restore#backup-and-restore-with-external-datastore">backups</a> on the external datastore are configured, this can differ depending on the chosen database</td>
-</tr>
-</tbody>
-</table>
+<p>DistributionConfigurationRKEConfirm <a href="https://rke.docs.rancher.com/etcd-snapshots/recurring-snapshots">recurring snapshots</a> are enabled with an S3 compatible endpoint for off-node copies RKE2Confirm <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#automatic-snapshots">recurring snapshots</a> are enabled with an S3 compatible endpoint for off-node copiesk3s (embedded etcd)Confirm <a href="https://docs.k3s.io/cli/etcd-snapshot#options">recurring snapshots</a> are enabled with an S3 compatible endpoint for off-node copiesk3s (external datastore)Confirm <a href="https://docs.k3s.io/datastore/backup-restore#backup-and-restore-with-external-datastore">backups</a> on the external datastore are configured, this can differ depending on the chosen database </p>
 <blockquote>
 <p>In addition to a recurring schedule, it's important to take one-time snapshots of etcd (RKE, RKE2 and k3s (embedded)) , or datastore (k3s) before and after significant changes.</p>
 <p>The <a href="https://rancher.com/docs/rancher/v2.6/en/backups/">Rancher backup operator</a> can also be used on any distribution or hosted provider to backup the related objects that Rancher needs to function, this can be used to restore to a previous backup point or migrate Rancher between clusters.</p>
@@ -12110,21 +11940,15 @@ etcdcontainer=$(/var/lib/rancher/rke2/bin/crictl ps --label io.kubernetes.contai
 <p>In general, the below can be used to confirm the OS limits allow for adequate headroom for the workloads</p>
 <ul>
 <li>File <a href="https://www.suse.com/support/kb/doc/?id=000020149">descriptor usage</a>: <code>cat /proc/sys/fs/file-nr</code></li>
-<li>
-<p>User ulimits: <code>ulimit -a</code>
-Or, a particular process can be checked: <code>cat /proc/PID/limits</code></p>
-</li>
-<li>
-<p>Conntrack limits:</p>
-</li>
+<li>User ulimits: <code>ulimit -a</code></li>
 </ul>
-<p><code>cat /proc/sys/net/netfilter/nf_conntrack_max</code></p>
-<p><code>cat /proc/sys/net/netfilter/nf_conntrack_count</code></p>
-<ul>
-<li>Filesystem space and inode usage: <code>df -h</code> and <code>df -ih</code></li>
-</ul>
+<p>Or, a particular process can be checked: <code>cat /proc/PID/limits</code>
+- Conntrack limits:</p>
+<p><code>cat /proc/sys/net/netfilter/nf_conntrack_max</code><br />
+<code>cat /proc/sys/net/netfilter/nf_conntrack_count</code>
+- Filesystem space and inode usage: <code>df -h</code> and <code>df -ih</code></p>
 <blockquote>
-<p>Requirements for Linux can differ slightly depending on the distribution, refer to the requirements ( <a href="https://rke.docs.rancher.com/os#general-linux-requirements">RKE</a> , <a href="https://docs.rke2.io/install/requirements#operating-systems">RKE2</a> , <a href="https://docs.k3s.io/installation/requirements#architecture">k3s</a>) for more information.</p>
+<p>Requirements for Linux can differ slightly depending on the distribution, refer to the requirements (<a href="https://rke.docs.rancher.com/os#general-linux-requirements">RKE</a> , <a href="https://docs.rke2.io/install/requirements#operating-systems">RKE2</a> , <a href="https://docs.k3s.io/installation/requirements#architecture">k3s</a>) for more information.</p>
 </blockquote>
 <h4 id="35-log-rotation">3.5 Log rotation</h4>
 <p>To prevent large log files from accumulating, it is recommended to rotate OS and container log files. Optionally <a href="https://ranchermanager.docs.rancher.com/pages-for-subheaders/logging">an external log service</a> can be used to stream logs off the nodes for a longer-term lifecycle and easier searching.</p>
@@ -12160,6 +11984,7 @@ Or, a particular process can be checked: <code>cat /proc/PID/limits</code></p>
 <h3 id="additional-information">Additional Information</h3>
 <p>For further information see the documentation for <a href="https://ranchermanager.docs.rancher.com/reference-guides/best-practices">Best Practices</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

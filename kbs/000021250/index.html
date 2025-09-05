@@ -9144,7 +9144,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10947,32 +10947,34 @@
 <h3 id="environment">Environment</h3>
 <p>- Rancher 2.6.x, 2.7.x and Rancher 2.8.x</p>
 <h3 id="situation">Situation</h3>
-<p>-  The ' <strong>http</strong>' type repository is in ' <strong>downloading</strong>' status with the error message " <strong>Get <HTTP git repo url>:x509:certificate signed by unknown authority".</strong></p>
+<p>-  The '<strong>http</strong>' type repository is in '<strong>downloading</strong>' status with the error message " <strong>Get &lt;HTTP git repo url&gt;:x509:certificate signed by unknown authority".</strong><br />
+</p>
 <h3 id="resolution">Resolution</h3>
-<p>- The error will occur if using the certificate signed by a private CA on the repository. So, as a solution, we need to add the CA certificate to the HTTP-based repo.</p>
-<p>- Follow the below steps to add the custom CA certificate to HTTP based repo:</p>
-<p><strong>Steps :</strong></p>
+<p>- The error will occur if using the certificate signed by a private CA on the repository. So, as a solution, we need to add the CA certificate to the HTTP-based repo. </p>
+<p>- Follow the below steps to add the custom CA certificate to HTTP based repo: </p>
+<p><strong>Steps :</strong> </p>
 <p>A) <strong>Get the "caBundle" key:</strong> The caBundle key is a base64 encoded DER certificate, and you can get it using the command below.</p>
 <div class="highlight"><pre><span></span><code>openssl x509 -outform der -in ca.pem | base64 -w0
 
 Note :  Make sure to replace the ca.pem certificate in the above command
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>B)  Go to Rancher UI -&gt; select the downstream cluster -&gt;  edit the rancher-repo and  &quot;Edit YAML&quot; and add the resulting value from above steps, in &#39;caBundle&#39; section below :
+<div class="highlight"><pre><span></span><code>B)  Go to Rancher UI -&gt; select the downstream cluster -&gt;  edit the rancher-repo and  &quot;Edit YAML&quot; and add the resulting value from above steps, in &#39;caBundle&#39; section below : 
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>spec:
   forceUpdate: &quot;&quot;
   url: https://[url]
   caBundle: &quot;&lt;add_value_here&gt;&quot;
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>C) (Optional) If you do not want to add the custom CA and want to ingore/bypass the error, then add &#39;insecureSkipTLSVerify:true&#39; flag in the clusterepo specification like below :
+<div class="highlight"><pre><span></span><code>C) (Optional) If you do not want to add the custom CA and want to ingore/bypass the error, then add &#39;insecureSkipTLSVerify:true&#39; flag in the clusterepo specification like below : 
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>spec:
   clientSecret: null
   forceUpdate: &quot;2023-08-10T05:42:22Z&quot;
-  insecureSkipTLSVerify: true              &lt;&lt; Note here
+  insecureSkipTLSVerify: true              &lt;&lt; Note here 
   url: &lt;URL&gt;
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

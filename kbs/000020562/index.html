@@ -9126,7 +9126,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10911,8 +10911,12 @@
 <h3 id="resolution">Resolution</h3>
 <p>It's normally preferred to connect Rancher Hosted Prime with your network using VPC peering through an AWS transit gateway. This is the most cost-effective, secure, and manageable solution. However, if this is not an option, a VPN connection can be established between your corporate network and Rancher Hosted Prime through an IPSec VPN tunnel. The following steps are required to set this up:</p>
 <ol>
-<li>Provide the Rancher Hosted Prime team with the following information about your VPN device:</li>
-<li>Public IP address for your VPN endpoint</li>
+<li>
+<p>Provide the Rancher Hosted Prime team with the following information about your VPN device:</p>
+</li>
+<li>
+<p>Public IP address for your VPN endpoint</p>
+</li>
 <li>Routing option: a) static (no BGP support) or b) dynamic (BGP support)</li>
 <li>BGP ASN (only if dynamic routing)</li>
 <li>VPN device make and model used on-premise that we'll be connecting to.</li>
@@ -10921,6 +10925,7 @@
 </ol>
 <p>See also <a href="https://docs.aws.amazon.com/vpn/latest/s2svpn/index.html">AWS Site-to-Site VPN User Guide</a>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

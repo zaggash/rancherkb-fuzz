@@ -9144,7 +9144,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10951,44 +10951,31 @@
 <h3 id="resolution">Resolution</h3>
 <p>To configure the Rancher Backup Operator with Google Cloud Storage, perform the following steps:</p>
 <ol>
-<li>
-<p>Create a new bucket in <a href="https://console.cloud.google.com/storage/browser?referrer=search&amp;project=elite-protocol-319303">Google Cloud Storage</a></p>
-</li>
-<li>
-<p>Create a GCP serviceaccount in <a href="https://console.cloud.google.com/iam-admin">IAM &amp; Admin</a></p>
-</li>
-<li>
-<p>Give the GCP serviceaccount permissions to read, write, and delete objects in the bucket. The serviceaccount will require the <code>roles/storage.objectAdmin</code> role to read, write, and delete objects in the bucket.</p>
-</li>
-<li>
-<p>Navigate to your <a href="https://console.cloud.google.com/storage/browser">buckets in cloud storage</a> and select your newly created bucket.</p>
-</li>
-<li>
-<p>Go to the cloud storage’s settings menu and navigate to the <a href="https://console.cloud.google.com/storage/settings;tab=interoperability">interoperability tab</a></p>
-</li>
-<li>
-<p>Scroll down to <em>Service account HMAC</em> and press <code>+ CREATE A KEY FOR A SERVICE ACCOUNT</code></p>
-</li>
-<li>
-<p>Select the GCP serviceaccount you created earlier and press <code>CREATE KEY</code></p>
-</li>
-<li>
-<p>Save the <em>Access Key</em> and <em>Secret</em>.</p>
-</li>
-<li>
-<p>Create the credentials secret using the following documentation: <a href="https://ranchermanager.docs.rancher.com/reference-guides/backup-restore-configuration/backup-configuration#example-credentialsecret">https://ranchermanager.docs.rancher.com/reference-guides/backup-restore-configuration/backup-configuration#example-credentialsecret</a></p>
-</li>
+<li>Create a new bucket in <a href="https://console.cloud.google.com/storage/browser?referrer=search&amp;project=elite-protocol-319303">Google Cloud Storage</a></li>
+<li>Create a GCP serviceaccount in <a href="https://console.cloud.google.com/iam-admin">IAM &amp; Admin</a></li>
+<li>Give the GCP serviceaccount permissions to read, write, and delete objects in the bucket. The serviceaccount will require the <code>roles/storage.objectAdmin</code> role to read, write, and delete objects in the bucket.</li>
+</ol>
+<!--THE END-->
+
+<ol>
+<li>Navigate to your <a href="https://console.cloud.google.com/storage/browser">buckets in cloud storage</a> and select your newly created bucket.</li>
+<li>Go to the cloud storage’s settings menu and navigate to the <a href="https://console.cloud.google.com/storage/settings;tab=interoperability">interoperability tab</a></li>
+<li>Scroll down to <em>Service account HMAC</em> and press <code>+ CREATE A KEY FOR A SERVICE ACCOUNT</code></li>
+<li>Select the GCP serviceaccount you created earlier and press <code>CREATE KEY</code></li>
+<li>Save the <em>Access Key</em> and <em>Secret</em>.</li>
+<li>Create the credentials secret using the following documentation: <a href="https://ranchermanager.docs.rancher.com/reference-guides/backup-restore-configuration/backup-configuration#example-credentialsecret">https://ranchermanager.docs.rancher.com/reference-guides/backup-restore-configuration/backup-configuration#example-credentialsecret</a></li>
 <li>
 <p>Install the Backup Operator with a default S3 storage location. The S3 storage location yaml looks like this:</p>
+<div class="highlight"><pre><span></span><code>  credentialSecretName: s3-creds
+  credentialSecretNamespace: default
+  bucketName: rancher-backups
+  region: us
+  endpoint: storage.googleapis.com
+</code></pre></div>
 </li>
 </ol>
-<div class="highlight"><pre><span></span><code>     credentialSecretName: s3-creds
-     credentialSecretNamespace: default
-     bucketName: rancher-backups
-     region: us
-     endpoint: storage.googleapis.com
-</code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

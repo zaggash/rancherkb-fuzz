@@ -9171,7 +9171,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11073,28 +11073,29 @@ This is an example output from a test cluster; please note that due to the vario
 <div class="highlight"><pre><span></span><code>Connecting to host 10.42.0.36, port 12345
 [  4] local 10.42.0.37 port 45568 connected to 10.42.0.36 port 12345
 [ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
-[  4]   0.00-1.00   sec  2.23 GBytes  19.1 Gbits/sec  300   2.88 MBytes
-[  4]   1.00-2.00   sec  2.49 GBytes  21.4 Gbits/sec  737   1.58 MBytes
-[  4]   2.00-3.00   sec  2.42 GBytes  20.8 Gbits/sec  524   2.33 MBytes
-[  4]   3.00-4.00   sec  2.17 GBytes  18.6 Gbits/sec  248   2.41 MBytes
-[  4]   4.00-5.00   sec  2.25 GBytes  19.3 Gbits/sec  151   2.45 MBytes
-[  4]   5.00-6.00   sec  2.36 GBytes  20.2 Gbits/sec   73   3.00 MBytes
-[  4]   6.00-7.00   sec  2.40 GBytes  20.6 Gbits/sec  181   2.84 MBytes
-[  4]   7.00-8.00   sec  2.29 GBytes  19.7 Gbits/sec   73   2.64 MBytes
-[  4]   8.00-9.00   sec  2.35 GBytes  20.2 Gbits/sec  110   2.44 MBytes
-[  4]   9.00-10.00  sec  2.27 GBytes  19.5 Gbits/sec  167   2.43 MBytes
+[  4]   0.00-1.00   sec  2.23 GBytes  19.1 Gbits/sec  300   2.88 MBytes       
+[  4]   1.00-2.00   sec  2.49 GBytes  21.4 Gbits/sec  737   1.58 MBytes       
+[  4]   2.00-3.00   sec  2.42 GBytes  20.8 Gbits/sec  524   2.33 MBytes       
+[  4]   3.00-4.00   sec  2.17 GBytes  18.6 Gbits/sec  248   2.41 MBytes       
+[  4]   4.00-5.00   sec  2.25 GBytes  19.3 Gbits/sec  151   2.45 MBytes       
+[  4]   5.00-6.00   sec  2.36 GBytes  20.2 Gbits/sec   73   3.00 MBytes       
+[  4]   6.00-7.00   sec  2.40 GBytes  20.6 Gbits/sec  181   2.84 MBytes       
+[  4]   7.00-8.00   sec  2.29 GBytes  19.7 Gbits/sec   73   2.64 MBytes       
+[  4]   8.00-9.00   sec  2.35 GBytes  20.2 Gbits/sec  110   2.44 MBytes       
+[  4]   9.00-10.00  sec  2.27 GBytes  19.5 Gbits/sec  167   2.43 MBytes       
 - - - - - - - - - - - - - - - - - - - - - - - - -
 [ ID] Interval           Transfer     Bandwidth       Retr
 [  4]   0.00-10.00  sec  23.2 GBytes  19.9 Gbits/sec  2564             sender
-[  4]   0.00-10.00  sec  23.2 GBytes  19.9 Gbits/sec                  receiver
+[  4]   0.00-10.00  sec  23.2 GBytes  19.9 Gbits/sec                  receiver 
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
 <h3 id="cause">Cause</h3>
 <p>In this article, we have shown you how to use iperf3 to test connectivity between Kubernetes pods in your cluster. We have used a DaemonSet to ensure that iperf3 pods are running on each node in the cluster. We hope that this article has helped demonstrate how to use iperf3 for testing connectivity between pods in your Kubernetes cluster.</p>
 <h3 id="additional-information">Additional Information</h3>
 <p>https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

@@ -9216,7 +9216,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11094,8 +11094,8 @@
 <li>Nodes running CentOS 7.x or RHEL 7.x, with Docker installed from the CentOS/RHEL extras repository.</li>
 </ul>
 <h3 id="situation">Situation</h3>
-<p><em><strong>Deprecation notice</strong></em></p>
-<p><em>Docker is not packaged in the RHEL 8 or 9 repositories, and starting with Rancher v2.7 the RHEL-packaged version of Docker (1.13) for RHEL 7 has been removed from the <a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/rancher-v2-7-0/">Rancher Support Matrix</a>. Therefore, customers must migrate from RHEL-packaged Docker 1.13 to the upstream Docker version in their RKE clusters.</em></p>
+<p><strong><em>Deprecation notice</em></strong><br />
+<em>Docker is not packaged in the RHEL 8 or 9 repositories, and starting with Rancher v2.7 the RHEL-packaged version of Docker (1.13) for RHEL 7 has been removed from the <a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/rancher-v2-7-0/">Rancher Support Matrix</a>. Therefore, customers must migrate from RHEL-packaged Docker 1.13 to the upstream Docker version in their RKE clusters.</em></p>
 <p>This article will describe the process by which you can migrate a CentOS or RHEL node in an RKE cluster from running the CentOS/RHEL-packaged Docker package to the upstream package from Docker.</p>
 <p>To perform this migration you will be required to first uninstall the CentOS/RHEL packaged Docker, before installing the upstream version. This process is destructive and will remove all container state from the host. As a result, the process outlined below will guide you through first removing the node from the Rancher cluster, before conducting the package migration, then finally re-adding the node to the cluster.</p>
 <h3 id="resolution">Resolution</h3>
@@ -11107,17 +11107,11 @@
 <li>Check if you should first add an additional node to the cluster, to replace the node during its migration:</li>
 </ol>
 <p><strong>Controlplane or etcd nodes</strong> In the case that the node is a controlplane or etcd node, it is recommend that you first add an additional node to replace this, or add the role(s) to an existing node, to ensure that quorum is maintained in the event of failure of another node during the process. If the node is the single etcd or controlplane node in the cluster, then adding an additional node to replace it is not an optional step. Add the new etcd and/or controlplane role node to the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and run <code>rke up</code> to provision this.</p>
-<p><strong>Worker nodes</strong> If the worker nodes within the cluster are heavily loaded, or if the node is the sole worker role node, you should provision an additional worker node, to replace the node during the migration. Add the new worker role node to the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and run <code>rke up</code> to provision this.</p>
-<ol>
-<li>
-<p>Remove the node which you are migrating from the cluster, to do so remove the node from the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and then run <code>rke up</code> to reconcile the cluster.</p>
-</li>
-<li>
-<p>Once the <code>rke up</code> invocation in step 2. completes successfully, run the <a href="https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup">Extended Rancher 2 cleanup script</a> on the node that you are migrating, to clean up Rancher state.</p>
-</li>
-<li>Switch to the upstream Docker package on the node, by following the <a href="https://docs.docker.com/engine/install/centos/#uninstall-old-versions">Docker Engine installation documentation for CentOS</a> or using the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/install-docker">Rancher installation script for Docker</a>.</li>
-<li>Add the node back to the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and run <code>rke up</code> to provision it.</li>
-</ol>
+<p><strong>Worker nodes</strong> If the worker nodes within the cluster are heavily loaded, or if the node is the sole worker role node, you should provision an additional worker node, to replace the node during the migration. Add the new worker role node to the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and run <code>rke up</code> to provision this.
+2. Remove the node which you are migrating from the cluster, to do so remove the node from the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and then run <code>rke up</code> to reconcile the cluster.
+3. Once the <code>rke up</code> invocation in step 2. completes successfully, run the <a href="https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup">Extended Rancher 2 cleanup script</a>on the node that you are migrating, to clean up Rancher state.
+4. Switch to the upstream Docker package on the node, by following the <a href="https://docs.docker.com/engine/install/centos/#uninstall-old-versions">Docker Engine installation documentation for CentOS</a> or using the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/install-docker">Rancher installation script for Docker</a>.
+5. Add the node back to the <a href="https://rke.docs.rancher.com/config-options/nodes">cluster configuration YAML</a> and run <code>rke up</code> to provision it.</p>
 <h2 id="custom-cluster-launched-by-rancher">Custom cluster launched by Rancher</h2>
 <h3 id="create-a-backup_1">Create a Backup</h3>
 <p>As with any cluster maintenance, it is recommended that you first take an etcd snapshot of the cluster, to recover from in the event of an issue. A snapshot can be created for the cluster, per the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher-launched-kubernetes-clusters">Rancher documentation here</a> and you should copy the snapshot off an etcd node to a safe location outside the cluster, if S3 backups are not configured for the cluster.</p>
@@ -11126,18 +11120,13 @@
 <li>Check if you should first add an additional node to the cluster, to replace the node during its migration:</li>
 </ol>
 <p><strong>Controlplane or etcd nodes</strong> In the case that the node is a controlplane or etcd node, it is recommended that you first add an additional node to replace this, to ensure that quorum is maintained in the event of failure of another node during the process. If the node is the single etcd or controlplane node in the cluster, then adding an additional node to replace it is not an optional step. Add the new etcd and/or controlplane role node by running the Rancher agent command from the 'Edit Cluster' view, with the appropriate roles, on the replacement node.</p>
-<p><strong>Worker nodes</strong> If the worker nodes within the cluster are heavily loaded, or if the node is the sole worker role node, you should provision an additional worker node, to replace the node during the migration. Add the new worker role node by running the Rancher agent command from the 'Edit Cluster' view, with the worker role, on the replacement node.</p>
-<ol>
-<li>
-<p>Remove the node that you are migrating from the cluster, to do so delete it from the node list for the cluster within Rancher.</p>
-</li>
-<li>
-<p>Once the cluster reconciliation triggered by step 2. is complete, and the cluster no longer shows as updating within Rancher, run the <a href="https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup">Extended Rancher 2 cleanup script</a> on the node that you are migrating to clean up Rancher state.</p>
-</li>
-<li>Switch to the upstream Docker package on the node, by following the <a href="https://docs.docker.com/engine/install/centos/#uninstall-old-versions">Docker Engine installation documentation for CentOS</a> or using the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/install-docker">Rancher installation script for Docker</a>.</li>
-<li>Add the node back by running the Rancher agent command from the 'Edit Cluster' view, with the appropriate roles, on the node.</li>
-</ol>
+<p><strong>Worker nodes</strong> If the worker nodes within the cluster are heavily loaded, or if the node is the sole worker role node, you should provision an additional worker node, to replace the node during the migration. Add the new worker role node by running the Rancher agent command from the 'Edit Cluster' view, with the worker role, on the replacement node.
+2. Remove the node that you are migrating from the cluster, to do so delete it from the node list for the cluster within Rancher.
+3. Once the cluster reconciliation triggered by step 2. is complete, and the cluster no longer shows as updating within Rancher, run the <a href="https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup">Extended Rancher 2 cleanup script</a> on the node that you are migrating to clean up Rancher state.
+4. Switch to the upstream Docker package on the node, by following the <a href="https://docs.docker.com/engine/install/centos/#uninstall-old-versions">Docker Engine installation documentation for CentOS</a> or using the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/install-docker">Rancher installation script for Docker</a>.
+5. Add the node back by running the Rancher agent command from the 'Edit Cluster' view, with the appropriate roles, on the node.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

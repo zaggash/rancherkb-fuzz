@@ -9144,7 +9144,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10945,67 +10945,27 @@
 <h1 id="rancher-product-lifecycle-advisory-20220330-2022-eomeol-dates-for-rancher-24-and-25">[Rancher] Product Lifecycle Advisory, 20220330: 2022 EOM/EOL dates for Rancher 2.4 and 2.5</h1>
 <p>This document <strong>(000020631)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="resolution">Resolution</h3>
-<table>
-<thead>
-<tr>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Note:</strong><br>This Rancher Customer advisory below was originally sent by email to subscribed customer users on March 30, 2022.</td>
-</tr>
-</tbody>
-</table>
-<p>Dear SUSE Rancher user,</p>
-<p>We have been sharing important SUSE Rancher product lifecycle dates on our <a href="https://www.suse.com/lifecycle">Product Support Lifecycle</a> page.</p>
-<p>To help you plan for any necessary upgrades for your deployments, we would like to bring to your attention information on some Rancher Manager product versions that are approaching (or have reached) their <strong>End of Maintenance (EOM)</strong> and <strong>End of Life (EOL)</strong> milestones.</p>
+<p><strong>Note:</strong> </p>
+<p>This Rancher Customer advisory below was originally sent by email to subscribed customer users on March 30, 2022. </p>
+<p>Dear SUSE Rancher user,<br />
+</p>
+<p>We have been sharing important SUSE Rancher product lifecycle dates on our <a href="https://www.suse.com/lifecycle">Product Support Lifecycle</a> page. </p>
+<p>To help you plan for any necessary upgrades for your deployments, we would like to bring to your attention information on some Rancher Manager product versions that are approaching (or have reached) their <strong>End of Maintenance (EOM)</strong> and <strong>End of Life (EOL)</strong> milestones.<br />
+</p>
 <p><strong>EOM Dates</strong></p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Rancher Version</strong></td>
-<td><strong>EOM Date</strong></td>
-</tr>
-<tr>
-<td>v2.4.x</td>
-<td>July 30, 2021</td>
-</tr>
-<tr>
-<td>v2.5.x</td>
-<td>January 5, 2022</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Rancher Version</strong> </p>
+<p><strong>EOM Date</strong></p>
+<p>v2.4.x</p>
+<p>July 30, 2021</p>
+<p>v2.5.x</p>
+<p>January 5, 2022 </p>
 <p><strong>EOL Dates</strong></p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Rancher Version</strong></td>
-<td><strong>EOL Date</strong></td>
-</tr>
-<tr>
-<td>v2.4.x</td>
-<td>March 31, 2022</td>
-</tr>
-<tr>
-<td>v2.5.x</td>
-<td>October 5, 2022</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Rancher Version</strong> </p>
+<p><strong>EOL Date</strong></p>
+<p>v2.4.x</p>
+<p>March 31, 2022 </p>
+<p>v2.5.x</p>
+<p>October 5, 2022 </p>
 <h3 id="what-does-the-above-mean">What does the above mean?</h3>
 <p>After a product release reaches its EOM date, no further code-level maintenance will be provided, except for critical security-related fixes. Product will continue to be supported in a limited manner until it reaches EOL, in the form of:</p>
 <ul>
@@ -11013,7 +10973,8 @@
 <li>Upgrade recommendation to an existing newer version of product</li>
 <li>Issue resolution limited to applying configuration changes and/or an upgrade recommendation to an existing newer version of product</li>
 </ul>
-<p>Once a product release reaches its EOL date, a Rancher user may continue to use the product within the terms of the product licensing agreement. However, Support Plan SLAs from SUSE Rancher do not apply to product versions that are past their EOL dates.</p>
+<p>Once a product release reaches its EOL date, a Rancher user may continue to use the product within the terms of the product licensing agreement. However, Support Plan SLAs from SUSE Rancher do not apply to product versions that are past their EOL dates.<br />
+</p>
 <p>Please review in detail the following resources to understand changes and prepare for your upgrade.</p>
 <ul>
 <li><a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions">Rancher Support Matrix</a></li>
@@ -11022,8 +10983,10 @@
 <li><a href="https://www.suse.com/support/kb/doc/?id=000020061">Rancher Support Upgrade checklist</a></li>
 <li><a href="https://www.suse.com/support/kb/doc/?id=000020432">Rancher Support FAQs</a></li>
 </ul>
-<p>In addition, please note that with the upcoming release of Kubernetes 1.24, scheduled for April 19th, dockershim removal from Kubernetes will be final. Please see the <a href="https://kubernetes.io/blog/2022/01/07/kubernetes-is-moving-on-from-dockershim/">Kubernetes blog</a> and our <a href="https://www.suse.com/support/kb/doc/?id=000020543">Rancher Support Advisory</a> for more information.</p>
-<p>If you have any questions on this advisory or would like assistance validating your upgrade path, simply contact your Customer Success Manager or open a new support case via the <a href="https://scc.suse.com/login">SCC portal</a> referencing this advisory.</p>
+<p>In addition, please note that with the upcoming release of Kubernetes 1.24, scheduled for April 19th, dockershim removal from Kubernetes will be final. Please see the <a href="https://kubernetes.io/blog/2022/01/07/kubernetes-is-moving-on-from-dockershim/">Kubernetes blog</a> and our <a href="https://www.suse.com/support/kb/doc/?id=000020543">Rancher Support Advisory</a> for more information.<br />
+</p>
+<p>If you have any questions on this advisory or would like assistance validating your upgrade path, simply contact your Customer Success Manager or open a new support case via the <a href="https://scc.suse.com/login">SCC portal</a> referencing this advisory.<br />
+</p>
 <p>Thanks,</p>
 <p>SUSE Rancher Support Team</p>
 <h3 id="additional-information">Additional Information</h3>
@@ -11032,6 +10995,7 @@
 <li><a href="https://www.suse.com/support/kb/doc/?id=000020432">Rancher Support FAQs</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

@@ -9144,7 +9144,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10956,17 +10956,22 @@
 <li>During the OS upgrade, don't stop the rke2-server or rke2-agent services</li>
 <li>Drain worker nodes before upgrading them</li>
 <li>Wait for the pods to be drained and scheduled to other nodes before upgrading the drained worker</li>
-<li>Perform the upgrade in a rolling fashion:</li>
-<li>Start by upgrading a single controlplane/etcd node at a time</li>
+<li>
+<p>Perform the upgrade in a rolling fashion:</p>
+</li>
+<li>
+<p>Start by upgrading a single controlplane/etcd node at a time</p>
+</li>
 <li>Upgrade one or more workers at a time (depending upon the capacity within the cluster to reschedule workloads to other nodes)</li>
 <li>Reboot the node after the upgrade is completed</li>
 <li>Un-cordon the node</li>
 </ol>
-<p><strong>Draining nodes during the operating system upgrade:</strong></p>
-<p>Controlplane/etcd nodes should not be running with the worker role, and so should not be running any user workloads. The rancher cluster-agent scheduled on these nodes runs as a Deployment of two replicas on separate nodes. As a result, you do not need to drain controlplane/etcd nodes during upgrade.</p>
-<p><strong>Special care if Longhorn is installed:</strong></p>
-<p>If Longhorn is installed on the cluster, please take a look at the upgrade requirements in the Longhorn documentation related to the version you are using, in particular the section concerning draining nodes: https://longhorn.io/docs/1.6.2/maintenance/maintenance/#updating-the-node-os-or-container-runtime</p>
+<p><strong>Draining nodes during the operating system upgrade:</strong><br />
+Controlplane/etcd nodes should not be running with the worker role, and so should not be running any user workloads. The rancher cluster-agent scheduled on these nodes runs as a Deployment of two replicas on separate nodes. As a result, you do not need to drain controlplane/etcd nodes during upgrade.</p>
+<p><strong>Special care if Longhorn is installed:</strong><br />
+If Longhorn is installed on the cluster, please take a look at the upgrade requirements in the Longhorn documentation related to the version you are using, in particular the section concerning draining nodes: https://longhorn.io/docs/1.6.2/maintenance/maintenance/#updating-the-node-os-or-container-runtime</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

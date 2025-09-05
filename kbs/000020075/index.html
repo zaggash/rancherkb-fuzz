@@ -9192,7 +9192,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11055,11 +11055,11 @@
 <p>For a Rancher v2.x managed cluster, the Canal component log level can be adjusted via the Rancher UI, per the following process:</p>
 <ol>
 <li>Navigate to the <code>System</code> project of the relevant cluster within the Rancher UI.</li>
-<li>Locate the canal DaemonSet workload within the <code>kube-system</code> namespace, click the vertical elipses ( <code>⋮</code>) and select Edit.</li>
+<li>Locate the canal DaemonSet workload within the <code>kube-system</code> namespace, click the vertical elipses (<code>⋮</code>) and select Edit.</li>
 <li>Click to Edit the <code>calico-node</code> container.</li>
 <li>Add <code>CALICO_STARTUP_LOGLEVEL = DEBUG</code> in the Environment Variables section, click <code>Save</code>.</li>
 </ol>
-<div class="highlight"><pre><span></span><code>         containers:
+<p><div class="highlight"><pre><span></span><code>      containers:
         - env:
             - name: DATASTORE_TYPE
               value: kubernetes
@@ -11120,63 +11120,58 @@
             timeoutSeconds: 10
           name: calico-node
 </code></pre></div>
-<ol>
-<li>Click Edit Yaml for the canal DaemonSet again.</li>
-<li>This time click Edit on the <code>kube-flannel</code> container.</li>
-<li>In the Command section add <code>--v=10</code> to the <code>Entrypoint</code> e.g.: <code>/opt/bin/flanneld --ip-masq --kube-subnet-mgr --v=10</code>, and click <code>Save</code>.</li>
-</ol>
-<p>```
-        - command:
+5. Click Edit Yaml for the canal DaemonSet again.
+6. This time click Edit on the <code>kube-flannel</code> container.
+7. In the Command section add <code>--v=10</code> to the <code>Entrypoint</code> e.g.: <code>/opt/bin/flanneld --ip-masq --kube-subnet-mgr --v=10</code>, and click <code>Save</code>.</p>
+<div class="highlight"><pre><span></span><code>        - command:
             - /opt/bin/flanneld
-            - '--ip-masq'
-            - '--kube-subnet-mgr'
-            - '--v=10'</p>
-<p>```</p>
+            - &#39;--ip-masq&#39;
+            - &#39;--kube-subnet-mgr&#39;
+            - &#39;--v=10&#39;
+</code></pre></div>
 <h5 id="via-kubectl">Via kubectl</h5>
 <p>With a Kube Config file sourced for the relevant cluster, for a user with permission to edit the System project, the Canal component log level can be adjusted via kubectl, per the following process:</p>
 <ol>
 <li>Run <code>kubectl -n kube-system edit daemonset canal</code>.</li>
 <li>In the <code>env</code> definition for the <code>calico-node</code> container add an environment variable with the name <code>CALICO_STARTUP_LOGLEVEL</code> and value <code>DEBUG</code>, e.g.:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
-<span class="w">         </span><span class="nt">containers</span><span class="p">:</span>
-<span class="w">     </span><span class="w w-Error"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">env</span><span class="p">:</span>
+<p><div class="highlight"><pre><span></span><code><span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">containers</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">env</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CALICO_STARTUP_LOGLEVEL</span>
 <span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEBUG</span>
 <span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
 </code></pre></div>
-<ol>
-<li>In the <code>command</code> definition for the <code>kube-flannel</code> container add <code>--v=10</code> to the command, e.g.:</li>
-</ol>
-<p><code>yaml
-   [...]
-      - commmand:
-        - /opt/bin/flanneld
-        - --ip-masq
-        - --kube-subnet-mgr
-        - --v=10
-[...]
-<div class="highlight"><pre><span></span><code>4. Save the file.
-
-After Setting up the Debug log level, it can be checked viewing the &#39;Canal&#39; pod logs:
+3. In the <code>command</code> definition for the <code>kube-flannel</code> container add <code>--v=10</code> to the command, e.g.:</p>
+<p><div class="highlight"><pre><span></span><code><span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">commmand</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/opt/bin/flanneld</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--ip-masq</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--kube-subnet-mgr</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--v=10</span>
+<span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
 </code></pre></div>
-2024-07-10 07:11:15.447 [INFO][9] startup/startup.go 425: Early log level set to debug
+4. Save the file.</p>
+<p>After Setting up the Debug log level, it can be checked viewing the 'Canal' pod logs:</p>
+<div class="highlight"><pre><span></span><code>2024-07-10 07:11:15.447 [INFO][9] startup/startup.go 425: Early log level set to debug
 2024-07-10 07:11:15.447 [DEBUG][9] startup/load.go 124: No kubeconfig file at default path, leaving blank.
-2024-07-10 07:11:15.447 [DEBUG][9] startup/client.go 30: Using datastore type 'kubernetes'
-2024-07-10 07:11:15.450 [DEBUG][9] startup/k8s.go 628: Performing 'Get' for Node(foo)
+2024-07-10 07:11:15.447 [DEBUG][9] startup/client.go 30: Using datastore type &#39;kubernetes&#39;
+2024-07-10 07:11:15.450 [DEBUG][9] startup/k8s.go 628: Performing &#39;Get&#39; for Node(foo) 
 2024-07-10 07:11:15.450 [DEBUG][9] startup/node.go 118: Received Get request on Node type
 2024-07-10 07:11:15.483 [DEBUG][9] startup/k8s.go 98: Created k8s clientSet: &amp;{DiscoveryClient:0xc000c38ea0 admissionregistrationV1:0xc000609ad0 admissionregistrationV1beta1:0xc000609b30 internalV1alpha1:0xc000609b90 appsV1:0xc000609bf0 appsV1beta1:0xc000609c50 appsV1beta2:0xc000609cb0 authenticationV1:0xc000609d10 authenticationV1beta1:0xc000609d70 authorizationV1:0xc000609dd0 authorizationV1beta1:0xc000609e30 autoscalingV1:0xc000609f40 autoscalingV2beta1:0xc000609fc0 autoscalingV2beta2:0xc000410150 batchV1:0xc000410380 batchV1beta1:0xc0004105c0 certificatesV1:0xc0004107e0 certificatesV1beta1:0xc000410940 coordinationV1beta1:0xc000410a40 coordinationV1:0xc000410aa0 coreV1:0xc000410b00 discoveryV1:0xc000410b90 discoveryV1beta1:0xc000410bf0 eventsV1:0xc000410c50 eventsV1beta1:0xc000410cb0 extensionsV1beta1:0xc000410d30 flowcontrolV1alpha1:0xc000410d90 flowcontrolV1beta1:0xc000410e10 networkingV1:0xc000410ed0 networkingV1beta1:0xc000410f30 nodeV1:0xc000410fa0 nodeV1alpha1:0xc000411000 nodeV1beta1:0xc000411060 policyV1:0xc0004110e0 policyV1beta1:0xc000411140 rbacV1:0xc0004111c0 rbacV1beta1:0xc000411220 rbacV1alpha1:0xc000411290 schedulingV1alpha1:0xc0004112f0 schedulingV1beta1:0xc000411360 schedulingV1:0xc0004113c0 storageV1beta1:0xc000411420 storageV1:0xc000411480 storageV1alpha1:0xc0004114f0}
-2024-07-10 07:11:15.483 [DEBUG][9] startup/k8s.go 628: Performing 'Get' for ClusterInformation(default)
-2024-07-10 07:11:15.483 [DEBUG][9] startup/customresource.go 205: Get custom Kubernetes resource Key=ClusterInformation(default) Resource="ClusterInformations" Revision=""
-2024-07-10 07:11:15.483 [DEBUG][9] startup/customresource.go 216: Get custom Kubernetes resource by name Key=ClusterInformation(default) Name="default" Namespace="" Resource="ClusterInformations" Revision=""
-2024-07-10 07:11:15.487 [DEBUG][9] startup/migrate.go 820: major version is already &gt;= 3: v3.22.0</code></p>
+2024-07-10 07:11:15.483 [DEBUG][9] startup/k8s.go 628: Performing &#39;Get&#39; for ClusterInformation(default) 
+2024-07-10 07:11:15.483 [DEBUG][9] startup/customresource.go 205: Get custom Kubernetes resource Key=ClusterInformation(default) Resource=&quot;ClusterInformations&quot; Revision=&quot;&quot;
+2024-07-10 07:11:15.483 [DEBUG][9] startup/customresource.go 216: Get custom Kubernetes resource by name Key=ClusterInformation(default) Name=&quot;default&quot; Namespace=&quot;&quot; Resource=&quot;ClusterInformations&quot; Revision=&quot;&quot;
+2024-07-10 07:11:15.487 [DEBUG][9] startup/migrate.go 820: major version is already &gt;= 3: v3.22.0
+</code></pre></div>
 <h4 id="further-reading">Further reading</h4>
 <ul>
 <li><a href="https://docs.projectcalico.org/reference/node/configuration">Calico configuration documentation</a></li>
 <li><a href="https://coreos.com/flannel/docs/latest/troubleshooting.html">Flannel troubleshooting documentation</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

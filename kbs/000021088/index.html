@@ -9153,7 +9153,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10970,8 +10970,8 @@
 <h3 id="situation">Situation</h3>
 <p>One wants to install an RKE cluster without the default version of RKE or the Kubernetes version is not listed on the Rancher UI</p>
 <h3 id="resolution">Resolution</h3>
-<p>1. For RKE CLI:</p>
-<p>Through the RKE CLI, one might get the available versions of Kubernetes for that release:</p>
+<p>1. For RKE CLI:<br />
+Through the RKE CLI, one might get the available versions of Kubernetes for that release:</p>
 <div class="highlight"><pre><span></span><code>$ rke config --list-version --all
 v1.30.2-rancher1-1
 v1.28.11-rancher1-1
@@ -10980,9 +10980,9 @@ v1.27.15-rancher1-1
 
 $ rke version
 rke version
-INFO[0000] Running RKE version: v1.6.0
+INFO[0000] Running RKE version: v1.6.0 
 </code></pre></div>
-<p>Without the flag --all it will display the default version of the Kubernetes to be installed if the version is not specified on the cluster.yml. Documentation on how to do it can be found <a href="https://rke.docs.rancher.com/upgrades#prerequisites">here</a></p>
+<p>Without the flag --all it will display the default version of the Kubernetes to be installed if the version is not specified on the cluster.yml. Documentation on how to do it can be found <a href="https://rke.docs.rancher.com/upgrades#prerequisites">here</a> </p>
 <p>2. For RKE Kubernetes versions available on Rancher, check the RKE k8s System Images resource:</p>
 <div class="highlight"><pre><span></span><code>kubectl get rkek8ssystemimages.management.cattle.io -n cattle-global-data
 </code></pre></div>
@@ -11026,6 +11026,7 @@ $ rke config --system-images --all
 </code></pre></div>
 <p>Note: the information is also available on the RKE release page: https://github.com/rancher/rke/releases/</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

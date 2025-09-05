@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10996,18 +10996,18 @@ Service &quot;istio-ingressgateway&quot; is invalid: spec.ports[1].nodePort: Inv
 <p>4. Add the following lines to 'Custom Overlay File' by adding the following lines starting on line 1.</p>
 <p>5. Change the nodePort to a different value from 31380 to 31370.</p>
 <p>6. Once you have added the below lines, you can click on 'Next' and then 'Update'.</p>
-<p>(I just chose 31370; you can choose any open port on your cluster in the range of 30000-32767)</p>
+<p>(I just chose 31370; you can choose any open port on your cluster in the range of 30000-32767) </p>
 <div class="highlight"><pre><span></span><code>### alter only the status-port as nodeport 31370
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
-spec:
-  components:
-    ingressGateways:
+spec: 
+  components: 
+    ingressGateways: 
     - enabled: true
       name: istio-ingressgateway
-      k8s:
-        service:
-          ports:
+      k8s: 
+        service: 
+          ports: 
             - name: status-port
               port: 15021
               targetPort: 15021
@@ -11028,6 +11028,7 @@ istio-ingressgateway   NodePort    10.43.36.43     &lt;none&gt;        15021:313
 <h3 id="additional-information">Additional Information</h3>
 <p><a href="https://ranchermanager.docs.rancher.com/integrations-in-rancher/istio/configuration-options#overlay-file">https://ranchermanager.docs.rancher.com/integrations-in-rancher/istio/configuration-options#overlay-file</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

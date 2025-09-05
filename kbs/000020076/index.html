@@ -9186,7 +9186,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11042,51 +11042,38 @@
 <ol>
 <li>Edit the cluster configuration YAML file to include the <code>ssl-protocols</code> option for the ingress, as follows:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>     ingress:
-       provider: nginx
-       options:
-         ssl-protocols: &quot;TLSv1.1 TLSv1.2&quot;
+<p><div class="highlight"><pre><span></span><code>  ingress:
+    provider: nginx
+    options:
+      ssl-protocols: &quot;TLSv1.1 TLSv1.2&quot;
 </code></pre></div>
-<ol>
-<li>Apply the changes to the cluster, by invoking <code>rke up</code>:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>rke up --config &lt;cluster configuration yaml file&gt;
+2. Apply the changes to the cluster, by invoking <code>rke up</code>:</p>
+<p><div class="highlight"><pre><span></span><code>rke up --config &lt;cluster configuration yaml file&gt;
 </code></pre></div>
-<ol>
-<li>Verify the new configuration:</li>
-</ol>
+3. Verify the new configuration:</p>
 <div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep ssl_protocols | grep &#39;1.1&#39; &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
 </code></pre></div>
 <h3 id="configuration-for-rancher-provisioned-rke-clusters"><strong>Configuration for Rancher-provisioned RKE clusters</strong></h3>
 <ol>
-<li>
-<p>Login into the Rancher UI</p>
-</li>
-<li>
-<p>Go to <strong>Cluster Management</strong></p>
-</li>
+<li>Login into the Rancher UI</li>
+<li>Go to <strong>Cluster Management</strong></li>
 <li>Click <strong>Edit Config</strong> for the relevant Rancher-provisioned RKE cluster</li>
 <li>Click <strong>Edit as YAML</strong></li>
 <li>Include the <code>ssl-protocols</code> option for the ingress, as follows:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>ingress:
-     provider: nginx
-     options:
-       ssl-protocols: &quot;TLSv1.1 TLSv1.2&quot;
+<p><div class="highlight"><pre><span></span><code>ingress:
+  provider: nginx
+  options:
+    ssl-protocols: &quot;TLSv1.1 TLSv1.2&quot;
 </code></pre></div>
-<ol>
-<li>
-<p>Click <strong>Save</strong> at the bottom of the page</p>
-</li>
-<li>
-<p>Wait for cluster to finish upgrading</p>
-</li>
-<li>Explore the cluster and launch a kubectl shell</li>
-<li>Run the following inside the kubectl shell to verify the new argument:</li>
-</ol>
+6. Click <strong>Save</strong> at the bottom of the page
+7. Wait for cluster to finish upgrading
+8. Explore the cluster and launch a kubectl shell
+9. Run the following inside the kubectl shell to verify the new argument:</p>
 <div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep ssl_protocols | grep &#39;1.1&#39; &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

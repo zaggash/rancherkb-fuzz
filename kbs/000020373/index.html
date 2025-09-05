@@ -9153,7 +9153,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10965,7 +10965,8 @@
 <h3 id="environment">Environment</h3>
 <p>An RKE CLI or Rancher-provisioned RKE1 cluster</p>
 <h3 id="situation">Situation</h3>
-<p>Need a way to cordon or drain a node when OS patching is automated, and the automation doesn't have access to the Rancher API.</p>
+<p>Need a way to cordon or drain a node when OS patching is automated, and the automation doesn't have access to the Rancher API.<br />
+</p>
 <h3 id="resolution">Resolution</h3>
 <p>Integrate the below command in the automation to drain the node in the OS patching workflow.</p>
 <p>Rancher v2.7.14+/Rancher v2.8.5+, RKE v1.4.19+/RKE v1.5.10+ :</p>
@@ -10975,18 +10976,19 @@
 <div class="highlight"><pre><span></span><code>docker exec kubelet bash -c &#39;kubectl --kubeconfig &lt;(kubectl --kubeconfig /etc/kubernetes/ssl/kubecfg-kube-node.yaml get configmap -n kube-system full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | jq -r .currentState.certificatesBundle.\&quot;kube-admin\&quot;.config | sed -e &quot;/^[[:space:]]*server:/ s_:.*_: \&quot;https://127.0.0.1:6443\&quot;_&quot;) drain $(hostname -s) --delete-local-data=true --force=true --grace-period=60 --ignore-daemonsets=true --timeout=120s&#39;
 </code></pre></div>
 <p>Please note that the below flags need to be changed according to your requirements.</p>
-<div class="highlight"><pre><span></span><code>--delete-local-data=true
---force=true
---grace-period=60
---ignore-daemonsets=true
+<div class="highlight"><pre><span></span><code>--delete-local-data=true 
+--force=true 
+--grace-period=60 
+--ignore-daemonsets=true 
 --timeout=120s
 </code></pre></div>
 <h3 id="cause">Cause</h3>
-<p>Attempting to drain nodes using the kubeconfig file " <em>/etc/kubernetes/ssl/kubecfg-kube-node.yaml"</em> will result in errors like below, since the " <em>system:node"</em> role is not authorized to access the needed API groups.</p>
+<p>Attempting to drain nodes using the kubeconfig file "<em>/etc/kubernetes/ssl/kubecfg-kube-node.yaml"</em> will result in errors like below, since the "<em>system:node"</em> role is not authorized to access the needed API groups.</p>
 <div class="highlight"><pre><span></span><code>cannot delete daemonsets.apps &quot;nginx-ingress-controller&quot; is forbidden: User &quot;system:node&quot; cannot get resource &quot;daemonsets&quot; in API group &quot;apps&quot; in the namespace &quot;ingress-nginx&quot;
 </code></pre></div>
-<p>But this kubeconfig file can access the secret/config-map <em>"full-cluster-state</em>" in the " <em>kube-system</em>" namespace, containing the kubeconfig file that has the privilege to do the drain operation.</p>
+<p>But this kubeconfig file can access the secret/config-map <em>"full-cluster-state</em>" in the "<em>kube-system</em>" namespace, containing the kubeconfig file that has the privilege to do the drain operation. </p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

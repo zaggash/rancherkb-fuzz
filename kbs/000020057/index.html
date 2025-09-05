@@ -9183,7 +9183,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11029,18 +11029,19 @@
 <p>情報収集が必要となる、各ノードからログが収集された後、Rancher Support の指示に従い、この出力ファイルをサポートチケット（上限20MB）にアップロードするか、サポートが提供するファイルアップロードリンクにアップロードすることができます。</p>
 <h4 id="_2">ソリューション</h4>
 <h5 id="rancher-v2x">Rancher v2.x</h5>
-<p>Rancher v2.x クラスタ内のノードからログを収集するには、 <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">Rancher v2.x log collector script</a> を使用して、以下のように収集することができます：</p>
+<p>Rancher v2.x クラスタ内のノードからログを収集するには、<a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">Rancher v2.x log collector script</a> を使用して、以下のように収集することができます：</p>
 <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>-O-<span class="w"> </span>https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>bash<span class="w"> </span>-s
 </code></pre></div>
 <h5 id="rancher-v16">Rancher v1.6</h5>
-<p>Rancher v1.6 クラスタ内のノードからログを収集するには、 <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v1.6/logs-collector">Rancher v1.6 log collector script</a> を使用して、以下のように収集することができます：</p>
+<p>Rancher v1.6 クラスタ内のノードからログを収集するには、<a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v1.6/logs-collector">Rancher v1.6 log collector script</a>を使用して、以下のように収集することができます：</p>
 <div class="highlight"><pre><span></span><code>wget<span class="w"> </span>-O-<span class="w"> </span>https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v1.6/logs-collector/rancher16_logs_collector.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>bash<span class="w"> </span>-s
 </code></pre></div>
 <h5 id="rancheros">RancherOS</h5>
-<p>RancherOS特有の問題を調査するために、 <a href="https://github.com/rancher/os/blob/master/scripts/tools/collect_rancheros_info.sh">RancherOS log collector script</a> でデータを収集することができます：</p>
+<p>RancherOS特有の問題を調査するために、<a href="https://github.com/rancher/os/blob/master/scripts/tools/collect_rancheros_info.sh">RancherOS log collector script</a>でデータを収集することができます：</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>curl<span class="w"> </span>https://raw.githubusercontent.com/rancher/os/master/scripts/tools/collect_rancheros_info.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

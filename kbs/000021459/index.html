@@ -9144,7 +9144,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10952,18 +10952,20 @@
 <h3 id="situation">Situation</h3>
 <p>You have followed the recommended steps to register a new Windows node in a cluster:</p>
 <ul>
-<li>
-<p>You can add Windows hosts to the cluster by creating or editing the cluster and choosing the <strong>Windows</strong> option.</p>
-</li>
-<li>
-<p>In the upper left corner, click <strong>☰ &gt; Cluster Management</strong>.</p>
-</li>
+<li>You can add Windows hosts to the cluster by creating or editing the cluster and choosing the <strong>Windows</strong> option.</li>
+</ul>
+<!--THE END-->
+
+<ol>
+<li>In the upper left corner, click <strong>☰ &gt; Cluster Management</strong>.</li>
 <li>Go to the cluster that you created and click <strong>⋮ &gt; Edit Config</strong>.</li>
 <li>Scroll down to <strong>Node Operating System</strong>. Choose <strong>Windows</strong>. Note: You will see that the <strong>worker</strong> role is the only available role.</li>
 <li>Copy the command displayed on the screen to your clipboard.</li>
-<li>
-<p>Log in to your Windows host using your preferred tool, such as <a href="https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients">Microsoft Remote Desktop</a>. Run the command copied to your clipboard in the <strong>Command Prompt (CMD)</strong>.</p>
-</li>
+<li>Log in to your Windows host using your preferred tool, such as <a href="https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients">Microsoft Remote Desktop</a>. Run the command copied to your clipboard in the <strong>Command Prompt (CMD)</strong>.</li>
+</ol>
+<!--THE END-->
+
+<ul>
 <li>
 <p>However, as your Windows node runs under a proxy, the registration command would get stuck with the following error message:</p>
 </li>
@@ -10973,9 +10975,12 @@
 <p>Current WinHTTP proxy settings:</p>
 <pre><code>Direct access (no proxy server)
 </code></pre>
-<p><code>- Likewise, a proxy error configuration can be confirmed by checking the 'rancher-wins' logs:
-  -</code>
-Get-EventLog -LogName Application -Source 'rancher-wins' -Newest 100 | format-table -Property TimeGenerated, ReplacementStrings -Wrap</p>
+<p>```
+- Likewise, a proxy error configuration can be confirmed by checking the 'rancher-wins' logs:</p>
+</li>
+<li>
+<p>```
+    Get-EventLog -LogName Application -Source 'rancher-wins' -Newest 100 | format-table -Property TimeGenerated, ReplacementStrings -Wrap</p>
 <p>.
 .
 .
@@ -10996,6 +11001,7 @@ Get-EventLog -LogName Application -Source 'rancher-wins' -Newest 100 | format-ta
 </ol>
 <p>Once the authenticated proxy is configured from Windows settings, the node should be able to access the internet via the proxy. The node registration should finish as expected after this proxy configuration.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

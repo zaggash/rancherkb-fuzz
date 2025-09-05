@@ -9117,7 +9117,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10894,18 +10894,10 @@
 <h1 id="what-is-cattle-impersonation-system">What is cattle-impersonation-system?​</h1>
 <p>It is part of the Rancher Authentication Proxy​:</p>
 <ul>
-<li>
-<p>Cattle-impersonation-system is a critical part of how Rancher has implemented authentication.​</p>
-</li>
-<li>
-<p>A subject must explicitly have the “impersonate” privilege to be able to perform impersonation of other users. ​</p>
-</li>
-<li>
-<p>One of the key features that Rancher adds to Kubernetes is centralized user authentication. This feature allows users to use one set of credentials to authenticate with any of your Kubernetes clusters.  ​</p>
-</li>
-<li>
-<p>This centralized user authentication is accomplished using the Rancher authentication proxy, installed along with the rest of Rancher. This proxy authenticates your users and forwards their requests to your Kubernetes clusters using a service account.</p>
-</li>
+<li>Cattle-impersonation-system is a critical part of how Rancher has implemented authentication.​</li>
+<li>A subject must explicitly have the “impersonate” privilege to be able to perform impersonation of other users. ​</li>
+<li>One of the key features that Rancher adds to Kubernetes is centralized user authentication. This feature allows users to use one set of credentials to authenticate with any of your Kubernetes clusters.  ​</li>
+<li>This centralized user authentication is accomplished using the Rancher authentication proxy, installed along with the rest of Rancher. This proxy authenticates your users and forwards their requests to your Kubernetes clusters using a service account.</li>
 </ul>
 <h1 id="why-do-we-need-cattle-impersonation-system">Why do we need cattle-impersonation-system​?</h1>
 <h2 id="doesnt-kubernetes-come-with-user-authentication">Doesn't Kubernetes come with user authentication?</h2>
@@ -10914,54 +10906,33 @@
 <h3 id="what-about-users-in-kubernetes">What about users in Kubernetes?​</h3>
 <p>Kubernetes does not have full support for the user and group entities​</p>
 <ul>
-<li>
-<p>It does have service accounts as users​</p>
-</li>
-<li>
-<p>But for normal users, Kubernetes documents that they should be managed externally by external identity providers.​</p>
-</li>
-<li>
-<p>Thus, there is no API support for a user object and its group membership ( <a href="https://kubernetes.io/docs/reference/access-authn-authz/authentication/#users-in-kubernetes">link</a>)​</p>
-</li>
-<li>
-<p>If you want to manage multiple Kubernetes clusters and users across these clusters, you need to manage them externally.</p>
-</li>
+<li>It does have service accounts as users​</li>
+<li>But for normal users, Kubernetes documents that they should be managed externally by external identity providers.​</li>
+<li>Thus, there is no API support for a user object and its group membership (<a href="https://kubernetes.io/docs/reference/access-authn-authz/authentication/#users-in-kubernetes">link</a>)​</li>
+<li>If you want to manage multiple Kubernetes clusters and users across these clusters, you need to manage them externally.</li>
 </ul>
 <h1 id="how-does-rancher-do-user-authentication-in-this-case">How does Rancher do user authentication in this case?​</h1>
 <p>Rancher has designed and developed its authentication framework and extended Kubernetes to support the user and group object:​</p>
 <p>To achieve this, it uses the <strong>user impersonation</strong> of Kubernetes.​ User Impersonation:​</p>
 <ul>
-<li>
-<p>The ability for one user (or service account) to act as another​</p>
-</li>
-<li>
-<p>The user or service account should have "impersonate" permissions granted​</p>
-</li>
-<li>
-<p>An important key to Rancher's authentication system: on every Kubernetes API call, the authentication proxy authenticates the caller. It sets the proper Kubernetes impersonation headers before forwarding the call to Kubernetes masters.​</p>
-</li>
+<li>The ability for one user (or service account) to act as another​</li>
+<li>The user or service account should have "impersonate" permissions granted​</li>
+<li>An important key to Rancher's authentication system: on every Kubernetes API call, the authentication proxy authenticates the caller. It sets the proper Kubernetes impersonation headers before forwarding the call to Kubernetes masters.​</li>
 </ul>
 <h2 id="rancher-authentication-proxy">​Rancher authentication proxy​</h2>
 <p>In the central authentication model, Rancher is sitting in "front" of all Kubernetes clusters, acts as a central authentication proxy, and thus facilitates the authentication for multiple clusters.​</p>
 <p>A Rancher admin will configure and enable authentication against one of the integrations available for Rancher(e.g. Active Directory, OpenLdap, etc.) once, centrally on the Rancher server and manage it for all clusters. ​</p>
 <p>Users authenticate with Rancher, and Rancher redirects the user request to the specific Kubernetes cluster using standard bearer tokens and user impersonation to act as that user.​</p>
-<p><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000001GziB&amp;operationContext=DELIVERY&amp;contentId=05TTr000001we69&amp;page=0&amp;d=/a/Tr000000moFU/DuzfuSuQesfsPv6djb6LEa_HYg_ye77Q21GGMXmtlYU&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
+<p><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000001GziB&amp;operationContext=DELIVERY&amp;contentId=05TTr000001we69&amp;page=0&amp;d=%2Fa%2FTr000000moFU%2FDuzfuSuQesfsPv6djb6LEa_HYg_ye77Q21GGMXmtlYU&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /><br />
+</p>
 <h1 id="resources-for-cattle-impersonation-system">Resources for cattle-impersonation-system​</h1>
 <p>Four resources are created to handle impersonation:​</p>
 <ol>
-<li>
-<p><strong>namespace</strong>: cattle-impersonation-system​</p>
-</li>
-<li>
-<p><strong>service account</strong>: cattle-impersonation-system/cattle-impersonation-<user ID>​</p>
-<p>Behind the scenes, Kubernetes also creates an account token that Rancher uses for authentication: cattle-impersonation-system/cattle-impersonation-<user ID>-token-<hash>​</p>
-</li>
-<li>
-<p><strong>cluster role</strong>: cattle-impersonation-<user ID>​</p>
-</li>
-<li>
-<p><strong>cluster role binding</strong>: cattle-impersonation-<user ID></p>
-</li>
+<li><strong>namespace</strong>: cattle-impersonation-system​</li>
+<li><strong>service account</strong>: cattle-impersonation-system/cattle-impersonation-&lt;user ID&gt;​<br />
+   Behind the scenes, Kubernetes also creates an account token that Rancher uses for authentication: cattle-impersonation-system/cattle-impersonation-&lt;user ID&gt;-token-&lt;hash&gt;​</li>
+<li><strong>cluster role</strong>: cattle-impersonation-&lt;user ID&gt;​</li>
+<li><strong>cluster role binding</strong>: cattle-impersonation-&lt;user ID&gt;</li>
 </ol>
 <h1 id="internal-implementation">Internal implementation</h1>
 <p>Creating the impersonation resources works in two parts.  ​</p>
@@ -10972,54 +10943,34 @@
 </ul>
 <h2 id="part-2">Part 2​</h2>
 <ul>
-<li>
-<p>When a user makes a request on the downstream cluster, using either the cluster explorer, kubectl with a downloaded kubeconfig, or curl with the /k8s/clusters proxy API, Rancher intercepts the request and checks to make sure the resources are up to date, that they exist, and that the rules are up to date for the user.​</p>
-</li>
-<li>
-<p>If the user is logging in from an external auth provider, Rancher may not know during part 1 what extra attributes the user has, as these are provided in the token in the request. At this point, Rancher will update the cluster role to include these extra attributes included in the request, such as the principal ID and username.​</p>
-</li>
-<li>
-<p>All relevant resources (namespace, service account, secret, clusterrole and clusterrolebinding) on the downstream cluster are watched and cached on the Rancher server, so checking the resources should have minimal performance overhead.</p>
-</li>
+<li>When a user makes a request on the downstream cluster, using either the cluster explorer, kubectl with a downloaded kubeconfig, or curl with the /k8s/clusters proxy API, Rancher intercepts the request and checks to make sure the resources are up to date, that they exist, and that the rules are up to date for the user.​</li>
+<li>If the user is logging in from an external auth provider, Rancher may not know during part 1 what extra attributes the user has, as these are provided in the token in the request. At this point, Rancher will update the cluster role to include these extra attributes included in the request, such as the principal ID and username.​</li>
+<li>All relevant resources (namespace, service account, secret, clusterrole and clusterrolebinding) on the downstream cluster are watched and cached on the Rancher server, so checking the resources should have minimal performance overhead.</li>
 </ul>
 <h2 id="request-diagram">Request Diagram</h2>
-<p><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000008Sf3m&amp;operationContext=DELIVERY&amp;contentId=05TTr00000BhMR8&amp;page=0&amp;d=/a/Tr000004aCbS/gTy2jxQ6pUPEwiIyvVeZzTN8O1cv5n7QSkQE7sQ4RGQ&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
-<h1 id="example-in-this-diagram-a-user-named-bob-wants-to-see-all-pods-running-on-a-downstream-user-cluster-called-user-cluster">Example:​    <img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000001H6A5&amp;operationContext=DELIVERY&amp;contentId=05TTr000001wJ0Y&amp;page=0&amp;d=/a/Tr000000mneO/aRnzDca.PK8KxIrkpIRwoH4jEa_GElcBpvXd0bIhoCY&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" />    In this diagram, a user named Bob wants to see all pods running on a downstream user cluster called User Cluster. ​</h1>
+<p><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000008Sf3m&amp;operationContext=DELIVERY&amp;contentId=05TTr00000BhMR8&amp;page=0&amp;d=%2Fa%2FTr000004aCbS%2FgTy2jxQ6pUPEwiIyvVeZzTN8O1cv5n7QSkQE7sQ4RGQ&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /> <a href=""></a><br />
+</p>
+<h1 id="example-in-this-diagram-a-user-named-bob-wants-to-see-all-pods-running-on-a-downstream-user-cluster-called-user-cluster">Example:​ <img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr000001H6A5&amp;operationContext=DELIVERY&amp;contentId=05TTr000001wJ0Y&amp;page=0&amp;d=%2Fa%2FTr000000mneO%2FaRnzDca.PK8KxIrkpIRwoH4jEa_GElcBpvXd0bIhoCY&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /> In this diagram, a user named Bob wants to see all pods running on a downstream user cluster called User Cluster. ​</h1>
 <ol>
-<li>
-<p>From within Rancher, he can run a kubectl command to see the pods. Bob is authenticated through Rancher’s authentication proxy.​</p>
-</li>
-<li>
-<p>The authentication proxy forwards all Kubernetes API calls to downstream clusters. It integrates with authentication services like local authentication, Active Directory, and GitHub. On every Kubernetes API call, the authentication proxy authenticates the caller and sets the proper Kubernetes impersonation headers before forwarding the call to Kubernetes masters.​</p>
-</li>
-<li>
-<p>Rancher communicates with Kubernetes clusters using a <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/">service account</a> , which provides an identity for processes that run in a pod.​</p>
-</li>
-<li>
-<p>By default, Rancher generates a kubeconfig file that contains credentials for proxying through the Rancher server to connect to the Kubernetes API server on a downstream user cluster. The kubeconfig file (kube_config_rancher-cluster.yml) contains full access to the cluster.</p>
-</li>
+<li>From within Rancher, he can run a kubectl command to see the pods. Bob is authenticated through Rancher’s authentication proxy.​</li>
+<li>The authentication proxy forwards all Kubernetes API calls to downstream clusters. It integrates with authentication services like local authentication, Active Directory, and GitHub. On every Kubernetes API call, the authentication proxy authenticates the caller and sets the proper Kubernetes impersonation headers before forwarding the call to Kubernetes masters.​</li>
+<li>Rancher communicates with Kubernetes clusters using a <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/">service account</a> , which provides an identity for processes that run in a pod.​</li>
+<li>By default, Rancher generates a kubeconfig file that contains credentials for proxying through the Rancher server to connect to the Kubernetes API server on a downstream user cluster. The kubeconfig file (kube_config_rancher-cluster.yml) contains full access to the cluster.</li>
 </ol>
 <h1 id="qa">Q&amp;A</h1>
 <h2 id="when-is-the-clusterrole-supposed-to-change">When is the ClusterRole supposed to change? ​</h2>
 <ul>
-<li>
-<p>It often changes on the first login to add userextras/principalid and userextras/username. A future enhancement to the way user extra attributes are handled in Rancher will make this less necessary in the future.​</p>
-</li>
-<li>
-<p>It will change if the user adds an auth provider or changes auth providers. (NOTE: Rancher does not support changing auth providers at the moment).​</p>
-</li>
-<li>
-<p>It will change if the user's groups in the auth provider change.​</p>
-</li>
-<li>
-<p>It may change depending on how the user makes the request - UI, kubectl, or curl - sometimes the token includes different user extra attributes.</p>
-</li>
+<li>It often changes on the first login to add userextras/principalid and userextras/username. A future enhancement to the way user extra attributes are handled in Rancher will make this less necessary in the future.​</li>
+<li>It will change if the user adds an auth provider or changes auth providers. (NOTE: Rancher does not support changing auth providers at the moment).​</li>
+<li>It will change if the user's groups in the auth provider change.​</li>
+<li>It may change depending on how the user makes the request - UI, kubectl, or curl - sometimes the token includes different user extra attributes.</li>
 </ul>
 <h2 id="when-will-cleanup-happen">When will Cleanup happen?​</h2>
 <ul>
 <li>The service account, clusterrole and clusterrolebinding are cleaned up when the ClusterRoleTemplateBinding or ProjectRoleTemplateBinding are deleted (when the user is removed from the project or cluster).</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

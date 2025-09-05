@@ -9153,7 +9153,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10971,8 +10971,8 @@
 <ul>
 <li>Create a user profile with <strong>ANY</strong> user permissions (User-Base, Administrator, Restricted Administrator, Standard User) and assign the role of <strong>‘Project Member</strong>’ within the Project through the Rancher user interface</li>
 <li>Login to the Rancher user interface as the new user.</li>
-<li>Initiate the generation of a <strong><code>KUBECONFIG</code></strong> file via the user interface linked to the respective user's profile.</li>
-<li>Develop a namespace manifest incorporating the specific annotation: <strong>"</strong> <strong>field.cattle.io/projectId: c-m-zk2csxxp:p-bsr6h"</strong>, where <strong>"c-m-zk2csxxp"</strong> represents the ClusterID for the targeted cluster and <strong>"p-bsr6h"</strong> signifies the projectID.</li>
+<li>Initiate the generation of a  <strong><code>KUBECONFIG</code></strong>  file via the user interface linked to the respective user's profile.</li>
+<li>Develop a namespace manifest incorporating the specific annotation: <strong>"field.cattle.io/projectId: c-m-zk2csxxp:p-bsr6h"</strong>, where <strong>"c-m-zk2csxxp"</strong> represents the ClusterID for the targeted cluster and <strong>"p-bsr6h"</strong> signifies the projectID.</li>
 </ul>
 <p><strong>Example:</strong></p>
 <div class="highlight"><pre><span></span><code>apiVersion: v1
@@ -10998,6 +10998,7 @@ Name: &quot;demo&quot;, Namespace: &quot;&quot;
 from server for: &quot;ns.yml&quot;: namespaces &quot;demo&quot; is forbidden: User &quot;u-v26xr&quot; cannot get resource &quot;namespaces&quot; in API group &quot;&quot; in the namespace &quot;demo&quot;
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

@@ -9144,7 +9144,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10950,19 +10950,32 @@
 <p>MySQL DB dump is available, and the cluster token from /var/lib/rancher/k3s/server/token</p>
 <h3 id="resolution">Resolution</h3>
 <ol>
-<li>In the new MySQL instance create a database</li>
-<li>Here we set the <a href="https://dev.mysql.com/doc/refman/5.7/en/charset-database.html">Character</a> set to latin1 and collation to latin1_swedish_ci, as the original DB</li>
+<li>
+<p>In the new MySQL instance create a database</p>
+</li>
+<li>
+<p>Here we set the <a href="https://dev.mysql.com/doc/refman/5.7/en/charset-database.html">Character</a> set to latin1 and collation to latin1_swedish_ci, as the original DB</p>
+</li>
 <li>we also chose the same name, as it is a new instance</li>
 <li>Restore the dump, you may use <em>mysql db_name &lt; backup-file.sql</em></li>
-<li>on the first node start k3s with:</li>
-<li>curl -sfL https://get.k3s.io | sh -s - server --token <SERVER-TOKEN> --datastore-endpoint="mysql://<USERNAME>:<PASSWORD>@tcp(<INSTANCE-NAME>.mysql.database.azure.com:3306)/<RESTORED-DB>?tls=true"</li>
+<li>
+<p>on the first node start k3s with:</p>
+</li>
+<li>
+<p>curl -sfL https://get.k3s.io | sh -s - server --token &lt;SERVER-TOKEN&gt; --datastore-endpoint="mysql://&lt;USERNAME&gt;:&lt;PASSWORD&gt;@tcp(&lt;INSTANCE-NAME&gt;.mysql.database.azure.com:3306)/&lt;RESTORED-DB&gt;?tls=true"</p>
+</li>
 <li>the token is retrieve from the failed cluster in <em>/var/lib/rancher/k3s/server/token</em></li>
-<li>Remove the failed nodes running:</li>
-<li>k3s kubectl get nodes</li>
-<li>k3s kubectl delete nodes <FAILED-NODE></li>
+<li>
+<p>Remove the failed nodes running:</p>
+</li>
+<li>
+<p>k3s kubectl get nodes</p>
+</li>
+<li>k3s kubectl delete nodes &lt;FAILED-NODE&gt;</li>
 <li>Join any additional node using the <a href="https://docs.k3s.io/installation/ha#4-optional-join-additional-server-nodes">instructions</a> from k3s documentation</li>
 </ol>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

@@ -9159,7 +9159,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10976,20 +10976,21 @@
 <p>This document <strong>(000020111)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
 <h4 id="issue">Issue</h4>
-<p>In a Linux Kubernetes cluster that has frequent pod creations and deletions along with large amounts of pod network traffic, the following error may be logged to the host system logs:</p>
-<p><code>"unregister_netdevice: waiting for lo to become free. Usage count = 1"</code></p>
+<p>In a Linux Kubernetes cluster that has frequent pod creations and deletions along with large amounts of pod network traffic, the following error may be logged to the host system logs:<br />
+<code>"unregister_netdevice: waiting for lo to become free. Usage count = 1"</code></p>
 <p>The kernel will typically be in a semi-hung state after this, causing major system instability.</p>
 <h4 id="resolution">Resolution</h4>
-<p>This issue is fixed upstream in the Linux Kernel by <a href="https://github.com/torvalds/linux/commit/deed49df7390d5239024199e249190328f1651e7">this commit</a> which was released in version 4.4.0.</p>
-<p>We recommend upgrading to the latest linux kernel available in your distribution.</p>
+<p>This issue is fixed upstream in the Linux Kernel by <a href="https://github.com/torvalds/linux/commit/deed49df7390d5239024199e249190328f1651e7">this commit</a> which was released in version 4.4.0.<br />
+We recommend upgrading to the latest linux kernel available in your distribution.</p>
 <p>We have seen cases where certain kernel modules can cause this issue while loaded, even on a kernel that includes the fix above. If you are running a kernel higher than 4.4.0 and still seeing this issue, try disabling any third-party kernel modules to test.</p>
 <h4 id="projectos-specific-bugs">Project/OS Specific bugs:</h4>
 <p>Docker - <a href="https://github.com/moby/moby/issues/5618">https://github.com/moby/moby/issues/5618</a></p>
-<p>Ubuntu - <a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1403152">https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1403152</a></p>
-<p>- <a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1711407">https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1711407</a></p>
+<p>Ubuntu - <a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1403152">https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1403152</a><br />
+- <a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1711407">https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1711407</a></p>
 <p>RedHat - <a href="https://access.redhat.com/solutions/3105941">https://access.redhat.com/solutions/3105941</a> - <a href="https://access.redhat.com/solutions/3659011">https://access.redhat.com/solutions/3659011</a></p>
 <p>Centos - <a href="https://bugs.centos.org/view.php?id=12711">https://bugs.centos.org/view.php?id=12711</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

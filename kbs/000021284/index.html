@@ -9153,7 +9153,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10975,16 +10975,15 @@
 <li>Open an SSH shell on the affected node</li>
 <li>Move the kube-proxy.yaml manifest out of the static pod folder. You might need to change the path if you are using a non-default static pod folder:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>mv /var/lib/rancher/rke2/agent/pod-manifests/kube-proxy.yaml /var/lib/rancher/rke2/agent/kube-proxy.yaml_backup
+<p><div class="highlight"><pre><span></span><code>mv /var/lib/rancher/rke2/agent/pod-manifests/kube-proxy.yaml /var/lib/rancher/rke2/agent/kube-proxy.yaml_backup
 </code></pre></div>
-<ol>
-<li>Restart the rke2-agent service:</li>
-</ol>
+3. Restart the rke2-agent service:</p>
 <div class="highlight"><pre><span></span><code>systemctl restart rke2-agent
 </code></pre></div>
 <h3 id="cause">Cause</h3>
 <p>This bug was tracked in <a href="https://github.com/rancher/rke2/issues/4864">https://github.com/rancher/rke2/issues/4864</a> and fixed in RKE2 1.27.12, 1.28.8, 1.29.4 and above.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

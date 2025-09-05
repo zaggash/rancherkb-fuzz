@@ -9144,7 +9144,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10947,15 +10947,16 @@
 <h3 id="situation">Situation</h3>
 <h3 id="collecte-de-journaux-linux-rancher-v2x_1">Collecte de journaux Linux Rancher v2.x</h3>
 <p>Les journaux peuvent être collectés à partir d'un nœud Linux dans un cluster Rancher v2.x à l'aide du <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">script de collecte de journaux Rancher v2.x</a>.</p>
-<p><strong>Important:</strong>Ce script ne peut être utilisé que pour collecter des journaux à partir de clusters provisionnés par <a href="https://rancher.com/docs/rke/latest/en/">l'interface de ligne de commande Rancher Kubernetes Engine (RKE)</a> , de <a href="https://rancher.com/docs/k3s/latest/en/">clusters K3s</a>, de <a href="https://rancher.com/docs/rancher/v2.5/en/cluster-provisioning/rke-clusters/custom-nodes/">clusters personnalisés</a> provisionnés par Rancher et de <a href="https://rancher.com/docs/rancher/v2.5/en/cluster-provisioning/rke-clusters/node-pools/">clusters provisionnés par Rancher à l'aide d'un pilote de nœud</a>.</p>
+<p><strong>Important:</strong> Ce script ne peut être utilisé que pour collecter des journaux à partir de clusters provisionnés par <a href="https://rancher.com/docs/rke/latest/en/">l'interface de ligne de commande Rancher Kubernetes Engine (RKE)</a> , de <a href="https://rancher.com/docs/k3s/latest/en/">clusters K3s</a>, de <a href="https://rancher.com/docs/rancher/v2.5/en/cluster-provisioning/rke-clusters/custom-nodes/">clusters personnalisés</a> provisionnés par Rancher et de <a href="https://rancher.com/docs/rancher/v2.5/en/cluster-provisioning/rke-clusters/node-pools/">clusters provisionnés par Rancher à l'aide d'un pilote de nœud</a>.</p>
 <p>Ce script n'est pas adapté à la collecte de journaux à partir de clusters de fournisseurs <a href="https://rancher.com/docs/rancher/v2.5/en/cluster-provisioning/hosted-kubernetes-clusters/">Kubernetes hébergés</a>.</p>
 <p>Le script doit être téléchargé et exécuté directement sur l'hôte en utilisant l'utilisateur root ou en utilisant sudo, comme suit:</p>
 <div class="highlight"><pre><span></span><code>wget -O- https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh | sudo bash -s
 </code></pre></div>
-<p>Par défaut, la sortie sera écrite dans /tmpdans un fichier tar gzippé nommé <hostname>-<datetime>.tar.gz</p>
+<p>Par défaut, la sortie sera écrite dans /tmp dans un fichier tar gzippé nommé &lt;hostname&gt;-&lt;datetime&gt;.tar.gz</p>
 <h3 id="choix"><strong>Choix</strong></h3>
 <p>Les indicateurs disponibles pouvant être transmis au script se trouvent dans le <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">script de collecteur de journaux Rancher v2.x README</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>Cette base de connaissances de support technique fournit un outil précieux aux clients SUSE et autres parties intéressées par nos produits et solutions pour obtenir des informations, des idées et apprendre réciproquement. Les documents sont fournis à des fins d'information, personnelles ou non commerciales au sein de votre organisation et sont présentés «EN L'ÉTAT » SANS GARANTIE D'AUCUNE SORTE.</p>
 
 

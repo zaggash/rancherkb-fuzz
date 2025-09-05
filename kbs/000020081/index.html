@@ -9174,7 +9174,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11038,11 +11038,13 @@
 <li>The agent executes the node plan provided by the Rancher server.</li>
 <li>Docker run command will create the path <code>/etc/kubernetes</code> if it doesn't exist.</li>
 <li>Rancher will run cluster provisioning/reconcile based on the desired role for the node being added (etcd and control plane nodes only). This process will copy certificates down from the server via the built in rke cluster provisioning.</li>
-<li>On worker nodes, the process is slightly different. The agent requests a node plan from the Rancher server. The Rancher server generates the node config then sends it back down to the agent. The agent then executes the plan contained in the node config.<ul>
+<li>
+<p>On worker nodes, the process is slightly different. The agent requests a node plan from the Rancher server. The Rancher server generates the node config then sends it back down to the agent. The agent then executes the plan contained in the node config.</p>
+<ul>
 <li>This involves the certificate generation for the Kubernetes components and the container create commands to create the following services: kubelet, kube-proxy, and nginx-proxy.</li>
+<li>The Rancher agent uses the node plan to write out a cloud-config to configure cloud provider settings.</li>
 </ul>
 </li>
-<li>The Rancher agent uses the node plan to write out a cloud-config to configure cloud provider settings.</li>
 </ol>
 <p>If the provisioning of the node succeeds, the node will be registering to the Kubernetes cluster and cattle-node-agent DaemonSet pods will be scheduled to the node, and the pod will remove and replace the agent container that was created via the Docker run command.</p>
 <p>The <code>share-mnt</code> binary (aka bootstrap phase 2):</p>
@@ -11053,6 +11055,7 @@
 <p><em>Note: All Kubernetes control plane components talk directly with the Kubernetes API server that is housed on the same node. This proxy is configured to front all k8s API servers within the cluster.</em></p>
 <p>If all goes well, the <code>share-mnt</code> bootstrap and <code>share-root</code> container exit and the <code>share-root</code> container gets removed. The kubelet starts, registers with Kubernetes, and cattle-node-agent <code>DaemonSet</code> schedules a pod. The pod should then take over the websocket connection to the rancher server. This should end our provisioning journey and hopefully lead to a functional, happy cluster.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

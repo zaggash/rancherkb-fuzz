@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10973,20 +10973,18 @@
 <p>However, when going into one of the other etcd nodes, and checking the etcd member list, the old etcd node will still appear:</p>
 <div class="highlight"><pre><span></span><code>docker exec etcd etcdctl member list
 </code></pre></div>
-<p>This inconsistent removal may lead you into unexpected scenarios, as the number of etcd nodes running in the cluster won't match the number you expect it to be.</p>
-<p>Depending on the number of etcd nodes running, and the actions performed on the theoretically removed etcd nodes, you may even lose control over the cluster if it becomes unresponsive due to etcd quorum lost.</p>
+<p>This inconsistent removal may lead you into unexpected scenarios, as the number of etcd nodes running in the cluster won't match the number you expect it to be.<br />
+Depending on the number of etcd nodes running, and the actions performed on the theoretically removed etcd nodes, you may even lose control over the cluster if it becomes unresponsive due to etcd quorum lost.</p>
 <div class="highlight"><pre><span></span><code>
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
 <p>To workaround this issue, you need to:</p>
 <ol>
-<li>Double-check the etcd member list, where the old node/s should still be listed:</li>
+<li>Double-check the etcd member list, where the old node/s should still be listed: </li>
 </ol>
-<div class="highlight"><pre><span></span><code>docker exec etcd etcdctl member list
+<p><div class="highlight"><pre><span></span><code>docker exec etcd etcdctl member list
 </code></pre></div>
-<ol>
-<li>Manually remove the desired etcd node, even if this node was already deleted via kubectl or editing the configuration YAML file.</li>
-</ol>
+2. Manually remove the desired etcd node, even if this node was already deleted via kubectl or editing the configuration YAML file.</p>
 <div class="highlight"><pre><span></span><code>docker exec etcdctl member remove &lt;etcd node ID&gt;
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>
@@ -10997,6 +10995,7 @@
 <h3 id="cause">Cause</h3>
 <p>Due to a <a href="https://github.com/rancher/rancher/issues/47185">known bug</a> in these versions of Rancher and RKE, after removing a node with at least the etcd role, it won't get removed from the etcd list, even if the node is not part anymore of the cluster from the kubectl perspective.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

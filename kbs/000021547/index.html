@@ -9135,7 +9135,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10933,7 +10933,8 @@
 <li>Rancher-monitoring installed.</li>
 </ul>
 <h3 id="situation">Situation</h3>
-<p>Canal and Calico offer metrics that can be exposed and consumed by rancher-monitoring. This article shows how to do it.</p>
+<p>Canal and Calico offer metrics that can be exposed and consumed by rancher-monitoring. This article shows how to do it.<br />
+</p>
 <h3 id="resolution">Resolution</h3>
 <h1 id="prerequisite-for-calico">Prerequisite for Calico</h1>
 <p>Calico's RKE2 addon does not export Prometheus metrics by default.</p>
@@ -10962,7 +10963,7 @@ spec:
   clusterIP: None
   ports:
   - port: 9091
-    protocol: TCP
+    protocol: TCP 
     name: metrics-port
   selector:
     k8s-app: canal
@@ -11039,6 +11040,7 @@ spec:
 </code></pre></div>
 <p>After both the Service and ServiceMonitors are applied, the target will appear in Prometheus, and the metrics will be scraped. Be aware that it might take a minute for Prometheus to see the new target and scrape the metrics.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

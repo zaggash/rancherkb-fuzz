@@ -9228,7 +9228,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11153,19 +11153,19 @@ Starting test generation and run.
 Generated 1 cases in 0.0616 seconds
 
 FROM             TO               PORT
-default:app=web  default:app=web  -*
+default:app=web  default:app=web  -*  
 
 Ensure that Pods of DaemonSet illuminatio-runner are ready
 
 Finished running 1 tests in 7.1175 seconds
-FROM             TO               PORT  RESULT
+FROM             TO               PORT  RESULT   
 default:app=web  default:app=web  -*    success
 </code></pre></div>
 <h5 id="limit-traffic-to-an-application">Limit Traffic to an application</h5>
 <p>Allow app=bookstore pods to communicate with only other app=bookstore pods.</p>
 <p><code>kubectl run --generator=run-pod/v1 apiserver --image=nginx --labels app=bookstore,role=api --expose --port 80</code></p>
-<p>Save the following as api-allow.yaml and issue kubectl apply -f api-allow.yaml.</p>
-<p>Network policies are accumulative.</p>
+<p>Save the following as api-allow.yaml and issue kubectl apply -f api-allow.yaml.<br />
+Network policies are accumulative.</p>
 <div class="highlight"><pre><span></span><code>kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -11181,7 +11181,7 @@ spec:
           matchLabels:
             app: bookstore
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>$ kubectl apply -f api-allow.yaml
+<div class="highlight"><pre><span></span><code>$ kubectl apply -f api-allow.yaml 
 networkpolicy.networking.k8s.io/api-allow created
 
 $ kubectl get netpol
@@ -11196,16 +11196,16 @@ Starting test generation and run.
 Generated 5 cases in 0.0594 seconds
 
 FROM                                                             TO                              PORT
-illuminatio-inverted-default:app=bookstore                       default:app=bookstore,role=api  -*
-illuminatio-inverted-default:illuminatio-inverted-app=bookstore  default:app=bookstore,role=api  -*
-default:illuminatio-inverted-app=bookstore                       default:app=bookstore,role=api  -*
-default:app=web                                                  default:app=web                 -*
-default:app=bookstore                                            default:app=bookstore,role=api  *
+illuminatio-inverted-default:app=bookstore                       default:app=bookstore,role=api  -*  
+illuminatio-inverted-default:illuminatio-inverted-app=bookstore  default:app=bookstore,role=api  -*  
+default:illuminatio-inverted-app=bookstore                       default:app=bookstore,role=api  -*  
+default:app=web                                                  default:app=web                 -*  
+default:app=bookstore                                            default:app=bookstore,role=api  *   
 
 Ensure that Pods of DaemonSet illuminatio-runner are ready
 
 Finished running 5 tests in 13.2368 seconds
-FROM                                                             TO                              PORT  RESULT
+FROM                                                             TO                              PORT  RESULT 
 
 illuminatio-inverted-default:app=bookstore                       default:app=bookstore,role=api  -*    success
 illuminatio-inverted-default:illuminatio-inverted-app=bookstore  default:app=bookstore,role=api  -*    success
@@ -11227,7 +11227,7 @@ spec:
   ingress:
   - {}
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>$ kubectl apply -f web-allow-all.yaml
+<div class="highlight"><pre><span></span><code>$ kubectl apply -f web-allow-all.yaml 
 networkpolicy.networking.k8s.io/web-allow-all created
 
 $ kubectl get netpol
@@ -11245,16 +11245,16 @@ ons to it are allowed
 Generated 5 cases in 0.0551 seconds
 
 FROM                                                             TO                              PORT
-illuminatio-inverted-default:app=bookstore                       default:app=bookstore,role=api  -*
-illuminatio-inverted-default:illuminatio-inverted-app=bookstore  default:app=bookstore,role=api  -*
-default:illuminatio-inverted-app=bookstore                       default:app=bookstore,role=api  -*
-default:app=bookstore                                            default:app=bookstore,role=api  *
-*:*                                                              default:app=web                 *
+illuminatio-inverted-default:app=bookstore                       default:app=bookstore,role=api  -*  
+illuminatio-inverted-default:illuminatio-inverted-app=bookstore  default:app=bookstore,role=api  -*  
+default:illuminatio-inverted-app=bookstore                       default:app=bookstore,role=api  -*  
+default:app=bookstore                                            default:app=bookstore,role=api  *   
+*:*                                                              default:app=web                 *   
 
 Ensure that Pods of DaemonSet illuminatio-runner are ready
 
 Finished running 5 tests in 13.4065 seconds
-FROM                                                             TO                              PORT  RESULT
+FROM                                                             TO                              PORT  RESULT 
 
 illuminatio-inverted-default:app=bookstore                       default:app=bookstore,role=api  -*    success
 illuminatio-inverted-default:illuminatio-inverted-app=bookstore  default:app=bookstore,role=api  -*    success
@@ -11303,18 +11303,18 @@ ons to it are allowed
 Generated 7 cases in 0.0621 seconds
 
 FROM                                                             TO                              PORT
-illuminatio-inverted-default:illuminatio-inverted-app=bookstore  default:app=bookstore,role=api  -*
-default:illuminatio-inverted-app=bookstore                       default:app=bookstore,role=api  -*
-illuminatio-inverted-default:app=bookstore                       default:app=bookstore,role=api  -*
-illuminatio-inverted-secondary:*                                 secondary:*                     -*
-default:app=bookstore                                            default:app=bookstore,role=api  *
-*:*                                                              default:app=web                 *
-secondary:*                                                      secondary:*                     *
+illuminatio-inverted-default:illuminatio-inverted-app=bookstore  default:app=bookstore,role=api  -*  
+default:illuminatio-inverted-app=bookstore                       default:app=bookstore,role=api  -*  
+illuminatio-inverted-default:app=bookstore                       default:app=bookstore,role=api  -*  
+illuminatio-inverted-secondary:*                                 secondary:*                     -*  
+default:app=bookstore                                            default:app=bookstore,role=api  *   
+*:*                                                              default:app=web                 *   
+secondary:*                                                      secondary:*                     *   
 
 Ensure that Pods of DaemonSet illuminatio-runner are ready
 
 Finished running 7 tests in 13.2361 seconds
-FROM                                                             TO                              PORT  RESULT
+FROM                                                             TO                              PORT  RESULT 
 
 illuminatio-inverted-default:illuminatio-inverted-app=bookstore  default:app=bookstore,role=api  -*    success
 default:illuminatio-inverted-app=bookstore                       default:app=bookstore,role=api  -*    success
@@ -11364,13 +11364,13 @@ Starting test generation and run.
 Generated 2 cases in 0.0645 seconds
 
 FROM                                       TO               PORT
-illuminatio-inverted-purpose=production:*  default:app=web  -*
-purpose=production:*                       default:app=web  *
+illuminatio-inverted-purpose=production:*  default:app=web  -*  
+purpose=production:*                       default:app=web  *   
 
 Ensure that Pods of DaemonSet illuminatio-runner are ready
 
 Finished running 2 tests in 7.1767 seconds
-FROM                                       TO               PORT  RESULT
+FROM                                       TO               PORT  RESULT   
 illuminatio-inverted-purpose=production:*  default:app=web  -*    success
 purpose=production:*                       default:app=web  *     success
 </code></pre></div>
@@ -11443,6 +11443,7 @@ metadata:
 <li><a href="https://github.com/inovex/illuminatio">Inovex/Illuminatio GitHub Project Page</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

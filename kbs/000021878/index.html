@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10325,6 +10325,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#cause" class="md-nav__link">
     <span class="md-ellipsis">
       Cause
@@ -10909,6 +10918,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#cause" class="md-nav__link">
     <span class="md-ellipsis">
       Cause
@@ -10951,54 +10969,50 @@
 </ul>
 <h3 id="situation">Situation</h3>
 <ul>
-<li>```
-Set-PowerCLIConfiguration -InvalidCertificateAction Ignore
-<div class="highlight"><pre><span></span><code>Custom attributes in vSphere are user-defined fields that allow users to store metadata for objects like VMs, hosts,etc.
-- Custom attributes are a legacy feature in vSphere for attaching metadata to objects, while tags are the modern alternative. A tag is a label that can be applied to an object in the vSphere inventory.
-- Users may need custom attributes for existing workflows or integrations that rely on this metadata for the vSphere clusters provisioned through Rancher.
-
-### Resolution
-
-- Make sure the attributes are already created from vSphere client side: vSphere client &gt;&gt; Menu &gt;&gt; Tags &amp; Custom Attributes.
-
-- As custom attribute is stored in key-value format and each key has its own identifier as `ID`. To fetch the ID of the key, first verify that PowerCLI is installed. If not, run the command below from PowerShell to install:
-</code></pre></div>
-Install-Module -Name VMware.PowerCLI
-<div class="highlight"><pre><span></span><code>- Now, connect to the desired vSphere cluster using the below command in Power CLI:
-</code></pre></div>
-Connect-VIServer -Server server.example.com -User <username> -Password <password>
-<div class="highlight"><pre><span></span><code>- If it fails with SSL error, then you can try the workaround below &amp; re-run the above command:
-</code></pre></div>
-Set-PowerCLIConfiguration -InvalidCertificateAction Ignore
-<div class="highlight"><pre><span></span><code>- Now fetch the customAttributes from the environment, below is an example shown for custom attribute `Owner`:
-</code></pre></div>
-Get-CustomAttribute
-<div class="highlight"><pre><span></span><code>- Run the command below to get a specific attribute. Replace `Owner ` with any custom attribute defined in your vSphere environment:
-</code></pre></div>
-Get-CustomAttribute -Name "Owner"
-<div class="highlight"><pre><span></span><code>- Note the ID mentioned in `Key` column for the attribute.
-- Edit the resource `vmwarevsphereconfigs.rke-machine-config.cattle.io` in the Rancher management cluster (local cluster) for the specific downstream cluster. Run the first command to get the resource name for the desired downstream cluster. Below is an example shown for a customAttribute `Owner`:
-</code></pre></div>
-kubectl -n fleet-default get vmwarevsphereconfigs.rke-machine-config.cattle.io
-kubectl -n fleet-default edit vmwarevsphereconfigs.rke-machine-config.cattle.io <downstream_cluster>
-<div class="highlight"><pre><span></span><code>- In the example YAML output given below 1234 is the id for the attribute `Owner`. Replace the id with the one defined in your vSphere environment for the desired attribute:
-</code></pre></div>
-customAttribute:</li>
-<li>
-<p>1234=user1
-```</p>
-</li>
-<li>
-<p>Verify the custom attribute in the vSphere client under 'Tags &amp; Custom Attributes' or run the below command from PowerCLI:</p>
-</li>
+<li><code>cpp
+  Set-PowerCLIConfiguration -InvalidCertificateAction Ignore</code></li>
 </ul>
-<p><code>Get-VM -Name "&lt;VM_NAME&gt;" | Get-Annotation</code></p>
+<p>Custom attributes in vSphere are user-defined fields that allow users to store metadata for objects like VMs, hosts,etc.
+- Custom attributes are a legacy feature in vSphere for attaching metadata to objects, while tags are the modern alternative. A tag is a label that can be applied to an object in the vSphere inventory.
+- Users may need custom attributes for existing workflows or integrations that rely on this metadata for the vSphere clusters provisioned through Rancher.</p>
+<h3 id="resolution">Resolution</h3>
+<ul>
+<li>Make sure the attributes are already created from vSphere client side: vSphere client &gt;&gt; Menu &gt;&gt; Tags &amp; Custom Attributes.</li>
+<li>As custom attribute is stored in key-value format and each key has its own identifier as <code>ID</code>. To fetch the ID of the key, first verify that PowerCLI is installed. If not, run the command below from PowerShell to install:</li>
+</ul>
+<p><div class="highlight"><pre><span></span><code>Install-Module -Name VMware.PowerCLI
+</code></pre></div>
+- Now, connect to the desired vSphere cluster using the below command in Power CLI:</p>
+<p><div class="highlight"><pre><span></span><code>Connect-VIServer -Server server.example.com -User &lt;username&gt; -Password &lt;password&gt;
+</code></pre></div>
+- If it fails with SSL error, then you can try the workaround below &amp; re-run the above command:</p>
+<p><div class="highlight"><pre><span></span><code>Set-PowerCLIConfiguration -InvalidCertificateAction Ignore
+</code></pre></div>
+- Now fetch the customAttributes from the environment, below is an example shown for custom attribute <code>Owner</code>:</p>
+<p><div class="highlight"><pre><span></span><code>Get-CustomAttribute
+</code></pre></div>
+- Run the command below to get a specific attribute. Replace <code>Owner</code>with any custom attribute defined in your vSphere environment:</p>
+<p><div class="highlight"><pre><span></span><code>Get-CustomAttribute -Name &quot;Owner&quot;
+</code></pre></div>
+- Note the ID mentioned in <code>Key</code> column for the attribute.
+- Edit the resource <code>vmwarevsphereconfigs.rke-machine-config.cattle.io</code> in the Rancher management cluster (local cluster) for the specific downstream cluster. Run the first command to get the resource name for the desired downstream cluster. Below is an example shown for a customAttribute <code>Owner</code>:</p>
+<p><div class="highlight"><pre><span></span><code>kubectl -n fleet-default get vmwarevsphereconfigs.rke-machine-config.cattle.io
+kubectl -n fleet-default edit vmwarevsphereconfigs.rke-machine-config.cattle.io &lt;downstream_cluster&gt;
+</code></pre></div>
+- In the example YAML output given below 1234 is the id for the attribute <code>Owner</code>. Replace the id with the one defined in your vSphere environment for the desired attribute:</p>
+<p><div class="highlight"><pre><span></span><code>customAttribute:
+- 1234=user1
+</code></pre></div>
+- Verify the custom attribute in the vSphere client under 'Tags &amp; Custom Attributes' or run the below command from PowerCLI:</p>
+<div class="highlight"><pre><span></span><code>Get-VM -Name &quot;&lt;VM_NAME&gt;&quot; | Get-Annotation
+</code></pre></div>
 <h3 id="cause">Cause</h3>
 <ul>
 <li>According to the <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/downstream-cluster-configuration/node-template-configuration/vsphere#node-tags-and-custom-attributes">documentation</a>, Custom attributes are a legacy feature that will eventually be removed from vSphere. However, it can be configured through a custom resource definition <code>vmwarevsphereconfigs.rke-machine-config.cattle.io</code> on a Rancher-provisioned vsphere cluster.</li>
 <li>Since custom attributes will be removed in future vSphere versions, users should consider migrating to tags or other solutions for long-term use.</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

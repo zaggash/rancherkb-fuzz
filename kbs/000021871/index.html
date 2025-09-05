@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10970,42 +10970,43 @@
 </ul>
 <h3 id="situation">Situation</h3>
 <ul>
-<li>A project with the finalizer " <strong>clusterscoped.controller.cattle.io/project-precan-alert-controller</strong>" cannot be removed, either from Rancher UI or executing this kubectl conmand in the Rancher local cluster:  ' <code>kubectl delete projects.management.cattle.io p-xxxx</code>' and it remains in "terminating" status due to the finalizer.</li>
-<li>This project has been created on a Rancher version &lt;2.9, with the "legacy" feature flag enabled under <em><strong>Global Settings=&gt; Feature Flags =&gt; Legacy</strong></em></li>
+<li>A project with the finalizer "<strong>clusterscoped.controller.cattle.io/project-precan-alert-controller</strong>" cannot be removed, either from Rancher UI or executing this kubectl conmand in the Rancher local cluster:  '<code>kubectl delete projects.management.cattle.io p-xxxx</code>' and it remains in "terminating" status due to the finalizer.</li>
+<li>This project has been created on a Rancher version &lt;2.9, with the "legacy" feature flag enabled under <strong><em>Global Settings=&gt; Feature Flags =&gt; Legacy</em></strong></li>
 </ul>
 <h3 id="resolution">Resolution</h3>
 <ul>
 <li>You can manually edit the project hanging in Terminating status, and remove the finalizer <strong>clusterscoped.controller.cattle.io/project-precan-alert-controller</strong>.</li>
-<li>There is a sample script that can help locating projects with the finalizer <strong>clusterscoped.controller.cattle.io/project-precan-alert-controller</strong>, and delete them (to be executed in the  Rancher local cluster), but please use it with caution:</li>
+<li>There is a sample script that can help locating projects with the finalizer <strong>clusterscoped.controller.cattle.io/project-precan-alert-controller</strong>, and delete them (to be executed in the  Rancher local cluster), but please use it with caution: </li>
 </ul>
 <div class="highlight"><pre><span></span><code>namespaces=$(kubectl get ns --no-headers -o custom-columns=NAME:.metadata.name | grep &quot;c-&quot; | grep -v cluster-fleet)
 
 for n in $namespaces; do
-    echo &quot;Namespace: $n&quot;
-    projects=$(kubectl get project -n $n --no-headers -o name)
+  echo &quot;Namespace: $n&quot;
+  projects=$(kubectl get project -n $n --no-headers -o name)
 
-    for p in $projects; do
-      echo &quot;Project: $p&quot;
-      finalizers=$(kubectl get $p -n $n -o json | jq -r &#39;.metadata.finalizers[]&#39;)
+  for p in $projects; do
+    echo &quot;Project: $p&quot;
+    finalizers=$(kubectl get $p -n $n -o json | jq -r &#39;.metadata.finalizers[]&#39;)
 
-      for i in $finalizers; do
-        if [[ $i == clusterscoped.controller.cattle.io/project-precan-alert-controller* ]]; then
-          echo &quot;Removing finalizer from $p: $i&quot;
-          index=$(kubectl get $p -n $n -o json | jq -r &quot;.metadata.finalizers | index(\&quot;$i\&quot;)&quot;)
-          kubectl patch $p -n $n --type=&#39;json&#39; -p=&quot;[{\&quot;op\&quot;: \&quot;remove\&quot;, \&quot;path\&quot;: \&quot;/metadata/finalizers/$index\&quot;}]&quot;
-        fi
-      done
+    for i in $finalizers; do
+      if [[ $i == clusterscoped.controller.cattle.io/project-precan-alert-controller* ]]; then
+        echo &quot;Removing finalizer from $p: $i&quot;
+        index=$(kubectl get $p -n $n -o json | jq -r &quot;.metadata.finalizers | index(\&quot;$i\&quot;)&quot;)
+        kubectl patch $p -n $n --type=&#39;json&#39; -p=&quot;[{\&quot;op\&quot;: \&quot;remove\&quot;, \&quot;path\&quot;: \&quot;/metadata/finalizers/$index\&quot;}]&quot;
+      fi
     done
+  done
 done
 </code></pre></div>
 <h3 id="cause">Cause</h3>
 <ul>
-<li>The "legacy" feature flag is a remanent from Rancher 2.5.x and per the docs: <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/feature-flags">https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/feature-flags</a>, this flag is disabled by default on new Rancher installations.</li>
+<li>The "legacy" feature flag is a remanent from Rancher 2.5.x and per the docs: <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/feature-flags">https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/feature-flags</a> , this flag is disabled by default on new Rancher installations.</li>
 <li>It is meant for backwards compatibility of clusters that started in the 2.5 era and needed time to remove usage of those features.</li>
-<li>The finalizer " <strong>clusterscoped.controller.cattle.io/project-precan-alert-controller</strong>" is from the deprecated and removed <em><strong>Monitoring/Logging/Alerting V1.</strong></em></li>
+<li>The finalizer "<strong>clusterscoped.controller.cattle.io/project-precan-alert-controller</strong>" is from the deprecated and removed <strong><em>Monitoring/Logging/Alerting V1.</em></strong></li>
 <li>In Rancher 2.9 and later, none of the legacy code related to this exists. It is advisable not to enable "Legacy feature flag", unless strictly required.</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

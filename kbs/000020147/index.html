@@ -9201,7 +9201,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11060,7 +11060,7 @@
 <p>This document <strong>(000020147)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
 <ul>
-<li>A standalone or Rancher-provisioned RKE or RKE2 cluster, deployed within the bundled ingress-nginx controller</li>
+<li>A<a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/cluster-project-roles/"></a> standalone or Rancher-provisioned RKE or RKE2 cluster, deployed within the bundled ingress-nginx controller</li>
 </ul>
 <h3 id="situation">Situation</h3>
 <h4 id="this-article-details-how-to-enable-ssl-passthrough-on-the-bundled-nginx-ingress-controller-in-an-rke-or-rke2-cluster">This article details how to enable SSL passthrough on the bundled nginx-ingress controller in an RKE or RKE2 cluster</h4>
@@ -11069,34 +11069,30 @@
 <ol>
 <li>Edit the <a href="https://rke.docs.rancher.com/installation#creating-the-cluster-configuration-file">cluster configuration YAML</a> file to include the <code>enable-ssl-passthrough: true</code> option for the ingress, as follows:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>ingress:
-     provider: nginx
-     extra_args:
-       enable-ssl-passthrough: true
+<p><div class="highlight"><pre><span></span><code>ingress:
+  provider: nginx
+  extra_args:
+    enable-ssl-passthrough: true
 </code></pre></div>
-<ol>
-<li>Apply the changes to the cluster, by invoking <code>rke up</code>:</li>
-</ol>
+2. Apply the changes to the cluster, by invoking <code>rke up</code>:</p>
 <div class="highlight"><pre><span></span><code>rke up --config &lt;cluster configuration yaml file&gt;
 </code></pre></div>
 <h2 id="standalone-rke2-clusters">Standalone RKE2 clusters:</h2>
 <ol>
 <li>Create the file /var/lib/rancher/rke2/server/manifest/rke2-ingress-nginx-config.yaml with the <a href="https://docs.rke2.io/helm/#customizing-packaged-components-with-helmchartconfig" title="https://docs.rke2.io/helm/#customizing-packaged-components-with-helmchartconfig">desired HelmChartConfig</a> on server nodes within the cluster:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
+<p><div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
-     name: rke2-ingress-nginx
-     namespace: kube-system
-spec:
-     valuesContent:  |-
-       controller:
-         extraArgs:
-           enable-ssl-passthrough: true
+  name: rke2-ingress-nginx
+  namespace: kube-system
+spec: 
+  valuesContent:  |-
+    controller:
+      extraArgs:
+        enable-ssl-passthrough: true
 </code></pre></div>
-<ol>
-<li>Restart the rke2-server process to trigger a helm installation Job for the rke2-ingress-nginx chart, applying the new configuration:</li>
-</ol>
+2. Restart the rke2-server process to trigger a helm installation Job for the rke2-ingress-nginx chart, applying the new configuration:</p>
 <div class="highlight"><pre><span></span><code>systemctl restart rke2-server
 </code></pre></div>
 <h2 id="rancher-provisioned-rke-clusters">Rancher-provisioned RKE clusters:</h2>
@@ -11106,34 +11102,31 @@ spec:
 <li>Click <strong>Edit as YAML</strong></li>
 <li>Include the <strong><em><code>enable-ssl-passthrough: true</code></em></strong> option for the ingress, as follows:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>ingress:
-     provider: nginx
-     extra_args:
-       enable-ssl-passthrough: true
+<p><div class="highlight"><pre><span></span><code>ingress:
+  provider: nginx
+  extra_args:
+    enable-ssl-passthrough: true
 </code></pre></div>
-<ol>
-<li>Click <strong>Save</strong></li>
-</ol>
+5. Click <strong>Save</strong></p>
 <h2 id="rancher-provisioned-rke2-clusters">Rancher-provisioned RKE2 clusters:</h2>
 <ol>
 <li>Navigate to <strong>Cluster Management</strong> in the Rancher UI</li>
 <li>Click <strong>Edit Config</strong> for the relevant RKE cluster</li>
-<li>Click <strong>Additional Manifests</strong> and add the <a href="https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig">desired HemChartConfig manifest</a>:</li>
+<li>Click <strong>Additional Manifests</strong> and add the <a href="https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig">desired HemChartConfig manifest</a>:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
+<p><div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
-     name: rke2-ingress-nginx
-     namespace: kube-system
+  name: rke2-ingress-nginx
+  namespace: kube-system
 spec:
-     valuesContent: |-
-        extraArgs:
-          enable-ssl-passthrough: true
+  valuesContent: |-
+     extraArgs:
+       enable-ssl-passthrough: true
 </code></pre></div>
-<ol>
-<li>Click <strong>Save</strong></li>
-</ol>
+4. Click <strong>Save</strong></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

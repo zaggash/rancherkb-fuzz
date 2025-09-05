@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10964,7 +10964,7 @@
 <p>This document <strong>(000021913)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
 <p>Rancher v2.10.6 and later.</p>
-<p>This KB <strong>should NOT implemented</strong> in Rancher environment if you have a mix of Custom, Node Provisioned as Imported clusters and disabling the Rancher System Upgrade Controller via the feature flag would cause unexpected consequences on Rancher Provisioned clusters.</p>
+<p>This KB <strong>should NOT implemented</strong> in Rancher environment if you have a mix of Custom, Node Provisioned as Imported clusters and disabling the Rancher System Upgrade Controller via the feature flag would cause unexpected consequences on Rancher Provisioned clusters. </p>
 <h3 id="situation">Situation</h3>
 <p>The System Upgrade Controller can be installed on standalone K3S/RKE2 clusters to manage the cluster upgrades. However, when the standalone cluster is imported and managed by Rancher, an additional system upgrade controller is installed on these clusters by Rancher when Rancher is upgraded to v2.10.6.</p>
 <h3 id="resolution">Resolution</h3>
@@ -10975,33 +10975,35 @@
 <ul>
 <li>Open the <strong>values.yaml</strong> file using your preferred editor. If you do not have this file, you can generate it for an existing Rancher installation using the below command:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>helm get values rancher -n cattle-system -o yaml &gt; values.yaml
+<div class="highlight"><pre><span></span><code><span class="n">helm</span> <span class="n">get</span> <span class="n">values</span> <span class="n">rancher</span> <span class="o">-</span><span class="n">n</span> <span class="n">cattle</span><span class="o">-</span><span class="n">system</span> <span class="o">-</span><span class="n">o</span> <span class="n">yaml</span> <span class="o">&gt;</span> <span class="n">values</span><span class="o">.</span><span class="n">yaml</span>
 </code></pre></div>
 <ul>
 <li>Now you can update <strong>"features: managed-system-upgrade-controller=false"</strong> in the file. Below is a reference of the file after adding the flag:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>bootstrapPassword: P@ssw2rd
-features: managed-system-upgrade-controller=false
-hostname: rancher.foo.bar
-replicas: 1
+<div class="highlight"><pre><span></span><code><span class="n">bootstrapPassword</span><span class="p">:</span> <span class="n">P</span><span class="nd">@ssw2rd</span>
+<span class="n">features</span><span class="p">:</span> <span class="n">managed</span><span class="o">-</span><span class="n">system</span><span class="o">-</span><span class="n">upgrade</span><span class="o">-</span><span class="n">controller</span><span class="o">=</span><span class="n">false</span>
+<span class="n">hostname</span><span class="p">:</span> <span class="n">rancher</span><span class="o">.</span><span class="n">foo</span><span class="o">.</span><span class="n">bar</span>
+<span class="n">replicas</span><span class="p">:</span> <span class="mi">1</span>
 </code></pre></div>
+<!--THE END-->
+
 <ul>
-<li>Now you can perform the Rancher upgrade using the below command by passing the <strong>values.yaml</strong> file.</li>
+<li>Now you can perform the Rancher upgrade using the below command by passing the <strong>values.yaml</strong> file. <br />
+<strong>NOTE:</strong> Ensure that you add other parameters to the below command which was used to install Rancher initially.</li>
 </ul>
-<p><strong>NOTE:</strong> Ensure that you add other parameters to the below command which was used to install Rancher initially.</p>
-<div class="highlight"><pre><span></span><code> helm upgrade rancher rancher-prime/rancher \
-  --namespace cattle-system \
-  -f values.yaml \
-  --version &lt;DEPLOYED_RANCHER_VERSION&gt;
+<div class="highlight"><pre><span></span><code> <span class="n">helm</span> <span class="n">upgrade</span> <span class="n">rancher</span> <span class="n">rancher</span><span class="o">-</span><span class="n">prime</span><span class="o">/</span><span class="n">rancher</span> \
+  <span class="o">--</span><span class="n">namespace</span> <span class="n">cattle</span><span class="o">-</span><span class="n">system</span> \
+  <span class="o">-</span><span class="n">f</span> <span class="n">values</span><span class="o">.</span><span class="n">yaml</span> \
+  <span class="o">--</span><span class="n">version</span> <span class="o">&lt;</span><span class="n">DEPLOYED_RANCHER_VERSION</span><span class="o">&gt;</span>
 </code></pre></div>
 <ul>
 <li>Once upgraded, Rancher will not install any system-upgrade-controller for new clusters that you import.</li>
 <li>An additional step needs to be performed for already existing imported clusters. Even after updating the Rancher helm release with the above helm values, the Rancher <strong>system-upgrade-controller</strong> would not be automatically removed. For existing clusters, you would have to remove the rancher system-upgrade-controller manually and to do that, you can run the below command on the existing cluster.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>kubectl delete apps -n cattle-system system-upgrade-controller
+<div class="highlight"><pre><span></span><code><span class="n">kubectl</span> <span class="n">delete</span> <span class="n">apps</span> <span class="o">-</span><span class="n">n</span> <span class="n">cattle</span><span class="o">-</span><span class="n">system</span> <span class="n">system</span><span class="o">-</span><span class="n">upgrade</span><span class="o">-</span><span class="n">controller</span> 
 </code></pre></div>
-<p><strong>NOTE</strong>: Going forward, any Kubernetes upgrades for the imported clusters where Rancher system-upgrade-controller is disabled should not be performed from Rancher UI. If performed, this would not upgrade the cluster and it would keep the cluster in <strong>"Upgrading"</strong> state with a message <strong>"Cluster is being upgraded"</strong> and you would notice the following error message in the Rancher pod logs:</p>
-<div class="highlight"><pre><span></span><code>2025/07/23 09:33:59 [ERROR] error syncing &#39;c-m-zz2sgb6k&#39;: handler k3s-upgrade-controller: the server could not find the requested resource (get plans.upgrade.cattle.io), requeuing
+<p><strong>NOTE</strong>: Going forward, any Kubernetes upgrades for the imported clusters where Rancher system-upgrade-controller is disabled should not be performed from Rancher UI. If performed, this would not upgrade the cluster and it would keep the cluster in <strong>"Upgrading"</strong> state with a message <strong>"Cluster is being upgraded"</strong> and you would notice the following error message in the Rancher pod logs: </p>
+<div class="highlight"><pre><span></span><code><span class="mi">2025</span><span class="o">/</span><span class="mi">07</span><span class="o">/</span><span class="mi">23</span> <span class="mi">09</span><span class="p">:</span><span class="mi">33</span><span class="p">:</span><span class="mi">59</span> <span class="p">[</span><span class="n">ERROR</span><span class="p">]</span> <span class="n">error</span> <span class="n">syncing</span> <span class="s1">&#39;c-m-zz2sgb6k&#39;</span><span class="p">:</span> <span class="n">handler</span> <span class="n">k3s</span><span class="o">-</span><span class="n">upgrade</span><span class="o">-</span><span class="n">controller</span><span class="p">:</span> <span class="n">the</span> <span class="n">server</span> <span class="n">could</span> <span class="ow">not</span> <span class="n">find</span> <span class="n">the</span> <span class="n">requested</span> <span class="n">resource</span> <span class="p">(</span><span class="n">get</span> <span class="n">plans</span><span class="o">.</span><span class="n">upgrade</span><span class="o">.</span><span class="n">cattle</span><span class="o">.</span><span class="n">io</span><span class="p">),</span> <span class="n">requeuing</span>
 </code></pre></div>
 <ul>
 <li>Hence, its recommended that you either perform manual or automated K3S/RKE2 upgrades outside of Rancher.</li>
@@ -11016,6 +11018,7 @@ replicas: 1
 <h3 id="status">Status</h3>
 <p>Top Issue</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

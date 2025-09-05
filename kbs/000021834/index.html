@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10960,8 +10960,8 @@
   done
 done
 </code></pre></div>
-<p>If you want to check for certificates expiring within a certain period of time, for example by 30 days, you can increment the date like this: <code>'-d +30 days'</code>. Please note that this is wrapped in single quotes .</p>
-<p>See the example below for reference.</p>
+<p>If you want to check for certificates expiring within a certain period of time, for example by 30 days, you can increment the date like this: <code>'-d +30 days'</code>. Please note that this is wrapped in single quotes .<br />
+See the example below for reference.</p>
 <div class="highlight"><pre><span></span><code>for ns in $(kubectl get ns -o jsonpath=&#39;{.items[*].metadata.name}&#39;); do
   for sec in $(kubectl get secrets -n $ns -o json | jq -r &#39;.items[] | select(.type==&quot;kubernetes.io/tls&quot;) | .metadata.name&#39;); do
     exp=$(kubectl get secret $sec -n $ns -o jsonpath=&quot;{.data[&#39;tls\.crt&#39;]}&quot; | base64 -d | openssl x509 -noout -enddate | cut -d= -f2)
@@ -10987,13 +10987,14 @@ done
 <div class="highlight"><pre><span></span><code>sudo find / -type f -name &quot;*.crt&quot; -exec sh -c &#39;
   for cert; do
     exp=$(openssl x509 -in &quot;$cert&quot; -noout -enddate 2&gt;/dev/null | cut -d= -f2)
-    if [ -n &quot;$exp&quot; ] &amp;&amp; [ &quot;$(date -d &quot;$exp&quot; +%s)&quot; -lt &quot;$(date -d +30 days +%s)&quot; ]; then
+    if [ -n &quot;$exp&quot; ] &amp;&amp; [ &quot;$(date -d &quot;$exp&quot; +%s)&quot; -lt &quot;$(date -d +30 days +%s)&quot; ]; then 
       echo &quot;Expired certificate: $cert (validity period: $exp)&quot;
     fi
   done
 &#39; sh {} + 2&gt;/dev/null
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

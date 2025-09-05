@@ -9261,7 +9261,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11237,26 +11237,35 @@
 <ol>
 <li>Power on any storage devices if applicable.</li>
 </ol>
-<p>Check with your storage vendor on how to properly power on you storage devices and verify that they are ready.</p>
+<p>Check with your storage vendor on how to properly power on you storage devices and verify that they are ready.
+2. For each etcd node:</p>
 <ol>
-<li>For each etcd node:</li>
 <li>Power on the system/start the instance.</li>
 <li>Log into the system via ssh.</li>
 <li>Ensure docker has started <code>sudo service docker status</code> or <code>sudo systemctl status docker</code></li>
 <li>Ensure etcd and kubelet’s status shows Up in Docker <code>sudo docker ps</code></li>
-<li>For each control plane node:</li>
-<li>Power on the system/start the instance.</li>
+<li>
+<p>For each control plane node:</p>
+</li>
+<li>
+<p>Power on the system/start the instance.</p>
+</li>
 <li>Log into the system via ssh.</li>
 <li>Ensure docker has started <code>sudo service docker status</code> or <code>sudo systemctl status docker</code></li>
 <li>Ensure kube-apiserver, kube-scheduler, kube-controller-manager, and kubelet’s status shows Up in Docker <code>sudo docker ps</code></li>
-<li>For each worker node:</li>
-<li>Power on the system/start the instance.</li>
+<li>
+<p>For each worker node:</p>
+</li>
+<li>
+<p>Power on the system/start the instance.</p>
+</li>
 <li>Log into the system via ssh.</li>
 <li>Ensure docker has started <code>sudo service docker status</code> or <code>sudo systemctl status docker</code></li>
 <li>Ensure kubelet’s status shows Up in Docker <code>sudo docker ps</code></li>
 <li>Log into the Rancher UI (or use kubectl) and check your various projects to ensure workloads have started as expected. This may take a few minutes depending on the number of workloads and your server capacity.</li>
 </ol>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

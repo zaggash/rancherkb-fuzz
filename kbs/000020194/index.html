@@ -9195,7 +9195,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11054,12 +11054,18 @@
 <p>The bulk of the Rancher HA installation and upgrade are performed by using Helm. The core piece of the Rancher Helm Chart is the Rancher deployment. Please note the following characteristics of this Helm Chart:</p>
 <ul>
 <li>Deployment is set to a replica of 3. This means Kubernetes will attempt to run and maintain three rancher pods.</li>
-<li>Deployment is set to do a rolling update with a max surge of 25% and max unavailability of 25%. This means:</li>
-<li>During an upgrade, pods are updated in chunks, not all at once.</li>
+<li>
+<p>Deployment is set to do a rolling update with a max surge of 25% and max unavailability of 25%. This means:</p>
+</li>
+<li>
+<p>During an upgrade, pods are updated in chunks, not all at once.</p>
+</li>
 <li>During an update, no more than 4 pods will be running at once</li>
 <li>During an update, no fewer than 2 pods will be available at once</li>
 <li>Deployment has an anti-affinity for the node's hostname. This means Kubernetes will attempt to place each pod on a separate host. For three pods and three hosts, that means one pod on each host.</li>
 </ul>
+<!--THE END-->
+
 <p>Given the information above on how the manifests are defined, below is the expected sequence of events during a Rancher upgrade:</p>
 <h5 id="rancher-ha-cluster">Rancher HA cluster</h5>
 <ol>
@@ -11088,6 +11094,7 @@
 <p>Kubernetes deployments - <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></p>
 <p>Kubernetes daemonsets - <a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

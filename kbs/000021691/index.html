@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11003,10 +11003,10 @@
 <p>RKE2</p>
 <h3 id="situation">Situation</h3>
 <p>If you encounter these errors while creating the RKE2 custom cluster, adding new nodes to an existing cluster, or running a pod on the new nodes, you may try the steps mentioned in the checklist below.</p>
-<p><strong>From containerd logs</strong></p>
+<p><strong>From containerd logs</strong> </p>
 <div class="highlight"><pre><span></span><code>failed, error&quot; error=&quot;failed to create containerd task: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: can&#39;t copy bootstrap data to pipe: write init-p: broken
 </code></pre></div>
-<p><strong>From Rancher pod logs</strong></p>
+<p><strong>From Rancher pod logs</strong> </p>
 <div class="highlight"><pre><span></span><code>{&quot;Code&quot;:&quot;Forbidden&quot;,&quot;Status&quot;:403},&quot;Message&quot;:&quot;clusters.management.cattle.io \&quot;c-m-f5lgdss6\&quot; is forbidden: User \&quot;u-z72j43l5aq\&quot; cannot get resource \&quot;clusters\&quot; in API group \&quot;management.cattle.io\&quot; at the cluster scope&quot;,&quot;Cause&quot;:null,&quot;FieldName&quot;:&quot;&quot;} (get nodes)
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
@@ -11024,12 +11024,13 @@
 <li>Review the host resource limitations, if the container attempts to use more memory or CPU than allocated on the host, causing the container to fail to start.</li>
 </ol>
 <h3 id="cause">Cause</h3>
-<p>Concerning 'runc' container/OCI runtime error typically occurs when there is a problem with the configuration or execution of a container using the 'runc' due to not accessing necessary resources, or experiencing permission errors due to incorrect container image settings or host system configurations or incorrect permissions on container files.</p>
+<p>Concerning 'runc' container/OCI runtime error typically occurs when there is a problem with the configuration or execution of a container using the 'runc' due to not accessing necessary resources, or experiencing permission errors due to incorrect container image settings or host system configurations or incorrect permissions on container files. </p>
 <h3 id="status">Status</h3>
 <p>Top Issue</p>
 <h3 id="additional-information">Additional Information</h3>
-<p>Please feel free to contact SUSE support if the issue persists.</p>
+<p>Please feel free to contact SUSE support if the issue persists. </p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

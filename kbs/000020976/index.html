@@ -9135,7 +9135,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10932,17 +10932,17 @@
 <ol>
 <li>Go to <strong>Apps</strong> &gt; <strong>Charts</strong>, then Select <strong>Logging</strong> and click <strong>Install/Update</strong></li>
 <li>Select the project to install the logging app and select <strong>"Customize Helm Options before install",</strong> and click Next</li>
-<li>
-<p>Select <strong>Edit YAML</strong> tab and modify the following:</p>
-</li>
-<li>
-<p>Search for <strong>disablePvc</strong> and change that from true to false</p>
-</li>
+<li>Select <strong>Edit YAML</strong> tab and modify the following:</li>
 </ol>
+<!--THE END-->
+
+<ul>
+<li>Search for <strong>disablePvc</strong> and change that from true to false</li>
+</ul>
 <div class="highlight"><pre><span></span><code>disablePvc: false
 </code></pre></div>
 <ul>
-<li>Search for the <strong>bufferStorageVolume</strong> section and change it to the following (Modify the <em><strong>STORAGE_CLASS_NAME</strong></em> with your environement value):</li>
+<li>Search for the <strong>bufferStorageVolume</strong> section and change it to the following (Modify the <strong><em>STORAGE_CLASS_NAME</em></strong> with your environement value):</li>
 </ul>
 <div class="highlight"><pre><span></span><code>  bufferStorageVolume:
     pvc:
@@ -10967,13 +10967,13 @@ NAME                                  STATUS   VOLUME      
 rancher-logging-root-fluentd-buffer   Bound    pvc-4b78c686-7b68-4f7d-a40f-32c0a5470831   40Gi       RWO            rancher-storage-class   10s
 </code></pre></div>
 <ol>
-<li>
-<p>From UI, go to <strong>Workload</strong> &gt; <strong>StatefulSets</strong>, then Edit the fluentd StatefulSet YAML ( <em><strong>rancher-logging-root-fluentd</strong></em>) and update the <strong>claimName</strong> for the <em><strong>rancher-logging-root-fluentd-buffer</strong></em> volume with the PVC name.</p>
-</li>
-<li>
-<p>Change the following two lines:</p>
-</li>
+<li>From UI, go to <strong>Workload</strong> &gt; <strong>StatefulSets</strong>, then Edit the fluentd StatefulSet YAML (<strong><em>rancher-logging-root-fluentd</em></strong>) and update the <strong>claimName</strong> for the <strong><em>rancher-logging-root-fluentd-buffer</em></strong> volume with the PVC name.</li>
 </ol>
+<!--THE END-->
+
+<ul>
+<li>Change the following two lines:</li>
+</ul>
 <div class="highlight"><pre><span></span><code>      - emptyDir: {}
         name: rancher-logging-root-fluentd-buffer
 </code></pre></div>
@@ -11003,7 +11003,7 @@ rancher-logging-root-fluentd-buffer   Bound    pvc-4b78c686-7b68-4f7d-a40f-32
 </ul>
 <div class="highlight"><pre><span></span><code>  rancher-logging-root-fluentd-buffer:
     Type:       EmptyDir (a temporary directory that shares a pod&#39;s lifetime)
-    Medium:
+    Medium:     
     SizeLimit:  &lt;unset&gt;
 </code></pre></div>
 <p><strong>Reference:</strong></p>
@@ -11011,6 +11011,7 @@ rancher-logging-root-fluentd-buffer   Bound    pvc-4b78c686-7b68-4f7d-a40f-32
 <li>https://banzaicloud.com/docs/one-eye/logging-operator/logging-infrastructure/fluentd/</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

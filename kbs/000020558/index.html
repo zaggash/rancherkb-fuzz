@@ -9126,7 +9126,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10911,6 +10911,7 @@
 <h3 id="resolution">Resolution</h3>
 <p>There is minimal impact or disruption during a Rancher Hosted Prime upgrade. During the one-hour maintenance window you can expect a brief (usually 1-2 minutes) when your Rancher control plane UI/API is inaccessible. This does not impact the workloads on your managed downstream clusters, only your ability to make changes to these clusters. Immediately following the Rancher control plane upgrade, the cluster and node agents running in your managed downstream clusters will be upgraded and restarted. This also only takes a few minutes (unless you have very large clusters or very poor network speeds) and during this time Rancher will be unable to manage the cluster, but again the workloads running on the clusters should operate normally.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

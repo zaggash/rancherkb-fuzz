@@ -9126,7 +9126,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10917,7 +10917,7 @@
 </ul>
 <h3 id="situation">Situation</h3>
 <h1 id="the-provisioning-of-an-rke-downstream-cluster-fails-after-adding-extra_args-for-the-kubelet-service-to-a-new-rke-template-and-using-this-newly-created-template-to-provision-the-rke-cluster">The provisioning of an RKE downstream cluster fails after adding extra_args for the kubelet service to a new RKE template and using this newly created template to provision the RKE cluster.</h1>
-<p><em><strong>Error:</strong></em></p>
+<p><strong><em>Error:</em></strong></p>
 <div class="highlight"><pre><span></span><code>Error message while creating a new RKE cluster from the new RKE Template:
 Unable to validate S3 backup target configuration: Get http://169.254.169.254/latest/meta-data/iam/security-credentials/&quot;: dial tcp 169.254.169.254:80: i/o timeout
 </code></pre></div>
@@ -10931,13 +10931,17 @@ Unable to validate S3 backup target configuration: Get http://169.254.169.254/l
         image-gc-high-threshold: &#39;80&#39;
         image-gc-low-threshold: &#39;75&#39;
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
-<p>Verify if the RKE Template has configurable questions:</p>
+<p>Verify if the RKE Template has configurable questions: </p>
 <ul>
-<li>Check in the RKE Template if there is any setting set as a configurable question for the end-user</li>
-<li>Go to Cluster Management =&gt; RKE1 Configuration =&gt; RKE Templates</li>
+<li>
+<p>Check in the RKE Template if there is any setting set as a configurable question for the end-user</p>
+</li>
+<li>
+<p>Go to Cluster Management =&gt; RKE1 Configuration =&gt; RKE Templates</p>
+</li>
 <li>Select your desired RKE Template, and click on the 3-dot menu far on the right menu, select "Clone revision"</li>
 <li>Go to the "Cluster Option Overrides" section lower down on the cloned template, and uncheck any available options. After removing these configurable questions,  the value set in the template is used without user entry.</li>
 <li>Set a Name for the new Template and click on Save. Select the newly created template and set it as Default Template if this is going to be your default template.</li>
@@ -10945,6 +10949,7 @@ Unable to validate S3 backup target configuration: Get http://169.254.169.254/l
 <h3 id="cause">Cause</h3>
 <p>Configurable questions on the RKE template would require the end-user to answer those questions to set up a new RKE cluster and won't allow a new RKE cluster to be deployed automatically.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

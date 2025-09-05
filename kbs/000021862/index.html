@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10986,7 +10986,6 @@
 <p>Containers do not inherit timezones from host machines and have only accessed to the clock from the kernel - which is always UTC. The default timezone for most images is UTC, yet it is not guaranteed and may be different from container to container since it can be changed on a pod or image level.</p>
 <h3 id="resolution">Resolution</h3>
 <p>You can use the following environment variables to set the desired timezone in the various pods by editing the cluster YAML:</p>
-<p>``</p>
 <div class="highlight"><pre><span></span><code>    machineSelectorConfig:
       - config:
             kube-apiserver-extra-env: &quot;TZ=&lt;timezone&gt;&quot;
@@ -10997,17 +10996,18 @@
             cloud-controller-manager-extra-env: &quot;TZ=&lt;timezone&gt;&quot;
 </code></pre></div>
 <p>This assumes the tzdb package is present on the nodes. Rancher started including this in their k8s releases from January 2025 onwards.</p>
-<p>For other non-static pods and workloads you may have, you can consider using k8tz that creates a admission controller that injects the timezones into any pods created.</p>
-<p>See here: <a href="https://github.com/k8tz/k8tz">https://github.com/k8tz/k8tz</a></p>
+<p>For other non-static pods and workloads you may have, you can consider using k8tz that creates a admission controller that injects the timezones into any pods created. <br />
+See here: <a href="https://github.com/k8tz/k8tz">https://github.com/k8tz/k8tz</a></p>
 <h3 id="cause">Cause</h3>
 <p>Rancher started including the tzdb package in k8s releases from January 2025 onwards.</p>
 <p>Prior to this it as not possible to set the Timezone.</p>
-<p>See this issue:</p>
-<p><a href="https://github.com/rancher/rke2/issues/7331">https://github.com/rancher/rke2/issues/7331</a></p>
+<p>See this issue:<br />
+<a href="https://github.com/rancher/rke2/issues/7331">https://github.com/rancher/rke2/issues/7331</a></p>
 <h3 id="additional-information">Additional Information</h3>
-<p>Check the k8tz controller to manage it globally in your cluster.</p>
-<p>See:  <a href="https://github.com/k8tz/k8tz">https://github.com/k8tz/k8tz</a></p>
+<p>Check the k8tz controller to manage it globally in your cluster.<br />
+See:  <a href="https://github.com/k8tz/k8tz">https://github.com/k8tz/k8tz</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

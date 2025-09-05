@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11050,13 +11050,18 @@ data:
 </li>
 <li>Do <strong>not</strong> manually add the <code>/kube-scheduler-config</code> file as an additional mount via <code>kube-apiserver-extra-mount</code>. RKE2 handles this automatically when referenced in the arguments. Adding it manually will result in a double-mount attempt and kube-scheduler pod startup failures.</li>
 <li>Configuring custom scheduling policies like <code>NodeResourcesBalancedAllocation</code> is possible in RKE2. However, creating and troubleshooting such policies are outside the standard support scope. For tailored guidance, users should contact their CSM for consulting services.</li>
-<li><strong>References:</strong></li>
-<li><a href="https://kubernetes.io/docs/reference/scheduling/config/">Kubernetes Scheduler Configuration</a></li>
+<li>
+<p><strong>References:</strong></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/reference/scheduling/config/">Kubernetes Scheduler Configuration</a></p>
+</li>
 <li><a href="https://docs.rke2.io/reference/server_config">RKE2 Server Configuration</a></li>
 <li><a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineselectorfiles">Rancher RKE2 Cluster Configuration - machineSelectorFiles</a></li>
 <li><a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineselectorconfig">Rancher RKE2 Cluster Configuration - machineSelectorConfig</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

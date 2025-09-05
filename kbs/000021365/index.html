@@ -9162,7 +9162,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10985,14 +10985,17 @@
 <h3 id="situation">Situation</h3>
 <p>When configuring a Rancher local/upstream cluster, or a downstream cluster, you may be concerned about the support scope of those clusters based on their Kubernetes version. This is, the date until you are completely covered by SUSE support, in the case of having an active support entitlement.</p>
 <h3 id="resolution">Resolution</h3>
-<p>As long as the configured version of RKE/RKE2/k3s is included under the <a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/">Support Matrix</a> for the running Rancher version, and that version of Rancher that is still under support, per the <a href="https://www.suse.com/lifecycle/">SUSE Product Lifecycle</a>, it is covered by SUSE support. Then, <strong>the critical EOL date to take into account is always the Rancher one</strong>, and also to verify that the RKE/RKE2/k3s version is under the Support Matrix.</p>
+<p>As long as the configured version of RKE/RKE2/k3s is included under the <a href="https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/">Support Matrix</a> for the running Rancher version, and that version of Rancher that is still under support, per the <a href="https://www.suse.com/lifecycle/">SUSE Product Lifecycle</a>, it is covered by SUSE support. Then, <strong>the critical EOL date to take into account is always the Rancher one</strong>, and also to verify that the RKE/RKE2/k3s version is under the Support Matrix. <br />
+</p>
 <h3 id="cause">Cause</h3>
-<p>The support scope may be misunderstood when checking our <a href="https://www.suse.com/lifecycle#rke">Product Support Lifecycle page for RKE/RKE/k3s</a>. That page should only be consulted when using RKE/RKE2/k3s standalone, without a Rancher installation.</p>
+<p>The support scope may be misunderstood when checking our <a href="https://www.suse.com/lifecycle#rke">Product Support Lifecycle page for RKE/RKE/k3s</a>. That page should only be consulted when using RKE/RKE2/k3s standalone, without a Rancher installation.<br />
+</p>
 <h3 id="additional-information">Additional Information</h3>
-<p>It is also important to highlight that fixes may not be backported, so in the event of a Kubernetes bug, the recommended mitigation may be an upgrade to a later Kubernetes release. However, we will still assist you in troubleshooting an issue if the cluster is covered by support, per the above.</p>
-<p>Besides, upstream Kubernetes fixes are to be incorporated by RKE/RKE2/K3S at the Engineering's team discretion.</p>
-<p>Note: Please, open a support case if you have any questions around versions and supportability.</p>
+<p>It is also important to highlight that fixes may not be backported, so in the event of a Kubernetes bug, the recommended mitigation may be an upgrade to a later Kubernetes release. However, we will still assist you in troubleshooting an issue if the cluster is covered by support, per the above.<br />
+Besides, upstream Kubernetes fixes are to be incorporated by RKE/RKE2/K3S at the Engineering's team discretion. <br />
+Note: Please, open a support case if you have any questions around versions and supportability.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

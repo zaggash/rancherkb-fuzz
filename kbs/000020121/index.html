@@ -9222,7 +9222,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11117,43 +11117,43 @@
 <ol>
 <li>Log in to your Rancher Server:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>rancher login &lt;server_url&gt; --token &lt;token&gt;
+<p><div class="highlight"><pre><span></span><code>rancher login &lt;server_url&gt; --token &lt;token&gt;
 </code></pre></div>
-<ol>
-<li>Create the cluster:</li>
-</ol>
+2. Create the cluster:</p>
 <p>To create a cluster with the default cluster configuration:</p>
 <div class="highlight"><pre><span></span><code>rancher cluster create &lt;new_cluster_name&gt;
 </code></pre></div>
 <p>If you are passing in an RKE cluster config file, do so as follows:</p>
 <div class="highlight"><pre><span></span><code>rancher cluster create --rke-config &lt;rke_config_file&gt; &lt;new_cluster_name&gt;
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
 <h5 id="cluster-creation-via-the-rancher-v3-api"><strong>Cluster creation via the Rancher v3 API</strong></h5>
 <ol>
-<li>Create a <a href="https://ranchermanager.docs.rancher.com/v2.8/reference-guides/user-settings/api-keys">Rancher API Key</a> , and save the access key and secret key as environment variables ( <code>export "CATTLE_ACCESS_KEY=&lt;access_key&gt; &amp;&amp; export CATTLE_SECRET_KEY=&lt;secret_key&gt;</code>)". Alternatively you can pass these directly into the curl request in place of the <code>${CATTLE_ACCESS_KEY}</code> and <code>${CATTLE_SECRET_KEY}</code> variables in the examples below.</li>
+<li>Create a <a href="https://ranchermanager.docs.rancher.com/v2.8/reference-guides/user-settings/api-keys">Rancher API Key</a> , and save the access key and secret key as environment variables (<code>export "CATTLE_ACCESS_KEY=&lt;access_key&gt; &amp;&amp; export CATTLE_SECRET_KEY=&lt;secret_key&gt;</code>)". Alternatively you can pass these directly into the curl request in place of the <code>${CATTLE_ACCESS_KEY}</code> and <code>${CATTLE_SECRET_KEY}</code> variables in the examples below.</li>
 <li>Send a POST request to the <code>/v3/clusters</code> API endpoint of your Rancher server:</li>
 </ol>
 <p>To create a cluster with the default cluster configuration:</p>
 <div class="highlight"><pre><span></span><code>curl -u &quot;${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot; \
-   -X POST \
-   -H &#39;Accept: application/json&#39; \
-   -H &#39;Content-Type: application/json&#39; \
-   -d &#39;{&quot;name&quot;:&quot;test-cluster&quot;}&#39; \
+-X POST \
+-H &#39;Accept: application/json&#39; \
+-H &#39;Content-Type: application/json&#39; \
+-d &#39;{&quot;name&quot;:&quot;test-cluster&quot;}&#39; \
 &#39;https://&lt;rancher_server&gt;/v3/clusters&#39;
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>If you are passing in an RKE cluster config file, do so as follows:
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>curl -u &quot;${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot; \
-   -X POST \
-   -H &#39;Accept: application/json&#39; \
-   -H &#39;Content-Type: application/json&#39; \
-   -d @&lt;rke_config_file&gt; \
+-X POST \
+-H &#39;Accept: application/json&#39; \
+-H &#39;Content-Type: application/json&#39; \
+-d @&lt;rke_config_file&gt; \
 &#39;https://&lt;rancher_server&gt;/v3/clusters&#39;
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
+<!--THE END-->
+
 <h3 id="additional-information">Additional Information</h3>
 <h4 id="additional-reading">Additional Reading</h4>
 <ul>
@@ -11161,6 +11161,7 @@
 <li><a href="https://github.com/rancher/api-spec/blob/master/specification.md">The Rancher v2.8.x API Specification</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

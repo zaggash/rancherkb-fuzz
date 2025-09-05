@@ -9144,7 +9144,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10959,18 +10959,26 @@
 <ul>
 <li>When did you first notice the issue? Please be as specific as possible, for example a time, date and timezone</li>
 <li>Is the issue related to Rancher, the management (local) cluster, or a downstream cluster managed by Rancher?</li>
-<li>Logs, screenshots, terminal output, error, etc. are very useful to assist troubleshooting:</li>
-<li>System logs are almost always required when diagnosing an issue, you can generate these using the <a href="https://www.suse.com/support/kb/doc/?id=000020191">Rancher log collector script</a></li>
+<li>
+<p>Logs, screenshots, terminal output, error, etc. are very useful to assist troubleshooting:</p>
+</li>
+<li>
+<p>System logs are almost always required when diagnosing an issue, you can generate these using the <a href="https://www.suse.com/support/kb/doc/?id=000020191">Rancher log collector script</a></p>
+</li>
 <li>For some issues it can help to capture traffic from the browser to the Rancher UI in a HAR file, the steps can be found <a href="https://www.suse.com/support/kb/doc/?id=000020177">here</a></li>
 <li>To capture as much context about the issue as possible, a screenshot to demonstrate the issue, or a copy/paste or attachment of errors or terminal output that demonstrate the issue can greatly reduce the time to resolution</li>
-<li>What are the installed versions? For example, Rancher version, Kubernetes version of the affected cluster(s)?</li>
-<li>The Rancher version can be found at the bottom left of the Rancher UI or by inspecting the container image tag of the Rancher pod/container</li>
-<li>The Kubernetes version can be found by:<ul>
+<li>
+<p>What are the installed versions? For example, Rancher version, Kubernetes version of the affected cluster(s)?</p>
+</li>
+<li>
+<p>The Rancher version can be found at the bottom left of the Rancher UI or by inspecting the container image tag of the Rancher pod/container</p>
+</li>
+<li>
+<p>The Kubernetes version can be found by:</p>
+<ul>
 <li>Navigating to the relevant cluster in the Rancher dashboard</li>
 <li>Using kubectl get nodes</li>
-<li>Standalone RKE clusters can be checked also with kubectl, and rke version --config <path to cluster.yml></li>
-</ul>
-</li>
+<li>Standalone RKE clusters can be checked also with kubectl, and rke version --config &lt;path to cluster.yml&gt;</li>
 <li>If the issue is related to an upgrade of Rancher or Kubernetes, what were the previous versions?</li>
 <li>If the issue is related to a downstream cluster, which distribution and how was the cluster built? RKE1, RKE2, k3s, hosted provider, imported or custom?</li>
 <li>If the issue is related to Longhorn, please create a Longhorn log bundle as explained <a href="https://www.suse.com/support/kb/doc/?id=000020145">here</a>, and attach it to the case.</li>
@@ -10978,7 +10986,10 @@
 <li>Are there any events that you think may correlate with the issue? For example, an infrastructure outage, host reboot, OS upgrade, Docker upgrade, network changes, configuration changes?</li>
 <li>Have you taken any corrective action or steps?</li>
 </ul>
+</li>
+</ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

@@ -9168,7 +9168,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11002,19 +11002,15 @@
 <ol>
 <li>Download and install the latest version of fio. This is important because older versions do not provide storage latency. I have a very simple script below to download and install this.</li>
 </ol>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-LO<span class="w"> </span>https://github.com/rancherlabs/support-tools/raw/master/instant-fio-master/instant-fio-master.sh
+<p><div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-LO<span class="w"> </span>https://github.com/rancherlabs/support-tools/raw/master/instant-fio-master/instant-fio-master.sh
 bash<span class="w"> </span>instant-fio-master.sh
 </code></pre></div>
-<ol>
-<li>Test the storage, create a directory on the device you want to test then run the fio command as shown below.</li>
-</ol>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>/usr/local/bin:<span class="nv">$PATH</span>
+2. Test the storage, create a directory on the device you want to test then run the fio command as shown below.</p>
+<p><div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>/usr/local/bin:<span class="nv">$PATH</span>
 mkdir<span class="w"> </span>test-data
 fio<span class="w"> </span>--rw<span class="o">=</span>write<span class="w"> </span>--ioengine<span class="o">=</span>sync<span class="w"> </span>--fdatasync<span class="o">=</span><span class="m">1</span><span class="w"> </span>--directory<span class="o">=</span>test-data<span class="w"> </span>--size<span class="o">=</span>100m<span class="w"> </span>--bs<span class="o">=</span><span class="m">2300</span><span class="w"> </span>--name<span class="o">=</span>mytest
 </code></pre></div>
-<ol>
-<li>Below is an example output from an etcd,controlplane,worker node of a Rancher installation cluster running on an AWS ec2 instance type of t2.large.</li>
-</ol>
+3. Below is an example output from an etcd,controlplane,worker node of a Rancher installation cluster running on an AWS ec2 instance type of t2.large.</p>
 <div class="highlight"><pre><span></span><code>[root@ip-172-31-14-184 ~]# fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=100m --bs=2300 --name=mytest
 mytest: (g=0): rw=write, bs=(R) 2300B-2300B, (W) 2300B-2300B, (T) 2300B-2300B, ioengine=sync, iodepth=1
 fio-3.15-23-g937e
@@ -11022,56 +11018,46 @@ Starting 1 process
 mytest: Laying out IO file (1 file / 100MiB)
 Jobs: 1 (f=1): [W(1)][100.0%][w=2684KiB/s][w=1195 IOPS][eta 00m:00s]
 mytest: (groupid=0, jobs=1): err= 0: pid=21203: Sun Aug 11 23:47:30 2019
-     write: IOPS=1196, BW=2687KiB/s (2752kB/s)(99.0MiB/38105msec)
-       clat (nsec): min=2840, max=99026, avg=8551.56, stdev=3187.53
-         lat (nsec): min=3337, max=99664, avg=9191.92, stdev=3285.92
-       clat percentiles (nsec):
-         |  1.00th=[ 4640],  5.00th=[ 5536], 10.00th=[ 5728], 20.00th=[ 6176],
-         | 30.00th=[ 6624], 40.00th=[ 7264], 50.00th=[ 7968], 60.00th=[ 8768],
-         | 70.00th=[ 9408], 80.00th=[10304], 90.00th=[11840], 95.00th=[13760],
-         | 99.00th=[19328], 99.50th=[23168], 99.90th=[35584], 99.95th=[44288],
-         | 99.99th=[63744]
-       bw (  KiB/s): min= 2398, max= 2852, per=99.95%, avg=2685.79, stdev=104.84, samples=76
-       iops        : min= 1068, max= 1270, avg=1195.96, stdev=46.66, samples=76
-     lat (usec)   : 4=0.52%, 10=76.28%, 20=22.34%, 50=0.82%, 100=0.04%
-     fsync/fdatasync/sync_file_range:
-       sync (usec): min=352, max=21253, avg=822.36, stdev=652.94
-       sync percentiles (usec):
-         |  1.00th=[  400],  5.00th=[  420], 10.00th=[  437], 20.00th=[  457],
-         | 30.00th=[  478], 40.00th=[  529], 50.00th=[  906], 60.00th=[  947],
-         | 70.00th=[  988], 80.00th=[ 1020], 90.00th=[ 1090], 95.00th=[ 1156],
-         | 99.00th=[ 2245], 99.50th=[ 5932], 99.90th=[ 8717], 99.95th=[11600],
-         | 99.99th=[16581]
-     cpu          : usr=0.79%, sys=7.38%, ctx=119920, majf=0, minf=35
-     IO depths    : 1=200.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0%
-         submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &gt;=64=0.0%
-         complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &gt;=64=0.0%
-         issued rwts: total=0,45590,0,0 short=45590,0,0,0 dropped=0,0,0,0
-         latency   : target=0, window=0, percentile=100.00%, depth=1
+  write: IOPS=1196, BW=2687KiB/s (2752kB/s)(99.0MiB/38105msec)
+    clat (nsec): min=2840, max=99026, avg=8551.56, stdev=3187.53
+      lat (nsec): min=3337, max=99664, avg=9191.92, stdev=3285.92
+    clat percentiles (nsec):
+      |  1.00th=[ 4640],  5.00th=[ 5536], 10.00th=[ 5728], 20.00th=[ 6176],
+      | 30.00th=[ 6624], 40.00th=[ 7264], 50.00th=[ 7968], 60.00th=[ 8768],
+      | 70.00th=[ 9408], 80.00th=[10304], 90.00th=[11840], 95.00th=[13760],
+      | 99.00th=[19328], 99.50th=[23168], 99.90th=[35584], 99.95th=[44288],
+      | 99.99th=[63744]
+    bw (  KiB/s): min= 2398, max= 2852, per=99.95%, avg=2685.79, stdev=104.84, samples=76
+    iops        : min= 1068, max= 1270, avg=1195.96, stdev=46.66, samples=76
+  lat (usec)   : 4=0.52%, 10=76.28%, 20=22.34%, 50=0.82%, 100=0.04%
+  fsync/fdatasync/sync_file_range:
+    sync (usec): min=352, max=21253, avg=822.36, stdev=652.94
+    sync percentiles (usec):
+      |  1.00th=[  400],  5.00th=[  420], 10.00th=[  437], 20.00th=[  457],
+      | 30.00th=[  478], 40.00th=[  529], 50.00th=[  906], 60.00th=[  947],
+      | 70.00th=[  988], 80.00th=[ 1020], 90.00th=[ 1090], 95.00th=[ 1156],
+      | 99.00th=[ 2245], 99.50th=[ 5932], 99.90th=[ 8717], 99.95th=[11600],
+      | 99.99th=[16581]
+  cpu          : usr=0.79%, sys=7.38%, ctx=119920, majf=0, minf=35
+  IO depths    : 1=200.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0%
+      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &gt;=64=0.0%
+      complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &gt;=64=0.0%
+      issued rwts: total=0,45590,0,0 short=45590,0,0,0 dropped=0,0,0,0
+      latency   : target=0, window=0, percentile=100.00%, depth=1
 Run status group 0 (all jobs):
-     WRITE: bw=2687KiB/s (2752kB/s), 2687KiB/s-2687KiB/s (2752kB/s-2752kB/s), io=99.0MiB (105MB), run=38105-38105msec
+  WRITE: bw=2687KiB/s (2752kB/s), 2687KiB/s-2687KiB/s (2752kB/s-2752kB/s), io=99.0MiB (105MB), run=38105-38105msec
 Disk stats (read/write):
-     xvda: ios=0/96829, merge=0/3, ticks=0/47440, in_queue=47432, util=92.25%
+  xvda: ios=0/96829, merge=0/3, ticks=0/47440, in_queue=47432, util=92.25%
 </code></pre></div>
 <p>In the fsync data section you can see that the 99th percentile is 2245 or about 2.2ms of latency. This storage is well suited for an etcd node. <a href="https://github.com/etcd-io/etcd/blob/master/Documentation/faq.md#what-does-the-etcd-warning-failed-to-send-out-heartbeat-on-time-mean">The etcd documentation suggests</a> that for storage to be fast enough, the 99th percentile of fdatasync invocations when writing to the WAL file must be less than 10ms.</p>
 <h4 id="resolution">Resolution</h4>
 <p>What if your node's storage isn't fast enough? The simple solution is to upgrade the storage but that isn't always an option. If you are on the cusp of acceptable, there are things you can do to optimize your storage so that etcd is happy.</p>
 <ol>
-<li>
-<p>Don't run etcd on a node with other roles. A general rule of thumb is to never have the worker role on the same node as etcd. However many environments have etcd and controlplane roles on the same node and run just fine. If this is the case for your environment then you should consider separating etcd and controlplane nodes.</p>
-</li>
-<li>
-<p>If you've separated etcd and the controlplane node and are still having issues, you can mount a separate volume for etcd so that read write operations for everything else on the node do not impact etcd's performance. This is mostly applicable to Cloud hosted nodes since each volume mounted has its own allocated set of resources.</p>
-</li>
-<li>
-<p>If you are on a dedicated server and would like to separate etcd read write operations from the rest of the server, you should install a new storage device for etcd mounts.</p>
-</li>
-<li>
-<p>Always use SSD's for your etcd nodes, whether it is dedicated or in the cloud.</p>
-</li>
-<li>
-<p>Set the priority of the etcd container so that it is higher than other processes but not too high that it overwhelms the server.</p>
-</li>
+<li>Don't run etcd on a node with other roles. A general rule of thumb is to never have the worker role on the same node as etcd. However many environments have etcd and controlplane roles on the same node and run just fine. If this is the case for your environment then you should consider separating etcd and controlplane nodes.</li>
+<li>If you've separated etcd and the controlplane node and are still having issues, you can mount a separate volume for etcd so that read write operations for everything else on the node do not impact etcd's performance. This is mostly applicable to Cloud hosted nodes since each volume mounted has its own allocated set of resources.</li>
+<li>If you are on a dedicated server and would like to separate etcd read write operations from the rest of the server, you should install a new storage device for etcd mounts.</li>
+<li>Always use SSD's for your etcd nodes, whether it is dedicated or in the cloud.</li>
+<li>Set the priority of the etcd container so that it is higher than other processes but not too high that it overwhelms the server.</li>
 </ol>
 <div class="highlight"><pre><span></span><code>ionice<span class="w"> </span>-c2<span class="w"> </span>-n0<span class="w"> </span>-p<span class="w"> </span><span class="sb">`</span>pgrep<span class="w"> </span>-x<span class="w"> </span>etcd<span class="sb">`</span>
 </code></pre></div>
@@ -11086,6 +11072,7 @@ Disk stats (read/write):
 <li><a href="https://aws.amazon.com/blogs/database/understanding-burst-vs-baseline-performance-with-amazon-rds-and-gp2/">AWS blog post on the difference between burst and baseline performance in EC2 storage</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

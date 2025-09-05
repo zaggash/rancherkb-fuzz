@@ -9168,7 +9168,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10999,7 +10999,7 @@
 </ul>
 <h3 id="situation">Situation</h3>
 <h4 id="task">Task</h4>
-<p>You might have modified the default configmap for CoreDNS using Rancher Kubernetes Engine's (RKE) cluster configuration YAML ( <code>cluster.yml</code>). In this case, you may want to know the default configmap before upgrading Kubernetes. This verification step will help you to add all of the default/mandatory parameters to the modified configmap in RKE's <code>cluster.yml</code>, upon upgrade.</p>
+<p>You might have modified the default configmap for CoreDNS using Rancher Kubernetes Engine's (RKE) cluster configuration YAML (<code>cluster.yml</code>). In this case, you may want to know the default configmap before upgrading Kubernetes. This verification step will help you to add all of the default/mandatory parameters to the modified configmap in RKE's <code>cluster.yml</code>, upon upgrade.</p>
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
 <li>Python installed.</li>
@@ -11020,7 +11020,7 @@
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>python -c &quot;import sys, json; d=json.load(sys.stdin)[&#39;K8sVersionedTemplates&#39;][&#39;coreDNS&#39;]; print (json.dumps(d,indent=4))&quot; &lt;data.json
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
 <p>Output:</p>
 <div class="highlight"><pre><span></span><code>{
@@ -11035,12 +11035,12 @@
 <p>Translation of one of the entries from the list is as follows:</p>
 <div class="highlight"><pre><span></span><code>&quot;&gt;=1.21.9-rancher1-2&quot;: &quot;coredns-v1.8.3-rancher2&quot;,
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
 <p>If the Kubernetes version is <strong>greater than or equal to</strong> <em><code>1.21.9-rancher1-2</code></em> , then the CoreDNS key we have to use in the next step is <strong><em><code>coredns-v1.8.3-rancher2.</code></em></strong></p>
 <div class="highlight"><pre><span></span><code>python -c &quot;import sys, json; print (json.load(sys.stdin)[&#39;K8sVersionedTemplates&#39;][&#39;templateKeys&#39;][&#39;coredns-v1.8.3-rancher2&#39;])&quot; &lt;data.json
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
 <p>The configmap will be printed on the screen along with other YAML template specs associated with CoreDNS.</p>
 <p>Sample output:</p>
@@ -11075,9 +11075,10 @@ data:
     } # STUBDOMAINS - Rancher specific change
 ---
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

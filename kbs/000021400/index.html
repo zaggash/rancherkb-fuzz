@@ -9162,7 +9162,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10981,27 +10981,28 @@
 <h1 id="add-cabundle-private-ca-to-chart-repository">Add caBundle private CA to chart repository</h1>
 <p>This document <strong>(000021400)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher 2.6.x</p>
-<p>Rancher 2.7.x</p>
-<p>Rancher 2.8.x</p>
+<p>Rancher 2.6.x<br />
+Rancher 2.7.x<br />
+Rancher 2.8.x</p>
 <h3 id="situation">Situation</h3>
-<p>There are some cases where customers and users have their own custom charts and they would prefer to add them and use them in Rancher Server.</p>
-<p>The UI has a section called "Repositories" where they simply add the repository in question and then it will become available in the Charts tab under the given name of that repository.</p>
-<p>While adding the repository an error related to the invalidity of the certificate can appear like the following</p>
+<p>There are some cases where customers and users have their own custom charts and they would prefer to add them and use them in Rancher Server.<br />
+The UI has a section called "Repositories" where they simply add the repository in question and then it will become available in the Charts tab under the given name of that repository.<br />
+While adding the repository an error related to the invalidity of the certificate can appear like the following</p>
 <div class="highlight"><pre><span></span><code>&quot;fatal: unable to access &#39;https://url.chart.repo/some-path/repo.git/&#39;: SSL certificate problem: unable to get local issuer certificate&quot;
 </code></pre></div>
 <p>or</p>
 <div class="highlight"><pre><span></span><code>Get &quot;https://docker.repo.local/chart/repo/index.yaml&quot;: x509: certificate signed by unknown authority
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
-<p>The custom CA certificate needs to be added to the ClusterRepo manifest, under the spec.caBundle field.</p>
-<p>The documentation reference for that matter can be found <a href="https://ranchermanager.docs.rancher.com/v2.7/how-to-guides/new-user-guides/helm-charts-in-rancher#add-a-private-ca-to-repositories">here</a>.</p>
+<p>The custom CA certificate needs to be added to the ClusterRepo manifest, under the spec.caBundle field.<br />
+The documentation reference for that matter can be found <a href="https://ranchermanager.docs.rancher.com/v2.7/how-to-guides/new-user-guides/helm-charts-in-rancher#add-a-private-ca-to-repositories">here</a>.</p>
 <h3 id="cause">Cause</h3>
 <p>missing CA certificate when adding a custom or private chart repository.</p>
 <h3 id="additional-information">Additional Information</h3>
 <p>- In the Apps v1 feature, the management of catalogs was handled centrally within the Rancher process itself. As such, all catalogs were downloaded by Rancher running in the local cluster; and, where additional trusted CAs were added to Rancher, catalogs served by an endpoint with a custom CA certificate were trusted.</p>
 <p>- In the Apps v2 feature, the management of cluster repositories is handled within each cluster, by Rancher in the local cluster, but by the cattle-cluster-agent in downstream clusters. It is, therefore, necessary to set the CA in the ClusterRepo definition, as the additional trusted CAs are only trusted by the Rancher process itself in the local cluster, and not by the cattle-cluster-agent which downloads the chart repositories within a downstream cluster.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

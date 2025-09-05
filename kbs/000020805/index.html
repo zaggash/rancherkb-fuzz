@@ -9171,7 +9171,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10999,7 +10999,8 @@
 <h1 id="rancher-upgrade-has-failed-with-an-error-no-matches-for-kind-issuer-in-version-cert-manageriov1alpha2">Rancher upgrade has failed with an error no matches for kind "Issuer" in version "cert-manager.io/v1alpha2"</h1>
 <p>This document <strong>(000020805)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher 2.6.x</p>
+<p>Rancher 2.6.x<br />
+</p>
 <h3 id="situation">Situation</h3>
 <p>Rancher upgrade is failing due to the deprecated apiVersion for the cert-manager CRD. This affects cert-manager upgrades from an earlier release, for example upgrading cert-manager from 0.12 to 1.7.1, which in turn has the potential to create a deprecated apiVersion within the existing Rancher release manifest.</p>
 <p>The relevant error message may appear as below and occurs when running the helm upgrade command to upgrade Rancher.</p>
@@ -11011,10 +11012,10 @@
 <div class="highlight"><pre><span></span><code> kubectl get secrets -n cattle-system
 </code></pre></div>
 <p>2. Back up the object, this example assumes sh.helm.release.v1.rancher.v1 is the latest</p>
-<div class="highlight"><pre><span></span><code>kubectl get secret sh.helm.release.v1.rancher.v1 -n cattle-system -o yaml &gt; helm-rancher-config.yaml
+<div class="highlight"><pre><span></span><code>kubectl get secret sh.helm.release.v1.rancher.v1 -n cattle-system -o yaml &gt; helm-rancher-config.yaml 
 </code></pre></div>
 <p>3. Decode the data.release field and save the output to yaml (jq must be installed before executing the below steps)</p>
-<div class="highlight"><pre><span></span><code>kubectl get secrets sh.helm.release.v1.rancher.v1 -n cattle-system -o json | jq .data.release | tr -d &#39;&quot;&#39; | base64 -d | base64 -d | gzip -d &gt; helm-rancher-config-data-decoded.yaml
+<div class="highlight"><pre><span></span><code>kubectl get secrets sh.helm.release.v1.rancher.v1 -n cattle-system -o json | jq .data.release | tr -d &#39;&quot;&#39; | base64 -d | base64 -d | gzip -d &gt; helm-rancher-config-data-decoded.yaml 
 </code></pre></div>
 <p>4. Change the apiVersion from v1/alpha2 to v1.</p>
 <div class="highlight"><pre><span></span><code>sed -e &#39;s/cert-manager.io\/v1alpha2/cert-manager.io\/v1/&#39; helm-rancher-config-data-decoded.yaml &gt; helm-rancher-config-data-decoded-replaced.yaml
@@ -11033,8 +11034,8 @@
 <h3 id="status">Status</h3>
 <p>Top Issue</p>
 <h3 id="additional-information">Additional Information</h3>
-<p>The correct way of upgrading cert-manager is in the below link</p>
-<p><a href="https://docs.ranchermanager.rancher.io/getting-started/installation-and-upgrade/resources/upgrade-cert-manager#option-a-upgrade-cert-manager-with-internet-access">https://docs.ranchermanager.rancher.io/getting-started/installation-and-upgrade/resources/upgrade-cert-manager#option-a-upgrade-cert-manager-with-internet-access</a></p>
+<p>The correct way of upgrading cert-manager is in the below link<br />
+<a href="https://docs.ranchermanager.rancher.io/getting-started/installation-and-upgrade/resources/upgrade-cert-manager#option-a-upgrade-cert-manager-with-internet-access">https://docs.ranchermanager.rancher.io/getting-started/installation-and-upgrade/resources/upgrade-cert-manager#option-a-upgrade-cert-manager-with-internet-access</a></p>
 <p>Below is a snippet of helm get manifest -n cattle-system rancher which uses old CRDs, and thus has deprecated apiVersions.</p>
 <div class="highlight"><pre><span></span><code>---
 # Source: rancher/templates/issuer-rancher.yaml
@@ -11056,6 +11057,7 @@ spec:
 <div class="highlight"><pre><span></span><code>kubectl get --raw /apis/cert-manager.io | jq .
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

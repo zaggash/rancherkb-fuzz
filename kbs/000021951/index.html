@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11020,29 +11020,29 @@
 <p>A Rancher-provisioned RKE2 or K3s cluster, in which a proxy is required for the downstream cluster to connect to Rancher</p>
 <h3 id="situation">Situation</h3>
 <p>In a Rancher-provisioned RKE2 or K3s cluster, in which a proxy is required for the downstream cluster to connect to Rancher, the rancher-system-agent relies on proxy environment variables to communicate with the Rancher management server. These variables are typically configured via the <strong>"Agent Environment Variables"</strong> section in the Rancher UI Cluster Configuration for a given cluster.</p>
-<p>If anincorrect or unreachable proxy is configured in this section after the cluster is already registered and operational, the communication between Rancher and the downstream cluster breaks. Even if the correct proxy settings are later re-applied in the Rancher UI, the cluster remains disconnected and unmanageable through Rancher, as the the rancher-system-agents are disconnected and unable to apply the update.</p>
+<p>If an incorrect or unreachable proxy is configured in this section after the cluster is already registered and operational, the communication between Rancher and the downstream cluster breaks. Even if the correct proxy settings are later re-applied in the Rancher UI, the cluster remains disconnected and unmanageable through Rancher, as the the rancher-system-agents are disconnected and unable to apply the update.</p>
 <h3 id="resolution">Resolution</h3>
 <p>To restore communication between Rancher and the downstream cluster:</p>
 <h3 id="1-update-proxy-settings-in-the-rancher-ui"><strong>1. Update Proxy Settings in the Rancher UI</strong></h3>
 <p>Navigate to the affected cluster in the <strong>Cluster Management</strong> section of the Rancher UI and ensure that the correct proxy settings are configured under:</p>
 <p><strong>Cluster</strong> → <strong>Edit Config</strong> → <strong>Agent Environment Variables</strong></p>
 <p>Ensure the following variables are correctly defined:</p>
-<div class="highlight"><pre><span></span><code>HTTP_PROXY=http://&lt;your-proxy&gt;:&lt;port&gt;
-HTTPS_PROXY=https://&lt;your-proxy&gt;:&lt;port&gt;
-NO_PROXY=localhost,127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.cluster.local,0.0.0.0,cattle-system.svc
+<div class="highlight"><pre><span></span><code><span class="n">HTTP_PROXY</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="c1">//&lt;your-proxy&gt;:&lt;port&gt;</span>
+<span class="n">HTTPS_PROXY</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="c1">//&lt;your-proxy&gt;:&lt;port&gt;</span>
+<span class="n">NO_PROXY</span><span class="o">=</span><span class="n">localhost</span><span class="p">,</span><span class="mf">127.0.0.0</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span><span class="mf">10.0.0.0</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span><span class="mf">172.16.0.0</span><span class="o">/</span><span class="mi">12</span><span class="p">,</span><span class="mf">192.168.0.0</span><span class="o">/</span><span class="mi">16</span><span class="p">,.</span><span class="na">svc</span><span class="p">,.</span><span class="na">cluster</span><span class="p">.</span><span class="na">local</span><span class="p">,</span><span class="mf">0.0.0.0</span><span class="p">,</span><span class="n">cattle</span><span class="o">-</span><span class="n">system</span><span class="p">.</span><span class="na">svc</span>
 </code></pre></div>
 <h3 id="2-manually-fix-proxy-settings-on-one-control-plane-node"><strong>2. Manually Fix Proxy Settings on one Control Plane Node</strong></h3>
 <p>SSH into one of the control plane nodes of the affected downstream cluster, and update the environment file used by the rancher-system-agent.</p>
 <p>a. Edit the file:</p>
-<div class="highlight"><pre><span></span><code>sudo vi /etc/systemd/system/rancher-system-agent.env
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">rancher</span><span class="o">-</span><span class="n">system</span><span class="o">-</span><span class="n">agent</span><span class="p">.</span><span class="na">env</span>
 </code></pre></div>
 <p>b. Add or update the following lines:</p>
-<div class="highlight"><pre><span></span><code>http_proxy=http://&lt;your-correct-proxy&gt;:&lt;port&gt;
-https_proxy=http://&lt;your-correct-proxy&gt;:&lt;port&gt;
-NO_PROXY=localhost,127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.cluster.local,0.0.0.0,cattle-system.svc
+<div class="highlight"><pre><span></span><code><span class="n">http_proxy</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="c1">//&lt;your-correct-proxy&gt;:&lt;port&gt;</span>
+<span class="n">https_proxy</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="c1">//&lt;your-correct-proxy&gt;:&lt;port&gt;</span>
+<span class="n">NO_PROXY</span><span class="o">=</span><span class="n">localhost</span><span class="p">,</span><span class="mf">127.0.0.0</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span><span class="mf">10.0.0.0</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span><span class="mf">172.16.0.0</span><span class="o">/</span><span class="mi">12</span><span class="p">,</span><span class="mf">192.168.0.0</span><span class="o">/</span><span class="mi">16</span><span class="p">,.</span><span class="na">svc</span><span class="p">,.</span><span class="na">cluster</span><span class="p">.</span><span class="na">local</span><span class="p">,</span><span class="mf">0.0.0.0</span><span class="p">,</span><span class="n">cattle</span><span class="o">-</span><span class="n">system</span><span class="p">.</span><span class="na">svc</span>
 </code></pre></div>
 <p>c. Restart the agent:</p>
-<div class="highlight"><pre><span></span><code>sudo systemctl restart rancher-system-agent
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">systemctl</span><span class="w"> </span><span class="n">restart</span><span class="w"> </span><span class="n">rancher</span><span class="o">-</span><span class="n">system</span><span class="o">-</span><span class="n">agent</span>
 </code></pre></div>
 <p>Once the agent on this node can communicate with Rancher, it will allow Rancher to re-establish connectivity and trigger the appropriate upgrade plan via the system-upgrade-controller.</p>
 <h3 id="3-automatic-rollout-to-remaining-nodes"><strong>3. Automatic Rollout to Remaining Nodes</strong></h3>
@@ -11051,6 +11051,7 @@ NO_PROXY=localhost,127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.clu
 <p>The root cause of this issue is that once a non-functional or invalid proxy is applied through the Agent Environment Variables setting, it is persisted in the local system environment of the rancher-system-agent on each node.</p>
 <p>Even if the correct proxy settings are later configured in the Rancher UI, the rancher-system-agent processes cannot automatically reload or overwrite their existing environment file (/etc/systemd/system/rancher-system-agent.env), because they are disconnected from Rancher due to the incorrect proxy settings.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

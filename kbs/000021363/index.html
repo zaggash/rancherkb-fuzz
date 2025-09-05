@@ -9135,7 +9135,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10937,8 +10937,8 @@
 <li>https://github.com/opencontainers/runc/security/advisories/GHSA-xr7r-f8xq-vfvv</li>
 </ul>
 <h3 id="resolution">Resolution</h3>
-<p>The solution:</p>
-<p>This CVE has been patched in runc versions &gt;=1.1.12:</p>
+<p>The solution:<br />
+This CVE has been patched in runc versions &gt;=1.1.12:</p>
 <ul>
 <li>https://github.com/opencontainers/runc/releases/tag/v1.1.12</li>
 </ul>
@@ -10949,76 +10949,45 @@
 </ul>
 <p>For RKE users, the releases for patched Kubernetes versions include:</p>
 <ul>
-<li>
-<blockquote>
-<p>=v1.5.5</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>=v1.4.14</p>
-</blockquote>
-</li>
+<li>&gt;=v1.5.5</li>
+<li>&gt;=v1.4.14</li>
 </ul>
 <p>For RKE2 users, the patched Kubernetes versions include:</p>
 <ul>
-<li>
-<blockquote>
-<p>=v1.26.13+rke2r1</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>=v1.27.10+rke2r1</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>=v1.28.6+rke2r1</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>=v1.29.1+rke2r1</p>
-</blockquote>
-</li>
+<li>&gt;=v1.26.13+rke2r1</li>
+<li>&gt;=v1.27.10+rke2r1</li>
+<li>&gt;=v1.28.6+rke2r1</li>
+<li>&gt;=v1.29.1+rke2r1</li>
 </ul>
 <p>For K3s users, the patched Kubernetes versions include:</p>
 <ul>
-<li>
-<blockquote>
-<p>=v1.26.13+k3s2</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>=v1.27.10+k3s2</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>=v1.28.6+k3s2</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>=v1.29.1+k3s2</p>
-</blockquote>
-</li>
+<li>&gt;=v1.26.13+k3s2</li>
+<li>&gt;=v1.27.10+k3s2</li>
+<li>&gt;=v1.28.6+k3s2</li>
+<li>&gt;=v1.29.1+k3s2</li>
 </ul>
 <p>For users of Embedded K3s (Used when running rancher/rancher in a single Docker container(install) - Not recommended for production use)</p>
 <ul>
 <li>There will be a future release including the necessary patches (TBD)</li>
-<li><strong>Please note that this does NOT affect Rancher itself, only if you have spun up an instance of Rancher in a single Docker container</strong></li>
-<li>For <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker">reference</a></li>
+<li>
+<p><strong>Please note that this does NOT affect Rancher itself, only if you have spun up an instance of Rancher in a single Docker container</strong></p>
+</li>
+<li>
+<p>For <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker">reference</a></p>
+</li>
 </ul>
 <p><strong>For Air-Gapped users</strong>:</p>
 <ul>
 <li>There will be a future release specifically for these environments so they can benefit from the KDM (Kontainer driver metadata) upgrades (TDB)</li>
-<li>For more information on what KDM is, please review this GitHub repo:</li>
-<li>https://github.com/rancher/kontainer-driver-metadata</li>
+<li>
+<p>For more information on what KDM is, please review this GitHub repo:</p>
+</li>
+<li>
+<p>https://github.com/rancher/kontainer-driver-metadata</p>
+</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

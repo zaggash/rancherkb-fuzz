@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11025,117 +11025,69 @@
 <h3 id="environment">Environment</h3>
 <p>The information applies to the following SUSE products:</p>
 <ul>
-<li>
-<p>Rancher Prime</p>
-</li>
-<li>
-<p>RKE</p>
-</li>
-<li>
-<p>RKE2</p>
-</li>
-<li>
-<p>K3s</p>
-</li>
-<li>
-<p>Harvester</p>
-</li>
-<li>
-<p>Longhorn</p>
-</li>
-<li>
-<p>NeuVector</p>
-</li>
+<li>Rancher Prime</li>
+<li>RKE</li>
+<li>RKE2</li>
+<li>K3s</li>
+<li>Harvester</li>
+<li>Longhorn</li>
+<li>NeuVector</li>
 </ul>
 <h3 id="situation">Situation</h3>
 <p>Customers concerned about security vulnerabilities and CVEs in container images published by SUSE Rancher Prime, and listed in the <a href="https://scans.rancher.com/">CVE portal</a>, can contact SUSE to inquire about those CVEs.</p>
 <h2 id="scope">Scope</h2>
 <p>Inquiries about the following types of CVEs are applicable to this document:</p>
 <ol>
-<li>
-<p>CVEs that directly affect source code dependencies used by our application or in third-party upstream binaries that we import in our images. Examples of such CVEs are related to Rancher’s Go dependencies.</p>
-</li>
-<li>
-<p>CVEs that affect OS level packages inside the container images that we use or that we mirror from third-party upstream. Examples of such CVEs are the ones affecting `curl` and `openssl` binaries.</p>
-</li>
+<li>CVEs that directly affect source code dependencies used by our application or in third-party upstream binaries that we import in our images. Examples of such CVEs are related to Rancher’s Go dependencies.</li>
+<li>CVEs that affect OS level packages inside the container images that we use or that we mirror from third-party upstream. Examples of such CVEs are the ones affecting `curl` and `openssl` binaries.</li>
 </ol>
 <p>Note: for reporting new security vulnerabilities that are not public yet (aka 0-days) that directly affect the source code of SUSE Rancher Prime and the related products, please follow the responsible disclosure guidelines provided <a href="https://www.suse.com/support/security/rancher-security/">here</a>.</p>
 <h3 id="resolution">Resolution</h3>
 <h2 id="note-about-etas-for-cve-fixes">Note about ETAs for CVE fixes</h2>
-<p>Before following this process to inquire about CVEs, make sure to read the information provided in the KB <strong>‘</strong> <strong><a href="https://www.suse.com/support/kb/doc/?id=000021646">How to use SUSE Rancher Prime’s CVE Portal</a></strong> <strong>’</strong>.</p>
+<p>Before following this process to inquire about CVEs, make sure to read the information provided in the KB <strong>‘<a href="https://www.suse.com/support/kb/doc/?id=000021646">How to use SUSE Rancher Prime’s CVE Portal</a>’</strong>.</p>
 <p>SUSE doesn’t provide a date (ETA) for when the CVEs listed in the portal will be fixed, because such fixes normally depend on multiple variables:</p>
 <ol>
-<li>
-<p>If a fixed version for the dependency or package is available.</p>
-</li>
-<li>
-<p>If the fixed version is compatible with Rancher.</p>
-</li>
-<li>
-<p>Recompiling the affected dependency or updating the package across all the affected areas.</p>
-</li>
-<li>
-<p>For the cases where the CVE is inside a mirrored image, those that we pull directly and without modifications from its upstream developer, it’s also necessary to wait for a new release of the image that contains the needed fix.</p>
-</li>
-<li>
-<p>QA tests being executed to identify possible regressions.</p>
-</li>
-<li>
-<p>The update being rolled out to all of the possible affected areas while still inside the development window for the next release of Rancher.</p>
-</li>
+<li>If a fixed version for the dependency or package is available.</li>
+<li>If the fixed version is compatible with Rancher.</li>
+<li>Recompiling the affected dependency or updating the package across all the affected areas.</li>
+<li>For the cases where the CVE is inside a mirrored image, those that we pull directly and without modifications from its upstream developer, it’s also necessary to wait for a new release of the image that contains the needed fix.</li>
+<li>QA tests being executed to identify possible regressions.</li>
+<li>The update being rolled out to all of the possible affected areas while still inside the development window for the next release of Rancher.</li>
 </ol>
 <h2 id="how-to-inquiry-about-a-cve-as-a-suse-customer">How to inquiry about a CVE as a SUSE Customer</h2>
 <p>The workflow presented below must be observed when inquiring about CVEs in any of the listed products.</p>
 <ol>
-<li>
-<p>Verify if you are using and scanning the latest patch version or development version of the product. Inquiries regarding CVEs in older patch versions will not be evaluated.</p>
-</li>
-<li>
-<p>If the CVE has <strong>critical</strong> or <strong>high</strong> severity and is not listed in the portal, that’s because it’s already fixed in one of the development branches or is considered a false-positive. Those will not be evaluated.</p>
-</li>
-<li>
-<p>Verify if the severity of the CVE wasn’t modified, reduced or increased, according to SUSE’s own re-evaluation of CVEs’ original CVSS rating applicability. CVEs that had their original CVSS rating recalculated will have a distinctive tag in the CVE portal.</p>
-</li>
-<li>
-<p>Inquiries for CVEs considered <strong>informational</strong> or that don’t have a severity defined, i.e., are considered <strong>none</strong> according to the <a href="https://www.suse.com/support/security/rating/">CVSS rating</a> calculation by SUSE as listed in SUSE’s <a href="https://www.suse.com/security/cve/">CVE database</a>, will not be evaluated. CVEs that are eventually not tracked by SUSE will have their CVSS score based on the <a href="https://nvd.nist.gov/">NVD database</a>.</p>
-</li>
-<li>
-<p>Inquiries for <strong>medium</strong> and <strong>low</strong> can be sent and will be analyzed, although with a minor priority given their lower severity. We are currently prioritizing the analysis and fixes of <strong>critical</strong> and <strong>high</strong> severity CVEs. Some medium and low CVEs are updated in conjunction with higher severity ones.</p>
-</li>
-<li>
-<p>Submit your request through the <a href="https://scc.suse.com/">SUSE Customer Center</a> (SCC). Consult your designated Support or Sales engineer in case you don’t know how to use the SCC.</p>
-</li>
+<li>Verify if you are using and scanning the latest patch version or development version of the product. Inquiries regarding CVEs in older patch versions will not be evaluated.</li>
+<li>If the CVE has <strong>critical</strong> or <strong>high</strong> severity and is not listed in the portal, that’s because it’s already fixed in one of the development branches or is considered a false-positive. Those will not be evaluated.</li>
+<li>Verify if the severity of the CVE wasn’t modified, reduced or increased, according to SUSE’s own re-evaluation of CVEs’ original CVSS rating applicability. CVEs that had their original CVSS rating recalculated will have a distinctive tag in the CVE portal.</li>
+<li>Inquiries for CVEs considered <strong>informational</strong> or that don’t have a severity defined, i.e., are considered <strong>none</strong> according to the <a href="https://www.suse.com/support/security/rating/">CVSS rating</a> calculation by SUSE as listed in SUSE’s <a href="https://www.suse.com/security/cve/">CVE database</a>, will not be evaluated. CVEs that are eventually not tracked by SUSE will have their CVSS score based on the <a href="https://nvd.nist.gov/">NVD database</a>.</li>
+<li>Inquiries for <strong>medium</strong> and <strong>low</strong> can be sent and will be analyzed, although with a minor priority given their lower severity. We are currently prioritizing the analysis and fixes of <strong>critical</strong> and <strong>high</strong> severity CVEs. Some medium and low CVEs are updated in conjunction with higher severity ones.</li>
+<li>Submit your request through the <a href="https://scc.suse.com/">SUSE Customer Center</a> (SCC). Consult your designated Support or Sales engineer in case you don’t know how to use the SCC.</li>
 <li>
 <p>In the request, provide the following mandatory information:</p>
 </li>
 <li>
 <p>The complete versions (major, minor and patch) of the products that were scanned.</p>
 </li>
-<li>
-<p>Name and version of the scanning tool used.</p>
-</li>
+<li>Name and version of the scanning tool used.</li>
 <li>
 <p>The actual scan report containing the CVEs <strong>must be</strong> in a CSV file with the following structure:</p>
 <ol>
-<li>Each line containing the fields:<ol>
-<li>"image:version","package_name","vulnerability_id","severity".</li>
+<li>
+<p>Each line containing the fields:</p>
+<ol>
+<li>
+<p>"image:version","package_name","vulnerability_id","severity".</p>
+<ol>
+<li>The fields are described as:</li>
 </ol>
 </li>
 <li>
-<p>The fields are described as:</p>
-<ol>
-<li>
 <p>Field 1 - image:version: name and version of the scanned image.</p>
 </li>
-<li>
-<p>Field 2 - package_name: name of the package, with its full path inside the image, where the vulnerability was identified.</p>
-</li>
-<li>
-<p>Field 3 - vulnerability_id: public vulnerability identifier in the CVE format or similar (this can vary between scanning tools).</p>
-</li>
-<li>
-<p>Field 4 - severity: severity level of the vulnerability.</p>
-<ol>
+<li>Field 2 - package_name: name of the package, with its full path inside the image, where the vulnerability was identified.</li>
+<li>Field 3 - vulnerability_id: public vulnerability identifier in the CVE format or similar (this can vary between scanning tools).</li>
+<li>Field 4 - severity: severity level of the vulnerability.<ol>
 <li>Example of a valid input file scan report:</li>
 </ol>
 </li>
@@ -11144,22 +11096,15 @@
 </ol>
 </li>
 </ol>
-<table>
-<thead>
-<tr>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>"image:version","package_name","vulnerability_id","severity"<br>rancher/shell:v0.1.18,2.7.3",/usr/local/bin/helm,CVE-2022-41723,medium<br>rancher/hardened-kubernetes:v1.23.17-rke2r1-build20230228,container-suseconnect,SUSE-SU-2023:0871-1,medium<br>rancher/rke2-runtime:v1.23.17-rke2r1,bin/containerd,CVE-2022-27664,medium</td>
-</tr>
-</tbody>
-</table>
+<p>"image:version","package_name","vulnerability_id","severity"</p>
+<p>rancher/shell:v0.1.18,2.7.3",/usr/local/bin/helm,CVE-2022-41723,medium</p>
+<p>rancher/hardened-kubernetes:v1.23.17-rke2r1-build20230228,container-suseconnect,SUSE-SU-2023:0871-1,medium</p>
+<p>rancher/rke2-runtime:v1.23.17-rke2r1,bin/containerd,CVE-2022-27664,medium</p>
 <ol>
 <li>Failing to provide the needed information might result in the ticket being rejected or in delayed processing time due to extra information being requested back to the reporter.</li>
 </ol>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

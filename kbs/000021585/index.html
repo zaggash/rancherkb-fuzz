@@ -22,7 +22,7 @@
     
     
       
-        <title>How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider - SUSE KBs</title>
+        <title>How to resolve the error "Secret <cluster-name>-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-resolve-the-error-secret-admission-configuration-psact-does-not-contain-the-expected-content-when-updating-rke2-clusters-via-rancher2-terraform-provider" class="md-skip">
+        <a href="#how-to-resolve-the-error-secret-cluster-name-admission-configuration-psact-does-not-contain-the-expected-content-when-updating-rke2-clusters-via-rancher2-terraform-provider" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+              How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
             
           </span>
         </div>
@@ -9075,7 +9075,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -9088,7 +9088,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10960,7 +10960,7 @@
 
 
 
-<h1 id="how-to-resolve-the-error-secret-admission-configuration-psact-does-not-contain-the-expected-content-when-updating-rke2-clusters-via-rancher2-terraform-provider">How to resolve the error "Secret <cluster-name>-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider</h1>
+<h1 id="how-to-resolve-the-error-secret-cluster-name-admission-configuration-psact-does-not-contain-the-expected-content-when-updating-rke2-clusters-via-rancher2-terraform-provider">How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider</h1>
 <p>This document <strong>(000021585)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
 <ul>
@@ -10969,7 +10969,7 @@
 <li>A Rancher-provisioned RKE2 cluster, managed via Terraform, with the default_pod_security_admission_configuration_template_name field set</li>
 </ul>
 <h3 id="situation">Situation</h3>
-<p>After setting the " <a href="https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster_v2#default_pod_security_admission_configuration_template_name">default_pod_security_admission_configuration_template_name</a>" argument on a <a href="https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster_v2">rancher2_cluster_v2</a> resource, which defines cluster configuration under "defaultPodSecurityAdmissionConfigurationTemplateName", any  further change to the cluster configuration results in a new entry on the cluster.provisioning.cattle.io resource in Rancher, per the example below:</p>
+<p>After setting the "<a href="https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster_v2#default_pod_security_admission_configuration_template_name">default_pod_security_admission_configuration_template_name</a>" argument on a <a href="https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster_v2">rancher2_cluster_v2</a> resource, which defines cluster configuration under "defaultPodSecurityAdmissionConfigurationTemplateName", any  further change to the cluster configuration results in a new entry on the cluster.provisioning.cattle.io resource in Rancher, per the example below: </p>
 <div class="highlight"><pre><span></span><code>machineSelectorFiles:
     - fileSources:
       - configMap:
@@ -10982,7 +10982,7 @@
           name: &lt;cluster-name&gt;-admission-configuration-psact
       machineLabelSelector:
         matchLabels:
-          rke.cattle.io/control-plane-role: &quot;true&quot;
+          rke.cattle.io/control-plane-role: &quot;true&quot; 
 </code></pre></div>
 <p>These blocks are not overwritten, instead, a new one is added each time. Thus, subsequent changes to the cluster result in multiple blocks, per the following example:</p>
 <div class="highlight"><pre><span></span><code>    - fileSources:
@@ -11031,11 +11031,12 @@
               name: &lt;cluster-name&gt;-admission-configuration-psact
         machineLabelSelector:
           matchLabels:
-            rke.cattle.io/control-plane-role: &#39;true&#39;
+            rke.cattle.io/control-plane-role: &#39;true&#39; 
 </code></pre></div>
 <h3 id="cause">Cause</h3>
 <p>This behavior is the result of a bug that duplicates the file reference for the PSACT secret instead of overwriting it, whenever there is a change in the cluster from Terraform. The issue was tracked in <a href="https://github.com/rancher/terraform-provider-rancher2/issues/1426">GitHub issue #1426</a>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

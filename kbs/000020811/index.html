@@ -9171,7 +9171,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11001,18 +11001,18 @@
 <h3 id="environment">Environment</h3>
 <p>Rancher v2.6.x, v2.7.x, v2.9.x and v2.10.x</p>
 <h3 id="situation">Situation</h3>
-<p>Rancher integrates the <strong>RKE metadata feature</strong> ( <code>rke-metadata-config</code>) to automatically synchronize Kubernetes version metadata at regular intervals. This ensures that Rancher remains aligned with the latest Kubernetes patch versions without requiring a Rancher upgrade.</p>
+<p>Rancher integrates the <strong>RKE metadata feature</strong> (<code>rke-metadata-config</code>) to automatically synchronize Kubernetes version metadata at regular intervals. This ensures that Rancher remains aligned with the latest Kubernetes patch versions without requiring a Rancher upgrade.</p>
 <p>The <strong>rke-metadata-config</strong> feature enhances flexibility by enabling the automatic synchronization of Kubernetes metadata, allowing users to provision clusters with the latest patch versions of Kubernetes without upgrading Rancher. However, upgrading to new minor versions still requires a Rancher upgrade to ensure full compatibility.</p>
-<p>If the <strong>rke-metadata-config</strong> `` value has been manually modified at any point, it will not auto-update during a Rancher upgrade, as per its design. This can lead to inconsistencies and potential disruptions in the managed RKE2 downstream clusters.</p>
+<p>If the <strong>rke-metadata-config</strong> value has been manually modified at any point, it will not auto-update during a Rancher upgrade, as per its design. This can lead to inconsistencies and potential disruptions in the managed RKE2 downstream clusters.</p>
 <p>In some air-gapped environments the RKE metadata setting can be modified to meet security and compliance concerns. In addition users will be able to manage these settings through the Rancher helm values file on installation and/or upgrades.</p>
 <h3 id="resolution">Resolution</h3>
-<p><strong>A) Method 1: Customizing the Metadata Settings via Rancher UI</strong></p>
+<p><strong>A) Method 1: Customizing the Metadata Settings via Rancher UI</strong> </p>
 <p>The metadata config setting can be found in the UI under Global Settings &gt; Settings &gt; rke-metadata-config.</p>
 <p>In an open environment (with internet access), the default metadata config for Rancher v2.5.x and 2.6.x is to pull/refresh the Kubernetes metadata via a JSON file in the Rancher Git repository.</p>
 <p>Note: In air-gapped environments, this works differently, i.e. only those Kubernetes versions available and included at the time of the Rancher release will be selectable. To take advantage of later Kubernetes patch versions, the Kontainer Driver Metadata from the Kubernetes metadata repository will need to be mirrored in a location that is accessible to air-gapped installations of Rancher. The default rke-metadata-config URL can be modified to point to the local mirror. Updated system images will also be required.</p>
 <p><strong>B) Method 2: Customizing the Metadata Settings via Helm</strong></p>
-<p>Using Helm, the rke-metadata-config settings can be passed with --set, using the CATTLE_ prefixed extra environment variables.</p>
-<p>The example command shown below makes use of the current Rancher release values exported to a file, and the file is referenced during a Helm upgrade.</p>
+<p>Using Helm, the rke-metadata-config settings can be passed with --set, using the CATTLE_ prefixed extra environment variables.<br />
+The example command shown below makes use of the current Rancher release values exported to a file, and the file is referenced during a Helm upgrade.</p>
 <div class="highlight"><pre><span></span><code>helm upgrade rancher rancher-stable/rancher   --namespace cattle-system  -f rancher-values.yaml --version &lt;version&gt; --set &#39;extraEnv[0].name=CATTLE_RKE_METADATA_CONFIG&#39; --set &#39;extraEnv[0].value=\{\&quot;refresh-interval-minutes\&quot;:\&quot;1450&quot;\,\&quot;url&quot;\:\&quot;https://releases.rancher.com/kontainer-driver-metadata/release-v2.6/data.json\&quot;}&#39;
 </code></pre></div>
 <p>Alternatively, it is also possible to supply the necessary arguments in the values file.</p>
@@ -11022,27 +11022,27 @@
 </code></pre></div>
 <p>Please see below example screenshot taken from the Global Settings &gt; Settings menu in the Rancher UI after applying the rke-metadata-config setting using Helm.</p>
 <p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000YsHJ&amp;feoid=00N1i000002LdMN&amp;refid=0EM5q000000ZqiH" /></p>
-<p><strong>IMPORTANT NOTE:</strong></p>
+<p><strong>IMPORTANT NOTE:</strong> </p>
 <p>When upgrading Rancher to the next major/minor release (e.g 2.9.x or 210.x), please ensure that the RKE metadata setting matches the release in use, i.e. release-v2.9 or release-v2.10</p>
-<p>To ensure that Rancher uses the default <code>rke-metadata-config</code> value — which is automatically updated during a Rancher upgrade— <strong>it is necessary to remove any manually set value in the Rancher local cluster. This helps prevent Kubernetes metadata (KDM) related issues during the upgrade process.</strong></p>
+<p>To ensure that Rancher uses the default <code>rke-metadata-config</code> value — which is automatically updated during a Rancher upgrade—  <strong>it is necessary to remove any manually set value in the Rancher local cluster. This helps prevent Kubernetes metadata (KDM) related issues during the upgrade process.</strong></p>
 <p>To reset the configuration, you can use the UI or a valid <code>kubeconfig</code> for the Rancher cluster and execute the following command:</p>
-<div class="highlight"><pre><span></span><code>kubectl edit settings rke-metadata-config
+<div class="highlight"><pre><span></span><code><span class="n">kubectl</span> <span class="n">edit</span> <span class="n">settings</span> <span class="n">rke</span><span class="o">-</span><span class="n">metadata</span><span class="o">-</span><span class="n">config</span>
 </code></pre></div>
-<p>``</p>
-<p>Then, set the <code>value</code> field to an empty string ( <code>""</code>) to revert to the default configuration.</p>
+<p>Then, set the <code>value</code> field to an empty string (<code>""</code>) to revert to the default configuration.</p>
 <h3 id="cause">Cause</h3>
-<p>The <strong>rke-metadata-config</strong> `` value is unique to each Rancher version. If the Kubernetes metadata (KDM) version does not match the Rancher version, there is a risk of cluster failures due to inconsistencies between supported Kubernetes versions and system configurations.</p>
+<p>The <strong>rke-metadata-config</strong> value is unique to each Rancher version. If the Kubernetes metadata (KDM) version does not match the Rancher version, there is a risk of cluster failures due to inconsistencies between supported Kubernetes versions and system configurations.</p>
 <h3 id="status">Status</h3>
 <p>Top Issue</p>
 <h3 id="additional-information">Additional Information</h3>
-<p><strong>Further reading</strong></p>
-<p>Please refer to the following Rancher documentation pages to find out more information.</p>
+<p><strong>Further reading</strong><br />
+Please refer to the following Rancher documentation pages to find out more information.</p>
 <ul>
 <li><a href="https://docs.ranchermanager.rancher.io/getting-started/installation-and-upgrade/upgrade-kubernetes-without-upgrading-rancher">Upgrading Kubernetes without Upgrading Rancher</a></li>
 <li><a href="https://docs.ranchermanager.rancher.io/reference-guides/installation-references/helm-chart-options#setting-extra-environment-variables">Setting Extra Environment Variables</a></li>
 <li><a href="https://docs.ranchermanager.rancher.io/getting-started/installation-and-upgrade/upgrade-kubernetes-without-upgrading-rancher#air-gap-setups">Air-Gapped Setups</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

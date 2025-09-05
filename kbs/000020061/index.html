@@ -9216,7 +9216,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11107,50 +11107,76 @@
 </li>
 <li>For example, do not upgrade Rancher to a newer version if the Kubernetes versions of your management (local) and downstream clusters are not supported by the upgraded version of Rancher. Instead, upgrade Kubernetes to a version supported by both the current and upgraded versions of Rancher.</li>
 <li>All upgrades should be performed in a lab, testing, or non-prod environment first</li>
-<li>Adding a grace period between upgrades is recommended, to run workloads and confirm that the single upgrade did not cause any issues</li>
-<li>For example: add 24 hours between upgrading Rancher, the local cluster, and downstream clusters</li>
+<li>
+<p>Adding a grace period between upgrades is recommended, to run workloads and confirm that the single upgrade did not cause any issues</p>
+</li>
+<li>
+<p>For example: add 24 hours between upgrading Rancher, the local cluster, and downstream clusters</p>
+</li>
 <li>This reduces the number of changes occurring in a short timeframe and can aid in troubleshooting if an unexpected issue occurs</li>
 <li>It is recommended to pause any application deployments that use the Rancher API during an upgrade of Rancher</li>
 </ul>
 <p>Please see the following recommendations when planning version upgrades:</p>
 <ul>
 <li>
+<ul>
+<li>
 <p><strong>Rancher</strong>:</p>
 </li>
 <li>
 <p>Avoid skipping minor versions when upgrading</p>
-<ul>
-<li>For example: when upgrading from v2.9.x -&gt; v2.11.x we encourage upgrading v2.9.x -&gt; v2.10.x -&gt; v2.11.x</li>
-</ul>
-</li>
-<li>It is recommended to upgrade from the newest patch version of the current release to the newest patch version of the next minor release, particularly if the current patch version is many releases behind and may be missing important fixes. For example:<ul>
-<li>When upgrading from v2.9.2 -&gt; v2.10.x, we encourage you to first upgrade to v2.9.10 (newest v2.9.x patch version at the time of writing) as an intermediary step</li>
-<li>Then to upgrade from v2.9.10 to v2.10.6 (newest v2.10.x patch version at the time of writing) and not any earlier v2.10.x patch version, for example, v2.10.1</li>
-</ul>
 </li>
 <li>
+<p>For example: when upgrading from v2.9.x -&gt; v2.11.x we encourage upgrading v2.9.x -&gt; v2.10.x -&gt; v2.11.x</p>
+</li>
+<li>
+<p>It is recommended to upgrade from the newest patch version of the current release to the newest patch version of the next minor release, particularly if the current patch version is many releases behind and may be missing important fixes. For example:</p>
+</li>
+<li>
+<p>When upgrading from v2.9.2 -&gt; v2.10.x, we encourage you to first upgrade to v2.9.10 (newest v2.9.x patch version at the time of writing) as an intermediary step</p>
+</li>
+<li>Then to upgrade from v2.9.10 to v2.10.6 (newest v2.10.x patch version at the time of writing) and not any earlier v2.10.x patch version, for example, v2.10.1</li>
+<li>
 <p>Avoid upgrading to a pre-release or non-stable version as they are not yet fully tested and supported. This is generally recommended for any cluster/environment, however particularly important for production</p>
-<ul>
-<li>Pre-release versions can be identified by a -rc# or -alpha# following the Rancher version number (eg, v2.12.0-rc2)</li>
+</li>
+<li>
+<p>Pre-release versions can be identified by a -rc# or -alpha# following the Rancher version number (eg, v2.12.0-rc2)</p>
+</li>
 </ul>
 </li>
+</ul>
+<!--THE END-->
+
+<ul>
+<li>
+<ul>
 <li>
 <p><strong>Kubernetes</strong>:</p>
 </li>
 <li>
 <p>It is recommended to upgrade incrementally and <strong>avoid skipping minor versions.</strong> This helps minimize potential issues by introducing gradual changes</p>
-<ul>
-<li>For example: when upgrading from v1.29.x -&gt; v1.32.x we encourage upgrading v1.29.x -&gt; v1.30.x -&gt; v1.31.x -&gt; v1.32.x</li>
+</li>
+<li>
+<p>For example: when upgrading from v1.29.x -&gt; v1.32.x we encourage upgrading v1.29.x -&gt; v1.30.x -&gt; v1.31.x -&gt; v1.32.x</p>
+</li>
 <li>Kubernetes plans approximately <a href="https://kubernetes.io/releases/release/#the-release-cycle">three minor version releases a year</a>, so it is a good practice to also plan a minor version upgrade multiple times throughout the year</li>
 </ul>
 </li>
+</ul>
+<!--THE END-->
+
+<ul>
+<li>
+<ul>
 <li>
 <p><strong>RKE1 CLI</strong>:</p>
 </li>
 <li>
 <p>Perform one minor CLI version jump at a time</p>
-<ul>
-<li>For example: when upgrading from v1.5.x -&gt; v1.8.x instead do v1.5.x -&gt; v1.6.x -&gt; v1.7.x -&gt; v1.8.x</li>
+</li>
+<li>
+<p>For example: when upgrading from v1.5.x -&gt; v1.8.x instead do v1.5.x -&gt; v1.6.x -&gt; v1.7.x -&gt; v1.8.x</p>
+</li>
 </ul>
 </li>
 </ul>
@@ -11158,7 +11184,7 @@
 <p>Before you start your upgrade, please collect the following pieces of information to best prepare yourself in case you need to open a support ticket.</p>
 <ul>
 <li>Scheduled change window:</li>
-<li>Current Rancher version ( `` shown bottom left in the Rancher dashboard):</li>
+<li>Current Rancher version (shown bottom left in the Rancher dashboard):</li>
 <li>Target Rancher version:</li>
 <li>Installation option (single install/HA):</li>
 <li>Current Kubernetes version of Rancher local cluster (use <code>kubectl version</code>):</li>
@@ -11169,22 +11195,20 @@
 <li>Check if all clusters in UI are in an Active state</li>
 <li>Check if all pods in <code>kube-system</code> and <code>cattle-system</code> namespaces are running (in both Rancher and downstream clusters)</li>
 </ul>
-<div class="highlight"><pre><span></span><code>kubectl get pods -n kube-system
+<p><div class="highlight"><pre><span></span><code>kubectl get pods -n kube-system
 kubectl get pods -n cattle-system
 </code></pre></div>
+- Verify the datastore has scheduled snapshots configured, and these are working.</p>
 <ul>
-<li>Verify the datastore has scheduled snapshots configured, and these are working.</li>
 <li>
 <p><strong>RKE</strong>: If Rancher is deployed on a Kubernetes cluster built with RKE, verify etcd snapshots are enabled and working, on etcd nodes you can confirm with the following:</p>
-<div class="highlight"><pre><span></span><code>ls -l /opt/rke/etcd-snapshots
+<p><div class="highlight"><pre><span></span><code>ls -l /opt/rke/etcd-snapshots
 docker logs etcd-rolling-snapshots
 </code></pre></div>
+  - <strong>k3s</strong>: If Rancher is deployed on a k3s Kubernetes cluster, ensure scheduled backups are configured and working. Please see the <a href="https://docs.k3s.io/datastore/backup-restore">k3s documentation</a> pages for further information on this.
+  - <strong>RKE2:</strong> If Rancher is deployed on a RKE2 Kubernetes cluster, ensure scheduled backups are configured and working. Please see the <a href="https://docs.rke2.io/datastore/backup_restore">RKE2 documentation</a> pages for further information on this.
+- Create a one-time datastore snapshot, please see the following documentation for <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/one-time-snapshots/">RKE</a>, <a href="https://docs.rke2.io/datastore/backup_restore">RKE2</a>, and <a href="https://docs.k3s.io/datastore/backup-restore">k3s</a> , and the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher">single node Docker</a> install options for more information</p>
 </li>
-<li>
-<p><strong>k3s</strong>: If Rancher is deployed on a k3s Kubernetes cluster, ensure scheduled backups are configured and working. Please see the <a href="https://docs.k3s.io/datastore/backup-restore">k3s documentation</a> pages for further information on this.</p>
-</li>
-<li><strong>RKE2:</strong> If Rancher is deployed on a RKE2 Kubernetes cluster, ensure scheduled backups are configured and working. Please see the <a href="https://docs.rke2.io/datastore/backup_restore">RKE2 documentation</a> pages for further information on this.</li>
-<li>Create a one-time datastore snapshot, please see the following documentation for <a href="https://rancher.com/docs/rke/latest/en/etcd-snapshots/one-time-snapshots/">RKE</a>, <a href="https://docs.rke2.io/datastore/backup_restore">RKE2</a>, and <a href="https://docs.k3s.io/datastore/backup-restore">k3s</a> , and the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher">single node Docker</a> install options for more information</li>
 </ul>
 <h3 id="rancher-upgrade-steps">Rancher Upgrade steps</h3>
 <ul>
@@ -11193,10 +11217,18 @@ docker logs etcd-rolling-snapshots
 <h3 id="rancher-reviewverify">Rancher Review/Verify</h3>
 <p>After the upgrade is completed, go through the following checklist to verify your environment is in working order.</p>
 <ul>
-<li>Check if the Rancher UI is accessible</li>
-<li>You should be able to login into Rancher, view clusters, and browse to workloads</li>
-<li>Verify the Rancher version has changed in UI</li>
-<li>After logging into Rancher, review the version in the bottom left corner of the page</li>
+<li>
+<p>Check if the Rancher UI is accessible</p>
+</li>
+<li>
+<p>You should be able to login into Rancher, view clusters, and browse to workloads</p>
+</li>
+<li>
+<p>Verify the Rancher version has changed in UI</p>
+</li>
+<li>
+<p>After logging into Rancher, review the version in the bottom left corner of the page</p>
+</li>
 <li>Check if all clusters in UI are in an Active state</li>
 <li>Check if all pods in <code>kube-system</code> and <code>cattle-system</code> are running (in both Rancher and downstream clusters)</li>
 <li>
@@ -11216,12 +11248,13 @@ docker logs etcd-rolling-snapshots
 <li>Docker/OS upgrades, please our article on <a href="https://www.suse.com/support/kb/doc/?id=000020084">performing rolling changes to nodes</a></li>
 </ul>
 <h3 id="other-useful-kbs">Other useful KBs</h3>
-<p><a href="https://www.suse.com/support/kb/doc/?id=000020437">[Rancher] Can Rancher Support validate our planned upgrade?</a></p>
-<p><a href="https://www.suse.com/support/kb/doc/?id=000020440">[Rancher] Can Rancher Support join me as I do my upgrade?</a></p>
+<p><a href="https://www.suse.com/support/kb/doc/?id=000020437">[Rancher] Can Rancher Support validate our planned upgrade?</a><br />
+<a href="https://www.suse.com/support/kb/doc/?id=000020440">[Rancher] Can Rancher Support join me as I do my upgrade?</a></p>
 <h3 id="additional-information">Additional Information</h3>
 <p>Below is an example plan for upgrading from Rancher 2.9.5 to 2.11.2, and upgrading the local and downstream clusters from 1.27 to 1.31.</p>
 <blockquote>
-<p><strong>Note</strong> Refer to the planning section above to plan each Rancher and Kubernetes upgrade. For example, <strong>between each upgrade</strong> (bullet point) take an etcd snapshot of the related cluster(s), add a grace period of 24 hours or longer between each upgrade, and check the critical applications/components in the cluster are healthy</p>
+<p><strong>Note</strong><br />
+Refer to the planning section above to plan each Rancher and Kubernetes upgrade. For example, <strong>between each upgrade</strong> (bullet point) take an etcd snapshot of the related cluster(s), add a grace period of 24 hours or longer between each upgrade, and check the critical applications/components in the cluster are healthy</p>
 </blockquote>
 <p>1) Upgrade Rancher to the latest version of the current release (2.9.9 at the time of writing)</p>
 <ul>
@@ -11251,6 +11284,7 @@ docker logs etcd-rolling-snapshots
 <li>Upgrade Rancher 2.10.6 to Rancher 2.11.2</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

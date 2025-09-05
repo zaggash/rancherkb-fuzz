@@ -9168,7 +9168,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10993,28 +10993,22 @@
 <h1 id="rancher-operational-advisory-20201210-related-to-deprecation-of-dockershim-in-kubernetes-v120">[Rancher] Operational Advisory, 20201210: Related to deprecation of dockershim in Kubernetes v1.20</h1>
 <p>This document <strong>(000020536)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="resolution">Resolution</h3>
-<table>
-<thead>
-<tr>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Note:</strong><br>This Rancher Labs operational advisory below was originally sent in December 2020.  It has been published here to continue SUSE Rancher customer conversations around this topic via support cases and for sharing any relevant updates around it.<br>For an update on this topic, please see <a href="https://www.suse.com/support/kb/doc/?id=000020538">[Rancher] Operational Advisory, 20220113: Related to removal of dockershim in Kubernetes v1.24</a>.</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Note:</strong></p>
+<p>This Rancher Labs operational advisory below was originally sent in December 2020.  It has been published here to continue SUSE Rancher customer conversations around this topic via support cases and for sharing any relevant updates around it.</p>
+<p>For an update on this topic, please see <a href="https://www.suse.com/support/kb/doc/?id=000020538">[Rancher] Operational Advisory, 20220113: Related to removal of dockershim in Kubernetes v1.24</a>.</p>
 <p>Dear Rancher Customer,</p>
 <p>This is an operational advisory from Rancher Support related to the deprecation of dockershim in Kubernetes v1.20</p>
-<p>As <a href="https://kubernetes.io/blog/2020/12/02/dont-panic-kubernetes-and-docker/">announced</a> on the official Kubernetes blog, the dockershim, which enables the use of the Docker Daemon as the container runtime in Kubernetes, will be deprecated with the upcoming Kubernetes v1.20 release.</p>
+<p>As <a href="https://kubernetes.io/blog/2020/12/02/dont-panic-kubernetes-and-docker/">announced</a> on the official Kubernetes blog, the dockershim, which enables the use of the Docker Daemon as the container runtime in Kubernetes, will be deprecated with the upcoming Kubernetes v1.20 release.<br />
+</p>
 <h2 id="what-is-dockershim">What is dockershim?</h2>
-<p>The dockershim is built into Kubernetes to provide a Container Runtime Interface (CRI) compliant layer between the kubelet and the Docker Daemon. The shim is necessary because Docker Daemon is not CRI-compliant.</p>
+<p>The dockershim is built into Kubernetes to provide a Container Runtime Interface (CRI) compliant layer between the kubelet and the Docker Daemon. The shim is necessary because Docker Daemon is not CRI-compliant.<br />
+</p>
 <h2 id="what-does-deprecation-of-dockershim-in-kubernetes-v120-mean">What does deprecation of dockershim in Kubernetes v1.20 mean?</h2>
-<p>The dockershim will only be deprecated in Kubernetes v1.20, and will not yet be removed from the kubelet. As a result, no immediate action needs to be taken and Kubernetes clusters can continue to operate with the Docker Daemon container runtime in Kubernetes v1.20. The only change at this time will be a deprecation warning printed in the kubelet logs when running on Docker.</p>
+<p>The dockershim will only be deprecated in Kubernetes v1.20, and will not yet be removed from the kubelet. As a result, no immediate action needs to be taken and Kubernetes clusters can continue to operate with the Docker Daemon container runtime in Kubernetes v1.20. The only change at this time will be a deprecation warning printed in the kubelet logs when running on Docker.<br />
+</p>
 <h2 id="what-are-ranchers-plans-to-ensure-on-going-container-runtime-support-in-future-kubernetes-releases">What are Rancher's plans to ensure on-going container runtime support in future Kubernetes releases?</h2>
-<p>We are working on our roadmap to ensure that all Rancher provisioned clusters will continue to operate on a CRI-compliant runtime.</p>
-<p>For existing RKE customers, users will continue to get Kubernetes updates until the shim is officially removed. The removal is currently targeted for late 2021 and will be supported with patches during the 12-month upstream maintenance window. Before the end of maintenance, we fully expect an upgrade path from RKE to RKE2.</p>
+<p>We are working on our roadmap to ensure that all Rancher provisioned clusters will continue to operate on a CRI-compliant runtime. </p>
+<p>For existing RKE customers, users will continue to get Kubernetes updates until the shim is officially removed. The removal is currently targeted for late 2021 and will be supported with patches during the 12-month upstream maintenance window. Before the end of maintenance, we fully expect an upgrade path from RKE to RKE2. </p>
 <p>Looking forward, containerd is already the default runtime in both K3s and RKE2, so any removal of dockershim will have zero impact on future releases. As with RKE, organizations currently using K3s with the Docker runtime will continue to get Kubernetes updates until the shim is officially removed. The dockershim deprecation schedule is tracked by the upstream Kubernetes community in Kubernetes Enhancement Proposal (KEP) 1985, Rancher will continue to keep you updated with related news on the roadmap from our product management, as well as information related to migration off of Docker.</p>
 <p>Thanks,</p>
 <p>Rancher Support Team</p>
@@ -11024,6 +11018,7 @@
 <li><a href="https://www.suse.com/support/kb/doc/?id=000020432">Rancher Support FAQs</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

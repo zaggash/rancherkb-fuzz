@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11014,7 +11014,7 @@
 <p>A standalone or Rancher-managed Kubernetes cluster, with a Service of type Loadbalancer</p>
 <h3 id="situation">Situation</h3>
 <p>When attempting to deploy a LoadBalancer service in a Rancher or Rancher-managed cluster, the service remains in a Pending or Provisioning state, with the following message:</p>
-<div class="highlight"><pre><span></span><code>Service is ready: LoadBalancer is being provisioned
+<div class="highlight"><pre><span></span><code><span class="n">Service</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">ready</span><span class="p">:</span><span class="w"> </span><span class="n">LoadBalancer</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">being</span><span class="w"> </span><span class="n">provisioned</span>
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
 <p>When deploying a LoadBalancer service, Kubernetes relies on an external controller to provision the external IP address. If such a controller is not present or is misconfigured, the service will remain in the Pending state indefinitely.</p>
@@ -11031,27 +11031,21 @@
 <p>Ensure that the cloud credentials used by the Cloud Controller Manager have <strong>sufficient privileges</strong> to create Load Balancers in the infrastructure provider (e.g., appropriate IAM roles or policies).</p>
 <p><strong>Tips for further investigation</strong></p>
 <p>To further investigate the issue, run the following commands:</p>
-<p>```whitespace-pre! bash</p>
-<p><div class="highlight"><pre><span></span><code>
-</code></pre></div>
-kubectl get svc <your-service> -n <namespace> -o wide
-kubectl describe svc <your-service> -n <namespace></p>
 <div class="highlight"><pre><span></span><code>
 </code></pre></div>
-<p>```</p>
+<div class="highlight"><pre><span></span><code><span class="n">kubectl</span><span class="w"> </span><span class="n">get</span><span class="w"> </span><span class="n">svc</span><span class="w"> </span><span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">service</span><span class="o">&gt;</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="n">namespace</span><span class="o">&gt;</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">wide</span>
+<span class="n">kubectl</span><span class="w"> </span><span class="n">describe</span><span class="w"> </span><span class="n">svc</span><span class="w"> </span><span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">service</span><span class="o">&gt;</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="n">namespace</span><span class="o">&gt;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
 <p>Pay attention to the following fields in the output:</p>
 <ul>
-<li>
-<p><strong>Events:</strong> Look for any warnings or errors related to provisioning</p>
-</li>
-<li>
-<p><strong>External IP:</strong> Should show an allocated IP once provisioning succeeds</p>
-</li>
-<li>
-<p><strong>Annotations:</strong> Review for any cloud-provider or controller-specific settings</p>
-</li>
+<li><strong>Events:</strong> Look for any warnings or errors related to provisioning</li>
+<li><strong>External IP:</strong> Should show an allocated IP once provisioning succeeds</li>
+<li><strong>Annotations:</strong> Review for any cloud-provider or controller-specific settings</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10981,29 +10981,30 @@
 <h1 id="pods-stuck-in-terminating-state-due-to-poddisruptionbudget">Pods stuck in terminating state due to PodDisruptionBudget</h1>
 <p>This document <strong>(000021824)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher Prime: v2.9.2.</p>
-<p>RKE2: v1.28.11+rke2r1</p>
+<p>Rancher Prime: v2.9.2.<br />
+RKE2: v1.28.11+rke2r1</p>
 <h3 id="situation">Situation</h3>
 <p>With PodDisruptionBudget configured, restarting the workload deployments or draining/shutting down the node puts the pods in Terminating state.</p>
 <h3 id="resolution">Resolution</h3>
-<p>The permanent fix would be to upgrade to <strong>v1.30.9+rke2r1</strong>.</p>
-<p>Temporary fix would be to disable PodDisruptionBudget or adjust the <strong>minAvailable</strong>/ <strong>maxUnavailable</strong> values in PDB to get it working without disabling PDBs.</p>
+<p>The permanent fix would be to upgrade to <strong>v1.30.9+rke2r1</strong>.<br />
+Temporary fix would be to disable PodDisruptionBudget or adjust the <strong>minAvailable</strong>/<strong>maxUnavailable</strong> values in PDB to get it working without disabling PDBs. </p>
 <h3 id="cause">Cause</h3>
-<p>When a PodDisruptionBudget (PDB) is configured, restarting workload deployments or draining/shutting down a node may result in pods entering a Terminating state without completing cleanup.</p>
-<p>We observed this behavior on Kubernetes <strong>v1.28.11+rke2r1</strong>, particularly under the following edge case:</p>
+<p>When a PodDisruptionBudget (PDB) is configured, restarting workload deployments or draining/shutting down a node may result in pods entering a Terminating state without completing cleanup.<br />
+We observed this behavior on Kubernetes <strong>v1.28.11+rke2r1</strong>, particularly under the following edge case:</p>
 <ul>
 <li>Assume a cluster with two worker nodes.</li>
-<li>A deployment has three pod replicas, and the PDB is configured with <strong><code>minAvailable: 50%</code>.</strong></li>
+<li>A deployment has three pod replicas, and the PDB is configured with  <strong><code>minAvailable: 50%</code>.</strong></li>
 <li>Suppose one replica is scheduled on one node and the remaining two replicas on the second node.</li>
 <li>If the node hosting the two replicas is drained or rebooted, multiple pods may become unavailable simultaneously.</li>
 </ul>
-<p>Given the PDB setting of <code>minAvailable: 50%</code> and a total of three replicas, only one pod can be voluntarily disrupted at any time. Draining the node with two replicas causes more than one pod to be unavailable, thereby violating the PDB policy. As a result, the remaining pods may be stuck in the <strong>Terminating</strong> state and not clean up properly.</p>
-<p>This behaviour is not reflected in the pod or deployment logs. The only observable clue is found in the <strong><code>kube-controller-manager</code></strong> logs, where the following error message typically appears:</p>
+<p>Given the PDB setting of <code>minAvailable: 50%</code> and a total of three replicas, only one pod can be voluntarily disrupted at any time. Draining the node with two replicas causes more than one pod to be unavailable, thereby violating the PDB policy. As a result, the remaining pods may be stuck in the <strong>Terminating</strong> state and not clean up properly.<br />
+This behaviour is not reflected in the pod or deployment logs. The only observable clue is found in the <strong><code>kube-controller-manager</code></strong>  logs, where the following error message typically appears:</p>
 <div class="highlight"><pre><span></span><code>kube-system-kube-controller-manager-k00m01.nve90.rpt.idia:E0131 10:37:43.721229 1 disruption.go:626] Error syncing PodDisruptionBudget &lt;namespace&gt;/&lt;deployment&gt;, requeuing: Operation cannot be fulfilled on poddisruptionbudgets.policy &quot;&lt;deployment&gt;&quot;: the object has been modified; please apply your changes to the latest version and try again
 </code></pre></div>
 <h3 id="additional-information">Additional Information</h3>
 <p><a href="https://kubernetes.io/docs/tasks/run-application/configure-pdb/#think-about-how-your-application-reacts-to-disruptions">https://kubernetes.io/docs/tasks/run-application/configure-pdb/#think-about-how-your-application-reacts-to-disruptions</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

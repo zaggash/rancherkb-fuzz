@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10967,20 +10967,17 @@
 <p>RKE2</p>
 <p>K3S</p>
 <h3 id="situation">Situation</h3>
-<p>Creation of RKE2/K3S cluster by using a mix of Linux OS. For instance, using Red Hat OS for master nodes and Ubuntu for worker nodes.</p>
+<p>Creation of RKE2/K3S cluster by using a mix of Linux OS. For instance, using Red Hat OS for master nodes and Ubuntu for worker nodes. </p>
 <h3 id="resolution">Resolution</h3>
 <p>For a <strong>stable and supported deployment</strong>, a single, <strong>consistent operating system</strong> should be used across all master and worker nodes in a cluster.</p>
 <ul>
-<li>
-<p><strong>Unsupported Configuration:</strong> The <strong>SUSE</strong> <strong>engineering</strong> team doesn't test or validate mixed-OS setups for <strong>RKE2 or K3S</strong>.  This means that any problems encountered may be challenging to diagnose and fix, as the root cause could be related to the OS differences rather than a software bug.</p>
-</li>
-<li>
-<p><strong>Recommendation:</strong> To ensure cluster stability, simplify management, and receive reliable support, always use the same OS for every node in your cluster.</p>
-</li>
+<li><strong>Unsupported Configuration:</strong> The <strong>SUSE</strong> <strong>engineering</strong> team doesn't test or validate mixed-OS setups for <strong>RKE2 or K3S</strong>.  This means that any problems encountered may be challenging to diagnose and fix, as the root cause could be related to the OS differences rather than a software bug.</li>
+<li><strong>Recommendation:</strong> To ensure cluster stability, simplify management, and receive reliable support, always use the same OS for every node in your cluster.</li>
 </ul>
 <h3 id="cause">Cause</h3>
 <p>Using a mixed-OS configuration within a single cluster is not officially supported. This is due to potential issues that can arise from the differences between operating systems. Variations in kernel versions, system libraries, and networking can lead to unpredictable behaviour and make troubleshooting difficult.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

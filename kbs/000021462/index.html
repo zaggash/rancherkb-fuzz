@@ -9144,7 +9144,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10952,7 +10952,7 @@
 <ul>
 <li>High number restarts  of the core pods</li>
 </ul>
-<div class="highlight"><pre><span></span><code>NAMESPACE      NAME                                           READY   STATUS     RESTARTS
+<div class="highlight"><pre><span></span><code>NAMESPACE      NAME                                           READY   STATUS     RESTARTS            
 cattle-fleet-system fleet-agent-cc8c97f97-bvx78               1/1    Running      185
 cattle-system cattle-cluster-agent-b1460cbd-8ct5c             1/1    Running      115
 cattle-system cattle-cluster-agent-b1460cbd-l2l8l             1/1    Running      168
@@ -10963,7 +10963,7 @@ kube-system cloud-controller-manager-cluster-suse-cp-5c-2qgvh 1/1    Running    
 <ul>
 <li>The apiserver pod flaps between ready and not ready status</li>
 </ul>
-<div class="highlight"><pre><span></span><code>NAMESPACE              NAME                                 READY   STATUS     RESTARTS
+<div class="highlight"><pre><span></span><code>NAMESPACE              NAME                                 READY   STATUS     RESTARTS 
 
 kube-system kube-apiserver-cluster-suse-cp-f777105c-2qgvh     0/1   Running    314
 </code></pre></div>
@@ -10973,17 +10973,12 @@ kube-system kube-apiserver-cluster-suse-cp-f777105c-2qgvh     0/1   Running    3
 <h3 id="resolution">Resolution</h3>
 <p>1) <strong>Enable kubelet debug logging</strong></p>
 <ol>
-<li>
-<p>Click <strong>☰ &gt; Cluster Management</strong>.</p>
-</li>
-<li>
-<p>Go to the cluster you want to configure and click <strong>⋮ &gt; Edit Config</strong>.</p>
-</li>
-<li>
-<p><strong>Advanced</strong> &gt; <strong>Additional Kubelet Args</strong> &gt; Add v=9 under <strong>For all machines, use Kubelet args</strong></p>
-</li>
+<li>Click <strong>☰ &gt; Cluster Management</strong>.</li>
+<li>Go to the cluster you want to configure and click <strong>⋮ &gt; Edit Config</strong>.</li>
+<li><strong>Advanced</strong> &gt; <strong>Additional Kubelet Args</strong> &gt; Add v=9 under <strong>For all machines, use Kubelet args</strong></li>
 </ol>
-<p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000002WYT&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr0000046Omv" /></p>
+<p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000002WYT&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr0000046Omv" /><br />
+</p>
 <p>2) <strong>Replicate the livenenessProbe and check the kubelet logs</strong></p>
 <div class="highlight"><pre><span></span><code>   2.1 Open an SSH session to a master node
    2.2 Execute the command to simulate livenessProbe for kube-apiserver in the cluster
@@ -10997,6 +10992,7 @@ kube-system kube-apiserver-cluster-suse-cp-f777105c-2qgvh     0/1   Running    3
 <div class="highlight"><pre><span></span><code> Check the DNS resolution and DNS lookups.
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

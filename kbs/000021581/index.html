@@ -9153,7 +9153,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10975,25 +10975,26 @@
 <p>This situation can occur as the result of a previously failed update to or removal of the component.</p>
 <p>This KB describes how you can solve the above issue.</p>
 <h3 id="resolution">Resolution</h3>
-<p>The following commands (in order) should resolve the issue:</p>
-<p>- `helm ls -A` to identify which rke2 deployed helm chart is not in a deployed state</p>
-<p>- `helm -n kube-system history rke2-ingress-nginx` to view the release history for the affected chart (in this example the rke2-ingress-nginx chart in the kube-system Namespace).</p>
+<p>The following commands (in order) should resolve the issue:<br />
+- `helm ls -A` to identify which rke2 deployed helm chart is not in a deployed state<br />
+- `helm -n kube-system history rke2-ingress-nginx` to view the release history for the affected chart (in this example the rke2-ingress-nginx chart in the kube-system Namespace).</p>
 <p>NOTE: for affected charts the most recent revision will be in a non-deployed status, e.g. the output below where it indicates the chart is uninstalling and <em>deletion is in progress.</em> This example shows that revision number 5 is stuck and not deployed properly</p>
-<div class="highlight"><pre><span></span><code>REVISION    UPDATED                     STATUS          CHART                           APP VERSION DESCRIPTION
+<div class="highlight"><pre><span></span><code>REVISION    UPDATED                     STATUS          CHART                           APP VERSION DESCRIPTION                              
 5           Thu Oct  3 15:32:44 2024    uninstalling    rke2-ingress-nginx-4.10.401 1.10.4          Deletion in progress (or silently failed)
 </code></pre></div>
 <p>- `kubectl get secrets -n kube-system | grep rke2-ingress-nginx`</p>
-<p>NOTE: every <strong>X</strong> version will have a secret name that looks like: sh.helm.release.v1.rke2-ingress-nginx.v <strong>X</strong></p>
-<p>Following the example above, the name should be: sh.helm.release.v1.rke2-ingress-nginx.v5</p>
-<p>Delete that secret</p>
-<p>- `kubectl delete secrets -n kube-system sh.helm.release.v1.rke2-ingress-nginx.v5` To delete the affected helm release secret</p>
-<p>- `kubectl delete pods -n kube-system helm-install-rke2-ingress-nginx-xxxxx` To delete the failed helm Job pod</p>
+<p>NOTE: every <strong>X</strong> version will have a secret name that looks like: sh.helm.release.v1.rke2-ingress-nginx.v<strong>X</strong><br />
+Following the example above, the name should be: sh.helm.release.v1.rke2-ingress-nginx.v5<br />
+Delete that secret</p>
+<p>- `kubectl delete secrets -n kube-system sh.helm.release.v1.rke2-ingress-nginx.v5` To delete the affected helm release secret<br />
+- `kubectl delete pods -n kube-system helm-install-rke2-ingress-nginx-xxxxx` To delete the failed helm Job pod</p>
 <p>The last command will delete the existing helm Job pod in an error state (with CrashLoopBackoff). After the pod deletion, a new Job pod will be scheduled and should run correctly (following the previous helm release secret deletion).</p>
 <h3 id="cause">Cause</h3>
-<p>Helm deploys a version with a revision number for every component (e.g. rke2-ingress-nginx or rke2-metrics-server) in an RKE2 cluster in a certain namespace.</p>
-<p>Whenever these components get upgraded, helm creates a new secret to indicate that a new release/version has been installed/rolled out.</p>
-<p>Deleting the secret in question that reports the error message can unblock the situation and get the component upgrade to deploy successfully.</p>
+<p>Helm deploys a version with a revision number for every component (e.g. rke2-ingress-nginx or rke2-metrics-server) in an RKE2 cluster in a certain namespace.<br />
+Whenever these components get upgraded, helm creates a new secret to indicate that a new release/version has been installed/rolled out.<br />
+Deleting the secret in question that reports the error message can unblock the situation and get the component upgrade to deploy successfully.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

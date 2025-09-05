@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10969,9 +10969,9 @@
 <h3 id="resolution">Resolution</h3>
 <p>Addressing the identified time synchronization discrepancies between the upstream and downstream clusters by implementing NTP or chrony on all nodes resolved the Git Repo synchronization failures. Subsequently, the Git Repo status returned to <strong>"Ready."</strong></p>
 <h3 id="cause">Cause</h3>
-<p>Fleet Git Repositories in a Continuous Delivery setup are experiencing a recurring issue where they transition to a <strong>"Git Updating"</strong> state and fail to synchronize automatically. Manual <strong>"Force Update"</strong> resolves the issue temporarily, indicating a breakdown in auto-synchronization. Notably, the <strong><code>fleet-controller</code></strong> and <strong><code>fleet-agent</code></strong> logs do not show any explicit error messages. <img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr00000SWfPq&amp;operationContext=DELIVERY&amp;contentId=05TTr00000cYkP8&amp;page=0&amp;d=/a/Tr00000Dsd8B/P8e306WVYGIwFDGAwKBsb5JG.PlsA9uuARt8ICj0OKg&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
+<p>Fleet Git Repositories in a Continuous Delivery setup are experiencing a recurring issue where they transition to a <strong>"Git Updating"</strong> state and fail to synchronize automatically. Manual <strong>"Force Update"</strong> resolves the issue temporarily, indicating a breakdown in auto-synchronization. Notably, the <strong><code>fleet-controller</code></strong> and <strong><code>fleet-agent</code></strong> logs do not show any explicit error messages. <img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr00000SWfPq&amp;operationContext=DELIVERY&amp;contentId=05TTr00000cYkP8&amp;page=0&amp;d=%2Fa%2FTr00000Dsd8B%2FP8e306WVYGIwFDGAwKBsb5JG.PlsA9uuARt8ICj0OKg&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
 <p><strong>Observed Error in Rancher UI (After enabling Fleet Debug Log):</strong></p>
-<p><strong><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr00000Sb10D&amp;operationContext=DELIVERY&amp;contentId=05TTr00000ceVYf&amp;page=0&amp;d=/a/Tr00000DueGE/VKyTcSI5PrIyX89XT5GspZy.scbLfbcZHd8uLrQW3Eg&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></strong></p>
+<p><strong><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr00000Sb10D&amp;operationContext=DELIVERY&amp;contentId=05TTr00000ceVYf&amp;page=0&amp;d=%2Fa%2FTr00000DueGE%2FVKyTcSI5PrIyX89XT5GspZy.scbLfbcZHd8uLrQW3Eg&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></strong></p>
 <div class="highlight"><pre><span></span><code>Job Failed. failed: 1/1
 time=&quot;2025-04-30T09:58:25.679769+0000&quot; level=info msg=&quot;Using in-cluster namespace&quot; namespace=fleet-default
 time=&quot;2025-04-30T09:58:25.680059+0000&quot; level=info msg=&quot;Using in-cluster configuration&quot;
@@ -10991,12 +10991,8 @@ time=&quot;2025-04-30T09:58:25Z&quot; level=fatal msg=Unauthorized
 </code></pre></div>
 <p><strong>Observations:</strong></p>
 <ul>
-<li>
-<p>Bundles, resources, and associated clusters are reported as healthy.</p>
-</li>
-<li>
-<p>The debug log indicates a successful initial connection to the Kubernetes API server (10.43.0.1:443)</p>
-</li>
+<li>Bundles, resources, and associated clusters are reported as healthy.</li>
+<li>The debug log indicates a successful initial connection to the Kubernetes API server (10.43.0.1:443)</li>
 </ul>
 <p><strong>Error in Gitjob Pod (Triggered by Force Update):</strong></p>
 <div class="highlight"><pre><span></span><code>{&quot;level&quot;:&quot;error&quot;,&quot;ts&quot;:&quot;2025-03-27T07:22:02Z&quot;,&quot;logger&quot;:&quot;gitops-status&quot;,&quot;msg&quot;:&quot;Reconcile failed update to git repo status&quot;,&quot;controller&quot;:&quot;GitRepoStatus&quot;,&quot;controllerGroup&quot;:&quot;fleet.cattle.io&quot;,&quot;controllerKind&quot;:&quot;GitRepo&quot;,&quot;GitRepo&quot;:{&quot;name&quot;:&quot;xxx-xx-test-001&quot;,&quot;namespace&quot;:&quot;fleet-default&quot;},&quot;namespace&quot;:&quot;fleet-default&quot;,&quot;name&quot;:&quot;xxx-xx-test-001&quot;,&quot;reconcileID&quot;:&quot;8e6da18a-e838-4be8-8855-692aec99eb89&quot;,&quot;generation&quot;:15,&quot;commit&quot;:&quot;2ce6239c21fa08a9d8746dd6c812f45xxxxxxxxx&quot;,&quot;conditions&quot;:[{&quot;type&quot;:&quot;Ready&quot;,&quot;status&quot;:&quot;True&quot;,&quot;lastUpdateTime&quot;:&quot;2025-03-27T06:26:03Z&quot;},{&quot;type&quot;:&quot;GitPolling&quot;,&quot;status&quot;:&quot;True&quot;,&quot;lastUpdateTime&quot;:&quot;2025-03-25T09:35:15Z&quot;},{&quot;type&quot;:&quot;Reconciling&quot;,&quot;status&quot;:&quot;False&quot;,&quot;lastUpdateTime&quot;:&quot;2025-02-21T20:44:49Z&quot;},{&quot;type&quot;:&quot;Stalled&quot;,&quot;status&quot;:&quot;True&quot;,&quot;lastUpdateTime&quot;:&quot;2025-03-27T07:20:05Z&quot;,&quot;reason&quot;:&quot;Stalled&quot;,&quot;message&quot;:&quot;Job Failed. failed: 1/1time=\&quot;2025-03-27T07:20:02Z\&quot; level=fatal msg=Unauthorized\n&quot;}]}
@@ -11004,12 +11000,13 @@ time=&quot;2025-04-30T09:58:25Z&quot; level=fatal msg=Unauthorized
 <p><strong>kube-apiserver Logs (During Force Update):</strong></p>
 <div class="highlight"><pre><span></span><code>E0430 10:07:19.141522       1 authentication.go:73] &quot;Unable to authenticate the request&quot; err=&quot;[invalid bearer token, service account token is not valid yet]&quot;
 </code></pre></div>
-<p>The " <strong>Unauthorized</strong>" error in Rancher UI for the Git Repo and the kube-apiserver logs, specifically the message "service account token is not valid yet", strongly suggests an issue with token validity, likely due to time synchronisation problems between the upstream Rancher cluster and the downstream clusters managed by Fleet.</p>
+<p>The "<strong>Unauthorized</strong>" error in Rancher UI for the Git Repo and the kube-apiserver logs, specifically the message "service account token is not valid yet", strongly suggests an issue with token validity, likely due to time synchronisation problems between the upstream Rancher cluster and the downstream clusters managed by Fleet.</p>
 <p><strong>Verification:</strong></p>
 <p>Checking the time across the upstream and downstream clusters confirmed the presence of time synchronisation discrepancies.</p>
 <div class="highlight"><pre><span></span><code>
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

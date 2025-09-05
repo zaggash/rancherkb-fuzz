@@ -9144,7 +9144,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10955,63 +10955,64 @@ Error: UPGRADE FAILED: unable to build kubernetes objects from current release m
 Error: UPGRADE FAILED: unable to build kubernetes objects from current release manifest: resource mapping not found for name: &quot;rancher&quot; namespace: &quot;&quot; from &quot;&quot;: no matches for kind &quot;Ingress&quot; in version &quot;networking.k8s.io/v1beta1&quot;
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
-<p>The helm-mapkubeapis plugin can be used to restore your release to a working state. This plugin reads Helm release data and replaces superseded APIs with their new versions or removes resources that refer to APIs that were completely removed from Kubernetes.</p>
-<p>Note that Helm plugins are installed locally in the machine where the commands are run. Therefore, please make sure to run the installation steps on the same machine where you intend to run the cleanup steps.</p>
-<p><em><strong>Install helm-mapkubeapis</strong></em></p>
+<p>The helm-mapkubeapis plugin can be used to restore your release to a working state. This plugin reads Helm release data and replaces superseded APIs with their new versions or removes resources that refer to APIs that were completely removed from Kubernetes. </p>
+<p>Note that Helm plugins are installed locally in the machine where the commands are run. Therefore, please make sure to run the installation steps on the same machine where you intend to run the cleanup steps. </p>
+<p><strong><em>Install helm-mapkubeapis</em></strong><br />
+</p>
 <ol>
-<li>
-<p>Ensure that Helm is installed by running `helm version`</p>
-<p>You should see an output similar to the following:</p>
-</li>
+<li>Ensure that Helm is installed by running `helm version`</li>
 </ol>
-<div class="highlight"><pre><span></span><code>version.BuildInfo{Version:&quot;v3.10.2&quot;, GitCommit:&quot;50f003e5ee8704ec937a756c646870227d7c8b58&quot;, GitTreeState:&quot;clean&quot;, GoVersion:&quot;go1.18.8&quot;}
+<p>You should see an output similar to the following: </p>
+<div class="highlight"><pre><span></span><code>version.BuildInfo{Version:&quot;v3.10.2&quot;, GitCommit:&quot;50f003e5ee8704ec937a756c646870227d7c8b58&quot;, GitTreeState:&quot;clean&quot;, GoVersion:&quot;go1.18.8&quot;} 
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
+<!--THE END-->
+
 <ol>
 <li>Install the helm-mapkubeapis plugin:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>helm plugin install https://github.com/helm/helm-mapkubeapis
+<div class="highlight"><pre><span></span><code>helm plugin install https://github.com/helm/helm-mapkubeapis  
 </code></pre></div>
-<p>Output should be similar to:</p>
+<p>Output should be similar to: </p>
 <div class="highlight"><pre><span></span><code>Downloading and installing helm-mapkubeapis v0.4.1 ...
 https://github.com/helm/helm-mapkubeapis/releases/download/v0.4.1/helm-mapkubeapis_0.4.1_linux_amd64.tar.gz
 Installed plugin: mapkubeapis
 </code></pre></div>
-<p>Make sure that the installed version of helm-mapkubeapis is v0.4.1 or later, as earlier versions do not support the removal of resources.</p>
+<p>Make sure that the installed version of helm-mapkubeapis is v0.4.1 or later, as earlier versions do not support the removal of resources. <br />
+</p>
 <ol>
 <li>Check that the plugin was installed correctly:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>helm mapkubeapis --help
+<div class="highlight"><pre><span></span><code>helm mapkubeapis --help  
 </code></pre></div>
-<p>Output should be similar to:</p>
-<div class="highlight"><pre><span></span><code>Map release deprecated or removed Kubernetes APIs in-place
-Usage:
-       mapkubeapis [flags] RELEASE
-
-Flags:
-       --dry-run               simulate a command
-       -h, --help              help for mapkubeapis
-       --kube-context string   name of the kubeconfig context to use
-       --kubeconfig string     path to the kubeconfig file
-       --mapfile string        path to the API mapping file
-       --namespace string      namespace scope of the release
+<p>Output should be similar to: </p>
+<div class="highlight"><pre><span></span><code>Map release deprecated or removed Kubernetes APIs in-place  
+Usage: 
+    mapkubeapis [flags] RELEASE 
+     
+Flags: 
+    --dry-run               simulate a command 
+    -h, --help              help for mapkubeapis 
+    --kube-context string   name of the kubeconfig context to use 
+    --kubeconfig string     path to the kubeconfig file 
+    --mapfile string        path to the API mapping file 
+    --namespace string      namespace scope of the release
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
-<p><strong><em>Clean up releases</em></strong></p>
+<p><strong><em>Clean up releases</em></strong><br />
+</p>
 <ol>
 <li>Open your terminal of choice and make sure the Rancher management upstream cluster is accessible by running:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>kubectl cluster-info
+<p><div class="highlight"><pre><span></span><code>kubectl cluster-info
 </code></pre></div>
-<ol>
-<li>Perform a dry run for the Rancher release in the cattle-system namespace to check the changes:</li>
-</ol>
+2. Perform a dry run for the Rancher release in the cattle-system namespace to check the changes:</p>
 <div class="highlight"><pre><span></span><code>helm mapkubeapis --dry-run rancher  --namespace cattle-system
 </code></pre></div>
 <p>Output should be similar to:</p>
-<div class="highlight"><pre><span></span><code>NOTE: This is in dry-run mode, the following actions will not be executed.
+<p><div class="highlight"><pre><span></span><code>NOTE: This is in dry-run mode, the following actions will not be executed.
 Run without --dry-run to take the actions described below:
 Release &#39;rancher&#39; will be checked for deprecated or removed Kubernetes APIs and will be updated if necessary to supported API versions.
 Get release &#39;rancher&#39; latest version.
@@ -11028,14 +11029,11 @@ Found 1 instances of deprecated or removed Kubernetes API:
 &quot;apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 </code></pre></div>
-<ol>
-<li>Perform a full run with helm:</li>
-</ol>
+3. Perform a full run with helm:</p>
 <div class="highlight"><pre><span></span><code>helm mapkubeapis rancher --namespace cattle-system
 </code></pre></div>
-<pre><code>Output should be similar to:
-</code></pre>
-<div class="highlight"><pre><span></span><code>        Release &#39;rancher&#39; will be checked for deprecated or removed Kubernetes APIs and will be updated if necessary to supported API versions.
+<p>Output should be similar to:</p>
+<div class="highlight"><pre><span></span><code>     Release &#39;rancher&#39; will be checked for deprecated or removed Kubernetes APIs and will be updated if necessary to supported API versions.
 Get release &#39;rancher&#39; latest version.
 Check release &#39;rancher&#39; for deprecated or removed APIs...
 Found 1 instances of deprecated or removed Kubernetes API:
@@ -11055,16 +11053,16 @@ Release version &#39;rancher.v2&#39; added successfully.
 Release &#39;rancher&#39; with deprecated or removed APIs updated successfully to new version.
 Map of release &#39;rancher&#39; deprecated or removed APIs to supported versions, completed successfully.
 </code></pre></div>
-<pre><code>Re-run the helm upgrade command after all deprecated or superseded APIs are removed.
-</code></pre>
+<p>Re-run the helm upgrade command after all deprecated or superseded APIs are removed.</p>
 <h3 id="additional-information">Additional Information</h3>
-<p><strong>How to check apiVersions for a release</strong></p>
-<p>Command to get the available apiVersion for cert-manager</p>
+<p><strong>How to check apiVersions for a release</strong><br />
+Command to get the available apiVersion for cert-manager</p>
 <div class="highlight"><pre><span></span><code>kubectl get --raw /apis/cert-manager.io | jq .
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code> 
 </code></pre></div>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

@@ -9249,7 +9249,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11185,7 +11185,7 @@
       user: ubuntu
       role:
         - controlplane
-        - etcd
+        - etcd 
 [...] # rest of cluster.yaml except control plane / etcd nodes restracted
 </code></pre></div>
 <h5 id="step-1-validate-the-cluster-is-quorate-and-confirm-the-unresponsive-node">Step 1. Validate the cluster is quorate and confirm the unresponsive node</h5>
@@ -11199,7 +11199,7 @@ https://1.2.3.2:2379 is healthy: successfully committed proposal: took = 18.2272
 https://1.2.3.3:2379 is unhealthy: failed to commit proposal: context deadline exceeded
 </code></pre></div>
 <h5 id="step-2-remove-the-unresponsive-node">Step 2. Remove the unresponsive node</h5>
-<p>Having confirmed which node is unresponsive in the cluster, remove this from the nodes block in the cluster configuration file ( <code>cluster.yaml</code>), per the example of <code>1.2.3.3</code> removed below:</p>
+<p>Having confirmed which node is unresponsive in the cluster, remove this from the nodes block in the cluster configuration file (<code>cluster.yaml</code>), per the example of <code>1.2.3.3</code> removed below:</p>
 <div class="highlight"><pre><span></span><code>nodes:
     - address: 1.2.3.1
       user: ubuntu
@@ -11220,8 +11220,8 @@ https://1.2.3.3:2379 is unhealthy: failed to commit proposal: context deadline e
 <p>The above action will remove the problematic and unresponsive control plane / etcd node.</p>
 <h5 id="step-3-clean-and-add-the-removed-node-back-to-the-cluster">Step 3. Clean and add the removed node back to the cluster</h5>
 <p>Once the <code>rke up</code> invocation has run through without any errors, and you can see the node removed from the Rancher UI or <code>kubectl get nodes</code> output, it is safe to move onto adding the node back in.</p>
-<p>First clean the removed node ( <code>1.2.3.3</code>) in our example, using the <a href="https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup">Extended Rancher 2 Cleanup script</a>.</p>
-<p>After cleaning the node, add this back into the cluster configuration ( <code>cluster.yaml</code>) file:</p>
+<p>First clean the removed node (<code>1.2.3.3</code>) in our example, using the <a href="https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup">Extended Rancher 2 Cleanup script</a>.</p>
+<p>After cleaning the node, add this back into the cluster configuration (<code>cluster.yaml</code>) file:</p>
 <div class="highlight"><pre><span></span><code>nodes:
     - address: 1.2.3.1
       user: ubuntu
@@ -11237,7 +11237,7 @@ https://1.2.3.3:2379 is unhealthy: failed to commit proposal: context deadline e
       user: ubuntu
       role:
         - controlplane
-        - etcd
+        - etcd 
 [...] # rest of cluster.yaml except control plane / etcd nodes restracted
 </code></pre></div>
 <p>And run the rke up command again:</p>
@@ -11258,6 +11258,7 @@ https://1.2.3.3:2379 is healthy: successfully committed proposal: took = 22.0656
 <h3 id="status">Status</h3>
 <p>Top Issue</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

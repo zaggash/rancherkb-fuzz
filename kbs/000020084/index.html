@@ -9159,7 +9159,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10990,52 +10990,41 @@
 <h4 id="steps">Steps</h4>
 <p>While performing a rolling change to nodes you will need to determine a batch size, effectively how many nodes you wish to take out of service at a time. Initially, it is recommended to perform the change on one node as a canary first, and testing the change has the desired outcome before doing more at once.</p>
 <ol>
-<li>
-<p>If you wish to maintain the number of nodes in the cluster while performing the rolling change, at this point you may wish to add new nodes, this ensures that when nodes are out of service the cluster maintains at least the original number of available nodes.</p>
-</li>
-<li>
-<p>Drain the node, this can be done with <code>kubectl drain &lt;node&gt;</code>, or in the Rancher UI.</p>
-</li>
+<li>If you wish to maintain the number of nodes in the cluster while performing the rolling change, at this point you may wish to add new nodes, this ensures that when nodes are out of service the cluster maintains at least the original number of available nodes.</li>
+<li>Drain the node, this can be done with <code>kubectl drain &lt;node&gt;</code>, or in the Rancher UI.</li>
 </ol>
 <blockquote>
 <p>This is particularly important to avoid disruptions to services, by draining first, service endpoints are updated to remove the pods from services, stopped, started on a new node in the cluster, and added back to the service safely.</p>
-<p>If there are pods using local storage (commonly <code>emptyDir</code> volumes), and these should be drained, the <code>--delete-local-data=true</code> will be needed, <strong>beware:</strong> the data will be lost.</p>
-</blockquote>
-<ol>
-<li><strong>Optional</strong> Delete the node(s) from the cluster, this can be done with <code>kubectl delete &lt;node&gt;</code>. This is needed for changes that cannot be performed on existing nodes, such as IP address, hostnames, moving nodes to another cluster, and large configuration updates. Any pods and Kubernetes components running on the nodes will be removed.</li>
-</ol>
-<blockquote>
+<p>If there are pods using local storage (commonly <code>emptyDir</code> volumes), and these should be drained, the <code>--delete-local-data=true</code> will be needed, <strong>beware:</strong> the data will be lost.
+3. <strong>Optional</strong> Delete the node(s) from the cluster, this can be done with <code>kubectl delete &lt;node&gt;</code>. This is needed for changes that cannot be performed on existing nodes, such as IP address, hostnames, moving nodes to another cluster, and large configuration updates. Any pods and Kubernetes components running on the nodes will be removed.</p>
 <p><strong>Note:</strong> if this is an <code>etcd</code> node, ensure that the cluster has quorum and at least two remaining <code>etcd</code> nodes to maintain HA before performing this step.</p>
 </blockquote>
 <ul>
-<li>For an imported cluster, there is no automated cleanup so at this point you would remove the node from the cluster configuration<ul>
+<li>
+<p>For an imported cluster, there is no automated cleanup so at this point you would remove the node from the cluster configuration</p>
+<ul>
 <li>RKE, <a href="https://rancher.com/docs/rke/latest/en/managing-clusters/#adding-removing-nodes">remove the node from the cluster.yaml file followed by an <code>rke up</code></a></li>
 <li>k3s, stop the k3s service and <a href="https://rancher.com/docs/k3s/latest/en/installation/uninstall/">uninstall k3s using the script</a></li>
+<li><strong>Optional</strong> If the node has been deleted in step 3, <a href="https://www.suse.com/support/kb/doc/?id=000020162">cleaning the node is important</a> to ensure all previous history of the cluster, CNI devices, volumes, and containers are removed. This is especially important if the node is to be re-used in another cluster.</li>
+<li>Perform the changes to the node, this could be automated with configuration management, scripted or manual steps.</li>
+<li>Once step 5 is complete, add the node back to the desired cluster.</li>
 </ul>
 </li>
 <li>
-<p><strong>Optional</strong> If the node has been deleted in step 3, <a href="https://www.suse.com/support/kb/doc/?id=000020162">cleaning the node is important</a> to ensure all previous history of the cluster, CNI devices, volumes, and containers are removed. This is especially important if the node is to be re-used in another cluster.</p>
+<p>In a custom cluster this can be done with the <code>docker run</code> command supplied in the Rancher UI</p>
 </li>
 <li>
-<p>Perform the changes to the node, this could be automated with configuration management, scripted or manual steps.</p>
-</li>
-<li>
-<p>Once step 5 is complete, add the node back to the desired cluster.</p>
-</li>
-<li>In a custom cluster this can be done with the <code>docker run</code> command supplied in the Rancher UI</li>
-<li>For an imported cluster the steps are different<ul>
+<p>For an imported cluster the steps are different</p>
+<ul>
 <li>RKE, you would add this node to the cluster by configuring it in the cluster.yaml file, followed with an <code>rke up</code></li>
 <li>k3s, re-install k3s using the correct flags/variables</li>
+<li>Test the nodes with running workloads, and monitor before proceeding with the next node, or a larger batch size of nodes.</li>
+<li>If additional nodes were added in step 1, these can be removed from the cluster at this point by following steps 2, 3, and 4.</li>
 </ul>
-</li>
-<li>
-<p>Test the nodes with running workloads, and monitor before proceeding with the next node, or a larger batch size of nodes.</p>
-</li>
-<li>
-<p>If additional nodes were added in step 1, these can be removed from the cluster at this point by following steps 2, 3, and 4.</p>
 </li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

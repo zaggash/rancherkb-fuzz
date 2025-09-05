@@ -9153,7 +9153,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10963,10 +10963,10 @@
 <h1 id="failed-etcd-snapshot-with-storageerror-invalid-object-message">failed etcd snapshot with StorageError invalid object message</h1>
 <p>This document <strong>(000021078)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<p>Rancher 2.6.x</p>
-<p>Rancher 2.7.x</p>
-<p>Downstream RKE2 cluster</p>
-<p>Kubernetes 1.22 and above</p>
+<p>Rancher 2.6.x<br />
+Rancher 2.7.x<br />
+Downstream RKE2 cluster<br />
+Kubernetes 1.22 and above</p>
 <h3 id="situation">Situation</h3>
 <p>During the manual or recurring snapshot process you're seeing in Rancher logs the following error messages:</p>
 <div class="highlight"><pre><span></span><code>23/05/04 14:45:01 [INFO] [snapshotbackpopulate] rkecluster fleet-default/xxxx-yyyy-wwww: processing configmap kube-system/rke2-etcd-snapshots
@@ -10976,26 +10976,26 @@
 2023/05/04 14:47:10 [ERROR] rkecluster fleet-default/xxxx-yyyy-wwww: error while creating s3 etcd snapshot fleet-default/clstr-k8s-xxxx-yyyy-wwww-.-s3: ETCDSnapshot.rke.cattle.io &quot;clstr-k8s-xxxx-yyyy-wwww-.-s3&quot; is invalid: metadata.name: Invalid value: &quot;clstr-k8s-xxxx-yyyy-wwww-.-s3&quot;: a lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, &#39;-&#39; or &#39;.&#39;, and must start and end with an alphanumeric character (e.g. &#39;example.com&#39;, regex used for validation is &#39;[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*&#39;)
 </code></pre></div>
 <p>This message is indicating that snapshot is in process but failing due to possibly:</p>
-<p>- issue with the S3-compatible storage hosting solution</p>
-<p>- not respecting the limit name length of objects that Kubernetes is allowed to (RFC 1123)</p>
-<p>- corrupted snapshot with invalid/malformed name hosted on S3 bucket but Rancher (snapshot controller) keeps adding them to the configmap</p>
+<p>- issue with the S3-compatible storage hosting solution<br />
+- not respecting the limit name length of objects that Kubernetes is allowed to (RFC 1123)<br />
+- corrupted snapshot with invalid/malformed name hosted on S3 bucket but Rancher (snapshot controller) keeps adding them to the configmap</p>
 <h3 id="resolution">Resolution</h3>
 <p>If it's complaining about the name length, then please double check the naming convention in your environment and change it to respect the requirement. Refer to RFC 1123 Kubernetes.</p>
-<p>If it's complaining about snapshot itself, you may want to check the S3 bucket to see if there are still snapshots in the specified folder with the invalid file name.</p>
-<p>The snapshot controller on the rke2 side will keep re-adding those snapshots to the confimap as long as the files exist in the bucket or on disk on the nodes.</p>
-<p>Removing those corrupted / malformed snapshots from the bucket and/or nodes is useful in this case.</p>
-<p>At some point Rancher can get stuck finishing the process even if the other parameters (S3 config, snapshot names etc...) are fine.</p>
-<p>For that purpose, a small and safe edit can get around and let Rancher proceed properly like:</p>
-<p>On Rancher UI, go to Cluster Management</p>
-<p>Select the downstream cluster having the issue</p>
-<p>Edit the cluster configuration and refer to ETCD</p>
-<p>Change Folder Name in the S3 bucket configuration</p>
-<p>Save and exit then wait for the change to finish applying</p>
-<p>Edit the cluster again the same way</p>
-<p>Change the folder back to its original name</p>
-<p>Save and exit</p>
-<p>This should re-instruct Rancher to use the right folder name again properly.</p>
-<p>It's also good to restart the Rancher deployment for better responsiveness.</p>
+<p>If it's complaining about snapshot itself, you may want to check the S3 bucket to see if there are still snapshots in the specified folder with the invalid file name.<br />
+The snapshot controller on the rke2 side will keep re-adding those snapshots to the confimap as long as the files exist in the bucket or on disk on the nodes.<br />
+Removing those corrupted / malformed snapshots from the bucket and/or nodes is useful in this case.</p>
+<p>At some point Rancher can get stuck finishing the process even if the other parameters (S3 config, snapshot names etc...) are fine.<br />
+For that purpose, a small and safe edit can get around and let Rancher proceed properly like:</p>
+<p>On Rancher UI, go to Cluster Management<br />
+Select the downstream cluster having the issue<br />
+Edit the cluster configuration and refer to ETCD<br />
+Change Folder Name in the S3 bucket configuration<br />
+Save and exit then wait for the change to finish applying<br />
+Edit the cluster again the same way<br />
+Change the folder back to its original name<br />
+Save and exit</p>
+<p>This should re-instruct Rancher to use the right folder name again properly.<br />
+It's also good to restart the Rancher deployment for better responsiveness.</p>
 <p>If the above doesn't have any effect, try the following steps</p>
 <ul>
 <li>Save copies of etcd snapshots in another folder as a precaution.</li>
@@ -11015,11 +11015,12 @@
 </ul>
 <p>Note: the above steps are tested and validated on various clusters.</p>
 <h3 id="cause">Cause</h3>
-<p>This can happen due to a couple of reasons such as:</p>
-<p>Failure on an ETCD restore from backup</p>
-<p>Failure during the upgrade process</p>
-<p>Corrupted old/previous snapshots</p>
+<p>This can happen due to a couple of reasons such as:<br />
+Failure on an ETCD restore from backup<br />
+Failure during the upgrade process<br />
+Corrupted old/previous snapshots </p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

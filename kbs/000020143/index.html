@@ -9192,7 +9192,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11053,12 +11053,12 @@
 <li>Add the <code>server-tokens: "false"</code> option for nginx into the cluster configuration YAML file as follows:</li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="nt">ingress</span><span class="p">:</span>
-<span class="w">       </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
-<span class="w">       </span><span class="nt">options</span><span class="p">:</span>
-<span class="w">         </span><span class="nt">server-tokens</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
+<span class="w">    </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">server-tokens</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
 </code></pre></div>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">nodes</span><span class="p">:</span>
+<p><div class="highlight"><pre><span></span><code><span class="nt">nodes</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">x.x.x.x</span>
 <span class="w">    </span><span class="nt">internal_address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">x.x.x.x</span>
 <span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu</span>
@@ -11068,14 +11068,12 @@
 <span class="w">    </span><span class="nt">options</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">server-tokens</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
 <span class="nt">services</span><span class="p">:</span>
-<span class="nt">etcd</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">etcd</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">snapshot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">    </span><span class="nt">creation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6h</span>
 <span class="w">    </span><span class="nt">retention</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">24h</span>
 </code></pre></div>
-<ol>
-<li>Execute <code>rke up</code> to update the cluster with the new configuration. <strong>N.B.</strong> Ensure the <code>.rkestate</code> file for the cluster is present in the working directory when invoking <code>rke up</code> per the <a href="https://rancher.com/docs/rke/latest/en/installation/#kubernetes-cluster-state">documentation here</a>:</li>
-</ol>
+2. Execute <code>rke up</code> to update the cluster with the new configuration. <strong>N.B.</strong> Ensure the <code>.rkestate</code> file for the cluster is present in the working directory when invoking <code>rke up</code> per the <a href="https://rancher.com/docs/rke/latest/en/installation/#kubernetes-cluster-state">documentation here</a>:</p>
 <div class="highlight"><pre><span></span><code>rke<span class="w"> </span>up<span class="w"> </span>--config<span class="w"> </span>&lt;cluster<span class="w"> </span>configuration<span class="w"> </span>YAML<span class="w"> </span>file&gt;
 </code></pre></div>
 <h5 id="rancher-v2x-provisioned-clusters">Rancher v2.x provisioned clusters</h5>
@@ -11084,19 +11082,18 @@
 <li>Click 'Edit as YAML'.</li>
 <li>Add the <code>server-tokens: "false"</code> option for nginx into the cluster configuration YAML file as follows:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nt">rancher_kubernetes_engine_config</span><span class="p">:</span>
+<p><div class="highlight"><pre><span></span><code><span class="nt">rancher_kubernetes_engine_config</span><span class="p">:</span>
 <span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
 <span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
 <span class="w">      </span><span class="nt">options</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">server-tokens</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
 </code></pre></div>
-<ol>
-<li>Click 'Save' to update the cluster with the new configuration.</li>
-</ol>
+4. Click 'Save' to update the cluster with the new configuration.</p>
 <h4 id="further-reading">Further reading</h4>
 <p><a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#server-tokens">ingress-nginx documentation on the server-tokens options</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

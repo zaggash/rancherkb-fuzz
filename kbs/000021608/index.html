@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10999,16 +10999,14 @@
 <h3 id="resolution">Resolution</h3>
 <h2 id="collection">Collection</h2>
 <ol>
-<li>install the <strong><code>iperf3</code></strong> tool (on macOS, use <code>brew install iperf3</code>)</li>
-<li>run the following commands from a machine with kubectl access to the upstream Rancher cluster:</li>
+<li>install the  <strong><code>iperf3</code></strong> tool (on macOS, use <code>brew install iperf3</code>)</li>
+<li>run the following commands from a machine with kubectl access to the upstream Rancher cluster: </li>
 </ol>
-<div class="highlight"><pre><span></span><code>kubectl run iperf3-server --image=networkstatic/iperf3 --port=5201 --command -- iperf3 -s
+<p><div class="highlight"><pre><span></span><code>kubectl run iperf3-server --image=networkstatic/iperf3 --port=5201 --command -- iperf3 -s
 kubectl port-forward pod/iperf3-server 5201:5201 &amp;
 iperf3 -c localhost -p 5201
 </code></pre></div>
-<ol>
-<li>The output will look like this:</li>
-</ol>
+3. The output will look like this: </p>
 <div class="highlight"><pre><span></span><code>Connecting to host localhost, port 5201
 [  7] local ::1 port 57800 connected to ::1 port 5201
 [ ID] Interval           Transfer     Bitrate
@@ -11022,7 +11020,7 @@ iperf3 -c localhost -p 5201
 [  7]   7.00-8.00   sec   110 MBytes   925 Mbits/sec
 [  7]   8.00-9.01   sec   110 MBytes   927 Mbits/sec
 [  7]   9.01-10.01  sec   103 MBytes   867 Mbits/sec
-   - - - - - - - - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - - - - - - - -
 [ ID] Interval           Transfer     Bitrate
 [  7]   0.00-10.01  sec  1.08 GBytes   928 Mbits/sec                  sender
 [  7]   0.00-10.08  sec  1.07 GBytes   915 Mbits/sec                  receiver
@@ -11033,6 +11031,7 @@ iperf Done
 <p>The last two table rows, under the <strong>Bitrate</strong> column, represent actual raw bandwidth.</p>
 <p>For optimal Rancher performance at scale, <a href="https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/best-practices/tuning-rancher-at-scale.html#_browser_requirements">SUSE recommends at least 72 Mbits/s "receiver" bandwidth</a> (equivalent to a single 802.11n Wi-Fi 4 link stream).</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

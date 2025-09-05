@@ -9177,7 +9177,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11012,8 +11012,7 @@
 <p>This document <strong>(000020172)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="situation">Situation</h3>
 <h5 id="overview-and-intention">Overview and Intention</h5>
-<p>This is a quick guide aiming to get Rancher v2.x using external authentication via Active Directory with the least amount of effort. Of course there is much more to consider and configure in a production enterprise environment. For more detail on this function please refer to this Rancher article and fine tune as required.
-<a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/authentication/ad/">Configuring Active Directory</a></p>
+<p>This is a quick guide aiming to get Rancher v2.x using external authentication via Active Directory with the least amount of effort. Of course there is much more to consider and configure in a production enterprise environment. For more detail on this function please refer to this Rancher article and fine tune as required. <a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/authentication/ad/">Configuring Active Directory</a></p>
 <h5 id="pre-requisites">Pre-requisites</h5>
 <ul>
 <li>A running instance of Rancher v2.x, either <a href="https://rancher.com/docs/rancher/v2.x/en/installation/single-node/">a single node instance</a> or <a href="https://rancher.com/docs/rancher/v2.x/en/installation/ha/">High Availability (HA) cluster</a>.</li>
@@ -11050,11 +11049,16 @@
 <ol>
 <li>Once auth is configured in Rancher change the relaxed default setting from 'Allow any valid Users' to login to 'only allow members of Cluster, Projects' to login. Access must now be specified instead of allowing any User onto the cluster.</li>
 <li>Under 'Global, Security, Roles' It is best to drop 'New User Default' setting from 'User' to 'User Base' which provide less privleges to new users and must increased as required not as a default.</li>
-<li>The bind account is critical for ongoing authentication so locking the account will break functionality.</li>
-<li>If this account gets locked or the password changes your AD authentication will be broken. Setting the account and the password not to expire and removing lockout policies prevent disruption.</li>
+<li>
+<p>The bind account is critical for ongoing authentication so locking the account will break functionality.</p>
+</li>
+<li>
+<p>If this account gets locked or the password changes your AD authentication will be broken. Setting the account and the password not to expire and removing lockout policies prevent disruption.</p>
+</li>
 <li>Remove interactive logon abilites as this account doesn't need to logon to a server and control it</li>
 </ol>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

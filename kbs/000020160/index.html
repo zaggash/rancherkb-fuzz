@@ -9210,7 +9210,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11092,10 +11092,10 @@
 <h5 id="creating-extra-nginx-ingress-controller-charts"><strong>Creating extra nginx-ingress-controller charts</strong></h5>
 <p>It is recommended to use the community <a href="https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx">nginx-ingress helm chart</a> to install the extra ingress-controllers with <a href="https://kubernetes.io/docs/concepts/services-networking/service/#nodeport">NodePort</a> services.</p>
 <p>This deployment method allows you to run multiple ingress controllers on a single node, as there are no conflicting ports. You are required to route traffic to the correct ingress controller ports through an external load balancer.</p>
-<p>Deploy a second default backend and ingress-controller from the nginx-ingress helm chart with the following values: <code>controller.ingressClass</code> - unique name of the ingress class, such as <code>ingress-nginx-2</code> <code>controller.service.type=NodePort</code></p>
-<p><code>controller.service.nodePorts.http</code> - define the NodePort between 30000-32767 you want to expose for http traffic. Optional, if not defined, one will be randomly assigned</p>
-<p><code>controller.service.nodePorts.https</code> - define the NodePort between 30000-32767 you want to expose for http traffic. Optional, if not defined one will be randomly assigned</p>
-<p><code>controller.kind=DaemonSet</code></p>
+<p>Deploy a second default backend and ingress-controller from the nginx-ingress helm chart with the following values: <code>controller.ingressClass</code> - unique name of the ingress class, such as <code>ingress-nginx-2</code> <code>controller.service.type=NodePort</code><br />
+<code>controller.service.nodePorts.http</code> - define the NodePort between 30000-32767 you want to expose for http traffic. Optional, if not defined, one will be randomly assigned<br />
+<code>controller.service.nodePorts.https</code> - define the NodePort between 30000-32767 you want to expose for http traffic. Optional, if not defined one will be randomly assigned<br />
+<code>controller.kind=DaemonSet</code></p>
 <p>For more configuration options, see the <a href="https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/README.md">chart readme</a> .</p>
 <p>An example daemon set install would be:</p>
 <div class="highlight"><pre><span></span><code>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>stable<span class="w"> </span>https://kubernetes-charts.storage.googleapis.com
@@ -11150,6 +11150,7 @@ Events:<span class="w">                   </span>&lt;none&gt;
 <h3 id="status">Status</h3>
 <p>Top Issue</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

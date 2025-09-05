@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10969,18 +10969,12 @@
 </ul>
 <h3 id="situation">Situation</h3>
 <ul>
-<li>
-<p>A cluster with rancher-logging installed causing rancher-logging-root-fluentd-0 pod to restart continuously with error code '137'. But the same issue persists even after increasing the memory significantly.</p>
-</li>
-<li>
-<p>The rancher-logging-root-fluentd-0 pod only shows below error:</p>
-</li>
+<li>A cluster with rancher-logging installed causing rancher-logging-root-fluentd-0 pod to restart continuously with error code '137'. But the same issue persists even after increasing the memory significantly.</li>
+<li>The rancher-logging-root-fluentd-0 pod only shows below error:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>Last status: Exited with 137: Error, Started: Fri Feb 28, 2025 4:50:53 PM, Exited: Fri Feb 28, 2025 4:57:07 PM
+<p><div class="highlight"><pre><span></span><code>Last status: Exited with 137: Error, Started: Fri Feb 28, 2025 4:50:53 PM, Exited: Fri Feb 28, 2025 4:57:07 PM
 </code></pre></div>
-<ul>
-<li>Upon further investigation, rancher-logging-root-fluentbit pod shows below errors:</li>
-</ul>
+- Upon further investigation, rancher-logging-root-fluentbit pod shows below errors: </p>
 <div class="highlight"><pre><span></span><code>[2025/03/04 11:01:38] [error] [net] TCP connection failed: rancher-logging-root-fluentd.cattle-logging-system.svc.cluster.local:24240 (Connection refused)
 [2025/03/04 11:01:38] [error] [output:forward:forward.0] no upstream connections available
 [2025/03/04 11:01:38] [ warn] [engine] failed to flush chunk &#39;1-1741004097.135890300.flb&#39;, retry in 320 seconds: task_id=147, input=tail.0 &gt; output=forward.0 (out_id=0)
@@ -10990,26 +10984,26 @@
 <li>Configure the output buffer to use the type 'file' instead of 'memory'.</li>
 <li>Below is an example output snippet for elasticsearch:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>apiVersion: logging.banzaicloud.io/v1beta1
-kind: Output
-metadata:
-  name: efk
-  namespace: cattle-logging-system
-spec:
-  elasticsearch:
-    buffer:
-      flush_interval: 30s
-      flush_mode: interval
-      flush_thread_count: 4
-      queued_chunks_limit_size: 300
-      type: file                          &lt;&lt;========================
+<div class="highlight"><pre><span></span><code><span class="nl">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="n">logging</span><span class="p">.</span><span class="n">banzaicloud</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">v1beta1</span>
+<span class="nl">kind</span><span class="p">:</span><span class="w"> </span><span class="n">Output</span>
+<span class="nl">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nl">name</span><span class="p">:</span><span class="w"> </span><span class="n">efk</span>
+<span class="w">  </span><span class="nl">namespace</span><span class="p">:</span><span class="w"> </span><span class="n">cattle</span><span class="o">-</span><span class="n">logging</span><span class="o">-</span><span class="n">system</span>
+<span class="nl">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nl">elasticsearch</span><span class="p">:</span>
+<span class="w">    </span><span class="nl">buffer</span><span class="p">:</span>
+<span class="w">      </span><span class="nl">flush_interval</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="n">s</span>
+<span class="w">      </span><span class="nl">flush_mode</span><span class="p">:</span><span class="w"> </span><span class="n">interval</span>
+<span class="w">      </span><span class="nl">flush_thread_count</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span>
+<span class="w">      </span><span class="nl">queued_chunks_limit_size</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span>
+<span class="w">      </span><span class="nl">type</span><span class="p">:</span><span class="w"> </span><span class="n">file</span><span class="w">                          </span><span class="o">&lt;&lt;========================</span>
 </code></pre></div>
 <ul>
 <li>Furthermore, login to Rancher &gt;&gt; explore the desired cluster &gt;&gt; Apps &gt;&gt; Installed Apps &gt;&gt; Rancher-Logging &gt;&gt; Click on "Edit/Upgrade" and review if the 'Buffer_Chunk_Size' and 'Buffer_Max_Size' mentioned below can be tuned further with a value that best suits the cluster needs as per <a href="https://github.com/rancher/rancher-docs/issues/90">https://github.com/rancher/rancher-docs/issues/90</a></li>
 </ul>
-<div class="highlight"><pre><span></span><code>inputTail:
-    Buffer_Chunk_Size: &#39;&#39;
-    Buffer_Max_Size: &#39;&#39;
+<div class="highlight"><pre><span></span><code><span class="nl">inputTail</span><span class="p">:</span>
+<span class="w">    </span><span class="nl">Buffer_Chunk_Size</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;&#39;</span>
+<span class="w">    </span><span class="nl">Buffer_Max_Size</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;&#39;</span>
 </code></pre></div>
 <ul>
 <li>Observe that the pod rancher-logging-root-fluentd-0 does not restart anymore and logs are sent successfully.</li>
@@ -11022,6 +11016,7 @@ spec:
 <li>More information can be found here: <a href="https://docs.fluentbit.io/manual/administration/buffering-and-storage">https://docs.fluentbit.io/manual/administration/buffering-and-storage</a>.</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

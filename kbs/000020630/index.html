@@ -9180,7 +9180,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11017,26 +11017,17 @@
 <h1 id="rancher-operational-advisory-20201105-related-to-docker-hub-rate-limits">[Rancher] Operational Advisory, 20201105: Related to Docker Hub rate limits</h1>
 <p>This document <strong>(000020630)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="resolution">Resolution</h3>
-<table>
-<thead>
-<tr>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Note</strong>:<br> Below is the Rancher Customer email advisory sent in Nov 2020 on the topic of Docker Hub rate limits.</td>
-</tr>
-</tbody>
-</table>
-<p>Dear Rancher Customer,</p>
+<p><strong>Note</strong>:</p>
+<p>Below is the Rancher Customer email advisory sent in Nov 2020 on the topic of Docker Hub rate limits.</p>
+<p>Dear Rancher Customer,<br />
+</p>
 <p>As <a href="https://www.docker.com/blog/scaling-docker-to-serve-millions-more-developers-network-egress/">announced</a> by Docker Inc, the rate-limiting by Docker Hub is expected to progressively take effect beginning Nov 2.</p>
 <p>We have been engaged in direct conversations with many of you on the possible impact of this <a href="https://docs.docker.com/docker-hub/download-rate-limit/">rate-limiting</a> and steps toward managing that.  This operational advisory is a summary of those conversations.</p>
 <h3 id="do-the-rate-limits-apply-to-rancher-images-that-we-pull-anonymously">Do the rate limits apply to Rancher images that we pull anonymously?</h3>
-<p>No.  To ensure customers pulling Rancher resources are not affected by this, Rancher Labs has partnered with Docker, Inc. so that pulls from the Rancher namespace on Docker Hub are exempt from these limits.</p>
+<p>No.  To ensure customers pulling Rancher resources are not affected by this, Rancher Labs has partnered with Docker, Inc. so that pulls from the Rancher namespace on Docker Hub are exempt from these limits. </p>
 <p>If you run into any rate-limiting issues with images hosted in the Rancher namespace, please let us know.</p>
 <h3 id="what-about-images-that-are-outside-the-rancher-namespace-that-we-pull-anonymously">What about images that are outside the Rancher namespace that we pull anonymously?</h3>
-<p>Yes. Rate limits do apply to the images that are outside of the Rancher namespace.</p>
+<p>Yes. Rate limits do apply to the images that are outside of the Rancher namespace. </p>
 <h3 id="what-can-we-do-about-the-limits-on-images-outside-the-rancher-namespace">What can we do about the limits on images outside the Rancher namespace?</h3>
 <p>We can introduce you to the right contact at Docker Inc should you be interested in procuring an exemption for your org based on something like an IP range.  This is to derisk being limited on image pulls outside of the Rancher namespace.</p>
 <h3 id="what-other-practical-options-can-we-pursue">What other practical options can we pursue?</h3>
@@ -11056,6 +11047,7 @@
 <li><a href="https://www.suse.com/support/kb/doc/?id=000020432">Rancher Support FAQs</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

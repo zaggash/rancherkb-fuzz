@@ -9186,7 +9186,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11047,15 +11047,13 @@
 <ol>
 <li>Add the <code>upstreamnameservers</code> option, with the list of nameservers, to the cluster configuration YAML. For RKE provisioned clusters, add this into the cluster.yml file. For a Rancher provisioned cluster, navigate to Cluster Management in the Rancher UI, and Edit Config of the cluster, click <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration#editing-clusters-with-yaml"><code>Edit as YAML</code></a>.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nt">dns</span><span class="p">:</span>
-<span class="w">     </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coredns</span>
-<span class="w">     </span><span class="nt">upstreamnameservers</span><span class="p">:</span>
-<span class="w w-Error">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.1.1.1</span>
+<p><div class="highlight"><pre><span></span><code><span class="nt">dns</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coredns</span>
+<span class="w">  </span><span class="nt">upstreamnameservers</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.1.1.1</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8.8.8.8</span>
 </code></pre></div>
-<ol>
-<li>Update the cluster with the new configuration. For RKE provisioned clusters, invoke <code>rke up --cluster.yml</code> ( <strong>ensure the cluster.rkestate file is present in the working directory when invoking <code>rke up</code></strong>). For Rancher provisioned clusters, click <code>Save</code> in the Rancher UI <code>Edit as YAML</code> view.</li>
-</ol>
+2. Update the cluster with the new configuration. For RKE provisioned clusters, invoke <code>rke up --cluster.yml</code> (<strong>ensure the cluster.rkestate file is present in the working directory when invoking <code>rke up</code></strong> ). For Rancher provisioned clusters, click <code>Save</code> in the Rancher UI <code>Edit as YAML</code> view.</p>
 <blockquote>
 <p><strong>Note:</strong> This option is recommended as it requires minimal change, see the <a href="https://rke.docs.rancher.com/config-options/add-ons/dns#coredns-upstream-nameservers">RKE add-ons documentation</a> for more information.</p>
 </blockquote>
@@ -11066,19 +11064,15 @@
 <ol>
 <li>On each of the nodes in the cluster create the custom nameserver configuration file with a nameserver IP address:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;nameserver 8.8.8.8&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/k8s-resolv.conf
+<p><div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;nameserver 8.8.8.8&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/k8s-resolv.conf
 </code></pre></div>
-<ol>
-<li>Add the <code>resolv-conf</code> flag to the <code>extra_args</code> option for the kubelet service, referencing the custom nameserver configuration file into the cluster configuration YAML. For RKE provisioned clusters, add this into the cluster.yml file. For a Rancher provisioned cluster, navigate to Cluster Management in the Rancher UI, and Edit Config of the cluster, click <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration#editing-clusters-with-yaml"><code>Edit as YAML</code></a>.</li>
-</ol>
-<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+2. Add the <code>resolv-conf</code> flag to the <code>extra_args</code> option for the kubelet service, referencing the custom nameserver configuration file into the cluster configuration YAML. For RKE provisioned clusters, add this into the cluster.yml file. For a Rancher provisioned cluster, navigate to Cluster Management in the Rancher UI, and Edit Config of the cluster, click <a href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration#editing-clusters-with-yaml"><code>Edit as YAML</code></a>.</p>
+<p><div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">kubelet</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">extra_args</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">resolv-conf</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/host/etc/k8s-resolv.conf</span>
 </code></pre></div>
-<ol>
-<li>Update the cluster with the new configuration. For RKE provisioned clusters, invoke <code>rke up --cluster.yml</code> ( <strong>ensure the cluster.rkestate file is present in the working directory when invoking <code>rke up</code></strong>). For Rancher provisioned clusters, click <code>Save</code> in the Rancher UI <code>Edit as YAML</code> view.</li>
-</ol>
+3. Update the cluster with the new configuration. For RKE provisioned clusters, invoke <code>rke up --cluster.yml</code> (<strong>ensure the cluster.rkestate file is present in the working directory when invoking <code>rke up</code></strong> ). For Rancher provisioned clusters, click <code>Save</code> in the Rancher UI <code>Edit as YAML</code> view.</p>
 <p>See the <a href="https://rancher.com/docs/rke/latest/en/config-options/services/services-extras/#extra-args">RKE services documentation</a> for more information.</p>
 <blockquote>
 <p><strong>Note:</strong> kubelet flags are being updated, as such a restart of the kubelet component will occur on each node.</p>
@@ -11097,6 +11091,7 @@
 </ul>
 </blockquote>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

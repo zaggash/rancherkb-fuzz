@@ -9162,7 +9162,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10986,24 +10986,28 @@
 <li>RKE1/RKE2</li>
 <li>Kubernetes v1.19+</li>
 <li>vSphere 6.7 U3+ or vSphere 7.0+</li>
-<li>Vsphere cloud provider:</li>
-<li>Vsphere CPI: rancher-vsphere-cpi:100.3.0+up1.2.1+</li>
+<li>
+<p>Vsphere cloud provider:</p>
+</li>
+<li>
+<p>Vsphere CPI: rancher-vsphere-cpi:100.3.0+up1.2.1+</p>
+</li>
 <li>Vsphere CSI: rancher-vsphere-csi:100.3.0+up2.5.1-rancher1+</li>
 </ul>
 <h3 id="situation">Situation</h3>
 <p><strong>Inability to detach/attach CNS block volumes:</strong></p>
 <p>Customers can create CNS block volumes in the RKE1/RKE2 cluster using the Vsphere CSI.</p>
 <p>However, when scaling down a workload (deployment,statefulset), the block volume does not get detached automatically from the nodes. Scaling up the workload, the following error appears in the cluster events:</p>
-<div class="highlight"><pre><span></span><code>rpc error: code = Internal desc = queryVolume failed for volumeID: &quot;5db7cc3c-62b9-427d-823b-87729fcef771&quot; with err=ServerFaultCode: NoPermission
+<div class="highlight"><pre><span></span><code>rpc error: code = Internal desc = queryVolume failed for volumeID: &quot;5db7cc3c-62b9-427d-823b-87729fcef771&quot; with err=ServerFaultCode: NoPermission 
 </code></pre></div>
 <h3 id="resolution">Resolution</h3>
-<p>This error indicates the user is missing the permission " <strong><em>Cns.Searchable</em></strong>" at the root vCenter level and Datastore level.</p>
-<p>To grant the user account the <em><strong>Cns.Searchable</strong></em> permission in vSphere, see the following documentation:</p>
-<p><a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/vsphere/create-credentials">https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/vsphere/create-credentials</a></p>
+<p>This error indicates the user is missing the permission "<strong><em>Cns.Searchable</em></strong>" at the root vCenter level and Datastore level.</p>
+<p>To grant the user account the <strong><em>Cns.Searchable</em></strong> permission in vSphere, see the following documentation:<br />
+<a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/vsphere/create-credentials">https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/vsphere/create-credentials</a></p>
 <h3 id="cause">Cause</h3>
-<p>The user account within vSphere must be granted the following permissions:</p>
-<p><a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.security.doc/GUID-C04F1605-D158-4B65-810F-6F5B109BCDEC.html">https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.security.doc/GUID-C04F1605-D158-4B65-810F-6F5B109BCDEC.html</a></p>
-<p><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Jpg&amp;versionId=068Tr000000w5U3&amp;operationContext=DELIVERY&amp;contentId=05TTr000001VBAK&amp;page=0&amp;d=/a/Tr000000aECZ/kNChLu18BUNEF8QQFUbUPn7G1UpkegFnNbTirxpriEg&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
+<p>The user account within vSphere must be granted the following permissions:<br />
+<a href="https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.security.doc/GUID-C04F1605-D158-4B65-810F-6F5B109BCDEC.html">https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.security.doc/GUID-C04F1605-D158-4B65-810F-6F5B109BCDEC.html</a></p>
+<p><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Jpg&amp;versionId=068Tr000000w5U3&amp;operationContext=DELIVERY&amp;contentId=05TTr000001VBAK&amp;page=0&amp;d=%2Fa%2FTr000000aECZ%2FkNChLu18BUNEF8QQFUbUPn7G1UpkegFnNbTirxpriEg&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
 <h3 id="additional-information">Additional Information</h3>
 <p><strong>vSphere CNS Block volumes:</strong></p>
 <p>Cloud Native Storage (CNS) integrates vSphere and Kubernetes and offers capabilities to create and manage container volumes in vSphere environment. CNS consists of the two components, CNS component in vCenter Server and a vSphere volume driver in Kubernetes, called vSphere Container Storage Plug-in.</p>
@@ -11014,6 +11018,7 @@
 <p>CSI allows volume plugins to be installed on Kubernetes clusters as extensions. Once a CSI-compatible volume driver is deployed on a Kubernetes cluster, users can use the CSI to provision, attach, mount, and format the volumes exposed by the CSI driver.</p>
 <p>The CSI driver for vSphere is <code>csi.vsphere.vmware.com</code>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

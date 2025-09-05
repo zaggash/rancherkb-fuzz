@@ -9183,7 +9183,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11025,17 +11025,18 @@
 <h3 id="resolution">Resolution</h3>
 <h2 id="development-status"><strong>Development Status</strong></h2>
 <h3 id="edit-feb-2024-rancheros-1x-has-a-new-name-and-new-identity"><strong>EDIT (FEB 2024): RancherOS 1.x has a new name and new identity.</strong></h3>
-<p>RancherOS was re-named in July 2022&lt; <a href="https://github.com/rancher/elemental/pull/161">https://github.com/rancher/elemental/pull/161</a> &gt; and is now known as Elemental&lt; <a href="https://github.com/rancher/elemental">https://github.com/rancher/elemental</a> &gt;.</p>
-<p>It's evolved, and is now based on SLE Micro&lt; <a href="https://www.suse.com/products/micro/">https://www.suse.com/products/micro/</a> &gt; -&gt; into SLEMicro-Rancher&lt; <a href="https://github.com/rancher/elemental/issues/1008">https://github.com/rancher/elemental/issues/1008</a> &gt;.</p>
-<p>Because it’s based on SLE Micro, that is derived from SLES, it benefits from all the Security Certifications &lt; <a href="https://www.suse.com/support/security/certifications/">https://www.suse.com/support/security/certifications/</a> &gt;, hardening&lt; <a href="https://documentation.suse.com/compliance/all/html/SLES-openscap/index.html#openscap-ssg-profiles-sle15">https://documentation.suse.com/compliance/all/html/SLES-openscap/index.html#openscap-ssg-profiles-sle15</a> &gt; and hardware certifications&lt; <a href="https://www.suse.com/product-certification/yes-certified/faq/">https://www.suse.com/product-certification/yes-certified/faq/</a> &gt; of SLES.</p>
+<p>RancherOS was re-named in July 2022&lt;<a href="https://github.com/rancher/elemental/pull/161">https://github.com/rancher/elemental/pull/161</a>&gt; and is now known as Elemental&lt;<a href="https://github.com/rancher/elemental">https://github.com/rancher/elemental</a>&gt;.</p>
+<p>It's evolved, and is now based on SLE Micro&lt;<a href="https://www.suse.com/products/micro/">https://www.suse.com/products/micro/</a>&gt; -&gt; into SLEMicro-Rancher&lt;<a href="https://github.com/rancher/elemental/issues/1008">https://github.com/rancher/elemental/issues/1008</a>&gt;.</p>
+<p>Because it’s based on SLE Micro, that is derived from SLES, it benefits from all the Security Certifications &lt;<a href="https://www.suse.com/support/security/certifications/">https://www.suse.com/support/security/certifications/</a>&gt;, hardening&lt;<a href="https://documentation.suse.com/compliance/all/html/SLES-openscap/index.html#openscap-ssg-profiles-sle15">https://documentation.suse.com/compliance/all/html/SLES-openscap/index.html#openscap-ssg-profiles-sle15</a>&gt; and hardware certifications&lt;<a href="https://www.suse.com/product-certification/yes-certified/faq/">https://www.suse.com/product-certification/yes-certified/faq/</a>&gt; of SLES.</p>
 <h3 id="edit-nov-2021-rancheros-1x-is-past-its-eol-milestone-and-no-longer-maintained"><strong>EDIT (NOV 2021): RancherOS 1.x is past its EOL milestone and no longer maintained.</strong></h3>
 <p>RancherOS 1.x is currently in a maintain-only-as-essential mode. That is to say, it is no longer being actively maintained at a code level other than addressing critical or security fixes. There are two significant reasons behind this product decision:</p>
-<p><strong>1. Docker.</strong> The current industry requirements for a container runtime is very much evolving. Container runtimes like containerd and CRIO are now being actively considered as the default choice. RancherOS 1.x, which was specifically designed around using Docker engine only, unfortunately does not lend itself, in its current design, to this new evolving requirement.</p>
-<p><strong>2. ISV Support.</strong> RancherOS was specifically designed as a minimalistic OS to support purpose-built containerized applications. It was not designed to be used as a general-purpose OS (such as CentOS or Ubuntu). As such, most ISVs have not certified their software to run on RancherOS, nor does RancherOS even contain the necessary components for many of these applications to run.</p>
+<p><strong>1. Docker.</strong> The current industry requirements for a container runtime is very much evolving. Container runtimes like containerd and CRIO are now being actively considered as the default choice. RancherOS 1.x, which was specifically designed around using Docker engine only, unfortunately does not lend itself, in its current design, to this new evolving requirement. </p>
+<p><strong>2. ISV Support.</strong> RancherOS was specifically designed as a minimalistic OS to support purpose-built containerized applications. It was not designed to be used as a general-purpose OS (such as CentOS or Ubuntu). As such, most ISVs have not certified their software to run on RancherOS, nor does RancherOS even contain the necessary components for many of these applications to run. </p>
 <h2 id="support-status">Support Status</h2>
 <h3 id="rancheros-1x-is-no-longer-commercially-supported"><strong>RancherOS 1.x is no longer commercially supported.</strong></h3>
 <p>Any assistance from Rancher Support on RancherOS topics, filed as support cases, is not SLA- bound.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

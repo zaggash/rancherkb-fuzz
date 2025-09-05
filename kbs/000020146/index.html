@@ -9168,7 +9168,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11015,12 +11015,12 @@
      - &quot;localhost:9090&quot;
 </code></pre></div>
 <p>You would add the following two definitions to the Answers section:</p>
-<p>prometheus.additionalScrapeConfigs[0].job_name = prometheus
-prometheus.additionalScrapeConfigs[0].static_configs[0].targets[0] = localhost:9090</p>
+<p>prometheus.additionalScrapeConfigs[0].job_name = prometheus prometheus.additionalScrapeConfigs[0].static_configs[0].targets[0] = localhost:9090</p>
 <p>After adding the answers, click 'Save' and you should now be able to view the target and its status within the Prometheus UI under Status -&gt; Targets.</p>
 <h4 id="further-reading">Further reading</h4>
 <p>Documentation on the Rancher cluster monitoring <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/monitoring/">can be found here</a> and for Rancher project monitoring <a href="https://rancher.com/docs/rancher/v2.x/en/project-admin/tools/monitoring/">here</a>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

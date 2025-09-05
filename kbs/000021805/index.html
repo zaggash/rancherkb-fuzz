@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11003,12 +11003,10 @@ TimeGenerated         ReplacementStrings
 <ol>
 <li>Create a folder "bin" in C: and change directory to the newly created folder to execute step 2.</li>
 </ol>
-<div class="highlight"><pre><span></span><code>mkdir C:/bin
+<p><div class="highlight"><pre><span></span><code>mkdir C:/bin 
 cd C:/bin
 </code></pre></div>
-<ol>
-<li>Create the C# source file with the name rancher-windowsnode-sh-exe.cs and the contents below. This file will be complied in step 3.</li>
-</ol>
+2. Create the C# source file with the name rancher-windowsnode-sh-exe.cs and the contents below. This file will be complied in step 3.</p>
 <div class="highlight"><pre><span></span><code>class Program
 
 {
@@ -11019,44 +11017,40 @@ static void Main(string[] args){}
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>PS C:\bin&gt; type .\rancher-windowsnode-sh-exe.cs
-class Program
+<div class="highlight"><pre><span></span><code><span class="nt">PS</span><span class="w"> </span><span class="nt">C</span><span class="o">:</span><span class="err">\</span><span class="nt">bin</span><span class="o">&gt;</span><span class="w"> </span><span class="nt">type</span><span class="w"> </span><span class="o">.</span><span class="err">\</span><span class="nt">rancher-windowsnode-sh-exe</span><span class="p">.</span><span class="nc">cs</span>
+<span class="nt">class</span><span class="w"> </span><span class="nt">Program</span>
 
-{
+<span class="p">{</span>
 
-static void Main(string[] args){}
+<span class="err">static</span><span class="w"> </span><span class="err">void</span><span class="w"> </span><span class="err">Main(string[]</span><span class="w"> </span><span class="err">args){</span><span class="p">}</span>
 
-}
-PS C:\bin&gt;
+<span class="err">}</span>
+<span class="nt">PS</span><span class="w"> </span><span class="nt">C</span><span class="o">:</span><span class="err">\</span><span class="nt">bin</span><span class="o">&gt;</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<p><div class="highlight"><pre><span></span><code>
 </code></pre></div>
-<ol>
-<li>Run the command below to compile the binary from the source file:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>    c:\Windows\microsoft.net\Framework64\v4.0.30319\csc.exe /target:exe /out:c:\bin\sh.exe rancher-windowsnode-sh-exe.cs
+3. Run the command below to compile the binary from the source file:</p>
+<div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nt">c</span><span class="o">:</span><span class="err">\</span><span class="nt">Windows</span><span class="err">\</span><span class="nt">microsoft</span><span class="p">.</span><span class="nc">net</span><span class="err">\</span><span class="nt">Framework64</span><span class="err">\</span><span class="nt">v4</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">30319</span><span class="err">\</span><span class="nt">csc</span><span class="p">.</span><span class="nc">exe</span><span class="w"> </span><span class="o">/</span><span class="nt">target</span><span class="p">:</span><span class="nd">exe</span><span class="w"> </span><span class="o">/</span><span class="nt">out</span><span class="p">:</span><span class="nd">c</span><span class="o">:</span><span class="err">\</span><span class="nt">bin</span><span class="err">\</span><span class="nt">sh</span><span class="p">.</span><span class="nc">exe</span><span class="w"> </span><span class="nt">rancher-windowsnode-sh-exe</span><span class="p">.</span><span class="nc">cs</span>
 </code></pre></div>
 <p>The output should be similar to:</p>
-<div class="highlight"><pre><span></span><code>PS C:\bin&gt; c:\Windows\microsoft.net\Framework64\v4.0.30319\csc.exe /target:exe /out:c:\bin\sh.exe rancher-windowsnode-sh-exe.cs
+<p><div class="highlight"><pre><span></span><code>PS C:\bin&gt; c:\Windows\microsoft.net\Framework64\v4.0.30319\csc.exe /target:exe /out:c:\bin\sh.exe rancher-windowsnode-sh-exe.cs
 Microsoft (R) Visual C# Compiler version 4.8.4161.0
 for C# 5
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 This compiler is provided as part of the Microsoft (R) .NET Framework, but only supports language versions up to C# 5, which is no longer the latest version. For compilers that support newer versions of the C# programming language, see http://go.microsoft.com/fwlink/?LinkID=533240
 </code></pre></div>
-<ol>
-<li>You can now confirm the presence of the sh.exe binary within the C:/bin folder:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>PS C:\bin&gt; dir
+4. You can now confirm the presence of the sh.exe binary within the C:/bin folder:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">PS</span><span class="w"> </span><span class="nt">C</span><span class="o">:</span><span class="err">\</span><span class="nt">bin</span><span class="o">&gt;</span><span class="w"> </span><span class="nt">dir</span>
 
 
-       Directory: C:\bin
+<span class="w">    </span><span class="nt">Directory</span><span class="o">:</span><span class="w"> </span><span class="nt">C</span><span class="o">:</span><span class="err">\</span><span class="nt">bin</span>
 
 
-Mode                 LastWriteTime         Length Name
-   ----                 -------------         ------ ----
-   -a----         4/25/2025   1:57 PM             60 rancher-windowsnode-sh-exe.cs
-   -a----         4/25/2025   2:02 PM           3584 sh.exe
+<span class="nt">Mode</span><span class="w">                 </span><span class="nt">LastWriteTime</span><span class="w">         </span><span class="nt">Length</span><span class="w"> </span><span class="nt">Name</span>
+<span class="nt">----</span><span class="w">                 </span><span class="nt">-------------</span><span class="w">         </span><span class="nt">------</span><span class="w"> </span><span class="nt">----</span>
+<span class="nt">-a----</span><span class="w">         </span><span class="nt">4</span><span class="o">/</span><span class="nt">25</span><span class="o">/</span><span class="nt">2025</span><span class="w">   </span><span class="nt">1</span><span class="p">:</span><span class="nd">57</span><span class="w"> </span><span class="nt">PM</span><span class="w">             </span><span class="nt">60</span><span class="w"> </span><span class="nt">rancher-windowsnode-sh-exe</span><span class="p">.</span><span class="nc">cs</span>
+<span class="nt">-a----</span><span class="w">         </span><span class="nt">4</span><span class="o">/</span><span class="nt">25</span><span class="o">/</span><span class="nt">2025</span><span class="w">   </span><span class="nt">2</span><span class="p">:</span><span class="nd">02</span><span class="w"> </span><span class="nt">PM</span><span class="w">           </span><span class="nt">3584</span><span class="w"> </span><span class="nt">sh</span><span class="p">.</span><span class="nc">exe</span>
 </code></pre></div>
 <p>If the cluster remains in an Updating status, verify if the cluster status is paused and proceed to unpause by following the <strong>Resolution</strong> steps described at <a href="https://www.suse.com/support/kb/doc/?id=000021399">https://www.suse.com/support/kb/doc/?id=000021399</a></p>
 <h3 id="additional-information">Additional Information</h3>
@@ -11065,6 +11059,7 @@ Mode                 LastWriteTime         Length Name
 <li>Certificate Rotation documentation for Rancher-provisioned clusters: <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/rotate-certificates#certificate-rotation">https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/rotate-certificates#certificate-rotation</a></li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

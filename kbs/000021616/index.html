@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10969,29 +10969,46 @@
 <h3 id="resolution">Resolution</h3>
 <p>Check the following aspects:</p>
 <ul>
-<li>CPU</li>
-<li>Go to ⋮ → <code>More Tools</code>  → <code>Task Manager</code></li>
-<li>Monitor the CPU column. Is it constantly at 100?</li>
-<li>Memory</li>
-<li>Go to ⋮ → <code>More Tools</code>  → <code>Task Manager</code><ul>
-<li>Monitor the <code>Memory footprint</code> column. Is it constantly higher than 400 MB? What does it peak at? Does it drop down after a minute?</li>
-</ul>
+<li>
+<p>CPU</p>
 </li>
-<li>Go to ⋮ → <code>More Tools</code>  → <code>Developer Tools</code> → <code>Memory Tab</code><ul>
-<li>Monitor the Total JS heap size. Is it constantly higher than 100 MB?</li>
-</ul>
+<li>
+<p>Go to ⋮ → <code>More Tools</code>  → <code>Task Manager</code></p>
+</li>
+<li>Monitor the CPU column. Is it constantly at 100?</li>
+<li>
+<p>Memory</p>
+</li>
+<li>
+<p>Go to ⋮ → <code>More Tools</code>  → <code>Task Manager</code> </p>
+<ul>
+<li>Monitor the <code>Memory footprint</code> column. Is it constantly higher than 400 MB? What does it peak at? Does it drop down after a minute?</li>
+<li>
+<p>Go to ⋮ → <code>More Tools</code>  → <code>Developer Tools</code> → <code>Memory Tab</code> </p>
+</li>
+<li>
+<p>Monitor the Total JS heap size. Is it constantly higher than 100 MB?</p>
 </li>
 <li>Web Socket traffic</li>
-<li>Go to ⋮ → <code>More Tools</code>  → <code>Developer Tools</code>  → <code>Network Tab</code>  → <code>WS</code>  → <check each entry> → <code>Messages Tab</code></li>
+</ul>
+</li>
+<li>
+<p>Go to ⋮ → <code>More Tools</code>  → <code>Developer Tools</code>  → <code>Network Tab</code>  → <code>WS</code>  → &lt;check each entry&gt; → <code>Messages Tab</code></p>
+</li>
 <li>Are there hundreds of messages per second?</li>
-<li>Errors or spammed messages</li>
-<li>Go to <code>More Tools</code>  → <code>Developer Tools</code>  → <code>Console Tab</code></li>
+<li>
+<p>Errors or spammed messages </p>
+</li>
+<li>
+<p>Go to <code>More Tools</code>  → <code>Developer Tools</code>  → <code>Console Tab</code></p>
+</li>
 <li>Are there Error entries?</li>
 <li>Are there lots and lots of messages?</li>
 </ul>
 <h3 id="additional-information">Additional Information</h3>
 <p>You should take a note of all this information and report back to the Rancher Support team via a support ticket if you need any further analysis.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

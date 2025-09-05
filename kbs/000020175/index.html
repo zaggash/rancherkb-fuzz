@@ -9234,7 +9234,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11150,6 +11150,8 @@ systemctl<span class="w"> </span>start<span class="w"> </span>haproxy
 </ul>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>--header<span class="w"> </span><span class="s2">&quot;Host: rancher.example.com&quot;</span><span class="w"> </span>https://192.168.1.103/ping
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Copy cert and key into a single file called /etc/haproxy/cert.pem</li>
 <li>Add frontend to /etc/haproxy/haproxy.cfg:</li>
@@ -11164,6 +11166,8 @@ bind *:443 ssl crt /etc/haproxy/cert.pem
 reqadd X-Forwarded-Proto:\ https
 default_backend rancher-https
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Add backends to /etc/haproxy/haproxy.cfg:</li>
 </ul>
@@ -11181,11 +11185,15 @@ server rancher01 192.168.1.103:443 check weight 1 maxconn 1024 ssl verify none
 server rancher02 192.168.1.104:443 check weight 1 maxconn 1024 ssl verify none
 server rancher03 192.168.1.105:443 check weight 1 maxconn 1024 ssl verify none
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Test the configuration:</li>
 </ul>
 <div class="highlight"><pre><span></span><code>haproxy<span class="w"> </span>-f<span class="w"> </span>/etc/haproxy/haproxy.cfg<span class="w"> </span>-c
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Reload HAProxy:</li>
 </ul>
@@ -11199,6 +11207,8 @@ server rancher03 192.168.1.105:443 check weight 1 maxconn 1024 ssl verify none
 </ul>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>--header<span class="w"> </span><span class="s2">&quot;Host: rancher.example.com&quot;</span><span class="w"> </span>http://192.168.1.103/ping
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Copy cert and key into a single file called /etc/haproxy/cert.pem</li>
 <li>Create frontends:</li>
@@ -11213,6 +11223,8 @@ bind *:443 ssl crt /etc/haproxy/cert.pem
 reqadd X-Forwarded-Proto:\ https
 default_backend rancher-http
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Create backends:</li>
 </ul>
@@ -11223,11 +11235,15 @@ server rancher01 192.168.1.103:80 check weight 1 maxconn 1024
 server rancher02 192.168.1.104:80 check weight 1 maxconn 1024
 server rancher03 192.168.1.105:80 check weight 1 maxconn 1024
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Test the configuration:</li>
 </ul>
 <div class="highlight"><pre><span></span><code>haproxy<span class="w"> </span>-f<span class="w"> </span>/etc/haproxy/haproxy.cfg<span class="w"> </span>-c
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Reload HAProxy:</li>
 </ul>
@@ -11241,6 +11257,8 @@ server rancher03 192.168.1.105:80 check weight 1 maxconn 1024
 </ul>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>--header<span class="w"> </span><span class="s2">&quot;Host: rancher.example.com&quot;</span><span class="w"> </span>https://192.168.1.103/ping
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>NOTE: The default gateway for all 3 Rancher nodes must be the load balancer. Doc: <a href="https://www.haproxy.com/blog/howto-transparent-proxying-and-binding-with-haproxy-and-aloha-load-balancer/">https://www.haproxy.com/blog/howto-transparent-proxying-and-binding-with-haproxy-and-aloha-load-balancer/</a></li>
 <li>Create frontends:</li>
@@ -11259,6 +11277,8 @@ option tcplog
 tcp-request inspect-delay 5s
 default_backend rancher-https
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Create backends:</li>
 </ul>
@@ -11278,11 +11298,15 @@ server rancher01 192.168.1.103:443
 server rancher02 192.168.1.104:443
 server rancher03 192.168.1.105:443
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Test the configuration:</li>
 </ul>
 <div class="highlight"><pre><span></span><code>haproxy<span class="w"> </span>-f<span class="w"> </span>/etc/haproxy/haproxy.cfg<span class="w"> </span>-c
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Reload HAProxy:</li>
 </ul>
@@ -11302,6 +11326,8 @@ stats realm Haproxy\ Statistics
 stats uri /
 stats auth admin:admin
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Go to http://load01.example.com:9000/</li>
 <li>Username/Password: admin/admin</li>
@@ -11309,10 +11335,13 @@ stats auth admin:admin
 </ul>
 <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>-f<span class="w"> </span>-N<span class="w"> </span>-L<span class="w"> </span><span class="m">9000</span>:127.0.0.1:9000<span class="w"> </span>root@192.168.1.101
 </code></pre></div>
+<!--THE END-->
+
 <ul>
 <li>Go to http://localhost:9000/</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

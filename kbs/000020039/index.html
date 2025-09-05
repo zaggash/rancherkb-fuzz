@@ -9192,7 +9192,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11046,26 +11046,16 @@
 <h4 id="during-troubleshooting-it-may-be-useful-to-collect-a-stacktrace-from-a-running-rancher-instance-and-this-article-details-the-steps-for-creating-one">During troubleshooting it may be useful to collect a stacktrace from a running Rancher instance, and this article details the steps for creating one.</h4>
 <h3 id="resolution">Resolution</h3>
 <ol>
-<li>
-<p>Open two shell sessions and source an admin kubeconfig for the Rancher server cluster in both.</p>
-</li>
-<li>
-<p>In one of the shell sessions, determine the name (e.g. <code>rancher-7b9f4764f5-rs2jx</code>) of the Rancher leader pod per the steps in the article here.</p>
-</li>
-<li>
-<p>In the same shell, start streaming the Rancher leader pod's logs to file, replacing with the pod name identified in step 2.:</p>
-</li>
+<li>Open two shell sessions and source an admin kubeconfig for the Rancher server cluster in both.</li>
+<li>In one of the shell sessions, determine the name (e.g. <code>rancher-7b9f4764f5-rs2jx</code>) of the Rancher leader pod <a href="">per the steps in the article here</a>.</li>
+<li>In the same shell, start streaming the Rancher leader pod's logs to file, replacing with the pod name identified in step 2.:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>kubectl logs -n cattle-system --tail=-1 -f &lt;LEADER_POD_NAME&gt; &gt; rancher.log
+<p><div class="highlight"><pre><span></span><code>kubectl logs -n cattle-system --tail=-1 -f &lt;LEADER_POD_NAME&gt; &gt; rancher.log
 </code></pre></div>
-<ol>
-<li>In the other shell, send a SIGABRT signal to the rancher process in the leader pod, with the command below, to trigger a stacktrace, replacing with the pod name identified in step 2.:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>kubectl -n cattle-system exec &lt;LEADER_POD_NAME&gt; -- bash -c &#39;kill -SIGABRT  $(pgrep -x rancher)&#39;
+4. In the other shell, send a SIGABRT signal to the rancher process in the leader pod, with the command below, to trigger a stacktrace, replacing with the pod name identified in step 2.:</p>
+<p><div class="highlight"><pre><span></span><code>kubectl -n cattle-system exec &lt;LEADER_POD_NAME&gt; -- bash -c &#39;kill -SIGABRT  $(pgrep -x rancher)&#39;
 </code></pre></div>
-<ol>
-<li>When the stacktrace generation is complete the Rancher leader pod will restart and the <code>kubectl logs</code> command in step 3. will exit. You can then provide the <code>rancher.log</code> file, containing the trace, to Rancher Support.</li>
-</ol>
+5. 1. When the stacktrace generation is complete the Rancher leader pod will restart and the <code>kubectl logs</code> command in step 3. will exit. You can then provide the <code>rancher.log</code> file, containing the trace, to Rancher Support.</p>
 <h3 id="validating-the-success-of-the-stacktrace">Validating the success of the stacktrace</h3>
 <p>If you want to validate the stacktrace was successfully generated, you can confirm the presence of the <code>SIGABRT</code> signal and <code>goroutine</code> traces in the <code>rancher.log</code> file as below:</p>
 <div class="highlight"><pre><span></span><code>SIGABRT: abort
@@ -11113,6 +11103,7 @@ gs     0x0
 <h3 id="additional-information">Additional Information</h3>
 <h4 id="rancher-documentation-on-troubleshooting-the-rancher-server-kubernetes-cluster"><a href="https://rancher.com/docs/rancher/v2.x/en/installation/resources/troubleshooting">Rancher Documentation on Troubleshooting the Rancher Server Kubernetes Cluster</a></h4>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

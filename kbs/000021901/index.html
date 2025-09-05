@@ -9066,7 +9066,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10993,7 +10993,7 @@ profiles:
 <p>3] Apply the changes by restarting the <code>rke2-server</code> service:</p>
 <div class="highlight"><pre><span></span><code>systemctl restart rke2-server
 </code></pre></div>
-<p>4] Finally, deploy some test pods and observe their distribution to ensure the custom topology spread constraints are being applied as expected.</p>
+<p>4] Finally, deploy some test pods and observe their distribution to ensure the custom topology spread constraints are being applied as expected. </p>
 <p>5] Below is an example deployment used for testing <strong>PodTopologySpread</strong> at a <strong>region</strong> level:</p>
 <div class="highlight"><pre><span></span><code>apiVersion: apps/v1
 kind: Deployment
@@ -11035,6 +11035,7 @@ spec:
 <h3 id="additional-information">Additional Information</h3>
 <p>In RKE2 clusters, pods may get scheduled unevenly across nodes, regions or zones, which can lead to poor availability or resource usage. To fix this, Kubernetes offers Pod Topology Spread Constraints, which help spread pods evenly across nodes, regions, or other topology domains.</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

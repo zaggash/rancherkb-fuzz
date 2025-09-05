@@ -9177,7 +9177,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11023,31 +11023,21 @@
 <ol>
 <li>Create a folder named k8s.io under <code>~/go/src/</code>:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>~/go/src/k8s.io
+<p><div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>~/go/src/k8s.io
 </code></pre></div>
-<ol>
-<li>Clone the perf-test under k8s.io folder:</li>
-</ol>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/go/src/k8s.io<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/galal-hussein/perf-tests.git
+2. Clone the perf-test under k8s.io folder:</p>
+<p><div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/go/src/k8s.io<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/galal-hussein/perf-tests.git
 </code></pre></div>
-<ol>
-<li>Navigate to the clusterloader2 directory:</li>
-</ol>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/go/src/k8s.io/perf-tests/clusterloader2
+3. Navigate to the clusterloader2 directory:</p>
+<p><div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/go/src/k8s.io/perf-tests/clusterloader2
 </code></pre></div>
-<ol>
-<li>Edit the testconfig according to the environment:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>vim<span class="w"> </span>testing/load/config.yaml
+4. Edit the testconfig according to the environment:</p>
+<p><div class="highlight"><pre><span></span><code>vim<span class="w"> </span>testing/load/config.yaml
 </code></pre></div>
-<ol>
-<li>Execute the clusterloader2 with appropriate options:</li>
-</ol>
-<div class="highlight"><pre><span></span><code><span class="nv">KUBE_SSH_USER</span><span class="o">=</span>&lt;SSH<span class="w"> </span>USERNAME&gt;<span class="w"> </span><span class="nv">LOCAL_SSH_KEY</span><span class="o">=</span>&lt;SSH<span class="w"> </span>KEY<span class="w"> </span>PATH&gt;<span class="w"> </span>go<span class="w"> </span>run<span class="w"> </span>cmd/clusterloader.go<span class="w"> </span>--nodes<span class="w"> </span><span class="m">3</span><span class="w"> </span>--mastername<span class="o">=</span>&lt;MASTER<span class="w"> </span>NODE<span class="w"> </span>NAME&gt;<span class="w"> </span>--kubeconfig<span class="o">=</span>&lt;KUBECONFIG<span class="w"> </span>FILE<span class="w"> </span>PATH&gt;<span class="w"> </span>--provider<span class="o">=</span><span class="nb">local</span><span class="w"> </span>--masterip<span class="o">=</span>&lt;MASTER<span class="w"> </span>NODE<span class="w"> </span>IP<span class="w"> </span>ADDRESS&gt;<span class="w"> </span>--testconfig<span class="o">=</span>testing/&lt;TESTING<span class="w"> </span>SUBJECT&gt;/config.yaml<span class="w"> </span>--report-dir<span class="o">=</span>/tmp/reports<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/tmp.log
+5. Execute the clusterloader2 with appropriate options:</p>
+<p><div class="highlight"><pre><span></span><code><span class="nv">KUBE_SSH_USER</span><span class="o">=</span>&lt;SSH<span class="w"> </span>USERNAME&gt;<span class="w"> </span><span class="nv">LOCAL_SSH_KEY</span><span class="o">=</span>&lt;SSH<span class="w"> </span>KEY<span class="w"> </span>PATH&gt;<span class="w"> </span>go<span class="w"> </span>run<span class="w"> </span>cmd/clusterloader.go<span class="w"> </span>--nodes<span class="w"> </span><span class="m">3</span><span class="w"> </span>--mastername<span class="o">=</span>&lt;MASTER<span class="w"> </span>NODE<span class="w"> </span>NAME&gt;<span class="w"> </span>--kubeconfig<span class="o">=</span>&lt;KUBECONFIG<span class="w"> </span>FILE<span class="w"> </span>PATH&gt;<span class="w"> </span>--provider<span class="o">=</span><span class="nb">local</span><span class="w"> </span>--masterip<span class="o">=</span>&lt;MASTER<span class="w"> </span>NODE<span class="w"> </span>IP<span class="w"> </span>ADDRESS&gt;<span class="w"> </span>--testconfig<span class="o">=</span>testing/&lt;TESTING<span class="w"> </span>SUBJECT&gt;/config.yaml<span class="w"> </span>--report-dir<span class="o">=</span>/tmp/reports<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/tmp.log
 </code></pre></div>
-<ol>
-<li>The results of the testing will be stored in the <code>/tmp/reports</code> directory.</li>
-</ol>
+6. The results of the testing will be stored in the <code>/tmp/reports</code> directory.</p>
 <h4 id="faq">FAQ</h4>
 <div class="highlight"><pre><span></span><code>Errors: [config reading error: decoding failed: error unmarshaling JSON: while decoding JSON: json: cannot unmarshal number -4611686018427388 into Go struct field Phase.Steps.Phases.ReplicasPerNamespace of type int32]&quot;
 </code></pre></div>
@@ -11068,6 +11058,7 @@
 <h4 id="further-reading">Further reading</h4>
 <p><a href="https://github.com/kubernetes/perf-tests">https://github.com/kubernetes/perf-tests</a></p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

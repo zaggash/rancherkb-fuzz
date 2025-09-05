@@ -9153,7 +9153,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10971,9 +10971,10 @@
 <h3 id="cause">Cause</h3>
 <p>The helm <code>--atomic</code> flag, <a href="https://helm.sh/docs/helm/helm_upgrade/#options">causes helm to rollback any changes made in case of a failed helm chart upgrade.</a></p>
 <p>Hypothetically, if the Rancher Deployment portion of the upgrade succeeds and new Rancher Pods start running, and making configuration state changes to the Rancher custom resources, but the helm upgrade then fails on another resource within the chart for any reason, a helm rollback would be automatically performed if the <code>--atomic</code> flag is used.</p>
-<p>Rancher Helm chart version rollbacks, without a restore of Rancher state, are not supported and this may result in a broken state, with partially upgraded Rancher state, but with the older Rancher version running.</p>
+<p>Rancher Helm chart version rollbacks, without a restore of Rancher state, are not supported and this may result in a broken state, with partially upgraded Rancher state, but with the older Rancher version running. </p>
 <p>For Rancher rollbacks in the case of a failed Rancher upgrade you should refer to the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rollbacks">Rancher rollback documentation</a>, using the Rancher backup operator, or a cluster-level restore, using the appropriate restore method for your local Rancher cluster (per the respective <a href="https://rke.docs.rancher.com/etcd-snapshots/restoring-from-backup">RKE</a>, <a href="https://docs.rke2.io/datastore/backup_restore#restoring-a-snapshot-to-existing-nodes">RKE2</a> and <a href="https://docs.k3s.io/datastore/backup-restore">K3s</a> documentation).</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

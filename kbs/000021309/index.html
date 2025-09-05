@@ -9171,7 +9171,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -11010,8 +11010,8 @@
 <p>Adjust the <code>proxy-body-size</code> setting using the <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#custom-max-body-size"><code>nginx.ingress.kubernetes.io/proxy-body-size</code> annotation</a> in the Ingress resource. This setting determines the maximum allowed size of the request body for requests to this individual Ingress. For example, set the following annotation on the Ingress to set a maximum allowed size of 4096MB.</p>
 <div class="highlight"><pre><span></span><code>  nginx.ingress.kubernetes.io/proxy-body-size: &quot;4096m&quot;
 </code></pre></div>
-<p><strong>Updating the default request maximum body size in the ingress-nginx configuration</strong></p>
-<p>Adjust the <code>proxy-body-size</code> in the <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#proxy-body-size">ingress-nginx controller's ConfigMap</a>.</p>
+<p><strong>Updating the default request maximum body size in the ingress-nginx configuration</strong><br />
+Adjust the <code>proxy-body-size</code> in the <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#proxy-body-size">ingress-nginx controller's ConfigMap</a>.</p>
 <p>For RKE2 clusters this configuration can be defined by creating a <a href="https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig">HelmChartConfig</a> resource in the cluster, to customise the values of the deployed rke2-ingress-nginx chart. In the following example, the maximum allowed size of the client request body is set to 5MB.</p>
 <div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
@@ -11034,6 +11034,7 @@ spec:
 <li><a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#custom-max-body-size">ingress-nginx documentation</a> on defining a custom max body size</li>
 </ul>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

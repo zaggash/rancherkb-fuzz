@@ -9171,7 +9171,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10999,7 +10999,7 @@
 <h1 id="recovering-clusteryml-and-clusterrkestate-files-from-kubeconfig-rke-clusters">Recovering cluster.yml and cluster.rkestate files from kubeconfig - RKE clusters</h1>
 <p>This document <strong>(000021114)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
 <h3 id="environment">Environment</h3>
-<h3 id="important-this-script-is-specifically-intended-for-use-with-clusters-created-using-the-rke-cli-do-not-utilize-it-against-any-other-clusters-eg-a-rancher-created-downstream-cluster"><strong>Important:</strong>  <strong>This script is specifically intended for use with clusters created using the RKE CLI.</strong>  Do not utilize it against any other clusters (e.g. a Rancher-created downstream cluster).</h3>
+<h3 id="important-this-script-is-specifically-intended-for-use-with-clusters-created-using-the-rke-cli-do-not-utilize-it-against-any-other-clusters-eg-a-rancher-created-downstream-cluster"><strong>Important:</strong> <strong>This script is specifically intended for use with clusters created using the RKE CLI.</strong> Do not utilize it against any other clusters (e.g. a Rancher-created downstream cluster).</h3>
 <h3 id="situation">Situation</h3>
 <p>During the installation of an RKE Kubernetes cluster, two essential files are created locally in the working directory where you invoke the RKE CLI:</p>
 <ul>
@@ -11014,7 +11014,7 @@
 <li><a href="https://jqlang.github.io/jq/">jq</a> command-line JSON processor installed.</li>
 <li><a href="https://github.com/mikefarah/yq">yq</a> command-line YAML, JSON, and XML processor installed.</li>
 </ul>
-<p>For RKE binary versions &lt; 1.4.19 , 1.5.10 or 1.6.0:</p>
+<p>For RKE binary versions &lt; 1.4.19 , 1.5.10 or 1.6.0: </p>
 <p>On RKE versions prior to 1.4.19, 1.5.10 or 1.6.10, the Kubernetes Cluster state file (cluster.rkestate) and cluster.yml files are stored as a configmap, under the kube-system namespace.</p>
 <div class="highlight"><pre><span></span><code>#!/bin/bash
 echo &quot;Building cluster_recovery.yml...&quot;
@@ -11049,7 +11049,7 @@ echo &quot;&quot; &gt;&gt; cluster_recovery.yml
 echo &quot;Building cluster_recovery.rkestate...&quot;
 kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | jq -r . &gt; cluster_recovery.rkestate
 </code></pre></div>
-<p>For RKE binary versions  1.4.19+ , 1.5.10+ or 1.6.0+:</p>
+<p>For RKE binary versions  1.4.19+ , 1.5.10+ or 1.6.0+: </p>
 <p>On RKE 1.4.19, 1.5.10 and 1.6.0 or higher, the Kubernetes Cluster state file (cluster.rkestate) and cluster.yml files are stored as a secret, under the kube-system namespace.</p>
 <div class="highlight"><pre><span></span><code>#!/bin/bash
 echo &quot;Building cluster_recovery.yml...&quot;
@@ -11087,11 +11087,12 @@ kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\&quo
 <p>Once the execution is completed, you will find two files in the folder of execution: cluster_recovery.yml and cluster_recovery.rkestate, which correspond to a copy of the Cluster Configuration File and the Kubernetes Cluster State file.</p>
 <p>After the recovery is done, please back up these files in a secure location to avoid future loss.</p>
 <h3 id="cause">Cause</h3>
-<p>This change has been implemented to mitigate the <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-32191" title="CVE-2023-32191">CVE-2023-32191</a>.  More information is available at <a href="https://github.com/rancher/rke/security/advisories/GHSA-6gr4-52w6-vmqx">https://github.com/rancher/rke/security/advisories/GHSA-6gr4-52w6-vmqx</a></p>
+<p>This change has been implemented to mitigate the <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-32191" title="CVE-2023-32191">CVE-2023-32191</a>.  More information is available at <a href="https://github.com/rancher/rke/security/advisories/GHSA-6gr4-52w6-vmqx">https://github.com/rancher/rke/security/advisories/GHSA-6gr4-52w6-vmqx</a>  </p>
 <h3 id="additional-information">Additional Information</h3>
-<p>Original source:</p>
-<p>https://gist.github.com/mattmattox/d32b3fea4820075c08c6cc2f6d736702</p>
+<p>Original source:<br />
+https://gist.github.com/mattmattox/d32b3fea4820075c08c6cc2f6d736702</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 

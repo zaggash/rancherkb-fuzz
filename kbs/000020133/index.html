@@ -2998,6 +2998,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#rke-provisioned-cluster-managed-by-rke" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE provisioned cluster managed by RKE
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -9183,7 +9192,7 @@
   
   
   <span class="md-ellipsis">
-    How to resolve the error "Secret -admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
+    How to resolve the error "Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content" when updating RKE2 clusters via Rancher2 Terraform Provider
     
   </span>
   
@@ -10981,6 +10990,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#rke-provisioned-cluster-managed-by-rke" class="md-nav__link">
+    <span class="md-ellipsis">
+      RKE provisioned cluster managed by RKE
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -11038,9 +11056,8 @@
 <li>Navigate to Cluster Management in the Rancher UI and click 'Edit Config' for the cluster.</li>
 <li>Click 'Edit as YAML'.</li>
 <li>Locate or add the <code>dns</code> field, using the below as an example to add the desired parameters below:</li>
-<li>
-<p>```yaml
-rancher_kubernetes_engine_config:
+<li><code>yaml
+   rancher_kubernetes_engine_config:
      [...]
      dns:
        linear_autoscaler_params:
@@ -11048,32 +11065,26 @@ rancher_kubernetes_engine_config:
          max: 5
          min: 1
          nodes_per_replica: 4
-         prevent_single_point_failure: true
-<div class="highlight"><pre><span></span><code>5. Click &#39;Save&#39; to update the cluster with the new configuration.
-
-
-#### RKE provisioned cluster managed by RKE
-
-1. Edit the cluster configuration YAML file to configure the `dns` field, using the below as an example to add the desired parameters below:
-
-
-```yaml
-dns:
-     linear_autoscaler_params:
-       cores_per_replica: 128
-       max: 5
-       min: 1
-       nodes_per_replica: 4
-       prevent_single_point_failure: true
-</code></pre></div></p>
-</li>
-<li>
-<p>Invoke <code>rke up --config &lt;cluster configuration YAML file&gt;</code> to update the cluster.</p>
-</li>
+         prevent_single_point_failure: true</code></li>
+<li>Click 'Save' to update the cluster with the new configuration.</li>
 </ol>
+<h4 id="rke-provisioned-cluster-managed-by-rke">RKE provisioned cluster managed by RKE</h4>
+<ol>
+<li>Edit the cluster configuration YAML file to configure the <code>dns</code> field, using the below as an example to add the desired parameters below:</li>
+</ol>
+<p><div class="highlight"><pre><span></span><code><span class="nt">dns</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">linear_autoscaler_params</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">cores_per_replica</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
+<span class="w">    </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">    </span><span class="nt">nodes_per_replica</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">    </span><span class="nt">prevent_single_point_failure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+2. Invoke <code>rke up --config &lt;cluster configuration YAML file&gt;</code> to update the cluster.</p>
 <h3 id="additional-information">Additional Information</h3>
 <p>RKE documentation: https://rke.docs.rancher.com/upgrades/configuring-strategy#replicas-for-dns-and-monitoring-addons</p>
 <h3 id="disclaimer">Disclaimer</h3>
+<p><a href=""></a></p>
 <p>This Support Knowledgebase provides a valuable tool for SUSE customers and parties interested in our products and solutions to acquire information, ideas and learn from one another. Materials are provided for informational, personal or non-commercial use within your organization and are presented "AS IS" WITHOUT WARRANTY OF ANY KIND.</p>
 
 
