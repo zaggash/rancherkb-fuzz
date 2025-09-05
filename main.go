@@ -9,8 +9,7 @@ import (
 	"regexp"
 	"time"
 
-	md "github.com/JohannesKaufmann/html-to-markdown"
-	mdPlugin "github.com/JohannesKaufmann/html-to-markdown/plugin"
+	md "github.com/JohannesKaufmann/html-to-markdown/v2"
 	colly "github.com/gocolly/colly/v2"
 	collyQueue "github.com/gocolly/colly/v2/queue"
 	sf "github.com/simpleforce/simpleforce"
@@ -130,9 +129,7 @@ func main() {
 		fmt.Println("Title:", page.Title)
 		fmt.Println("-------")
 
-		converter := md.NewConverter("", true, nil)
-		converter.Use(mdPlugin.GitHubFlavored())
-		markdown, err := converter.ConvertString(page.Content)
+		markdown, err := md.ConvertString(page.Content)
 		if err != nil {
 			logger.Println(err)
 			os.Exit(5)
