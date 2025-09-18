@@ -14,7 +14,7 @@
         <link rel="prev" href="../000020138/">
       
       
-        <link rel="next" href="../000020140/">
+        <link rel="next" href="../000020141/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -3160,29 +3160,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020140/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    What permissions are required for the API token when configuring the Rancher2 Terraform Provider?
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020141/" class="md-nav__link">
         
   
@@ -3787,29 +3764,6 @@
   
   <span class="md-ellipsis">
     How to setup HAProxy for Rancher v2.x
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020176/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    How to collect a trace and heap from nginx ingress
     
   </span>
   
@@ -4454,29 +4408,6 @@
   
   <span class="md-ellipsis">
     Why are namespaces created via the kubectl CLI not assigned to a project?
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020219/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    'SIGSEGV: segmentation violation' in prometheus container of the prometheus-project-monitoring-0 Pod when enabling Project monitoring on the System Project
     
   </span>
   
@@ -7392,6 +7323,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021019/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to resolve a TLS handshake timeout error when adding an app repository on a downstream cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021022/" class="md-nav__link">
         
   
@@ -8887,6 +8841,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021478/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cluster agent is not connected after accidentally deleting the cattle-system Namespace of a downstream cluster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021513/" class="md-nav__link">
         
   
@@ -8916,6 +8893,29 @@
   
   <span class="md-ellipsis">
     RKE to RKE2 replatforming - instructions and FAQs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021519/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Does Rancher support Docker?
     
   </span>
   
@@ -10973,6 +10973,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022047/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    UI Server-Side Pagination in Rancher v2.12 and Later
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -11094,7 +11117,9 @@
 </ul>
 <h4 id="answer">Answer</h4>
 <p>When you provision a Kubernetes cluster using RKE, a <a href="https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/">kubeconfig</a> file is automatically generated for your cluster.</p>
-<p>This file is created and saved as <code>kube_config_&lt;cluster&gt;.yml</code>, where <code>&lt;cluster&gt;</code> is the filename of your cluster configuration YAML file. This kubeconfig defines the connection and authentication details to interact with your cluster, using tools such as <code>kubectl</code>.</p>
+<p>This file is created and saved by default as <code>kube_config_cluster.yml</code>.<br />
+The filename can be changed to differentiate between other Kubeconfig files e.g. a prod cluster can have its file named as <code>kube_config_prod.yml</code>.<br />
+This kubeconfig defines the authentication details to access and interact with your cluster, using tools such as <code>kubectl</code>.</p>
 <p>By default, kubectl checks <code>~/.kube/config</code> for a kubeconfig file, but you can specify a different kubeconfig file using the --kubeconfig flag. For example:</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>--kubeconfig<span class="w"> </span>/custom/path/rke/kube_config_cluster.yml<span class="w"> </span>get<span class="w"> </span>pods
 </code></pre></div>
