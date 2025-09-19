@@ -22,7 +22,7 @@
     
     
       
-        <title>[JP] How to confirm a version upgrade of Rancher v2.x is completed successfully - SUSE KBs</title>
+        <title>How to confirm a version upgrade of Rancher v2.x is completed successfully - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#jp-how-to-confirm-a-version-upgrade-of-rancher-v2x-is-completed-successfully" class="md-skip">
+        <a href="#how-to-confirm-a-version-upgrade-of-rancher-v2x-is-completed-successfully" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+              How to confirm a version upgrade of Rancher v2.x is completed successfully
             
           </span>
         </div>
@@ -1545,7 +1545,7 @@
   
   
   <span class="md-ellipsis">
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
     
   </span>
   
@@ -1738,7 +1738,7 @@
   
   
   <span class="md-ellipsis">
-    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+    How to confirm a version upgrade of Rancher v2.x is completed successfully
     
   </span>
   
@@ -1751,7 +1751,7 @@
   
   
   <span class="md-ellipsis">
-    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+    How to confirm a version upgrade of Rancher v2.x is completed successfully
     
   </span>
   
@@ -3914,7 +3914,7 @@
   
   
   <span class="md-ellipsis">
-    [JP] How to test websocket connections to Rancher v2.x
+    How to test websocket connections to Rancher v2.x
     
   </span>
   
@@ -10441,6 +10441,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021886/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fleet Helm OCI deployments fail in Rancher v2.11.0 - v2.11.4 and v2.12.0
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021887/" class="md-nav__link">
         
   
@@ -11154,21 +11177,21 @@
 
 
 
-<h1 id="jp-how-to-confirm-a-version-upgrade-of-rancher-v2x-is-completed-successfully">[JP] How to confirm a version upgrade of Rancher v2.x is completed successfully</h1>
+<h1 id="how-to-confirm-a-version-upgrade-of-rancher-v2x-is-completed-successfully">How to confirm a version upgrade of Rancher v2.x is completed successfully</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360050943312">000020078</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
 <ul>
-<li>Rancher v2.xインスタンス（<a href="https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/">単一のDockerコンテナ</a> または<a href="https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/">Kubernetes上にデプロイした高可用性（HA）のインストール</a> ）</li>
-<li>Rancherの<a href="https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/">アップグレードドキュメント</a> に従って実行されるRancherバージョンのアップグレード</li>
+<li>A Rancher v2.x instance, either a <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker">single Docker container</a> or a <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster">Highly Available (HA) installation in Kubernetes</a>.</li>
+<li>A Rancher version upgrade performed per the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades">Rancher upgrade documentation</a>.</li>
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。</p>
+<p>This article details how to confirm that a Rancher version upgrade has successfully completed.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。</p>
+<p>The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:</p>
 <ul>
-<li>Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認</li>
-<li>HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認</li>
-<li>すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認</li>
+<li>Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.</li>
+<li>For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.</li>
+<li>Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.</li>
 </ul>
 
 

@@ -22,7 +22,7 @@
     
     
       
-        <title>[JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup - SUSE KBs</title>
+        <title>"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#jperror-xfs-filesystem-at-var-has-ftype0-cannot-use-overlay-backend-error-messages-logged-by-the-docker-daemon-upon-daemon-startup" class="md-skip">
+        <a href="#error-xfs-filesystem-at-var-has-ftype0-cannot-use-overlay-backend-error-messages-logged-by-the-docker-daemon-upon-daemon-startup" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+              "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
             
           </span>
         </div>
@@ -1554,7 +1554,7 @@
   
   
   <span class="md-ellipsis">
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
     
   </span>
   
@@ -1567,7 +1567,7 @@
   
   
   <span class="md-ellipsis">
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
     
   </span>
   
@@ -1602,15 +1602,6 @@
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
     </span>
   </a>
   
@@ -1807,7 +1798,7 @@
   
   
   <span class="md-ellipsis">
-    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+    How to confirm a version upgrade of Rancher v2.x is completed successfully
     
   </span>
   
@@ -3923,7 +3914,7 @@
   
   
   <span class="md-ellipsis">
-    [JP] How to test websocket connections to Rancher v2.x
+    How to test websocket connections to Rancher v2.x
     
   </span>
   
@@ -10450,6 +10441,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021886/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fleet Helm OCI deployments fail in Rancher v2.11.0 - v2.11.4 and v2.12.0
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021887/" class="md-nav__link">
         
   
@@ -11139,15 +11153,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -11172,24 +11177,18 @@
 
 
 
-<h1 id="jperror-xfs-filesystem-at-var-has-ftype0-cannot-use-overlay-backend-error-messages-logged-by-the-docker-daemon-upon-daemon-startup">[JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup</h1>
+<h1 id="error-xfs-filesystem-at-var-has-ftype0-cannot-use-overlay-backend-error-messages-logged-by-the-docker-daemon-upon-daemon-startup">"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360050943512">000020068</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<ul>
-<li><a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/"><code>overlay</code> or <code>overlay2</code> storage driver</a>を利用するDocker デーモン</li>
-</ul>
+<p>Cluster running with Docker daemon with the <a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/"><code>overlay</code> or <code>overlay2</code> storage driver</a></p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：</p>
+<p>During startup of the Docker daemon, an error message of the following format is present in the system logs:</p>
 <div class="highlight"><pre><span></span><code>Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 </code></pre></div>
-<div class="highlight"><pre><span></span><code> 
-</code></pre></div>
-<h2 id="cause"><strong>Cause</strong></h2>
-<p><a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites">Docker documentation</a>より<br />
-"Running on XFS without d_type support now causes Docker to skip the attempt to use the <code>overlay</code> or <code>overlay2</code>driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>xfsのファイルシステムは、d_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。<br />
-xfsファイルシステムのd_type設定値はxfs_infoコマンドで確認することができます。出力の例は<a href="https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES"><code>xfs_info</code>man pages</a>から参考できます。ftype=1の場合、ファイルシステムはd_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。</p>
+<p>An <code>xfs</code> formatted filesystem is only supported as backing for the <code>overlay</code> or <code>overlay2</code> Docker storage drivers if formatted with <code>d_type</code> set to <code>true</code>.</p>
+<p>The <code>d_type</code> value of an <code>xfs</code> filesystem can be verified with the <code>xfs_info</code> utility. Example output for this command can be found in the <a href="https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES"><code>xfs_info</code> man pages</a>. If <code>ftype=1</code> the filesystem was formatted with <code>d_type</code> <code>true</code> and the filesystem is suitable for use as backing for the <code>overlay</code> or <code>overlay2</code> storage drivers. If the value is set to <code>0</code> the filesystem is not suitable for use with the <code>overlay</code> or <code>overlay2</code> storage drivers, and would need to be reformated with the flag <code>-n ftype=1</code>.</p>
+<p>Per the <a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites">Docker documentation</a>: "Running on XFS without d_type support now causes Docker to skip the attempt to use the <code>overlay</code> or <code>overlay2</code> driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."</p>
 
 
 
