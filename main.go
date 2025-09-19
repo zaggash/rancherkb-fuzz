@@ -3,45 +3,49 @@ package main
 import (
 	"fmt"
 	"log"
-	"net"
-	"net/http"
 	"os"
-	"regexp"
-	"time"
+	"path/filepath"
 
 	md "github.com/JohannesKaufmann/html-to-markdown/v2"
-	colly "github.com/gocolly/colly/v2"
-	collyQueue "github.com/gocolly/colly/v2/queue"
 	sf "github.com/simpleforce/simpleforce"
 )
 
 var (
+	sfAPIVersion = "62.0"
 	sfURL        = os.Getenv("sfURL")
-	sfAPIVersion = "56.0"
 	sfUser       = os.Getenv("sfUser")
 	sfPassword   = os.Getenv("sfPass")
 	sfToken      = os.Getenv("sfToken")
 	sfIdsRequest = os.Getenv("sfIdsRequest")
-	kbPath       = "./website/docs/kbs/"
-	logger       *log.Logger
+
+	kbPath   = "./website/docs/kbs/"
+	logger   = log.New(os.Stderr, "[RancherKB-Fuzz] ", log.LstdFlags)
+	sfClient *sf.Client
 )
 
-// Article skeleton
 type Article struct {
-	Id      string
-	Title   string
-	Url     string
-	Content string
+	Id                string
+	Title             string
+	UrlName           string
+	Content_Env2      string
+	ContentBody       string
+	ContentSituation  string
+	ContentResolution string
+	ContentCause      string
+	ContentState      string
+	ContentProducts   string
 }
 
-// Return simpleforce authenticated client
+func init() {
+	logger = log.New(os.Stderr, "[RancherKB-Fuzz] ", log.Lmsgprefix|log.LstdFlags)
+}
+
 func createSfClient() *sf.Client {
 	client := sf.NewClient(sfURL, sf.DefaultClientID, sfAPIVersion)
 	if client == nil {
 		logger.Fatal("error creating salesforce client")
 		return nil
 	}
-
 	err := client.LoginPassword(sfUser, sfPassword, sfToken)
 	if err != nil {
 		logger.Fatal("failed with salesforce client authentication")
@@ -50,119 +54,108 @@ func createSfClient() *sf.Client {
 	return client
 }
 
-// Return SOQL Query results
 func sfQuery(q string) *sf.QueryResult {
-	sfClient := createSfClient()
-
+	if sfClient == nil {
+		sfClient = createSfClient()
+	}
 	result, err := sfClient.Query(q)
 	if err != nil {
 		logger.Fatal("query failed")
 	}
-
 	if result.TotalSize < 1 {
 		logger.Println("no records returned.")
 	}
 
+	allRecords := result.Records
+
+	// Loop to fetch remaining records if the first page isn't the last one
+	for !result.Done {
+		result, err = sfClient.Query(result.NextRecordsURL)
+		if err != nil {
+			logger.Fatal("query more failed")
+		}
+		allRecords = append(allRecords, result.Records...)
+	}
+	result.Records = allRecords
 	return result
 }
 
-// Do Main stuff
 func main() {
-	// setup scrapper logger
-	logger = log.New(os.Stderr, "[RancherKB-Fuzz] ", log.Lmsgprefix|log.LstdFlags)
+	articles := sfQuery(sfIdsRequest)
 
-	// get articles ID
-	articlesId := sfQuery(sfIdsRequest)
-
-	// setup articles list
-	book := make([]Article, 0)
-
-	// setup GoColly Queue
-	collyQ, _ := collyQueue.New(
-		10,
-		&collyQueue.InMemoryQueueStorage{MaxSize: 10000},
-	)
-
-	// prepare articles Collector
-	articleCollector := colly.NewCollector(
-		colly.URLFilters(
-			regexp.MustCompile(`www.suse.com/support/kb/(.*)/?id(.*)`),
-		),
-		colly.MaxDepth(1),
-	)
-
-	articleCollector.SetRequestTimeout(30 * time.Second)
-	
-	articleCollector.Limit(&colly.LimitRule{
-		Parallelism: 4,
-		Delay: 10 * time.Second,
-		RandomDelay: 5 * time.Second,
-	})
-
-	articleCollector.WithTransport(&http.Transport{
-		DisableKeepAlives: false,
-		DialContext: (&net.Dialer{
-			Timeout:   30 * time.Second,
-			KeepAlive: 30 * time.Second,
-		}).DialContext,
-		MaxIdleConns:          50,
-		IdleConnTimeout:       30 * time.Second,
-		TLSHandshakeTimeout:   10 * time.Second,
-		ExpectContinueTimeout: 3 * time.Second,
-	})
-
-	articleCollector.OnHTML(".col_one", func(mainHtmlArticle *colly.HTMLElement) {
-		page := Article{}
-		url := mainHtmlArticle.Request.URL.String()
-		title := mainHtmlArticle.ChildText("h1")
-		content, _ := mainHtmlArticle.DOM.Html()
-
-		page.Id = url[len(url)-9:]
-		page.Url = url
-		page.Title = title
-		page.Content = content
-		book = append(book, page)
-
-		fmt.Println("-------")
-		fmt.Println("Id:", page.Id)
-		fmt.Println("Link:", page.Url)
-		fmt.Println("Title:", page.Title)
-		fmt.Println("-------")
-
-		markdown, err := md.ConvertString(page.Content)
-		if err != nil {
-			logger.Println(err)
-			os.Exit(5)
+	for _, record := range articles.Records {
+		article := Article{
+			Id:                record.StringField("ArticleNumber"),
+			Title:             record.StringField("Title"),
+			UrlName:           record.StringField("UrlName"),
+			Content_Env2:      record.StringField("SUSE_Environment2__c"),
+			ContentBody:       record.StringField("Body__c"),
+			ContentSituation:  record.StringField("SUSE_Situation__c"),
+			ContentResolution: record.StringField("SUSE_Resolution__c"),
+			ContentCause:      record.StringField("SUSE_Cause__c"),
+			ContentState:      record.StringField("SUSE_State__c"),
+			//ContentProducts:   record.StringField("SUSE_Products__c"),
 		}
 
-		file, err := os.Create(kbPath + page.Id + ".md")
-		if err != nil {
-			logger.Println(err)
-			os.Exit(10)
-		} else {
-			file.WriteString(markdown)
+		contents := map[string]string{
+			"Environment": article.Content_Env2,
+			"Situation":   article.ContentSituation,
+			"State":       article.ContentState,
+			"Procedure":   article.ContentBody,
+			"Cause":       article.ContentCause,
+			"Resolution":  article.ContentResolution,
 		}
-		file.Close()
-	})
 
-	articleCollector.OnRequest(func(response *colly.Request) {
-		logger.Println("visiting kb:", response.URL.String())
-	})
+		fmt.Println("-------")
+		fmt.Println("Id:", article.Id)
+		fmt.Println("Title:", article.Title)
+		fmt.Println("UrlName: https://support.scc.suse.com/s/kb/" + article.UrlName)
 
-	// articleCollector.OnResponse(func(response *colly.Response) {
-	// 	fmt.Println("Response received:", response.StatusCode)
-	// })
+		markdowns := make(map[string]string)
+		for key, val := range contents {
+			if val == "" {
+				logger.Printf("Warning: section '%s' is empty, skipping conversion", key)
+				continue
+			}
+			mdStr, err := md.ConvertString(val)
+			if err != nil {
+				logger.Println("error converting HTML to Markdown:", err)
+				os.Exit(5)
+			}
+			markdowns[key] = mdStr
+		}
 
-	articleCollector.OnError(func(response *colly.Response, err error) {
-		logger.Println("Http Code:", response.StatusCode)
-		logger.Println("got this error:", err)
-		os.Exit(15)
-	})
+		kbContent := fmt.Sprintf("# %s\n\n", article.Title)
+		kbContent += fmt.Sprintf("**Article Number:** [%s](https://support.scc.suse.com/s/kb/%s)\n\n", article.Id, article.UrlName)
+		// Add sections in a specific order, skipping any that are missing
+		for _, section := range []string{"Environment", "Situation", "State", "Procedure", "Cause", "Resolution"} {
+			if _, exists := markdowns[section]; !exists {
+				logger.Printf("Warning: section '%s' is missing and will be skipped in the output", section)
+				continue
+			}
+			kbContent += fmt.Sprintf("## **%s**\n\n%s\n\n", section, markdowns[section])
+		}
 
-	for _, record := range articlesId.Records {
-		id := record.StringField("ArticleNumber")
-		collyQ.AddURL("https://www.suse.com/support/kb/doc/?id=" + id)
+		filePath := filepath.Join(kbPath, article.Id+".md")
+		file, err := os.Create(filePath)
+		if err != nil {
+			logger.Println("error creating file:", err)
+			return
+		}
+		_, err = file.WriteString(kbContent)
+		if err != nil {
+			logger.Println("error writing to file:", err)
+			defer file.Close()
+		}
+
+		fmt.Println("-------")
+
 	}
 
-	collyQ.Run(articleCollector)
+	files, err := os.ReadDir(kbPath)
+	if err != nil {
+		logger.Println("error reading directory:", err)
+	} else {
+		fmt.Printf("Total files created: %d\n", len(files))
+	}
 }
