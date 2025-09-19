@@ -2786,80 +2786,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#what-is-the-dbg-command" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      What is the /dbg command
+      Resolution
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Requirements
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-dbg" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using /dbg
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#viewing-ingress-controller-status" class="md-nav__link">
-    <span class="md-ellipsis">
-      Viewing ingress-controller status
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#viewing-backend-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Viewing backend configuration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#viewing-ingress-certificate-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      Viewing ingress certificate data
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#viewing-dynamically-generated-nginx-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Viewing dynamically generated nginx configuration
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -11057,80 +11006,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#what-is-the-dbg-command" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      What is the /dbg command
+      Resolution
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Requirements
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-dbg" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using /dbg
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#viewing-ingress-controller-status" class="md-nav__link">
-    <span class="md-ellipsis">
-      Viewing ingress-controller status
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#viewing-backend-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Viewing backend configuration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#viewing-ingress-certificate-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      Viewing ingress certificate data
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#viewing-dynamically-generated-nginx-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Viewing dynamically generated nginx configuration
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -11161,16 +11059,14 @@
 
 <h1 id="how-to-use-nginx-dbg">How to use nginx /dbg</h1>
 <p>This document <strong>(000020126)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Kubernetes environments with nginx-ingress-controller</p>
 <h3 id="situation">Situation</h3>
-<h4 id="what-is-the-dbg-command">What is the /dbg command</h4>
-<p>/dbg is a program included in the ingress-nginx container image that can be used to show information about the nginx environment and the resulting nginx configuration, which can be helpful when debugging ingress issues in Kubernetes.</p>
-<h4 id="requirements">Requirements</h4>
-<ul>
-<li>A Kubernetes cluster that has ingress enabled with ingress-nginx as the ingress controller</li>
-<li>A cluster with Linux nodes, nginx will not run on Windows</li>
-<li>kubectl configured</li>
-</ul>
-<h4 id="using-dbg">Using /dbg</h4>
+<p><strong>What is the /dbg command?</strong></p>
+<p>/dbg is a program included in the ingress-nginx container image that can be used to show information about the nginx environment and the resulting nginx configuration, which can be helpful when debugging ingress issues in Kubernetes.<br />
+</p>
+<h3 id="resolution">Resolution</h3>
+<p><strong>Using /dbg</strong></p>
 <p>This command needs to be run from inside one of the ingress-nginx pods, so first determine the pod to run it in.</p>
 <div class="highlight"><pre><span></span><code>&gt; kubectl get pods -n ingress-nginx
 NAME                                    READY   STATUS    RESTARTS   AGE
@@ -11184,27 +11080,25 @@ nginx-ingress-controller-n4p22          1/1     Running   0          5d
 <blockquote>
 <p>If you are diagnosing specific connection issues, you can determine which controller is receiving the traffic by looking through the logs of each.</p>
 </blockquote>
-<h4 id="viewing-ingress-controller-status">Viewing ingress-controller status</h4>
+<p><strong>Viewing ingress-controller status</strong></p>
 <p>/dbg general will show the count of running controllers.</p>
 <div class="highlight"><pre><span></span><code>&gt; kubectl exec -n ingress-nginx $NGINX_POD /dbg  general
 {
   &quot;controllerPodsCount&quot;: 3
 }
 </code></pre></div>
-<h4 id="viewing-backend-configuration">Viewing backend configuration</h4>
+<p><strong>Viewing backend configuration</strong></p>
 <p>/dbg backends list will list the discovered backends:</p>
-<p>```</p>
-<blockquote>
-<p>kubectl exec -n ingress-nginx $NGINX_POD /dbg backends list cattle-system-rancher-80 upstream-default-backend ```</p>
-</blockquote>
+<div class="highlight"><pre><span></span><code> &gt; kubectl exec -n ingress-nginx $NGINX_POD /dbg backends list cattle-system-rancher-80 upstream-default-backend 
+</code></pre></div>
 <p>/dbg backends get will show the configuration for the named backend:</p>
 <div class="highlight"><pre><span></span><code> &gt; kubectl exec -n ingress-nginx $NGINX_POD /dbg backends get cattle-system-rancher-80
 </code></pre></div>
-<h4 id="viewing-ingress-certificate-data">Viewing ingress certificate data</h4>
+<p><strong>Viewing ingress certificate data</strong></p>
 <p>/dbg certs will dump the x509 cert and key for a certificate that nginx has discovered from k8s secrets for the given hostname:</p>
 <div class="highlight"><pre><span></span><code>&gt; kubectl exec -n ingress-nginx $NGINX_POD /dbg certs get &lt;fqdn&gt;
 </code></pre></div>
-<h4 id="viewing-dynamically-generated-nginx-configuration">Viewing dynamically generated nginx configuration</h4>
+<p><strong>Viewing dynamically generated nginx configuration</strong></p>
 <p>/dbg conf will dump the dynamically generated nginx configuration. To view the configuration for a specific ingress hostname, you could run /dbg conf and then grep for the server_name:</p>
 <div class="highlight"><pre><span></span><code>&gt; kubectl exec -n ingress-nginx $NGINX_POD /dbg conf | grep &quot;server_name example.com&quot; -B2 -A20
 </code></pre></div>

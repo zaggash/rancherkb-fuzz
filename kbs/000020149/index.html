@@ -3269,6 +3269,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -3287,6 +3296,21 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#investigation" class="md-nav__link">
     <span class="md-ellipsis">
@@ -3297,7 +3321,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
+  <a href="#resolution_1" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
@@ -11021,6 +11045,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -11039,6 +11072,21 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#investigation" class="md-nav__link">
     <span class="md-ellipsis">
@@ -11049,7 +11097,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
+  <a href="#resolution_1" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
@@ -11089,6 +11137,8 @@
 
 <h1 id="resolving-conntrack-table-full-error-messages-nf_conntrack-table-full-dropping-packets">Resolving conntrack table full error messages: 'nf_conntrack: table full, dropping packets'</h1>
 <p>This document <strong>(000020149)</strong> is provided subject to the <a href="#disclaimer">disclaimer</a> at the end of this document.</p>
+<h3 id="environment">Environment</h3>
+<p>Rancher 2.x</p>
 <h3 id="situation">Situation</h3>
 <h4 id="issue">Issue</h4>
 <p>When investigating a connectivity issue, you may experience errors like the below in the system logs:</p>
@@ -11096,6 +11146,7 @@
 </code></pre></div>
 <p>This error indicates the connection tracking table size has been exhausted. This can manifest with different symptoms, such as intermittent or consistent network timeouts.</p>
 <p>The conntrack table keeps state on open connections that the kernel is translating. This occurs often in a Kubernetes cluster when pods access an external endpoint, or another service within the cluster. These scenarios use NAT and stateful firewall rules which are maintained as entries in the conntrack table.</p>
+<h3 id="resolution">Resolution</h3>
 <h4 id="investigation">Investigation</h4>
 <p>By default, the table size is <a href="https://www.kernel.org/doc/Documentation/networking/nf_conntrack-sysctl.txt">calculated based on the memory</a> allocated to the node. This does not fit all workloads demands, for example in a microservice environment typically a higher number of inter-service connections could be expected without consuming a high amount of memory.</p>
 <p>To output the current max table size:</p>
@@ -11107,7 +11158,7 @@
 <p>Note: With the <code>conntrack</code> package installed, you can also use <code>conntrack -C</code></p>
 <p>If the <code>nf_conntrack_count</code> and <code>nf_conntrack_max</code> are close, it is indicating that the current workload requires a larger table size.</p>
 <p>If the current number of entries are not approaching the table size, this could indicate that a burst of workload was experienced historically, in a containerized environment this can be common. For example, if the high-traffic Pods may now running on different nodes.</p>
-<h4 id="resolution">Resolution</h4>
+<h4 id="resolution_1">Resolution</h4>
 <p>Increasing the conntrack table size is achieved with <code>sysctl</code>.</p>
 <p>Calculate a higher value, this can be applied to the node immediately with:</p>
 <div class="highlight"><pre><span></span><code>sysctl<span class="w"> </span>-w<span class="w"> </span>net.netfilter.nf_conntrack_max<span class="o">=</span>&lt;value&gt;
