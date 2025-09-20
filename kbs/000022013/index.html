@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../000021459/">
+        <link rel="prev" href="../000021994/">
       
       
-        <link rel="next" href="../000021469/">
+        <link rel="next" href="../000022017/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>RKE2 vSphere cluster provisioning failing, with failing kube-apiserver healthchecks due to inability to resolve localhost - SUSE KBs</title>
+        <title>Cluster or node provisioning stuck with node taint "node.cloudprovider.kubernetes.io/uninitialized" - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rke2-vsphere-cluster-provisioning-failing-with-failing-kube-apiserver-healthchecks-due-to-inability-to-resolve-localhost" class="md-skip">
+        <a href="#cluster-or-node-provisioning-stuck-with-node-taint-nodecloudproviderkubernetesiouninitialized" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              RKE2 vSphere cluster provisioning failing, with failing kube-apiserver healthchecks due to inability to resolve localhost
+              Cluster or node provisioning stuck with node taint "node.cloudprovider.kubernetes.io/uninitialized"
             
           </span>
         </div>
@@ -8736,32 +8736,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    RKE2 vSphere cluster provisioning failing, with failing kube-apiserver healthchecks due to inability to resolve localhost
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000021462/" class="md-nav__link">
         
   
   
@@ -8772,53 +8750,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      Environment
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Situation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -11013,10 +10944,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../000022013/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Cluster or node provisioning stuck with node taint "node.cloudprovider.kubernetes.io/uninitialized"
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -11027,6 +10980,62 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Situation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -11176,6 +11185,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -11200,55 +11218,27 @@
 
 
 
-<h1 id="rke2-vsphere-cluster-provisioning-failing-with-failing-kube-apiserver-healthchecks-due-to-inability-to-resolve-localhost">RKE2 vSphere cluster provisioning failing, with failing kube-apiserver healthchecks due to inability to resolve localhost</h1>
-<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/RKE2-vSphere-cluster-provisioning-failing-with-failing-kube-apiserver-healthchecks-due-to-inability-to-resolve-localhostRKE2-vSphere-cluster-provisioning-failing-with-failing-kube-apiserver-healthchecks">000021462</a></p>
+<h1 id="cluster-or-node-provisioning-stuck-with-node-taint-nodecloudproviderkubernetesiouninitialized">Cluster or node provisioning stuck with node taint "node.cloudprovider.kubernetes.io/uninitialized"</h1>
+<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Cluster-or-node-provisioning-stuck-with-node-taint-node-cloudprovider-kubernetes-io-uninitialized">000022013</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Rancher 2.7.x</p>
-<p>Rancher 2.8.x</p>
+<ul>
+<li>A Rancher-provisioned RKE2 cluster with a Cloud Provider configured</li>
+</ul>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p><strong>Symptoms</strong></p>
-<ul>
-<li>High number restarts  of the core pods</li>
-</ul>
-<div class="highlight"><pre><span></span><code>NAMESPACE      NAME                                           READY   STATUS     RESTARTS            
-cattle-fleet-system fleet-agent-cc8c97f97-bvx78               1/1    Running      185
-cattle-system cattle-cluster-agent-b1460cbd-8ct5c             1/1    Running      115
-cattle-system cattle-cluster-agent-b1460cbd-l2l8l             1/1    Running      168
-kube-system kube-apiserver-cluster-suse-cp-f777105c-2qgvh     0/1    Running      314
-kube-system kube-controller-manager-cluster-suse-cp-5c-2qgvh  1/1    Running      491
-kube-system cloud-controller-manager-cluster-suse-cp-5c-2qgvh 1/1    Running      501
+<p>During the provisioning of RKE2 clusters, the machines are stuck with the status 'waiting for cluster agent'. The rke2-server service is running and pods are being created, but a number of them are in a pending state due to scheduling errors. </p>
+<p>Example: The vSphere CPI (Cloud Provider Interface) is unable to locate the virtual machine in vSphere, which results in the node being uninitialised. In the downstream cluster, the cloud controller manager pod logs indicate this error locating the virtual machine:</p>
+<div class="highlight"><pre><span></span><code> search.go:186] Did not find node node1.example.com in vc=example.com and datacenter=datacentre1
+ nodemanager.go:160] WhichVCandDCByNodeID failed using VM name. Err: No VM found
+ nodemanager.go:205] shakeOutNodeIDLookup failed. Err=No VM found
+ node_controller.go:233] error syncing &#39;node1.example.com: failed to get instance metadata for node node1.example.com: failed to get instance ID from cloud provider: No VM found, requeuing
+ node_controller.go:244] &quot;Unhandled Error&quot; err=&quot;error syncing &#39;node1.example.com&#39;: failed to get instance metadata for node node1.example.com: failed to get instance ID from cloud provider: No VM found, requeuing&quot;
+ node_controller.go:271] Update 1 nodes status took 57.912µs.
 </code></pre></div>
-<ul>
-<li>The apiserver pod flaps between ready and not ready status</li>
-</ul>
-<div class="highlight"><pre><span></span><code>NAMESPACE              NAME                                 READY   STATUS     RESTARTS 
-
-kube-system kube-apiserver-cluster-suse-cp-f777105c-2qgvh     0/1   Running    314
-</code></pre></div>
-<ul>
-<li>The kubelet logs register failing probes against the kube-apiserver.</li>
-</ul>
+<h2 id="cause"><strong>Cause</strong></h2>
+<p>The node.cloudprovider.kubernetes.io/uninitialized taint is added to new nodes in clusters where a Cloud Provider is configured. This taint is removed by the CPI once it successfully queries and sets the spec.providerID on the node. If there is a problem with the CPI configuration and this cannot be successfully queried, then the node will remain in this state and fail to complete provisioning. If this is the first node in the cluster then the cluster itself will be stuck in provisioning.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>1) <strong>Enable kubelet debug logging</strong></p>
-<ol>
-<li>Click <strong>☰ &gt; Cluster Management</strong>.</li>
-<li>Go to the cluster you want to configure and click <strong>⋮ &gt; Edit Config</strong>.</li>
-<li><strong>Advanced</strong> &gt; <strong>Additional Kubelet Args</strong> &gt; Add v=9 under <strong>For all machines, use Kubelet args</strong></li>
-</ol>
-<p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000002WYT&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr0000046Omv" /><br />
-</p>
-<p>2) <strong>Replicate the livenenessProbe and check the kubelet logs</strong></p>
-<div class="highlight"><pre><span></span><code>   2.1 Open an SSH session to a master node
-   2.2 Execute the command to simulate livenessProbe for kube-apiserver in the cluster
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>/var/lib/rancher/rke2/bin/crictl --runtime-endpoint unix:///run/k3s/containerd/containerd.sock exec $(/var/lib/rancher/rke2/bin/crictl --runtime-endpoint unix:///run/k3s/containerd/containerd.sock ps | grep kube-apiserver | awk &#39;{print $1}&#39;) kubectl get --server=https://localhost:6443/ --client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --raw=/livez
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>   2.3 Open another SSH sessionn to the same master node and check the logs
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>tail -f /var/lib/rancher/rke2/agent/logs/kubelet.log | grep kube-apiserver
-</code></pre></div>
-<div class="highlight"><pre><span></span><code> Check the DNS resolution and DNS lookups.
-</code></pre></div>
+<p>In order to resolve this issue, validate and correct the Cloud Provider configuration for the affected cluster, as required.</p>
+<p>In the example above, with the vSphere Cloud Provider, you would need to check the Add-on: vSphere CPI configuration for the cluster, to ensure the correct vCenter and Data Center was configured, as well as validating that VMware Tools was running successfully in the virtual machine, and its hostname was correctly configured.</p>
 
 
 
