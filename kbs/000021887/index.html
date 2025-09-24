@@ -22,7 +22,7 @@
     
     
       
-        <title>How to enable TLSv1 TLSv1.1 on ingress nginx - SUSE KBs</title>
+        <title>How to edit the enabled TLS protocols or ciphers of ingress-nginx in an RKE2 cluster - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-enable-tlsv1-tlsv11-on-ingress-nginx" class="md-skip">
+        <a href="#how-to-edit-the-enabled-tls-protocols-or-ciphers-of-ingress-nginx-in-an-rke2-cluster" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to enable TLSv1 TLSv1.1 on ingress nginx
+              How to edit the enabled TLS protocols or ciphers of ingress-nginx in an RKE2 cluster
             
           </span>
         </div>
@@ -1545,7 +1545,7 @@
   
   
   <span class="md-ellipsis">
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
     
   </span>
   
@@ -1729,7 +1729,7 @@
   
   
   <span class="md-ellipsis">
-    How to confirm a version upgrade of Rancher v2.x is completed successfully
+    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
     
   </span>
   
@@ -3730,7 +3730,7 @@
   
   
   <span class="md-ellipsis">
-    How do I edit or upgrade clusters created via RKE Templates?
+    [JP] How do I edit my cluster using RKE Templates?
     
   </span>
   
@@ -3845,7 +3845,7 @@
   
   
   <span class="md-ellipsis">
-    [JP] How to test websocket connections to Rancher v2.x
+    How to test websocket connections to Rancher v2.x
     
   </span>
   
@@ -4369,29 +4369,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020226/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    How to rotate certificates for clusters launched by RKE v0.1.x or Rancher v2.0.x and v2.1.x
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020231/" class="md-nav__link">
         
   
@@ -4466,7 +4443,7 @@
   
   
   <span class="md-ellipsis">
-    Istio-init container fails to start when SElinux is enabled on RHEL 7.x
+    Istio-init container fails to start when SElinux is enabled on RHEL 8.x
     
   </span>
   
@@ -4605,29 +4582,6 @@
   
   <span class="md-ellipsis">
     How to rotate rancher-webhook (cattle-webhook-tls) certificates?
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020416/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Downstream clusters flapping between available and unavailable state
     
   </span>
   
@@ -6077,6 +6031,29 @@
   
   <span class="md-ellipsis">
     How to recover an RKE cluster when all control plane nodes have failed
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000020698/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to upgrade a Rancher-managed k3s cluster via the Rancher2 Terraform Provider
     
   </span>
   
@@ -10386,7 +10363,7 @@
   
   
   <span class="md-ellipsis">
-    How to enable TLSv1 TLSv1.1 on ingress nginx
+    How to edit the enabled TLS protocols or ciphers of ingress-nginx in an RKE2 cluster
     
   </span>
   
@@ -10399,7 +10376,7 @@
   
   
   <span class="md-ellipsis">
-    How to enable TLSv1 TLSv1.1 on ingress nginx
+    How to edit the enabled TLS protocols or ciphers of ingress-nginx in an RKE2 cluster
     
   </span>
   
@@ -10440,20 +10417,35 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-for-rancher-provisioned-rke2-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration for Rancher-provisioned RKE2 clusters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-for-standalone-rke2-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration for standalone RKE2 clusters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -11162,20 +11154,35 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cause
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-for-rancher-provisioned-rke2-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration for Rancher-provisioned RKE2 clusters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-for-standalone-rke2-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration for standalone RKE2 clusters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -11195,39 +11202,59 @@
 
 
 
-<h1 id="how-to-enable-tlsv1-tlsv11-on-ingress-nginx">How to enable TLSv1 TLSv1.1 on ingress nginx</h1>
-<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/How-to-enable-TLSv1-TLSv1-1-on-ingress-nginx">000021887</a></p>
+<h1 id="how-to-edit-the-enabled-tls-protocols-or-ciphers-of-ingress-nginx-in-an-rke2-cluster">How to edit the enabled TLS protocols or ciphers of ingress-nginx in an RKE2 cluster</h1>
+<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/How-to-edit-the-enabled-TLS-protocols-or-ciphers-of-ingress-nginx-in-an-RKE2-cluster">000021887</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Rancher 2.x<br />
-Ingress-Nginx &gt;=2.3.3</p>
+<ul>
+<li>A Rancher-provisioned or standalone RKE2 cluster with the ingress-nginx ingress controller</li>
+</ul>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>Ingress-Nginx controller versions 2.3.3 and later removed support for TLS 1.0 and TLS 1.1. These versions default to using only TLS 1.2 and TLS 1.3</p>
-<h2 id="cause"><strong>Cause</strong></h2>
-<p>TLSv1 and TLSv1.1 are considered insecure and depreciated and as a result have been disabled by default in Ingress-Nginx controller versions 2.3.3 and later.</p>
+<p>You may wish to customise the TLS protocols or ciphers enabled by the built-in ingress-nginx ingress controller (via the <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#ssl-protocols">ssl-protocols</a> or <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#ssl-ciphers">ssl-ciphers</a> configuration), in an RKE2 cluster.</p>
+<p>For example, in ingress-nginx v1.12.4, the version packaged with RKE2 v1.33+rke2r1, the default ssl-protocol is TLS v1.2. You may wish to enable the deprecated TLS v1.0 and TLS v1.1 protocols, or enable the newer TLS v1.3 protocol. This article details how to achieve this in both Rancher-provisioned and standalone RKE2 clusters.</p>
+<p><strong>NOTE: Changing the default ssl protocols and ciphers has security implications, in particular the use of less secure deprecated protocols or ciphers. You should proceed with caution.</strong></p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p><strong>NOTE: These protocols have been disabled as they are deemed insecure. Enabling them can put you at risk. Do so with caution.</strong></p>
+<h3 id="configuration-for-rancher-provisioned-rke2-clusters"><strong>Configuration for Rancher-provisioned RKE2 clusters</strong></h3>
 <ol>
-<li>Login to the Rancher UI, select the desired downstream cluster from Cluster Management.</li>
-<li>For the desired downstream cluster, click on More options &gt;&gt; Edit Config &gt;&gt; Additional Manifest and provide the below HelmChartConfig for '<code>rke2-ingress-nginx</code>' in this section and click on "Save".</li>
-<li><code>apiVersion: helm.cattle.io/v1
-   kind: HelmChartConfig
-   metadata:
-     name: rke2-ingress-nginx
-     namespace: kube-system
-   spec:
-     valuesContent: |-
-       controller:
-         config:
-           ssl-protocols: "TLSv1 TLSv1.1 TLSv1.2 TLSv1.3"
-           ssl-ciphers": "@SECLEVEL=0 ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA256:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA</code></li>
-<li>Note we have added the TLS versions 1 and 1.1 to the protocols as well as @SECLEVEL=0 to the ssl-cipher suites</li>
-<li>Alternatively, this configuration can be provided in the manifest file '<code>/var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml</code>' on each RKE2 server node followed by a 'rke2-server' service restart.</li>
-<li>The TLS version can be confirmed by running the command below:</li>
+<li>Login to the Rancher UI</li>
+<li>Navigate to <strong>Cluster Management</strong></li>
+<li>Click <strong>Edit Config</strong> for the relevant Rancher-provisioned RKE2 cluster</li>
+<li>Click <strong>Additional Manifest</strong> and provide the a <a href="https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig">HelmChartConfig</a>, with the desired ssl-protocol and ssl-cipher, for the <code>rke2-ingress-nginx</code> chart. In this example, the deprecated TLS versions v1.0 and v1.1 are added to the ssl-protocols, as well as the newer TLS v1.3.</li>
 </ol>
-<p><div class="highlight"><pre><span></span><code># kubectl -n kube-system exec -it rke2-ingress-nginx-controller-xxxx -- /dbg conf|grep -i tls
+<p><div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-ingress-nginx
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    controller:
+      config:
+        ssl-protocols: &quot;TLSv1 TLSv1.1 TLSv1.2 TLSv1.3&quot;
 </code></pre></div>
-7. The TLS version can be verified by running a curl command to the service:</p>
-<div class="highlight"><pre><span></span><code> # curl -v https://&lt;service_url&gt;
+5. Click <strong>Save</strong> at the bottom of the page
+6. Wait for cluster to finish updating
+7. <strong>Explore</strong> the cluster and launch a kubectl shell.
+8. The ssl protocols and ciphers configuration in the running ingress-nginx Pods can be confirmed by running the below command against the cluster:</p>
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app.kubernetes.io/instance=rke2-ingress-nginx -n kube-system --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n kube-system exec &quot;$pod&quot; -- /dbg conf | grep ssl_protocols; done
+</code></pre></div>
+<h3 id="configuration-for-standalone-rke2-clusters"><strong>Configuration for standalone RKE2 clusters</strong></h3>
+<ol>
+<li>On server nodes in the cluster, create a <a href="https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig">HelmChartConfig</a> manifest, with the desired ssl-protocol and ssl-cipher, for the <code>rke2-ingress-nginx</code> chart, within the directory /var/lib/rancher/rke2/server/manifests/ (e.g. /var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml). In this example, the deprecated TLS versions v1.0 and v1.1 are added to the ssl-protocols, as well as the newer TLS v1.3.</li>
+</ol>
+<p><div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-ingress-nginx
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    controller:
+      config:
+        ssl-protocols: &quot;TLSv1 TLSv1.1 TLSv1.2 TLSv1.3&quot;
+</code></pre></div>
+2. Wait for the rke2-ingress-nginx helm chart to finish upgrading
+3. The ssl protocols and ciphers configuration in the running ingress-nginx Pods can be confirmed by running the below command against the cluster:</p>
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app.kubernetes.io/instance=rke2-ingress-nginx -n kube-system --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n kube-system exec &quot;$pod&quot; -- /dbg conf | grep ssl_protocols; done
 </code></pre></div>
 
 
