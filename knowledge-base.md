@@ -3143,35 +3143,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -3783,26 +3777,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# How to confirm a version upgrade of Rancher v2.x is completed successfully
+# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
-- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
+- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
+- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
 
 ## **Situation**
 
-This article details how to confirm that a Rancher version upgrade has successfully completed.
+この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
 
 ## **Resolution**
 
-The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
+Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
 
-- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
-- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
-- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
+- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
+- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
+- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
 
 
 
@@ -8806,28 +8800,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -9000,67 +9000,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -10030,34 +10022,6 @@ As with any cluster maintenance, it is recommended that you first take an etcd s
 
 ---
 
-## Article: 000020226.md
-
-# How to rotate certificates for clusters launched by RKE v0.1.x or Rancher v2.0.x and v2.1.x
-
-**Article Number:** [000020226](https://support.scc.suse.com/s/kb/360033950652)
-
-## **Situation**
-
-#### Task
-
-Kubernetes clusters use multiple certificates to provide both encryption of traffic to the Kubernetes components as well as authentication of these requests. These certificates are auto-generated for [clusters launched by Rancher](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/) and also [clusters launched by the Rancher Kubernetes Engine (RKE) CLI](https://rancher.com/docs/rke/latest/en/).
-
-In Rancher v2.0.x and v2.1.x, the auto-generated certificates for [Rancher-launched Kubernetes clusters](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/) have a validity period of one year, meaning these certificates will expire one year after the cluster is provisioned. The same applies to Kubernetes clusters provisioned by v0.1.x of the [Rancher Kubernetes Engine (RKE) CLI](https://rancher.com/docs/rke/latest/en/).
-
-If you created a Rancher-launched or RKE-provisioned Kubernetes cluster about 1 year ago, and have not already rotated the certificates, you need to rotate the certificates. If no action is taken, then when the certificates expire, the cluster will go into an error state and the Kubernetes API for the cluster will become unavailable. Rancher recommends that you rotate the certificates before they expire to avoid an unexpected service interruption. The rotation is a one time operation, and the newly-generated certificates will be valid for the next 10 years.
-
-#### Pre-requisites
-
-- A Kubernetes cluster launched by RKE CLI v0.1.x, or Rancher v2.0.x and v2.1.x
-
-#### Resolution
-
-Full details on who to rotate the certificates for the both RKE and Rancher launched clusters can be found in the Rancher blog post ["Manual Rotation of Certificates in Rancher Kubernetes Clusters"](https://rancher.com/blog/2019/kubernetes-certificate-expiry-and-rotation-in-rancher-kubernetes-clusters).
-
-
-
----
-
 ## Article: 000020231.md
 
 # Network ingress traffic from 192.168.0.0/16 always SNAT'd in Kubernetes clusters with canal network provider
@@ -10187,26 +10151,26 @@ If the log level is increased to `debug` for troubleshooting purposes, you shoul
 
 ## Article: 000020241.md
 
-# Istio-init container fails to start when SElinux is enabled on RHEL 7.x
+# Istio-init container fails to start when SElinux is enabled on RHEL 8.x
 
 **Article Number:** [000020241](https://support.scc.suse.com/s/kb/Istio-init-container-fails-to-start-when-SElinux-is-enabled)
 
 ## **Environment**
 
-OS: RHEL 7.x  
-ISTIO Chart Version: v1.8.300  
-Rancher Version : v2.5.7
+OS: RHEL 8.x  
+ISTIO Chart Version: v1.24.1  
+Kubernetes version: 1.30.x, 1.31.x, 1.32.x  
+Rancher Version : v2.9.x, v2.10.x, 2.11.x
 
 ## **Situation**
 
 Starting a workload on Istio-enabled namespace fails as the istio-init container failed to start.
 
-The istio-init container shows below error;  
- 
+The istio-init container shows below error:
 
-```
-The error is:
-nat
+```markup
+2025-07-01T21:53:04.349856Z     info    Running iptables restore with: iptables-legacy-restore and the following input:
+* nat
 -N ISTIO_INBOUND
 -N ISTIO_REDIRECT
 -N ISTIO_IN_REDIRECT
@@ -10215,26 +10179,42 @@ nat
 -A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001
 -A ISTIO_IN_REDIRECT -p tcp -j REDIRECT --to-ports 15006
 -A PREROUTING -p tcp -j ISTIO_INBOUND
--A ISTIO_INBOUND -p tcp --dport 22 -j RETURN
 -A ISTIO_INBOUND -p tcp --dport 15090 -j RETURN
 -A ISTIO_INBOUND -p tcp --dport 15021 -j RETURN
 -A ISTIO_INBOUND -p tcp --dport 15020 -j RETURN
 -A ISTIO_INBOUND -p tcp -j ISTIO_IN_REDIRECT
 -A OUTPUT -p tcp -j ISTIO_OUTPUT
 -A ISTIO_OUTPUT -o lo -s 127.0.0.6/32 -j RETURN
--A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -m owner --uid-owner 1337 -j ISTIO_IN_REDIRECT
+-A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -p tcp ! --dport 15008 -m owner --uid-owner 1337 -j ISTIO_IN_REDIRECT
 -A ISTIO_OUTPUT -o lo -m owner ! --uid-owner 1337 -j RETURN
 -A ISTIO_OUTPUT -m owner --uid-owner 1337 -j RETURN
--A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -m owner --gid-owner 1337 -j ISTIO_IN_REDIRECT
+-A ISTIO_OUTPUT -o lo ! -d 127.0.0.1/32 -p tcp ! --dport 15008 -m owner --gid-owner 1337 -j ISTIO_IN_REDIRECT
 -A ISTIO_OUTPUT -o lo -m owner ! --gid-owner 1337 -j RETURN
 -A ISTIO_OUTPUT -m owner --gid-owner 1337 -j RETURN
 -A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN
 -A ISTIO_OUTPUT -j ISTIO_REDIRECT
 COMMIT
+2025-07-01T21:53:04.349880Z     info    Running command (with wait lock): iptables-legacy-restore --noflush --wait=30
+2025-07-01T21:53:04.350989Z     error   Command error output: xtables other problem: Extension REDIRECT revision 0 not supported, missing kernel module?
+Warning: Extension owner revision 0 not supported, missing kernel module?
+Warning: Extension owner is not supported, missing kernel module?
+Warning: Extension owner is not supported, missing kernel module?
+Warning: Extension owner is not supported, missing kernel module?
+Warning: Extension owner is not supported, missing kernel module?
+Warning: Extension owner is not supported, missing kernel module?
+iptables-restore: line 24 failed
+2025-07-01T21:53:04.351011Z     info    Running command (without lock): iptables-legacy-save
+2025-07-01T21:53:04.352944Z     info    Command output:
+# Generated by iptables-save v1.8.10 on Tue Jul  1 21:53:04 2025
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+COMMIT
+# Completed on Tue Jul  1 21:53:04 2025
 
-iptables-restore --noflush /tmp/iptables-rules-1618985143596701894.txt019825926
-iptables-restore: line 25 failed
-iptables-save
+2025-07-01T21:53:04.352956Z     error   exit status 1
 ```
 
 ## **Cause**
@@ -10246,20 +10226,24 @@ The issue is caused by SELinux which prevents the istio-init to load kernel modu
 Execute the modprobe in the below order to fix this without a reboot.
 
 ```
-modprobe br_netfilter 
-modprobe nf_nat_redirect 
-modprobe xt_REDIRECT 
+modprobe iptable_raw
+modprobe xt_REDIRECT
+modprobe xt_connmark
 modprobe xt_owner
+modprobe xt_tcpudp
+modprobe x_tables
 ```
 
-To load the modules automatically during boot, create a file inside /etc/modules-load.d/ as shown below.
+To load the modules automatically during boot, create a file inside /etc/modules-load.d/ as shown below.
 
 ```
 cat >/etc/modules-load.d/istio-iptables.conf <<EOF
-br_netfilter
-nf_nat_redirect
+iptable_raw
 xt_REDIRECT
+xt_connmark
 xt_owner
+xt_tcpudp
+x_tables
 EOF
 ```
 
@@ -10523,41 +10507,6 @@ kubectl delete mutatingwebhookconfigurations.admissionregistration.k8s.io --igno
 ```
 kubectl delete pod -n cattle-system -l app=rancher-webhook
 ```
-
-
-
----
-
-## Article: 000020416.md
-
-# Downstream clusters flapping between available and unavailable state
-
-**Article Number:** [000020416](https://support.scc.suse.com/s/kb/Downstream-clusters-flapping-between-available-and-unavailable-state)
-
-## **Environment**
-
-Rancher version: v2.5.6  
-Management cluster K8S version: 1.21.5
-
-## **Situation**
-
-After upgrading the Kubernetes version of the Rancher management cluster, the downstream cluster status in the WebUI flaps between the available and unavailable states.
-
-Rancher Pod logs show errors like the below;
-
-```
-Failed to connect to peer wss://x.x.x.x/v3/connect [local ID=y.y.y.y]: websocket: bad handshake
-```
-
-## **Cause**
-
-Rancher is storing the service account token from the initial Pod, and then trying to reuse that on subsequent requests even though that pod has been deleted.  
-As of Kubernetes version v1.21, service account tokens are pod-specific, and are invalidated when the pod is deleted, which is why Rancher is unable to use it and thus unable to reach other Rancher replica instances via web-socket.
-
-## **Resolution**
-
-Upgrade Rancher to v2.6.x  
-A workaround until Rancher upgarde is to reduce the Rancher deployment replicas to one.
 
 
 
@@ -12330,6 +12279,49 @@ Please use the following steps as a guideline to recover the cluster, from this 
 7. Once the new node reaches the active state, check the cluster and add additional nodes by repeating step 3 when ready, the additional nodes can be added with only the control plane and etcd roles if desired.
 
 As a follow up, once all desired nodes are added and the cluster is healthy, the control plane and etcd node roles can be configured as needed. For example, if the `all` role is not needed, update the the node by [removing and adding the node again in a rolling fashion](https://www.suse.com/support/kb/doc/?id=000020084) .
+
+
+
+---
+
+## Article: 000020698.md
+
+# How to upgrade a Rancher-managed k3s cluster via the Rancher2 Terraform Provider
+
+**Article Number:** [000020698](https://support.scc.suse.com/s/kb/How-to-upgrade-a-Rancher-managed-k3s-cluster-via-the-Rancher2-Terraform-Provider)
+
+## **Situation**
+
+How to use the Rancher2 Terraform Provider to update an existing downstream cluster managed by Rancher.
+
+## **Resolution**
+
+To do this import the k3s cluster into the Terraform configuration, then upgrade the cluster via Terraform. 
+
+Firstly, with the Rancher2 Terraform Provider configured ([https://registry.terraform.io/providers/rancher/rancher2/latest/docs](https://registry.terraform.io/providers/rancher/rancher2/latest/docs)), define a rancher2\_cluster resource for your k3s cluster, per the following example:
+
+```
+resource "rancher2_cluster" "k3s" {
+    name = "k3s"
+}
+```
+
+Then use the \`terraform import\` command to import the k3s cluster into your Terraform configuration ([https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster#import](https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster#import)), e.g.:
+
+```
+terraform import rancher2_cluster.k3s c-m-h6xkkkvs
+```
+
+Finally with the cluster imported, set the Kubernetes version in the k3s\_config block to upgrade the cluster via a \`terraform apply\` operation, e.g.:
+
+```
+resource "rancher2_cluster" "k3s" {
+    name = "k3s"
+    k3s_config {
+        version = "v1.23.7+k3s1"
+    }
+}
+```
 
 
 
@@ -16887,9 +16879,13 @@ Make sure that the installed version of helm-mapkubeapis is v0.4.1 or later, as 
 
 **Article Number:** [000021220](https://support.scc.suse.com/s/kb/rancher-cattle-impersonation-system)
 
+## **Environment**
+
+Rancher 2.x
+
 ## **Situation**
 
-# What is cattle-impersonation-system?​
+**What is cattle-impersonation-system?​**
 
 It is part of the Rancher Authentication Proxy​:
 
@@ -16898,15 +16894,15 @@ It is part of the Rancher Authentication Proxy​:
 - One of the key features that Rancher adds to Kubernetes is centralized user authentication. This feature allows users to use one set of credentials to authenticate with any of your Kubernetes clusters.  ​
 - This centralized user authentication is accomplished using the Rancher authentication proxy, installed along with the rest of Rancher. This proxy authenticates your users and forwards their requests to your Kubernetes clusters using a service account.
 
-# Why do we need cattle-impersonation-system​?
+**Why do we need cattle-impersonation-system​?**
 
-## Doesn't Kubernetes come with user authentication?
+Doesn't Kubernetes come with user authentication?
 
 The short answer is yes, but Rancher is a multi-cluster Kubernetes management tool to deploy and run clusters anywhere and on any provider from one central point.​ Rancher is sitting "in front" of these multiple Kubernetes clusters. Because Kubernetes has a lot of support for authentication, each of these clusters can come with its own authentication strategy.
 
 By default, Kubernetes clusters are accessed with a kubeconfig file, and the kubeconfig file contains full access to the cluster.​ With Rancher, this file is not required for cluster API communication because it uses the authentication proxy mechanism. The Rancher Manager server connects to the Kubernetes API server on a downstream user cluster by using a service account to communicate with the Kubernetes clusters, which provides an identity for processes that run in pods.​
 
-### What about users in Kubernetes?​
+What about users in Kubernetes?​
 
 Kubernetes does not have full support for the user and group entities​
 
@@ -16915,7 +16911,7 @@ Kubernetes does not have full support for the user and group entities​
 - Thus, there is no API support for a user object and its group membership ([link](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#users-in-kubernetes))​
 - If you want to manage multiple Kubernetes clusters and users across these clusters, you need to manage them externally.
 
-# How does Rancher do user authentication in this case?​
+**How does Rancher do user authentication in this case?​**
 
 Rancher has designed and developed its authentication framework and extended Kubernetes to support the user and group object:​
 
@@ -16925,7 +16921,7 @@ To achieve this, it uses the **user impersonation** of Kubernetes.​ User Impe
 - The user or service account should have "impersonate" permissions granted​
 - An important key to Rancher's authentication system: on every Kubernetes API call, the authentication proxy authenticates the caller. It sets the proper Kubernetes impersonation headers before forwarding the call to Kubernetes masters.​
 
-## ​Rancher authentication proxy​
+**​Rancher authentication proxy​**
 
 In the central authentication model, Rancher is sitting in "front" of all Kubernetes clusters, acts as a central authentication proxy, and thus facilitates the authentication for multiple clusters.​
 
@@ -16936,7 +16932,7 @@ Users authenticate with Rancher, and Rancher redirects the user request to the 
 ![](https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=068Tr000001GziB&operationContext=DELIVERY&contentId=05TTr000001we69&page=0&d=%2Fa%2FTr000000moFU%2FDuzfuSuQesfsPv6djb6LEa_HYg_ye77Q21GGMXmtlYU&oid=00D1i000000gLOd&dpt=null&viewId=)  
  
 
-# Resources for cattle-impersonation-system​
+**Resources for cattle-impersonation-system​**
 
 Four resources are created to handle impersonation:​
 
@@ -16946,27 +16942,31 @@ Four resources are created to handle impersonation:​
 3. **cluster role**: cattle-impersonation-&lt;user ID&gt;​
 4. **cluster role binding**: cattle-impersonation-&lt;user ID&gt;
 
-# Internal implementation
+**Internal implementation**
 
 Creating the impersonation resources works in two parts.  ​
 
-## Part 1​
+**Part 1​**
 
 - When a user creates a cluster or is added as a cluster owner/member/other (or added to a project on that cluster), a **ClusterRoleTemplateBinding** or a **ProjectRoleTemplateBinding** is created for that user on the cluster.​
 - When the **ClusterRoleTemplateBinding** or a **ProjectRoleTemplateBinding** exists, Rancher creates the **namespace** (if it does not already exist), the **service account**, the **cluster role binding**, and the **cluster role** with rules based on the information it has at that time. The rules will include the ability to impersonate the user's ID and the groups that Rancher knows about.​
 
-## Part 2​
+**Part 2​**
 
 - When a user makes a request on the downstream cluster, using either the cluster explorer, kubectl with a downloaded kubeconfig, or curl with the /k8s/clusters proxy API, Rancher intercepts the request and checks to make sure the resources are up to date, that they exist, and that the rules are up to date for the user.​
 - If the user is logging in from an external auth provider, Rancher may not know during part 1 what extra attributes the user has, as these are provided in the token in the request. At this point, Rancher will update the cluster role to include these extra attributes included in the request, such as the principal ID and username.​
 - All relevant resources (namespace, service account, secret, clusterrole and clusterrolebinding) on the downstream cluster are watched and cached on the Rancher server, so checking the resources should have minimal performance overhead.
 
-## Request Diagram
+**Request Diagram**
 
 ![](https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=068Tr000008Sf3m&operationContext=DELIVERY&contentId=05TTr00000BhMR8&page=0&d=%2Fa%2FTr000004aCbS%2FgTy2jxQ6pUPEwiIyvVeZzTN8O1cv5n7QSkQE7sQ4RGQ&oid=00D1i000000gLOd&dpt=null&viewId=) []()  
  
 
-# Example:​ ![](https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=068Tr000001H6A5&operationContext=DELIVERY&contentId=05TTr000001wJ0Y&page=0&d=%2Fa%2FTr000000mneO%2FaRnzDca.PK8KxIrkpIRwoH4jEa_GElcBpvXd0bIhoCY&oid=00D1i000000gLOd&dpt=null&viewId=) In this diagram, a user named Bob wants to see all pods running on a downstream user cluster called User Cluster. ​
+**Example:​**
+
+![](https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=068Tr000001H6A5&operationContext=DELIVERY&contentId=05TTr000001wJ0Y&page=0&d=%2Fa%2FTr000000mneO%2FaRnzDca.PK8KxIrkpIRwoH4jEa_GElcBpvXd0bIhoCY&oid=00D1i000000gLOd&dpt=null&viewId=)
+
+In this diagram, a user named Bob wants to see all pods running on a downstream user cluster called User Cluster. ​
 
  
 
@@ -16975,16 +16975,16 @@ Creating the impersonation resources works in two parts.  ​
 3. Rancher communicates with Kubernetes clusters using a [service account](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) , which provides an identity for processes that run in a pod.​
 4. By default, Rancher generates a kubeconfig file that contains credentials for proxying through the Rancher server to connect to the Kubernetes API server on a downstream user cluster. The kubeconfig file (kube\_config\_rancher-cluster.yml) contains full access to the cluster.
 
-# Q&amp;A
+**Q&amp;A**
 
-## When is the ClusterRole supposed to change? ​
+When is the ClusterRole supposed to change? ​
 
 - It often changes on the first login to add userextras/principalid and userextras/username. A future enhancement to the way user extra attributes are handled in Rancher will make this less necessary in the future.​
 - It will change if the user adds an auth provider or changes auth providers. (NOTE: Rancher does not support changing auth providers at the moment).​
 - It will change if the user's groups in the auth provider change.​
 - It may change depending on how the user makes the request - UI, kubectl, or curl - sometimes the token includes different user extra attributes.
 
-## When will Cleanup happen?​
+When will Cleanup happen?​
 
 - The service account, clusterrole and clusterrolebinding are cleaned up when the ClusterRoleTemplateBinding or ProjectRoleTemplateBinding are deleted (when the user is removed from the project or cluster).
 
@@ -23605,53 +23605,75 @@ To resolve this issue, users should upgrade to a patched version, for Rancher v2
 
 ## Article: 000021887.md
 
-# How to enable TLSv1 TLSv1.1 on ingress nginx
+# How to edit the enabled TLS protocols or ciphers of ingress-nginx in an RKE2 cluster
 
-**Article Number:** [000021887](https://support.scc.suse.com/s/kb/How-to-enable-TLSv1-TLSv1-1-on-ingress-nginx)
+**Article Number:** [000021887](https://support.scc.suse.com/s/kb/How-to-edit-the-enabled-TLS-protocols-or-ciphers-of-ingress-nginx-in-an-RKE2-cluster)
 
 ## **Environment**
 
-Rancher 2.x  
-Ingress-Nginx &gt;=2.3.3
+- A Rancher-provisioned or standalone RKE2 cluster with the ingress-nginx ingress controller
 
 ## **Situation**
 
-Ingress-Nginx controller versions 2.3.3 and later removed support for TLS 1.0 and TLS 1.1. These versions default to using only TLS 1.2 and TLS 1.3
+You may wish to customise the TLS protocols or ciphers enabled by the built-in ingress-nginx ingress controller (via the [ssl-protocols](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#ssl-protocols) or [ssl-ciphers](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#ssl-ciphers) configuration), in an RKE2 cluster.
 
-## **Cause**
+For example, in ingress-nginx v1.12.4, the version packaged with RKE2 v1.33+rke2r1, the default ssl-protocol is TLS v1.2. You may wish to enable the deprecated TLS v1.0 and TLS v1.1 protocols, or enable the newer TLS v1.3 protocol. This article details how to achieve this in both Rancher-provisioned and standalone RKE2 clusters.
 
-TLSv1 and TLSv1.1 are considered insecure and depreciated and as a result have been disabled by default in Ingress-Nginx controller versions 2.3.3 and later.
+**NOTE: Changing the default ssl protocols and ciphers has security implications, in particular the use of less secure deprecated protocols or ciphers. You should proceed with caution.**
 
 ## **Resolution**
 
-**NOTE: These protocols have been disabled as they are deemed insecure. Enabling them can put you at risk. Do so with caution.**
+### **Configuration for Rancher-provisioned RKE2 clusters**
 
-1. Login to the Rancher UI, select the desired downstream cluster from Cluster Management.
-2. For the desired downstream cluster, click on More options &gt;&gt; Edit Config &gt;&gt; Additional Manifest and provide the below HelmChartConfig for '`rke2-ingress-nginx`' in this section and click on "Save".
-3. ```
+1. Login to the Rancher UI
+2. Navigate to **Cluster Management**
+3. Click **Edit Config** for the relevant Rancher-provisioned RKE2 cluster
+4. Click **Additional Manifest** and provide the a [HelmChartConfig](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig), with the desired ssl-protocol and ssl-cipher, for the `rke2-ingress-nginx` chart. In this example, the deprecated TLS versions v1.0 and v1.1 are added to the ssl-protocols, as well as the newer TLS v1.3.
+   
+   ```markup
    apiVersion: helm.cattle.io/v1
    kind: HelmChartConfig
    metadata:
-     name: rke2-ingress-nginx
-     namespace: kube-system
+     name: rke2-ingress-nginx
+     namespace: kube-system
    spec:
-     valuesContent: |-
-       controller:
-         config:
-           ssl-protocols: "TLSv1 TLSv1.1 TLSv1.2 TLSv1.3"
-           ssl-ciphers": "@SECLEVEL=0 ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA256:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA
+     valuesContent: |-
+       controller:
+         config:
+           ssl-protocols: "TLSv1 TLSv1.1 TLSv1.2 TLSv1.3"
    ```
-4. Note we have added the TLS versions 1 and 1.1 to the protocols as well as @SECLEVEL=0 to the ssl-cipher suites
-5. Alternatively, this configuration can be provided in the manifest file '`/var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml`' on each RKE2 server node followed by a 'rke2-server' service restart.
-6. The TLS version can be confirmed by running the command below:
+5. Click **Save** at the bottom of the page
+6. Wait for cluster to finish updating
+7. **Explore** the cluster and launch a kubectl shell.
+8. The ssl protocols and ciphers configuration in the running ingress-nginx Pods can be confirmed by running the below command against the cluster:
    
    ```markup
-   # kubectl -n kube-system exec -it rke2-ingress-nginx-controller-xxxx -- /dbg conf|grep -i tls
+   for pod in $(kubectl get pods -l app.kubernetes.io/instance=rke2-ingress-nginx -n kube-system --no-headers -o name | awk -F '/' '{print $2}'); do echo -n "Checking $pod .... "; kubectl -n kube-system exec "$pod" -- /dbg conf | grep ssl_protocols; done
    ```
-7. The TLS version can be verified by running a curl command to the service:
+
+ 
+
+### **Configuration for standalone RKE2 clusters**
+
+1. On server nodes in the cluster, create a [HelmChartConfig](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig) manifest, with the desired ssl-protocol and ssl-cipher, for the `rke2-ingress-nginx` chart, within the directory /var/lib/rancher/rke2/server/manifests/ (e.g. /var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml). In this example, the deprecated TLS versions v1.0 and v1.1 are added to the ssl-protocols, as well as the newer TLS v1.3.
    
    ```markup
-    # curl -v https://<service_url>
+   apiVersion: helm.cattle.io/v1
+   kind: HelmChartConfig
+   metadata:
+     name: rke2-ingress-nginx
+     namespace: kube-system
+   spec:
+     valuesContent: |-
+       controller:
+         config:
+           ssl-protocols: "TLSv1 TLSv1.1 TLSv1.2 TLSv1.3"
+   ```
+2. Wait for the rke2-ingress-nginx helm chart to finish upgrading
+3. The ssl protocols and ciphers configuration in the running ingress-nginx Pods can be confirmed by running the below command against the cluster:
+   
+   ```markup
+   for pod in $(kubectl get pods -l app.kubernetes.io/instance=rke2-ingress-nginx -n kube-system --no-headers -o name | awk -F '/' '{print $2}'); do echo -n "Checking $pod .... "; kubectl -n kube-system exec "$pod" -- /dbg conf | grep ssl_protocols; done
    ```
 
 
