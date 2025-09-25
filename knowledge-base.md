@@ -18535,6 +18535,50 @@ Repeat the following process on each server node in the RKE2 cluster:
 
 ---
 
+## Article: 000021378.md
+
+# Rancher Monitoring Chart Re-Installation is failing due to existing CRDs
+
+**Article Number:** [000021378](https://support.scc.suse.com/s/kb/Rancher-Monitoring-Chart-Re-Installation-is-failing)
+
+## **Environment**
+
+Rancher 2.x
+
+## **Situation**
+
+The Rancher Monitoring Chart reinstallation is failing with Web-hook errors as below.
+
+```markup
+Error: UPGRADE FAILED: failed to create resource: Internal error occurred: failed calling webhook "prometheusrulemutate.monitoring.coreos.com": failed to call webhook: Post "https://rancher-monitoring-operator.cattle-monitoring-system.svc:443/admission-prometheusrules/validate?timeout=10s": tls: failed to verify certificate: x509: certificate signed by unknown authority (possibly because of "x509: ECDSA verification failure" while trying to verify candidate authority certificate "nil1")
+```
+
+## **Cause**
+
+If the previous Monitoring chart Uninstall was not properly carried out, there would be few CRDs remaining. These CRDs and web hooks will stop the next monitoring chart installations.
+
+## **Resolution**
+
+List the leftover webhook configurations that remain from the last chart installations. The Backup of these web hooks are not require.
+
+```
+kubectl get crd | grep monitoring.coreos
+kubectl get validatingwebhookconfiguration | grep rancher-monitoring-admission
+```
+
+Delete all listed resources according to the steps below. 
+
+```
+kubectl delete crd <crd listed from above steps>
+kubectl delete validatingwebhookconfiguration rancher-monitoring-admission
+```
+
+Install the new Monitoring Chart via Rancher UI and make sure all components are installed properly.
+
+
+
+---
+
 ## Article: 000021379.md
 
 # Is Rancher Prime Hosted SOC2 compliant?
