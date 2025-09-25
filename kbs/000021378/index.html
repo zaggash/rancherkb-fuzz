@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../000021328/">
+        <link rel="prev" href="../000021373/">
       
       
-        <link rel="next" href="../000021334/">
+        <link rel="next" href="../000021379/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Rancher Monitoring: Known Issues with NFS Persistent Storage for Prometheus - SUSE KBs</title>
+        <title>Rancher Monitoring Chart Re-Installation is failing due to existing CRDs - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rancher-monitoring-known-issues-with-nfs-persistent-storage-for-prometheus" class="md-skip">
+        <a href="#rancher-monitoring-chart-re-installation-is-failing-due-to-existing-crds" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Rancher Monitoring: Known Issues with NFS Persistent Storage for Prometheus
+              Rancher Monitoring Chart Re-Installation is failing due to existing CRDs
             
           </span>
         </div>
@@ -8230,32 +8230,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Rancher Monitoring: Known Issues with NFS Persistent Storage for Prometheus
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000021332/" class="md-nav__link">
         
   
   
@@ -8266,53 +8244,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      Environment
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#situation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Situation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Resolution
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -8483,10 +8414,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../000021378/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Rancher Monitoring Chart Re-Installation is failing due to existing CRDs
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -8497,6 +8450,62 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Situation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -11153,6 +11162,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cause
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       Resolution
@@ -11177,25 +11195,26 @@
 
 
 
-<h1 id="rancher-monitoring-known-issues-with-nfs-persistent-storage-for-prometheus">Rancher Monitoring: Known Issues with NFS Persistent Storage for Prometheus</h1>
-<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Rancher-Monitoring-Known-Issues-with-NFS-Persistent-Storage-for-Prometheus">000021332</a></p>
+<h1 id="rancher-monitoring-chart-re-installation-is-failing-due-to-existing-crds">Rancher Monitoring Chart Re-Installation is failing due to existing CRDs</h1>
+<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Rancher-Monitoring-Chart-Re-Installation-is-failing">000021378</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<ul>
-<li>Rancher v2.x, from v2.5 and above</li>
-<li>rancher-monitoring deployed with a Prometheus persistent storage configuration using NFS</li>
-</ul>
+<p>Rancher 2.x</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>The Prometheus server is unstable, with storage-related errors in the Prometheus Pod logs:</p>
-<div class="highlight"><pre><span></span><code>2022-05-26T07:15:19.251601279Z level=error ts=2022-05-26T07:15:19.251Z caller=db.go:745 component=tsdb msg=&quot;compaction failed&quot; err=&quot;plan compaction: open /prometheus/01F8Q3MT8CJXMNMPKW7G86M6M5/meta.json: no such file or directory&quot;
+<p>The Rancher Monitoring Chart reinstallation is failing with Web-hook errors as below.</p>
+<div class="highlight"><pre><span></span><code>Error: UPGRADE FAILED: failed to create resource: Internal error occurred: failed calling webhook &quot;prometheusrulemutate.monitoring.coreos.com&quot;: failed to call webhook: Post &quot;https://rancher-monitoring-operator.cattle-monitoring-system.svc:443/admission-prometheusrules/validate?timeout=10s&quot;: tls: failed to verify certificate: x509: certificate signed by unknown authority (possibly because of &quot;x509: ECDSA verification failure&quot; while trying to verify candidate authority certificate &quot;nil1&quot;)
 </code></pre></div>
-<p>and/or a warning about NFS storage not being supported:</p>
-<div class="highlight"><pre><span></span><code>2022-05-25T10:15:40.601740700Z level=warn ts=2022-05-25T10:15:40.601Z caller=main.go:756 fs_type=NFS_SUPER_MAGIC msg=&quot;This filesystem is not supported and may lead to data corruption and data loss. Please carefully read https://prometheus.io/docs/prometheus/latest/storage/ to learn more about supported filesystems.&quot;
-</code></pre></div>
+<h2 id="cause"><strong>Cause</strong></h2>
+<p>If the previous Monitoring chart Uninstall was not properly carried out, there would be few CRDs remaining. These CRDs and web hooks will stop the next monitoring chart installations.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>As described in the <a href="https://prometheus.io/docs/prometheus/latest/storage/">Prometheus docs</a>, NFS is not a supported filesystem for Prometheus database storage:</p>
-<div class="highlight"><pre><span></span><code>CAUTION: Non-POSIX compliant filesystems are not supported for Prometheus&#39; local storage as unrecoverable corruptions may happen. NFS filesystems (including AWS&#39;s EFS) are not supported. NFS could be POSIX-compliant, but most implementations are not. It is strongly recommended to use a local filesystem for reliability.
+<p>List the leftover webhook configurations that remain from the last chart installations. The Backup of these web hooks are not require.</p>
+<div class="highlight"><pre><span></span><code>kubectl get crd | grep monitoring.coreos
+kubectl get validatingwebhookconfiguration | grep rancher-monitoring-admission
 </code></pre></div>
-<p>You should therefore remove the persistent storage configuration using NFS in the rancher-monitoring chart options or switch to a supported persistent storage type, such as a block storage volume provisioned (e.g. AWS EBS, Longhorn, vSphere volumes).</p>
+<p>Delete all listed resources according to the steps below. </p>
+<div class="highlight"><pre><span></span><code>kubectl delete crd &lt;crd listed from above steps&gt;
+kubectl delete validatingwebhookconfiguration rancher-monitoring-admission
+</code></pre></div>
+<p>Install the new Monitoring Chart via Rancher UI and make sure all components are installed properly.</p>
 
 
 
