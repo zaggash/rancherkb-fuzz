@@ -1394,6 +1394,9 @@ Just like with SSH, reference the secret in your GitRepo resource via `clientSec
       branch: main
       clientSecretName: basic-auth-secret
 
+:::info
+When using BitBucket and access tokens, the username must be `x-token-auth`.
+:::
 
 ### Using Custom CA Bundles
 
@@ -6971,7 +6974,7 @@ done ; wait
 When testing Fleet with private git repositories, you will notice that HTTP secrets are no longer supported in Github. To work around this issue, follow these steps:
 
 1. Create a [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) in Github.
-1. In Rancher, create an HTTP [secret](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/secrets) with your Github username.
+1. In Rancher, create an HTTP [secret](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/secrets) with your Github personal access token. Your username is optional.
 1. Use your token as the secret.
 
 ### Fleet fails with bad response code: 403

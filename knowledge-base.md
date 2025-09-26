@@ -13437,7 +13437,7 @@ extraEnv:
 
 Please see below example screenshot taken from the Global Settings &gt; Settings menu in the Rancher UI after applying the rke-metadata-config setting using Helm.
 
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000YsHJ&feoid=00N1i000002LdMN&refid=0EM5q000000ZqiH)
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tLRS&feoid=00N1i000002LdMN&refid=0EM5q000000ZqiH)
 
 **IMPORTANT NOTE:** 
 
@@ -16588,7 +16588,7 @@ In the Rancher UI, under **Users &amp; Authentication** &gt; **Role Templates** 
 
 After creating this custom Global Role, you can then assign it to [individual users](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/global-permissions#configuring-global-permissions-for-individual-users) or [groups](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/global-permissions#configuring-global-permissions-for-groups). When a non-admin user assigned this role accesses Rancher, the user will not be able to edit any Fleet resources but will be able to view these within the Continuous Delivery UI.
 
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000Twi9&feoid=00N1i000002LdMN&refid=0EMTr000000iCyL)
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tLL2&feoid=00N1i000002LdMN&refid=0EMTr000000iCyL)
 
 
 
@@ -17125,7 +17125,7 @@ Please contact SUSE again before upgrading to a newer Rancher version.
 
 \- As a result, the users are automatically logged out of Rancher. If not, then Once the changes are done, make sure to logout and login again to the Rancher UI. 
 
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000001cmP&feoid=00N1i000002LdMN&refid=0EM5q000003r5MP)
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tLMV&feoid=00N1i000002LdMN&refid=0EM5q000003r5MP)
 
 
 
@@ -19234,7 +19234,7 @@ Rancher 2.7.x, 2.8.x
 ## **Situation**
 
 After accidentally deleting the cattle-system Namespace of a downstream-cluster, the cluster is no longer accesible in Rancher UI due to the cluster agent being removed. To recover it, the cluster agent must be manually recreated and the cluster service account token updated.  
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000002lm1&feoid=00N1i000002LdMP&refid=0EMTr000004SwMx)
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&feoid=00N1i000002LdMP&refid=0EMTr000004SwMx)
 
 **Requierements**
 
@@ -19281,8 +19281,8 @@ Follow the steps described in this section to redeploy the Rancher agents:
 
    
 The namespace cattle-system and the cluster agent will be recreated:  
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000002lm1&feoid=00N1i000002LdMN&refid=0EMTr000004Tc2n)  
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000002lm1&feoid=00N1i000002LdMN&refid=0EMTr000004TbWY)
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&feoid=00N1i000002LdMN&refid=0EMTr000004Tc2n)  
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&feoid=00N1i000002LdMN&refid=0EMTr000004TbWY)
 
 ### 1.3 Force a cluster reconciliation Apply a minor change in the cluster configuration, such as changing the snap retention for etcd.
 
@@ -19290,7 +19290,7 @@ The namespace cattle-system and the cluster agent will be recreated:
 2. Go to the cluster you want to configure and click **⋮ &gt; Edit Config**.
 3. **Cluster Configuration** &gt; etcd &gt; Increase the number of **Snapshots per node**.
 
-![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000002lm1&feoid=00N1i000002LdMN&refid=0EMTr00000CLUp0)
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&feoid=00N1i000002LdMN&refid=0EMTr00000CLUp0)
 
 
 
@@ -19487,7 +19487,7 @@ kubectl patch settings.management.cattle.io ui-brand --type merge -p '{"default"
 
 Global settings &gt; settings &gt; ui-brand &gt; make sure the value is set as **suse** 
 
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000ISHB&feoid=00N1i000002LdMN&refid=0EMTr000005ljRp)
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tLH7&feoid=00N1i000002LdMN&refid=0EMTr000005ljRp)
 
 
 
@@ -22974,7 +22974,7 @@ Rancher-provisioned cluster:
  `kube-reserved=cpu=1,memory=2Gi,ephemeral-storage=5Gi`  
 `system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi`
 
-    ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000oMa1&feoid=00N1i000002LdMN&refid=0EMTr00000DCKeb)
+    ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tL92&feoid=00N1i000002LdMN&refid=0EMTr00000DCKeb)
 
    
 
@@ -24632,7 +24632,7 @@ type: kubernetes.io/basic-auth
 
 - This results in ***"/etc/rancher/agent/registries.yaml"*** file on the downstream server nodes containing the unexpected newline characters ('\\n'). Hence the error.
 
-![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000lP1N&feoid=00N1i000002LdMP&refid=0EMTr00000F0nxl)
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tL2N&feoid=00N1i000002LdMP&refid=0EMTr00000F0nxl)
 
 ## **Cause**
 
@@ -24644,11 +24644,11 @@ The issue is caused by the echo command appending a newline character ('\\n') wh
 - This prevents the newline character from being included in the encoded string, causing authentication issues. Here, in the above example, the ***registries.yaml*** file, the encoded string, i.e, ***SGVsbG8K = decodes to Hello\\n*** and ***V29ybGQK*** = decodes to ***World\\n***.
 - Unfortunately, the ***"echo | base64 -d"*** command does not show the extra newline character. Instead, you can use the ***'hexdump'*** command to confirm any unexpected newline character in encoded strings.
   
-  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000lP1N&feoid=00N1i000002LdMN&refid=0EMTr00000FVuZx)
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tL2N&feoid=00N1i000002LdMN&refid=0EMTr00000FVuZx)
 - The ***"0a"*** character in the command output above indicates the new line. See the ASCII character chart [here](https://www.eso.org/~ndelmott/ascii.html).
 - As a solution, use the ***"-n"*** flag as shown below when encoding the strings. The "-n" flag suppresses the trailing. \\n. 
   
-  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000lP1N&feoid=00N1i000002LdMN&refid=0EMTr00000FVth8)
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tL2N&feoid=00N1i000002LdMN&refid=0EMTr00000FVth8)
 
 ```markup
 From the man page of the echo command.

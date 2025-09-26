@@ -1737,57 +1737,6 @@ They became available and were turned on by default in Kubernetes v1.23, and rep
 
 PSS define security levels for workloads. PSAs describe requirements for pod security contexts and related fields. PSAs reference PSS levels to define security restrictions.
 
-#### Install `helm-mapkubeapis`
-
-1. Open your terminal in the machine you intend to use `helm-mapkubeapis` from and install the plugin:
-    ```shell
-    helm plugin install https://github.com/helm/helm-mapkubeapis
-    ```
-    
-    You will see output similar to the following:
-    ```console
-    Downloading and installing helm-mapkubeapis v0.4.1 ...
-    https://github.com/helm/helm-mapkubeapis/releases/download/v0.4.1/helm-mapkubeapis_0.4.1_darwin_amd64.tar.gz
-    Installed plugin: mapkubeapis
-    ```
-   
-    :::info important
-    Ensure that the `helm-mapkubeapis` plugin is at least v0.4.1, as older versions _do not_ support removal of resources.
-    :::
-
-1. Verify that the plugin was correctly installed:
-    ```shell
-    helm mapkubeapis --help
-    ```
-    
-    You will see output similar to the following:
-    ```console
-    Map release deprecated or removed Kubernetes APIs in-place
-    
-    Usage:
-    mapkubeapis [flags] RELEASE
-    
-    Flags:
-    --dry-run               simulate a command
-    -h, --help              help for mapkubeapis
-    --kube-context string   name of the kubeconfig context to use
-    --kubeconfig string     path to the kubeconfig file
-    --mapfile string        path to the API mapping file
-    --namespace string      namespace scope of the release
-    ```
-
-#### Cleaning Up Broken Releases
-
-After you install the `helm-mapkubeapis` plugin, clean up the releases that became broken after the upgrade to Kubernetes v1.25.
-
-1. Open your preferred terminal and make sure it's connected to the cluster you wish to target by running `kubectl cluster-info`.
-
-1. List all the releases you have installed in your cluster by running `helm list --all-namespaces`.
-
-1. Perform a dry run for each release you would like to clean up by running `helm mapkubeapis --dry-run <release-name> --namespace <release-namespace>`. The result of this command will inform you what resources are going to be replaced or removed.
-
-1. Finally, after reviewing the changes, perform a full run with `helm mapkubeapis <release-name> --namespace <release-namespace>`.
-
 ## Pod Security Admission Configuration Templates
 
 Rancher offers PSA configuration templates. These are pre-defined security configurations that you can apply to a cluster. Rancher admins (or those with the right permissions) can [create, manage, and edit](./psa-config-templates.md) PSA templates.
@@ -3386,7 +3335,7 @@ You will still be able to login using the locally configured `admin` account and
 
 In order to successfully configure AD authentication it is crucial that you provide the correct configuration pertaining to the hierarchy and schema of your AD server.
 
-The [`ldapsearch`](https://manpages.ubuntu.com/manpages/kinetic/en/man1/ldapsearch.1.html) tool allows you to query your AD server to learn about the schema used for user and group objects.
+The [`ldapsearch`](https://manpages.ubuntu.com/manpages/noble/en/man1/ldapsearch.1.html) tool allows you to query your AD server to learn about the schema used for user and group objects.
 
 For the purpose of the example commands provided below we will assume:
 
@@ -5411,6 +5360,8 @@ title: Global Permissions
 <head> 
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/global-permissions"/>
 </head>
+
+<PermissionsWarning />
 
 _Permissions_ are individual access rights that you can assign when selecting a custom permission for a user.
 
@@ -7898,6 +7849,12 @@ Follow the instructions from this page when:
 
 While restoring Rancher on the same setup, the operator will scale down the Rancher deployment when restore starts, and it will scale back up the deployment once restore completes. Rancher will be unavailable during the restore.
 
+:::
+
+:::note Warning for Fleet users
+You must consider how to handle Kubernetes API server availability and paused GitRepos when restoring a Rancher setup
+that is running Fleet workloads. See the [Fleet
+documentation](http://fleet.rancher.io/gitrepo-add#backing-up-and-restoring) for more details.
 :::
 
 :::tip
@@ -11643,7 +11600,7 @@ stringData:
       "tenantId": "<tenant-id>",
       "subscriptionId": "<subscription-id>",
       "aadClientId": "<client-id>",
-      "aadClientSecret": "<tenant-id>",
+      "aadClientSecret": "<client-secret>",
       "resourceGroup": "docker-machine",
       "location": "westus",
       "subnetName": "docker-machine",  
@@ -11728,7 +11685,7 @@ Note that this chart reads the Cloud Provider Config from the secret in the `kub
         "tenantId": "<tenant-id>",
         "subscriptionId": "<subscription-id>",
         "aadClientId": "<client-id>",
-        "aadClientSecret": "<tenant-id>",
+        "aadClientSecret": "<client-secret>",
         "resourceGroup": "docker-machine",
         "location": "westus",
         "subnetName": "docker-machine",
@@ -19828,7 +19785,7 @@ CURRENT   NAME                        CLUSTER                     AUTHINFO     N
 
 In this example, when you use `kubectl` with the first context, `my-cluster`, you will be authenticated through the Rancher server.
 
-With the second context, `my-cluster-controlplane-1`, you would authenticate with the authorized cluster endpoint, communicating with an downstream RKE/K3s cluster directly.
+With the second context, `my-cluster-controlplane-1`, you would authenticate with the authorized cluster endpoint, communicating with an downstream RKE2/K3s cluster directly.
 
 We recommend using a load balancer with the authorized cluster endpoint. For details, refer to the [recommended architecture section.](../../../../reference-guides/rancher-manager-architecture/architecture-recommendations.md#architecture-for-an-authorized-cluster-endpoint-ace)
 
@@ -21633,6 +21590,7 @@ Additionally, the following limitations are present when the feature is enabled.
   - `State` column sort and filter features work on the resources `metadata.state.name` field instead of one deduced locally by the UI.
   - Updates are shown every 5 seconds, rather than instantly.
 - Cluster Explorer:
+  - Project/Namespace filter does not support filtering namespaces by all namespaces not in a project via the `Not in a Project` entry.
   - `Cluster` group --> `Nodes` page
     - The following columns are not sortable or filterable: `Roles`, `External/Internal IP`, `CPU`, `RAM` (logic to determine their value is calculated in the browser)
   - `Workloads` list:
@@ -24532,12 +24490,14 @@ Rancher will publish deprecated features as part of the [release notes](https://
 
 | Patch Version |  Release Date |
 |---------------|---------------|
+| [2.12.2](https://github.com/rancher/rancher/releases/tag/v2.12.2) | September 25, 2025 |
 | [2.12.1](https://github.com/rancher/rancher/releases/tag/v2.12.1) | August 28, 2025 |
 | [2.12.0](https://github.com/rancher/rancher/releases/tag/v2.12.0) | July 30, 2025 |
 
 ## What can I expect when a feature is marked for deprecation?
 
 In the release where functionality is marked as "Deprecated", it will still be available and supported allowing upgrades to follow the usual procedure. Once upgraded, users/admins should start planning to move away from the deprecated functionality before upgrading to the release it marked as removed. The recommendation for new deployments is to not use the deprecated feature.
+
 
 ---
 
@@ -25976,8 +25936,6 @@ For more information on `rancher-monitoring` chart options, including options to
 
 ## Windows Cluster Support
 
-When deployed onto an RKE1 Windows cluster, Monitoring V2 will now automatically deploy a [windows-exporter](https://github.com/prometheus-community/windows_exporter) DaemonSet and set up a ServiceMonitor to collect metrics from each of the deployed Pods. This will populate Prometheus with `windows_` metrics that are akin to the `node_` metrics exported by [node_exporter](https://github.com/prometheus/node_exporter) for Linux hosts.
-
 To be able to fully deploy Monitoring V2 for Windows, all of your Windows hosts must have a minimum [wins](https://github.com/rancher/wins) version of v0.1.0.
 
 For more details on how to upgrade wins on existing Windows hosts, see [Windows cluster support for Monitoring V2.](windows-support.md).
@@ -26653,8 +26611,6 @@ Monitoring V2 can be deployed on a Windows cluster to scrape metrics from Window
 
 Monitoring V2 for Windows can only scrape metrics from Windows hosts that have a minimum `wins` version of v0.1.0.  To be able to fully deploy Monitoring V2 for Windows, all of your hosts must meet this requirement.
 
-If you provision a fresh RKE1 cluster in Rancher 2.5.8, your cluster should already meet this requirement.
-
 ### Upgrading Existing Clusters to wins v0.1.0
 
 If the cluster was provisioned before Rancher 2.5.8 (even if the current Rancher version is 2.5.8), you will not be able to successfully deploy Monitoring V2 for Windows until you upgrade the wins version on each host to at least v0.1.0.
@@ -26662,6 +26618,7 @@ If the cluster was provisioned before Rancher 2.5.8 (even if the current Rancher
 To facilitate this upgrade, Rancher 2.5.8 has released a brand new Helm chart called `rancher-wins-upgrader`.
 
 1. Deploy `rancher-wins-upgrader` with the following override:
+
     ```yaml
     # Masquerading bootstraps the wins-upgrader installation via
     # a previously whitelisted process path since the normal install path,
@@ -26672,15 +26629,9 @@ To facilitate this upgrade, Rancher 2.5.8 has released a brand new Helm chart ca
       enabled: true
       as: c:\\etc\wmi-exporter\wmi-exporter.exe
     ```
-    :::note Note for Non-Default Windows Prefix Path:
-
-    - If you set up the RKE cluster with a `cluster.yml` that has a non-default `win_prefix_path`, you will need to update the `masquerade.as` field with your prefix path in place of  `c:\\`.
-
-    - For example, if you have `win_prefix_path: 'c:\host\opt\'`, then you will need to set `as: c:\host\opt\etc\wmi-exporter\wmi-exporter.exe`.
-
-    :::
 
 2. Once all your hosts have been successfully upgraded, please ensure that you deploy the Helm chart once again with default values to avoid conflicts with the following settings:
+
     ```yaml
     masquerade:
       enabled: false
@@ -28110,6 +28061,7 @@ In order to deploy and run the adapter successfully, you need to ensure its vers
 
 | Rancher Version | Adapter Version  |
 |-----------------|------------------|
+| v2.12.2         |  107.0.0+up7.0.0 |
 | v2.12.1         |  107.0.0+up7.0.0 |
 | v2.12.0         |  107.0.0+up7.0.0 |
 
@@ -31437,7 +31389,7 @@ Deploying to Amazon AWS will incur charges.
 - [Amazon AWS Account](https://aws.amazon.com/account/): An Amazon AWS Account is required to create resources for deploying Rancher and Kubernetes.
 - [Amazon AWS Access Key](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html): Use this link to follow a tutorial to create an Amazon AWS Access Key if you don't have one yet.
 - [IAM Policy created](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html#access_policies_create-start): Defines the permissions an account attached with this policy has.
-- Install [Terraform](https://www.terraform.io/downloads.html): Used to provision the server and cluster in Amazon AWS.
+- Install [Terraform](https://developer.hashicorp.com/terraform/install): Used to provision the server and cluster in Amazon AWS.
 
 ### Example IAM Policy
 
@@ -31543,7 +31495,7 @@ Deploying to Microsoft Azure will incur charges.
 - [Microsoft Azure Subscription](https://docs.microsoft.com/en-us/azure/cost-management-billing/manage/create-subscription#create-a-subscription-in-the-azure-portal): Use this link to follow a tutorial to create a Microsoft Azure subscription if you don't have one yet.
 - [Micsoroft Azure Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant): Use this link and follow instructions to create a Microsoft Azure tenant.
 - [Microsoft Azure Client ID/Secret](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal): Use this link and follow instructions to create a Microsoft Azure client and secret.
-- [Terraform](https://www.terraform.io/downloads.html): Used to provision the server and cluster in Microsoft Azure.
+- [Terraform](https://developer.hashicorp.com/terraform/install): Used to provision the server and cluster in Microsoft Azure.
 
 
 ## Getting Started
@@ -31662,7 +31614,7 @@ Deploying to DigitalOcean will incur charges.
 
 - [DigitalOcean Account](https://www.digitalocean.com): You will require an account on DigitalOcean as this is where the server and cluster will run.
 - [DigitalOcean Access Key](https://www.digitalocean.com/community/tutorials/how-to-create-a-digitalocean-space-and-api-key): Use this link to create a DigitalOcean Access Key if you don't have one.
-- [Terraform](https://www.terraform.io/downloads.html): Used to provision the server and cluster to DigitalOcean.
+- [Terraform](https://developer.hashicorp.com/terraform/install): Used to provision the server and cluster to DigitalOcean.
 
 
 ## Getting Started
@@ -31861,7 +31813,7 @@ Deploying to Google GCP will incur charges.
 - [Google GCP Account](https://console.cloud.google.com/): A Google GCP Account is required to create resources for deploying Rancher and Kubernetes.
 - [Google GCP Project](https://cloud.google.com/appengine/docs/standard/nodejs/building-app/creating-project): Use this link to follow a tutorial to create a GCP Project if you don't have one yet.
 - [Google GCP Service Account](https://cloud.google.com/iam/docs/creating-managing-service-account-keys): Use this link and follow instructions to create a GCP service account and token file.
-- [Terraform](https://www.terraform.io/downloads.html): Used to provision the server and cluster in Google GCP.
+- [Terraform](https://developer.hashicorp.com/terraform/install): Used to provision the server and cluster in Google GCP.
 
 
 ## Getting Started
@@ -32108,7 +32060,7 @@ Deploying to Hetzner Cloud will incur charges.
 
 - [Hetzner Cloud Account](https://www.hetzner.com): You will require an account on Hetzner as this is where the server and cluster will run.
 - [Hetzner API Access Key](https://docs.hetzner.cloud/#getting-started): Use these instructions to create a Hetzner Cloud API Key if you don't have one.
-- [Terraform](https://www.terraform.io/downloads.html): Used to provision the server and cluster to Hetzner.
+- [Terraform](https://developer.hashicorp.com/terraform/install): Used to provision the server and cluster to Hetzner.
 
 
 ## Getting Started
@@ -32192,9 +32144,9 @@ Deploying to Linode will incur charges.
 
 :::
 
-- [Linode Account](https://linode.com): The Linode account to run provision server and cluster under.
-- [Linode Personal Access Token](https://www.linode.com/docs/products/tools/api/guides/manage-api-tokens/): A Linode Personal Access Token to authenticate with.
-- [Terraform](https://www.terraform.io/downloads.html): Used to provision the server and cluster on Linode.
+- [Linode Account](https://www.linode.com/): The Linode account to run provision server and cluster under.
+- [Linode Personal Access Token](https://techdocs.akamai.com/cloud-computing/docs/manage-personal-access-tokens): A Linode Personal Access Token to authenticate with.
+- [Terraform](https://developer.hashicorp.com/terraform/install): Used to provision the server and cluster on Linode.
 
 
 ## Getting Started
@@ -32217,7 +32169,7 @@ See the [Quickstart Readme](https://github.com/rancher/quickstart) and the [Lino
    - `prefix` - The prefix for all created infrastructure.
    - `linode_type` - The type/plan that all infrastructure Linodes should use.
      - Default: `g6-standard-2` 
-     - For a complete list of plans, see the [official Plan Types page](https://www.linode.com/docs/products/compute/compute-instances/plans/).
+     - For a complete list of plans, see the [official Plan Types page](https://techdocs.akamai.com/cloud-computing/docs/compute-instance-plan-types).
 
 6. Run `terraform init`.
 
@@ -32282,7 +32234,7 @@ Deploying to Outscale will incur charges.
 
 - [Outscale Account](https://en.outscale.com/): You will require an account on Outscale as this is where the server and cluster will run.
 - [Outscale Access Key](https://docs.outscale.com/en/userguide/About-Access-Keys.html): Use these instructions to create an Outscale Access Key if you don't have one.
-- [Terraform](https://www.terraform.io/downloads.html): Used to provision the server and cluster in Outscale.
+- [Terraform](https://developer.hashicorp.com/terraform/install): Used to provision the server and cluster in Outscale.
 
 
 ## Getting Started
@@ -32378,7 +32330,7 @@ The intent of these guides is to quickly launch a sandbox that you can use to ev
 
 ## Prerequisites
 
-- [Vagrant](https://www.vagrantup.com): Vagrant is required as this is used to provision the machine based on the Vagrantfile.
+- [Vagrant](https://developer.hashicorp.com/vagrant): Vagrant is required as this is used to provision the machine based on the Vagrantfile.
 - [Virtualbox](https://www.virtualbox.org): The virtual machines that Vagrant provisions need to be provisioned to VirtualBox.
 - At least 4GB of free RAM.
 
@@ -37724,7 +37676,7 @@ configs:
       ca_file: <path to the ca file used in the registry>
 ```
 
-For more information on private registries configuration file for RKE2, refer to the [RKE2 documentation.](https://docs.rke2.io/install/containerd_registry_configuration)
+For more information on private registries configuration file for RKE2, refer to the [RKE2 documentation.](https://docs.rke2.io/install/private_registry)
 
 ## 3. Install RKE2
 
@@ -39715,6 +39667,7 @@ Each Rancher version is designed to be compatible with a single version of the w
 
 | Rancher Version | Webhook Version | Availability in Prime | Availability in Community |
 |-----------------|-----------------|-----------------------|---------------------------|
+| v2.12.2         |     v0.8.2      | &check;               | &check;                   |
 | v2.12.1         |     v0.8.1      | &check;               | &check;                   |
 | v2.12.0         |     v0.8.0      | &cross;               | &check;                   |
 
@@ -40169,12 +40122,6 @@ We recommend exporting the kubeconfig file so that if Rancher goes down, you can
 
 ## Impersonation
 
-:::caution Known Issue
-
-Service account impersonation (`--as`) used by lower privileged user accounts to remove privileges is not implemented and is a [feature](https://github.com/rancher/rancher/issues/41988) being tracked.
-
-:::
-
 Users technically exist only on the upstream cluster. Rancher creates [RoleBindings and ClusterRoleBindings](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding) that refer to Rancher users, even though there is [no actual User resource](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#users-in-kubernetes) on the downstream cluster.
 
 When users interact with a downstream cluster through the authentication proxy, there needs to be some entity downstream to serve as the actor for those requests. Rancher creates service accounts to be that entity. Each service account is only granted one permission, which is to **impersonate** the user they belong to. If there was only one service account that could impersonate any user, then it would be possible for a malicious user to corrupt that account and escalate their privileges by impersonating another user. This issue was the basis for a [CVE](https://github.com/rancher/rancher/security/advisories/GHSA-pvxj-25m6-7vqr).
@@ -40272,6 +40219,12 @@ The tools that Rancher uses to provision downstream user clusters depends on the
 Rancher can dynamically provision nodes in a provider such as Amazon EC2, DigitalOcean, Azure, or vSphere, then install Kubernetes on them.
 
 Rancher provisions this type of cluster using [docker-machine.](https://github.com/rancher/machine)
+
+### Rancher Launched Kubernetes for Custom Nodes
+
+When setting up this type of cluster, Rancher installs Kubernetes on existing nodes, which creates a custom cluster.
+
+Rancher provisions this type of cluster using [RKE2](https://github.com/rancher/rke2) or [K3s](https://github.com/rancher/k3s).
 
 ### Hosted Kubernetes Providers
 
@@ -41886,7 +41839,7 @@ Option to set environment variables for [Rancher agents](../../../how-to-guides/
 
 ##### Automatic Snapshots
 
-Option to enable or disable recurring etcd snapshots. If enabled, users have the option to configure the frequency of snapshots. For details, refer to the [RKE2 documentation](https://docs.rke2.io/backup_restore#creating-snapshots). Note that with RKE2, snapshots are stored on each etcd node. This varies from RKE1 which only stores one snapshot per cluster.
+Option to enable or disable recurring etcd snapshots. If enabled, users have the option to configure the frequency of snapshots. For details, refer to the [RKE2 documentation](https://docs.rke2.io/datastore/backup_restore#creating-snapshots). Note that with RKE2, snapshots are stored on each etcd node. This varies from RKE1 which only stores one snapshot per cluster.
 
 ##### Metrics
 
@@ -41950,7 +41903,7 @@ We recommend using a load balancer with the authorized cluster endpoint. For det
 
 #### Registries
 
-Select the image repository to pull Rancher images from. For more details and configuration options, see the [RKE2 documentation](https://docs.rke2.io/install/containerd_registry_configuration).
+Select the image repository to pull Rancher images from. For more details and configuration options, see the [RKE2 documentation](https://docs.rke2.io/install/private_registry).
 
 #### Upgrade Strategy
 
@@ -43842,7 +43795,7 @@ Monitoring the availability and performance of all your internal workloads is vi
 
 In addition to monitoring workloads to detect performance, availability or scalability problems, the cluster and the workloads running into it should also be monitored for potential security problems. A good starting point is to frequently run and alert on [Compliance Scans](../../../how-to-guides/advanced-user-guides/compliance-scan-guides/compliance-scan-guides.md) which check if the cluster is configured according to security best practices.
 
-For the workloads, you can have a look at Kubernetes and Container security solutions like [NeuVector](https://www.suse.com/products/neuvector/), [Falco](https://falco.org/), [Aqua Kubernetes Security](https://www.aquasec.com/solutions/kubernetes-container-security/), [SysDig](https://sysdig.com/).
+For the workloads, you can have a look at Kubernetes and Container security solutions like [NeuVector](https://www.suse.com/products/neuvector/), [Falco](https://falco.org/), [Aqua Kubernetes Security](https://www.aquasec.com/products/kubernetes-security/), [SysDig](https://sysdig.com/).
 
 ## Setting up Alerts
 
@@ -44519,16 +44472,12 @@ The following commands are available for use in Rancher CLI.
 
 | Command  | Result  |
 |---|---|
-| `apps, [app]`  | Performs operations on catalog applications (i.e., individual [Helm charts](https://docs.helm.sh/developing_charts/)) or Rancher charts.  |
-| `catalog`  | Performs operations on [catalogs](../../how-to-guides/new-user-guides/helm-charts-in-rancher/helm-charts-in-rancher.md).  |
 | `clusters, [cluster]`  | Performs operations on your [clusters](../../how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/kubernetes-clusters-in-rancher-setup.md).  |
 | `context`  | Switches between Rancher [projects](../../how-to-guides/new-user-guides/manage-clusters/projects-and-namespaces.md). For an example, see [Project Selection](#project-selection).  |
-| `globaldns`  | Performs operations on global DNS providers and entries.  |
 | `inspect [OPTIONS] [RESOURCEID RESOURCENAME]`  | Displays details about [Kubernetes resources](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#resource-types) or Rancher resources (i.e.: [projects](../../how-to-guides/new-user-guides/manage-clusters/projects-and-namespaces.md) and [workloads](../../how-to-guides/new-user-guides/kubernetes-resources-setup/workloads-and-pods/workloads-and-pods.md)). Specify resources by name or ID.  |
 | `kubectl`  | Runs [kubectl commands](https://kubernetes.io/docs/reference/kubectl/overview/#operations).   |
 | `login, [l]`  | Logs into a Rancher Server. For an example, see [CLI Authentication](#cli-authentication).  |
 | `machines, [machine]`  | Performs operations on machines.  |
-| `multiclusterapps, [multiclusterapp mcapps mcapp]`  | Performs operations with multi-cluster apps.  |
 | `namespaces, [namespace]`  | Performs operations on [namespaces](../../how-to-guides/new-user-guides/manage-namespaces.md).  |
 | `nodes, [node]`  | Performs operations on [nodes](../../how-to-guides/new-user-guides/manage-clusters/nodes-and-node-pools.md).  |
 | `projects, [project]`  | Performs operations on [projects](../../how-to-guides/new-user-guides/manage-clusters/projects-and-namespaces.md).  |
@@ -45660,6 +45609,69 @@ You should protect the following ports behind an [external load balancer](../../
 
 These ports have TLS SAN certificates which list nodes' public IP addresses. An attacker could use that information to gain unauthorized access or monitor activity on the cluster. Protecting these ports helps mitigate against nodes' public IP addresses being disclosed to potential attackers.
 
+## Rancher Username Policy
+
+By default, Kubernetes does not provide enforcement mechanisms for baseline username policies. In Rancher, this means that any enforcement of username formats, naming conventions, or baseline policies is expected to be handled by the external identity provider's policies, if such policies are in place.
+
+In Rancher, `admin` is the default username for the Administrator user, as highlighted [here](../../getting-started/installation-and-upgrade/resources/bootstrap-password.md)
+
+Examples of potential baseline policies include:
+
+- Requiring usernames to follow an organizational convention (e.g., `firstname.lastname`)
+- Enforcing minimum or maximum length requirements
+- Disallowing certain special characters
+- Preventing impersonation by disallowing reserved names (e.g., `admin`, `root`)
+
+Without these controls at the identity provider layer, there is a risk of inconsistent or insecure username practices, which can complicate access audits and lead to privilege escalation attempts.
+
+:::note Important
+
+Rancher currently enforces only a [minimum password length](../../how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/manage-users-and-groups.md#minimum-password-length).
+
+:::
+
+**Recommendation:**
+We strongly advice that customers:
+
+- Review and configure username baseline policies directly in their external identity providers (e.g., LDAP, Active Directory, SAML, or OIDC).
+- Ensure that those policies align with the organization’s security and compliance requirements.
+- Regularly audit user accounts to detect naming inconsistencies or policy violations.
+
+For more information, see:
+
+- [OWASP Cheat Sheet: Authentication](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+- [OWASP Identity Management](https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication)
+
+## WAF Rules
+
+Rancher is designed to support a wide range of deployment scenarios, including environments where customers may programmatically automate the creation or provisioning of large numbers of clusters. Imposing strict application-level limits within Rancher itself could interfere with legitimate workloads that require dynamic scaling.
+
+For example:
+
+- CI/CD pipelines may create and tear down clusters frequently.
+- Self-service portals could provision clusters on-demand for developers.
+- Test environments may generate high volumes of API calls.
+
+**Risk:**
+Without appropriate rate limiting, adversaries could exploit unauthenticated or authenticated endpoints to:
+
+- Exhaust resources (Denial of Service).
+- Inflate storage costs.
+- Degrade performance for legitimate users.
+
+**Recommendation:**
+The most effective way to mitigate this risk is to implement rate limiting and abuse protection at the infrastructure or Web Application Firewall (WAF) layer. This approach allows thresholds to be tuned for each environment's expected usage and scaling characteristics. Some examples of controls can be:
+
+- Configuring a Web Application Firewall or API Gateway to enforce rate limits on sensitive operations, such as cluster creation and provisioning.
+- Defining thresholds based on baseline workload expectations (e.g., max requests per minute per client).
+- Monitoring logs and alerting on anomalies to detect potential abuse.
+- Apply a resource quota, which is a Rancher feature that limits the resources available to a project or namespace.
+
+For more information, see:
+
+- [Project Resource Quotas](../../how-to-guides/advanced-user-guides/manage-projects/manage-project-resource-quotas/manage-project-resource-quotas.md)
+- [OWASP API Security Top 10 - API4:2019 - Lack of Resources & Rate Limiting](https://owasp.org/API-Security/editions/2023/en/0xa4-lack-of-resources-rate-limiting/)
+- [OWASP Cheat Sheet: Rate Limiting](https://cheatsheetseries.owasp.org/cheatsheets/Rate_Limiting_Cheat_Sheet.html)
 
 ---
 
@@ -45913,60 +45925,11 @@ Rancher is committed to informing the community of security issues in our produc
 
 | ID | Description | Date | Resolution |
 |----|-------------|------|------------|
-| [CVE-2025-23390](https://github.com/rancher/fleet/security/advisories/GHSA-xgpc-q899-67p8) | This vulnerability only affects customers using [Continuous Delivery with Fleet](https://ranchermanager.docs.rancher.com/integrations-in-rancher/fleet) where Fleet does not validate a server's certificate when connecting through SSH. This can allow for a main-in-the-middle-attack against Fleet. The fix provides a new `insecureSkipHostKeyChecks` value for the `fleet` Helm chart. The default value is set to **`true` (opt-in) for Rancher v2.9 - v2.11** for backward compatibility. The default value is set to **`false` (opt-out) for Rancher v2.12 and later**, and Fleet v0.13 and later. <br/><br/> `true` (opt-in): <br/><br/><ul> If `insecureSkipHostKeyChecks` is set to `true`, then not finding any matching `known_hosts` entry for an SSH host will not lead to any error. Please note, regardless of the configuration setting, if the `known-hosts` ConfigMap is deleted it will lead to errors as it will be considered a symptom of an incomplete Fleet deployment. </ul> `false` (opt-out): <br/><br/><ul> If `insecureSkipHostKeyChecks` is set to `false`, then strict host key checks are enabled. When enabled, the checks ensure that when using SSH, Fleet rejects connection attempts to hosts not matching any entry found in (decreasing order of precedence): <br/><br/><ul> <li>A secret referenced by name in a `GitRepo` which is located in the same `GitRepo's` namespace.</li> <li> If no such secret name is provided, in a `gitcredential` secret located in the same namespace. </li> <li> A new `known-hosts` ConfigMap, created during the Fleet chart installation time and located in the namespace `cattle-fleet-system`. </li></ul> <br></br> This happens regardless of whether a `GitRepo` uses an SSH URL to point to a Git repository since, once cloned, a repository may be found to contain external resources to be retrieved, such as Helm artifacts. </ul> A limitation with the default `known_hosts` entries is that they are only provided for GitHub, Gitlab, Bitbucket and Azure DevOps hosts. If you need to connect to a different host, or if key fingerprints for the provided entries are updated, the following options are available: <br/><br/><ul><li> Manually update the default `known-hosts` ConfigMap. </li>  <li> Reference a secret from your `GitRepo` resources, containing the updated or additional `known_hosts` entries. </li> <li> Create a `gitcredential` secret containing the entries for `GitRepo` resources that do not already reference a secret. </li></ul> | 24 Apr 2025 | Rancher [v2.11.1](https://github.com/rancher/rancher/releases/tag/v2.11.1), [v2.10.5](https://github.com/rancher/rancher/releases/tag/v2.10.5), and [v2.9.9](https://github.com/rancher/rancher/releases/tag/v2.9.9) |
-| [CVE-2025-22031](https://github.com/rancher/rancher/security/advisories/GHSA-8h6m-wv39-239m) | A vulnerability was found where users could create a project and then gain access to arbitrary projects. As a fix, a new field has been added to projects called the `BackingNampespace`, which represents the namespace created for a project containing all resources needed for project operations. This includes resources such as ProjectRoleTemplateBindings, project-scoped secrets and workloads. <br/><br/> The field is populated automatically during project creation and is formatted as `<clusterID>-<project.Name>`. For example, if your project is named `project-abc123` in a cluster with ID `cluster-xyz789`, then the project will have the `BackingNampespace`: `cluster-xyz789-project-abc123`. <br/><br/> If the `BackingNampespace` field is empty then the project will fallback to using the namespace that is the project's name as it did before. Existing projects will not be migrated and only newly created projects will have the new namespace naming convention. If listing projects via `kubectl` the `BackingNampespace` will also be listed as a column. | 24 Apr 2025 | Rancher [v2.11.1](https://github.com/rancher/rancher/releases/tag/v2.11.1), [v2.10.5](https://github.com/rancher/rancher/releases/tag/v2.10.5), and [v2.9.9](https://github.com/rancher/rancher/releases/tag/v2.9.9) |
-| [CVE-2025-32198](https://github.com/rancher/steve/security/advisories/GHSA-95fc-g4gj-mqmx) | A vulnerability was found where users with permission to create a service in the Kubernetes cluster where Rancher is deployed can take over the Rancher UI, display their own UI, and gather sensitive information. This is only possible when the setting `ui-offline-preferred` is set to `remote`. This release introduces a patch, and the malicious user can no longer serve their own UI. If users can't upgrade, please make sure that only trustable users have access to create a service in the local cluster. | 24 Apr 2025 | Rancher [v2.11.1](https://github.com/rancher/rancher/releases/tag/v2.11.1), [v2.10.5](https://github.com/rancher/rancher/releases/tag/v2.10.5), [v2.9.9](https://github.com/rancher/rancher/releases/tag/v2.9.9) and [v2.8.15](https://github.com/rancher/rancher/releases/tag/v2.8.15) |
-| [CVE-2025-23391](https://github.com/rancher/rancher/security/advisories/GHSA-8p83-cpfg-fj3g) | A vulnerability has been identified within Rancher where a Restricted Administrator can change the password of Administrators and take over their accounts. A Restricted Administrator should not be allowed to change the password of more privileged users unless it contains the Manage Users permissions. A new validation has been added to block a user from editing or deleting another user with more permissions than themselves. Rancher deployments where the Restricted Administrator role is not being used are not affected by this CVE. | 31 Mar 2025 | Rancher [v2.11.0](https://github.com/rancher/rancher/releases/tag/v2.11.0), [v2.10.4](https://github.com/rancher/rancher/releases/tag/v2.10.4), [v2.9.8](https://github.com/rancher/rancher/releases/tag/v2.9.8) and [v2.8.14](https://github.com/rancher/rancher/releases/tag/v2.8.14) |
-| [CVE-2025-23389](https://github.com/rancher/rancher/security/advisories/GHSA-5qmp-9x47-92q8) | A vulnerability in Rancher has been discovered, leading to a local user impersonation through SAML Authentication on first login. <br/><br/> The issue occurs when a SAML authentication provider (AP) is configured (e.g. Keycloak). A newly created AP user can impersonate any user on Rancher by manipulating cookie values during their initial login to Rancher. This vulnerability could also be exploited if a Rancher user (present on the AP) is removed, either manually or automatically via the [User Retention feature](../../how-to-guides/advanced-user-guides/enable-user-retention.md) with delete-inactive-user-after | 27 Feb 2025 | Rancher [v2.10.3](https://github.com/rancher/rancher/releases/tag/v2.10.3), [v2.9.7](https://github.com/rancher/rancher/releases/tag/v2.9.7) and [v2.8.13](https://github.com/rancher/rancher/releases/tag/v2.8.13) |
-| [CVE-2025-23388](https://github.com/rancher/rancher/security/advisories/GHSA-xr9q-h9c7-xw8q) | An unauthenticated stack overflow crash, leading to a denial of service (DoS), was identified in Rancher’s `/v3-public/authproviders` public API endpoint. A malicious user could submit data to the API which would cause the Rancher server to crash, but no malicious or incorrect data would actually be written in the API. The downstream clusters, i.e., the clusters managed by Rancher, are not affected by this issue. <br/><br/> This vulnerability affects those using external authentication providers as well as Rancher’s local authentication. | 27 Feb 2025 | Rancher [v2.10.3](https://github.com/rancher/rancher/releases/tag/v2.10.3), [v2.9.7](https://github.com/rancher/rancher/releases/tag/v2.9.7) and [v2.8.13](https://github.com/rancher/rancher/releases/tag/v2.8.13) |
-| [CVE-2025-23387](https://github.com/rancher/rancher/security/advisories/GHSA-mq23-vvg7-xfm4) | A vulnerability has been identified within Rancher where it is possible for an unauthenticated user to list all CLI authentication tokens and delete them before the CLI is able to get the token value. This effectively prevents users from logging in via the CLI when using rancher token as the execution command (instead of the token directly being in the kubeconfig). <br/><br/> Note that this token is not the kubeconfig token and if an attacker is able to intercept it they can't use it to impersonate a real user since it is encrypted. | 27 Feb 2025 | Rancher [v2.10.3](https://github.com/rancher/rancher/releases/tag/v2.10.3), [v2.9.7](https://github.com/rancher/rancher/releases/tag/v2.9.7) and [v2.8.13](https://github.com/rancher/rancher/releases/tag/v2.8.13) |
-| [CVE-2024-52281](https://github.com/rancher/rancher/security/advisories/GHSA-2v2w-8v8c-wcm9) | A high severity vulnerability was identified within the Rancher UI that allows a malicious actor to perform a Stored XSS attack through the cluster description field. | 15 Jan 2025 | Rancher [v2.10.0](https://github.com/rancher/rancher/releases/tag/v2.10.0) and [v2.9.4](https://github.com/rancher/rancher/releases/tag/v2.9.4) |
-| [CVE-2024-52282](https://github.com/rancher/rancher/security/advisories/GHSA-9c5p-35gj-jqp4) | A medium severity vulnerability was discovered within Rancher Manager whereby applications installed via Rancher Manager Apps Catalog store their Helm values directly into the Apps Custom Resource Definition, resulting in any users with GET access to it to be able to read any sensitive information that are contained within the Apps’ values. Additionally, the same information leaks into auditing logs when the audit level is set to equal or above 2. **Rancher v2.7 is vulnerable and hasn't received the fix**. | 19 Nov 2024 | Rancher [v2.9.4](https://github.com/rancher/rancher/releases/tag/v2.9.4) and [v2.8.10](https://github.com/rancher/rancher/releases/tag/v2.8.10). |
-| [CVE-2024-22036](https://github.com/rancher/rancher/security/advisories/GHSA-h99m-6755-rgwc) | A critical severity vulnerability was discovered within Rancher where a cluster or node driver can be used to escape the `chroot` jail and gain root access to the Rancher container itself. In production environments, further privilege escalation is possible based on living off the land within the Rancher container itself. For test and development environments, based on a –privileged Docker container, it is possible to escape the Docker container and gain execution access on the host system. | 24 Oct 2024 | Rancher [v2.9.3](https://github.com/rancher/rancher/releases/tag/v2.9.3), [v2.8.9](https://github.com/rancher/rancher/releases/tag/v2.8.9) and [v2.7.16](https://github.com/rancher/rancher/releases/tag/v2.7.16) |
-| [CVE-2023-32197](https://github.com/rancher/rancher/security/advisories/GHSA-7h8m-pvw3-5gh4) | A critical severity vulnerability was discovered whereby Rancher Manager deployments containing Windows nodes have weak Access Control Lists (ACL), allowing `BUILTIN\Users` or `NT AUTHORITY\Authenticated Users` to view or edit sensitive files which could lead to privilege escalation. This vulnerability is exclusive to deployments that contain Windows nodes. Linux-only environments are not affected by it. **Rancher v2.7 is vulnerable and hasn't received the fix**.  | 24 Oct 2024 | Rancher [v2.9.3](https://github.com/rancher/rancher/releases/tag/v2.9.3) and [v2.8.9](https://github.com/rancher/rancher/releases/tag/v2.8.9) |
-| [CVE-2022-45157](https://github.com/rancher/rancher/security/advisories/GHSA-xj7w-r753-vj8v) | A critical severity vulnerability was discovered in the way that Rancher stores vSphere's CPI (Cloud Provider Interface) and CSI (Container Storage Interface) credentials used to deploy clusters through the vSphere cloud provider. This issue leads to the vSphere CPI and CSI passwords being stored in a plaintext object inside Rancher. This vulnerability is only applicable to users that deploy clusters in vSphere environments. **Rancher v2.7 is vulnerable and hasn't received the fix**. | 24 Oct 2024 | Rancher [v2.9.3](https://github.com/rancher/rancher/releases/tag/v2.9.3) and [v2.8.9](https://github.com/rancher/rancher/releases/tag/v2.8.9) |
-| [CVE-2024-22030](https://github.com/rancher/rancher/security/advisories/GHSA-h4h5-9833-v2p4) | A high severity vulnerability was discovered in Rancher's agents that under very specific circumstances allows a malicious actor to take over existing Rancher nodes. The attacker needs to have control of an expired domain or execute a DNS spoofing/hijacking attack against the domain in order to exploit this vulnerability. The targeted domain is the one used as the Rancher URL (the `server-url` of the Rancher cluster). | 19 Sep 2024 | Rancher [v2.9.2](https://github.com/rancher/rancher/releases/tag/v2.9.2), [v2.8.8](https://github.com/rancher/rancher/releases/tag/v2.8.8) and [v2.7.15](https://github.com/rancher/rancher/releases/tag/v2.7.15) |
-| [CVE-2024-22032](https://github.com/rancher/rancher/security/advisories/GHSA-q6c7-56cq-g2wm) | An issue was discovered in Rancher versions up to and including 2.7.13 and 2.8.4, where custom secrets encryption configurations are stored in plaintext under the clusters `AppliedSpec`. This also causes clusters to continuously reconcile, as the `AppliedSpec` would never match the desired cluster `Spec`. The stored information contains the encryption configuration for secrets within etcd, and could potentially expose sensitive data if the etcd database was exposed directly. | 17 Jun 2024 | Rancher [v2.8.5](https://github.com/rancher/rancher/releases/tag/v2.8.5) and [v2.7.14](https://github.com/rancher/rancher/releases/tag/v2.7.14) |
-| [CVE-2023-32196](https://github.com/rancher/rancher/security/advisories/GHSA-64jq-m7rq-768h) | An issue was discovered in Rancher versions up to and including 2.7.13 and 2.8.4, where the webhook rule resolver ignores rules from a `ClusterRole` for an external `RoleTemplate` set with `.context=project` or `.context=""`. This allows a user to create an external `ClusterRole` with `.context=project` or `.context=""`, depending on the use of the new feature flag `external-rules` and backing `ClusterRole`. | 17 Jun 2024 | Rancher [v2.8.5](https://github.com/rancher/rancher/releases/tag/v2.8.5) and [v2.7.14](https://github.com/rancher/rancher/releases/tag/v2.7.14) |
-| [CVE-2023-22650](https://github.com/rancher/rancher/security/advisories/GHSA-9ghh-mmcq-8phc) | An issue was discovered in Rancher versions up to and including 2.7.13 and 2.8.4, where Rancher did not have a user retention process for when external authentication providers are used, that could be configured to run periodically and disable and/or delete inactive users. The new user retention process added in Rancher v2.8.5 and Rancher v2.7.14 is disabled by default. If enabled, a user becomes subject to the retention process if they don't log in for a configurable period of time. It's possible to set overrides for user accounts that are primarily intended for programmatic access (e.g. CI, scripts, etc.) so that they don't become subject to the retention process for a longer period of time or at all. | 17 Jun 2024 | Rancher [v2.8.5](https://github.com/rancher/rancher/releases/tag/v2.8.5) and [v2.7.14](https://github.com/rancher/rancher/releases/tag/v2.7.14) |
-| [CVE-2023-32191](https://github.com/rancher/rke/security/advisories/GHSA-6gr4-52w6-vmqx) | An issue was discovered in Rancher versions up to and including 2.7.13 and 2.8.4, in which supported RKE versions store credentials inside a ConfigMap that can be accessible by non-administrative users in Rancher. This vulnerability only affects an RKE-provisioned cluster. | 17 Jun 2024 | Rancher [v2.8.5](https://github.com/rancher/rancher/releases/tag/v2.8.5) and [v2.7.14](https://github.com/rancher/rancher/releases/tag/v2.7.14) |
-| [CVE-2023-32193](https://github.com/rancher/norman/security/advisories/GHSA-r8f4-hv23-6qp6) | An issue was discovered in Rancher versions up to and including 2.6.13, 2.7.9 and 2.8.1, where multiple Cross-Site Scripting (XSS) vulnerabilities can be exploited via the Rancher UI (Norman). | 8 Feb 2024 | Rancher [v2.8.2](https://github.com/rancher/rancher/releases/tag/v2.8.2), [v2.7.10](https://github.com/rancher/rancher/releases/tag/v2.7.10) and [v2.6.14](https://github.com/rancher/rancher/releases/tag/v2.6.14) |
-| [CVE-2023-32192](https://github.com/rancher/apiserver/security/advisories/GHSA-833m-37f7-jq55) | An issue was discovered in Rancher versions up to and including 2.6.13, 2.7.9 and 2.8.1, where multiple Cross-Site Scripting (XSS) vulnerabilities can be exploited via the Rancher UI (Apiserver). | 8 Feb 2024 | Rancher [v2.8.2](https://github.com/rancher/rancher/releases/tag/v2.8.2), [v2.7.10](https://github.com/rancher/rancher/releases/tag/v2.7.10) and [v2.6.14](https://github.com/rancher/rancher/releases/tag/v2.6.14) |
-| [CVE-2023-22649](https://github.com/rancher/rancher/security/advisories/GHSA-xfj7-qf8w-2gcr) | An issue was discovered in Rancher versions up to and including 2.6.13, 2.7.9 and 2.8.1, in which sensitive data may be leaked into Rancher's audit logs. | 8 Feb 2024 | Rancher [v2.8.2](https://github.com/rancher/rancher/releases/tag/v2.8.2), [v2.7.10](https://github.com/rancher/rancher/releases/tag/v2.7.10) and [v2.6.14](https://github.com/rancher/rancher/releases/tag/v2.6.14) |
-| [CVE-2023-32194](https://github.com/rancher/rancher/security/advisories/GHSA-c85r-fwc7-45vc) | An issue was discovered in Rancher versions up to and including 2.6.13, 2.7.9 and 2.8.1, where granting a `create` or `*` global role for a resource type of "namespaces"; no matter the API group, the subject will receive `*` permissions for core namespaces. | 8 Feb 2024 | Rancher [v2.8.2](https://github.com/rancher/rancher/releases/tag/v2.8.2), [v2.7.10](https://github.com/rancher/rancher/releases/tag/v2.7.10) and [v2.6.14](https://github.com/rancher/rancher/releases/tag/v2.6.14) |
-| [CVE-2023-22648](https://github.com/rancher/rancher/security/advisories/GHSA-vf6j-6739-78m8) | An issue was discovered in Rancher versions up to and including 2.6.12 and 2.7.3, in which permission changes in Azure AD are not reflected to users until they logout and log back into the Rancher UI. | 31 May 2023 | Rancher [v2.7.4](https://github.com/rancher/rancher/releases/tag/v2.7.4) |
-| [CVE-2022-43760](https://github.com/rancher/rancher/security/advisories/GHSA-46v3-ggjg-qq3x) | An issue was discovered in Rancher versions up to and including 2.6.12 and 2.7.3, where multiple Cross-Site Scripting (XSS) vulnerabilities can be exploited via the Rancher UI. | 31 May 2023 | Rancher [v2.7.4](https://github.com/rancher/rancher/releases/tag/v2.7.4) |
-| [CVE-2020-10676](https://github.com/rancher/rancher/security/advisories/GHSA-8vhc-hwhc-cpj4) | An issue was discovered in Rancher versions up to and including 2.6.12 and 2.7.3, in which users with update privileges on a namespace, can move that namespace into a project they don't have access to. | 31 May 2023 | Rancher [v2.7.4](https://github.com/rancher/rancher/releases/tag/v2.7.4) |
-| [CVE-2023-22647](https://github.com/rancher/rancher/security/advisories/GHSA-p976-h52c-26p6) | An issue was discovered in Rancher versions up to and including 2.6.12 and 2.7.3, where Standard users or above are able to elevate their permissions to Administrator in the local cluster. | 31 May 2023 | Rancher [v2.7.4](https://github.com/rancher/rancher/releases/tag/v2.7.4) |
-| [CVE-2023-22651](https://github.com/rancher/rancher/security/advisories/GHSA-6m9f-pj6w-w87g) | The Rancher admissions webhook may become misconfigured due to a  failure in the webhook's update logic. The admissions webhook enforces validation rules and security checks before resources are admitted into the Kubernetes cluster. When the webhook is operating in a degraded state, it no longer validates any resources, which can result in severe privilege escalations and data corruption. | 24 April 2023 | Rancher [v2.7.3](https://github.com/rancher/rancher/releases/tag/v2.7.3) |
-| [CVE-2022-43758](https://github.com/rancher/rancher/security/advisories/GHSA-34p5-jp77-fcrc) | An issue was discovered in Rancher from versions 2.5.0 up to and including 2.5.16, 2.6.0 up to and including 2.6.9 and 2.7.0, where a command injection vulnerability is present in the Rancher Git package. This package uses the underlying Git binary available in the Rancher container image to execute Git operations. Specially crafted commands, when not properly disambiguated, can cause confusion when executed through Git, resulting in command injection in the underlying Rancher host. | 24 January 2023 | Rancher [v2.7.1](https://github.com/rancher/rancher/releases/tag/v2.7.1), [v2.6.10](https://github.com/rancher/rancher/releases/tag/v2.6.10) and [v2.5.17](https://github.com/rancher/rancher/releases/tag/v2.5.17) |
-| [CVE-2022-43757](https://github.com/rancher/rancher/security/advisories/GHSA-cq4p-vp5q-4522) | This issue affects Rancher versions from 2.5.0 up to and including 2.5.16, from 2.6.0 up to and including 2.6.9 and 2.7.0. It was discovered that the security advisory [CVE-2021-36782](https://github.com/advisories/GHSA-g7j7-h4q8-8w2f), previously released by Rancher, missed addressing some sensitive fields, secret tokens, encryption keys, and SSH keys that were still being stored in plaintext directly on Kubernetes objects like `Clusters`. The exposed credentials are visible in Rancher to authenticated `Cluster Owners`, `Cluster Members`, `Project Owners` and `Project Members` of that cluster. | 24 January 2023 | Rancher [v2.7.1](https://github.com/rancher/rancher/releases/tag/v2.7.1), [v2.6.10](https://github.com/rancher/rancher/releases/tag/v2.6.10) and [v2.5.17](https://github.com/rancher/rancher/releases/tag/v2.5.17) |
-| [CVE-2022-43755](https://github.com/rancher/rancher/security/advisories/GHSA-8c69-r38j-rpfj) | An issue was discovered in Rancher versions up to and including 2.6.9 and 2.7.0, where the `cattle-token` secret, used by the `cattle-cluster-agent`, is predictable. Even after the token is regenerated, it will have the same value. This can pose a serious problem if the token is compromised and needs to be recreated for security purposes. The `cattle-token` is used by Rancher's `cattle-cluster-agent` to connect to the Kubernetes API of Rancher provisioned downstream clusters. | 24 January 2023 | Rancher [v2.7.1](https://github.com/rancher/rancher/releases/tag/v2.7.1) and [v2.6.10](https://github.com/rancher/rancher/releases/tag/v2.6.10) |
-| [CVE-2022-21953](https://github.com/rancher/rancher/security/advisories/GHSA-g25r-gvq3-wrq7) | An issue was discovered in Rancher versions up to and including 2.5.16, 2.6.9 and 2.7.0, where an authorization logic flaw allows an authenticated user on any downstream cluster to (1) open a shell pod in the Rancher `local` cluster and (2) have limited kubectl access to it. The expected behavior is that a user does not have such access in the Rancher `local` cluster unless explicitly granted. | 24 January 2023 | Rancher [v2.7.1](https://github.com/rancher/rancher/releases/tag/v2.7.1), [v2.6.10](https://github.com/rancher/rancher/releases/tag/v2.6.10) and [v2.5.17](https://github.com/rancher/rancher/releases/tag/v2.5.17) |
-| [GHSA-c45c-39f6-6gw9](https://github.com/rancher/rancher/security/advisories/GHSA-c45c-39f6-6gw9) | This issue affects Rancher versions from 2.5.0 up to and including 2.5.16, from 2.6.0 up to and including 2.6.9 and 2.7.0. It only affects Rancher setups that have an external authentication provider configured or had one configured in the past. It was discovered that when an external authentication provider is configured in Rancher and then disabled, the Rancher generated tokens associated with users who had access granted through the now disabled auth provider are not revoked. | 24 January 2023 | Rancher [v2.7.1](https://github.com/rancher/rancher/releases/tag/v2.7.1), [v2.6.10](https://github.com/rancher/rancher/releases/tag/v2.6.10) and [v2.5.17](https://github.com/rancher/rancher/releases/tag/v2.5.17) |
-| [CVE-2022-31247](https://github.com/rancher/rancher/security/advisories/GHSA-6x34-89p7-95wg) | An issue was discovered in Rancher versions up to and including 2.5.15 and 2.6.6 where a flaw with authorization logic allows privilege escalation in downstream clusters through cluster role template binding (CRTB) and project role template binding (PRTB). The vulnerability can be exploited by any user who has permissions to create/edit CRTB or PRTB (such as `cluster-owner`, `manage cluster members`, `project-owner`, and `manage project members`) to gain owner permission in another project in the same cluster or in another project on a different downstream cluster. | 18 August 2022 | [Rancher v2.6.7](https://github.com/rancher/rancher/releases/tag/v2.6.7) and [Rancher v2.5.16](https://github.com/rancher/rancher/releases/tag/v2.5.16) |
-| [CVE-2021-36783](https://github.com/rancher/rancher/security/advisories/GHSA-8w87-58w6-hfv8) | It was discovered that in Rancher versions up to and including 2.5.12 and 2.6.3, there is a failure to properly sanitize credentials in cluster template answers. This failure can lead to plaintext storage and exposure of credentials, passwords, and API tokens. The exposed credentials are visible in Rancher to authenticated `Cluster Owners`, `Cluster Members`, `Project Owners`, and `Project Members` on the endpoints `/v1/management.cattle.io.clusters`, `/v3/clusters`, and `/k8s/clusters/local/apis/management.cattle.io/v3/clusters`. | 18 August 2022 | [Rancher v2.6.7](https://github.com/rancher/rancher/releases/tag/v2.6.7) and [Rancher v2.5.16](https://github.com/rancher/rancher/releases/tag/v2.5.16) |
-| [CVE-2021-36782](https://github.com/rancher/rancher/security/advisories/GHSA-g7j7-h4q8-8w2f) | An issue was discovered in Rancher versions up to and including 2.5.15 and 2.6.6 where sensitive fields like passwords, API keys, and Rancher's service account token (used to provision clusters) were stored in plaintext directly on Kubernetes objects like `Clusters` (e.g., `cluster.management.cattle.io`). Anyone with read access to those objects in the Kubernetes API could retrieve the plaintext version of those sensitive data. The issue was partially found and reported by Florian Struck (from [Continum AG](https://www.continum.net/)) and [Marco Stuurman](https://github.com/fe-ax) (from [Shock Media B.V.](https://www.shockmedia.nl/)). | 18 August 2022 | [Rancher v2.6.7](https://github.com/rancher/rancher/releases/tag/v2.6.7) and [Rancher v2.5.16](https://github.com/rancher/rancher/releases/tag/v2.5.16) |
-| [CVE-2022-21951](https://github.com/rancher/rancher/security/advisories/GHSA-vrph-m5jj-c46c) | This vulnerability only affects customers using Weave Container Network Interface (CNI) when configured through [RKE templates](../../how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/about-rke1-templates/about-rke1-templates.md). A vulnerability was discovered in Rancher versions 2.5.0 up to and including 2.5.13, and 2.6.0 up to and including 2.6.4, where a user interface (UI) issue with RKE templates does not include a value for the Weave password when Weave is chosen as the CNI. If a cluster is created based on the mentioned template, and Weave is configured as the CNI, no password will be created for [network encryption](https://github.com/weaveworks/weave/blob/master/site/tasks/manage/security-untrusted-networks.md) in Weave; therefore, network traffic in the cluster will be sent unencrypted. | 24 May 2022 | [Rancher v2.6.5](https://github.com/rancher/rancher/releases/tag/v2.6.5) and [Rancher v2.5.14](https://github.com/rancher/rancher/releases/tag/v2.5.14) |
-| [CVE-2021-36784](https://github.com/rancher/rancher/security/advisories/GHSA-jwvr-vv7p-gpwq) | A vulnerability was discovered in Rancher versions from 2.5.0 up to and including 2.5.12 and from 2.6.0 up to and including 2.6.3 which allows users who have create or update permissions on [Global Roles](../../how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/manage-role-based-access-control-rbac.md) to escalate their permissions, or those of another user, to admin-level permissions. Global Roles grant users Rancher-wide permissions, such as the ability to create clusters. In the identified versions of Rancher, when users are given permission to edit or create Global Roles, they are not restricted to only granting permissions which they already posses. This vulnerability affects customers who utilize non-admin users that are able to create or edit Global Roles. The most common use case for this scenario is the `restricted-admin` role. | 14 Apr 2022 | [Rancher v2.6.4](https://github.com/rancher/rancher/releases/tag/v2.6.4) and [Rancher v2.5.13](https://github.com/rancher/rancher/releases/tag/v2.5.13) |
-| [CVE-2021-4200](https://github.com/rancher/rancher/security/advisories/GHSA-hx8w-ghh8-r4xf) | This vulnerability only affects customers using the `restricted-admin` role in Rancher. A vulnerability was discovered in Rancher versions from 2.5.0 up to and including 2.5.12 and from 2.6.0 up to and including 2.6.3 where the `global-data` role in `cattle-global-data` namespace grants write access to the Catalogs. Since each user with any level of catalog access was bound to the `global-data` role, this grants write access to templates (`CatalogTemplates`) and template versions (`CatalogTemplateVersions`) for any user with any level of catalog access. New users created in Rancher are by default assigned to the `user` role (standard user), which is not designed to grant write catalog access. This vulnerability effectively elevates the privilege of any user to write access for the catalog template and catalog template version resources. | 14 Apr 2022 | [Rancher v2.6.4](https://github.com/rancher/rancher/releases/tag/v2.6.4) and [Rancher v2.5.13](https://github.com/rancher/rancher/releases/tag/v2.5.13) |
-| [GHSA-wm2r-rp98-8pmh](https://github.com/rancher/rancher/security/advisories/GHSA-wm2r-rp98-8pmh) | This vulnerability only affects customers using [Continuous Delivery with Fleet](../../integrations-in-rancher/fleet/fleet.md) for continuous delivery with authenticated Git and/or Helm repositories. An issue was discovered in `go-getter` library in versions prior to [`v1.5.11`](https://github.com/hashicorp/go-getter/releases/tag/v1.5.11) that exposes SSH private keys in base64 format due to a failure in redacting such information from error messages. The vulnerable version of this library is used in Rancher through Fleet in versions of Fleet prior to [`v0.3.9`](https://github.com/rancher/fleet/releases/tag/v0.3.9). This issue affects Rancher versions 2.5.0 up to and including 2.5.12 and from 2.6.0 up to and including 2.6.3. The issue was found and reported by Dagan Henderson from Raft Engineering. | 14 Apr 2022 | [Rancher v2.6.4](https://github.com/rancher/rancher/releases/tag/v2.6.4) and [Rancher v2.5.13](https://github.com/rancher/rancher/releases/tag/v2.5.13) |
-| [CVE-2021-36778](https://github.com/rancher/rancher/security/advisories/GHSA-4fc7-hc63-7fjg) | A vulnerability was discovered in Rancher versions from 2.5.0 up to and including 2.5.11 and from 2.6.0 up to and including 2.6.2, where an insufficient check of the same-origin policy when downloading Helm charts from a configured private repository can lead to exposure of the repository credentials to a third-party provider. This issue only happens when the user configures access credentials to a private repository in Rancher inside `Apps & Marketplace > Repositories`. The issue was found and reported by Martin Andreas Ullrich. | 14 Apr 2022 | [Rancher v2.6.3](https://github.com/rancher/rancher/releases/tag/v2.6.3) and [Rancher v2.5.12](https://github.com/rancher/rancher/releases/tag/v2.5.12) |
-| [GHSA-hwm2-4ph6-w6m5](https://github.com/rancher/rancher/security/advisories/GHSA-hwm2-4ph6-w6m5) | A vulnerability was discovered in versions of Rancher starting 2.0 up to and including 2.6.3. The `restricted` pod security policy (PSP) provided in Rancher deviated from the upstream `restricted` policy provided in Kubernetes on account of which Rancher's PSP had `runAsUser` set to `runAsAny`, while upstream had `runAsUser` set to `MustRunAsNonRoot`. This allowed containers to run as any user, including a privileged user (`root`), even when Rancher's `restricted` policy was enforced on a project or at the cluster level. | 31 Mar 2022 | [Rancher v2.6.4](https://github.com/rancher/rancher/releases/tag/v2.6.4) |
-| [CVE-2021-36775](https://github.com/rancher/rancher/security/advisories/GHSA-28g7-896h-695v) | A vulnerability was discovered in Rancher versions up to and including 2.4.17, 2.5.11 and 2.6.2. After removing a `Project Role` associated with a group from the project, the bindings that granted access to cluster-scoped resources for those subjects were not deleted. This was due to an incomplete authorization logic check. A user who was a member of the affected group with authenticated access to Rancher could exploit this vulnerability to access resources they shouldn't have had access to. The exposure level would depend on the original permission level granted to the affected project role. This vulnerability only affected customers using group based authentication in Rancher. | 31 Mar 2022 | [Rancher v2.6.3](https://github.com/rancher/rancher/releases/tag/v2.6.3), [Rancher v2.5.12](https://github.com/rancher/rancher/releases/tag/v2.5.12) and [Rancher v2.4.18](https://github.com/rancher/rancher/releases/tag/v2.4.18) |
-| [CVE-2021-36776](https://github.com/rancher/rancher/security/advisories/GHSA-gvh9-xgrq-r8hw) | A vulnerability was discovered in Rancher versions starting 2.5.0 up to and including 2.5.9, that allowed an authenticated user to impersonate any user on a cluster through an API proxy, without requiring knowledge of the impersonated user's credentials. This was due to the API proxy not dropping the impersonation header before sending the request to the Kubernetes API. A malicious user with authenticated access to Rancher could use this to impersonate another user with administrator access in Rancher, thereby gaining administrator level access to the cluster. | 31 Mar 2022 | [Rancher v2.6.0](https://github.com/rancher/rancher/releases/tag/v2.6.0) and [Rancher v2.5.10](https://github.com/rancher/rancher/releases/tag/v2.5.10) |
-| [CVE-2021-25318](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25318) | A vulnerability was discovered in Rancher versions 2.0 through the aforementioned fixed versions, where users were granted access to resources regardless of the resource's API group. For example, Rancher should have allowed users access to `apps.catalog.cattle.io`, but instead incorrectly gave access to `apps.*`. Resources affected in the **Downstream clusters** and **Rancher management cluster** can be found [here](https://github.com/rancher/rancher/security/advisories/GHSA-f9xf-jq4j-vqw4). There is not a direct mitigation besides upgrading to the patched Rancher versions. | 14 Jul 2021 | [Rancher v2.5.9](https://github.com/rancher/rancher/releases/tag/v2.5.9) and [Rancher v2.4.16](https://github.com/rancher/rancher/releases/tag/v2.4.16) |
-| [CVE-2021-31999](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-31999) | A vulnerability was discovered in Rancher 2.0.0 through the aforementioned patched versions, where a malicious Rancher user could craft an API request directed at the proxy for the Kubernetes API of a managed cluster to gain access to information they do not have access to. This is done by passing the "Impersonate-User" or "Impersonate-Group" header in the Connection header, which is then correctly removed by the proxy. At this point, instead of impersonating the user and their permissions, the request will act as if it was from the Rancher management server and incorrectly return the information. The vulnerability is limited to valid Rancher users with some level of permissions on the cluster. There is not a direct mitigation besides upgrading to the patched Rancher versions. | 14 Jul 2021 | [Rancher v2.5.9](https://github.com/rancher/rancher/releases/tag/v2.5.9) and [Rancher v2.4.16](https://github.com/rancher/rancher/releases/tag/v2.4.16) |
-| [CVE-2021-25320](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25320) | A vulnerability was discovered in Rancher 2.2.0 through the aforementioned patched versions, where cloud credentials weren't being properly validated through the Rancher API. Specifically through a proxy designed to communicate with cloud providers. Any Rancher user that was logged-in and aware of a cloud-credential ID that was valid for a given cloud provider, could call that cloud provider's API through the proxy API, and the cloud-credential would be attached. The exploit is limited to valid Rancher users. There is not a direct mitigation outside of upgrading to the patched Rancher versions. | 14 Jul 2021 | [Rancher v2.5.9](https://github.com/rancher/rancher/releases/tag/v2.5.9) and [Rancher v2.4.16](https://github.com/rancher/rancher/releases/tag/v2.4.16) |
-| [CVE-2021-25313](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25313) | A security vulnerability was discovered on all Rancher 2 versions. When accessing the Rancher API with a browser, the URL was not properly escaped, making it vulnerable to an XSS attack. Specially crafted URLs to these API endpoints could include JavaScript which would be embedded in the page and execute in a browser. There is no direct mitigation. Avoid clicking on untrusted links to your Rancher server. | 2 Mar 2021 | [Rancher v2.5.6](https://github.com/rancher/rancher/releases/tag/v2.5.6), [Rancher v2.4.14](https://github.com/rancher/rancher/releases/tag/v2.4.14), and [Rancher v2.3.11](https://github.com/rancher/rancher/releases/tag/v2.3.11) |
-| [CVE-2019-14435](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-14435) | This vulnerability allows authenticated users to potentially extract otherwise private data out of IPs reachable from system service containers used by Rancher. This can include but not only limited to services such as cloud provider metadata services. Although Rancher allow users to configure whitelisted domains for system service access, this flaw can still be exploited by a carefully crafted HTTP request. The issue was found and reported by Matt Belisle and Alex Stevenson at Workiva. | 5 Aug 2019 | [Rancher v2.2.7](https://github.com/rancher/rancher/releases/tag/v2.2.7) and [Rancher v2.1.12](https://github.com/rancher/rancher/releases/tag/v2.1.12) |
-| [CVE-2019-14436](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-14436) | The vulnerability allows a member of a project that has access to edit role bindings to be able to assign themselves or others a cluster level role granting them administrator access to that cluster. The issue was found and reported by Michal Lipinski at Nokia. | 5 Aug 2019 | [Rancher v2.2.7](https://github.com/rancher/rancher/releases/tag/v2.2.7) and [Rancher v2.1.12](https://github.com/rancher/rancher/releases/tag/v2.1.12) |
-| [CVE-2019-13209](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-13209) | The vulnerability is known as a [Cross-Site Websocket Hijacking attack](https://www.christian-schneider.net/CrossSiteWebSocketHijacking.html). This attack allows an exploiter to gain access to clusters managed by Rancher with the roles/permissions of a victim. It requires that a victim to be logged into a Rancher server and then access a third-party site hosted by the exploiter. Once that is accomplished, the exploiter is able to execute commands against the Kubernetes API with the permissions and identity of the victim. Reported by Matt Belisle and Alex Stevenson from Workiva. | 15 Jul 2019 | [Rancher v2.2.5](https://github.com/rancher/rancher/releases/tag/v2.2.5), [Rancher v2.1.11](https://github.com/rancher/rancher/releases/tag/v2.1.11) and [Rancher v2.0.16](https://github.com/rancher/rancher/releases/tag/v2.0.16) |
-| [CVE-2019-12303](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-12303) | Project owners can inject extra fluentd logging configurations that makes it possible to read files or execute arbitrary commands inside the fluentd container. Reported by Tyler Welton from Untamed Theory. | 5 Jun 2019 | [Rancher v2.2.4](https://github.com/rancher/rancher/releases/tag/v2.2.4), [Rancher v2.1.10](https://github.com/rancher/rancher/releases/tag/v2.1.10) and [Rancher v2.0.15](https://github.com/rancher/rancher/releases/tag/v2.0.15) |
-| [CVE-2019-12274](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-12274) | Nodes using the built-in node drivers using a file path option allows the machine to read arbitrary files including sensitive ones from inside the Rancher server container. | 5 Jun 2019 | [Rancher v2.2.4](https://github.com/rancher/rancher/releases/tag/v2.2.4), [Rancher v2.1.10](https://github.com/rancher/rancher/releases/tag/v2.1.10) and [Rancher v2.0.15](https://github.com/rancher/rancher/releases/tag/v2.0.15) |
-| [CVE-2019-11202](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-11202) | The default admin, that is shipped with Rancher, will be re-created upon restart of Rancher despite being explicitly deleted. | 16 Apr 2019 | [Rancher v2.2.2](https://github.com/rancher/rancher/releases/tag/v2.2.2), [Rancher v2.1.9](https://github.com/rancher/rancher/releases/tag/v2.1.9) and [Rancher v2.0.14](https://github.com/rancher/rancher/releases/tag/v2.0.14) |
-| [CVE-2019-6287](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-6287) | Project members continue to get access to namespaces from projects that they were removed from if they were added to more than one project. | 29 Jan 2019 | [Rancher v2.1.6](https://github.com/rancher/rancher/releases/tag/v2.1.6) and [Rancher v2.0.11](https://github.com/rancher/rancher/releases/tag/v2.0.11) |
-| [CVE-2018-20321](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-20321) | Any project member with access to the `default` namespace can mount the `netes-default` service account in a pod and then use that pod to execute administrative privileged commands against the Kubernetes cluster. | 29 Jan 2019 | [Rancher v2.1.6](https://github.com/rancher/rancher/releases/tag/v2.1.6) and [Rancher v2.0.11](https://github.com/rancher/rancher/releases/tag/v2.0.11) - Rolling back from these versions or greater have specific [instructions](../../getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rollbacks.md). |
+| [CVE-2024-58260](https://github.com/rancher/rancher/security/advisories/GHSA-q82v-h4rq-5c86) | Setting the username of one user as the same username of another user causes an error when either user attempts to log in. Therefore, a user with the `Manage Users` permission could potentially deny any user, including admins, from logging in. To prevent this, usernames have been made immutable once set, and it is not possible to update or create a user with a username that is already in use. | 25 Sep 2025 | Rancher [v2.12.2](https://github.com/rancher/rancher/releases/tag/v2.12.2), [v2.11.6](https://github.com/rancher/rancher/releases/tag/v2.11.6), [v2.10.10](https://github.com/rancher/rancher/releases/tag/v2.10.10), and [v2.9.12](https://github.com/rancher/rancher/releases/tag/v2.9.12) |
+| [CVE-2024-58267](https://github.com/rancher/rancher/security/advisories/GHSA-v3vj-5868-2ch2) | The Rancher CLI is modified to print the `requestId` more visibly than as part of the login URL. It also adds a `cli=true` origin marker to the URL. The dashboard is modified to recognize the presence of the `requestId` and uses that to show a warning message to the user, asking for verification that they initiated a CLI login with the related Id. The non-presence of the origin marker enables the dashboard to distinguish between the modified CLI and older CLI’s, and adjust the message accordingly. | 25 Sep 2025 | Rancher [v2.12.2](https://github.com/rancher/rancher/releases/tag/v2.12.2), [v2.11.6](https://github.com/rancher/rancher/releases/tag/v2.11.6), [v2.10.10](https://github.com/rancher/rancher/releases/tag/v2.10.10), and [v2.9.12](https://github.com/rancher/rancher/releases/tag/v2.9.12) |
+| [CVE-2025-54468](https://github.com/rancher/rancher/security/advisories/GHSA-mjcp-rj3c-36fr) | `Impersonate-*` headers are removed for requests made through the `/meta/proxy` Rancher endpoint (e.g. when cloud credentials are being created) as the headers may contain identifiable and/or sensitive information. | 25 Sep 2025 | Rancher [v2.12.2](https://github.com/rancher/rancher/releases/tag/v2.12.2), [v2.11.6](https://github.com/rancher/rancher/releases/tag/v2.11.6), [v2.10.10](https://github.com/rancher/rancher/releases/tag/v2.10.10), and [v2.9.12](https://github.com/rancher/rancher/releases/tag/v2.9.12) |
+| [CVE-2024-58259](https://github.com/rancher/rancher/security/advisories/GHSA-4h45-jpvh-6p5j) | POSTs to the Rancher API endpoints are now limited to 1 Mi; this is configurable through the settings if you need a larger limit. The Rancher authentication endpoints are configured independently of the main public API (as you might need bigger payloads in the other API endpoints). Suppose you need to increase the maximum allowed payload for authentication. In that case, you can set the environment variable `CATTLE_AUTH_API_BODY_LIMIT` to a quantity, e.g., 2 Mi, which would allow larger payloads for the authentication endpoints. | 28 Aug 2025 | Rancher [v2.12.1](https://github.com/rancher/rancher/releases/tag/v2.12.1), [v2.11.5](https://github.com/rancher/rancher/releases/tag/v2.11.5), [v2.10.9](https://github.com/rancher/rancher/releases/tag/v2.10.9) and [v2.9.11](https://github.com/rancher/rancher/releases/tag/v2.9.11) |
+| [CVE-2024-52284](https://github.com/rancher/fleet/security/advisories/GHSA-6h9x-9j5v-7w9h) | Following a recent [change](https://github.com/rancher/fleet/pull/3403) excluding Helm values files from bundles, an edge case subsisted where the values files referenced in `fleet.yaml` with your directory name (e.g., `my-dir/values.yaml` instead of `values.yaml`) would not be excluded, which would potentially expose confidential data in bundle resources. Helm values files are now excluded from bundle resources regardless of how you reference them. | 28 Aug 2025 | Rancher [v2.12.1](https://github.com/rancher/rancher/releases/tag/v2.12.1), [v2.11.5](https://github.com/rancher/rancher/releases/tag/v2.11.5) and [v2.10.9](https://github.com/rancher/rancher/releases/tag/v2.10.9) |
 
 
 ---
