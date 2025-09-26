@@ -11222,7 +11222,7 @@ The example command shown below makes use of the current Rancher release values 
   value: &#39;{&quot;refresh-interval-minutes&quot;:&quot;1450&quot;,&quot;url&quot;:&quot;https://releases.rancher.com/kontainer-driver-metadata/release-v2.6/data.json&quot;}&#39;
 </code></pre></div>
 <p>Please see below example screenshot taken from the Global Settings &gt; Settings menu in the Rancher UI after applying the rke-metadata-config setting using Helm.</p>
-<p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000YsHJ&amp;feoid=00N1i000002LdMN&amp;refid=0EM5q000000ZqiH" /></p>
+<p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tLRS&amp;feoid=00N1i000002LdMN&amp;refid=0EM5q000000ZqiH" /></p>
 <p><strong>IMPORTANT NOTE:</strong> </p>
 <p>When upgrading Rancher to the next major/minor release (e.g 2.9.x or 210.x), please ensure that the RKE metadata setting matches the release in use, i.e. release-v2.9 or release-v2.10</p>
 <p>To ensure that Rancher uses the default <code>rke-metadata-config</code> value — which is automatically updated during a Rancher upgrade—  <strong>it is necessary to remove any manually set value in the Rancher local cluster. This helps prevent Kubernetes metadata (KDM) related issues during the upgrade process.</strong></p>

@@ -11224,7 +11224,7 @@ type: kubernetes.io/basic-auth
 <ul>
 <li>This results in <strong><em>"/etc/rancher/agent/registries.yaml"</em></strong> file on the downstream server nodes containing the unexpected newline characters ('\n'). Hence the error.</li>
 </ul>
-<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000lP1N&amp;feoid=00N1i000002LdMP&amp;refid=0EMTr00000F0nxl" /></p>
+<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tL2N&amp;feoid=00N1i000002LdMP&amp;refid=0EMTr00000F0nxl" /></p>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The issue is caused by the echo command appending a newline character ('\n') when encoding strings to base64, which is then used in Kubernetes secrets.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
@@ -11233,10 +11233,10 @@ type: kubernetes.io/basic-auth
 <li>This prevents the newline character from being included in the encoded string, causing authentication issues. Here, in the above example, the <strong><em>registries.yaml</em></strong> file, the encoded string, i.e, <strong><em>SGVsbG8K = decodes to Hello\n</em></strong> and <strong><em>V29ybGQK</em></strong> = decodes to <strong><em>World\n</em></strong>.</li>
 <li>Unfortunately, the <strong><em>"echo | base64 -d"</em></strong> command does not show the extra newline character. Instead, you can use the <strong><em>'hexdump'</em></strong> command to confirm any unexpected newline character in encoded strings.</li>
 </ul>
-<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000lP1N&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000FVuZx" />
+<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tL2N&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000FVuZx" />
 - The <strong><em>"0a"</em></strong> character in the command output above indicates the new line. See the ASCII character chart <a href="https://www.eso.org/~ndelmott/ascii.html">here</a>.
 - As a solution, use the <strong><em>"-n"</em></strong> flag as shown below when encoding the strings. The "-n" flag suppresses the trailing. \n. </p>
-<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000lP1N&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000FVth8" /></p>
+<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tL2N&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000FVth8" /></p>
 <div class="highlight"><pre><span></span><code>From the man page of the echo command.
 
 #man echo | grep -i &#39;newline&#39;
