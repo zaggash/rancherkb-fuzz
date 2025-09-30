@@ -13216,7 +13216,7 @@ You need to set node selector for both types of components. See more details bel
           nodeSelector:
             label-key1: "label-value1"
       ```
-   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v1.1.1/deploy/longhorn.yaml), you need to modify the node selector section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
+   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the node selector section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
     Then apply the YAMl files.
    * If you install Longhorn using Helm, you can change the Helm values for `global.nodeSelector`, `longhornManager.nodeSelector`, `longhornUI.nodeSelector`, `longhornDriver.nodeSelector` in the `values.yaml` file before installing the chart.
 
@@ -13261,7 +13261,7 @@ You need to set node selector for both types of components. See more details bel
           nodeSelector:
             label-key1: "label-value1"
         ```
-    * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v1.1.1/deploy/longhorn.yaml), you need to modify the node selector section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
+    * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the node selector section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
       Then reapply the YAMl files.
     * If you install Longhorn using Helm, you can change the Helm values for `global.nodeSelector`, `longhornManager.nodeSelector`, `longhornUI.nodeSelector`, `longhornDriverDeployer.nodeSelector` in the `values.yaml` file, and then run `helm upgrade` to upgrade to the new version of the chart.
 
@@ -13566,7 +13566,7 @@ You need to set tolerations for both types of components. See more details below
            value: "value"
            effect: "NoSchedule"
      ```
-   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v1.1.1/deploy/longhorn.yaml), you need to modify the taint tolerations section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
+   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the taint tolerations section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
     Then apply the YAMl files.
    * If you install Longhorn using Helm, you can change the Helm values for `global.tolerations`, `longhornManager.tolerations`, `longhornUI.tolerations`, `longhornDriver.tolerations` in the `values.yaml` file before installing the chart.
 
@@ -13629,7 +13629,7 @@ You need to set tolerations for both types of components. See more details below
            value: "value"
            effect: "NoSchedule"
      ```
-   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v1.1.1/deploy/longhorn.yaml), you need to modify the taint tolerations section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
+   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the taint tolerations section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
   Then reapply the YAMl files.
    * If you install Longhorn using Helm, you can change the Helm values for `global.tolerations`, `longhornManager.tolerations`, `longhornUI.tolerations`, `longhornDriver.tolerations` in the `values.yaml` file, and then run `helm upgrade` to upgrade to the new version of the chart.
 
