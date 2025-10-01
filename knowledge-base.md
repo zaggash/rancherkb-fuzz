@@ -3777,26 +3777,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+# How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
-- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
+- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
+- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
 
 ## **Situation**
 
-この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
+This article details how to confirm that a Rancher version upgrade has successfully completed.
 
 ## **Resolution**
 
-Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
+The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
 
-- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
-- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
-- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
+- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
+- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
+- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
 
 
 
@@ -9000,59 +9000,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -13788,7 +13796,7 @@ Changing the cluster CNI after the cluster has been provisioned is not supported
 
 ## **Environment**
 
-- Suse Rancher 2.5.9
+- Suse Rancher 2.9 or higher version
 - Air-gapped environment
 - 1 or more RKE downstream clusters
 - RKE template configured for the downstream clusters
@@ -16341,18 +16349,19 @@ apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig 
 metadata: 
   name: rke2-ingress-nginx 
-  namespace: kube-system 
-spec: 
-  valuesContent: |- 
-    controller:       
-      hostPort: 
-        enabled: false 
-      service: 
-        enabled: true 
-        type: LoadBalancer 
+  namespace: kube-system 
+spec:
+  valuesContent: |
+    controller:
+      hostNetwork: false
+      kind: Deployment
+      replicaCount: 3
+      service:
+        enabled: true
+        type: LoadBalancer
 ```
 
-This configuration sets the "type" of the nginx ingress controller service to LoadBalancer, allowing it to be exposed through a cloud LoadBalancer.
+This configuration changes the ingress controller from a DaemonSet to a Deployment, sets the number of replicas to 3 for high availability, and updates the service type to LoadBalancer, enabling external access via a cloud load balancer. You should adjust the replica count based on the size and availability requirements of your environment.
 
 For standalone RKE2 clusters, this HelmChartConfig manifest can be defined within the manifests directory on server nodes, as documented at [https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig).
 
@@ -25337,4 +25346,48 @@ Note: As of Kubernetes v1.30, the `imageMaximumGCAge` feature is enabled by defa
 **Additional information**
 
 https://kubernetes.io/docs/concepts/architecture/garbage-collection/#image-maximum-age-gc
+
+
+
+---
+
+## Article: 000022067.md
+
+# Pod Filtering Not Working in Rancher 2.12.1
+
+**Article Number:** [000022067](https://support.scc.suse.com/s/kb/Pod-Filtering-Not-Working-in-Rancher-2-12-1)
+
+## **Environment**
+
+Rancher **2.12.1**  
+UI Extensions like Kubewarden or Observability enabled.
+
+## **Situation**
+
+In Rancher version **2.12.1**, the **Workloads &gt; Pods** page filter functionality may not work as expected when searching for pods using a specific pattern. This issue occurs when **UI extensions** are enabled, due to a known bug.
+
+If you open your browser’s developer tools (**Inspect &gt; Console**) and attempt to filter pods, you may see an error similar to the following:
+
+```
+
+```
+
+```markup
+steve-pagination-utils.ts:279 Uncaught (in promise) TypeError: e.startsWith is not a function
+    at u.convertArrayPath (steve-pagination-utils.ts:279:14)
+    at steve-pagination-utils.ts:530:31
+    at c (reactivity.esm-bundler.js:861:19)
+    at Array.map (<anonymous>)
+    at G (reactivity.esm-bundler.js:869:27)
+    at Proxy.map (reactivity.esm-bundler.js:793:12)
+    at steve-pagination-utils.ts:503:12
+    at Array.map (<anonymous>)
+    at u.convertPaginationParams (steve-pagination-utils.ts:501:8)
+    at u.createParamsForPagination (steve-pagination-utils.ts:426:28)
+```
+
+## **Resolution**
+
+To resolve this issue, upgrade to **Rancher 2.12.2**, where the fix is already available.  
+The issue is also scheduled to be addressed in the upcoming **Rancher 2.13.0** release, although no release date has been announced yet.
 
