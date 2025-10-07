@@ -3143,29 +3143,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -7794,50 +7800,62 @@ For clusters managed by RKE v1.0.0 and above, you can set the `generate_serving_
 
 ## Article: 000020162.md
 
-# How to clean a Rancher 2.x RKE cluster
+# How to remove all Kubernetes components from nodes
 
 **Article Number:** [000020162](https://support.scc.suse.com/s/kb/360042000771)
 
 ## **Environment**
 
-Rancher 2.x  
-RKE1 (all versions)
+RKE1   
+RKE2  
+K3S
 
 ## **Situation**
 
-At times a node may need to be cleaned of all state to ensure it is consistent for further use in a cluster. This article and script are for Rancher 2.x.
+At times a node may need to be cleaned of Kubernetes components for troubleshooting purposes or to reuse the node in another cluster. This article covers the process to remove all Kubernetes components from **RKE/RKE2/K3S** nodes
 
-> Please note, this script will delete all containers, volumes, images, network interfaces, and directories that relate to Rancher and Kubernetes. It can also optionally flush all iptables rules and delete container images. It is important to perform pre-checks, and backup the node as needed before proceeding with any steps below.
+> Please note, these steps will delete all containers, volumes, CNI network interfaces, and directories that relate to Rancher and Kubernetes. They can also optionally flush all iptables rules and delete container images. It is important to perform pre-checks, and backup the node as needed before proceeding with any steps below.
 
 #### **Prerequisite**
 
-- A node provisioned with the RKE distribution using Rancher or the RKE CLI.
-- The node should no longer be a member of any cluster.
-- A copy of [the cleanup script](https://github.com/rancherlabs/support-tools/raw/master/extended-rancher-2-cleanup/extended-cleanup-rancher2.sh), and root/sudo access.
-- Check the running containers or Pods, these will be forcefully deleted in the following steps.
-- Confirm you are on the correct node and are ready to proceed with cleaning all containers and all data specific to Kubernetes and Rancher/RKE.
+- A node provisioned with the RKE/RKE2/K3S distribution.
+- The node should no longer be a member of the Kubernetes cluster.
+- For RKE1,  [the cleanup script](https://github.com/rancherlabs/support-tools/raw/master/extended-rancher-2-cleanup/extended-cleanup-rancher2.sh) is required to be run and it is essential to correctly stop RKE1 services and remove all cluster-related containers, files, and network settings from the node
+- Root/ Sudo access privileges are required to modify system services, directories, and network settings that are part of the cluster's core configuration.
+- Ensure no critical workloads are still running in Kubernetes on the node; these will be forcefully deleted in the following steps.
 
 ## **Resolution**
 
-The below steps use a script to automate the clean of a node, the commands used can be run manually as needed, follow the steps below cleaning a node that has been used previously in a cluster.
+**RKE1**
 
-- Login to the node and download the cleanup script:
+The steps below use a script to automate the cleaning of a node; the commands used can be run manually as needed. Follow the steps below to clean a node that has been used previously in a cluster.
 
-`curl -sLO https://github.com/rancherlabs/support-tools/raw/master/extended-rancher-2-cleanup/extended-cleanup-rancher2.sh`
+- Log in to the node and download the cleanup script:
+  
+  ```markup
+  curl -sLO https://github.com/rancherlabs/support-tools/raw/master/extended-rancher-2-cleanup/extended-cleanup-rancher2.sh
+  ```
 
 You should now have a copy of the script in the current directory.
 
 - Run the script:
-
-`sudo bash extended-cleanup-rancher2.sh`
-
-If desired, the optional -f and -i flags can be used together or individually to flush iptables (-f) and delete container images (-i).
-
-`sudo bash extended-cleanup-rancher2.sh -f -i`
-
+  
+  ```markup
+  sudo bash extended-cleanup-rancher2.sh
+  ```
+- If desired, the optional -f and -i flags can be used together or individually to flush iptables (-f) and delete container images (-i)
+  
+  ```markup
+  sudo bash extended-cleanup-rancher2.sh -f -i
+  ```
 - Restart the node
 
-The node is now in a clean consistent state to be reused in a cluster.
+The node is now in a clean, consistent state to be reused in a cluster.
+
+Please refer to the following documents for similar processes for **RKE2/K3S.**
+
+- [RKE2 clean up](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/clean-cluster-nodes?k8s-distro=RKE2#cleaning-up-nodes "RKE2 clean up")
+- [K3S Clean up](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/clean-cluster-nodes?k8s-distro=K3s#cleaning-up-nodes)
 
 
 
@@ -25346,6 +25364,188 @@ Note: As of Kubernetes v1.30, the `imageMaximumGCAge` feature is enabled by defa
 **Additional information**
 
 https://kubernetes.io/docs/concepts/architecture/garbage-collection/#image-maximum-age-gc
+
+
+
+---
+
+## Article: 000022065.md
+
+# How to create a network bond for Elemental OS Machine
+
+**Article Number:** [000022065](https://support.scc.suse.com/s/kb/How-to-create-a-network-bond-for-Elemental-OS-Machine)
+
+## **Environment**
+
+Rancher 2.9 &gt;+
+
+Elemental Operator  1.6 and 1.7
+
+## **Procedure**
+
+# Configuring NIC Teaming for OS Elemental
+
+## Overview
+
+This article provides the procedure for configuring **NIC Teaming (bonding)** in **SUSE Elemental OS**. It includes an example configuration that can be adjusted to suit your specific environment.
+
+> **Note:** This procedure demonstrates the configuration using **Elemental (the visual method)** via the Rancher UI. Alternatively, **Elemental (the command-line method)** can be used to achieve the same result.
+
+* * *
+
+## Prerequisites
+
+- Access to **Rancher UI** with appropriate administrative privileges.
+- Network interfaces available for bonding (e.g., `eth0`, `eth1`).
+- Familiarity with **NetworkManager** and **cloud-config** syntax.
+
+* * *
+
+## Procedure
+
+### Step 1: Create or Update a Machine Registration Endpoint
+
+1. In the **Rancher UI**, navigate to:  
+   **☰ &gt; OS Management &gt; Registration Endpoints**.
+2. Click **Create** or **Edit Config**.
+3. In the **Cloud Configuration** section, add or update the following configuration example.
+
+* * *
+
+### Example Cloud Configuration
+
+```
+
+```
+
+```yaml
+
+```
+
+* * *
+
+## VLAN Configuration (Optional)
+
+To configure the bonding interface to use a specific VLAN, use the following example instead of the standard bond configuration:
+
+```markup
+- files:
+    - content: |
+        [connection]
+        id=bond-bond0
+        type=bond
+        interface-name=bond-bond0
+        master=mgmt-br
+        slave-type=bridge
+        autoconnect=true
+        [bond]
+        miimon=1000
+        mode=802.3ad
+        xmit_hash_policy=layer3+4
+        [ipv4]
+        method=disabled
+        [ipv6]
+        method=disabled
+      path: /etc/NetworkManager/system-connections/bond-bond0.nmconnection
+      permissions: 384
+
+  - files:
+      - content: |
+          [connection]
+          id=bond-bond0.1234
+          type=vlan
+          interface-name=bond-bond0.1234
+          autoconnect=true
+          [vlan]
+          id=1234
+          parent=bond-bond0
+          [ipv4]
+          method=auto
+          [ipv6]
+          method=auto
+        path: /etc/NetworkManager/system-connections/bond-bond0.1234.nmconnection
+        permissions: 384
+```
+
+```yaml
+
+```
+
+* * *
+
+## Additional Information
+
+- File permissions must **restrict read and write access to the root user** only.  
+  NetworkManager will refuse to load any connection profile with incorrect permissions.
+- Use octal notation to specify file permissions.  
+  For example:
+  
+   
+  
+  `root@SUSE-820564:~# echo $((0600)) 384 root@SUSE-820564:~#`
+- Refer to the official documentation for additional details:  
+  [Static Network with NetworkManager Configurator](https://elemental.docs.rancher.com/networking-static/#static-network-with-nm-configurator)
+
+```markup
+spec:
+  config:
+    cloud-config:
+      stages:
+        initramfs:
+          - files:
+              - content: |
+                  [connection]
+                  id=bond0-slave-eth0
+                  type=ethernet
+                  interface-name=eth0
+                  master=bond0
+                  slave-type=bond
+                  autoconnect=true
+                  [ethernet]
+                  mac-address=00:50:56:bd:c3:f8
+                path: /etc/NetworkManager/system-connections/bond0-slave-eth0.nmconnection
+                permissions: 384
+
+          - files:
+              - content: |
+                  [connection]
+                  id=bond0-slave-eth1
+                  type=ethernet
+                  interface-name=eth1
+                  master=bond0
+                  slave-type=bond
+                  autoconnect=true
+                  [ethernet]
+                  mac-address=00:50:56:bd:01:a2
+                path: /etc/NetworkManager/system-connections/bond0-slave-eth1.nmconnection
+                permissions: 384
+
+          - files:
+              - content: |
+                  [connection]
+                  id=bond-bond0
+                  type=bond
+                  interface-name=bond0
+                  [bond]
+                  miimon=100
+                  mode=802.3ad
+                  xmit_hash_policy=layer3+4
+                  [ipv4]
+                  method=auto
+                  dns=10.144.53.53;10.144.53.54
+                  [ipv6]
+                  method=disabled
+                path: /etc/NetworkManager/system-connections/bond-bond0.nmconnection
+                permissions: 384
+
+          
+```
+
+* * *
+
+## Summary
+
+By following this procedure, you can successfully configure NIC teaming in OS Elemental using either the visual method (Rancher UI) or the command-line method. Adjust the sample configuration as needed for your environment, ensuring all permissions and parameters align with your network requirements.
 
 
 
