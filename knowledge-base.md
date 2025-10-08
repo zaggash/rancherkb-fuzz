@@ -18711,7 +18711,7 @@ Afterwards, the system-upgrade-controller Job Pods should be able to restart suc
 
 ## Article: 000021399.md
 
-# Failed ETCD snapshot restoration leads the cluster into stuck "paused" state
+# Cluster Stuck in “Paused” State After Disaster Recovery (DR) Process
 
 **Article Number:** [000021399](https://support.scc.suse.com/s/kb/Failed-ETCD-snapshot-restoration-leads-the-cluster-into-stuck-paused-state)
 
@@ -18721,36 +18721,63 @@ Rancher Server 2.7.6 and above
 
 ## **Situation**
 
-In some cases, the downstream cluster can get into a broken state which requires a Disaster Recovery process to bring it back to its active state.  
-At some point, the DR process does not finish properly and hangs up indefinitely which leads the cluster into what is called a "paused" state.  
-This symptom can be seen by checking the  **`clusters.cluster.x-k8s.io`**  object in the  **`fleet-default`**  namespace from the local (upstream) cluster.
+In certain cases, a downstream cluster may enter a broken state that requires a Disaster Recovery (DR) process to restore it to an active state.  
+However, the DR process may occasionally fail to complete successfully, becoming stuck indefinitely. When this happens, the cluster enters a **“paused”** state.
 
-```
+This condition can be verified by inspecting the `clusters.cluster.x-k8s.io` object in the `fleet-default` namespace of the **local (upstream)** cluster:
+
+```markup
 kubectl get clusters.cluster.x-k8s.io <CLUSTER_NAME> -n fleet-default -o yaml
 ```
 
-In the yaml output, you should see the  **`.spec.paused`**  field being set to **true**.
+```
+
+```
+
+In the output, you will see the following field set to `true`:
+
+```markup
+spec:
+  paused: true
+```
 
 ## **Cause**
 
-an unforeseen incident (network, OS failure etc...) led the cluster into a broken state.  
-an outage that made all Control Plane nodes completely unavailable.
+The issue typically occurs due to one of the following:
+
+- An unexpected incident (e.g., network interruption, OS failure, etc.) leading the cluster into a broken state.
+- A complete outage rendering all Control Plane nodes unavailable.
 
 ## **Resolution**
 
-To unblock this situation, the following steps are recommended to perform:  
-\- edit the  **`clusters.cluster.x-k8s.io`**  object in the  **`fleet-default`**  namespace from the local (upstream) cluster
+To recover the cluster from the paused state:
 
-```
-kubectl edit clusters.cluster.x-k8s.io <CLUSTER_NAME> -n fleet-default -o yaml
-```
+1. Edit the `clusters.cluster.x-k8s.io` object in the `fleet-default` namespace on the **local (upstream)** cluster:
+   
+    
+   
+   ```markup
+   kubectl edit clusters.cluster.x-k8s.io <CLUSTER_NAME> -n fleet-default
+   ```
+2. Locate the following field:
+   
+    
+   
+   ```markup
+   spec: paused: true
+   ```
+3. Change the value of `paused` to `false`, then save and exit the editor.
+   
+    
+   
+   ```markup
+   spec: paused: false
+   ```
 
-\- refer to the  **`.spec.paused`**  field being set to **false**  
-\- save the file and exit
+These steps will instruct Rancher to **unpause** the cluster, allowing the restore process to continue.
 
-The above steps will instruct Rancher to unpause the cluster or unblock the stuck situation to continue doing the restore process.  
-The recommended approach would be performing the DR process again after the edit is made.  
-Right after this, please refer to Rancher Manager backup and restore docs [here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup#restoring-a-cluster-from-a-snapshot-when-the-controlplaneetcd-are-completely-unavailable) to continue the DR process depending on the distribution in use (RKE/RKE2/K3S).
+Once the cluster resumes activity, it is recommended to **re-run the DR process** to ensure the cluster is fully recovered.  
+For detailed guidance, refer to the official Rancher Manager Backup and Restore documentation for your specific distribution.
 
 
 
@@ -25590,4 +25617,250 @@ steve-pagination-utils.ts:279 Uncaught (in promise) TypeError: e.startsWith is n
 
 To resolve this issue, upgrade to **Rancher 2.12.2**, where the fix is already available.  
 The issue is also scheduled to be addressed in the upcoming **Rancher 2.13.0** release, although no release date has been announced yet.
+
+
+
+---
+
+## Article: 000022078.md
+
+# Rancher Prime Registration in 2.12 - FAQs
+
+**Article Number:** [000022078](https://support.scc.suse.com/s/kb/Rancher-Prime-Registration-FAQs)
+
+## **Environment**
+
+Rancher Prime 2.x
+
+
+
+---
+
+## Article: 000022080.md
+
+# How to scale down a specific node in a node pool with Elemental
+
+**Article Number:** [000022080](https://support.scc.suse.com/s/kb/How-to-scale-down-a-specific-node-in-a-node-pool-with-Elemental)
+
+## **Environment**
+
+Rancher
+
+Elemental
+
+RKE2
+
+## **Situation**
+
+When scaling down a **Rancher-provisioned Elemental RKE2 cluster node pool** after modifying the **MachineInventorySelectorTemplate**, the **oldest node** in the pool is removed — rather than the node that no longer matches the updated selector.
+
+This behavior is **expected**.  
+The `MachineInventorySelectorTemplate` is evaluated **only once**, during initial creation, to generate selectors.  
+Subsequent edits to the template **do not propagate** to existing selectors or machines that were previously created.
+
+For instructions on how to remove a specific machine or node from a node pool, refer to the **Resolution** section below.
+
+## **Cause**
+
+During node pool scaling operations, the **MachineInventorySelectorTemplate** is **not referenced**.  
+Instead, the **oldest node** is selected for removal to maintain the desired node count and to prevent unintended deletions that could occur due to mismatches between:
+
+- Labels defined in the MachineInventorySelectorTemplate, and
+- Labels present on existing MachineInventory objects.
+
+This safeguard ensures consistent and predictable scaling behavior, even when template labels are later modified.
+
+## **Resolution**
+
+To delete a specific node or machine from a pool, you can perform the operation via the **Rancher UI** or **kubectl**.
+
+**Option 1: Using Rancher UI**
+
+1. Navigate to the cluster and locate the node you want to remove.
+2. Select the node and **scale down** the node pool.
+3. Rancher automatically applies the following annotation to the targeted machine:
+
+```
+
+```
+
+```markup
+cluster.x-k8s.io/delete-machine: "true"
+```
+
+```yaml
+
+```
+
+**Option 2: Using kubectl**
+
+1. Identify the target machine object.
+2. Manually apply the deletion annotation:
+
+```
+
+```
+
+```markup
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Machine
+metadata:
+  annotations:
+    cluster.x-k8s.io/delete-machine: "true"
+```
+
+```yaml
+
+```
+
+3. Scale down the node pool to complete the deletion process.
+
+
+
+---
+
+## Article: 000022082.md
+
+# API Extension Service Failure Due to Custom Helm Release Name
+
+**Article Number:** [000022082](https://support.scc.suse.com/s/kb/API-Extension-Service-Failure-Due-to-Custom-Helm-Release-Name)
+
+## **Environment**
+
+• Rancher v2.11.x
+
+• Rancher deployed using a **custom Helm release name** other than the default (rancher) (e.g., rancher-stable).
+
+## **Situation**
+
+Rancher v2.11 ships with a new API extension, v1.ext.cattle.io, which is required for internal Rancher cluster management components, such as the capi-controller-manager.  
+When Rancher is installed using a custom Helm release name, services relying on resources within this new API group fail to discover the API extension correctly, leading to functional disruption.  
+Engine logs for affected components may display synchronization errors indicating API discovery failure:
+
+```
+
+failed to sync schemas: unable to retrieve the complete list of server APIs: [ext.cattle.io/v1]: stale GroupVersion discovery: [ext.cattle.io/v1]
+```
+
+While standard Rancher Helm charts are designed to dynamically template labels and resource names based on the chosen release name, this specific extension service does not adhere to dynamic naming conventions.
+
+Additionally, this backing service may persist in the \`cattle-system\` namespace if a rollback from Rancher 2.11 to a previous version is attempted.
+
+## **Cause**
+
+The root cause is a software bug related to the **hardcoded label selector** configured for the API extension's backing service.
+
+1\.  **API Extension Service:** The API extension is backed by the service \`cattle-system/imperative-api-extension\`.  
+2.  **Hardcoded Selector:** This service contains a **hardcoded label selector of \`app: rancher\`**.  
+3.  **Label Mismatch:** When a custom Helm release name (e.g., \`rancher-stable\`) is used, the Rancher deployment pods correctly receive an \`app\` label matching that name (e.g., \`app: rancher-stable\`).  
+4\.  **Service Failure:** Due to the label mismatch, the \`imperative-api-extension\` service cannot select the intended Rancher pods \[User Query]. This prevents the proper registration of the \`v1.ext.cattle.io\` \`APIService\` via the Kubernetes API Aggregation Layer, resulting in the reported *stale GroupVersion discovery* errors.
+
+This situation confirms a bug in the new \`imperative-api-extension\` feature, as it expects the static \`app: rancher\` label instead of dynamically resolving the name based on the Helm release. This issue is being tracked internally for a long-term resolution.
+
+ 
+
+**Changing Release Name Risk:**
+
+If you consider renaming your existing Helm chart release (e.g., from \`rancher-stable\` back to \`rancher\`), be advised that this process is highly disruptive: it forces a complete removal of the previous Rancher deployment and the creation of a fresh instance.
+
+This action will cause the Rancher management plane UI/API to be unavailable during the entire process, although downstream cluster workloads are designed to remain functional.
+
+## **Resolution**
+
+### ### Workaround: Manually Patch the Service Selector
+
+The recommended immediate resolution is to manually edit the \`imperative-api-extension\` service selector to match the actual application label applied to the Rancher deployment pods.
+
+**1. Identify the Correct Application Label**
+
+Determine the actual application label used by your Rancher pods (this is usually your Helm release name, e.g., \`rancher-stable\`):
+
+```
+# Replace <RANCHER_RELEASE_NAME> with your actual Helm release name
+kubectl get deployment <RANCHER_RELEASE_NAME> -n cattle-system -o yaml | grep 'app:'
+```
+
+**2. Patch the Imperative API Extension Service**
+
+Patch the Service in the \`cattle-system\` namespace, replacing \`&lt;ACTUAL\_APP\_LABEL&gt;\` with the value found in the previous step:
+
+```
+kubectl patch svc imperative-api-extension -n cattle-system \
+-p '{"spec":{"selector":{"app":"<ACTUAL_APP_LABEL>"}}}'
+```
+
+### ### Cleanup after Rollback (If applicable)
+
+If this issue occurs after rolling back from Rancher v2.11 to a prior version, the \`imperative-api-extension\` service may persist.   
+If the service is orphaned and not required by the older Rancher version, you should manually delete it:
+
+```
+kubectl delete svc imperative-api-extension -n cattle-system
+```
+
+Deleting the service is a specific cleanup step, contrasting with the general Rancher rollback process which usually involves restoring state using the Rancher backup operator.  
+General best practices recommend taking backups (snapshots) before any major operation like an upgrade or rollback.
+
+
+
+---
+
+## Article: 000022084.md
+
+# Mitigating Ingress-Nginx Warnings: Client Request Body Buffered to Temporary File in RKE2
+
+**Article Number:** [000022084](https://support.scc.suse.com/s/kb/Mitigating-Ingress-Nginx-Warnings-Client-Request-Body-Buffered-to-Temporary-File-in-RKE2)
+
+## **Environment**
+
+An RKE2 cluster using the bundled rke2-ingress-nginx controller.
+
+## **Situation**
+
+The rke2-ingress-nginx-controller pods are continuously emitting warning logs indicating that the client request body is being buffered to a temporary file.  
+An example of the logged warning is:  
+`[warn]: *16039 a client request body is buffered to a temporary file /tmp/nginx/client-body/0000019201, client: 10.x.x.x`  
+This warning persists even when the maximum client body size (client\_max\_body\_size), configured via proxy-body-size, has been set to a large value (e.g., 1024m).
+
+## **Cause**
+
+The warning a client request body is buffered to a temporary file occurs because the incoming request body size exceeds the allocated in-memory buffer (client\_body\_buffer\_size), forcing NGINX to write the excess data to a temporary file on disk.
+
+The distinction is critical:  
+1\. client\_max\_body\_size (set via proxy-body-size) limits the total request size (preventing 413 errors).  
+2\. client\_body\_buffer\_size (set via client-body-buffer-size) limits the amount NGINX holds in memory for the request body before writing to disk.  
+If the warning persists despite a large proxy-body-size, the client-body-buffer-size needs to be increased to prevent disk I/O and performance overhead
+
+## **Resolution**
+
+To resolve this issue, you must increase the maximum size of the in-memory buffer using the client-body-buffer-size configuration key, which is defined in the NGINX configuration map and managed in RKE2 via a HelmChartConfig resource.
+
+**Configure Client Body Buffer Size via HelmChartConfig (RKE2)**  
+To configure NGINX parameters for the bundled rke2-ingress-nginx controller, you create or modify a HelmChartConfig resource in the kube-system namespace. These configurations are passed through the controller.config map.
+
+In the example below, both the maximum allowed size (proxy-body-size) and the in-memory buffer size (client-body-buffer-size) are configured to a large value (e.g., 5MB, but adjust based on your workload needs):  
+1\. Create or modify the HelmChartConfig resource for rke2-ingress-nginx:  
+2\. Applying the Configuration:  
+   ◦ **Standalone RKE2 cluste**r: Save this manifest (e.g., /var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml) and restart the rke2-server service.  
+   ◦ **Rancher-provisioned RKE2 cluster**: Apply this YAML in the Additional Manifests section when editing the cluster configuration.
+
+```
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+ name: rke2-ingress-nginx
+ namespace: kube-system
+spec:
+ valuesContent: |-
+   controller:
+     config:
+       # Configures client_max_body_size (e.g., to prevent 413 errors)
+       proxy-body-size: "5m" 
+       # Configures client_body_buffer_size (e.g., to prevent disk buffering warnings)
+       client-body-buffer-size: "5m" 
+```
+
+     
+If the warning persists, ensure the new configurations have been correctly applied and loaded by the NGINX process.  
+Confirm that the NGINX configuration has been reloaded, sometimes requiring a manual restart of the rke2-ingress-nginx-controller DaemonSet.
 
