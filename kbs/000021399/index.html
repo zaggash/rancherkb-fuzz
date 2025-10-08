@@ -22,7 +22,7 @@
     
     
       
-        <title>Failed ETCD snapshot restoration leads the cluster into stuck "paused" state - SUSE KBs</title>
+        <title>Cluster Stuck in “Paused” State After Disaster Recovery (DR) Process - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#failed-etcd-snapshot-restoration-leads-the-cluster-into-stuck-paused-state" class="md-skip">
+        <a href="#cluster-stuck-in-paused-state-after-disaster-recovery-dr-process" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Failed ETCD snapshot restoration leads the cluster into stuck "paused" state
+              Cluster Stuck in “Paused” State After Disaster Recovery (DR) Process
             
           </span>
         </div>
@@ -8523,7 +8523,7 @@
   
   
   <span class="md-ellipsis">
-    Failed ETCD snapshot restoration leads the cluster into stuck "paused" state
+    Cluster Stuck in “Paused” State After Disaster Recovery (DR) Process
     
   </span>
   
@@ -8536,7 +8536,7 @@
   
   
   <span class="md-ellipsis">
-    Failed ETCD snapshot restoration leads the cluster into stuck "paused" state
+    Cluster Stuck in “Paused” State After Disaster Recovery (DR) Process
     
   </span>
   
@@ -11156,6 +11156,98 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022078/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rancher Prime Registration in 2.12 - FAQs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022080/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to scale down a specific node in a node pool with Elemental
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022082/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Extension Service Failure Due to Custom Helm Release Name
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022084/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Mitigating Ingress-Nginx Warnings: Client Request Body Buffered to Temporary File in RKE2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -11241,30 +11333,44 @@
 
 
 
-<h1 id="failed-etcd-snapshot-restoration-leads-the-cluster-into-stuck-paused-state">Failed ETCD snapshot restoration leads the cluster into stuck "paused" state</h1>
+<h1 id="cluster-stuck-in-paused-state-after-disaster-recovery-dr-process">Cluster Stuck in “Paused” State After Disaster Recovery (DR) Process</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Failed-ETCD-snapshot-restoration-leads-the-cluster-into-stuck-paused-state">000021399</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
 <p>Rancher Server 2.7.6 and above</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>In some cases, the downstream cluster can get into a broken state which requires a Disaster Recovery process to bring it back to its active state.<br />
-At some point, the DR process does not finish properly and hangs up indefinitely which leads the cluster into what is called a "paused" state.<br />
-This symptom can be seen by checking the  <strong><code>clusters.cluster.x-k8s.io</code></strong>  object in the  <strong><code>fleet-default</code></strong>  namespace from the local (upstream) cluster.</p>
+<p>In certain cases, a downstream cluster may enter a broken state that requires a Disaster Recovery (DR) process to restore it to an active state.<br />
+However, the DR process may occasionally fail to complete successfully, becoming stuck indefinitely. When this happens, the cluster enters a <strong>“paused”</strong> state.</p>
+<p>This condition can be verified by inspecting the <code>clusters.cluster.x-k8s.io</code> object in the <code>fleet-default</code> namespace of the <strong>local (upstream)</strong> cluster:</p>
 <div class="highlight"><pre><span></span><code>kubectl get clusters.cluster.x-k8s.io &lt;CLUSTER_NAME&gt; -n fleet-default -o yaml
 </code></pre></div>
-<p>In the yaml output, you should see the  <strong><code>.spec.paused</code></strong>  field being set to <strong>true</strong>.</p>
-<h2 id="cause"><strong>Cause</strong></h2>
-<p>an unforeseen incident (network, OS failure etc...) led the cluster into a broken state.<br />
-an outage that made all Control Plane nodes completely unavailable.</p>
-<h2 id="resolution"><strong>Resolution</strong></h2>
-<p>To unblock this situation, the following steps are recommended to perform:<br />
-- edit the  <strong><code>clusters.cluster.x-k8s.io</code></strong>  object in the  <strong><code>fleet-default</code></strong>  namespace from the local (upstream) cluster</p>
-<div class="highlight"><pre><span></span><code>kubectl edit clusters.cluster.x-k8s.io &lt;CLUSTER_NAME&gt; -n fleet-default -o yaml
+<div class="highlight"><pre><span></span><code>
 </code></pre></div>
-<p>- refer to the  <strong><code>.spec.paused</code></strong>  field being set to <strong>false</strong><br />
-- save the file and exit</p>
-<p>The above steps will instruct Rancher to unpause the cluster or unblock the stuck situation to continue doing the restore process.<br />
-The recommended approach would be performing the DR process again after the edit is made.<br />
-Right after this, please refer to Rancher Manager backup and restore docs <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup#restoring-a-cluster-from-a-snapshot-when-the-controlplaneetcd-are-completely-unavailable">here</a> to continue the DR process depending on the distribution in use (RKE/RKE2/K3S).</p>
+<p>In the output, you will see the following field set to <code>true</code>:</p>
+<div class="highlight"><pre><span></span><code>spec:
+  paused: true
+</code></pre></div>
+<h2 id="cause"><strong>Cause</strong></h2>
+<p>The issue typically occurs due to one of the following:</p>
+<ul>
+<li>An unexpected incident (e.g., network interruption, OS failure, etc.) leading the cluster into a broken state.</li>
+<li>A complete outage rendering all Control Plane nodes unavailable.</li>
+</ul>
+<h2 id="resolution"><strong>Resolution</strong></h2>
+<p>To recover the cluster from the paused state:</p>
+<ol>
+<li>Edit the <code>clusters.cluster.x-k8s.io</code> object in the <code>fleet-default</code> namespace on the <strong>local (upstream)</strong> cluster:</li>
+</ol>
+<p><div class="highlight"><pre><span></span><code>kubectl edit clusters.cluster.x-k8s.io &lt;CLUSTER_NAME&gt; -n fleet-default
+</code></pre></div>
+2. Locate the following field:</p>
+<p><div class="highlight"><pre><span></span><code>spec: paused: true
+</code></pre></div>
+3. Change the value of <code>paused</code> to <code>false</code>, then save and exit the editor.</p>
+<div class="highlight"><pre><span></span><code>spec: paused: false
+</code></pre></div>
+<p>These steps will instruct Rancher to <strong>unpause</strong> the cluster, allowing the restore process to continue.</p>
+<p>Once the cluster resumes activity, it is recommended to <strong>re-run the DR process</strong> to ensure the cluster is fully recovered.<br />
+For detailed guidance, refer to the official Rancher Manager Backup and Restore documentation for your specific distribution.</p>
 
 
 
