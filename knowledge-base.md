@@ -3067,40 +3067,6 @@ With a Kube Config file sourced for the relevant cluster, for a user with permis
 
 ---
 
-## Article: 000020064.md
-
-# The Rancher v2.x Windows log collector script
-
-**Article Number:** [000020064](https://support.scc.suse.com/s/kb/360050943552)
-
-## **Environment**
-
-Rancher 2.x
-
-Windows worker nodes
-
-## **Situation**
-
-#### Collecting logs from a Rancher 2.x cluster with Windows worker nodes using the Rancher v2.x Windows worker node log collection script.
-
-**N.B. The script needs to be downloaded and run directly on a Windows worker node using a Powershell session with Administrator Privileges.**
-
-## **Resolution**
-
-To run the script, open a new Powershell window with Administrator Privileges and run the following command:
-
-```
-Set-ExecutionPolicy Bypass -Scope Process -Force
-iwr -useb https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/windows-log-collector/win-log-collect.ps1 -OutFile win-log-collect.ps1
-& .\win-log-collect.ps1
-```
-
-Upon successful completion, the log bundle will be written to the root of the C:\\ drive in a file named `rancher_<hostname>_<datetime>.tar.gz`.
-
-
-
----
-
 ## Article: 000020067.md
 
 # Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
@@ -3143,35 +3109,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -8721,15 +8681,18 @@ Using the F12 button you can quickly open the Developer Tools on FireFox and Chr
 - Locate the record button, it should be a red circle to indicate that it is currently recording, if it is grey, click it once to start recording
 - Follow any steps needed to reproduce the issue during the recording
 - Note: immediately before triggering the action that reproduces the issue, also reload the page (eg. via CTRL+R). For example, if the issue manifests when navigating to a page, then go to the the page containing the link leading to it, first reload the page, and then click to reproduce the issue.
-- Once the issue has occurred, right click in the pane and select **Save as HAR with Content**
+- Once the issue has occurred, click the "export HAR (sanitized)" button , top right, in the second row of icons. You can no choose a name and location for the file.  
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000uGV7&feoid=00N1i000002LdMN&refid=0EMTr00000GWwSg)
 
 **Firefox**
 
-- From the menu, select **Tools &gt; Web Developer &gt; Network**
+- From the menu, select **Tools &gt; Browser Tools &gt; Web Developer Tools**
+- In the top of the new panel that has opened at the bottom of the page click "Network"
 - The recording to start automatically with any further navigation in the browser
 - Follow any steps needed to reproduce the issue with the network pane open
 - Note: immediately before triggering the action that reproduces the issue, also reload the page (eg. via CTRL+R). For example, if the issue manifests when navigating to a page, then go to the the page containing the link leading to it, first reload the page, and then click to reproduce the issue.
-- Once the issue has occurred, right click in the pane and select **Save all as HAR**
+- Once the issue has occurred, right click in the pane and select **Save all as HAR**  
+  **![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000uGV7&feoid=00N1i000002LdMN&refid=0EMTr00000GWoer)**
 
 **Upload the HAR file**
 
@@ -8818,34 +8781,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -9018,67 +8975,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -13014,6 +12963,68 @@ After creating the HelmChartConfig manifest, you need to apply it via Rancher. T
 2\. On the selected cluster, click **Edit Config**.  
 3\. Click on the Add-On Config tab and enter the manifest at the bottom in **Additional Manifest**.  
 ![](https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Jpg&versionId=0685q00000Gpeg2&operationContext=DELIVERY&contentId=05T5q00000v3VbC&page=0&d=%2Fa%2F5q0000012rsa%2FfLBhqaiBbLl2qG.kNZC29vFfj7SLX_MUIyb2ZVgg6kE&oid=00D1i000000gLOd&dpt=null&viewId=)
+
+
+
+---
+
+## Article: 000020766.md
+
+# How to list rolebindings for a given user
+
+**Article Number:** [000020766](https://support.scc.suse.com/s/kb/How-to-list-rolebindings-for-a-given-user)
+
+## **Situation**
+
+Need to list the roles bound for a given user
+
+## **Resolution**
+
+Two options available for listing the rolebindings are to use kubectl to get the rolebindings or use a plugin such as **rbac-lookup**.
+
+**Kubectl Commands to get JSON output**
+
+Run the following where $USERID is the ID seen in the Rancher UI as u-xxxx :
+
+```
+$ kubectl get rolebinding,clusterrolebinding --all-namespaces -o jsonpath='{range .items[?(@.subjects[0].name=="$USERID")]}[{.roleRef.kind},{.roleRef.name}]{end}'
+```
+
+This should provide a list of all rolebindings associated with the $USERID in an output like the following: 
+
+```
+[Role,user-global-catalog][Role,r-cluster-local-view][Role,project-member][Role,p-qq8hd-projectmember][Role,edit][Role,project-member][ClusterRole,cattle-globalrole-user][ClusterRole,project-member-promoted][ClusterRole,p-qq8hd-namespaces-edit][ClusterRole,create-ns][ClusterRole,local-clustermember][ClusterRole,u-dlns5-view]
+```
+
+**3rd Party Plugin: rback-lookup**
+
+The **rbac-lookup** plugin can be installed using a plugin manager like krew.   
+NOTE: This pugin is not created or maintaiened by us and so is not supported.  This is provided as an exampe only and your mileage may vary so use at your descretion.
+
+### See related sites:
+
+https://github.com/FairwindsOps/rbac-lookup  
+https://rbac-lookup.docs.fairwinds.com/usage/#flags-supported
+
+https://github.com/kubernetes-sigs/krew  
+https://krew.sigs.k8s.io/  
+ 
+
+Once installed the plugin can be run to retrieve roles as seen in the following example (where **u-x** is the Rancher user ID):
+
+```
+root@box:~# kubectl rbac-lookup u-x
+SUBJECT         SCOPE                ROLE
+u-x   cattle-global-data   Role/user-global-catalog
+u-x   c-m-zbsdgsk9         Role/p-x5msl-projectmember
+u-x   c-m-zbsdgsk9         Role/project-member
+u-x   p-x5msl              Role/project-member
+u-x   p-x5msl              Role/edit
+u-x   fleet-default        Role/r-cluster-quickstart-do-custom-view
+u-x   cluster-wide         ClusterRole/u-3uvr4kfrim-view
+u-x   cluster-wide         ClusterRole/cattle-globalrole-user
+u-x   cluster-wide         ClusterRole/c-m-zbsdgsk9-clustermember
+```
 
 
 
@@ -19158,83 +19169,6 @@ Once the authenticated proxy is configured from Windows settings, the node shoul
 
 ---
 
-## Article: 000021462.md
-
-# RKE2 vSphere cluster provisioning failing, with failing kube-apiserver healthchecks due to inability to resolve localhost
-
-**Article Number:** [000021462](https://support.scc.suse.com/s/kb/RKE2-vSphere-cluster-provisioning-failing-with-failing-kube-apiserver-healthchecks-due-to-inability-to-resolve-localhostRKE2-vSphere-cluster-provisioning-failing-with-failing-kube-apiserver-healthchecks)
-
-## **Environment**
-
-Rancher 2.7.x
-
-Rancher 2.8.x
-
-## **Situation**
-
-**Symptoms**
-
-- High number restarts  of the core pods
-
-```
-NAMESPACE      NAME                                           READY   STATUS     RESTARTS            
-cattle-fleet-system fleet-agent-cc8c97f97-bvx78               1/1    Running      185
-cattle-system cattle-cluster-agent-b1460cbd-8ct5c             1/1    Running      115
-cattle-system cattle-cluster-agent-b1460cbd-l2l8l             1/1    Running      168
-kube-system kube-apiserver-cluster-suse-cp-f777105c-2qgvh     0/1    Running      314
-kube-system kube-controller-manager-cluster-suse-cp-5c-2qgvh  1/1    Running      491
-kube-system cloud-controller-manager-cluster-suse-cp-5c-2qgvh 1/1    Running      501
-```
-
-- The apiserver pod flaps between ready and not ready status
-
-```
-NAMESPACE              NAME                                 READY   STATUS     RESTARTS 
-
-kube-system kube-apiserver-cluster-suse-cp-f777105c-2qgvh     0/1   Running    314
-```
-
-- The kubelet logs register failing probes against the kube-apiserver.
-
-## **Resolution**
-
-1\) **Enable kubelet debug logging**
-
-1. Click **☰ &gt; Cluster Management**.
-2. Go to the cluster you want to configure and click **⋮ &gt; Edit Config**.
-3. **Advanced** &gt; **Additional Kubelet Args** &gt; Add v=9 under **For all machines, use Kubelet args**
-
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000002WYT&feoid=00N1i000002LdMN&refid=0EMTr0000046Omv)  
- 
-
-2\) **Replicate the livenenessProbe and check the kubelet logs**
-
-```
-   2.1 Open an SSH session to a master node
-   2.2 Execute the command to simulate livenessProbe for kube-apiserver in the cluster
-```
-
-```
-/var/lib/rancher/rke2/bin/crictl --runtime-endpoint unix:///run/k3s/containerd/containerd.sock exec $(/var/lib/rancher/rke2/bin/crictl --runtime-endpoint unix:///run/k3s/containerd/containerd.sock ps | grep kube-apiserver | awk '{print $1}') kubectl get --server=https://localhost:6443/ --client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --raw=/livez
-
-```
-
-```
-   2.3 Open another SSH sessionn to the same master node and check the logs
-```
-
-```
-tail -f /var/lib/rancher/rke2/agent/logs/kubelet.log | grep kube-apiserver
-```
-
-```
- Check the DNS resolution and DNS lookups.
-```
-
-
-
----
-
 ## Article: 000021469.md
 
 # ManagedChart generation is X, but latest observed generation is Y
@@ -22936,6 +22870,80 @@ inputTail:
 
 ---
 
+## Article: 000021851.md
+
+# Troubleshooting etcd Time Synchronisation Issues
+
+**Article Number:** [000021851](https://support.scc.suse.com/s/kb/Troubleshooting-etcd-Time-Synchronisation-Issues)
+
+## **Environment**
+
+An RKE or RKE2 cluster with multiple etcd nodes.
+
+## **Situation**
+
+etcd is a critical component in Kubernetes environments, serving as the distributed reliable key-value store that holds the cluster's state. Its proper functioning is highly dependent on accurate time synchronisation across all etcd nodes. Even a small clock drift can lead to significant issues, impacting cluster stability and performance.
+
+Time synchronisation issues in etcd can manifest in various ways, often leading to a cascade of errors throughout your cluster. Common symptoms include:
+
+- **High Clock Drift errors in etcd logs:** You'll see warnings like `"prober found high clock drift"`.
+- **Slow etcd requests:** Messages such as `"apply request took too long"` or `"waiting for ReadIndex response took too long"` indicate that etcd operations are being delayed, often due to inconsistencies between nodes. While these kinds of messages can also indicate other etcd issues, they will commonly be included when a time synchronisation error is present.
+- **Kubernetes API Server timeouts:** The `kube-apiserver` might struggle to connect to etcd, resulting in `http: Handler timeout` errors.
+- **Unhealthy etcd nodes:** You'll see your etcd nodes as unhealthy or flapping (losing and regaining connection).
+- **Raft misalignment:** Inconsistent Raft indexes among etcd members.
+
+## **Cause**
+
+The primary cause of time synchronisation issues on etcd nodes is often a misconfigured or non-functional NTP (Network Time Protocol) client, such as `chrony` or `ntpd`. Specific problems can include:
+
+- **Incorrect NTP Server Configuration:** The `chrony.conf` or `ntp.conf` file might point to incorrect or unreachable NTP servers.
+- **Firewall Rules:** Necessary firewall rules (e.g., UDP port 123 for NTP) might be missing, preventing the nodes from reaching the configured time servers.
+- **Network Connectivity Issues:** General network problems can also prevent NTP synchronisation.
+
+## **Resolution**
+
+#### In order to solve a time synchronisation issue, you can follow these steps:
+
+#### Check the current time and synchronisation status on all your etcd nodes:
+
+- **Check current time:**
+  
+  ```
+  date +"%T.%N"
+  ```
+  
+  Execute this command simultaneously on all etcd nodes to quickly spot any significant differences. Even differences of a few seconds can be critical for etcd.
+- **Check the status of your NTP client.** E.g., for `chrony`:
+  
+  ```
+  timedatectl
+  chronyc sources list
+  chronyc tracking
+  ```
+
+Based on your verification, identify potential clock misalignments, and fix the issue:
+
+- **Review your NTP configuration:** Examine `/etc/chrony.conf` (for chrony) or `/etc/ntp.conf` (for ntpd) on each etcd node. Ensure that the configured NTP servers are correct and reachable. It's recommended to use reliable and accessible NTP sources.
+- **Check Firewall Rules:** Verify that UDP port 123 is open in your firewall configuration on all etcd nodes to allow NTP traffic to and from your configured time servers.
+
+Once you've corrected the configuration, force the NTP client to resynchronize the time.
+
+```
+sudo systemctl restart chronyd
+```
+
+**Important:** When restarting the time synchronisation service, it's generally safer to do it one etcd node at a time. While a temporary clock adjustment might occur, restarting the service on all nodes simultaneously could introduce further instability if a significant time jump occurs across the entire etcd cluster at once.
+
+After ensuring that time synchronisation is correct on all etcd nodes, verify the health of your etcd cluster and monitor the etcd logs for any recurring "high clock drift" or "took too long" errors. These should disappear once the time synchronisation is stable.
+
+```
+
+```
+
+
+
+---
+
 ## Article: 000021852.md
 
 # How to remove user addons or addons_include without deleting the resources
@@ -23882,6 +23890,84 @@ spec:
 - Ensure this filter is applied in the `istio-system` namespace or where your ingress gateway is running, depending on your specific deployment setup.
 - This solution uses an [EnvoyFilter](https://istio.io/latest/docs/reference/config/networking/envoy-filter/) to remove the `server` header. The approach is based on community guidance shared in the following GitHub issue: [GitHub Issue #13861 - Remove Server Header](https://github.com/istio/istio/issues/13861#issuecomment-1425116809)
 - The configuration uses `server_header_transformation: PASS_THROUGH` to avoid setting the default `istio-envoy` value, and explicitly removes the `server` header from response headers.
+
+
+
+---
+
+## Article: 000021893.md
+
+# How to adjust the number of replicas for RKE2 CoreDNS
+
+**Article Number:** [000021893](https://support.scc.suse.com/s/kb/How-to-adjust-the-number-of-replicas-for-RKE2-CoreDNS)
+
+## **Environment**
+
+A Rancher-provisioned or standalone RKE2 cluster.
+
+## **Situation**
+
+You want to adjust the number of CoreDNS replicas in the RKE2 cluster.
+
+## **Resolution**
+
+RKE2 manages the number of CoreDNS Pods automatically through the rke2-coredns-autoscaler. Therefore, manually changing the replica count of the CoreDNS Deployment will be automatically overwritten and reverted to a pre-calculated value.
+
+### Steps
+
+To apply the changes to the default CoreDNS deployment in RKE2, configure the appropriate helm values with a HelmChartConfig.
+
+- For standalone RKE2 clusters, [add the HelmChartConfig](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig) to each rke2-server (control plane) node as a .yaml file in the /var/lib/rancher/rke2/server/manifests directory
+- For RKE2 clusters provisioned by Rancher, add the HelmChartConfig content when editing the cluster in Cluster Management. Paste/edit the content under **Cluster Configuration &gt; Additional Manifest** and save
+
+### Examples
+
+Configure minimum/maximum number of Pods:
+
+```yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |
+    autoscaler:
+      min: 5
+      max: 10
+```
+
+Based on the number of nodes (one Pod per node):
+
+```yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |
+    autoscaler:
+      nodesPerReplica: 1
+```
+
+Based on CPU cores (one Pod for every 6 cores):
+
+```yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |
+    autoscaler:
+      coresPerReplica: 6
+```
+
+ 
+
+> **Note** [node-local-dns](https://docs.rke2.io/networking/networking_services#nodelocal-dnscache) can also be an alternative to scaling the CoreDNS pods, as node-local-dns will start a pod on each node and provide other benefits
 
 
 
@@ -25622,6 +25708,79 @@ The issue is also scheduled to be addressed in the upcoming **Rancher 2.13.0** r
 
 ---
 
+## Article: 000022073.md
+
+# cilium-operator fails to schedule on controlplane/etcd role nodes in RKE2 clusters running rke2-cilium v1.18.0 or v1.18.1
+
+**Article Number:** [000022073](https://support.scc.suse.com/s/kb/cilium-operator-fails-to-schedule-on-controlplane-etcd-role-nodes-in-RKE2-clusters-running-rke2-cilium-v1-18-0-or-v1-18-1)
+
+## **Environment**
+
+- A Rancher-provisioned RKE2 cluster running rke2-cilium v1.18.0 or v1.18.1 (affected RKE2 versions are [v1.30.14+rke2r4](https://docs.rke2.io/release-notes/v1.30.X), [v1.31.12+rke2r1 - v1.31.13+rke2r1](https://docs.rke2.io/release-notes/v1.31.X), [v1.32.8+rke2r1 - v1.32.9+rke2r1](https://docs.rke2.io/release-notes/v1.32.X), [v1.33.4+rke2r1 - v1.33.5+rke2r1,](https://docs.rke2.io/release-notes/v1.33.X) and [v1.34.1+rke2r1](https://docs.rke2.io/release-notes/v1.34.X)).
+- Separate controlplane/etcd and worker role nodes.
+
+## **Situation**
+
+In a Rancher-provisioned RKE2 cluster, running rke2-cilium v1.18.0 or v1.18.1, with separate controlplane/etcd and worker role nodes, the cilium-operator Pods remain in a Pending state during cluster provisioning. The cilium-operator Pods have FailedScheduling events with a message "0/1 nodes are available: 1 node(s) had untolerated taint {node-role.kubernetes.io/etcd: }. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling." As a result the cluster provisioning fails to progress.
+
+```
+$ kubectl -n kube-system get pods -l app.kubernetes.io/name=cilium-operator
+NAME                                                      READY   STATUS              
+cilium-operator-59fcfc5dbb-2b5jm                          0/1     Pending             
+cilium-operator-59fcfc5dbb-4cqm9                          0/1     Pending    
+
+$ kubectl -n kube-system describe pod cilium-operator-59fcfc5dbb-2b5jm
+[...]
+Events:
+  Type     Reason            Age                  From               Message
+  ----     ------            ----                 ----               -------
+  Warning  FailedScheduling  11m                  default-scheduler  0/1 nodes are available: 1 node(s) had untolerated taint {node-role.kubernetes.io/etcd: }. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.
+  Warning  FailedScheduling  52s (x2 over 5m52s)  default-scheduler  0/1 nodes are available: 1 node(s) had untolerated taint {node-role.kubernetes.io/etcd: }. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.
+```
+
+## **Cause**
+
+The behaviour is caused by a [change in the default calico-operator tolerations](https://github.com/cilium/cilium/pull/40475) in the upstream cilium Helm chart and was reported upstream in [cilium/41921](https://github.com/cilium/cilium/issues/41921). The issue is tracked in [rke2/8974](https://github.com/rancher/rke2/issues/8974) and resolved by including the required node-role.kubernetes.io/etcd toleration in the default values for the rke2-cilium chart v1.18.2+.
+
+## **Resolution**
+
+To resolve the issue, upgrade to a later RKE2 release, running rke2-cilium v1.18.2+.
+
+To workaround the issue in affected versions, the toleration below should be added to the cilium-operator in the rke2-cilium chart.
+
+```
+ - key: node-role.kubernetes.io/etcd
+   operator: Exists
+```
+
+To add this toleration:
+
+1. Navigate to **Cluster Management** within the Rancher UI
+2. Click **Edit Config** for the affected cluster.
+3. Under **Cluster Configuration** click **Add-on: Cilium**
+4. Scroll down to the operator.tolerations block and add the node-role.kubernetes.io/etcd toleration:
+   
+   ```
+   [...]
+   operator:
+     [...]
+     tolerations:
+       - key: node-role.kubernetes.io/etcd
+         operator: Exists
+       - key: node-role.kubernetes.io/control-plane
+         operator: Exists
+       - key: node-role.kubernetes.io/master
+         operator: Exists
+       - key: node.kubernetes.io/not-ready
+         operator: Exists
+   [...]
+   ```
+5. Click **Save** to update rke2-cilium with the new toleration
+
+
+
+---
+
 ## Article: 000022078.md
 
 # Rancher Prime Registration in 2.12 - FAQs
@@ -25863,4 +26022,77 @@ spec:
      
 If the warning persists, ensure the new configurations have been correctly applied and loaded by the NGINX process.  
 Confirm that the NGINX configuration has been reloaded, sometimes requiring a manual restart of the rke2-ingress-nginx-controller DaemonSet.
+
+
+
+---
+
+## Article: 000022085.md
+
+# How to increase the number for workers for Fleet
+
+**Article Number:** [000022085](https://support.scc.suse.com/s/kb/How-to-increase-the-number-for-workers-for-Fleet)
+
+## **Environment**
+
+Rancher 2.10+, Fleet 0.11+
+
+## **Procedure**
+
+In order to tweak Fleet for performance, it is possible to increase the number of workers. This will have trade-offs, mostly on CPU consumption.
+
+Increasing the number of workers on Rancher should be done through the Apps feature on the Rancher local cluster.
+
+ 
+
+1. Explore the Rancher local cluster, within the Rancher UI.
+2. Navigate to **Apps** -&gt; **Installed Apps**.
+3. Select **cattle-fleet-system** from the Namespace filter at the top of the page.
+4. Click **Edit/Upgrade** for the **fleet** application.
+5. Click **Next** on the first **metadata** view to progress to the chart **values** view.
+6. In the chart values, under controller.reconciler.workers you can increase the number of workers for each component. The default is 50. You may wish to start with increments of 50:
+   
+   ```markup
+   controller:
+     reconciler:
+       workers:
+         bundle: '50'
+         bundledeployment: '50'
+         cluster: '50'
+         clustergroup: '50'
+         gitrepo: '100'
+         imagescan: '50'
+   ```
+7. Click **Update** to update the helm chart with the new worker values.
+
+If you need more information, please contact support on this issue.
+
+
+
+---
+
+## Article: 000022087.md
+
+# Precedence of index.yaml versus chart manifests in git-based Rancher App repositories
+
+**Article Number:** [000022087](https://support.scc.suse.com/s/kb/Precedence-of-index-yaml-versus-chart-manifests-in-git-based-Rancher-App-repositories)
+
+## **Environment**
+
+Rancher v2.9+
+
+## **Situation**
+
+Rancher supports [git-based repositories](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/helm-charts-in-rancher#add-custom-git-repositories) in the Apps feature, enabling deployment of Helm charts into Rancher-managed clusters, from a git repository. An example of such a git repository is provided by the RKE2 cluster template examples at [https://github.com/rancher/cluster-template-examples](https://github.com/rancher/cluster-template-examples)
+
+Within an Apps git repository, two formats are supported:
+
+1. Un-archived and un-compressed Helm charts can be defined within sub-directories of the git repository, as in the example at [https://github.com/rancher/cluster-template-examples/tree/main/charts](https://github.com/rancher/cluster-template-examples/tree/main/charts)
+2. Archived and compressed Helm charts can be included within the git-repository and referenced from a Helm index.yaml file, as in the example at [https://github.com/rancher/cluster-template-examples/blob/main/index.yaml](https://github.com/rancher/cluster-template-examples/blob/main/index.yaml)
+
+If both formats are present in a single git repository, which takes precedence when Rancher loads available charts?
+
+## **Resolution**
+
+When an index.yaml file is present on the repository, this takes precedence and Rancher will load the list of charts and the referenced chart archives from the index file. This skips the process of walking the repository directory to build the index dynamically from charts in sub-directories.
 

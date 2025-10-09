@@ -49,7 +49,7 @@ subresource of it's `Cluster` resource.
 
 An overview of the components and how they interact on a high level.
 
-![Components](/img/FleetComponents.svg)
+![Components](../static/img/FleetComponents.svg)
 
 
 ---
@@ -146,34 +146,9 @@ You can't use a `fleet.yaml` in resources, it is only used by the fleet-cli to c
 
 The `spec.targetRestrictions` field is not useful, as it is an allow list for targets specified in `spec.targets`. It is not needed, since `targets` are explicitly given in a bundle and an empty `targetRestrictions` defaults to allow.
 
-## Convert a Helm Chart into a Bundle
-
-You can use the Fleet CLI to convert a Helm chart into a bundle.
-
-For example, you can download and convert the "external secrets" operator chart like this:
-```
-cat > targets.yaml <<EOF
-targets:
-- clusterSelector: {}
-EOF
-
-mkdir app
-cat > app/fleet.yaml <<EOF
-defaultNamespace: external-secrets
-helm:
-  repo: https://charts.external-secrets.io
-  chart: external-secrets
-EOF
-
-fleet apply --compress --targets-file=targets.yaml -n fleet-default -o - external-secrets app > eso-bundle.yaml
-
-kubectl apply -f eso-bundle.yaml
-```
-
-Make sure you use a cluster selector in `targets.yaml`, that matches all clusters you want to deploy to.
-
-The blog post on [Fleet: Multi-Cluster Deployment with the Help of External Secrets](https://www.suse.com/c/rancher_blog/fleet-multi-cluster-deployment-with-the-help-of-external-secrets/) has more information.
-
+:::note
+You can use Fleet CLI to convert a Helm chart into a `bundle`. For more information, refer to [Convert a Helm chart into a bundle using CLI.](install-usage-fleetCLI.md#convert-a-helm-chart-into-a-bundle).
+:::
 
 ---
 
@@ -192,10 +167,10 @@ The bundled charts may have some objects that are amended at runtime, for exampl
 
 This leads the status of the bundle and associated GitRepo to be reported as "Modified"
 
-![](/img/ModifiedGitRepo.png)
+![](../static/img/ModifiedGitRepo.png)
 
 Associated Bundle
-![](/img/ModifiedBundle.png)
+![](../static/img/ModifiedBundle.png)
 
 Fleet bundles support the ability to specify a custom [jsonPointer patch](http://jsonpatch.com/).
 
@@ -327,7 +302,7 @@ In summary, we need to ignore the fields `rules` and `clientConfig.caBundle` in 
 
 The field webhook in the ValidatingWebhookConfiguration spec is an array, so we need to address the elements by their index values.
 
-![](/img/WebhookConfigurationSpec.png)
+![](../static/img/WebhookConfigurationSpec.png)
 
 Based on this information, our diff patch would look as follows:
 
@@ -1066,7 +1041,7 @@ For more information, refer to [fleet.yaml with authentication](gitrepo-add.md#u
 
 ## Article: fine-tune-error.md
 
-# **Fine Tuning Error Detection**
+# Fine Tuning Error Detection
 
 Fleet monitors the `status` field of deployed resources to determine whether a `Bundle` is healthy or in error. In certain cases, Fleet may interpret a condition in the status field as an error, even if it is expected or harmless.
 
@@ -1839,7 +1814,7 @@ __How changes are applied to `values.yaml`__:
 
 This means that `valuesFrom` always overrides both `valuesFiles` and `values`.  
 
-![](/img/FleetValuesStages.svg)
+![](../static/img/FleetValuesStages.svg)
 
 ### Templating
 
@@ -2663,7 +2638,7 @@ Once change is made into git repository, fleet will read through the change and 
 
 # Overview
 
-![](/img/fleet-architecture.svg)
+![](../static/img/fleet-architecture.svg)
 
 ### What is Fleet?
 
@@ -2674,6 +2649,159 @@ Once change is made into git repository, fleet will read through the change and 
 ### Configuration Management
 
 Fleet is fundamentally a set of Kubernetes [custom resource definitions (CRDs)](https://fleet.rancher.io/concepts) and controllers that manage GitOps for a single Kubernetes cluster or a large scale deployment of Kubernetes clusters. It is a distributed initialization system that makes it easy to customize applications and manage HA clusters from a single point.
+
+
+---
+
+## Article: install-usage-fleetCLI.md
+
+# Install and Use Fleet CLI
+
+Fleet CLI is a command-line interface (CLI) that allows you to interact directly with Fleet from your local machine. It enables you to create, apply and inspect `bundles` without requiring a `GitRepo`. Typical use cases include:
+
+* Testing and previewing `bundle` contents.
+* Creating bundles directly from Helm charts, Kubernetes manifests and `fleet.yaml` files.
+* Checking which clusters a `bundle` would target
+* Validating deployments without installing Fleet in the cluster
+
+:::note
+You can use `fleet apply` without installing Fleet in your clusters. However, for cluster interaction (for example, `fleet target`, `fleet deploy`), Fleet must be installed. For more information, refer to [Install Fleet](installation.md).
+:::
+
+## Install Fleet CLI
+
+Fleet CLI is a stand-alone binary you can download from the [Fleet GitHub releases page](https://github.com/rancher/fleet/releases).
+
+**Linux/macOS**
+
+```bash
+curl -L -o fleet https://github.com/rancher/fleet/releases/latest/download/fleet-linux-amd64
+
+# Make it executable and move to PATH
+
+chmod +x fleet
+
+sudo mv fleet /usr/local/bin/
+```
+
+**Windows (PowerShell)**
+
+```bash
+Invoke-WebRequest -Uri "https://github.com/rancher/fleet/releases/latest/download/fleet-windows-amd64.exe" -OutFile "fleet.exe"
+```
+
+**Verify installation**
+
+```bash
+fleet --version
+```
+
+## **Prerequisites**
+
+Make sure you have the following tools installed and configured:
+
+* A working Kubernetes cluster (e.g., via k3s, kind, or a cloud provider).  
+* `kubectl` is configured for your cluster.  
+* helm is installed.  
+* Fleet CLI is installed and accessible in your terminal.
+
+**Verify prerequisites**
+
+```bash
+kubectl get nodes  
+helm version  
+fleet --version
+```
+
+## Key commands
+
+Fleet provides several CLI commands to create, preview, and deploy bundles. These commands are useful for debugging and understanding the bundle lifecycle.
+
+* `fleet apply`: creates or previews a `bundle` from local files, such as a Helm chart, Kubernetes manifests, or kustomize folders. This command does not require access to a cluster, and therefore works even without Fleet or `kubectl` installed.
+  * This applies for `fleet.yaml`, Helm charts and manifests. For example, `fleet apply my-bundle ./manifests`.  
+* `fleet target`: Reads a bundle file and evaluates which clusters would receive it, based on selectors and targeting rules such as `targets`, `targetOverrides`, `clusterGroups`, and `label` selectors.
+  * For example, `fleet target my-bundle ./manifests.`
+* `fleet deploy`: takes the output of `fleet target`, or a dumped `bundledeployment`/content resource and deploys it to a cluster, just like fleet-agent would. You can use it in these scenarios:
+  * `fleet apply -o - name ./folder` to check the YAML of the bundle before creating it. For more information, refer to [Convert a Helm chart into a bundle.](#convert-a-helm-chart-into-a-bundle)
+  * Use with a target to debug selectors and verify which downstream clusters are targeted.
+  * `fleet deploy --dry-run` to print the resources that would be deployed, but without applying them.  
+
+![A diagram explaining how fleet CLI key commands work.](../static/img/fleetCLI-key-components.svg)
+
+For more information, refer to [Bundle Lifecycle With the CLI](ref-bundle-stages.md#examining-the-bundle-lifecycle-with-the-cli).
+
+## Deploy a Sample Bundle Using Fleet CLI
+
+You can deploy workloads without using GitRepos by applying them locally with the CLI. For example, consider using the [Fleet examples repository](https://github.com/rancher/fleet-examples).
+
+```bash
+git clone https://github.com/rancher/fleet-examples  
+cd fleet-examples/single-cluster
+```
+
+Apply it to the current cluster:
+
+```bash
+fleet apply -o my-cool-bundle manifests
+```
+
+This creates a Bundle resource in the namespace.
+
+## Convert a Helm Chart into a Bundle
+
+You can use the Fleet CLI to convert a Helm chart into a bundle.
+
+For example, you can download and convert the "external secrets" operator chart like this:
+
+```bash
+cat > targets.yaml <<EOF
+targets:
+- clusterSelector: {}
+EOF
+
+mkdir app
+cat > app/fleet.yaml <<EOF
+defaultNamespace: external-secrets
+helm:
+  repo: https://charts.external-secrets.io
+  chart: external-secrets
+EOF
+
+fleet apply --compress --targets-file=targets.yaml -n fleet-default -o - external-secrets app > eso-bundle.yaml
+
+kubectl apply -f eso-bundle.yaml
+```
+
+Make sure you use a cluster selector in `targets.yaml`, that matches all clusters you want to deploy to.
+
+The blog post on [Fleet: Multi-Cluster Deployment with the Help of External Secrets](https://www.suse.com/c/rancher_blog/fleet-multi-cluster-deployment-with-the-help-of-external-secrets/) has more information.
+
+
+## **Troubleshooting**
+
+If the bundle is not ready:
+
+* Check if `fleet-controller` and `fleet-agent` pods are running.  
+* Make sure the `fleet-local` cluster is registered.
+* Inspect the bundle for error messages with:  
+  * `kubectl describe bundle -n fleet-local <bundle-name>`  
+* Delete and re-apply the bundle if you encounter Helm ownership conflicts.
+
+
+## Troubleshooting
+
+Before troubleshooting bundle or deployment issues, verify that the Fleet agent is registered and running on the downstream cluster. For details, refer to [Fleet Agent is Registered, Watches for BundleDeployments](ref-registration.md#fleet-agent-is-registered-watches-for-bundledeployments).
+
+### Verify agent and controller status 
+
+If a bundle is not ready on a given cluster, check the following:
+* on the management cluster:
+    * Verify that the fleet-controller and gitjob pods (or fleet-controller and helmops, depending on whether your bundle comes from gitOps or helmOps) are running.
+    * Ensure the cluster status shows Ready
+    * Check the status of the bundle: it should contain an error message explaining what went wrong when trying to deploy to that target cluster
+* on the target cluster where the bundle is not ready:
+    * Verify that this target cluster is registered and has a `fleet-agent` pod running.
+    * As last resort, check the logs of the `fleet-agent` pod.
 
 
 ---
@@ -2695,7 +2823,7 @@ you will setup a centralized manager cluster to which you can register clusters.
 If you are just learning Fleet the single cluster install is the recommended starting
 point. After which you can move from single cluster to multi-cluster setup down the line.
 
-![](/img/single-cluster.png)
+![](../static/img/single-cluster.png)
 
 Single-cluster is the default installation. The same cluster will run both the Fleet
 manager and the Fleet agent. The cluster will communicate with Git server to
@@ -3044,7 +3172,7 @@ A multi-user fleet setup looks like this:
   namespaces on downstream clusters
 * clusters are in a separate namespace
 
-![Shared Clusters](/img/FleetSharedClusters.svg)
+![Shared Clusters](../static/img/FleetSharedClusters.svg)
 
 :::warning important information
 
@@ -3274,7 +3402,7 @@ interact, refer to the diagram below. For more details on a specific option,
 please refer to the [GitRepo](./ref-gitrepo.md) or
 [fleet.yaml](./ref-fleet-yaml.md) reference.
 
-![Configuring Workload Namespaces](/img/FleetWorkloadNamespaces.png)
+![Configuring Workload Namespaces](../static/img/FleetWorkloadNamespaces.png)
 
 ### Cross Namespace Deployments
 
@@ -3358,7 +3486,7 @@ Understanding how namespaces are used in the Fleet manager
 is important to understand the security model and how one can use Fleet in a
 multi-tenant fashion.
 
-![Namespace](/img/FleetNamespaces.svg)
+![Namespace](../static/img/FleetNamespaces.svg)
 
 ### GitRepos, Bundles, Clusters, ClusterGroups
 
@@ -3689,7 +3817,7 @@ import TabItem from '@theme/TabItem';
 
 # Quick Start
 
-![](/img/single-cluster.png)
+![](../static/img/single-cluster.png)
 
 Who needs documentation, lets just run this thing!
 
@@ -3797,11 +3925,13 @@ To demonstrate the life cycle of a Fleet bundle, we will use [multi-cluster/helm
 
 This diagram shows the different rendering stages a bundle goes through until deployment.
 
-![Bundle Stages](/img/FleetBundleStages.svg)
+![Bundle Stages](../static/img/FleetBundleStages.svg)
 
 ## Examining the Bundle Lifecycle With the CLI
 
 Several fleet CLI commands help with debugging bundles.
+
+![A diagram explaining how fleet CLI key commands work.](../static/img/fleetCLI-key-components.svg)
 
 ### fleet apply
 
@@ -3821,13 +3951,15 @@ More information on how to create bundles with `fleet apply` can be found in the
 
 ### fleet deploy
 
-[Deploy](./cli/fleet-cli/fleet_deploy.md) takes the output of `fleet target`, or a dumped bundledeployment/content resource and deploys it to a cluster, just like fleet-agent would. It supports a dry run mode, to print out the resources which would be created, instead of installing them with helm. Since the command doesn't create the input resources, a running fleet-agent would likely garbage collect the deployment.
+[Deploy](./cli/fleet-cli/fleet_deploy.md) takes the output of `fleet target`, or a dumped bundledeployment/content resource and deploys it to a cluster, just like fleet-agent would. It supports a dry run mode, to print out the resources which would be created, instead of installing them with helm. Since the command does not create the input resources, a running fleet-agent would likely garbage collect the deployment.
 
 The deploy command can be used to bring bundles to air-gapped clusters.
 
-### Lifecycle CLI Example
+### Lifecycle CLI 
 
-```
+Fleet CLI commands help you debug and understand the bundle lifecycle. The following example uses the full bundle lifecycle using CLI:
+
+```bash
 git clone https://github.com/rancher/fleet-test-data
 cd fleet-test-data
 # for information about apply see https://fleet.rancher.io/bundle-add
@@ -3836,6 +3968,7 @@ fleet target --bundle-file bundle.yaml --dump-input-list  > bd.yaml
 fleet deploy --input-file bd.yaml --dry-run
 ```
 
+For more information, refer to [Fleet CLI Key commands.](install-usage-fleetCLI.md#key-commands)
 
 ---
 
@@ -5720,7 +5853,7 @@ avoid conflicts with other templating languages.
 Note that if the functions output changes with every call, e.g. `uuidv4`, the
 bundle will get redeployed.
 
-You can [test values templating with the CLI](./ref-bundle-stages#fleet-target) against existing clusters.
+You can [test values templating with the CLI](./install-usage-fleetCLI.md#key-commands) against existing clusters.
 
 The template context has the following keys:
 
@@ -6067,7 +6200,7 @@ The Fleet controller triggers and tries to grant the `ClusterRegistration` reque
 
 The new kubeconfig uses the "request" account. The "request" account can access the cluster status, `BundleDeployments` and `Contents`.
 
-![ClusterRegistationToken to ClusterRegistration](/img/FleetRegistrationToken.svg)
+![ClusterRegistationToken to ClusterRegistration](../static/img/FleetRegistrationToken.svg)
 
 ### Fleet Agent is Registered, Watches for `BundleDeployments`
 
@@ -6098,7 +6231,7 @@ It is important to note that there are multiple ways to start this:
 * Creating a `Cluster` resource with a kubeconfig. Rancher does this for downstream clusters. See [manager-initiated registration](./cluster-registration.md#manager-initiated).
 * Create a `ClusterRegistrationToken` resource, optionally create a `Cluster` resource for a pre-defined (`clientID`) cluster. See [agent-initiated registration](./cluster-registration.md#agent-initiated).
 
-![Registration](/img/FleetRegistration.svg)
+![Registration](../static/img/FleetRegistration.svg)
 
 ### Secrets during Agent Deployment
 
@@ -6119,7 +6252,7 @@ contains the upstream server URL and CA, next to the downstream's
 kubeconfig. If the settings are present in the kubeconfig secret, they
 override the configured values.
 
-![Registration Secrets](/img/FleetRegistrationSecrets.svg)
+![Registration Secrets](../static/img/FleetRegistrationSecrets.svg)
 
 ## Fleet Cluster Registration in Rancher
 
@@ -6510,7 +6643,7 @@ Similarly to what happens for `GitRepos`, the deployed resources are listed in
 ## Resource Counts
 
 This shows how resource counts are propagated from one resource to another:
-![Status Propagation](/img/FleetStatusSource.png)
+![Status Propagation](../static/img/FleetStatusSource.png)
 
 ### GitRepos
 
@@ -6627,7 +6760,7 @@ classDiagram
 
 This shows the resources, also the internal ones, involved in creating a deployment from a git repository.
 
-![Resources](/img/FleetResources.svg)
+![Resources](../static/img/FleetResources.svg)
 
 
 ---
@@ -7769,6 +7902,68 @@ For more information, refer to [Continuous Delivery in Rancher](https://document
 
 ---
 
+## Article: validate-fleetCLI.md
+
+# Validate Fleet CLI Deployment
+
+After applying a bundle using Fleet CLI, you can validate the deployment by inspecting the `Bundle` and its associated `BundleDeployments`.
+
+Each Fleet-managed cluster lists:
+
+* Which bundles are deployed to it.  
+* Their readiness status.  
+* Errors or sync issues (if any).
+
+To validate whether your `fleet apply` created a `bundle` and if it’s deployed to the right number of target(s), run: 
+
+```bash
+kubectl get bundles.fleet.cattle.io -A
+```
+
+![A screenshot validating the fleet deployment.](../static/img/validate-deployment-ss.png)
+
+You see the following fields:
+
+* `BUNDLEDEPLOYMENTS-READY` shows how many targets are ready out of the total.  
+* `STATUS` may show Ready, Modified, or other conditions based on the `rollout`.
+
+:::note:
+If this field shows 1/1, the bundle is successfully deployed to one cluster.
+:::
+
+To get a detailed view of how the bundle was rendered and applied:
+
+`kubectl get bundles.fleet.cattle.io -n fleet-local my-nginx-bundle -o yaml`
+
+Look for the following fields in the `status` section:
+
+```yaml
+status:  
+  display:  
+    readyClusters: 1/1  
+  summary:  
+    desiredReady: 1  
+    ready: 1  
+  conditions:  
+    type: Ready  
+    status: "True"
+```
+
+This indicates that:
+
+* The bundle was scheduled for 1 cluster.  
+* The target cluster has acknowledged and applied the resources.  
+* The controller marked the deployment as ready.
+
+You can also verify the corresponding `BundleDeployment` object, since each `BundleDeployment` corresponds to a target cluster.
+
+`kubectl get bundledeployments.fleet.cattle.io -A`
+
+For more information, refer to [Status Fields](ref-status-fields.md).
+
+
+---
+
 ## Article: webhook.md
 
 # Using Webhooks Instead of Polling
@@ -7834,7 +8029,7 @@ You can configure [TLS](https://kubernetes.io/docs/concepts/services-networking/
 
 ### 2. Go to your webhook provider and configure the webhook callback url. Here is a Github example.
 
-![](/img/webhook.png)
+![](../static/img/webhook.png)
 
 Configuring a secret is optional. This is used to validate the webhook payload as the payload should not be trusted by default.
 If your webhook server is publicly accessible to the Internet, then it is recommended to configure the secret. If you do configure the
