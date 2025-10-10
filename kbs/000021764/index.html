@@ -22,7 +22,7 @@
     
     
       
-        <title>Configure quota-backend-bytes to extend etcd keyspace limit in RKE2 - SUSE KBs</title>
+        <title>How to fix RKE2 Error: etcdserver mvcc database space exceeded? - SUSE KBs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#configure-quota-backend-bytes-to-extend-etcd-keyspace-limit-in-rke2" class="md-skip">
+        <a href="#how-to-fix-rke2-error-etcdserver-mvcc-database-space-exceeded" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Configure quota-backend-bytes to extend etcd keyspace limit in RKE2
+              How to fix RKE2 Error: etcdserver mvcc database space exceeded?
             
           </span>
         </div>
@@ -1522,7 +1522,7 @@
   
   
   <span class="md-ellipsis">
-    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
     
   </span>
   
@@ -1706,7 +1706,7 @@
   
   
   <span class="md-ellipsis">
-    How to confirm a version upgrade of Rancher v2.x is completed successfully
+    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
     
   </span>
   
@@ -3707,7 +3707,7 @@
   
   
   <span class="md-ellipsis">
-    How do I edit or upgrade clusters created via RKE Templates?
+    [JP] How do I edit my cluster using RKE Templates?
     
   </span>
   
@@ -3822,7 +3822,7 @@
   
   
   <span class="md-ellipsis">
-    How to test websocket connections to Rancher v2.x
+    [JP] How to test websocket connections to Rancher v2.x
     
   </span>
   
@@ -9834,7 +9834,7 @@
   
   
   <span class="md-ellipsis">
-    Configure quota-backend-bytes to extend etcd keyspace limit in RKE2
+    How to fix RKE2 Error: etcdserver mvcc database space exceeded?
     
   </span>
   
@@ -9847,7 +9847,7 @@
   
   
   <span class="md-ellipsis">
-    Configure quota-backend-bytes to extend etcd keyspace limit in RKE2
+    How to fix RKE2 Error: etcdserver mvcc database space exceeded?
     
   </span>
   
@@ -11025,6 +11025,52 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021995/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Angular deprecation or Panel plugin has no panel component errors in rancher-monitoring 105.1.0+up61.3.2 - 106.0.2+up66.7.1
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022006/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to migrate from using helm template to helm upgrade to manage Rancher upgrades in an air-gapped environment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000022013/" class="md-nav__link">
         
   
@@ -11123,6 +11169,75 @@
   
   <span class="md-ellipsis">
     Configuring imageMaximumGCAge for kubelet in Rancher managed RKE2 clusters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022052/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Why can't I see the list of the default admission controller plugins in the kube-apiserver configuration?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022059/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Difference between draining for Kubernetes version/config updates and Node Pool config updates
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022060/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to update the default ingress-nginx certificate in an RKE2 cluster
     
   </span>
   
@@ -11425,25 +11540,99 @@
 
 
 
-<h1 id="configure-quota-backend-bytes-to-extend-etcd-keyspace-limit-in-rke2">Configure quota-backend-bytes to extend etcd keyspace limit in RKE2</h1>
-<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Configure-quota-backend-bytes-for-etcd-in-RKE2">000021764</a></p>
+<h1 id="how-to-fix-rke2-error-etcdserver-mvcc-database-space-exceeded">How to fix RKE2 Error: etcdserver mvcc database space exceeded?</h1>
+<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/etcdserver-mvcc-database-space-exceeded-error">000021764</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Suse Rancher</p>
+<p>SUSE Rancher</p>
 <p>RKE2</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>In a Kubernetes cluster, etcd serves as the primary data store, maintaining the cluster state, configuration, and other critical metadata.</p>
-<p>Over time, as workloads grow and more resources are created, the etcd database can reach its default size limit, leading to performance degradation or even failures in cluster operations.</p>
+<p><strong>Overview:</strong><br />
+In Kubernetes, <strong>etcd</strong> is the authoritative data store for cluster state, configuration, and other critical metadata.</p>
+<p><strong>Problem:</strong><br />
+As workloads grow and more objects are created/updated, the etcd database can hit its default size quota. In <strong>RKE2</strong>, server nodes run an <strong>embedded etcd</strong>; when its BoltDB backend reaches the quota, etcd rejects new writes with:</p>
+<div class="highlight"><pre><span></span><code>etcdserver: mvcc: database space exceeded
+</code></pre></div>
+<p><strong>Impact:</strong></p>
+<ul>
+<li>Kubernetes API operations (create/update) begin to fail</li>
+<li>Controllers stall and reconcile loops pause</li>
+<li>The API server may log errors or even panic referencing the message above</li>
+</ul>
+<p><strong>Symptoms you'll see:</strong></p>
+<ul>
+<li>Pod events / apiserver logs: <code>etcdserver: mvcc: database space exceeded</code></li>
+<li>etcd alarms include <strong><code>NOSPACE</code></strong></li>
+<li>Cluster becomes read-only (creates/updates fail; reads still OK)</li>
+<li>High etcd DB size on disk; frequent WAL/bolt compaction messages</li>
+</ul>
 <h2 id="cause"><strong>Cause</strong></h2>
+<p><strong>Why this happens (root cause):</strong></p>
+<ul>
+<li>
+<p>etcd’s <strong>backend quota</strong> (default ~2 GiB) is reached because:</p>
+</li>
+<li>
+<p>Lots of historical revisions accumulated (high churn: ConfigMaps/Secrets/CRDs updated frequently).</p>
+</li>
+<li>Regular <strong>compaction/defragmentation</strong> hasn’t reclaimed space.</li>
+<li>Very <strong>large objects</strong> (big Secrets/ConfigMaps) are stored.</li>
+<li>Once quota is hit, etcd sets a <strong>NOSPACE alarm</strong> and rejects writes until you compact + defrag.</li>
+</ul>
 <p>The etcd database size is primarily influenced by the number of objects stored, frequent updates, and high write activity. If the database size limit is reached, you may experience issues such as slow API responses, failed leader elections, or cluster instability. Additionally, excessive fragmentation due to outdated entries and stale snapshots can contribute to rapid storage consumption.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>For a standalone RKE2 cluster, you can increase the etcd database size by modifying the RKE2 configuration file /etc/rancher/rke2/config.yaml. </p>
+<p><strong>Part 1: etcd database compact and defrag</strong></p>
+<p>Start by <strong>compacting and defragmenting the etcd database</strong> to resolve the issue. Follow the steps below:</p>
+<p><strong>Prework (Important)</strong></p>
+<div class="highlight"><pre><span></span><code>export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
+PATH=&quot;$PATH:/var/lib/rancher/rke2/bin&quot;
+
+etcdcontainer=$(/var/lib/rancher/rke2/bin/crictl ps --label io.kubernetes.container.name=etcd --quiet)
+ETCD_CERT=/var/lib/rancher/rke2/server/tls/etcd/server-client.crt
+ETCD_KEY=/var/lib/rancher/rke2/server/tls/etcd/server-client.key
+ETCD_CACERT=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt
+ETCDCTL_ENDPOINTS=$(crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} member list | cut -d, -f5 | sed -e &#39;s/ //g&#39; | paste -sd &#39;,&#39;)
+</code></pre></div>
+<!--THE END-->
+
+<ul>
+<li>etcdctl compact (<strong>Note:</strong><code>"etcdctl compact"</code> is a <strong>blocking</strong> operation—each member pauses writes during compaction; acceptable in read-only incidents, but be aware that it will block writes for multiple seconds on larger clusters and plan accordingly)</li>
+</ul>
+<div class="highlight"><pre><span></span><code>Command:
+$ rev=$(crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS endpoint status --write-out fields | grep Revision | cut -d: -f2)
+
+$ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS compact $rev
+
+Example output:
+compacted revision 31014066
+</code></pre></div>
+<ul>
+<li>etcdctl defrag</li>
+</ul>
+<div class="highlight"><pre><span></span><code>Command: 
+$ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS defrag --cluster
+
+Example output:
+Finished defragmenting etcd member[https://10.55.2.123:2379]
+</code></pre></div>
+<ul>
+<li>etcdctl alarm list</li>
+</ul>
+<div class="highlight"><pre><span></span><code>Command:
+$ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS alarm list
+</code></pre></div>
+<p>You can run the etcd <strong>member list/endpoint status/endpoint health</strong> commands to confirm the database size has decreased and that the cluster has recovered. For more details, refer to the <strong>Additional Information</strong> section below.</p>
+<p><strong>Part 2: Increase quota-backend-bytes to extend the etcd keyspace limit in RKE2</strong></p>
+<p>Sometimes the cluster won’t allow <code>compact</code> or <code>defrag</code>: all attempts fail because etcd has raised a <strong>NOSPACE</strong> alarm with no free headroom. The alarm blocks writes, and <code>defrag</code> still requires some writable space. <strong>Temporarily free disk space</strong> (e.g., remove old snapshots/logs or expand the volume) <strong>or increase <code>quota-backend-bytes</code></strong> to create headroom, then run <strong><code>compact</code></strong> followed by <strong><code>defrag</code></strong> .</p>
+<p>For a standalone RKE2 cluster, you can increase the etcd database size by modifying the RKE2 configuration file /etc/rancher/rke2/config.yaml. (This example sets the value to <strong>8,589,934,592</strong> (<strong>8 GiB</strong>); you can choose a different size as needed.)</p>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
 <div class="highlight"><pre><span></span><code>etcd-arg:
   - &quot;quota-backend-bytes=8589934592&quot;
 </code></pre></div>
 <p>and restart rke2-server</p>
 <div class="highlight"><pre><span></span><code>systemctl restart rke2-server
 </code></pre></div>
-<p>For a cluster managed by Rancher, go to Rancher, Cluster Management -&gt; select the cluster and edit the yaml ( which you will get from the 3 dots). </p>
+<p>For a cluster managed by Rancher, go to Rancher, Cluster Management -&gt; select the cluster and edit the YAML ( which you will get from the 3 dots). </p>
 <p>Add quota-backend-bytes under machineSelectorConfig.config.etcd-arg.  For example:</p>
 <div class="highlight"><pre><span></span><code> machineSelectorConfig:
       - config:
