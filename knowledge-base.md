@@ -3109,29 +3109,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -3743,26 +3749,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# How to confirm a version upgrade of Rancher v2.x is completed successfully
+# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
-- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
+- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
+- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
 
 ## **Situation**
 
-This article details how to confirm that a Rancher version upgrade has successfully completed.
+この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
 
 ## **Resolution**
 
-The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
+Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
 
-- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
-- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
-- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
+- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
+- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
+- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
 
 
 
@@ -8781,28 +8787,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -8975,59 +8987,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -22187,29 +22207,121 @@ Istio, Kiali, and Jaeger are third party tools which are not supported by Ranche
 
 ## Article: 000021764.md
 
-# Configure quota-backend-bytes to extend etcd keyspace limit in RKE2
+# How to fix RKE2 Error: etcdserver mvcc database space exceeded?
 
-**Article Number:** [000021764](https://support.scc.suse.com/s/kb/Configure-quota-backend-bytes-for-etcd-in-RKE2)
+**Article Number:** [000021764](https://support.scc.suse.com/s/kb/etcdserver-mvcc-database-space-exceeded-error)
 
 ## **Environment**
 
-Suse Rancher
+SUSE Rancher
 
 RKE2
 
 ## **Situation**
 
-In a Kubernetes cluster, etcd serves as the primary data store, maintaining the cluster state, configuration, and other critical metadata.
+**Overview:**  
+In Kubernetes, **etcd** is the authoritative data store for cluster state, configuration, and other critical metadata.
 
-Over time, as workloads grow and more resources are created, the etcd database can reach its default size limit, leading to performance degradation or even failures in cluster operations.
+**Problem:**  
+As workloads grow and more objects are created/updated, the etcd database can hit its default size quota. In **RKE2**, server nodes run an **embedded etcd**; when its BoltDB backend reaches the quota, etcd rejects new writes with:
+
+```markup
+etcdserver: mvcc: database space exceeded
+```
+
+ 
+
+**Impact:**
+
+- Kubernetes API operations (create/update) begin to fail
+- Controllers stall and reconcile loops pause
+- The API server may log errors or even panic referencing the message above
+
+**Symptoms you'll see:**
+
+- Pod events / apiserver logs: `etcdserver: mvcc: database space exceeded`
+- etcd alarms include **`NOSPACE`**
+- Cluster becomes read-only (creates/updates fail; reads still OK)
+- High etcd DB size on disk; frequent WAL/bolt compaction messages
 
 ## **Cause**
+
+**Why this happens (root cause):**
+
+- etcd’s **backend quota** (default ~2 GiB) is reached because:
+  
+  - Lots of historical revisions accumulated (high churn: ConfigMaps/Secrets/CRDs updated frequently).
+  - Regular **compaction/defragmentation** hasn’t reclaimed space.
+  - Very **large objects** (big Secrets/ConfigMaps) are stored.
+- Once quota is hit, etcd sets a **NOSPACE alarm** and rejects writes until you compact + defrag.
 
 The etcd database size is primarily influenced by the number of objects stored, frequent updates, and high write activity. If the database size limit is reached, you may experience issues such as slow API responses, failed leader elections, or cluster instability. Additionally, excessive fragmentation due to outdated entries and stale snapshots can contribute to rapid storage consumption.
 
 ## **Resolution**
 
-For a standalone RKE2 cluster, you can increase the etcd database size by modifying the RKE2 configuration file /etc/rancher/rke2/config.yaml. 
+**Part 1: etcd database compact and defrag**
+
+Start by **compacting and defragmenting the etcd database** to resolve the issue. Follow the steps below:
+
+ 
+
+**Prework (Important)**
+
+```markup
+export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
+PATH="$PATH:/var/lib/rancher/rke2/bin"
+
+etcdcontainer=$(/var/lib/rancher/rke2/bin/crictl ps --label io.kubernetes.container.name=etcd --quiet)
+ETCD_CERT=/var/lib/rancher/rke2/server/tls/etcd/server-client.crt
+ETCD_KEY=/var/lib/rancher/rke2/server/tls/etcd/server-client.key
+ETCD_CACERT=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt
+ETCDCTL_ENDPOINTS=$(crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} member list | cut -d, -f5 | sed -e 's/ //g' | paste -sd ',')
+```
+
+<!--THE END-->
+
+- etcdctl compact (**Note:**`"etcdctl compact"` is a **blocking** operation—each member pauses writes during compaction; acceptable in read-only incidents, but be aware that it will block writes for multiple seconds on larger clusters and plan accordingly)
+
+```markup
+Command:
+$ rev=$(crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS endpoint status --write-out fields | grep Revision | cut -d: -f2)
+
+$ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS compact $rev
+
+Example output:
+compacted revision 31014066
+```
+
+- etcdctl defrag
+
+```markup
+Command: 
+$ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS defrag --cluster
+
+Example output:
+Finished defragmenting etcd member[https://10.55.2.123:2379]
+```
+
+- etcdctl alarm list
+
+```markup
+Command:
+$ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS alarm list
+```
+
+You can run the etcd **member list/endpoint status/endpoint health** commands to confirm the database size has decreased and that the cluster has recovered. For more details, refer to the **Additional Information** section below.
+
+ 
+
+**Part 2: Increase quota-backend-bytes to extend the etcd keyspace limit in RKE2**
+
+Sometimes the cluster won’t allow `compact` or `defrag`: all attempts fail because etcd has raised a **NOSPACE** alarm with no free headroom. The alarm blocks writes, and `defrag` still requires some writable space. **Temporarily free disk space** (e.g., remove old snapshots/logs or expand the volume) **or increase `quota-backend-bytes`** to create headroom, then run **`compact`** followed by **`defrag`** .
+
+For a standalone RKE2 cluster, you can increase the etcd database size by modifying the RKE2 configuration file /etc/rancher/rke2/config.yaml. (This example sets the value to **8,589,934,592** (**8 GiB**); you can choose a different size as needed.)
+
+```
+
+```
 
 ```markup
 etcd-arg:
@@ -22222,7 +22334,7 @@ and restart rke2-server
 systemctl restart rke2-server
 ```
 
-For a cluster managed by Rancher, go to Rancher, Cluster Management -&gt; select the cluster and edit the yaml ( which you will get from the 3 dots). 
+For a cluster managed by Rancher, go to Rancher, Cluster Management -&gt; select the cluster and edit the YAML ( which you will get from the 3 dots). 
 
 Add quota-backend-bytes under machineSelectorConfig.config.etcd-arg.  For example:
 
@@ -25223,6 +25335,88 @@ subjects:
 
 ---
 
+## Article: 000021995.md
+
+# Angular deprecation or Panel plugin has no panel component errors in rancher-monitoring 105.1.0+up61.3.2 - 106.0.2+up66.7.1
+
+**Article Number:** [000021995](https://support.scc.suse.com/s/kb/Angular-deprecation-or-Panel-plugin-has-no-panel-component-errors-in-rancher-monitoring-105-1-0-up61-3-2---106-0-2-up66-7-1)
+
+## **Environment**
+
+- Rancher v2.10.x and v2.11.x
+- rancher-monitoring chart versions 105.1.0+up61.3.2 - 106.0.2+up66.7.1
+
+## **Situation**
+
+After upgrading to a rancher-monitoring chart version 105.1.0+up61.3.2 - 106.0.2+up66.7.1 built-in dashboards may have blank panels, with the message "Panel plugin has no panel component" and the dashboard may display a warning message “This dashboard depends on Angular, which is deprecated and will stop working in future releases of Grafana”.
+
+## **Cause**
+
+The issue is caused by the deprecation of Angular in Grafana, with support for Angular dashboard components disabled by default in [Grafana v11](https://grafana.com/docs/grafana/latest/developers/angular_deprecation/). The issue is resolved in an update to the upstream kube-prometheus-stack chart, packaged in rancher-monitoring, by migrating affected dashboard components away from Angular.
+
+## **Resolution**
+
+Upgrade to rancher-monitoring 106.1.0+up69.8.2 or higher in Rancher v2.11+.
+
+
+
+---
+
+## Article: 000022006.md
+
+# How to migrate from using `helm template` to `helm upgrade` to manage Rancher upgrades in an air-gapped environment
+
+**Article Number:** [000022006](https://support.scc.suse.com/s/kb/How-to-migrate-from-using-helm-template-to-helm-upgrade-to-manage-Rancher-upgrades-in-an-air-gapped-environment)
+
+## **Environment**
+
+- Rancher Server installed in an air-gapped environment.
+- The initial installation was performed using the \`helm template\` command.
+
+## **Procedure**
+
+When upgrading Rancher in an air-gapped environment, users who previously installed Rancher with `helm template` will encounter an "Error: UPGRADE FAILED: "rancher" has no deployed releases". This happens because `helm template` doesn't create a Helm release record in the cluster, which is essential for `helm upgrade` to function.
+
+The standard solution provided in the Rancher documentation is to continue using the `helm template` method for subsequent upgrades. However, you may wish to migrate to the `helm upgrade` workflow, removing the additional step of templating the helm chart, before applying it with kubectl, during upgrades.
+
+`helm upgrade --install` can be used to upgrade the Rancher chart, whilst creating the necessary Helm release record in the cluster. However, attempting to use `helm upgrade --install`without taking ownership of existing resources will result in an error like the following, because the Kubernetes resources (such as PriorityClass) lack the necessary Helm labels (`app.kubernetes.io/managed-by: Helm`) and annotations (`meta.helm.sh/release-name: rancher` and `meta.helm.sh/release-namespace: cattle-system`).
+
+```markup
+helm upgrade --install rancher ./rancher-<VERSION>.tgz --namespace cattle-system --set hostname=<RANCHER.YOURDOMAIN.COM>
+Release "rancher" does not exist. Installing it now.
+Error: Unable to continue with install: PriorityClass "rancher-critical" in namespace "" exists and cannot be imported into the current release: invalid ownership metadata; label validation error: missing key "app.kubernetes.io/managed-by": must be set to "Helm"; annotation validation error: missing key "meta.helm.sh/release-name": must be set to "rancher"; annotation validation error: missing key "meta.helm.sh/release-namespace": must be set to "cattle-system"
+```
+
+To migrate from the `helm template` workflow to the `helm upgrade` workflow, you must run the `helm upgrade --install` command with the `--take-ownership` flag. This flag instructs Helm to take control of existing resources in the cluster that were created by a previous installation of the same chart, even if they lack Helm-specific annotations and labels.
+
+This process essentially "adopts" the existing resources into a new Helm release, allowing future upgrades to be performed using the standard `helm upgrade` command.
+
+**Steps**
+
+1. Navigate to the directory containing the Rancher Helm chart tarball.
+2. Run the `helm upgrade --install`command with the `--take-ownership` flag, along with your original installation values (e.g., `--set hostname`):
+   
+   ```markup
+   helm upgrade --install rancher ./rancher-<VERSION>.tgz --namespace cattle-system --set hostname=<RANCHER.YOURDOMAIN.COM> --take-ownership
+   ```
+3. Confirm that the command output shows a successful deployment, with "Rancher Server has been installed":
+   
+   ```markup
+   Release "rancher" does not exist. Installing it now.
+   NAME: rancher
+   LAST DEPLOYED: Fri Aug 22 15:18:09 2025
+   NAMESPACE: cattle-system
+   STATUS: deployed
+   REVISION: 1
+   TEST SUITE: None
+   NOTES:
+   Rancher Server has been installed.
+   ```
+
+
+
+---
+
 ## Article: 000022013.md
 
 # Cluster or node provisioning stuck with node taint "node.cloudprovider.kubernetes.io/uninitialized"
@@ -25477,6 +25671,129 @@ Note: As of Kubernetes v1.30, the `imageMaximumGCAge` feature is enabled by defa
 **Additional information**
 
 https://kubernetes.io/docs/concepts/architecture/garbage-collection/#image-maximum-age-gc
+
+
+
+---
+
+## Article: 000022052.md
+
+# Why can't I see the list of the default admission controller plugins in the kube-apiserver configuration?
+
+**Article Number:** [000022052](https://support.scc.suse.com/s/kb/Why-can-t-I-see-the-list-of-the-default-admission-controller-plugins-in-the-kube-apiserver-configuration)
+
+## **Environment**
+
+A standalone or Rancher-provisioned RKE2 or K3s cluster
+
+
+
+---
+
+## Article: 000022059.md
+
+# Difference between draining for Kubernetes version/config updates and Node Pool config updates
+
+**Article Number:** [000022059](https://support.scc.suse.com/s/kb/Difference-between-draining-for-Kubernetes-version-config-updates-and-Node-Pool-config-updates)
+
+## **Environment**
+
+A Rancher-provisioned RKE2 or K3s [node driver cluster](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider)
+
+## **Situation**
+
+During a cluster maintenance operation that involves both a Kubernetes version or configuration update and a change to the node pool configuration (e.g., updating the OS image), nodes are observed to get stuck in a "Deleting" state.
+
+The symptoms include:
+
+- Pods running on these nodes are not automatically evicted.
+- The `upgradeStrategy` drain options defined in the cluster's specification appear to have no effect on this behaviour.
+
+This creates confusion as to why the configured drain process in the upgradeStrategy does not occur.
+
+## **Cause**
+
+It is important to understand that the replacement of nodes within a Node Pool, due to an update to the node pool configuration, and the in-place upgrade of Kubernetes version/configuration are two separate processes, managed by separate controllers within Rancher.
+
+- **Node Pool update draining**: This process is controlled by the Kubernetes Cluster API (CAPI). It is triggered when the configuration template for a node pool is changed. This process **replaces old nodes with new ones**.
+  
+  - In this case, the draining behaviour would be managed  by the " **`drainBeforeDelete: true"`** flag in the `machinePools` specification. If this flag is `false` or absent, CAPI will not drain the node before deleting it, leading to the stuck pods and "Deleting" state.
+
+<!--THE END-->
+
+- **Kubernetes version/configuration update draining**: This process is controlled by Rancher's upgrade controller. It reads the **`upgradeStrategy`** section in the cluster's specification. Its purpose is to manage the draining of nodes for an in-place update (e.g., upgrading the RKE2 version). The node itself is **not replaced**, so the underlying machine persists. It is simply cordoned, drained, updated, and un-cordoned.
+
+The previously described problem in the situation section occurs because the node replacement is being triggered by the Node Pool update, but the system is missing the "`drainBeforeDelete: true"`flag.
+
+## **Resolution**
+
+To ensure nodes are drained correctly during all maintenance operations, you must configure the appropriate mechanism for both processes, the Node Pool update, as well as the Kubernetes version/configuration update. These are two separate processes:
+
+- **Node Pool updates**: In your cluster's provisioning resource (`cluster.provisioning.cattle.io`), ensure every machine pool has the `drainBeforeDelete` flag set to `true`. This option is exposed under the **Show** **Advanced** section of the Machine Pools configuration, in the **Edit Config** view for a cluster. While this option is enabled by default when configuring a cluster via the Rancher UI, it is important to specify it explicitly when using external automated tools such as GitOps.
+- **Kubernetes version/configuration updates**: Configure your desired drain behaviour within the `upgradeStrategy` section of the cluster spec. This will be respected during an in-place Kubernetes version or configuration update. This option is exposed in the **Update Strategy** tab of the **Cluster Configuration** section, in the **Edit Config** view for a cluster.
+
+**Most importantly, you should not perform a Kubernetes version/configuration update and a node pool update at the same time.** Trigger these maintenance tasks in separate steps. For example:
+
+- First, apply the changes to your node pool configuration and wait for all nodes to be replaced successfully.
+- Then, apply the change for the Kubernetes version/configuration update.
+
+Applying a Kubernetes version/configuration update and a node pool template change at the same time will trigger two parallel, competing processes. This is inefficient (a node's Kubernetes version might be upgraded in-place only for the node to be immediately deleted due to the node pool configuration update) and makes it extremely difficult to troubleshoot if an issue occurs. Always perform these operations separately.
+
+
+
+---
+
+## Article: 000022060.md
+
+# How to update the default ingress-nginx certificate in an RKE2 cluster
+
+**Article Number:** [000022060](https://support.scc.suse.com/s/kb/How-to-update-the-default-ingress-nginx-certificate-in-an-RKE2-cluster)
+
+## **Environment**
+
+A standalone or Rancher-provisioned RKE2, with the [RKE2-bundled ingress-nginx](https://docs.rke2.io/networking/networking_services#ingress-controller) ingress controller
+
+## **Procedure**
+
+The [default SSL certificate for ingress-nginx](https://kubernetes.github.io/ingress-nginx/user-guide/tls/#default-ssl-certificate) can be updated in the rke2-ingress-nginx Helm chart via the value controller.extraArgs.default-ssl-certificate. This value should reference the namespace and name of a TLS secret that you have already created in the cluster. This value can be defined in an RKE2 cluster via a [HelmChartConfig](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig), as described in this article.
+
+**Configuration for Rancher-provisioned RKE2 clusters**
+
+1. Login to the Rancher UI
+2. Navigate to **Cluster Management**
+3. Click **Edit Config** for the relevant Rancher-provisioned RKE2 cluster
+4. Click **Additional Manifest** and provide the a [HelmChartConfig](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig), with the desired default-ssl-certificate, per the example below, setting &lt;namespace&gt; and &lt;secret\_name&gt; as required to reference the appropriate TLS secret.
+   
+   ```markup
+   apiVersion: helm.cattle.io/v1
+   kind: HelmChartConfig
+   metadata:
+     name: rke2-ingress-nginx
+     namespace: kube-system
+   spec:
+     valuesContent: |-
+       controller:
+         extraArgs:
+           default-ssl-certificate: "<namespace>/<secret_name>"
+   ```
+5. Click **Save** at the bottom of the page
+
+**Configuration for standalone RKE2 clusters**
+
+On server nodes in the cluster, create a HelmChartConfig manifest, with the desired default-ssl-certificate, for the rke2-ingress-nginx chart, within the directory /var/lib/rancher/rke2/server/manifests/ (e.g. /var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml). In the example below, set &lt;namespace&gt; and &lt;secret\_name&gt; as required to reference the appropriate TLS secret.
+
+```markup
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-ingress-nginx
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    controller:
+      extraArgs:
+        default-ssl-certificate: "<namespace>/<secret_name>"
+```
 
 
 
