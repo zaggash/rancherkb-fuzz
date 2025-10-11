@@ -3890,6 +3890,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -3900,9 +3909,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#rancher-v2x-linux-log-collector" class="md-nav__link">
+  <a href="#when-troubleshooting-your-issue-the-support-team-may-request-that-you-generate-and-provide-a-support-bundle-if-you-are-unable-to-generate-a-support-bundle-from-the-rancher-ui-you-can-manually-collect-the-logs-from-the-linux-kubernetes-nodes-using-the-rancher-v2x-linux-log-collector" class="md-nav__link">
     <span class="md-ellipsis">
-      Rancher v2.x Linux log collector
+      When troubleshooting your issue, the Support team may request that you generate and provide a Support Bundle. If you are unable to generate a Support Bundle from the Rancher UI, you can manually collect the logs from the Linux Kubernetes nodes using the Rancher v2.x Linux log collector.
     </span>
   </a>
   
@@ -3919,30 +3928,6 @@
       Resolution
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#download-and-run-the-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Download and run the script
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#optional-download-and-run-the-script-in-one-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      Optional: Download and run the script in one command
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -9505,6 +9490,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021670/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Using the Fluentd concat filter plugin to concatenate multiline logs in rancher-logging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021676/" class="md-nav__link">
         
   
@@ -11510,6 +11518,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
@@ -11520,9 +11537,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#rancher-v2x-linux-log-collector" class="md-nav__link">
+  <a href="#when-troubleshooting-your-issue-the-support-team-may-request-that-you-generate-and-provide-a-support-bundle-if-you-are-unable-to-generate-a-support-bundle-from-the-rancher-ui-you-can-manually-collect-the-logs-from-the-linux-kubernetes-nodes-using-the-rancher-v2x-linux-log-collector" class="md-nav__link">
     <span class="md-ellipsis">
-      Rancher v2.x Linux log collector
+      When troubleshooting your issue, the Support team may request that you generate and provide a Support Bundle. If you are unable to generate a Support Bundle from the Rancher UI, you can manually collect the logs from the Linux Kubernetes nodes using the Rancher v2.x Linux log collector.
     </span>
   </a>
   
@@ -11539,30 +11556,6 @@
       Resolution
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#download-and-run-the-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Download and run the script
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#optional-download-and-run-the-script-in-one-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      Optional: Download and run the script in one command
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -11584,32 +11577,45 @@
 
 <h1 id="the-rancher-v2x-linux-log-collector-script">The Rancher v2.x Linux log collector script</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/https-www-suse-com-support-kb-doc-id-000020191">000020191</a></p>
+<h2 id="environment"><strong>Environment</strong></h2>
+<p>This logs collector project was created to collect logs from Linux Kubernetes nodes. It is designed to be used in the following environments for troubleshooting support cases:</p>
+<ul>
+<li><a href="https://docs.rke2.io/">RKE2 clusters</a></li>
+<li><a href="https://rancher.com/docs/rke/latest/en/">RKE1 clusters</a></li>
+<li><a href="https://docs.k3s.io/">K3s clusters</a></li>
+<li><a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-existing-nodes">Custom clusters</a></li>
+<li><a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider">Infrastructure provider clusters</a></li>
+<li><a href="https://kubernetes.io/docs/reference/setup-tools/kubeadm/">Kubeadm clusters</a></li>
+</ul>
+<p>Note: This script may not collect all necessary information when run on nodes in a <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-clusters-from-hosted-kubernetes-providers">Hosted Kubernetes Provider</a> cluster.</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<h4 id="rancher-v2x-linux-log-collector">Rancher v2.x Linux log collector</h4>
+<h4 id="when-troubleshooting-your-issue-the-support-team-may-request-that-you-generate-and-provide-a-support-bundle-if-you-are-unable-to-generate-a-support-bundle-from-the-rancher-ui-you-can-manually-collect-the-logs-from-the-linux-kubernetes-nodes-using-the-rancher-v2x-linux-log-collector">When troubleshooting your issue, the Support team may request that you generate and provide a Support Bundle. If you are unable to generate a Support Bundle from the Rancher UI, you can manually collect the logs from the Linux Kubernetes nodes using the Rancher v2.x Linux log collector.</h4>
+<h2 id="resolution"><strong>Resolution</strong></h2>
 <p><strong>Note:</strong><br />
-<strong>This command requires curl or wget to be installed, and internet access from the node.</strong><br />
-<strong>This script is intended to collect logs from <a href="https://rancher.com/docs/rke/latest/en/">Rancher Kubernetes Engine (RKE) CLI</a> provisioned clusters, <a href="https://rancher.com/docs/k3s/latest/en/">K3s clusters</a>, <a href="https://docs.rke2.io/">RKE2 clusters</a>, Rancher provisioned <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-existing-nodes">Custom</a>, and <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-new-nodes-in-an-infra-provider">Node Driver</a> clusters.</strong><br />
-<strong>This script may not collect all necessary information when run on nodes in <a href="https://docs.ranchermanager.rancher.io/pages-for-subheaders/set-up-clusters-from-hosted-kubernetes-providers">Hosted Kubernetes Provider clusters</a>.</strong></p>
-<p>Logs can be collected from a Linux node using the <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">Rancher v2.x log collector script</a>.</p>
+<strong>This command requires <code>curl</code> or <code>wget</code> to be installed, and internet access from the node.</strong></p>
+<p>Logs can be collected from a Linux node using the <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector">Rancher v2.x log collector script</a>.</p>
 <p>The script needs to be downloaded and run directly on the node, using the root user or sudo.</p>
 <p>Output will be written to <code>/tmp</code> as a tar.gz archive named <code>&lt;hostname&gt;-&lt;date&gt;.tar.gz</code>, the default output directory can be changed with the <code>-d</code> flag.</p>
-<h2 id="resolution"><strong>Resolution</strong></h2>
-<h3 id="download-and-run-the-script">Download and run the script</h3>
-<ul>
+<ol>
 <li>Download the script as: <code>rancher2_logs_collector.sh</code></li>
-</ul>
+</ol>
 <p>Using <code>wget</code>:</p>
 <div class="highlight"><pre><span></span><code>wget --backups https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh
 </code></pre></div>
 <p>Using <code>curl</code>:</p>
 <p><div class="highlight"><pre><span></span><code>curl -OLs https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh
 </code></pre></div>
-- Run the script:</p>
+2. Run the script:</p>
 <div class="highlight"><pre><span></span><code>sudo bash rancher2_logs_collector.sh
 </code></pre></div>
-<h3 id="optional-download-and-run-the-script-in-one-command">Optional: Download and run the script in one command</h3>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+<p>Optional: Download and run the script in one command</p>
 <div class="highlight"><pre><span></span><code>curl -Ls rnch.io/rancher2_logs | sudo bash
 </code></pre></div>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+<p>For details on what information is collected, please refer to the <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector#scope-of-collection">Rancher v2.x log collector script README Scope of Collection</a> section.</p>
 
 
 
