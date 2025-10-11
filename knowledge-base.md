@@ -9060,49 +9060,68 @@ Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
 **Article Number:** [000020191](https://support.scc.suse.com/s/kb/https-www-suse-com-support-kb-doc-id-000020191)
 
+## **Environment**
+
+This logs collector project was created to collect logs from Linux Kubernetes nodes. It is designed to be used in the following environments for troubleshooting support cases:
+
+- [RKE2 clusters](https://docs.rke2.io/)
+- [RKE1 clusters](https://rancher.com/docs/rke/latest/en/)
+- [K3s clusters](https://docs.k3s.io/)
+- [Custom clusters](https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-existing-nodes)
+- [Infrastructure provider clusters](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider)
+- [Kubeadm clusters](https://kubernetes.io/docs/reference/setup-tools/kubeadm/)
+
+Note: This script may not collect all necessary information when run on nodes in a [Hosted Kubernetes Provider](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-clusters-from-hosted-kubernetes-providers) cluster.
+
 ## **Situation**
 
-#### Rancher v2.x Linux log collector
+#### When troubleshooting your issue, the Support team may request that you generate and provide a Support Bundle. If you are unable to generate a Support Bundle from the Rancher UI, you can manually collect the logs from the Linux Kubernetes nodes using the Rancher v2.x Linux log collector.
+
+## **Resolution**
 
 **Note:**  
-**This command requires curl or wget to be installed, and internet access from the node.**  
-**This script is intended to collect logs from [Rancher Kubernetes Engine (RKE) CLI](https://rancher.com/docs/rke/latest/en/) provisioned clusters, [K3s clusters](https://rancher.com/docs/k3s/latest/en/), [RKE2 clusters](https://docs.rke2.io/), Rancher provisioned [Custom](https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-existing-nodes), and [Node Driver](https://docs.ranchermanager.rancher.io/pages-for-subheaders/use-new-nodes-in-an-infra-provider) clusters.**  
-**This script may not collect all necessary information when run on nodes in [Hosted Kubernetes Provider clusters](https://docs.ranchermanager.rancher.io/pages-for-subheaders/set-up-clusters-from-hosted-kubernetes-providers).**
+**This command requires `curl` or `wget` to be installed, and internet access from the node.**
 
-Logs can be collected from a Linux node using the [Rancher v2.x log collector script](https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector).
+Logs can be collected from a Linux node using the [Rancher v2.x log collector script](https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector).
 
 The script needs to be downloaded and run directly on the node, using the root user or sudo.
 
 Output will be written to `/tmp` as a tar.gz archive named `<hostname>-<date>.tar.gz`, the default output directory can be changed with the `-d` flag.
 
-## **Resolution**
-
-### Download and run the script
-
-- Download the script as: `rancher2_logs_collector.sh`
-  
-  Using `wget`:
-  
-  ```
-  wget --backups https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh
-  ```
-  
-  Using `curl`:
-  
-  ```
-  curl -OLs https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh
-  ```
-- Run the script:
-  
-  ```
-  sudo bash rancher2_logs_collector.sh
-  ```
-
-### Optional: Download and run the script in one command
+1. Download the script as: `rancher2_logs_collector.sh`
+   
+   Using `wget`:
+   
+   ```markup
+   wget --backups https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh
+   ```
+   
+   Using `curl`:
+   
+   ```markup
+   curl -OLs https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/logs-collector/rancher2_logs_collector.sh
+   ```
+2. Run the script:
+   
+   ```markup
+   sudo bash rancher2_logs_collector.sh
+   ```
 
 ```
+
+```
+
+Optional: Download and run the script in one command
+
+```markup
 curl -Ls rnch.io/rancher2_logs | sudo bash
 ```
+
+```
+
+```
+
+For details on what information is collected, please refer to the [Rancher v2.x log collector script README Scope of Collection](https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/logs-collector#scope-of-collection) section.
 
 
 
@@ -20872,6 +20891,41 @@ REVISION        UPDATED                         STATUS          CHART           
    ```markup
    systemctl restart rke2-server
    ```
+
+
+
+---
+
+## Article: 000021670.md
+
+# Using the Fluentd concat filter plugin to concatenate multiline logs in rancher-logging
+
+**Article Number:** [000021670](https://support.scc.suse.com/s/kb/Using-the-Fluentd-concat-filter-plugin-to-concatenate-multiline-logs-in-rancher-logging)
+
+## **Environment**
+
+A Kubernetes cluster managed by Rancher v2.6+ with the rancher-logging chart installed
+
+## **Situation**
+
+Logs of multiple lines are separated across multiple log events within Pod logs and there is a need to combine them into a single event before forwarding them to a logging solution.
+
+## **Resolution**
+
+The rancher-logging operator provides a wide range of [Fluentd filter plugins](https://kube-logging.dev/docs/configuration/plugins/filters/). The [concat filter](https://kube-logging.dev/docs/configuration/plugins/filters/concat/) can be used to concatenate multiline logs into a single event. 
+
+Filters are defined in a Cluster or ClusterFlow, per the example below:
+
+```markup
+spec:
+  filters:
+    - concat:
+        flush_interval: 10
+        multiline_start_regexp: /\d{4}-\d{1,2}-\d{1,2}/
+        use_first_timestamp: true
+```
+
+Users should refer to the [Fluentd concat filter plugin documentation](https://github.com/fluent-plugins-nursery/fluent-plugin-concat?tab=readme-ov-file#usage), as well as the [kube-logging documentation](https://kube-logging.dev/docs/configuration/plugins/filters/concat/), to determine the appropriate concat filter parameters to concatenate their application logs.
 
 
 

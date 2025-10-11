@@ -990,6 +990,47 @@ Below are some of the concepts of Fleet that will be useful throughout this docu
 
 ---
 
+## Article: enableexperimental.md
+
+# How to enable experimental features
+
+Fleet supports experimental features that are disabled by default and that can be enabled by the user.
+
+Enabling/disabling experimental features is done using extra environment variables that are available when deploying `rancher/fleet`.
+
+See also "[Configure Fleet Install Options in Rancher](./ref-configuration#configure-fleet-install-options-in-rancher)".
+
+## Available experimental features
+
+Fleet currently supports the following experimental features:
+* Scheduling: [`EXPERIMENTAL_SCHEDULES`](./scheduling.md)
+
+## Enabling an experimental feature
+
+### Enabling when installing Fleet stand-alone
+
+All you need to do is to pass something like:
+```
+--set-string extraEnv[0].name=EXPERIMENTAL_SCHEDULES \
+--set-string extraEnv[0].value=true \
+```
+to your helm install or update command.
+
+Please note you have to use `--set-string` because otherwise the boolean value won't work as expected.
+
+### Enabling when installing Fleet with Rancher
+
+You can also activate the experimental features in Fleet when installing Rancher.
+
+The parameters are the same, but you have to add the `fleet.` prefix.
+
+```
+--set-string fleet.extraEnv[0].name=EXPERIMENTAL_SCHEDULES \
+--set-string fleet.extraEnv[0].value=true \
+```
+
+---
+
 ## Article: fetch-helm-oci.md
 
 # Fetch Helm Charts from OCI Registries
@@ -6355,6 +6396,64 @@ Also see [Namespaces](namespaces).
 
 ---
 
+## Article: ref-schedule.md
+
+# Schedule Resource
+
+The `Schedule` resource defines time windows during which Fleet accepts changes to `Clusters`.
+
+For more information on how to use `Schedule` resource, see [Scheduling](./scheduling.md).
+
+```yaml
+apiVersion: fleet.cattle.io/v1alpha1
+kind: Schedule
+metadata:
+  # Name of the schedule resource.
+  # Any name can be used here.
+  name: my-schedule
+
+  # Namespace of the schedule resource.
+  # Only targets in the namespace of this Schedule can be selected.
+  namespace: fleet-local
+spec:
+
+  # Any cron expression can be used here (with up to second resolution)
+  # 
+  # Examples:
+  #
+  #	Expression               Meaning
+  #	"0 0 12 * * ?"           Fire at 12pm (noon) every day
+  #	"0 15 10 ? * *"          Fire at 10:15am every day
+  #	"0 15 10 * * ?"          Fire at 10:15am every day
+  #	"0 15 10 * * ? *"        Fire at 10:15am every day
+  #	"0 * 14 * * ?"           Fire every minute starting at 2pm and ending at 2:59pm, every day
+  #	"0 0/5 14 * * ?"         Fire every 5 minutes starting at 2pm and ending at 2:55pm, every day
+  #	"0 0/5 14,18 * * ?"      Fire every 5 minutes starting at 2pm and ending at 2:55pm,
+  #	                         AND fire every 5 minutes starting at 6pm and ending at 6:55pm, every day
+  #	"0 0-5 14 * * ?"         Fire every minute starting at 2pm and ending at 2:05pm, every day
+  #	"0 10,44 14 ? 3 WED"     Fire at 2:10pm and at 2:44pm every Wednesday in the month of March.
+  #	"0 15 10 ? * MON-FRI"    Fire at 10:15am every Monday, Tuesday, Wednesday, Thursday and Friday
+  #	"0 15 10 15 * ?"         Fire at 10:15am on the 15th day of every month
+  #	"0 15 10 ? * 6L"         Fire at 10:15am on the last Friday of every month
+  #	"0 15 10 ? * 6#3"        Fire at 10:15am on the third Friday of every month
+  #	"0 15 10 L * ?"          Fire at 10:15am on the last day of every month
+  #	"0 15 10 L-2 * ?"        Fire at 10:15am on the 2nd-to-last last day of every month
+  schedule: "0 0 * * * *"
+
+  # Duration in which the Schedule will be active.
+  duration: 1h
+
+  # Target resources handled by the Schedule (clusters only for now)
+  targets:
+  # Target clusters handled by the Schedule.
+  # Refer to the "Mapping to Downstream Clusters" docs for
+  # more information as the format of targets is the same.
+  # If empty, no clusters will be targeted.
+    clusters:
+
+
+---
+
 ## Article: ref-status-fields.md
 
 # Status Fields
@@ -7030,6 +7129,92 @@ This ensures:
 
 * Partitions meet readiness before rollout continues.
 * Fleet pauses rollout if too many partitions are not ready.
+
+
+---
+
+## Article: scheduling.md
+
+# Scheduling
+
+Fleet supports (starting from version 0.13 and in experimental mode) the definition of **scheduled intervals** during which new updates to existing deployments are allowed.
+
+This enables users to control **when changes are applied**, independently of when updates are pushed to the Git repository—if desired.
+
+There are many reasons why one might want to define time windows during which changes to a cluster are permitted. For example:
+
+* Outside business hours
+* To schedule updates at specific times
+* To differentiate update windows between environments (e.g., dev vs prod)
+
+Update scheduling is currently applied at the `Cluster` level.
+A `Schedule` resource is defined, which specifies which `Clusters` are affected. Those clusters will only install new updates if permitted by the defined `Schedule`.
+
+Any changes detected by Fleet in the Git repository will still be applied at the `Bundle` level. However, the **agent** responsible for deploying the changes in each affected cluster will only initiate the deployment if the cluster is currently allowed to do so by the corresponding `Schedule`.
+
+This means that when a change is detected in the repository, it will be applied to the `Bundle`, and the status will move to *Waiting Update* until the `Cluster` agent is active and allowed to perform deployments according to its `Schedule`.
+
+If a `Cluster` is not associated with any `Schedule`, updates will be applied immediately.
+
+---
+
+# Schedule Resource
+
+Now let’s look at how to define a `Schedule` and what fields are available.
+
+A `Schedule` is essentially defined by:
+
+* A **cron expression** that indicates its start time
+* A **duration**
+* The **targets** (clusters) to which it applies
+
+Here’s a basic example of a `Schedule` that uses a simple target definition:
+
+```yaml
+apiVersion: fleet.cattle.io/v1alpha1
+kind: Schedule
+metadata:
+  name: schedule-test
+  namespace: fleet-local
+spec:
+  schedule: "0 0 22 * * *"
+  duration: 1h
+  targets:
+    clusters:
+      - name: local
+        clusterName: local
+```
+
+This defines a **1-hour time window** that starts every day at **22:00:00**, and applies to the cluster named *local* in the `fleet-local` namespace.
+The targets of a `Schedule` use the **same namespace** as the `Schedule`.
+
+In other words: the *local* `Cluster` will only accept changes from **22:00:00 to 23:00:00**.
+
+Now let’s look at another example where the `Schedule` is used to deploy updates to **downstream clusters** labeled with *env=dev*:
+
+```yaml
+apiVersion: fleet.cattle.io/v1alpha1
+kind: Schedule
+metadata:
+  name: schedule-test
+  namespace: fleet-default
+spec:
+  schedule: "0 0 */3 * * *"
+  duration: 1h 
+  targets:
+    clusters:
+      - name: targets-dev
+        clusterSelector:
+          matchLabels:
+            env: dev
+```
+
+In this case, the `Schedule` allows updates to `Clusters` labeled with *env=dev* **every 3 hours**, for a **duration of 1 hour**.
+
+The way you define target `Clusters` is **identical** to how targets are defined for `GitRepo` resources.
+The existing documentation at [https://fleet.rancher.io/gitrepo-targets](https://fleet.rancher.io/gitrepo-targets) also applies to `Schedule` targets.
+
+You can view the full CRD for `Schedule` [here](ref-schedule.md)
 
 
 ---
