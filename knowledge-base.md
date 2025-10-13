@@ -3109,35 +3109,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -3749,26 +3743,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+# How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
-- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
+- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
+- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
 
 ## **Situation**
 
-この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
+This article details how to confirm that a Rancher version upgrade has successfully completed.
 
 ## **Resolution**
 
-Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
+The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
 
-- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
-- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
-- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
+- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
+- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
+- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
 
 
 
@@ -8987,67 +8981,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -24458,6 +24444,141 @@ Labels on the PVCs can be used to automate the assignment of Longhorn recurring 
       ```
       
       Additional Details of recurring jobs are explained [here](https://github.com/longhorn/longhorn/issues/7109). Once the source label on the PVC is enabled, Longhorn starts to sync the recurring-job label from PVC to Longhorn Volume, since Volume is the real resource that Longhorn manages. So, Longhorn needs to sync the label from PVCs to Volumes and further use these labels to select Volumes to do recurring jobs.
+
+
+
+---
+
+## Article: 000021920.md
+
+# How to change the open files limits for the systemd service and components in kubernetes cluster?
+
+**Article Number:** [000021920](https://support.scc.suse.com/s/kb/How-to-change-the-open-files-for-kubernetes-cluster-and-components)
+
+## **Environment**
+
+- RKE2
+- K3s
+- RKE1
+
+## **Situation**
+
+When observing errors like the below, containing "too many open files", the RKE1/RKE2/K3S node is likely experiencing service instability or Pod failures due to the exhaustion of the open file descriptor limit, often referred to as the nofiles or LimitNOFILE ulimit setting.
+
+Common log errors and symptoms of this issue include:
+
+- **Networking failures:** When the kubelet fails to set up the pod network, you may see an error like this:
+
+```markup
+Failed to create sandbox for pod" err="rpc error: code = Unknown desc = failed to setup network for sandbox ... plugin type="loopback" failed (add): netplugin failed with no error message: fork/exec /opt/cni/bin/loopback: too many open files"
+```
+
+- **Ingress  failures:** The Ingress controller is unable to accept new connections, logging a fatal error such as:
+
+```markup
+35#35: accept4() failed (24: Too many open files)
+```
+
+- **Container runtime failures:** The container runtime itself cannot open a necessary file to manage the container lifecycle. This can manifest as an error like:
+
+```markup
+Status from runtime service failed" err="rpc error: code = Unknown desc = open /var/lib/rancher/rke2/agent/containerd/io.containerd.grpc.v1.introspection/uuid: too many open files"
+```
+
+## **Resolution**
+
+# RKE2 and K3s
+
+> **Note**: the below steps reference the **rke2-agent** service, the same change can be adapted for the **rke2-server** (control plane) nodes, and **k3s** nodes by changing the service name appropriately in each step
+
+ 
+
+- SSH into the worker node where the open file is to be increased
+
+```markup
+systemctl edit rke2-agent
+```
+
+- Modify the file
+
+```markup
+### Editing /etc/systemd/system/rke2-agent.service.d/override.conf
+### Anything between here and the comment below will become the new contents of the file
+[Service]
+LimitNOFILE=xxxx # use your value instead of xxx
+```
+
+Once you save, this will create an override.conf file with new setting under /etc/systemd/system/rke2-agent.service.d/ 
+
+> **Note:** Please be sure to place the above configuration between the top/bottom comment lines in the file to take effect when editing
+> 
+> Also, if the LimitNOFILE value used for the rke2-agent service is greater than the OS nofiles ulimit, the increase may not take effect. In this case, increase the OS nofiles ulimit to at least the desired value configured for rke2-agent.
+
+- Restart rke2-agent
+
+```markup
+sudo systemctl restart rke2-agent.service
+```
+
+Please create a new pod on this node for testing and execute it to view the ulimit -n value, the updated value in systemd can also be verified with a command like: systemctl show rke2-agent.service | grep LimitNOFILE
+
+# RKE1
+
+The steps below are for RKE1, the same steps apply for control plane node/etcd node and worker nodes.
+
+There are two approaches (systemd and Docker) which change the scope of the ulimit change, check each option to decide which fits the use case.  
+
+## Systemd
+
+By default, **systemd** ignores ulimits defined in `/etc/security/limits.conf` and applies its own limits. These can be configured either **system-wide** or **per service**.
+
+### System-wide configuration
+
+- Edit `/etc/systemd/system.conf` and set:
+
+```markup
+DefaultLimitNOFILE=65535:65535
+```
+
+### Per-service configuration
+
+To configure for a specific service (e.g., Docker), either edit the service file or create an override file:
+
+- Add an override file for the Docker service
+
+`/etc/systemd/system/docker.service.d/override.conf`:
+
+```markup
+[Service]
+LimitNOFILE=infinity
+```
+
+## Docker Configuration
+
+You can also set container-level limits using the Docker daemon configuration.
+
+- Edit the Docker configuration to set the default nofiles ulimit for all containers
+
+`/etc/docker/daemon.json`:
+
+```markup
+{
+  "default-ulimits": {
+    "nofile": {
+      "Name": "nofile",
+      "Soft": 64000,
+      "Hard": 64000
+    }
+  }
+}
+```
+
+- Restart Docker after making changes:
+
+```markup
+systemctl daemon-reload
+systemctl restart docker
+```
 
 
 
