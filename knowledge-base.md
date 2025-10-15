@@ -8781,34 +8781,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -8981,59 +8975,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -21864,6 +21866,81 @@ If a S3 endpoint is not readily available, it would be easier to use the local R
 
 ---
 
+## Article: 000021755.md
+
+# OOM (Out Of Memory), high memory consumption basic troubleshooting steps
+
+**Article Number:** [000021755](https://support.scc.suse.com/s/kb/OOM-Out-Of-Memory-high-memory-consumption-basic-troubleshooting-steps)
+
+## **Environment**
+
+Rancher 2.x
+
+## **Situation**
+
+Memory consumption on the nodes is too high, or OOM kill is happening frequently.
+
+**At the Kubernetes level**  
+Start with [kubectl top](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_top/) as it should tell what is consuming memory at the point in time:
+
+```c
+# check which pods are consuming most memory
+kubectl top pods 
+# check which nodes are affected
+kubectl top nodes
+```
+
+A few questions that can help are:
+
+- Which pods are consuming the most resources?
+- Is it on a specific node, or across all nodes?
+- Describing the node, is it over-provisioned?
+
+This might give opportunities for better capacity planning for your applications.
+
+**At the node level**  
+Check the messages (or with dmesg -T) for the OOM Kill message:
+
+- If invoked by cgroup, it means that limits are being respected. Adjust them as needed.
+- If invoked by the kernel, it means that the node is running out of memory and OOM is reclaiming it
+
+Check the kubelet logs for OOM  kills.
+
+## **Cause**
+
+OOM kills or high memory usage might be caused by lack of resources, configuration issues or application failures.
+
+## **Resolution**
+
+**Rancher Project Resource Quotas:**  
+Rancher allows for resource management at the Project level. Please review the [documentation](https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/manage-projects/manage-project-resource-quotas) on how to set limits at the Project and Namespace levels. 
+
+**For non-Rancher components:**  
+Adjust the requests and limits as per the Kubernetes [documentation](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/). It can be done at many levels. At spec.container, or even on the values.yaml. Here is an example from [Rancher Monitoring](https://github.com/rancher/charts/blob/dev-v2.11/charts/rancher-monitoring/106.0.0%2Bup66.7.1-rancher.2/values.yaml#L1547):
+
+```markup
+resources:
+      limits:
+        memory: 500Mi
+        cpu: 1000m
+      requests:
+        memory: 100Mi
+        cpu: 100m
+```
+
+If you are experiencing issues with Rancher-shipped components, open a case with Rancher Support. Please collect all the data below when contacting SUSE Rancher support.
+
+- kubectl top pods
+- kubectl top nodes
+- Grafana Graphs of the affected services, or graphs from any monitoring in place
+- The log bundle: [https://www.suse.com/support/kb/doc/?id=000020191](https://www.suse.com/support/kb/doc/?id=000020191)
+- The resource count of Rancher: [https://www.suse.com/support/kb/doc/?id=000021310](https://www.suse.com/support/kb/doc/?id=000021310)
+- You might be asked by support to also collect profiles of Rancher or Fleet: [https://www.suse.com/support/kb/doc/?id=000021615](https://www.suse.com/support/kb/doc/?id=000021615)
+
+
+
+---
+
 ## Article: 000021756.md
 
 # Nginx "IngressNightmare"
@@ -25397,6 +25474,39 @@ Delete the downstream cluster and recreate it without the symlink on nodes. Alte
 
 ---
 
+## Article: 000021989.md
+
+# Add labels for alerts generated by Project Monitors.
+
+**Article Number:** [000021989](https://support.scc.suse.com/s/kb/Add-labels-for-alerts-generated-by-Project-Monitors)
+
+## **Environment**
+
+Rancher v2.10.x
+
+## **Procedure**
+
+To label alerts for Project Monitors, you must configure the Prometheus Federator Helm chart's **values** section. This is done by adding **additionalRuleLabels** under **defaultRules** within **helmProjectOperator**. You can perform this modification during a new chart installation or by updating a deployed one. This allows you to tag alerts with information like **cluster\_id** for easy identification and routing to a **remote\_write** endpoint:
+
+```python
+helmProjectOperator:
+  valuesOverride:
+    defaultRules:
+      additionalRuleLabels:
+        cluster_id: your-cluster-id
+        another: label <== An example to how multiple labels can be added. 
+```
+
+**Verification:**
+
+Once the values are updated and the chart is upgraded, you would be able to see the **cluster\_id** for the alerts once you navigate to the **Alertmanager** Window. 
+
+![](https://suse.file.force.com/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_Png&versionId=068Tr00000YlAi4&operationContext=CHATTER&contentId=05TTr00000kfPQi)
+
+
+
+---
+
 ## Article: 000021992.md
 
 # RKE2/K3S Cluster Support for Mixed Operating Systems
@@ -26587,4 +26697,228 @@ If both formats are present in a single git repository, which takes precedence w
 ## **Resolution**
 
 When an index.yaml file is present on the repository, this takes precedence and Rancher will load the list of charts and the referenced chart archives from the index file. This skips the process of walking the repository directory to build the index dynamically from charts in sub-directories.
+
+
+
+---
+
+## Article: 000022095.md
+
+# Getting x509: certificate signed by unknown authority while uploading image to Suse Private Registry
+
+**Article Number:** [000022095](https://support.scc.suse.com/s/kb/Getting-x509-certificate-signed-by-unknown-authority-while-uploading-image-to-Suse-Private-Registry)
+
+## **Environment**
+
+- SUSE Private Registry
+
+## **Situation**
+
+- Whenever we try to push an image to the SUSE Private registry, we get the following error :
+
+```markup
+"Get "https://core.harbor.domain/v2/": tls: failed to verify certificate: x509: certificate signed by unknown authority (possibly because of "crypto/rsa: verification error" while trying to verify candidate authority certificate "harbor-ca")"
+```
+
+## **Cause**
+
+- The error occurs when the client (e.g., Docker, containerd) **does not trust the certificate authority (CA)** that signed Harbor’s certificate.
+
+## **Resolution**
+
+- Log in to the SUSE private registry web interface and download the '***Registry Certificate***' under the project.
+
+              ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000vhY5&feoid=00N1i000002LdMN&refid=0EMTr00000GnjKX)
+
+ 
+
+- Once downloaded, SSH to the node where the private registry is configured or to the node from where you are uploading the images and upload the \`ca.crt\` certificate by following the commands below :
+
+```markup
+a) Upload downloaded ca.crt certificate to the server node : 
+   #cp ca.crt /usr/local/share/ca-certificates/
+
+b) Update the ca certificates on the server node : 
+    #update-ca-certificates 
+  output : 
+      Updating certificates in /etc/ssl/certs...
+      0 added, 0 removed; done. 
+      Running hooks in /etc/ca-certificates/update.d...
+      done.
+
+c) systemctl restart docker (if using docker service)
+```
+
+ 
+
+This results in the CA cert being trusted system-wide.
+
+
+
+---
+
+## Article: 000022097.md
+
+# How to test Alertmanager in rancher-monitoring
+
+**Article Number:** [000022097](https://support.scc.suse.com/s/kb/How-to-test-Alertmanager-in-rancher-monitoring)
+
+## **Environment**
+
+A Kubernetes cluster managed by Rancher v2.6+ with rancher-monitoring installed
+
+## **Procedure**
+
+This guide demonstrates how to test Alertmanager and PrometheusRule configuration, to validate that alerts are sent successfully by Alertmanager.
+
+With this objective in mind, and for this test to be self-contained, a webhook receiver is configured in Alertmanager. A webhook-receiver pod is deployed to receive these webhook alert requests and print them to stdout, such that they are visible in the Pod logs for verification. All of these resources are created in the cattle-monitoring-system.
+
+ 
+
+1. Navigate to a Rancher-managed cluster with rancher-monitoring installed.
+2. Apply the following YAMLs:
+   
+   1. ConfigMap:
+      
+      ```markup
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: webhook-receiver-configmap-script
+        namespace: cattle-monitoring-system
+      data:
+        receiver.sh: |
+          #!/bin/bash
+          TIMEOUT_SEC=1
+      
+          echo "Starting nc listener with $TIMEOUT_SEC second timeout..."
+      
+          while true; do
+            REQUEST_FILE="/tmp/request.log"
+      
+            echo "Waiting for connection..."
+      
+            # Reads the HTTP POST request and prints it to a file.
+            (
+              printf "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/plain\r\n\r\nRequest successfully logged.\n"
+            ) | nc -l -p 8080 -w $TIMEOUT_SEC > $REQUEST_FILE
+      
+      
+            # Prints to stdout
+            echo -e "\n--- RECEIVED FULL REQUEST ---\n"
+            cat $REQUEST_FILE
+            echo -e "\n--- END OF REQUEST ---\n"
+      
+            # Erases the temp file to end the loop
+            rm -f $REQUEST_FILE
+            sleep 0.1
+          done
+      ```
+   2. Pod:
+      
+      ```markup
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: webhook-receiver
+        namespace: cattle-monitoring-system
+        labels:
+          app: webhook-receiver
+      spec:
+        containers:
+        - name: receiver-container
+          image: rancherlabs/swiss-army-knife:latest
+          command: ["/bin/bash", "/script/receiver.sh"]
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - name: receiver-script-volume
+            mountPath: /script
+        volumes:
+        - name: receiver-script-volume
+          configMap:
+            name: webhook-receiver-configmap-script
+            defaultMode: 0744
+      ```
+   3. Service:
+      
+      ```markup
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: webhook-receiver-service
+        namespace: cattle-monitoring-system
+      spec:
+        selector:
+          app: webhook-receiver
+        ports:
+          - protocol: TCP
+            port: 80
+            targetPort: 8080
+        type: ClusterIP
+      ```
+3. Ensure that the pod is up and tail the log, you should see a couple of lines stating that the netcat listener is ready and waiting for a connection. The Alertmanager alert configured below will be visible in these logs.
+4. Apply the following AlertmanagerConfig to configure Alertmanager to send any alerts with the label "severity=critical" to the webhook-receiver pod (the Alertmanager configuration documentation can be found [here](https://prometheus.io/docs/alerting/latest/configuration/)). Note that the URL used is that of the service created above:
+   
+   ```markup
+   apiVersion: monitoring.coreos.com/v1alpha1
+   kind: AlertmanagerConfig
+   metadata:
+     name: webhook-receiver-am-config
+     namespace: cattle-monitoring-system
+   spec:
+     receivers:
+       - name: webhook-receiver-pod
+         webhookConfigs:
+           - url: http://webhook-receiver-service/
+             sendResolved: true
+     route:
+       receiver: webhook-receiver-pod
+       routes:
+         - matchers:
+             - name: severity
+               value: critical
+           receiver: webhook-receiver-pod
+           continue: false
+   ```
+5. Create a PrometheusRule with an alert expression. This example uses vector(1) as the expression, such that its value will be always "1" and the alert will be trigged continuously:
+   
+   ```markup
+   apiVersion: monitoring.coreos.com/v1
+   kind: PrometheusRule
+   metadata:
+     name: test-rule
+     namespace: cattle-monitoring-system
+   spec:
+     groups:
+       - name: test-rule
+         rules:
+           - alert: test-alert
+             expr: vector(1)
+             for: 0s
+             labels:
+               namespace: cattle-monitoring-system
+               severity: critical
+   ```
+6. Wait for the alert to appear in the Alertmanager Alerts UI.
+7. Check the log of the webhook-receiver pod and observe that the test-rule alert is received, similar to the following:
+   
+   ```markup
+   Starting nc listener with 1 second timeout...
+   Waiting for connection...
+   
+   --- RECEIVED FULL REQUEST ---
+   
+   POST / HTTP/1.1
+   Host: webhook-receiver-service
+   User-Agent: Alertmanager/0.28.1
+   Content-Length: 1214
+   Content-Type: application/json
+   
+   {"receiver":"cattle-monitoring-system/webhook-receiver-am-config/webhook-receiver-pod","status":"firing","alerts":[{"status":"firing","labels":{"alertname":"test-alert","namespace":"cattle-monitoring-system","prometheus":"cattle-monitoring-system/rancher-monitoring-prometheus","severity":"critical"},"annotations":{},"startsAt":"2025-10-14T09:04:11.437Z","endsAt":"0001-01-01T00:00:00Z","generatorURL":"https://142.93.230.60.nip.io/k8s/clusters/c-m-d2xdbdjr/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/graph?g0.expr=vector%281%29\u0026g0.tab=1","fingerprint":"163a7e819a18ef74"}],"groupLabels":{"namespace":"cattle-monitoring-system"},"commonLabels":{"alertname":"test-alert","namespace":"cattle-monitoring-system","prometheus":"cattle-monitoring-system/rancher-monitoring-prometheus","severity":"critical"},"commonAnnotations":{},"externalURL":"https://142.93.230.60.nip.io/k8s/clusters/c-m-d2xdbdjr/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy","version":"4","groupKey":"{}/{namespace=\"cattle-monitoring-system\"}/{severity=\"critical\"}:{namespace=\"cattle-monitoring-system\"}","truncatedAlerts":0}
+   
+   --- END OF REQUEST ---
+   ```
+
+Following this method, it is possible to test Alertmanager and PrometheusRule configurations without needing a third party app or configuring an external receiver. This is useful to see if the alerts arrive as expected or if they are not being sent. If you are struggling to correctly apply an AlertmanagerConfig, you can check the rancher-monitoring-operator pod logs, in order to check that the syntax is correct and was accepted; the Alertmanager pod logs; as well as the value of the PrometheusRule expression, using the Prometheus Query UI, to confirm whether the alert should currently trigger.
 
