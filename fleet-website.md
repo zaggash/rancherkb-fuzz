@@ -147,7 +147,7 @@ You can't use a `fleet.yaml` in resources, it is only used by the fleet-cli to c
 The `spec.targetRestrictions` field is not useful, as it is an allow list for targets specified in `spec.targets`. It is not needed, since `targets` are explicitly given in a bundle and an empty `targetRestrictions` defaults to allow.
 
 :::note
-You can use Fleet CLI to convert a Helm chart into a `bundle`. For more information, refer to [Convert a Helm chart into a bundle using CLI.](install-usage-fleetCLI.md#convert-a-helm-chart-into-a-bundle).
+You can use Fleet CLI to convert a Helm chart into a `bundle`. For more information, refer to [Convert a Helm chart into a bundle using CLI.](install-usage-fleet-cli.md#convert-a-helm-chart-into-a-bundle).
 :::
 
 ---
@@ -2694,7 +2694,7 @@ Fleet is fundamentally a set of Kubernetes [custom resource definitions (CRDs)](
 
 ---
 
-## Article: install-usage-fleetCLI.md
+## Article: install-usage-fleet-cli.md
 
 # Install and Use Fleet CLI
 
@@ -4009,7 +4009,7 @@ fleet target --bundle-file bundle.yaml --dump-input-list  > bd.yaml
 fleet deploy --input-file bd.yaml --dry-run
 ```
 
-For more information, refer to [Fleet CLI Key commands.](install-usage-fleetCLI.md#key-commands)
+For more information, refer to [Fleet CLI Key commands.](install-usage-fleet-cli.md#key-commands)
 
 ---
 
@@ -5894,7 +5894,7 @@ avoid conflicts with other templating languages.
 Note that if the functions output changes with every call, e.g. `uuidv4`, the
 bundle will get redeployed.
 
-You can [test values templating with the CLI](./install-usage-fleetCLI.md#key-commands) against existing clusters.
+You can [test values templating with the CLI](./install-usage-fleet-cli.md#key-commands) against existing clusters.
 
 The template context has the following keys:
 
@@ -8087,7 +8087,7 @@ For more information, refer to [Continuous Delivery in Rancher](https://document
 
 ---
 
-## Article: validate-fleetCLI.md
+## Article: validate-fleet-cli.md
 
 # Validate Fleet CLI Deployment
 
@@ -8112,7 +8112,7 @@ You see the following fields:
 * `BUNDLEDEPLOYMENTS-READY` shows how many targets are ready out of the total.  
 * `STATUS` may show Ready, Modified, or other conditions based on the `rollout`.
 
-:::note:
+:::note
 If this field shows 1/1, the bundle is successfully deployed to one cluster.
 :::
 

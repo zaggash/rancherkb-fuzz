@@ -1133,83 +1133,89 @@ The built-in Rancher local authentication provider does not have 2FA or MFA capa
 
 **Article Number:** [000020031](https://support.scc.suse.com/s/kb/360054671192)
 
+## **Environment**
+
+- Rancher 2.x
+- Rancher Kubernetes Engine (RKE) CLI or a Rancher v2.x provisioned Custom Cluster.
+
 ## **Situation**
 
-#### Task
+#### **Task :**
 
-This article provides instructions for safely shutting down a Kubernetes cluster provisioned via the Rancher Kubernetes Engine (RKE) CLI or a Rancher v2.x provisioned Custom Cluster.
+- This article provides instructions for safely shutting down a Kubernetes cluster provisioned via the Rancher Kubernetes Engine (RKE) CLI or a Rancher v2.x provisioned Custom Cluster.
 
-#### Requirements
+#### **Background :**
 
-- A Kubernetes cluster launched with the RKE CLI or from Rancher 2.x as a Custom Cluster
+- If you have a need to shut down the infrastructure running a Kubernetes cluster (datacenter maintenance, migration, etc.) this guide will provide steps in the proper order to ensure a safe cluster shutdown. This guide has command examples for RKE-deployed clusters but the order of operations and the process is similar for most Kubernetes distributions.
+- Please ensure you complete an etcd backup before continuing this process. A guide regarding the backup and restore process can be found [here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/checklist-for-production-ready-clusters#back-up-etcd).
 
-#### Background
+## **Resolution**
 
-If you have a need to shut down the infrastructure running a Kubernetes cluster (datacenter maintenance, migration, etc.) this guide will provide steps in the proper order to ensure a safe cluster shutdown. This guide has command examples for RKE-deployed clusters but the order of operations and the process is similar for most Kubernetes distributions.
-
-Please ensure you complete an etcd backup before continuing this process. A guide regarding the backup and restore process can be found [here](https://rancher.com/docs/rancher/v2.x/en/backups/).
-
-#### Solution
+#### **Solution :**
 
 > **N.B.** If you have nodes that share worker, control plane, or etcd roles, postpone the `docker stop` and shutdown operations until worker or control plane containers have been stopped.
 
-#### Draining nodes.
+#### **Draining nodes :**
 
-##### For all nodes, prior to stopping the containers, run:
+- For all nodes, prior to stopping the containers, run:
 
 ```
+
+```
+
+```markup
 kubectl get nodes
 ```
 
-##### To identify the desired node, then run:
+- To identify the desired node, then run:
 
-```
+```markup
 kubectl drain <node name>
 ```
 
-##### This will safely evict any pods, and you can proceed with the following steps to a shutdown.
+This will safely evict any pods, and you can proceed with the following steps to a shutdown.
 
- 
+#### **Shutting down the worker nodes :**
 
-#### Shutting down the workers nodes
+- For each worker node:
+  
+  1. ssh into the worker node
+  2. stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
+  3. stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
+  4. shutdown the system `sudo shutdown now`
 
-For each worker node:
+#### **Shutting down the ControlePlane nodes :**
 
-1. ssh into the worker node
-2. stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
-3. stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
-4. shutdown the system `sudo shutdown now`
+- For each control plane node:
+  
+  1. ssh into the control plane node
+  2. stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
+  3. stop kube-scheduler and kube-controller-manager by running `sudo docker stop kube-scheduler kube-controller-manager`
+  4. stop kube-apiserver by running `sudo docker stop kube-apiserver`
+  5. stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
+  6. shutdown the system `sudo shutdown now`
 
-##### Shutting down the control plane nodes
+#### **Shutting down the etcd nodes :**
 
-For each control plane node:
+- For each etcd node: 
+  
+  1. ssh into the etcd node
+  2. stop kubelet and kube-proxy by running sudo docker stop kubelet kube-proxy
+  3. stop etcd by running sudo docker stop etcd
+  4. stop docker by running sudo service docker stop or sudo systemctl stop docker
+  5. shutdown the system sudo shutdown now
 
-1. ssh into the control plane node
-2. stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
-3. stop kube-scheduler and kube-controller-manager by running `sudo docker stop kube-scheduler kube-controller-manager`
-4. stop kube-apiserver by running `sudo docker stop kube-apiserver`
-5. stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
-6. shutdown the system `sudo shutdown now`
+#### **Shutting down the storage :**
 
-##### Shutting down the etcd nodes
-
-For each etcd node:
-
-1. ssh into the etcd node
-2. stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
-3. stop etcd by running `sudo docker stop etcd`
-4. stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
-5. shutdown the system `sudo shutdown now`
-
-##### Shutting down storage
-
-Shut down any persistent storage devices that you might have in your datacenter (such as NAS storage devices) if applicable. It iss important that you do this after shutting everything else down to prevent data loss/corruption for containers requiring persistency.
+#### Shut down any persistent storage devices that you might have in your datacenter (such as NAS storage devices) if applicable. It is important that you do this after shutting everything else down to prevent data loss/corruption for containers requiring persistence.
 
 > **N.B.** If you are running a cluster that was not deployed through RKE then the order of the process is still the same, however the commands may vary. For instance, some distributions run kubelet and other control plane items as a service on the node rather than in docker. Check documentation for the specific Kubernetes distribution for information as to how to stop these services.
 
-##### Starting a Kubernetes cluster up after shutdown
+#### **Start Kubernetes cluster up after shutdown :**
 
-Kubernetes is good about recovering from a cluster shutdown and requires little intervention, though there is a specific order in which things should be powered back on to minimize errors.
+- Kubernetes is good about recovering from a cluster shutdown and requires little intervention, though there is a specific order in which things should be powered back on to minimize errors.
+
+<!--THE END-->
 
 1. Power on any storage devices if applicable.
    
@@ -1232,7 +1238,7 @@ Kubernetes is good about recovering from a cluster shutdown and requires little 
    2. Log into the system via ssh.
    3. Ensure docker has started `sudo service docker status` or `sudo systemctl status docker`
    4. Ensure kubelet’s status shows Up in Docker `sudo docker ps`
-5. Log into the Rancher UI (or use kubectl) and check your various projects to ensure workloads have started as expected. This may take a few minutes depending on the number of workloads and your server capacity.
+5. Log into the Rancher UI (or use kubectl) and check your various projects to ensure workloads have started as expected. This may take a few minutes, depending on the number of workloads and your server capacity.
 
 
 
@@ -3109,29 +3115,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -3743,26 +3755,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# How to confirm a version upgrade of Rancher v2.x is completed successfully
+# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
-- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
+- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
+- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
 
 ## **Situation**
 
-This article details how to confirm that a Rancher version upgrade has successfully completed.
+この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
 
 ## **Resolution**
 
-The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
+Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
 
-- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
-- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
-- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
+- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
+- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
+- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
 
 
 
@@ -8682,7 +8694,7 @@ Using the F12 button you can quickly open the Developer Tools on FireFox and Chr
 - Follow any steps needed to reproduce the issue during the recording
 - Note: immediately before triggering the action that reproduces the issue, also reload the page (eg. via CTRL+R). For example, if the issue manifests when navigating to a page, then go to the the page containing the link leading to it, first reload the page, and then click to reproduce the issue.
 - Once the issue has occurred, click the "export HAR (sanitized)" button , top right, in the second row of icons. You can no choose a name and location for the file.  
-  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000uGV7&feoid=00N1i000002LdMN&refid=0EMTr00000GWwSg)
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000w2xV&feoid=00N1i000002LdMN&refid=0EMTr00000GWwSg)
 
 **Firefox**
 
@@ -8692,7 +8704,7 @@ Using the F12 button you can quickly open the Developer Tools on FireFox and Chr
 - Follow any steps needed to reproduce the issue with the network pane open
 - Note: immediately before triggering the action that reproduces the issue, also reload the page (eg. via CTRL+R). For example, if the issue manifests when navigating to a page, then go to the the page containing the link leading to it, first reload the page, and then click to reproduce the issue.
 - Once the issue has occurred, right click in the pane and select **Save all as HAR**  
-  **![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000uGV7&feoid=00N1i000002LdMN&refid=0EMTr00000GWoer)**
+  **![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000w2xV&feoid=00N1i000002LdMN&refid=0EMTr00000GWoer)**
 
 **Upload the HAR file**
 
@@ -8975,67 +8987,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -25975,6 +25979,148 @@ A standalone or Rancher-provisioned RKE2 or K3s cluster
 
 ---
 
+## Article: 000022055.md
+
+# How to configure cpu-manager-policy in an RKE2 or K3s cluster
+
+**Article Number:** [000022055](https://support.scc.suse.com/s/kb/How-to-configure-cpu-manager-policy-in-an-RKE2-or-K3s-cluster)
+
+## **Environment**
+
+- RKE2
+- K3s Cluster
+
+## **Procedure**
+
+To configure CPU Manager Policy:
+
+**For RKE2 or K3s Rancher-provisioned cluster:**
+
+  **a.1 Configure the CPU Manager Policy at cluster creation time**
+
+   Create the new cluster from Cluster Management, fill in with the common set of configurations (kubernetes version, CNI version, Node Os Image, Node Os, sizing,Private registry, etc…), and  then select  “Edit as YAML” on the bottom section of the page:
+
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000rrPZ&feoid=00NTr00000R90Sn&refid=0EMTr00000GIFQn)
+
+ 
+
+Add the following configuration snippet under the section spec → rkeConfig → MachineGlobalConfig:
+
+```
+    machineGlobalConfig:
+      kubelet-arg:
+        - cpu-manager-policy=static
+        - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
+```
+
+ 
+
+**a.2 Configure the CPU Manager Policy on a provisioned-cluster**
+
+To configure the CPU Manager Policy on existing rancher-provisioned clusters, go to Cluster Management -&gt; Select your desired Downstream cluster, Edit Cluster as YAML:
+
+Add the configuration:
+
+Add the following configuration snippet under the section spec → rkeConfig → MachineGlobalConfig:
+
+```
+    machineGlobalConfig:
+      kubelet-arg:
+        - cpu-manager-policy=static
+        - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
+```
+
+The cluster will transition to Updating status, and the Cluster nodes will show "waiting for the Kubelet to start"
+
+Remove the old CPU Manager State file:
+
+ssh into each node, and execute the following command:
+
+```markup
+# rm -rf /var/lib/kubelet/cpu_manager_state
+```
+
+Then, the cluster will transition to "Ready" status.
+
+ 
+
+**b) For RKE2 or K3s standalone clusters:**
+
+ 
+
+**b.1 Configure CPU Manager Policy at cluster creation time:**
+
+**RKE2:** The CPU Manager Policy can be configured in the  /etc/rancher/k3s/config.yaml file, adding the lines:
+
+```markup
+kubelet-arg:
+  - cpu-manager-policy=static
+  - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
+
+```
+
+Then, continue with the [standard bootstrap of the RKE2 cluster](https://docs.rke2.io/install/quickstart). 
+
+**K3s:** The CPU Manager Policy can be configured  in the  /etc/rancher/k3s/config.yaml, adding the lines:
+
+```markup
+kubelet-arg:
+  - cpu-manager-policy=static
+  - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
+```
+
+Then, proceed with the [standard bootstrap of the K3s cluster](https://docs.k3s.io/installation) 
+
+**b.2 Configure CPU Manager Policy on already-provisioned RKE2/k3s clusters:**
+
+Perform the same steps as in case b.1, and additionally,  ssh into each node to remove the CPU Manager state file:
+
+```markup
+# rm -rf /var/lib/kubelet/cpu_manager_state
+```
+
+After that, perform the following steps:
+
+RKE2:
+
+Server nodes:
+
+```markup
+systemctl stop rke2-server
+rke2-killall.sh
+systemctl start rke2-server
+```
+
+Agent nodes:
+
+k3s:
+
+Server nodes:
+
+```markup
+systemctl stop k3s
+k3s-killall.sh
+systemctl start k3s
+```
+
+Agent nodes:
+
+```markup
+systemctl stop k3s-agent
+k3s-killall.sh
+systemctl start k3s-agent
+```
+
+ 
+
+Additional docs:
+
+\[1] - [Changing the CPU Policy Manager](https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#changing-the-cpu-manager-policy)
+
+
+
+---
+
 ## Article: 000022059.md
 
 # Difference between draining for Kubernetes version/config updates and Node Pool config updates
@@ -26475,6 +26621,55 @@ metadata:
 ```
 
 3. Scale down the node pool to complete the deletion process.
+
+
+
+---
+
+## Article: 000022081.md
+
+# S3 backups failing in a Rancher RKE2 K3s cluster with "failed to test for existence of bucket: HEAD Forbidden" error
+
+**Article Number:** [000022081](https://support.scc.suse.com/s/kb/S3-backups-failing-in-a-Rancher-RKE2-K3s-cluster-with-failed-to-test-for-existence-of-bucket-HEAD-Forbidden-error)
+
+## **Environment**
+
+- Rancher
+- RKE2
+
+## **Situation**
+
+When uploading a backup to a self hosted S3 backend storage you can find in the logs the following errors.
+
+```
+
+failed to initialize S3 client: failed to test for existence of bucket downstream-cluster-etcd-backups: Access Denied
+```
+
+Or
+
+```
+failed to initialize S3 client: failed to test for existence of bucket downstream-cluster-etcd-backups: Head "https://s3-host-local-cloud:9XXXX/downstream-cluster-etcd-backups/": Forbidden
+```
+
+Or
+
+```
+failed to initialize S3 client: failed to test for existence of bucket downstream-cluster-etcd-backups: Head "https://s3-host-local-cloud:9XXXX/downstream-cluster-etcd-backups/": net/https: TLS handshake timeout 
+```
+
+This is likely to happen in an on-premise environment with proxy settings configured.  
+Your S3 cluster probably do not need to be reached through the proxy.
+
+## **Cause**
+
+The cause for this case is determined to be a missing entry in the no\_proxy environment variable, which can result in a "HEAD &lt;S3-ENDPOINT:PORT&gt; Forbidden" request error during S3 backup attempts.
+
+## **Resolution**
+
+The recommended approach to resolve this is to double check the proxy configuration in the downstream cluster, specifically the **NO\_PROXY** setting, and add an entry to match the full hostname of the S3 endpoint e.g. the domain name.
+
+The IP alone would not suffice to create the backup folder nor to upload the snapshot file.
 
 
 
