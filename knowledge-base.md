@@ -3073,6 +3073,42 @@ With a Kube Config file sourced for the relevant cluster, for a user with permis
 
 ---
 
+## Article: 000020064.md
+
+# The Rancher v2.x Windows log collector script
+
+**Article Number:** [000020064](https://support.scc.suse.com/s/kb/360050943552)
+
+## **Environment**
+
+Rancher 2.x
+
+Windows worker nodes
+
+**Note: the collector refers to docker and RKE usage which are both deprecated.**
+
+## **Situation**
+
+#### Collecting logs from a Rancher 2.x cluster with Windows worker nodes using the Rancher v2.x Windows worker node log collection script.
+
+**N.B. The script needs to be downloaded and run directly on a Windows worker node using a Powershell session with Administrator Privileges.**
+
+## **Resolution**
+
+To run the script, open a new Powershell window with Administrator Privileges and run the following command:
+
+```
+Set-ExecutionPolicy Bypass -Scope Process -Force
+iwr -useb https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/windows-log-collector/win-log-collect.ps1 -OutFile win-log-collect.ps1
+& .\win-log-collect.ps1
+```
+
+Upon successful completion, the log bundle will be written to the root of the C:\\ drive in a file named `rancher_<hostname>_<datetime>.tar.gz`.
+
+
+
+---
+
 ## Article: 000020067.md
 
 # Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
@@ -3755,26 +3791,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+# How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
-- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
+- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
+- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
 
 ## **Situation**
 
-この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
+This article details how to confirm that a Rancher version upgrade has successfully completed.
 
 ## **Resolution**
 
-Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
+The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
 
-- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
-- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
-- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
+- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
+- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
+- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
 
 
 
@@ -8793,28 +8829,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -8987,59 +9029,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -21605,6 +21655,194 @@ If the correct PSA is not applied, pod creation in the `cattle-system` namespace
 
 ---
 
+## Article: 000021731.md
+
+# Enforce default HTTPS Rancher certificate with Letsencrypt ECDSA and DNS-01 renewal challenge
+
+**Article Number:** [000021731](https://support.scc.suse.com/s/kb/Enforce-default-HTTPS-Rancher-certificate-with-Letsencrypt-ECDSA-and-DNS-01-renewal-challenge)
+
+## **Environment**
+
+2.9+
+
+## **Situation**
+
+A self-signed default Rancher certificate is currently used and will be migrated to a stronger Let’s Encrypt ECDSA-386 certificate using the DNS-01 renewal challenge.
+
+## **Resolution**
+
+### Before proceeding, make sure you have backups available in case a rollback is needed. Also, ensure you have read and fully understand all the steps before starting.
+
+ 
+
+### **1 - Modify the URL in the Rancher UI**
+
+If the URL changes, modify it under `Global settings -> Settings -> server-url`.
+
+### **2 - Configures cert-manager to issue a Let's Encrypt TLS certificate using DNS-01 challenge**
+
+If your issuer is Cloudflare, copy this in a file, `letsencrypt-cert-manager.yaml` for example, and apply it:
+
+```markup
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tls-rancher-ingress
+  namespace: cattle-system
+spec:
+  secretName: tls-rancher-ingress
+  commonName: my_rancher.example.com
+  dnsNames:
+  - my_rancher.example.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    email: xxx.yyy@zzz.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
+---
+apiVersion: v1
+kind: Secret
+data:
+  api-token: AAAAAAAAAAAAAAAAAAAAAAAA==
+kind: Secret
+metadata:
+  name: cloudflare-api-token-secret
+  namespace: cert-manager
+type: Opaque
+```
+
+```markup
+kubectl apply -f letsencrypt-cert-manager.yaml
+```
+
+ 
+
+> Note that if you are using other issuers, please check the [cert-manager DNS-01 challenge](https://cert-manager.io/docs/configuration/acme/dns01) documentation for the correct syntax.
+
+> To prevent being locked by Letsencrypt during your tests, use the acme [staging environment](https://letsencrypt.org/docs/staging-environment) first.
+
+### **3 - Reconfigure Rancher**
+
+- Export your previous Rancher helm chart configuration:
+
+```markup
+helm get values rancher -n cattle-system -o yaml > values.yaml
+```
+
+ 
+
+- Create a new Helm chart values file with the following settings:
+
+```markup
+> cat ingress_letsencrypt.yaml
+ingress:
+  tls:
+    source: secret
+  extraAnnotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/private-key-algorithm: "ECDSA"
+    cert-manager.io/private-key-size: "384"
+    cert-manager.io/private-key-rotation-policy: "Always"
+privateCA: true
+```
+
+> Since we want to use ECDSA while the default Rancher Ingress uses RSA, we enforce private key regeneration by setting `private-key-rotation-policy` to `Always`. After applying the change and once the new certificate is in place, you can remove the annotation to prevent further private key renewals (See point 8). If you choose to keep RSA as the certificate algorithm, this line is not required.
+
+ 
+
+If you want to stick to your current Rancher version and don't want to update, do not forget to add the `--version` option followed by your version. Ex: `--version=2.10.1`
+
+```markup
+helm upgrade --install rancher rancher-prime/rancher --namespace cattle-system --set hostname=my_rancher.example.com -f values.yaml -f ingress_letsencrypt.yaml --version=2.10.1
+```
+
+### **4 - Check if the new certificate has indeed be issued**
+
+Use the following commands to check the renewal status:
+
+```markup
+kubectl get certificate,certificaterequest,order -n cattle-system
+```
+
+```markup
+kubectl events -n cattle-system
+```
+
+ 
+
+Once the Rancher pod deployments have been rolled out, you should be able to log in to Rancher and verify the HTTPS certificate.
+
+ 
+
+### **5 - Reconfigure Rancher agents to trust the private CA**
+
+As explained in [Updating the Rancher certificate,](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/resources/update-rancher-certificate#4-reconfigure-rancher-agents-to-trust-the-private-ca) 3 methods exist to force the Rancher agent to trust the CA. Method 3 can be used as a fallback if method 1 and 2 are not possible.
+
+ 
+
+- Method 1: [Force a redeploy of the Rancher agent](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/resources/update-rancher-certificate#method-1-force-a-redeploy-of-the-rancher-agents)
+- Method 2: [Manually update the checksum environment variable](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/resources/update-rancher-certificate#method-2-manually-update-the-checksum-environment-variable)
+- Method 3: [Manually redeploy the Rancher agent](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/resources/update-rancher-certificate#method-3-manually-redeploy-the-rancher-agents)
+
+ 
+
+### **6 - Force Update Fleet clusters to reconnect the fleet-agent to Rancher**
+
+As explained in [Updating the Rancher certificate](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/resources/update-rancher-certificate#4-reconfigure-rancher-agents-to-trust-the-private-ca), you have to select `Force Update` for the clusters within the `Continuous Delivery`view of the Rancher UI to allow the fleet-agent in downstream clusters to successfully connect to Rancher.
+
+ 
+
+### **7 - Remove private-key-rotation-policy annotation in ingress**
+
+You can now remove the annotation set in point 4 to prevent the renewal of the private key:
+
+ 
+
+- **On the fly:**
+
+```markup
+kubectl -n cattle-system annotate ingress rancher cert-manager.io/private-key-rotation-policy-
+```
+
+ 
+
+- **Permanently**: Reapply the Rancher Helm chart removing the `private-key-rotation-policy` line in `ingress_letsencrypt.yaml`
+
+```markup
+> cat ingress_letsencrypt.yaml
+ingress:
+  tls:
+    source: secret
+  extraAnnotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/private-key-algorithm: "ECDSA"
+    cert-manager.io/private-key-size: "384"
+privateCA: true
+```
+
+```markup
+helm upgrade --install rancher rancher-prime/rancher --namespace cattle-system --set hostname=my_rancher.example.com -f values.yaml -f ingress_letsencrypt.yaml --version=2.10.1
+```
+
+
+
+---
+
 ## Article: 000021736.md
 
 # How to query Rancher API tokens information via kubectl
@@ -26639,7 +26877,16 @@ metadata:
 
 ## **Situation**
 
-When uploading a backup to a self hosted S3 backend storage you can find in the logs the following errors.
+Backing up your Rancher instance is crucial to protect your cluster configurations, user data, and workloads.  
+In the event of system failure, accidental deletion, or data corruption, a backup ensures that you can quickly restore your environment with minimal downtime.  
+Regular backups help maintain business continuity and reduce the risk of losing critical infrastructure settings.
+
+Rancher Server gives you the possibility of taking that backup in the form of a snapshot file and storing it somewhere safe e.g. S3 bucket, where you can perform restoration in case of an incident.
+
+The snapshot file can be stored either in the cloud, depending your provider choice, or also in your on-premise environment by using a self-hosted solution such as MinIO.
+
+Sometimes, Rancher Server can experience UI slowness or go down for a couple of minutes because of the backup process misbehaving or missing some configuration.  
+This can be observed in the logs by seeing the following symptoms:
 
 ```
 
@@ -26658,8 +26905,8 @@ Or
 failed to initialize S3 client: failed to test for existence of bucket downstream-cluster-etcd-backups: Head "https://s3-host-local-cloud:9XXXX/downstream-cluster-etcd-backups/": net/https: TLS handshake timeout 
 ```
 
-This is likely to happen in an on-premise environment with proxy settings configured.  
-Your S3 cluster probably do not need to be reached through the proxy.
+The log messages can differ from one system/environment to another.  
+This is likely to happen in an on-premise environment with proxy settings misconfigured on the cluster side, which makes the S3 or S3-compatible bucket unreachable.
 
 ## **Cause**
 
