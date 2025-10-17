@@ -1494,6 +1494,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000020064/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    The Rancher v2.x Windows log collector script
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000020067/" class="md-nav__link">
         
   
@@ -1706,7 +1729,7 @@
   
   
   <span class="md-ellipsis">
-    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+    How to confirm a version upgrade of Rancher v2.x is completed successfully
     
   </span>
   
@@ -3707,7 +3730,7 @@
   
   
   <span class="md-ellipsis">
-    How do I edit or upgrade clusters created via RKE Templates?
+    [JP] How do I edit my cluster using RKE Templates?
     
   </span>
   
@@ -3822,7 +3845,7 @@
   
   
   <span class="md-ellipsis">
-    How to test websocket connections to Rancher v2.x
+    [JP] How to test websocket connections to Rancher v2.x
     
   </span>
   
@@ -9705,6 +9728,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000021731/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Enforce default HTTPS Rancher certificate with Letsencrypt ECDSA and DNS-01 renewal challenge
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000021736/" class="md-nav__link">
         
   
@@ -11732,7 +11778,13 @@
 <li>RKE2</li>
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>When uploading a backup to a self hosted S3 backend storage you can find in the logs the following errors.</p>
+<p>Backing up your Rancher instance is crucial to protect your cluster configurations, user data, and workloads.<br />
+In the event of system failure, accidental deletion, or data corruption, a backup ensures that you can quickly restore your environment with minimal downtime.<br />
+Regular backups help maintain business continuity and reduce the risk of losing critical infrastructure settings.</p>
+<p>Rancher Server gives you the possibility of taking that backup in the form of a snapshot file and storing it somewhere safe e.g. S3 bucket, where you can perform restoration in case of an incident.</p>
+<p>The snapshot file can be stored either in the cloud, depending your provider choice, or also in your on-premise environment by using a self-hosted solution such as MinIO.</p>
+<p>Sometimes, Rancher Server can experience UI slowness or go down for a couple of minutes because of the backup process misbehaving or missing some configuration.<br />
+This can be observed in the logs by seeing the following symptoms:</p>
 <div class="highlight"><pre><span></span><code>failed to initialize S3 client: failed to test for existence of bucket downstream-cluster-etcd-backups: Access Denied
 </code></pre></div>
 <p>Or</p>
@@ -11741,8 +11793,8 @@
 <p>Or</p>
 <div class="highlight"><pre><span></span><code>failed to initialize S3 client: failed to test for existence of bucket downstream-cluster-etcd-backups: Head &quot;https://s3-host-local-cloud:9XXXX/downstream-cluster-etcd-backups/&quot;: net/https: TLS handshake timeout 
 </code></pre></div>
-<p>This is likely to happen in an on-premise environment with proxy settings configured.<br />
-Your S3 cluster probably do not need to be reached through the proxy.</p>
+<p>The log messages can differ from one system/environment to another.<br />
+This is likely to happen in an on-premise environment with proxy settings misconfigured on the cluster side, which makes the S3 or S3-compatible bucket unreachable.</p>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The cause for this case is determined to be a missing entry in the no_proxy environment variable, which can result in a "HEAD &lt;S3-ENDPOINT:PORT&gt; Forbidden" request error during S3 backup attempts.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
