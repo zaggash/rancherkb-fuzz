@@ -3791,26 +3791,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# How to confirm a version upgrade of Rancher v2.x is completed successfully
+# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
-- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
+- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
+- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
 
 ## **Situation**
 
-This article details how to confirm that a Rancher version upgrade has successfully completed.
+この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
 
 ## **Resolution**
 
-The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
+Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
 
-- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
-- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
-- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
+- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
+- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
+- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
 
 
 
@@ -8829,34 +8829,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -26866,57 +26860,29 @@ metadata:
 
 ## Article: 000022081.md
 
-# S3 backups failing in a Rancher RKE2 K3s cluster with "failed to test for existence of bucket: HEAD Forbidden" error
+# S3 backups failing in a Rancher-provisioned RKE2 or K3s cluster with "failed to test for existence of bucket: HEAD Forbidden"
 
 **Article Number:** [000022081](https://support.scc.suse.com/s/kb/S3-backups-failing-in-a-Rancher-RKE2-K3s-cluster-with-failed-to-test-for-existence-of-bucket-HEAD-Forbidden-error)
 
 ## **Environment**
 
-- Rancher
-- RKE2
+A Rancher-provisioned RKE2 or K3s cluster, with etcd snapshots configured to an S3 bucket, and a HTTP Proxy configuration
 
 ## **Situation**
 
-Backing up your Rancher instance is crucial to protect your cluster configurations, user data, and workloads.  
-In the event of system failure, accidental deletion, or data corruption, a backup ensures that you can quickly restore your environment with minimal downtime.  
-Regular backups help maintain business continuity and reduce the risk of losing critical infrastructure settings.
+The automated etcd snapshots for a Rancher-provisioned RKE2 or K3s cluster to an S3 bucket are failing. The error message listed next to the Failed snapshots is of the following format:
 
-Rancher Server gives you the possibility of taking that backup in the form of a snapshot file and storing it somewhere safe e.g. S3 bucket, where you can perform restoration in case of an incident.
+`failed to initialize S3 client: failed to test for existence of bucket etcd-backups: Head "https://s3.example.com/etcd-backups/": Forbidden`
 
-The snapshot file can be stored either in the cloud, depending your provider choice, or also in your on-premise environment by using a self-hosted solution such as MinIO.
-
-Sometimes, Rancher Server can experience UI slowness or go down for a couple of minutes because of the backup process misbehaving or missing some configuration.  
-This can be observed in the logs by seeing the following symptoms:
-
-```
-
-failed to initialize S3 client: failed to test for existence of bucket downstream-cluster-etcd-backups: Access Denied
-```
-
-Or
-
-```
-failed to initialize S3 client: failed to test for existence of bucket downstream-cluster-etcd-backups: Head "https://s3-host-local-cloud:9XXXX/downstream-cluster-etcd-backups/": Forbidden
-```
-
-Or
-
-```
-failed to initialize S3 client: failed to test for existence of bucket downstream-cluster-etcd-backups: Head "https://s3-host-local-cloud:9XXXX/downstream-cluster-etcd-backups/": net/https: TLS handshake timeout 
-```
-
-The log messages can differ from one system/environment to another.  
-This is likely to happen in an on-premise environment with proxy settings misconfigured on the cluster side, which makes the S3 or S3-compatible bucket unreachable.
+In addition, in Rancher &lt; v2.11 you may experience some UI slowness as a result of the repeated failing snapshots in the affected cluster(s).
 
 ## **Cause**
 
-The cause for this case is determined to be a missing entry in the no\_proxy environment variable, which can result in a "HEAD &lt;S3-ENDPOINT:PORT&gt; Forbidden" request error during S3 backup attempts.
+The cause for this case is determined to be a missing entry in the affected cluster's NO\_PROXY environment variable, which can result in a "HEAD &lt;S3-ENDPOINT:PORT&gt; Forbidden" error, as a result of S3 requests being incorrectly sent to the HTTP Proxy.
 
 ## **Resolution**
 
-The recommended approach to resolve this is to double check the proxy configuration in the downstream cluster, specifically the **NO\_PROXY** setting, and add an entry to match the full hostname of the S3 endpoint e.g. the domain name.
-
-The IP alone would not suffice to create the backup folder nor to upload the snapshot file.
+The recommended approach to resolve this is to double check the proxy configuration of the downstream RKE2/K3s cluster, specifically the **NO\_PROXY** setting. Ensure this contains an entry that matches the full hostname of the S3 endpoint, e.g. s3.example.com in the example above.
 
 
 
@@ -27363,4 +27329,82 @@ With this objective in mind, and for this test to be self-contained, a webhook r
    ```
 
 Following this method, it is possible to test Alertmanager and PrometheusRule configurations without needing a third party app or configuring an external receiver. This is useful to see if the alerts arrive as expected or if they are not being sent. If you are struggling to correctly apply an AlertmanagerConfig, you can check the rancher-monitoring-operator pod logs, in order to check that the syntax is correct and was accepted; the Alertmanager pod logs; as well as the value of the PrometheusRule expression, using the Prometheus Query UI, to confirm whether the alert should currently trigger.
+
+
+
+---
+
+## Article: 000022099.md
+
+# Azure AD Client Secret Expiry Causes Rancher Login Failure
+
+**Article Number:** [000022099](https://support.scc.suse.com/s/kb/Azure-AD-Client-Secret-Expiry-Causes-Rancher-Login-Failure)
+
+## **Environment**
+
+SUSE Rancher Manager 2.x integrated with Azure AD as Identity Provider (IDP)
+
+## **Situation**
+
+Users are unable to log in to the Rancher portal using their Azure AD accounts. The authentication fails with an error:
+
+```
+An error occurred logging in Server error while authenticating
+```
+
+The initial attempt to delete the azuread-access-token secret from the cattle-global-data namespace did not resolve the login issue. Additionally, the secret was not automatically regenerated, resulting in persistent Rancher warnings about the missing secret.
+
+## **Cause**
+
+The login failure occurred because the Azure AD Application Secret used by Rancher had expired. Rancher requires a valid client secret to communicate with Azure AD.
+
+## **Resolution**
+
+It was observed that the Application Secret (client secret) for the Rancher app registered in Azure AD had expired. This caused Rancher’s authentication with Azure AD to fail.
+
+To resolve the issue:
+
+- Generate a new Application Secret for the Rancher app in Azure AD.
+- In Rancher, update the new secret:
+- Go to Rancher UI → Users &amp; Authentication → Auth Provider → Azure AD → Application Secret
+- Enter the new Application Secret.
+- Save the configuration.
+
+The secret azuread-access-token in the cattle-global-data namespace got recreated automatically and the login started working again.
+
+
+
+---
+
+## Article: 000022103.md
+
+# How to configure environment variables for a Rancher Deployment
+
+**Article Number:** [000022103](https://support.scc.suse.com/s/kb/How-to-configure-environment-variables-for-a-Rancher-Deployment)
+
+## **Environment**
+
+Rancher v2.x
+
+## **Procedure**
+
+Environment variables can be configured on a Rancher Deployment for a variety of purposes. For example, to configure [HTTP Proxy settings](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#http-proxy) (HTTP\_PROXY, HTTPS\_PROXY and NO\_PROXY), to enable collection of [Rancher Performance Metrics](https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/enable-monitoring#enabling-the-rancher-performance-dashboard) (CATTLE\_PROMETHEUS\_METRICS), or to enable debug logs for the Rancher remotedialer (CATTLE\_TUNNEL\_DATA\_DEBUG).
+
+These environment variables can be configured temporarily via kubectl, which may be desirable in a troubleshooting scenario, or persistently via Helm chart values.
+
+### Using kubectl:
+
+A Rancher environment variable can be set quickly using kubectl, per the following example:
+
+`kubectl set env -n cattle-system deployment/rancher CATTLE_PROMETHEUS_METRICS="true"`
+
+When setting a variable with kubectl, it will be overwritten at the next Rancher upgrade with Helm.
+
+### Using Helm:
+
+If you need to set an environment variable persistently, add these to the Rancher Helm chart values via the extraEnv list, as [documented here](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#setting-extra-environment-variables).
+
+You can check the current environment variables in a running Rancher Pod with the following command:
+
+`kubectl exec --namespace cattle-system <RANCHER-POD> -- env`
 

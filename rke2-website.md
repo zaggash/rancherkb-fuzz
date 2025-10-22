@@ -35,7 +35,7 @@ It is also possible to rotate an individual service by passing the `--service` f
 
 Any file found in `/var/lib/rancher/rke2/server/manifests` will automatically be deployed to Kubernetes in a manner similar to `kubectl apply`.
 
-For information about deploying Helm charts using the manifests directory, refer to the section about [Helm.](helm.md)
+For information about deploying Helm charts using the manifests directory, refer to the section about [Helm.](add-ons/helm.md)
 
 ## Configuring containerd
 
@@ -296,148 +296,6 @@ kube-apiserver-extra-env:
 kube-scheduler-extra-env: "TZ=America/Los_Angeles"
 ```
 
-## Deploy NVIDIA operator
-
-The [NVIDIA operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html) allows administrators of Kubernetes clusters to manage GPUs just like CPUs. It includes everything needed for pods to be able to operate GPUs.
-
-### Host OS requirements
-
-To expose the GPU to the pod correctly, the NVIDIA kernel drivers and the `libnvidia-ml` library must be correctly installed in the host OS. The NVIDIA Operator can automatically install drivers and libraries on some operating systems; check the NVIDIA documentation for information on [supported operating system releases](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html#supported-operating-systems-and-kubernetes-platforms). Installation of the NVIDIA components on your host OS is out of the scope of this document; reference the NVIDIA documentation for instructions.
-
-The following three commands should return a correct output if the kernel driver was correctly installed:
-
-1 - `lsmod | grep nvidia`
-
-Returns a list of nvidia kernel modules, for example:
-
-```
-nvidia_uvm           2129920  0
-nvidia_drm            131072  0
-nvidia_modeset       1572864  1 nvidia_drm
-video                  77824  1 nvidia_modeset
-nvidia               9965568  2 nvidia_uvm,nvidia_modeset
-ecc                    45056  1 nvidia
-```
-
-2 - `cat /proc/driver/nvidia/version`
-
-returns the NVRM and GCC version of the driver. For example:
-
-```
-NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  555.42.06  Release Build  (abuild@host)  Thu Jul 11 12:00:00 UTC 2024
-GCC version:  gcc version 7.5.0 (SUSE Linux) 
-```
-
-3 - `find /usr/ -iname libnvidia-ml.so`
-
-returns a path to the `libnvidia-ml.so` library. For example:
-
-```
-/usr/lib64/libnvidia-ml.so
-```
-
-This library is used by Kubernetes components to interact with the kernel driver.
-
-
-### Operator installation ###
-
-Once the OS is ready and RKE2 is running, install the GPU Operator with the following yaml manifest:
-```yaml
-apiVersion: helm.cattle.io/v1
-kind: HelmChart
-metadata:
-  name: gpu-operator
-  namespace: kube-system
-spec:
-  repo: https://helm.ngc.nvidia.com/nvidia
-  chart: gpu-operator
-  targetNamespace: gpu-operator
-  createNamespace: true
-  valuesContent: |-
-    toolkit:
-      env:
-      - name: CONTAINERD_SOCKET
-        value: /run/k3s/containerd/containerd.sock
-```
-:::warning
-The NVIDIA operator restarts containerd with a hangup call which restarts RKE2
-:::
-
-After one minute approximately, you can make the following checks to verify that everything worked as expected:
-
-1 - Assuming the drivers and `libnvidia-ml.so` library were previously installed, check if the operator detects them correctly:
-```
-kubectl get node $NODENAME -o jsonpath='{.metadata.labels}' | grep "nvidia.com/gpu.deploy.driver"
-```
-You should see the value `pre-installed`. If you see `true`, the drivers were not correctly installed. If the [pre-requirements](#host-os-requirements) were correct, it is possible that you forgot to reboot the node after installing all packages.
-
-You can also check other driver labels with:
-```
-kubectl get node $NODENAME -o jsonpath='{.metadata.labels}' | jq | grep "nvidia.com"
-```
-You should see labels specifying driver and GPU (e.g. nvidia.com/gpu.machine or nvidia.com/cuda.driver.major)
-
-2 - Check if the gpu was added (by nvidia-device-plugin-daemonset) as an allocatable resource in the node:
-```
-kubectl get node $NODENAME -o jsonpath='{.status.allocatable}' | jq
-```
-You should see `"nvidia.com/gpu":` followed by the number of gpus in the node
-
-3 - Check that the container runtime binary was installed by the operator (in particular by the `nvidia-container-toolkit-daemonset`):
-```
-ls /usr/local/nvidia/toolkit/nvidia-container-runtime
-```
-
-4 - Verify if containerd config was updated to include the nvidia container runtime:
-```
-grep nvidia /var/lib/rancher/rke2/agent/etc/containerd/config.toml
-```
-
-5 - Run a pod to verify that the GPU resource can successfully be scheduled on a pod and the pod can detect it
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nbody-gpu-benchmark
-  namespace: default
-spec:
-  restartPolicy: OnFailure
-  runtimeClassName: nvidia
-  containers:
-  - name: cuda-container
-    image: nvcr.io/nvidia/k8s/cuda-sample:nbody
-    args: ["nbody", "-gpu", "-benchmark"]
-    resources:
-      limits:
-        nvidia.com/gpu: 1
-    env:
-    - name: NVIDIA_VISIBLE_DEVICES
-      value: all
-    - name: NVIDIA_DRIVER_CAPABILITIES
-      value: compute,utility
-```
-
-:::info Version Gate
-Available as of October 2024 releases: v1.28.15+rke2r1, v1.29.10+rke2r1, v1.30.6+rke2r1, v1.31.2+rke2r1.
-:::
-
-RKE2 will now use `PATH` to find alternative container runtimes, in addition to checking the default paths used by the container runtime packages. In order to use this feature, you must modify the RKE2 service's PATH environment variable to add the directories containing the container runtime binaries.
-
-It's recommended that you modify one of this two environment files:
-
-- /etc/default/rke2-server # or rke2-agent
-- /etc/sysconfig/rke2-server # or rke2-agent
-
-This example will add the `PATH` in `/etc/default/rke2-server`:
-
-```bash
-echo PATH=$PATH >> /etc/default/rke2-server
-```
-
-:::warning
-`PATH` changes should be done with care to avoid placing untrusted binaries in the path of services that run as root.
-:::
-
 
 
 
@@ -645,249 +503,6 @@ helm --kubeconfig /etc/rancher/rke2/rke2.yaml ls --all-namespaces
 ## Accessing the Cluster from Outside with kubectl
 
 Copy `/etc/rancher/rke2/rke2.yaml` on your machine located outside the cluster as `~/.kube/config`. Then replace `127.0.0.1` with the IP or hostname of your RKE2 server. `kubectl` can now manage your RKE2 cluster.
-
-
----
-
-## Article: helm.md
-
----
-title: Helm Integration
----
-
-Helm is the package management tool of choice for Kubernetes. Helm charts provide templating syntax for Kubernetes YAML manifest documents. With Helm we can create configurable deployments instead of just using static files. For more information about creating your own catalog of deployments, check out the docs at [https://helm.sh/docs/intro/quickstart/](https://helm.sh/docs/intro/quickstart/).
-
-RKE2 does not require any special configuration to use with Helm command-line tools. Just be sure you have properly set up your kubeconfig as per the section about [cluster access](./cluster_access.md). RKE2 does include some extra functionality to make deploying both traditional Kubernetes resource manifests and Helm Charts even easier with the [rancher/helm-release CRD.](#using-the-helm-crd)
-
-## Automatically Deploying Manifests and Helm Charts
-
-Any Kubernetes manifests found in `/var/lib/rancher/rke2/server/manifests` will automatically be deployed to RKE2 in a manner similar to `kubectl apply`, both on startup and when the file is changed on disk. Deleting files out of this directory will not delete the corresponding resources from the cluster.
-
-Manifests deployed in this manner are managed as AddOn custom resources, and can be viewed by running `kubectl get addon -A`. By default, you will find AddOns for packaged components such as CoreDNS, Nginx-Ingress, and Metrics Server. AddOns are created automatically by the deploy controller, and are named based on their filename in the manifests directory. 
-
-It is also possible to deploy Helm charts as AddOns. RKE2 includes a [Helm Controller](https://github.com/k3s-io/helm-controller/) that manages Helm charts using a HelmChart Custom Resource Definition (CRD).
-
-#### File Naming Requirements
-
-The `AddOn` name for each file in the manifest directory is derived from the file basename. 
-Ensure that all files within the manifests directory (or within any subdirectories) have names that are unique, and adhere to Kubernetes [object naming restrictions](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/).
-Care should also be taken not to conflict with names in use by the default RKE2 packaged components, even if those components are disabled.
-
-An example of an error that would be reported if the file name contains underscores:
-> `Failed to process config: failed to process /var/lib/rancher/rke2/server/manifests/example_manifest.yaml:
-   Addon.k3s.cattle.io "example_manifest" is invalid: metadata.name: Invalid value: "example_manifest": 
-   a lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character
-   (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')`
-
-## Disabling AddOns
-
-The AddOns for packaged components listed above, in addition to AddOns for any additional manifests placed in the manifests directory, can be disabled with the --disable flag. Disabled AddOns are actively uninstalled from the cluster, and the source files deleted from the manifests directory.
-
-For example, to disable CoreDNS from being installed on a new cluster, or to uninstall it and remove the manifest from an existing cluster, you can start RKE2 with `disable: rke2-coredns` in the config file. Multiple items can be disabled in a nested list.
-
-```yaml
-# /etc/rancher/rke2/config.yaml
-disable:
-  - rke2-coredns
-  - rke2-metrics-server
-```
-
-## Using the Helm CRD
-
-The [HelmChart resource definition](https://github.com/k3s-io/helm-controller#helm-controller) captures most of the options you would normally pass to the `helm` command-line tool. Here's an example of how you might deploy Grafana from the default chart repository, overriding some of the default chart values. Note that the HelmChart resource itself is in the `kube-system` namespace, but the chart's resources will be deployed to the `monitoring` namespace.
-
-```yaml
-apiVersion: helm.cattle.io/v1
-kind: HelmChart
-metadata:
-  name: grafana
-  namespace: kube-system
-spec:
-  chart: stable/grafana
-  targetNamespace: monitoring
-  set:
-    adminPassword: "NotVerySafePassword"
-  valuesContent: |-
-    image:
-      tag: master
-    env:
-      GF_EXPLORE_ENABLED: true
-    adminUser: admin
-    sidecar:
-      datasources:
-        enabled: true
-```
-
-An example of deploying a helm chart from a private repo with authentication:
-
-```yaml
-apiVersion: helm.cattle.io/v1
-kind: HelmChart
-metadata:
-  namespace: kube-system
-  name: example-app
-spec:
-  targetNamespace: example-space
-  createNamespace: true
-  version: v1.2.3
-  chart: example-app
-  repo: https://secure-repo.example.com
-  authSecret:
-    name: example-repo-auth
-  repoCAConfigMap:
-    name: example-repo-ca
-  valuesContent: |-
-    image:
-      tag: v1.2.2
----
-apiVersion: v1
-kind: Secret
-metadata:
-  namespace: kube-system
-  name: example-repo-auth
-type: kubernetes.io/basic-auth
-stringData:
-  username: user
-  password: pass
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  namespace: kube-system
-  name: example-repo-ca
-data:
-  ca.crt: |-
-    -----BEGIN CERTIFICATE-----
-    <YOUR CERTIFICATE>
-    -----END CERTIFICATE-----
-```
-
-#### HelmChart Field Definitions
-
-| Field | Default | Description | Helm Argument / Flag Equivalent |
-|-------|---------|-------------|-------------------------------|
-| metadata.name |   | Helm Chart name | NAME |
-| spec.chart |   | Helm Chart name in repository, or complete HTTPS URL to chart archive (.tgz) | CHART |
-| spec.targetNamespace | default | Helm Chart target namespace | `--namespace` |
-| spec.createNamespace | false | Create target namespace if not present | `--create-namespace` |
-| spec.version |   | Helm Chart version (when installing from repository) | `--version` |
-| spec.repo |   | Helm Chart repository URL | `--repo` |
-| spec.repoCA | | Verify certificates of HTTPS-enabled servers using this CA bundle. Should be a string containing one or more PEM-encoded CA Certificates. | `--ca-file` |
-| spec.repoCAConfigMap | | Reference to a ConfigMap containing CA Certificates to be be trusted by Helm. Can be used along with or instead of `repoCA` | `--ca-file` |
-| spec.helmVersion | v3 | Helm version to use (`v2` or `v3`) |  |
-| spec.bootstrap | False | Set to True if this chart is needed to bootstrap the cluster (Cloud Controller Manager, etc) |  |
-| spec.set |   | Override simple default Chart values. These take precedence over options set via valuesContent. | `--set` / `--set-string` |
-| spec.jobImage |   | Specify the image to use when installing the helm chart. E.g. rancher/klipper-helm:v0.3.0 . | |
-| spec.backOffLimit | 1000 | Specify the number of retries before considering a job failed. | |
-| spec.timeout | 300s | Timeout for Helm operations, as a [duration string](https://pkg.go.dev/time#ParseDuration) (`300s`, `10m`, `1h`, etc) | `--timeout` |
-| spec.failurePolicy | reinstall | Set to `abort` which case the Helm operation is aborted, pending manual intervention by the operator. | |
-| spec.authSecret | | Reference to Secret of type `kubernetes.io/basic-auth` holding Basic auth credentials for the Chart repo. | |
-| spec.authPassCredentials | false | Pass Basic auth credentials to all domains. | `--pass-credentials` |
-| spec.dockerRegistrySecret | | Reference to Secret of type `kubernetes.io/dockerconfigjson` holding Docker auth credentials for the OCI-based registry acting as the Chart repo. | |
-| spec.valuesContent |   | Override complex default Chart values via YAML file content | `--values` |
-| spec.chartContent |   | Base64-encoded chart archive .tgz - overrides spec.chart | CHART |
-
-### Customizing Packaged Components with HelmChartConfig
-
-To allow overriding values for packaged components that are deployed as HelmCharts (such as Canal, CoreDNS, Nginx-Ingress, etc), RKE2 supports customizing deployments via a `HelmChartConfig` resources. The `HelmChartConfig` resource must match the name and namespace of its corresponding HelmChart, and supports providing additional `valuesContent`, which is passed to the `helm` command as an additional value file.
-
-:::note
-HelmChart `spec.set` values override HelmChart and HelmChartConfig `spec.valuesContent` settings.
-:::
-
-For example, to customize the packaged CoreDNS configuration, you can create a file named `/var/lib/rancher/rke2/server/manifests/rke2-coredns-config.yaml` and populate it with the following content:
-
-```yaml
-apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
-metadata:
-  name: rke2-coredns
-  namespace: kube-system
-spec:
-  valuesContent: |-
-    image: coredns/coredns
-    imageTag: v1.7.1
-```
-
-You can find all the packaged Helm charts including their documentation and default values in the [RKE2 charts repository](https://github.com/rancher/rke2-charts/tree/main/charts).
-
-
----
-
-## Article: import-images.md
-
----
-title: Import images
----
-
-Container images are cached locally on each node by the containerd image store. Images can be pulled from the registry as needed by pods, preloaded via image pull, or imported from an image tarball.
-
-## On-demand image pulling
-
-Kubernetes, by default, automatically pulls images when a Pod requires them if the image is not already present on the node. This behavior can be changed by using the [image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) field of the Pod. When using the default `IfNotPresent` policy, containerd will pull the image from either upstream (default) or your [private registry](install/private_registry.md) and store it in its image store. Users do not need to apply any additional configuration for on-demand image pulling to work.
-
-
-## Pre-import images
-:::info Version Gate
-The pre-importing of images while K3s is running feature is available as of January 2025 releases: v1.32.0+rke2r1, v1.31.5+rke2r1, v1.30.9+rke2r1, v1.30.13+rke2r1
-Before that, RKE2 pre-imported the images only when booting.
-:::
-
-Pre-importing images onto the node is essential if you configure Kubernetes' `imagePullPolicy` as `Never`. You might do this for security reasons or to reduce the time it takes for your RKE2 nodes to spin up.
-
-RKE2 includes two mechanisms to pre-import images into the containerd image store:
-
-<Tabs groupId="import-images" queryString>
-<TabItem value="Online image importing" default>
-
-Users can trigger a pull of images into the containerd image store by placing a text file containing the image names, one per line, in the `/var/lib/rancher/k3s/agent/images` directory. The text file can be placed before RKE2 is started, or created/modified while RKE2 is running. RKE2 will sequentially pull the images via the CRI API, optionally using the [registries.yaml](install/private_registry.md) configuration.
-
-For example:
-
-```bash
-mkdir /var/lib/rancher/rke2/agent/images
-cp example.txt /var/lib/rancher/rke2/agent/images
-```
-
-Where `example.txt` contains:
-
-```
-docker.io/library/redis:latest
-docker.io/library/mysql:latest
-```
-
-After a few seconds, the `redis` and the `mysql` images will be available in the containerd image store of the node. 
-
-Use `ctr -a /run/k3s/containerd/containerd.sock -n k8s.io images list` to query the containerd image store.
-
-</TabItem>
-<TabItem value="Offline image importing">
-
-Users can import images directly into the containerd image store by placing image tarballs in the `/var/lib/rancher/rke2/agent/images` directory. The tarball can be placed before RKE2 is started, or created/modified while RKE2 is running. RKE2 will decompress the image tarball if necessary, extract the images, and load them into the containerd image store.
-
-For example:
-
-```bash
-mkdir /var/lib/rancher/rke2/agent/images
-curl https://github.com/rancher/rke2/releases/download/v1.33.1%2Brke2r1/rke2-images.linux-amd64.tar.zst -O  /var/lib/rancher/rke2/agent/images/rke2-images-amd64.tar.zst
-```
-
-After a few seconds, the images included in the image tarball will be available in the containerd image store of the node. 
-
-Use `ctr -a /run/k3s/containerd/containerd.sock -n k8s.io images list` to query the containerd image store.
-
-This is the method used in Airgap. Please follow the [Airgap install documentation](install/airgap.md) for detailed information.
-
-</TabItem>
-</Tabs>
-
-## Set up an image registry
-
-RKE2 supports two alternatives for image registries:
-
-* [Private Registry Configuration](install/private_registry.md) covers use of `registries.yaml` to configure container image registry authentication and mirroring.
-
-* [Embedded Registry Mirror](install/registry_mirror.md) shows how to enable the embedded distributed image registry mirror, for peer-to-peer sharing of images between nodes.
 
 
 ---
@@ -4560,6 +4175,229 @@ The decision will result in some drawbacks:
 
 - The decision will not enable RPM installation by default.
 - The tarball installation will not enable SELINUX by default.
+
+---
+
+## Article: reference/ai_conformance.md
+
+---
+title: CNCF AI Conformance
+---
+
+The [CNCF Kubernetes AI Conformance](https://docs.google.com/document/d/1hXoSdh9FEs13Yde8DivCYjjXyxa7j4J8erjZPEGWuzc/edit?tab=t.0) defines a set of additional capabilities, APIs, and configurations that a Kubernetes cluster MUST offer, on top of standard CNCF Kubernetes Conformance, to reliably and efficiently run AI/ML workloads.
+
+This document demonstrates how some of these requirements can be met. For the rest, please refer to the SUSE AI document (TBD).
+
+## Support Dynamic Resource Allocation (DRA) ##
+
+[DRA](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) is a new API that enables more flexible and fine-grained resource requests beyond simple counts.
+
+It is GA since v1.34. The requirement states that it must be possible to verify that all the resource.k8s.io/v1 DRA API resources are enabled. This can be done by running:
+
+```bash
+kubectl api-resources --api-group=resource.k8s.io
+```
+
+The output should be:
+```yaml
+NAME                     SHORTNAMES   APIVERSION           NAMESPACED   KIND
+deviceclasses                         resource.k8s.io/v1   false        DeviceClass
+resourceclaims                        resource.k8s.io/v1   true         ResourceClaim
+resourceclaimtemplates                resource.k8s.io/v1   true         ResourceClaimTemplate
+resourceslices                        resource.k8s.io/v1   false        ResourceSlice
+```
+
+## Support the Gateway API ##
+
+[Gateway API](https://gateway-api.sigs.k8s.io/) represents the next generation of Kubernetes ingress, load balancing and service mesh APIs.
+
+To enable the Gateway API in RKE2, we must deploy with Traefik and enable its KuberneteGateway provider as explained in the [Ingress Controller docs](../networking/networking_services.md#ingress-controller)
+
+The requirement states that it must be possible to verify that all the gateway.networking.k8s.io/v1 Gateway API resources are enabled. This can be done by running:
+
+```bash
+kubectl api-resources --api-group=gateway.networking.k8s.io/v1
+```
+
+The output should be:
+```yaml
+NAME              SHORTNAMES   APIVERSION                          NAMESPACED   KIND
+gatewayclasses    gc           gateway.networking.k8s.io/v1        false        GatewayClass
+gateways          gtw          gateway.networking.k8s.io/v1        true         Gateway
+grpcroutes                     gateway.networking.k8s.io/v1        true         GRPCRoute
+httproutes                     gateway.networking.k8s.io/v1        true         HTTPRoute
+referencegrants   refgrant     gateway.networking.k8s.io/v1beta1   true         ReferenceGrant
+```
+
+To verify that Traefik is consuming Gateway API resources, you can create a GatewayClass:
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: traefik
+spec:
+  controllerName: traefik.io/gateway-controller
+```
+
+Then, if you verify its status:
+```yaml
+kubectl get gatewayclass traefik -o jsonpath='{.status}'
+```
+It will say:
+```json
+"message":"Handled by Traefik controller","observedGeneration":1,"reason":"Handled","status":"True","type":"Accepted"
+```
+
+## Cluster autoscaler ##
+
+If the platform provides a cluster autoscaler or an equivalent mechanism, it must be able to scale up/down node groups containing specific accelerator types based on pending pods requesting those accelerators. RKE2 is a Kubernetes distro and thus does not provide a cluster autoscaler. 
+
+For reference, it'd be explained how to use the upstream [autoscaler](https://kubernetes.github.io/autoscaler) with Azure as an example.
+
+1 - Create a [vmss](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview) with VMs that are equipped with GPUs.
+2 - Deploy RKE2 with the following options:
+```yaml
+disable-cloud-controller: true # Only in rke2-server
+kubelet-arg: # On both rke2-server and rke2-agent
+- --cloud-provider=external
+```
+
+3 - Install the Azure CCM:
+```bash
+helm install --repo https://raw.githubusercontent.com/kubernetes-sigs/cloud-provider-azure/master/helm/repo cloud-provider-azure --generate-name --set cloudControllerManager.imageRepository=mcr.microsoft.com/oss/kubernetes --set cloudControllerManager.imageName=azure-cloud-controller-manager --set cloudNodeManager.imageRepository=mcr.microsoft.com/oss/kubernetes --set cloudNodeManager.imageName=azure-cloud-node-manager --set cloudControllerManager.configureCloudRoutes=false --set cloudControllerManager.allocateNodeCidrs=false
+```
+
+4 - Create a correct `azure.json` and save it under `/etc/kubernetes/azure.json`. Make sure these two config options are present:
+```json
+  "useManagedIdentityExtension": false,
+  "useInstanceMetadata": true
+```
+If it is correctly deployed, nodes should include a ProviderID. You can check it with:
+```bash
+kubectl get nodes -o yaml | grep ProviderID
+```
+This ID is picked from the Metadata of the instance. This can be checked with:
+```bash
+curl -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2021-02-01"
+```
+
+5 - Install the upstream autoscaler. Firstly, create a correct values.yaml where we specify the vmss created in step 1 and other azure details. Then:
+```bash
+helm repo add autoscaler https://kubernetes.github.io/autoscaler
+helm repo update
+helm install cluster-autoscaler autoscaler/cluster-autoscaler -f values.yaml
+```
+6 - If everything is correctly deployed, the autoscaler will detect if there is a pod requesting a GPU resource. If the cluster is unable to provide it, autoscaler will contact Azure and a new node with a GPU will be automatically created and added to the cluster.
+
+## Horizontal pod autoscaler ##
+
+This includes the ability to scale these Pods based on custom metrics relevant to AI/ML workloads. For that we use the [HorizontalPodAutoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) included by default in Kubernetes.
+
+We can demonstrate this requirement by installing an ollama deployment in RKE2 and then using this manifest:
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ollama-hpa
+spec:
+  scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: ollama
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Object
+    object:
+      describedObject:
+        apiVersion: v1
+        kind: Namespace
+        name: suse-private-ai
+      metric:
+        name: gpu_utilization
+      target:
+        type: AverageValue
+        averageValue: "70"
+```
+
+When increasing the load on ollama, the gpu utilization will reach 70 and that will trigger the deployment of new ollama pods. 
+
+## Secure accelerator access ##
+
+We must ensure that access to accelerators from within containers is properly isolated and mediated by the Kubernetes. In order to achieve this, we must install the NVIDIA GPU Operator as described in the [docs](../add-ons/gpu_operators.md#deploy-nvidia-operator).
+
+Once that is done, please verify that the toolkit config under `/usr/local/nvidia/toolkit/.config/nvidia-container-runtime/config.toml` contains:
+```yaml
+accept-nvidia-visible-devices-as-volume-mounts = true
+accept-nvidia-visible-devices-envvar-when-unprivileged = false
+```
+and the `device-plugin` deamonset includes the envvar:
+```yaml
+DEVICE_LIST_STRATEGY:        volume-mounts
+```
+
+If that is the case, you can verify this requirement by running the following three pods in a cluster with only one GPU:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nbody-gpu-benchmark1
+  namespace: default
+spec:
+  restartPolicy: OnFailure
+  runtimeClassName: nvidia
+  containers:
+  - name: cuda-container
+    image: nvcr.io/nvidia/k8s/cuda-sample:nbody
+    command: ["/bin/bash", "-c"]
+    args: 
+      - "while true; do sleep 5 && cuda-samples/nbody -gpu -benchmark; done"
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nbody-gpu-benchmark2
+  namespace: default
+spec:
+  restartPolicy: OnFailure
+  runtimeClassName: nvidia
+  containers:
+  - name: cuda-container2
+    image: nvcr.io/nvidia/k8s/cuda-sample:nbody
+    command: ["/bin/bash", "-c"]
+    args: 
+      - "while true; do sleep 5 && cuda-samples/nbody -gpu -benchmark; done"
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nbody-gpu-benchmark3
+  namespace: default
+spec:
+  restartPolicy: OnFailure
+  runtimeClassName: nvidia
+  containers:
+  - name: cuda-container3
+    image: nvcr.io/nvidia/k8s/cuda-sample:nbody
+    command: ["/bin/bash", "-c"]
+    args:
+      - "while true; do sleep 5 && cuda-samples/nbody -gpu -benchmark; done"
+```
+
+The first pod will run correctly and in the logs you will see that it is able to consume the GPU.
+
+The second pod will not be scheduled by Kubernetes because the only GPU available in the cluster is already being consumed by the first pod.
+
+The third pod will run but in the logs you will see that it does not find any GPU available. Therefore, the isolation is working.
+
+
 
 ---
 
@@ -29308,7 +29146,7 @@ For any file under `/var/lib/rancher/rke2/server/manifests`, you can create a `.
 
 ## Helm AddOns
 
-For information about managing Helm charts via auto-deploying manifests, refer to the section about [Helm.](../helm.md)
+For information about managing Helm charts via auto-deploying manifests, refer to the section about [Helm.](../add-ons/helm.md)
 
 
 
@@ -29794,7 +29632,7 @@ This option enables the embedded mirror for use on all nodes in the cluster.
 When enabled at a cluster level, all nodes will host a local OCI registry on port 9345,
 and publish a list of available images via a peer to peer network on port 5001.
 Any image available in the containerd image store on any node, can be pulled by other cluster members without access to an external registry.
-Images imported via [air-gap image tar files](airgap.md?airgap-load-images=Manually+Deploy+Images#prepare-the-images-directory-and-airgap-image-tarball) or [pre-imported](../import-images.md#pre-import-images) are pinned in containerd to
+Images imported via [air-gap image tar files](airgap.md?airgap-load-images=Manually+Deploy+Images#prepare-the-images-directory-and-airgap-image-tarball) or [pre-imported](../add-ons/import-images.md#pre-import-images) are pinned in containerd to
 ensure that they remain available and are not pruned by Kubelet garbage collection.
 
 ### Requirements
@@ -29912,7 +29750,7 @@ If image integrity is important, you should use image digests instead of tags, a
 ## Sharing Air-gap or Manually Loaded Images
 
 Images sharing is controlled based on the source registry.
-Images loaded directly into containerd via [air-gap tarballs](./airgap.md?airgap-load-images=Manually+Deploy+Images), [pre-imported](../import-images.md#pre-import-images) or loaded directly into containerd's image store using the `ctr` command line tool,
+Images loaded directly into containerd via [air-gap tarballs](./airgap.md?airgap-load-images=Manually+Deploy+Images), [pre-imported](../add-ons/import-images.md#pre-import-images) or loaded directly into containerd's image store using the `ctr` command line tool,
 will be shared between nodes if they are tagged as being from a registry that is enabled for mirroring.
 
 Note that the upstream registry that the images appear to come from does not actually have to exist or be reachable.
@@ -29924,7 +29762,7 @@ You would then be able to pull those images from all cluster members, as long as
 The embedded registry is read-only, and cannot be pushed to directly using `docker push` or other common tools that interact with OCI registries.
 
 Images can be manually made available via the embedded registry by running `ctr -n k8s.io image pull` to pull an image,
-or by loading image archives created by `docker save` via the `ctr -n k8s.io image import` command or the [pre-import feature](../import-images.md#pre-import-images).
+or by loading image archives created by `docker save` via the `ctr -n k8s.io image import` command or the [pre-import feature](../add-ons/import-images.md#pre-import-images).
 Note that the `k8s.io` namespace must be specified when managing images via `ctr` in order for them to be visible to the kubelet.
 
 
@@ -30367,7 +30205,7 @@ title: Network Options
 
 Kubernetes requires installation of one or more CNI Plugins to provide Pod networking. RKE2 bundles four primary CNI Plugins: Canal, Cilium, Calico, and Flannel. Only Calico and Flannel support Microsoft Windows. RKE2 also includes Multus as a secondary CNI Plugin, which must be enabled alongside a primary CNI Plugin. For more information, see the [Multus and SR-IOV](multus_sriov.md) documentation.
 
-Canal is the default CNI Plugin, but all bundled plugins are supported.  Bundled CNI Plugins are installed via Helm chart, and can be customized by deploying a HelmChartConfig with additional chart values. For more information on using HelmChartConfig resources, see the [Helm Integration](../helm.md) documentation, and the CNI-specific examples provided below.
+Canal is the default CNI Plugin, but all bundled plugins are supported.  Bundled CNI Plugins are installed via Helm chart, and can be customized by deploying a HelmChartConfig with additional chart values. For more information on using HelmChartConfig resources, see the [Helm Integration](../add-ons/helm.md) documentation, and the CNI-specific examples provided below.
 
 ## Select a CNI Plugin
 
@@ -30378,7 +30216,7 @@ Use the `cni` [configuration file key](../install/configuration.md) to select th
 cni: canal
 ```
 
-Bundled CNI Plugins are provided as AddOns that deploy a HelmChart resource, as described in the [Helm Integration](../helm.md) documentation. CNI Plugin charts are named `rke2-<CNI-PLUGIN-NAME>` and can be found in the `kube-system` namespace.
+Bundled CNI Plugins are provided as AddOns that deploy a HelmChart resource, as described in the [Helm Integration](../add-ons/helm.md) documentation. CNI Plugin charts are named `rke2-<CNI-PLUGIN-NAME>` and can be found in the `kube-system` namespace.
 
 To customize the Helm chart values for a bundled CNI Plugin chart, you must create a HelmChartConfig resource that matches the name and namespace of its corresponding HelmChart. See the tabs below for examples of customizing the chart values for each of the bundled CNI Plugins.
 
@@ -30710,7 +30548,7 @@ host-local IPAM plugin allocates ip addresses out of a set of address ranges. It
 
 Multus provides an optional daemonset to deploy the DHCP daemon required to run the [DHCP IPAM plugin](https://www.cni.dev/plugins/current/ipam/dhcp/).
 
-You can do this by using the following [HelmChartConfig](../helm.md#customizing-packaged-components-with-helmchartconfig):
+You can do this by using the following [HelmChartConfig](../add-ons/helm.md#customizing-packaged-components-with-helmchartconfig):
 ```yaml
 # /var/lib/rancher/rke2/server/manifests/rke2-multus-config.yaml
 ---
@@ -30734,7 +30572,7 @@ NOTE: You should write this file before starting rke2.
 
 [Whereabouts](https://github.com/k8snetworkplumbingwg/whereabouts) is an IP Address Management (IPAM) CNI Plugin that assigns IP addresses cluster-wide.
 RKE2 includes the option to use Whereabouts with Multus to manage the IP addresses of the additional interfaces created through Multus.
-In order to do this, you need to use [HelmChartConfig](../helm.md#customizing-packaged-components-with-helmchartconfig) to configure the Multus CNI to use Whereabouts.
+In order to do this, you need to use [HelmChartConfig](../add-ons/helm.md#customizing-packaged-components-with-helmchartconfig) to configure the Multus CNI to use Whereabouts.
 
 You can do this by using the following HelmChartConfig:
 
@@ -30850,7 +30688,7 @@ CoreDNS is deployed by default when starting the server. To disable, run each se
 
 If you don't install CoreDNS, you will need to install a cluster DNS provider yourself.
 
-CoreDNS is deployed with the [autoscaler](https://github.com/kubernetes-incubator/cluster-proportional-autoscaler) by default. To disable it or change its config, use the [HelmChartConfig](../helm.md#customizing-packaged-components-with-helmchartconfig) resource.
+CoreDNS is deployed with the [autoscaler](https://github.com/kubernetes-incubator/cluster-proportional-autoscaler) by default. To disable it or change its config, use the [HelmChartConfig](../add-ons/helm.md#customizing-packaged-components-with-helmchartconfig) resource.
 
 ### NodeLocal DNSCache
 
@@ -30935,7 +30773,7 @@ This is done in 2 steps:
 
 `ingress-nginx` is deployed by default when starting the server. Ports 80 and 443 will be bound by the ingress controller in its default configuration, making these unusable for HostPort or NodePort services in the cluster.
 
-Configuration options can be specified by creating a [HelmChartConfig manifest](../helm.md#customizing-packaged-components-with-helmchartconfig) to customize the `rke2-ingress-nginx` HelmChart values. For example, a HelmChartConfig at `/var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml` with the following contents sets `use-forwarded-headers` to `"true"` in the ConfigMap storing the NGINX config:
+Configuration options can be specified by creating a [HelmChartConfig manifest](../add-ons/helm.md#customizing-packaged-components-with-helmchartconfig) to customize the `rke2-ingress-nginx` HelmChart values. For example, a HelmChartConfig at `/var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml` with the following contents sets `use-forwarded-headers` to `"true"` in the ConfigMap storing the NGINX config:
 ```yaml
 # /var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml
 ---
@@ -30963,7 +30801,7 @@ Traefik support is available as of August 2024 releases: v1.28.12+rke2r1, v1.29.
 
 To use traefik, start each server with the `ingress-controller: traefik` option in your configuration file.
 
-Configuration options can be specified by creating a [HelmChartConfig manifest](../helm.md#customizing-packaged-components-with-helmchartconfig) to customize the `rke2-traefik` HelmChart values. For example, a HelmChartConfig at `/var/lib/rancher/rke2/server/manifests/rke2-traefik-config.yaml` with the following contents enables the kubernetes gateway api:
+Configuration options can be specified by creating a [HelmChartConfig manifest](../add-ons/helm.md#customizing-packaged-components-with-helmchartconfig) to customize the `rke2-traefik` HelmChart values. For example, a HelmChartConfig at `/var/lib/rancher/rke2/server/manifests/rke2-traefik-config.yaml` with the following contents enables the kubernetes gateway api:
 
 ```yaml
 # /var/lib/rancher/rke2/server/manifests/rke2-traefik-config.yaml
@@ -31060,6 +30898,410 @@ Start-Service RemoteAccess
 ```
 
 After that, you can start the RKE2 service.
+
+
+---
+
+## Article: add-ons/gpu_operators.md
+
+---
+title: GPU Operators
+---
+
+## Deploy NVIDIA operator
+
+The [NVIDIA operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html) allows administrators of Kubernetes clusters to manage GPUs just like CPUs. It includes everything needed for pods to be able to operate GPUs.
+
+### Host OS requirements
+
+To expose the GPU to the pod correctly, the NVIDIA kernel drivers and the `libnvidia-ml` library must be correctly installed in the host OS. The NVIDIA Operator can automatically install drivers and libraries on some operating systems; check the NVIDIA documentation for information on [supported operating system releases](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html#supported-operating-systems-and-kubernetes-platforms). Installation of the NVIDIA components on your host OS is out of the scope of this document; reference the NVIDIA documentation for instructions.
+
+The following three commands should return a correct output if the kernel driver was correctly installed:
+
+1.  `lsmod | grep nvidia`
+
+    Returns a list of nvidia kernel modules, for example:
+
+    ```
+    nvidia_uvm           2129920  0
+    nvidia_drm            131072  0
+    nvidia_modeset       1572864  1 nvidia_drm
+    video                  77824  1 nvidia_modeset
+    nvidia               9965568  2 nvidia_uvm,nvidia_modeset
+    ecc                    45056  1 nvidia
+    ```
+
+2.  `cat /proc/driver/nvidia/version`
+
+    returns the NVRM and GCC version of the driver. For example:
+
+    ```
+    NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  555.42.06  Release Build  (abuild@host)  Thu Jul 11 12:00:00 UTC 2024
+    GCC version:  gcc version 7.5.0 (SUSE Linux) 
+    ```
+
+3.  `find /usr/ -iname libnvidia-ml.so`
+
+    returns a path to the `libnvidia-ml.so` library. For example:
+
+    ```
+    /usr/lib64/libnvidia-ml.so
+    ```
+
+    This library is used by Kubernetes components to interact with the kernel driver.
+
+
+### Operator installation ###
+
+Once the OS is ready and RKE2 is running, install the GPU Operator with the following yaml manifest:
+```yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: gpu-operator
+  namespace: kube-system
+spec:
+  repo: https://helm.ngc.nvidia.com/nvidia
+  chart: gpu-operator
+  version: v25.3.4
+  targetNamespace: gpu-operator
+  createNamespace: true
+  valuesContent: |-
+    toolkit:
+      env:
+      - name: CONTAINERD_SOCKET
+        value: /run/k3s/containerd/containerd.sock
+      - name: ACCEPT_NVIDIA_VISIBLE_DEVICES_ENVVAR_WHEN_UNPRIVILEGED
+        value: "false"
+      - name: ACCEPT_NVIDIA_VISIBLE_DEVICES_AS_VOLUME_MOUNTS
+        value: "true"
+    devicePlugin:
+      env:
+      - name: DEVICE_LIST_STRATEGY
+        value: volume-mounts
+```
+:::warning
+The NVIDIA operator restarts containerd with a hangup call which restarts RKE2
+:::
+
+:::info
+The envvars `ACCEPT_NVIDIA_VISIBLE_DEVICES_ENVVAR_WHEN_UNPRIVILEGED`, `ACCEPT_NVIDIA_VISIBLE_DEVICES_AS_VOLUME_MOUNTS` and `DEVICE_LIST_STRATEGY` are required to properly isolate GPU resources as explained in this nvidia [doc](https://docs.google.com/document/d/1zy0key-EL6JH50MZgwg96RPYxxXXnVUdxLZwGiyqLd8/edit?tab=t.0)
+:::
+
+After one minute approximately, you can make the following checks to verify that everything worked as expected:
+
+1. Assuming the drivers and `libnvidia-ml.so` library were previously installed, check if the operator detects them correctly:
+    ```
+    kubectl get node $NODENAME -o jsonpath='{.metadata.labels}' | grep "nvidia.com/gpu.deploy.driver"
+    ```
+    You should see the value `pre-installed`. If you see `true`, the drivers were not correctly installed. If the [pre-requirements](#host-os-requirements) were correct, it is possible that you forgot to reboot the node after installing all packages.
+
+    You can also check other driver labels with:
+    ```
+    kubectl get node $NODENAME -o jsonpath='{.metadata.labels}' |  grep "nvidia.com"
+    ```
+    You should see labels specifying driver and GPU (e.g. nvidia.com/gpu.machine or nvidia.com/cuda.driver.major)
+
+2. Check if the gpu was added (by nvidia-device-plugin-daemonset) as an allocatable resource in the node:
+    ```
+    kubectl get node $NODENAME -o jsonpath='{.status.allocatable}'
+    ```
+    You should see `"nvidia.com/gpu":` followed by the number of gpus in the node
+
+3. Check that the container runtime binary was installed by the operator (in particular by the `nvidia-container-toolkit-daemonset`):
+    ```
+    ls /usr/local/nvidia/toolkit/nvidia-container-runtime
+    ```
+
+4. Verify if containerd config was updated to include the nvidia container runtime:
+    ```
+    grep nvidia /var/lib/rancher/rke2/agent/etc/containerd/config.toml
+    ```
+
+5. Run a pod to verify that the GPU resource can successfully be scheduled on a pod and the pod can detect it
+    ```yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: nbody-gpu-benchmark
+      namespace: default
+    spec:
+      restartPolicy: OnFailure
+      runtimeClassName: nvidia
+      containers:
+      - name: cuda-container
+        image: nvcr.io/nvidia/k8s/cuda-sample:nbody
+        args: ["nbody", "-gpu", "-benchmark"]
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+    ```
+
+:::info Version Gate
+Available as of October 2024 releases: v1.28.15+rke2r1, v1.29.10+rke2r1, v1.30.6+rke2r1, v1.31.2+rke2r1.
+:::
+
+RKE2 will now use `PATH` to find alternative container runtimes, in addition to checking the default paths used by the container runtime packages. In order to use this feature, you must modify the RKE2 service's PATH environment variable to add the directories containing the container runtime binaries.
+
+It's recommended that you modify one of this two environment files:
+
+- `/etc/default/rke2-server` # or rke2-agent
+- `/etc/sysconfig/rke2-server` # or rke2-agent
+
+This example will add the `PATH` in `/etc/default/rke2-server`:
+
+```bash
+echo PATH=$PATH >> /etc/default/rke2-server
+```
+
+:::warning
+`PATH` changes should be done with care to avoid placing untrusted binaries in the path of services that run as root.
+:::
+
+
+
+
+---
+
+## Article: add-ons/helm.md
+
+---
+title: Helm
+---
+
+Helm is the package management tool of choice for Kubernetes. Helm charts provide templating syntax for Kubernetes YAML manifest documents. With Helm we can create configurable deployments instead of just using static files. For more information about creating your own catalog of deployments, check out the docs at [https://helm.sh/docs/intro/quickstart/](https://helm.sh/docs/intro/quickstart/).
+
+RKE2 does not require any special configuration to use with Helm command-line tools. Just be sure you have properly set up your kubeconfig as per the section about [cluster access](../cluster_access.md). RKE2 does include some extra functionality to make deploying both traditional Kubernetes resource manifests and Helm Charts even easier with the [rancher/helm-release CRD.](#using-the-helm-crd)
+
+## Automatically Deploying Manifests and Helm Charts
+
+Any Kubernetes manifests found in `/var/lib/rancher/rke2/server/manifests` will automatically be deployed to RKE2 in a manner similar to `kubectl apply`, both on startup and when the file is changed on disk. Deleting files out of this directory will not delete the corresponding resources from the cluster.
+
+Manifests deployed in this manner are managed as AddOn custom resources, and can be viewed by running `kubectl get addon -A`. By default, you will find AddOns for packaged components such as CoreDNS, Nginx-Ingress, and Metrics Server. AddOns are created automatically by the deploy controller, and are named based on their filename in the manifests directory. 
+
+It is also possible to deploy Helm charts as AddOns. RKE2 includes a [Helm Controller](https://github.com/k3s-io/helm-controller/) that manages Helm charts using a HelmChart Custom Resource Definition (CRD).
+
+#### File Naming Requirements
+
+The `AddOn` name for each file in the manifest directory is derived from the file basename. 
+Ensure that all files within the manifests directory (or within any subdirectories) have names that are unique, and adhere to Kubernetes [object naming restrictions](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/).
+Care should also be taken not to conflict with names in use by the default RKE2 packaged components, even if those components are disabled.
+
+An example of an error that would be reported if the file name contains underscores:
+> `Failed to process config: failed to process /var/lib/rancher/rke2/server/manifests/example_manifest.yaml:
+   Addon.k3s.cattle.io "example_manifest" is invalid: metadata.name: Invalid value: "example_manifest": 
+   a lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character
+   (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')`
+
+## Disabling AddOns
+
+The AddOns for packaged components listed above, in addition to AddOns for any additional manifests placed in the manifests directory, can be disabled with the --disable flag. Disabled AddOns are actively uninstalled from the cluster, and the source files deleted from the manifests directory.
+
+For example, to disable CoreDNS from being installed on a new cluster, or to uninstall it and remove the manifest from an existing cluster, you can start RKE2 with `disable: rke2-coredns` in the config file. Multiple items can be disabled in a nested list.
+
+```yaml
+# /etc/rancher/rke2/config.yaml
+disable:
+  - rke2-coredns
+  - rke2-metrics-server
+```
+
+## Using the Helm CRD
+
+The [HelmChart resource definition](https://github.com/k3s-io/helm-controller#helm-controller) captures most of the options you would normally pass to the `helm` command-line tool. Here's an example of how you might deploy Grafana from the default chart repository, overriding some of the default chart values. Note that the HelmChart resource itself is in the `kube-system` namespace, but the chart's resources will be deployed to the `monitoring` namespace.
+
+```yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: grafana
+  namespace: kube-system
+spec:
+  chart: stable/grafana
+  targetNamespace: monitoring
+  set:
+    adminPassword: "NotVerySafePassword"
+  valuesContent: |-
+    image:
+      tag: master
+    env:
+      GF_EXPLORE_ENABLED: true
+    adminUser: admin
+    sidecar:
+      datasources:
+        enabled: true
+```
+
+An example of deploying a helm chart from a private repo with authentication:
+
+```yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  namespace: kube-system
+  name: example-app
+spec:
+  targetNamespace: example-space
+  createNamespace: true
+  version: v1.2.3
+  chart: example-app
+  repo: https://secure-repo.example.com
+  authSecret:
+    name: example-repo-auth
+  repoCAConfigMap:
+    name: example-repo-ca
+  valuesContent: |-
+    image:
+      tag: v1.2.2
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: kube-system
+  name: example-repo-auth
+type: kubernetes.io/basic-auth
+stringData:
+  username: user
+  password: pass
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: kube-system
+  name: example-repo-ca
+data:
+  ca.crt: |-
+    -----BEGIN CERTIFICATE-----
+    <YOUR CERTIFICATE>
+    -----END CERTIFICATE-----
+```
+
+#### HelmChart Field Definitions
+
+| Field | Default | Description | Helm Argument / Flag Equivalent |
+|-------|---------|-------------|-------------------------------|
+| metadata.name |   | Helm Chart name | NAME |
+| spec.chart |   | Helm Chart name in repository, or complete HTTPS URL to chart archive (.tgz) | CHART |
+| spec.targetNamespace | default | Helm Chart target namespace | `--namespace` |
+| spec.createNamespace | false | Create target namespace if not present | `--create-namespace` |
+| spec.version |   | Helm Chart version (when installing from repository) | `--version` |
+| spec.repo |   | Helm Chart repository URL | `--repo` |
+| spec.repoCA | | Verify certificates of HTTPS-enabled servers using this CA bundle. Should be a string containing one or more PEM-encoded CA Certificates. | `--ca-file` |
+| spec.repoCAConfigMap | | Reference to a ConfigMap containing CA Certificates to be be trusted by Helm. Can be used along with or instead of `repoCA` | `--ca-file` |
+| spec.helmVersion | v3 | Helm version to use (`v2` or `v3`) |  |
+| spec.bootstrap | False | Set to True if this chart is needed to bootstrap the cluster (Cloud Controller Manager, etc) |  |
+| spec.set |   | Override simple default Chart values. These take precedence over options set via valuesContent. | `--set` / `--set-string` |
+| spec.jobImage |   | Specify the image to use when installing the helm chart. E.g. rancher/klipper-helm:v0.3.0 . | |
+| spec.backOffLimit | 1000 | Specify the number of retries before considering a job failed. | |
+| spec.timeout | 300s | Timeout for Helm operations, as a [duration string](https://pkg.go.dev/time#ParseDuration) (`300s`, `10m`, `1h`, etc) | `--timeout` |
+| spec.failurePolicy | reinstall | Set to `abort` which case the Helm operation is aborted, pending manual intervention by the operator. | |
+| spec.authSecret | | Reference to Secret of type `kubernetes.io/basic-auth` holding Basic auth credentials for the Chart repo. | |
+| spec.authPassCredentials | false | Pass Basic auth credentials to all domains. | `--pass-credentials` |
+| spec.dockerRegistrySecret | | Reference to Secret of type `kubernetes.io/dockerconfigjson` holding Docker auth credentials for the OCI-based registry acting as the Chart repo. | |
+| spec.valuesContent |   | Override complex default Chart values via YAML file content | `--values` |
+| spec.chartContent |   | Base64-encoded chart archive .tgz - overrides spec.chart | CHART |
+
+### Customizing Packaged Components with HelmChartConfig
+
+To allow overriding values for packaged components that are deployed as HelmCharts (such as Canal, CoreDNS, Nginx-Ingress, etc), RKE2 supports customizing deployments via a `HelmChartConfig` resources. The `HelmChartConfig` resource must match the name and namespace of its corresponding HelmChart, and supports providing additional `valuesContent`, which is passed to the `helm` command as an additional value file.
+
+:::note
+HelmChart `spec.set` values override HelmChart and HelmChartConfig `spec.valuesContent` settings.
+:::
+
+For example, to customize the packaged CoreDNS configuration, you can create a file named `/var/lib/rancher/rke2/server/manifests/rke2-coredns-config.yaml` and populate it with the following content:
+
+```yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    image: coredns/coredns
+    imageTag: v1.7.1
+```
+
+You can find all the packaged Helm charts including their documentation and default values in the [RKE2 charts repository](https://github.com/rancher/rke2-charts/tree/main/charts).
+
+
+---
+
+## Article: add-ons/import-images.md
+
+---
+title: Import images
+---
+
+Container images are cached locally on each node by the containerd image store. Images can be pulled from the registry as needed by pods, preloaded via image pull, or imported from an image tarball.
+
+## On-demand image pulling
+
+Kubernetes, by default, automatically pulls images when a Pod requires them if the image is not already present on the node. This behavior can be changed by using the [image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) field of the Pod. When using the default `IfNotPresent` policy, containerd will pull the image from either upstream (default) or your [private registry](../install/private_registry.md) and store it in its image store. Users do not need to apply any additional configuration for on-demand image pulling to work.
+
+
+## Pre-import images
+:::info Version Gate
+The pre-importing of images while K3s is running feature is available as of January 2025 releases: v1.32.0+rke2r1, v1.31.5+rke2r1, v1.30.9+rke2r1, v1.30.13+rke2r1
+Before that, RKE2 pre-imported the images only when booting.
+:::
+
+Pre-importing images onto the node is essential if you configure Kubernetes' `imagePullPolicy` as `Never`. You might do this for security reasons or to reduce the time it takes for your RKE2 nodes to spin up.
+
+RKE2 includes two mechanisms to pre-import images into the containerd image store:
+
+<Tabs groupId="import-images" queryString>
+<TabItem value="Online image importing" default>
+
+Users can trigger a pull of images into the containerd image store by placing a text file containing the image names, one per line, in the `/var/lib/rancher/k3s/agent/images` directory. The text file can be placed before RKE2 is started, or created/modified while RKE2 is running. RKE2 will sequentially pull the images via the CRI API, optionally using the [registries.yaml](../install/private_registry.md) configuration.
+
+For example:
+
+```bash
+mkdir /var/lib/rancher/rke2/agent/images
+cp example.txt /var/lib/rancher/rke2/agent/images
+```
+
+Where `example.txt` contains:
+
+```
+docker.io/library/redis:latest
+docker.io/library/mysql:latest
+```
+
+After a few seconds, the `redis` and the `mysql` images will be available in the containerd image store of the node. 
+
+Use `ctr -a /run/k3s/containerd/containerd.sock -n k8s.io images list` to query the containerd image store.
+
+</TabItem>
+<TabItem value="Offline image importing">
+
+Users can import images directly into the containerd image store by placing image tarballs in the `/var/lib/rancher/rke2/agent/images` directory. The tarball can be placed before RKE2 is started, or created/modified while RKE2 is running. RKE2 will decompress the image tarball if necessary, extract the images, and load them into the containerd image store.
+
+For example:
+
+```bash
+mkdir /var/lib/rancher/rke2/agent/images
+curl https://github.com/rancher/rke2/releases/download/v1.33.1%2Brke2r1/rke2-images.linux-amd64.tar.zst -O  /var/lib/rancher/rke2/agent/images/rke2-images-amd64.tar.zst
+```
+
+After a few seconds, the images included in the image tarball will be available in the containerd image store of the node. 
+
+Use `ctr -a /run/k3s/containerd/containerd.sock -n k8s.io images list` to query the containerd image store.
+
+This is the method used in Airgap. Please follow the [Airgap install documentation](../install/airgap.md) for detailed information.
+
+</TabItem>
+</Tabs>
+
+## Set up an image registry
+
+RKE2 supports two alternatives for image registries:
+
+* [Private Registry Configuration](../install/private_registry.md) covers use of `registries.yaml` to configure container image registry authentication and mirroring.
+
+* [Embedded Registry Mirror](../install/registry_mirror.md) shows how to enable the embedded distributed image registry mirror, for peer-to-peer sharing of images between nodes.
 
 
 ---
