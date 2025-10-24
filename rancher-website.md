@@ -1880,6 +1880,7 @@ When you run Rancher on a Kubernetes cluster that enforces a restrictive securit
 - `longhorn-system`
 - `rancher-alerting-drivers`
 - `security-scan`
+- `sr-operator-system`
 - `tigera-operator`
 
 Rancher, some Rancher owned charts, and RKE2 and K3s distributions all use these namespaces. A subset of the listed namespaces are already exempt in the built-in Rancher `rancher-restricted` policy, for use in downstream clusters. For a complete template which has all the exemptions you need to run Rancher, please refer to this [sample Admission Configuration](../../../reference-guides/rancher-security/psa-restricted-exemptions.md).
@@ -2681,12 +2682,12 @@ Setting up Microsoft AD FS with Rancher Server requires configuring AD FS on you
 - [1. Configuring Microsoft AD FS for Rancher](configure-ms-adfs-for-rancher.md)
 - [2. Configuring Rancher for Microsoft AD FS](configure-rancher-for-ms-adfs.md)
 
-:::note SAML Provider Caveats:
+:::note SAML Provider Caveats
 
-- SAML Protocol does not support search or lookup for users or groups. Therefore, there is no validation on users or groups when adding them to Rancher.
+- Users and groups aren't validated when you assign permissions to them in Rancher.
 - When adding users, the exact user IDs (i.e. `UID Field`) must be entered correctly. As you type the user ID, there will be no search for other  user IDs that may match.
 - When adding groups, you must select the group from the drop-down that is next to the text box. Rancher assumes that any input from the text box is a user.
-- The group drop-down shows only the groups that you are a member of. You will not be able to add groups that you are not a member of.
+- The group drop-down shows only the groups that you are a member of. However, if you have Administrator permissions or restricted Administrator permissions, you can join a group that you are not a member of.
 
 :::
 
@@ -3106,12 +3107,12 @@ To set the Rancher access level for users in the authorization service, follow t
 
 **Result:** The Rancher access configuration settings are applied.
 
-:::note SAML Provider Caveats:
+:::note SAML Provider Caveats
 
-- SAML Protocol does not support search or lookup for users or groups. Therefore, there is no validation on users or groups when adding them to Rancher.
+- Users and groups aren't validated when you assign permissions to them in Rancher.
 - When adding users, the exact user IDs (i.e. `UID Field`) must be entered correctly. As you type the user ID, there will be no search for other  user IDs that may match.
 - When adding groups, you must select the group from the drop-down that is next to the text box. Rancher assumes that any input from the text box is a user.
-- The group drop-down shows only the groups that you are a member of. You will not be able to add groups that you are not a member of.
+- The group drop-down shows only the groups that you are a member of. However, if you have Administrator permissions or Restricted Administrator permissions, you can join a group that you are not a member of.
 
 :::
 
@@ -4349,6 +4350,15 @@ If you have an existing configuration using the SAML protocol and want to switch
 
 **Result:** Rancher is configured to work with Keycloak using the OIDC protocol. Your users can now sign in to Rancher using their Keycloak logins.
 
+:::note SAML Provider Caveats
+
+- Users and groups aren't validated when you assign permissions to them in Rancher.
+- When adding users, the exact user IDs (i.e. `UID Field`) must be entered correctly. As you type the user ID, there will be no search for other  user IDs that may match.
+- When adding groups, you must select the group from the drop-down that is next to the text box. Rancher assumes that any input from the text box is a user.
+- The group drop-down shows only the groups that you are a member of. However, if you have Administrator permissions or Restricted Administrator permissions, you can join a group that you are not a member of.
+
+:::
+
 ## Configuration Reference
 
 | Field                     | Description                                                                                                                                              |
@@ -4693,14 +4703,14 @@ You can integrate Okta with Rancher, so that authenticated users can access Ranc
 
 **Result:** Rancher is configured to work with Okta. Your users can now sign into Rancher using their Okta logins.
 
-:::note SAML Provider Caveats:
+:::note SAML Provider Caveats
 
 If you configure Okta without OpenLDAP, you won't be able to search for or directly lookup users or groups. This brings several caveats:
 
 - Users and groups aren't validated when you assign permissions to them in Rancher.
 - When adding users, the exact user IDs (i.e. `UID Field`) must be entered correctly. As you type the user ID, there will be no search for other  user IDs that may match.
 - When adding groups, you must select the group from the drop-down that is next to the text box. Rancher assumes that any input from the text box is a user.
-- The group drop-down shows only the groups that you are a member of. You will not be able to add groups that you are not a member of.
+- The group drop-down shows only the groups that you are a member of. However, if you have Administrator permissions or restricted Administrator permissions, you can join a group that you are not a member of.
 
 :::
 
@@ -4806,12 +4816,12 @@ Note that these URLs will not return valid data until the authentication configu
 
 **Result:** Rancher is configured to work with PingIdentity. Your users can now sign into Rancher using their PingIdentity logins.
 
-:::note SAML Provider Caveats:
+:::note SAML Provider Caveats
 
-- SAML Protocol does not support search or lookup for users or groups. Therefore, there is no validation on users or groups when adding them to Rancher.
+- Users and groups aren't validated when you assign permissions to them in Rancher.
 - When adding users, the exact user IDs (i.e. `UID Field`) must be entered correctly. As you type the user ID, there will be no search for other  user IDs that may match.
 - When adding groups, you must select the group from the drop-down that is next to the text box. Rancher assumes that any input from the text box is a user.
-- The group drop-down shows only the groups that you are a member of. You will not be able to add groups that you are not a member of.
+- The group drop-down shows only the groups that you are a member of. However, if you have Administrator permissions or restricted Administrator permissions, you can join a group that you are not a member of.
 
 :::
 
@@ -4867,12 +4877,12 @@ When adding a user or group to a resource, you can search for users or groups by
 
 All users, whether they are local users or from an authentication provider, can be viewed and managed. In the upper left corner, click **☰ > Users & Authentication**. In the left navigation bar, click **Users**.
 
-:::note SAML Provider Caveats:
+:::note SAML Provider Caveats
 
-- SAML Protocol does not support search or lookup for users or groups. Therefore, there is no validation on users or groups when adding them to Rancher.
+- Users and groups aren't validated when you assign permissions to them in Rancher.
 - When adding users, the exact user IDs (i.e. `UID Field`) must be entered correctly. As you type the user ID, there will be no search for other  user IDs that may match.
 - When adding groups, you must select the group from the drop-down that is next to the text box. Rancher assumes that any input from the text box is a user.
-- The group drop-down shows only the groups that you are a member of. You will not be able to add groups that you are not a member of.
+- The group drop-down shows only the groups that you are a member of. However, if you have Administrator permissions or restricted Administrator permissions, you can join a group that you are not a member of.
 
 :::
 
@@ -5991,16 +6001,18 @@ If your organization uses Shibboleth for user authentication, you can configure 
 
 **Result:** Rancher is configured to work with Shibboleth. Your users can now sign into Rancher using their Shibboleth logins.
 
-### SAML Provider Caveats
+:::note SAML Provider Caveats
 
 If you configure Shibboleth without OpenLDAP, the following caveats apply due to the fact that SAML Protocol does not support search or lookup for users or groups.
 
 - There is no validation on users or groups when assigning permissions to them in Rancher.
 - When adding users, the exact user IDs (i.e. UID Field) must be entered correctly. As you type the user ID, there will be no search for other user IDs that may match.
 - When adding groups, you must select the group from the drop-down that is next to the text box. Rancher assumes that any input from the text box is a user.
-- The group drop-down shows only the groups that you are a member of. You will not be able to add groups that you are not a member of.
+- The group drop-down shows only the groups that you are a member of. However, if you have Administrator permissions or restricted Administrator permissions, you can join a group that you are not a member of.
 
 To enable searching for groups when assigning permissions in Rancher, you will need to configure a back end for the SAML provider that supports groups, such as OpenLDAP.
+
+:::
 
 ### Configuring SAML Single Logout (SLO)
 
@@ -6230,210 +6242,6 @@ Don't have a Kubernetes cluster? Try one of these tutorials.
 This section contains information on how to install a Kubernetes cluster that the Rancher server can be installed on.
 
 Rancher can run on any Kubernetes cluster.
-
-
----
-
-## Article: how-to-guides/new-user-guides/kubernetes-cluster-setup/rke1-for-rancher.md
-
----
-title: Setting up a High-availability RKE Kubernetes Cluster
----
-
-<head>
-  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-cluster-setup/rke1-for-rancher"/>
-</head>
-
-<EOLRKE1Warning />
-
-This section describes how to install a Kubernetes cluster. This cluster should be dedicated to run only the Rancher server.
-
-:::note
-
-Rancher can run on any Kubernetes cluster, included hosted Kubernetes solutions such as Amazon EKS. The below instructions represent only one possible way to install Kubernetes.
-
-:::
-
-For systems without direct internet access, refer to [Air Gap: Kubernetes install.](../../../getting-started/installation-and-upgrade/other-installation-methods/air-gapped-helm-cli-install/air-gapped-helm-cli-install.md)
-
-:::tip Single-node Installation Tip:
-
-In a single-node Kubernetes cluster, the Rancher server does not have high availability, which is important for running Rancher in production. However, installing Rancher on a single-node cluster can be useful if you want to save resources by using a single node in the short term, while preserving a high-availability migration path.
-
-To set up a single-node RKE cluster, configure only one node in the `cluster.yml` . The single node should have all three roles: `etcd`, `controlplane`, and `worker`.
-
-In both single-node setups, Rancher can be installed with Helm on the Kubernetes cluster in the same way that it would be installed on any other cluster.
-
-:::
-
-## Installing Kubernetes
-
-### Required CLI Tools
-
-Install [kubectl,](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl) a Kubernetes command-line tool.
-
-Also install [RKE,](https://rancher.com/docs/rke/latest/en/installation/) the Rancher Kubernetes Engine, a Kubernetes distribution and command-line tool.
-
-### 1. Create the cluster configuration file
-
-In this section, you will create a Kubernetes cluster configuration file called `rancher-cluster.yml`. In a later step, when you set up the cluster with an RKE command, it will use this file to install Kubernetes on your nodes.
-
-Using the sample below as a guide, create the `rancher-cluster.yml` file. Replace the IP addresses in the `nodes` list with the IP address or DNS names of the 3 nodes you created.
-
-If your node has public and internal addresses, it is recommended to set the `internal_address:` so Kubernetes will use it for intra-cluster communication. Some services like AWS EC2 require setting the `internal_address:` if you want to use self-referencing security groups or firewalls.
-
-RKE will need to connect to each node over SSH, and it will look for a private key in the default location of `~/.ssh/id_rsa`. If your private key for a certain node is in a different location than the default, you will also need to configure the `ssh_key_path` option for that node.
-
-When choosing a Kubernetes version, be sure to first consult the [support matrix](https://rancher.com/support-matrix/) to find the highest version of Kubernetes that has been validated for your Rancher version.
-
-```yaml
-nodes:
-  - address: 165.227.114.63
-    internal_address: 172.16.22.12
-    user: ubuntu
-    role: [controlplane, worker, etcd]
-  - address: 165.227.116.167
-    internal_address: 172.16.32.37
-    user: ubuntu
-    role: [controlplane, worker, etcd]
-  - address: 165.227.127.226
-    internal_address: 172.16.42.73
-    user: ubuntu
-    role: [controlplane, worker, etcd]
-
-services:
-  etcd:
-    snapshot: true
-    creation: 6h
-    retention: 24h
-
-# Required for external TLS termination with
-# ingress-nginx v0.22+
-ingress:
-  provider: nginx
-  options:
-    use-forwarded-headers: "true"
-
-kubernetes_version: v1.25.6-rancher4-1
-```
-
-<figcaption>Common RKE Nodes Options</figcaption>
-
-| Option             | Required | Description                                                                            |
-| ------------------ | -------- | -------------------------------------------------------------------------------------- |
-| `address`          | yes      | The public DNS or IP address                                                           |
-| `user`             | yes      | A user that can run docker commands                                                    |
-| `role`             | yes      | List of Kubernetes roles assigned to the node                                          |
-| `internal_address` | no       | The private DNS or IP address for internal cluster traffic                             |
-| `ssh_key_path`     | no       | Path to SSH private key used to authenticate to the node (defaults to `~/.ssh/id_rsa`) |
-
-:::note Advanced Configurations:
-
-RKE has many configuration options for customizing the install to suit your specific environment.
-
-Please see the [RKE Documentation](https://rancher.com/docs/rke/latest/en/config-options/) for the full list of options and capabilities.
-
-For tuning your etcd cluster for larger Rancher installations, see the [etcd settings guide](../../advanced-user-guides/tune-etcd-for-large-installs.md).
-
-For more information regarding Dockershim support, refer to [this page](../../../getting-started/installation-and-upgrade/installation-requirements/dockershim.md)
-
-:::
-
-### 2. Run RKE
-
-```
-rke up --config ./rancher-cluster.yml
-```
-
-When finished, it should end with the line: `Finished building Kubernetes cluster successfully`.
-
-### 3. Test Your Cluster
-
-This section describes how to set up your workspace so that you can interact with this cluster using the `kubectl` command-line tool.
-
-Assuming you have installed `kubectl`, you need to place the `kubeconfig` file in a location where `kubectl` can reach it. The `kubeconfig` file contains the credentials necessary to access your cluster with `kubectl`.
-
-When you ran `rke up`, RKE should have created a `kubeconfig` file named `kube_config_cluster.yml`. This file has the credentials for `kubectl` and `helm`.
-
-:::note
-
-If you have used a different file name from `rancher-cluster.yml`, then the kube config file will be named `kube_config_<FILE_NAME>.yml`.
-
-:::
-
-Move this file to `$HOME/.kube/config`, or if you are working with multiple Kubernetes clusters, set the `KUBECONFIG` environmental variable to the path of `kube_config_cluster.yml`:
-
-```
-export KUBECONFIG=$(pwd)/kube_config_cluster.yml
-```
-
-Test your connectivity with `kubectl` and see if all your nodes are in `Ready` state:
-
-```
-kubectl get nodes
-
-NAME                          STATUS    ROLES                      AGE       VERSION
-165.227.114.63                Ready     controlplane,etcd,worker   11m       v1.13.5
-165.227.116.167               Ready     controlplane,etcd,worker   11m       v1.13.5
-165.227.127.226               Ready     controlplane,etcd,worker   11m       v1.13.5
-```
-
-### 4. Check the Health of Your Cluster Pods
-
-Check that all the required pods and containers are healthy are ready to continue.
-
-- Pods are in `Running` or `Completed` state.
-- `READY` column shows all the containers are running (i.e. `3/3`) for pods with `STATUS` `Running`
-- Pods with `STATUS` `Completed` are run-once Jobs. For these pods `READY` should be `0/1`.
-
-```
-kubectl get pods --all-namespaces
-
-NAMESPACE       NAME                                      READY     STATUS      RESTARTS   AGE
-ingress-nginx   nginx-ingress-controller-tnsn4            1/1       Running     0          30s
-ingress-nginx   nginx-ingress-controller-tw2ht            1/1       Running     0          30s
-ingress-nginx   nginx-ingress-controller-v874b            1/1       Running     0          30s
-kube-system     canal-jp4hz                               3/3       Running     0          30s
-kube-system     canal-z2hg8                               3/3       Running     0          30s
-kube-system     canal-z6kpw                               3/3       Running     0          30s
-kube-system     kube-dns-7588d5b5f5-sf4vh                 3/3       Running     0          30s
-kube-system     kube-dns-autoscaler-5db9bbb766-jz2k6      1/1       Running     0          30s
-kube-system     metrics-server-97bc649d5-4rl2q            1/1       Running     0          30s
-kube-system     rke-ingress-controller-deploy-job-bhzgm   0/1       Completed   0          30s
-kube-system     rke-kubedns-addon-deploy-job-gl7t4        0/1       Completed   0          30s
-kube-system     rke-metrics-addon-deploy-job-7ljkc        0/1       Completed   0          30s
-kube-system     rke-network-plugin-deploy-job-6pbgj       0/1       Completed   0          30s
-```
-
-This confirms that you have successfully installed a Kubernetes cluster that the Rancher server will run on.
-
-### 5. Save Your Files
-
-:::note Important:
-
-The files mentioned below are needed to maintain, troubleshoot and upgrade your cluster.
-
-:::
-
-Save a copy of the following files in a secure location:
-
-- `rancher-cluster.yml`: The RKE cluster configuration file.
-- `kube_config_cluster.yml`: The [Kubeconfig file](https://rancher.com/docs/rke/latest/en/kubeconfig/) for the cluster, this file contains credentials for full access to the cluster.
-- `rancher-cluster.rkestate`: The [Kubernetes Cluster State file](https://rancher.com/docs/rke/latest/en/installation/#kubernetes-cluster-state), this file contains credentials for full access to the cluster.<br/><br/>_The Kubernetes Cluster State file is only created when using RKE v0.2.0 or higher._
-
-:::note
-
-The "rancher-cluster" parts of the two latter file names are dependent on how you name the RKE cluster configuration file.
-
-:::
-
-### Issues or errors?
-
-See the [Troubleshooting](../../../getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/troubleshooting.md) page.
-
-
-### [Next: Install Rancher](../../../getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/install-upgrade-on-a-kubernetes-cluster.md)
-
 
 
 ---
@@ -7689,7 +7497,7 @@ title: Restoring a Cluster from Backup
 
 Etcd backup and recovery for [Rancher launched Kubernetes clusters](../launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md) can be easily performed. Snapshots of the etcd database are taken and saved either locally onto the etcd nodes or to a S3 compatible target. The advantages of configuring S3 is that if all etcd nodes are lost, your snapshot is saved remotely and can be used to restore the cluster.
 
-Rancher recommends enabling the [ability to set up recurring snapshots of etcd](back-up-rancher-launched-kubernetes-clusters.md#configuring-recurring-snapshots), but [one-time snapshots](back-up-rancher-launched-kubernetes-clusters.md#one-time-snapshots) can easily be taken as well. Rancher allows restore from [saved snapshots](#restoring-a-cluster-from-a-snapshot) or if you don't have any snapshots, you can still [restore etcd](#recovering-etcd-without-a-snapshot-rke).
+Rancher recommends enabling the [ability to set up recurring snapshots of etcd](back-up-rancher-launched-kubernetes-clusters.md#configuring-recurring-snapshots), but [one-time snapshots](back-up-rancher-launched-kubernetes-clusters.md#one-time-snapshots) can easily be taken as well. Rancher allows restore from [saved snapshots](#restoring-a-cluster-from-a-snapshot).
 
 Clusters can also be restored to a prior Kubernetes version and cluster configuration.
 
@@ -7732,21 +7540,7 @@ To restore snapshots from S3, the cluster needs to be configured to [take recurr
 
 In a disaster recovery scenario, the control plane and etcd nodes managed by Rancher in a downstream cluster may no longer be available or functioning. The cluster can be rebuilt by adding control plane and etcd nodes again, followed by restoring from an available snapshot.
 
-<Tabs groupId="k8s-distro">
-<TabItem value="RKE">
-
-Follow the procedure described in the [SUSE Knowledgebase](https://www.suse.com/support/kb/doc/?id=000020695).
-
-</TabItem>
-<TabItem value="RKE2/K3s">
-
 If you have a complete cluster failure, you must remove all etcd nodes/machines from your cluster before you can add a "new" etcd node for restore.
-
-:::note
-
-Due to a [known issue](https://github.com/rancher/rancher/issues/41080), this procedure requires Rancher v2.7.5 or newer.
-
-:::
 
 :::note
 
@@ -7792,39 +7586,6 @@ If you are using [local snapshots](./back-up-rancher-launched-kubernetes-cluster
       ```
 
 1. After restoration is successful, you can scale your etcd nodes back up to the desired redundancy.
-
-</TabItem>
-</Tabs>
-
-## Recovering etcd without a Snapshot (RKE)
-
-If the group of etcd nodes loses quorum, the Kubernetes cluster will report a failure because no operations, e.g. deploying workloads, can be executed in the Kubernetes cluster. The cluster should have three etcd nodes to prevent a loss of quorum. If you want to recover your set of etcd nodes, follow these instructions:
-
-1. Keep only one etcd node in the cluster by removing all other etcd nodes.
-
-2. On the single remaining etcd node, run the following command:
-
-    ```bash
-    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock assaflavie/runlike etcd
-    ```
-
-    This command outputs the running command for etcd, save this command to use later.
-
-3. Stop the running `etcd` container and rename it to `etcd-old`.
-
-    ```bash
-    docker stop etcd
-    docker rename etcd etcd-old
-    ```
-
-4. Take the saved command from Step 2 and revise it:
-
-    - If you originally had more than 1 etcd node, then you need to change `--initial-cluster` to only contain the node that remains.
-    - Add `--force-new-cluster` to the end of the command.
-
-5. Run the revised command.
-
-6. After the single nodes is up and running, Rancher recommends adding additional etcd nodes to your cluster. If you have a [custom cluster](../../../reference-guides/cluster-configuration/rancher-server-configuration/use-existing-nodes/use-existing-nodes.md) and you want to reuse an old node, you are required to [clean up the nodes](../manage-clusters/clean-cluster-nodes.md) before attempting to add them back into a cluster.
 
 
 ---
@@ -17574,7 +17335,7 @@ The `system` project:
 
 :::note
 
-In RKE clusters where the project network isolation option is enabled, the `system` project overrides the project network isolation option so that it can communicate with other projects, collect logs, and check health.
+In RKE2/K3s clusters where the project network isolation option is enabled, the `system` project overrides the project network isolation option so that it can communicate with other projects, collect logs, and check health.
 
 :::
 
@@ -18875,625 +18636,6 @@ kubectl apply -f rook-1.4.5/ceph/filesystem.yaml
 
 ---
 
-## Article: how-to-guides/new-user-guides/manage-clusters/install-cluster-autoscaler/install-cluster-autoscaler.md
-
----
-title: Cluster Autoscaler
----
-
-<head>
-  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/install-cluster-autoscaler"/>
-</head>
-
-In this section, you'll learn how to install and use the [Kubernetes cluster-autoscaler](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/) on Rancher custom clusters using AWS EC2 Auto Scaling Groups.
-
-The cluster autoscaler is a tool that automatically adjusts the size of the Kubernetes cluster when one of the following conditions is true:
-
-* There are pods that failed to run in the cluster due to insufficient resources.
-* There are nodes in the cluster that have been underutilized for an extended period of time and their pods can be placed on other existing nodes.
-
-To prevent your pod from being evicted, set a `priorityClassName: system-cluster-critical` property on your pod spec.
-
-Cluster Autoscaler is designed to run on Kubernetes master nodes. It can run in the `kube-system` namespace. Cluster Autoscaler doesn't scale down nodes with non-mirrored `kube-system` pods running on them.
-
-It's possible to run a customized deployment of Cluster Autoscaler on worker nodes, but extra care needs to be taken to ensure that Cluster Autoscaler remains up and running.
-
-## Cloud Providers
-
-Cluster Autoscaler provides support to distinct cloud providers. For more information, go to [cluster-autoscaler supported cloud providers.](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler#deployment)
-
-### Setting up Cluster Autoscaler on Amazon Cloud Provider
-
-For details on running the cluster autoscaler  on Amazon cloud provider, refer to [this page.](use-aws-ec2-auto-scaling-groups.md)
-
-
----
-
-## Article: how-to-guides/new-user-guides/manage-clusters/install-cluster-autoscaler/use-aws-ec2-auto-scaling-groups.md
-
----
-title: Cluster Autoscaler with AWS EC2 Auto Scaling Groups
----
-
-<head>
-  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/install-cluster-autoscaler/use-aws-ec2-auto-scaling-groups"/>
-</head>
-
-This guide will show you how to install and use [Kubernetes cluster-autoscaler](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/) on Rancher custom clusters using AWS EC2 Auto Scaling Groups.
-
-We are going to install a Rancher RKE custom cluster with a fixed number of nodes with the etcd and controlplane roles, and a variable nodes with the worker role, managed by `cluster-autoscaler`.
-
-
-## Prerequisites
-
-These elements are required to follow this guide:
-
-* The Rancher server is up and running
-* You have an AWS EC2 user with proper permissions to create virtual machines, auto scaling groups, and IAM profiles and roles
-
-### 1. Create a Custom Cluster
-
-On Rancher server, we should create a custom k8s cluster. Refer [here](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/) to check for version compatibility.
-
-Be sure that cloud_provider name is set to `amazonec2`. Once cluster is created we need to get:
-
-* clusterID: `c-xxxxx` will be used on EC2 `kubernetes.io/cluster/<clusterID>` instance tag
-* clusterName: will be used on EC2 `k8s.io/cluster-autoscaler/<clusterName>` instance tag
-* nodeCommand: will be added on EC2 instance user_data to include new nodes on cluster
-
-    ```sh
-    sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:<RANCHER_VERSION> --server https://<RANCHER_URL> --token <RANCHER_TOKEN> --ca-checksum <RANCHER_CHECKSUM> <roles>
-    ```
-
-### 2. Configure the Cloud Provider
-
-On AWS EC2, we should create a few objects to configure our system. We've defined three distinct groups and IAM profiles to configure on AWS.
-
-1. Autoscaling group: Nodes that will be part of the EC2 Auto Scaling Group (ASG). The ASG will be used by `cluster-autoscaler` to scale up and down.
-  * IAM profile: Required by k8s nodes where cluster-autoscaler will be running. It is recommended for Kubernetes master nodes. This profile is called `K8sAutoscalerProfile`.
-
-      ```json
-      {
-          "Version": "2012-10-17",
-          "Statement": [
-              {
-                  "Effect": "Allow",
-                  "Action": [
-                      "autoscaling:DescribeAutoScalingGroups",
-                      "autoscaling:DescribeAutoScalingInstances",
-                      "autoscaling:DescribeLaunchConfigurations",
-                      "autoscaling:SetDesiredCapacity",
-                      "autoscaling:TerminateInstanceInAutoScalingGroup",
-                      "autoscaling:DescribeTags",
-                      "autoscaling:DescribeLaunchConfigurations",
-                      "ec2:DescribeLaunchTemplateVersions"
-                  ],
-                  "Resource": [
-                      "*"
-                  ]
-              }
-          ]
-      }
-      ```
-
-2. Master group: Nodes that will be part of the Kubernetes etcd and/or control planes. This will be out of the ASG.
-  * IAM profile: Required by the Kubernetes cloud_provider integration. Optionally, `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` can be used instead [using-aws-credentials.](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#using-aws-credentials) This profile is called `K8sMasterProfile`.
-
-      ```json
-      {
-          "Version": "2012-10-17",
-          "Statement": [
-              {
-                  "Effect": "Allow",
-                  "Action": [
-                      "autoscaling:DescribeAutoScalingGroups",
-                      "autoscaling:DescribeLaunchConfigurations",
-                      "autoscaling:DescribeTags",
-                      "ec2:DescribeInstances",
-                      "ec2:DescribeRegions",
-                      "ec2:DescribeRouteTables",
-                      "ec2:DescribeSecurityGroups",
-                      "ec2:DescribeSubnets",
-                      "ec2:DescribeVolumes",
-                      "ec2:CreateSecurityGroup",
-                      "ec2:CreateTags",
-                      "ec2:CreateVolume",
-                      "ec2:ModifyInstanceAttribute",
-                      "ec2:ModifyVolume",
-                      "ec2:AttachVolume",
-                      "ec2:AuthorizeSecurityGroupIngress",
-                      "ec2:CreateRoute",
-                      "ec2:DeleteRoute",
-                      "ec2:DeleteSecurityGroup",
-                      "ec2:DeleteVolume",
-                      "ec2:DetachVolume",
-                      "ec2:RevokeSecurityGroupIngress",
-                      "ec2:DescribeVpcs",
-                      "elasticloadbalancing:AddTags",
-                      "elasticloadbalancing:AttachLoadBalancerToSubnets",
-                      "elasticloadbalancing:ApplySecurityGroupsToLoadBalancer",
-                      "elasticloadbalancing:CreateLoadBalancer",
-                      "elasticloadbalancing:CreateLoadBalancerPolicy",
-                      "elasticloadbalancing:CreateLoadBalancerListeners",
-                      "elasticloadbalancing:ConfigureHealthCheck",
-                      "elasticloadbalancing:DeleteLoadBalancer",
-                      "elasticloadbalancing:DeleteLoadBalancerListeners",
-                      "elasticloadbalancing:DescribeLoadBalancers",
-                      "elasticloadbalancing:DescribeLoadBalancerAttributes",
-                      "elasticloadbalancing:DetachLoadBalancerFromSubnets",
-                      "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-                      "elasticloadbalancing:ModifyLoadBalancerAttributes",
-                      "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-                      "elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer",
-                      "elasticloadbalancing:AddTags",
-                      "elasticloadbalancing:CreateListener",
-                      "elasticloadbalancing:CreateTargetGroup",
-                      "elasticloadbalancing:DeleteListener",
-                      "elasticloadbalancing:DeleteTargetGroup",
-                      "elasticloadbalancing:DescribeListeners",
-                      "elasticloadbalancing:DescribeLoadBalancerPolicies",
-                      "elasticloadbalancing:DescribeTargetGroups",
-                      "elasticloadbalancing:DescribeTargetHealth",
-                      "elasticloadbalancing:ModifyListener",
-                      "elasticloadbalancing:ModifyTargetGroup",
-                      "elasticloadbalancing:RegisterTargets",
-                      "elasticloadbalancing:SetLoadBalancerPoliciesOfListener",
-                      "iam:CreateServiceLinkedRole",
-                      "ecr:GetAuthorizationToken",
-                      "ecr:BatchCheckLayerAvailability",
-                      "ecr:GetDownloadUrlForLayer",
-                      "ecr:GetRepositoryPolicy",
-                      "ecr:DescribeRepositories",
-                      "ecr:ListImages",
-                      "ecr:BatchGetImage",
-                      "kms:DescribeKey"
-                  ],
-                  "Resource": [
-                      "*"
-                  ]
-              }
-          ]
-      }
-      ```
-
-    * IAM role: `K8sMasterRole: [K8sMasterProfile,K8sAutoscalerProfile]`
-    * Security group: `K8sMasterSg` More info at [RKE ports (custom nodes tab)](../../../../getting-started/installation-and-upgrade/installation-requirements/port-requirements.md#downstream-kubernetes-cluster-nodes)
-    * Tags:
-      `kubernetes.io/cluster/<clusterID>: owned`
-    * User data: `K8sMasterUserData` Ubuntu 18.04(ami-0e11cbb34015ff725), installs docker and add etcd+controlplane node to the k8s cluster
-
-      ```sh
-      #!/bin/bash -x
-
-      cat <<EOF > /etc/sysctl.d/90-kubelet.conf
-      vm.overcommit_memory = 1
-      vm.panic_on_oom = 0
-      kernel.panic = 10
-      kernel.panic_on_oops = 1
-      kernel.keys.root_maxkeys = 1000000
-      kernel.keys.root_maxbytes = 25000000
-      EOF
-      sysctl -p /etc/sysctl.d/90-kubelet.conf
-
-      curl -sL https://releases.rancher.com/install-docker/19.03.sh | sh
-      sudo usermod -aG docker ubuntu
-
-      TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-      PRIVATE_IP=$(curl -H "X-aws-ec2-metadata-token: ${TOKEN}" -s http://169.254.169.254/latest/meta-data/local-ipv4)
-      PUBLIC_IP=$(curl -H "X-aws-ec2-metadata-token: ${TOKEN}" -s http://169.254.169.254/latest/meta-data/public-ipv4)
-      K8S_ROLES="--etcd --controlplane"
-
-      sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:<RANCHER_VERSION> --server https://<RANCHER_URL> --token <RANCHER_TOKEN> --ca-checksum <RANCHER_CA_CHECKSUM> --address ${PUBLIC_IP} --internal-address ${PRIVATE_IP} ${K8S_ROLES}
-      ```
-
-3. Worker group: Nodes that will be part of the k8s worker plane. Worker nodes will be scaled by cluster-autoscaler using the ASG.
-  * IAM profile: Provides cloud_provider worker integration.
-  This profile is called `K8sWorkerProfile`.
-
-      ```json
-      {
-          "Version": "2012-10-17",
-          "Statement": [
-              {
-                  "Effect": "Allow",
-                  "Action": [
-                      "ec2:DescribeInstances",
-                      "ec2:DescribeRegions",
-                      "ecr:GetAuthorizationToken",
-                      "ecr:BatchCheckLayerAvailability",
-                      "ecr:GetDownloadUrlForLayer",
-                      "ecr:GetRepositoryPolicy",
-                      "ecr:DescribeRepositories",
-                      "ecr:ListImages",
-                      "ecr:BatchGetImage"
-                  ],
-                  "Resource": "*"
-              }
-          ]
-      }
-      ```
-
-  * IAM role: `K8sWorkerRole: [K8sWorkerProfile]`
-  * Security group: `K8sWorkerSg` More info at [RKE ports (custom nodes tab)](../../../../getting-started/installation-and-upgrade/installation-requirements/port-requirements.md#downstream-kubernetes-cluster-nodes)
-  * Tags:
-    * `kubernetes.io/cluster/<clusterID>: owned`
-    * `k8s.io/cluster-autoscaler/<clusterName>: true`
-    * `k8s.io/cluster-autoscaler/enabled: true`
-  * User data: `K8sWorkerUserData` Ubuntu 18.04(ami-0e11cbb34015ff725), installs docker and add worker node to the k8s cluster
-
-      ```sh
-      #!/bin/bash -x
-
-      cat <<EOF > /etc/sysctl.d/90-kubelet.conf
-      vm.overcommit_memory = 1
-      vm.panic_on_oom = 0
-      kernel.panic = 10
-      kernel.panic_on_oops = 1
-      kernel.keys.root_maxkeys = 1000000
-      kernel.keys.root_maxbytes = 25000000
-      EOF
-      sysctl -p /etc/sysctl.d/90-kubelet.conf
-
-      curl -sL https://releases.rancher.com/install-docker/19.03.sh | sh
-      sudo usermod -aG docker ubuntu
-
-      TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-      PRIVATE_IP=$(curl -H "X-aws-ec2-metadata-token: ${TOKEN}" -s http://169.254.169.254/latest/meta-data/local-ipv4)
-      PUBLIC_IP=$(curl -H "X-aws-ec2-metadata-token: ${TOKEN}" -s http://169.254.169.254/latest/meta-data/public-ipv4)
-      K8S_ROLES="--worker"
-
-      sudo docker run -d --privileged --restart=unless-stopped --net=host -v /etc/kubernetes:/etc/kubernetes -v /var/run:/var/run rancher/rancher-agent:<RANCHER_VERSION> --server https://<RANCHER_URL> --token <RANCHER_TOKEN> --ca-checksum <RANCHER_CA_CHECKCSUM> --address ${PUBLIC_IP} --internal-address ${PRIVATE_IP} ${K8S_ROLES}
-      ```
-
-More info is at [RKE clusters on AWS](../../../new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-cloud-providers/amazon.md) and [Cluster Autoscaler on AWS.](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md)
-
-### 3. Deploy Nodes
-
-Once we've configured AWS, let's create VMs to bootstrap our cluster:
-
-* master (etcd+controlplane): Depending your needs, deploy three master instances with proper size. More info is at [the recommendations for production-ready clusters.](../../kubernetes-clusters-in-rancher-setup/checklist-for-production-ready-clusters/checklist-for-production-ready-clusters.md)
-  * IAM role: `K8sMasterRole`
-  * Security group: `K8sMasterSg`
-  * Tags:
-    * `kubernetes.io/cluster/<clusterID>: owned`
-  * User data: `K8sMasterUserData`
-
-* worker: Define an ASG on EC2 with the following settings:
-  * Name: `K8sWorkerAsg`
-  * IAM role: `K8sWorkerRole`
-  * Security group: `K8sWorkerSg`
-  * Tags:
-    * `kubernetes.io/cluster/<clusterID>: owned`
-    * `k8s.io/cluster-autoscaler/<clusterName>: true`
-    * `k8s.io/cluster-autoscaler/enabled: true`
-  * User data: `K8sWorkerUserData`
-  * Instances:
-    * minimum: 2
-    * desired: 2
-    * maximum: 10
-
-Once the VMs are deployed, you should have a Rancher custom cluster up and running with three master and two worker nodes.
-
-### 4. Install Cluster-autoscaler
-
-At this point, we should have rancher cluster up and running. We are going to install cluster-autoscaler on master nodes and `kube-system` namespace, following cluster-autoscaler recommendation.
-
-#### Parameters
-
-This table shows cluster-autoscaler parameters for fine tuning:
-
-| Parameter | Default | Description |
-|---|---|---|
-|cluster-name|-|Autoscaled cluster name, if available|
-|address|:8085|The address to expose Prometheus metrics|
-|kubernetes|-|Kubernetes master location. Leave blank for default|
-|kubeconfig|-|Path to kubeconfig file with authorization and master location information|
-|cloud-config|-|The path to the cloud provider configuration file.  Empty string for no configuration file|
-|namespace|"kube-system"|Namespace in which cluster-autoscaler run|
-|scale-down-enabled|true|Should CA scale down the cluster|
-|scale-down-delay-after-add|"10m"|How long after scale up that scale down evaluation resumes|
-|scale-down-delay-after-delete|0|How long after node deletion that scale down evaluation resumes, defaults to scanInterval|
-|scale-down-delay-after-failure|"3m"|How long after scale down failure that scale down evaluation resumes|
-|scale-down-unneeded-time|"10m"|How long a node should be unneeded before it is eligible for scale down|
-|scale-down-unready-time|"20m"|How long an unready node should be unneeded before it is eligible for scale down|
-|scale-down-utilization-threshold|0.5|Sum of cpu or memory of all pods running on the node divided by node's corresponding allocatable resource, below which a node can be considered for scale down|
-|scale-down-gpu-utilization-threshold|0.5|Sum of gpu requests of all pods running on the node divided by node's allocatable resource, below which a node can be considered for scale down|
-|scale-down-non-empty-candidates-count|30|Maximum number of non empty nodes considered in one iteration as candidates for scale down with drain|
-|scale-down-candidates-pool-ratio|0.1|A ratio of nodes that are considered as additional non empty candidates for scale down when some candidates from previous iteration are no longer valid|
-|scale-down-candidates-pool-min-count|50|Minimum number of nodes that are considered as additional non empty candidates for scale down when some candidates from previous iteration are no longer valid|
-|node-deletion-delay-timeout|"2m"|Maximum time CA waits for removing delay-deletion.cluster-autoscaler.kubernetes.io/ annotations before deleting the node|
-|scan-interval|"10s"|How often cluster is reevaluated for scale up or down|
-|max-nodes-total|0|Maximum number of nodes in all node groups. Cluster autoscaler will not grow the cluster beyond this number|
-|cores-total|"0:320000"|Minimum and maximum number of cores in cluster, in the format `<min>:<max>.` Cluster autoscaler will not scale the cluster beyond these numbers|
-|memory-total|"0:6400000"|Minimum and maximum number of gigabytes of memory in cluster, in the format `<min>:<max>.` Cluster autoscaler will not scale the cluster beyond these numbers|
-cloud-provider|-|Cloud provider type|
-|max-bulk-soft-taint-count|10|Maximum number of nodes that can be tainted/untainted PreferNoSchedule at the same time. Set to 0 to turn off such tainting|
-|max-bulk-soft-taint-time|"3s"|Maximum duration of tainting/untainting nodes as PreferNoSchedule at the same time|
-|max-empty-bulk-delete|10|Maximum number of empty nodes that can be deleted at the same time|
-|max-graceful-termination-sec|600|Maximum number of seconds CA waits for pod termination when trying to scale down a node|
-|max-total-unready-percentage|45|Maximum percentage of unready nodes in the cluster.  After this is exceeded, CA halts operations|
-|ok-total-unready-count|3|Number of allowed unready nodes, irrespective of max-total-unready-percentage|
-|scale-up-from-zero|true|Should CA scale up when there 0 ready nodes|
-|max-node-provision-time|"15m"|Maximum time CA waits for node to be provisioned|
-|nodes|-|sets min,max size and other configuration data for a node group in a format accepted by cloud provider. Can be used multiple times. Format: `<min>:<max>:<other...>`|
-|node-group-auto-discovery|-|One or more definition(s) of node group auto-discovery. A definition is expressed `<name of discoverer>:[<key>[=<value>]]`|
-|estimator|"binpacking"|Type of resource estimator to be used in scale up. Available values: ["binpacking"]|
-|expander|"random"|Type of node group expander to be used in scale up. Available values: `["random","most-pods","least-waste","price","priority"]`|
-|ignore-daemonsets-utilization|false|Should CA ignore DaemonSet pods when calculating resource utilization for scaling down|
-|ignore-mirror-pods-utilization|false|Should CA ignore Mirror pods when calculating resource utilization for scaling down|
-|write-status-configmap|true|Should CA write status information to a configmap|
-|max-inactivity|"10m"|Maximum time from last recorded autoscaler activity before automatic restart|
-|max-failing-time|"15m"|Maximum time from last recorded successful autoscaler run before automatic restart|
-|balance-similar-node-groups|false|Detect similar node groups and balance the number of nodes between them|
-|node-autoprovisioning-enabled|false|Should CA autoprovision node groups when needed|
-|max-autoprovisioned-node-group-count|15|The maximum number of autoprovisioned groups in the cluster|
-|unremovable-node-recheck-timeout|"5m"|The timeout before we check again a node that couldn't be removed before|
-|expendable-pods-priority-cutoff|-10|Pods with priority below cutoff will be expendable. They can be killed without any consideration during scale down and they don't cause scale up. Pods with null priority (PodPriority disabled) are non expendable|
-|regional|false|Cluster is regional|
-|new-pod-scale-up-delay|"0s"|Pods less than this old will not be considered for scale-up|
-|ignore-taint|-|Specifies a taint to ignore in node templates when considering to scale a node group|
-|balancing-ignore-label|-|Specifies a label to ignore in addition to the basic and cloud-provider set of labels when comparing if two node groups are similar|
-|aws-use-static-instance-list|false|Should CA fetch instance types in runtime or use a static list. AWS only|
-|profiling|false|Is debug/pprof endpoint enabled|
-
-#### Deployment
-
-Based on the [cluster-autoscaler-run-on-control-plane.yaml](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/examples/cluster-autoscaler-run-on-control-plane.yaml) example, we've created our own `cluster-autoscaler-deployment.yaml` to use preferred [auto-discovery setup](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/aws#auto-discovery-setup), updating tolerations, nodeSelector, image version and command config:
-
-
-```yml
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
-    k8s-addon: cluster-autoscaler.addons.k8s.io
-    k8s-app: cluster-autoscaler
-  name: cluster-autoscaler
-  namespace: kube-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: cluster-autoscaler
-  labels:
-    k8s-addon: cluster-autoscaler.addons.k8s.io
-    k8s-app: cluster-autoscaler
-rules:
-  - apiGroups: [""]
-    resources: ["events", "endpoints"]
-    verbs: ["create", "patch"]
-  - apiGroups: [""]
-    resources: ["pods/eviction"]
-    verbs: ["create"]
-  - apiGroups: [""]
-    resources: ["pods/status"]
-    verbs: ["update"]
-  - apiGroups: [""]
-    resources: ["endpoints"]
-    resourceNames: ["cluster-autoscaler"]
-    verbs: ["get", "update"]
-  - apiGroups: [""]
-    resources: ["nodes"]
-    verbs: ["watch", "list", "get", "update"]
-  - apiGroups: [""]
-    resources:
-      - "pods"
-      - "services"
-      - "replicationcontrollers"
-      - "persistentvolumeclaims"
-      - "persistentvolumes"
-    verbs: ["watch", "list", "get"]
-  - apiGroups: ["extensions"]
-    resources: ["replicasets", "daemonsets"]
-    verbs: ["watch", "list", "get"]
-  - apiGroups: ["policy"]
-    resources: ["poddisruptionbudgets"]
-    verbs: ["watch", "list"]
-  - apiGroups: ["apps"]
-    resources: ["statefulsets", "replicasets", "daemonsets"]
-    verbs: ["watch", "list", "get"]
-  - apiGroups: ["storage.k8s.io"]
-    resources: ["storageclasses", "csinodes"]
-    verbs: ["watch", "list", "get"]
-  - apiGroups: ["batch", "extensions"]
-    resources: ["jobs"]
-    verbs: ["get", "list", "watch", "patch"]
-  - apiGroups: ["coordination.k8s.io"]
-    resources: ["leases"]
-    verbs: ["create"]
-  - apiGroups: ["coordination.k8s.io"]
-    resourceNames: ["cluster-autoscaler"]
-    resources: ["leases"]
-    verbs: ["get", "update"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: cluster-autoscaler
-  namespace: kube-system
-  labels:
-    k8s-addon: cluster-autoscaler.addons.k8s.io
-    k8s-app: cluster-autoscaler
-rules:
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    verbs: ["create","list","watch"]
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    resourceNames: ["cluster-autoscaler-status", "cluster-autoscaler-priority-expander"]
-    verbs: ["delete", "get", "update", "watch"]
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: cluster-autoscaler
-  labels:
-    k8s-addon: cluster-autoscaler.addons.k8s.io
-    k8s-app: cluster-autoscaler
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-autoscaler
-subjects:
-  - kind: ServiceAccount
-    name: cluster-autoscaler
-    namespace: kube-system
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: cluster-autoscaler
-  namespace: kube-system
-  labels:
-    k8s-addon: cluster-autoscaler.addons.k8s.io
-    k8s-app: cluster-autoscaler
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: cluster-autoscaler
-subjects:
-  - kind: ServiceAccount
-    name: cluster-autoscaler
-    namespace: kube-system
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: cluster-autoscaler
-  namespace: kube-system
-  labels:
-    app: cluster-autoscaler
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: cluster-autoscaler
-  template:
-    metadata:
-      labels:
-        app: cluster-autoscaler
-      annotations:
-        prometheus.io/scrape: 'true'
-        prometheus.io/port: '8085'
-    spec:
-      serviceAccountName: cluster-autoscaler
-      tolerations:
-        - effect: NoSchedule
-          operator: "Equal"
-          value: "true"
-          key: node-role.kubernetes.io/controlplane
-      nodeSelector:
-        node-role.kubernetes.io/controlplane: "true"
-      containers:
-        - image: eu.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler:<VERSION>
-          name: cluster-autoscaler
-          resources:
-            limits:
-              cpu: 100m
-              memory: 300Mi
-            requests:
-              cpu: 100m
-              memory: 300Mi
-          command:
-            - ./cluster-autoscaler
-            - --v=4
-            - --stderrthreshold=info
-            - --cloud-provider=aws
-            - --skip-nodes-with-local-storage=false
-            - --expander=least-waste
-            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/<clusterName>
-          volumeMounts:
-            - name: ssl-certs
-              mountPath: /etc/ssl/certs/ca-certificates.crt
-              readOnly: true
-          imagePullPolicy: "Always"
-      volumes:
-        - name: ssl-certs
-          hostPath:
-            path: "/etc/ssl/certs/ca-certificates.crt"
-
-```
-
-Once the manifest file is prepared, deploy it in the Kubernetes cluster (Rancher UI can be used instead):
-
-```sh
-kubectl -n kube-system apply -f cluster-autoscaler-deployment.yaml
-```
-
-:::note
-
-Cluster-autoscaler deployment can also be set up using [manual configuration](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/aws#manual-configuration)
-
-:::
-
-## Testing
-
-At this point, we should have a cluster-scaler up and running in our Rancher custom cluster. Cluster-scale should manage `K8sWorkerAsg` ASG to scale up and down between 2 and 10 nodes, when one of the following conditions is true:
-
-* There are pods that failed to run in the cluster due to insufficient resources. In this case, the cluster is scaled up.
-* There are nodes in the cluster that have been underutilized for an extended period of time and their pods can be placed on other existing nodes. In this case, the cluster is scaled down.
-
-### Generating Load
-
-We've prepared a `test-deployment.yaml` just to generate load on the Kubernetes cluster and see if cluster-autoscaler is working properly. The test deployment is requesting 1000m CPU and 1024Mi memory by three replicas. Adjust the requested resources and/or replica to be sure you exhaust the Kubernetes cluster resources:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: hello-world
-  name: hello-world
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: hello-world
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-    type: RollingUpdate
-  template:
-    metadata:
-      labels:
-        app: hello-world
-    spec:
-      containers:
-      - image: rancher/hello-world
-        imagePullPolicy: Always
-        name: hello-world
-        ports:
-        - containerPort: 80
-          protocol: TCP
-        resources:
-          limits:
-            cpu: 1000m
-            memory: 1024Mi
-          requests:
-            cpu: 1000m
-            memory: 1024Mi
-```
-
-Once the test deployment is prepared, deploy it in the Kubernetes cluster default namespace (Rancher UI can be used instead):
-
-```
-kubectl -n default apply -f test-deployment.yaml
-```
-
-### Checking Scale
-
-Once the Kubernetes resources got exhausted, cluster-autoscaler should scale up worker nodes where pods failed to be scheduled. It should scale up until up until all pods became scheduled. You should see the new nodes on the ASG and on the Kubernetes cluster. Check the logs on the `kube-system` cluster-autoscaler pod.
-
-Once scale up is checked, let check for scale down. To do it, reduce the replica number on the test deployment until you release enough Kubernetes cluster resources to scale down. You should see nodes disappear on the ASG and on the Kubernetes cluster. Check the logs on the `kube-system` cluster-autoscaler pod.
-
-
----
-
 ## Article: how-to-guides/new-user-guides/manage-clusters/access-clusters/access-clusters.md
 
 ---
@@ -20445,66 +19587,7 @@ You can also use the directive `machineSelectorConfig` with proper machineLabelS
 For more information about cluster configuration, refer to the [K3s cluster configuration reference](../../reference-guides/cluster-configuration/rancher-server-configuration/k3s-cluster-configuration.md) pages.
 
 </TabItem>
-
-<TabItem value="RKE1">
-
-The audit log can be enabled and configured by editing the cluster with YAML.
-
-When the audit log is enabled, RKE1 default values will be applied.
-
-```yaml
-# 
-# Rancher Config
-# 
-rancher_kubernetes_engine_config:
-  services:
-    kube-api:
-      audit_log:
-        enabled: true
-```
-
-You can customize the audit log by using the configuration directive.
-
-```yaml
-# 
-# Rancher Config
-# 
-rancher_kubernetes_engine_config:
-  services:
-    kube-api:
-      audit_log:
-        enabled: true
-        configuration:
-          max_age: 6
-          max_backup: 6
-          max_size: 110
-          path: /var/log/kube-audit/audit-log.json
-          format: json
-          policy:
-            apiVersion: audit.k8s.io/v1 # This is required.
-            kind: Policy
-            omitStages:
-              - "RequestReceived"
-            rules:
-              # Log pod changes at RequestResponse level
-              - level: RequestResponse
-                resources:
-                  - group: ""
-                    # Resource "pods" doesn't match requests to any subresource of pods,
-                    # which is consistent with the RBAC policy.
-                    resources: ["pods"]
-              # Log "pods/log", "pods/status" at Metadata level
-              - level: Metadata
-                resources:
-                  - group: ""
-                    resources: ["pods/log", "pods/status"]
-```
-
-For configuration details, refer to the official [RKE1 documentation](https://rke.docs.rancher.com/config-options/audit-log).
-
-</TabItem>
 </Tabs>
-
 
 
 ---
@@ -21490,12 +20573,12 @@ title: Tuning etcd for Large Installations
 
 When Rancher is used to manage [a large infrastructure](../../getting-started/installation-and-upgrade/installation-requirements/installation-requirements.md) it is recommended to increase the default keyspace for etcd from the default 2 GB. The maximum setting is 8 GB and the host should have enough RAM to keep the entire dataset in memory. When increasing this value you should also increase the size of the host. The keyspace size can also be adjusted in smaller installations if you anticipate a high rate of change of pods during the garbage collection interval.
 
-The etcd data set is automatically cleaned up on a five minute interval by Kubernetes. There are situations, e.g. deployment thrashing, where enough events could be written to etcd and deleted before garbage collection occurs and cleans things up causing the keyspace to fill up. If you see `mvcc: database space exceeded` errors, in the etcd logs or Kubernetes API server logs, you should consider increasing the keyspace size. This can be accomplished by setting the [quota-backend-bytes](https://etcd.io/docs/v3.5/op-guide/maintenance/#space-quota) setting on the etcd servers.
+The etcd data set is automatically cleaned up on a five-minute interval by Kubernetes. There are situations, e.g. deployment thrashing, where enough events could be written to etcd and deleted before garbage collection occurs and cleans things up causing the keyspace to fill up. If you see `mvcc: database space exceeded` errors, in the etcd logs or Kubernetes API server logs, you should consider increasing the keyspace size. This can be accomplished by setting the [quota-backend-bytes](https://etcd.io/docs/v3.5/op-guide/maintenance/#space-quota) setting on the etcd servers.
 
-## Example: This Snippet of the RKE Cluster.yml file Increases the Keyspace Size to 5GB
+## Example: This Snippet of the RKE2/K3s config.yaml file Increases the Keyspace Size to 5GB
 
 ```yaml
-# RKE cluster.yml
+# RKE2/K3s config.yaml
 ---
 services:
   etcd:
@@ -21509,10 +20592,10 @@ You can follow the recommendations from [the etcd docs](https://etcd.io/docs/v3.
 
 Additionally, to reduce IO contention on the disks for etcd, you can use a dedicated device for the data and wal directory. Based on etcd best practices, mirroring RAID configurations are unnecessary because etcd replicates data between the nodes in the cluster. You can use striping RAID configurations to increase available IOPS.
 
-To implement this solution in an RKE cluster, the `/var/lib/etcd/data` and `/var/lib/etcd/wal` directories will need to have disks mounted and formatted on the underlying host. In the `extra_args` directive of the `etcd` service, you must include the `wal_dir` directory. Without specifying the `wal_dir`, etcd process will try to manipulate the underlying `wal` mount with insufficient permissions.
+To implement this solution in an RKE2/K3s cluster, the `/var/lib/etcd/data` and `/var/lib/etcd/wal` directories will need to have disks mounted and formatted on the underlying host. In the `extra_args` directive of the `etcd` service, you must include the `wal_dir` directory. Without specifying the `wal_dir`, etcd process will try to manipulate the underlying `wal` mount with insufficient permissions.
 
 ```yaml
-# RKE cluster.yml
+# RKE2/K3s config.yaml
 ---
 services:
   etcd:
@@ -23535,14 +22618,6 @@ You can enable monitoring with or without SSL.
 - Allow traffic on port 9796 for each of your nodes. Prometheus scrapes metrics from these ports.
   - You may also need to allow traffic on port 10254 for each of your nodes, if [PushProx](../../../integrations-in-rancher/monitoring-and-alerting/how-monitoring-works.md#pushprox) is disabled (`ingressNginx.enabled` set to `false`), or you've upgraded from a previous Rancher version that had v1 monitoring already installed.
 - Make sure that your cluster fulfills the resource requirements. The cluster should have at least 1950Mi memory available, 2700m CPU, and 50Gi storage. See [Configuring Resource Limits and Requests](../../../reference-guides/monitoring-v2-configuration/helm-chart-options.md#configuring-resource-limits-and-requests) for a breakdown of the resource limits and requests.
-- When you install monitoring on an RKE cluster that uses RancherOS or Flatcar Linux nodes, change the etcd node certificate directory to `/opt/rke/etc/kubernetes/ssl`.
-- For clusters that have been provisioned with the RKE CLI and that have the address set to a hostname instead of an IP address, set `rkeEtcd.clients.useLocalhost` to `true` when you configure the Values during installation. For example:
-
-```yaml
-rkeEtcd:
-  clients:
-    useLocalhost: true
-```
 
 :::note
 
@@ -24185,7 +23260,7 @@ To see these tabs,
 ## Article: how-to-guides/advanced-user-guides/enable-experimental-features/rancher-on-arm64.md
 
 ---
-title: "Running on ARM64 (Experimental)"
+title: "Running on ARM64 Mixed Architecture (Experimental)"
 ---
 
 <head>
@@ -24194,40 +23269,18 @@ title: "Running on ARM64 (Experimental)"
 
 :::caution
 
-Running on an ARM64 platform is currently an experimental feature and is not yet officially supported in Rancher. Therefore, we do not recommend using ARM64 based nodes in a production environment.
+Running on an ARM64 mixed architecture platform is currently an experimental feature and is not yet officially supported in Rancher. Therefore, we do not recommend using ARM64 mixed architecture based nodes in a production environment.
 
 :::
 
 The following options are available when using an ARM64 platform:
 
-- Running Rancher on ARM64 based node(s)
-  - Only for Docker Install. Please note that the following installation command replaces the examples found in the [Docker Install link](../../../getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/rancher-on-a-single-node-with-docker.md):
-
-  ```
-  # In the last line `rancher/rancher:vX.Y.Z`, be certain to replace "X.Y.Z" with a released version in which ARM64 builds exist. For  example, if your matching version is v2.5.8, you would fill in this line with `rancher/rancher:v2.5.8`.
-  docker run -d --restart=unless-stopped \
-    -p 80:80 -p 443:443 \
-    --privileged \
-    rancher/rancher:vX.Y.Z
-  ```
-
-:::note
-
-To check if your specific released version is compatible with the ARM64 architecture, you may navigate to your
-version's release notes in the following two ways:
-
-- Manually find your version using https://github.com/rancher/rancher/releases.
-- Go directly to your version using the tag and the specific version number. If you plan to use v2.5.8, for example, you may navigate to https://github.com/rancher/rancher/releases/tag/v2.5.8.
-
-:::
-
 - Create custom cluster and adding ARM64 based node(s)
   - Kubernetes cluster version must be 1.12 or higher
-  - CNI Network Provider must be [Flannel](../../../faq/container-network-interface-providers.md#flannel)
 - Importing clusters that contain ARM64 based nodes
   - Kubernetes cluster version must be 1.12 or higher
 
-Please see [Cluster Options](../../../reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration.md) how to configure the cluster options.
+Depending on your cluster provisioning refer to [RKE2 cluster configuration options](../../../reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration.md) or [K3s cluster configuration options](../../../reference-guides/cluster-configuration/rancher-server-configuration/k3s-cluster-configuration.md) for more information.
 
 The following features are not tested:
 
@@ -24490,6 +23543,7 @@ Rancher will publish deprecated features as part of the [release notes](https://
 
 | Patch Version |  Release Date |
 |---------------|---------------|
+| [2.12.3](https://github.com/rancher/rancher/releases/tag/v2.12.3) | October 23, 2025 |
 | [2.12.2](https://github.com/rancher/rancher/releases/tag/v2.12.2) | September 25, 2025 |
 | [2.12.1](https://github.com/rancher/rancher/releases/tag/v2.12.1) | August 28, 2025 |
 | [2.12.0](https://github.com/rancher/rancher/releases/tag/v2.12.0) | July 30, 2025 |
@@ -27604,7 +26658,7 @@ title: Additional Steps for Project Network Isolation
 
 :::warning
 
-[Rancher-Istio](https://github.com/rancher/charts/tree/release-v2.11/charts/rancher-istio) will be deprecated in Rancher v2.12.0; turn to the [SUSE Rancher Application Collection](https://apps.rancher.io) build of Istio for enhanced security (included in SUSE Rancher Prime subscriptions).
+[Rancher-Istio](https://github.com/rancher/charts/tree/release-v2.11/charts/rancher-istio) has been deprecated since Rancher v2.12.0; turn to the [SUSE Rancher Application Collection](https://apps.rancher.io) build of Istio for enhanced security (included in SUSE Rancher Prime subscriptions).
 
 Detailed information can be found in [this announcement](https://forums.suse.com/t/deprecation-of-rancher-istio/45043).
 
@@ -27612,7 +26666,7 @@ Detailed information can be found in [this announcement](https://forums.suse.com
 
 In clusters where:
 
-- You are using the Canal network plugin with Rancher before v2.5.8, or you are using Rancher v2.5.8+ with an any RKE network plug-in that supports the enforcement of Kubernetes network policies, such as Canal or the Cisco ACI plugin
+- You are using Rancher v2.5.8+ with an any RKE2 network plug-in that supports the enforcement of Kubernetes network policies, such as Canal
 - The Project Network Isolation option is enabled
 - You install the Istio Ingress module
 
@@ -28061,6 +27115,7 @@ In order to deploy and run the adapter successfully, you need to ensure its vers
 
 | Rancher Version | Adapter Version  |
 |-----------------|------------------|
+| v2.12.3         |  107.0.0+up7.0.0 |
 | v2.12.2         |  107.0.0+up7.0.0 |
 | v2.12.1         |  107.0.0+up7.0.0 |
 | v2.12.0         |  107.0.0+up7.0.0 |
@@ -29076,7 +28131,7 @@ The Benchmark version is included in the generated report.
 
 The Benchmark provides recommendations of two types: Automated and Manual. Recommendations marked as Manual in the Benchmark are not included in the generated report.
 
-Some tests are designated as "Not Applicable." These tests will not be run on any CIS scan because of the way that Rancher provisions RKE clusters. For information on how test results can be audited, and why some tests are designated to be not applicable, refer to Rancher's [self-assessment guide](../../reference-guides/rancher-security/rancher-security.md#the-cis-benchmark-and-self-assessment) for the corresponding Kubernetes version.
+Some tests are designated as "Not Applicable." These tests will not be run on any CIS scan because of the way that Rancher provisions RKE2/K3s clusters. For information on how test results can be audited, and why some tests are designated to be not applicable, refer to Rancher's [self-assessment guide](../../reference-guides/rancher-security/rancher-security.md#the-cis-benchmark-and-self-assessment) for the corresponding Kubernetes version.
 
 The report contains the following information:
 
@@ -29104,12 +28159,6 @@ The following profiles are available:
 - Generic CIS 1.6
 - Generic CIS 1.20
 - Generic CIS 1.23
-- RKE permissive 1.6
-- RKE hardened 1.6
-- RKE permissive 1.20
-- RKE hardened 1.20
-- RKE permissive 1.23
-- RKE hardened 1.23
 - RKE2 permissive 1.6
 - RKE2 hardened 1.6
 - RKE2 permissive 1.20
@@ -29128,11 +28177,11 @@ The following profiles are available:
 
 You also have the ability to customize a profile by saving a set of tests to skip.
 
-All profiles will have a set of not applicable tests that will be skipped during the CIS scan. These tests are not applicable based on how a RKE cluster manages Kubernetes.
+All profiles will have a set of not applicable tests that will be skipped during the CIS scan. These tests are not applicable based on how a RKE2/K3s cluster manages Kubernetes.
 
-There are two types of RKE cluster scan profiles:
+There are two types of RKE2/K3s cluster scan profiles:
 
-- **Permissive:** This profile has a set of tests that have been will be skipped as these tests will fail on a default RKE Kubernetes cluster. Besides the list of skipped tests, the profile will also not run the not applicable tests.
+- **Permissive:** This profile has a set of tests that have been will be skipped as these tests will fail on a default RKE2/K3s Kubernetes cluster. Besides the list of skipped tests, the profile will also not run the not applicable tests.
 - **Hardened:** This profile will not skip any tests, except for the non-applicable tests.
 
 The EKS and GKE cluster scan profiles are based on CIS Benchmark versions that are specific to those types of clusters.
@@ -29143,10 +28192,9 @@ The default profile and the supported CIS benchmark version depends on the type 
 
 The `rancher-compliance` supports the CIS 1.9 Benchmark version.
 
-- For RKE Kubernetes clusters, the RKE Permissive 1.9 profile is the default.
-- EKS and GKE have their own CIS Benchmarks published by `kube-bench`. The corresponding test profiles are used by default for those clusters.
 - For RKE2 Kubernetes clusters, the RKE2 Permissive 1.9 profile is the default.
-- For cluster types other than RKE, RKE2, EKS and GKE, the Generic CIS 1.5 profile will be used by default.
+- EKS and GKE have their own CIS Benchmarks published by `kube-bench`. The corresponding test profiles are used by default for those clusters.
+- For cluster types other than RKE2, EKS and GKE, the Generic CIS 1.5 profile is used by default.
 
 ## About Skipped and Not Applicable Tests
 
@@ -29199,9 +28247,9 @@ An example ClusterScan custom resource is below:
 apiVersion: compliance.cattle.io/v1
 kind: ClusterScan
 metadata:
-  name: rke-cis
+  name: scan-smnr9
 spec:
-  scanProfileName: rke-profile-hardened
+  scanProfileName: cis-1.10-profile
 ```
 
 ## Profiles
@@ -29227,16 +28275,21 @@ apiVersion: compliance.cattle.io/v1
 kind: ClusterScanProfile
 metadata:
   annotations:
-    meta.helm.sh/release-name: clusterscan-operator
+    clusterscanprofile.compliance.cattle.io/builtin: 'true'
+    meta.helm.sh/release-name: rancher-compliance
     meta.helm.sh/release-namespace: compliance-operator-system
+  creationTimestamp: '2025-09-15T18:09:52Z'
+  generation: 1
   labels:
     app.kubernetes.io/managed-by: Helm
-  name: "<example-profile>"
+  name: cis-1.10-profile
+  resourceVersion: '93582'
+  uid: 0baad187-1157-46ac-982d-014338847c27
 spec:
-  benchmarkVersion: cis-1.5
+  benchmarkVersion: cis-1.10
   skipTests:
-    - "1.1.20"
-    - "1.1.21"
+    - '1.1.20'
+    - '1.1.21'
 ```
 
 ## Benchmark Versions
@@ -29255,7 +28308,7 @@ If the default BenchmarkVersions are edited, the next chart update will reset th
 
 A ClusterScanBenchmark consists of the fields:
 
-- `ClusterProvider`: This is the cluster provider name for which this benchmark is applicable. For example: RKE, EKS, GKE, etc. Leave it empty if this benchmark can be run on any cluster type.
+- `ClusterProvider`: This is the cluster provider name for which this benchmark is applicable. For example: RKE2, EKS, GKE, etc. Leave it empty if this benchmark can be run on any cluster type.
 - `MinKubernetesVersion`: Specifies the cluster's minimum kubernetes version necessary to run this benchmark. Leave it empty if there is no dependency on a particular Kubernetes version.
 - `MaxKubernetesVersion`: Specifies the cluster's maximum Kubernetes version necessary to run this benchmark. Leave it empty if there is no dependency on a particular k8s version.
 
@@ -29266,19 +28319,18 @@ apiVersion: compliance.cattle.io/v1
 kind: ClusterScanBenchmark
 metadata:
   annotations:
-    meta.helm.sh/release-name: clusterscan-operator
+    meta.helm.sh/release-name: rancher-compliance
     meta.helm.sh/release-namespace: compliance-operator-system
-  creationTimestamp: "2020-08-28T18:18:07Z"
+  creationTimestamp: '2025-09-15T18:09:52Z'
   generation: 1
   labels:
     app.kubernetes.io/managed-by: Helm
-  name: cis-1.5
-  resourceVersion: "203878"
-  selfLink: /apis/cis.cattle.io/v1/clusterscanbenchmarks/cis-1.5
+  name: cis-1.10
+  resourceVersion: '93569'
   uid: 309e543e-9102-4091-be91-08d7af7fb7a7
 spec:
-  clusterProvider: ""
-  minKubernetesVersion: 1.15.0
+  clusterProvider: ''
+  minKubernetesVersion: 1.28.0
 ```
 
 
@@ -32960,101 +32012,11 @@ To download the system images for the private registry:
 
 ---
 
-## Article: getting-started/installation-and-upgrade/installation-requirements/dockershim.md
-
----
-title: Dockershim
----
-
-<head>
-  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/dockershim"/>
-</head>
-
-The Dockershim is the CRI compliant layer between the Kubelet and the Docker daemon. As part of the Kubernetes 1.20 release, the [deprecation of the in-tree Dockershim was announced](https://kubernetes.io/blog/2020/12/02/dont-panic-kubernetes-and-docker/). For more information on the deprecation and its timelines, see the [Kubernetes Dockershim Deprecation FAQ](https://kubernetes.io/blog/2020/12/02/dockershim-faq/#when-will-dockershim-be-removed).
-
-RKE clusters now support the external Dockershim to continue leveraging Docker as the CRI runtime. We now implement the upstream open source community external Dockershim announced by [Mirantis and Docker](https://www.mirantis.com/blog/mirantis-to-take-over-support-of-kubernetes-dockershim-2/) to ensure RKE clusters can continue to leverage Docker.
-
-RKE2 and K3s clusters use an embedded containerd as a container runtime and are not affected.
-
-To enable the external Dockershim in versions of RKE before 1.24, configure the following option.
-
-```
-enable_cri_dockerd: true
-```
-
-Starting with version 1.24, the above defaults to true.
-
-For users looking to use another container runtime, Rancher has the edge-focused K3s and datacenter-focused RKE2 Kubernetes distributions that use containerd as the default runtime. Imported RKE2 and K3s Kubernetes clusters can then be upgraded and managed through Rancher going forward.
-
-## FAQ
-
-<br/>
-
-Q: Do I have to upgrade Rancher to get Rancher’s support of the upstream external Dockershim replacement?
-
-A: The upstream support of the Dockershim replacement `cri_dockerd` begins for RKE in Kubernetes 1.21. You will need to be on a version of Rancher that supports RKE 1.21. See our support matrix for details.
-
-<br/>
-
-Q: I am currently on RKE with Kubernetes 1.23. What happens when upstream finally removes Dockershim in 1.24?
-
-A: The version of Dockershim in RKE with Kubernetes will continue to work until 1.23. For information on the timeline, see the [Kubernetes Dockershim Deprecation FAQ](https://kubernetes.io/blog/2020/12/02/dockershim-faq/#when-will-dockershim-be-removed). After this, starting in 1.24, RKE will default to enabling `cri_dockerd` by default and will continue to do for versions afterwards.
-
-<br/>
-
-Q: What are my other options if I don’t want to depend on the Dockershim or cri_dockerd?
-
-A: You can use a runtime like containerd with Kubernetes that does not require Dockershim support. RKE2 or K3s are two options for doing this.
-
-<br/>
-
-Q: If I am already using RKE1 and want to switch to RKE2, what are my migration options?
-
-A: Today, you can stand up a new cluster and migrate workloads to a new RKE2 cluster that uses containerd. For details, see the [RKE to RKE2 Replatforming Guide](https://links.imagerelay.com/cdn/3404/ql/5606a3da2365422ab2250d348aa07112/rke_to_rke2_replatforming_guide.pdf).
-
-<br/>
-
-
----
-
-## Article: getting-started/installation-and-upgrade/installation-requirements/install-docker.md
-
----
-title: Installing Docker
----
-
-<head>
-  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/install-docker"/>
-</head>
-
-Docker is required to be installed on nodes where the Rancher server will be installed with Helm on an RKE cluster or with Docker. Docker is not required for RKE2 or K3s clusters.
-
-There are a couple of options for installing Docker. One option is to refer to the [official Docker documentation](https://docs.docker.com/install/) about how to install Docker on Linux. The steps will vary based on the Linux distribution.
-
-Another option is to use one of Rancher's Docker installation scripts, which are available for most recent versions of Docker. Rancher has installation scripts for every version of upstream Docker that Kubernetes supports.
-
-For example, this command could be used to install on one of the main Linux distributions, such as SUSE Linux Enterprise or Ubuntu:
-
-```bash
-curl https://releases.rancher.com/install-docker/<version-number>.sh | sh
-```
-
-Consult the [Rancher support matrix](https://www.suse.com/suse-rancher/support-matrix) to match a validated Docker version with your operating system and version of Rancher. Although the support matrix lists validated Docker versions down to the patch version, only the major and minor version of the release are relevant for the Docker installation scripts.
-
-Note that the following sysctl setting must be applied:
-
-```bash
-net.bridge.bridge-nf-call-iptables=1
-```
-
-
----
-
 ## Article: getting-started/installation-and-upgrade/installation-requirements/installation-requirements.md
 
 ---
 title: Installation Requirements
-description: Learn the node requirements for each node running Rancher server when you’re configuring  Rancher to run either in a Docker or Kubernetes setup
+description: Learn the node requirements for each node running Rancher server when you’re configuring  Rancher to run either in a Kubernetes setup
 ---
 
 <head>
@@ -33087,9 +32049,7 @@ If you install Rancher on a hardened Kubernetes cluster, check the [Exempting Re
 
 All supported operating systems are 64-bit x86. Rancher should work with any modern Linux distribution.
 
-The [Rancher support matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions) lists which OS and Docker versions were tested for each Rancher version.
-
-Docker is required for nodes that will run RKE clusters. It is not required for RKE2 or K3s clusters.
+The [Rancher support matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions) lists which OS versions were tested for each Rancher version.
 
 The `ntp` (Network Time Protocol) package should be installed. This prevents errors with certificate validation that can occur when the time is not synchronized between the client and server.
 
@@ -33101,7 +32061,7 @@ If you plan to run Rancher on ARM64, see [Running on ARM64 (Experimental).](../.
 
 ### RKE2 Specific Requirements
 
-RKE2 bundles its own container runtime, containerd. Docker is not required for RKE2 installs.
+RKE2 bundles its own container runtime, containerd.
 
 For details on which OS versions were tested with RKE2, refer to the [Rancher support matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions).
 
@@ -33114,12 +32074,6 @@ Rancher needs to be installed on a supported Kubernetes version. To find out whi
 If you are installing Rancher on a K3s cluster with **Raspbian Buster**, follow [these steps](https://rancher.com/docs/k3s/latest/en/advanced/#enabling-legacy-iptables-on-raspbian-buster) to switch to legacy iptables.
 
 If you are installing Rancher on a K3s cluster with Alpine Linux, follow [these steps](https://rancher.com/docs/k3s/latest/en/advanced/#additional-preparation-for-alpine-linux-setup) for additional setup.
-
-### RKE Specific Requirements
-
-RKE requires a Docker container runtime. Supported Docker versions are specified in the [Support Matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/) page.
-
-For more information, see [Installing Docker](install-docker.md).
 
 ## Hardware Requirements
 
@@ -33209,40 +32163,13 @@ These requirements apply to hosted Kubernetes clusters such as Amazon Elastic Ku
 
 (*): Large deployments require that you [follow best practices](../../../reference-guides/best-practices/rancher-server/tuning-and-best-practices-for-rancher-at-scale.md) for adequate performance.
 
-### RKE
-
-The following table lists minimum CPU and memory requirements for each node in the [upstream cluster](../install-upgrade-on-a-kubernetes-cluster/install-upgrade-on-a-kubernetes-cluster.md).
-
-Please note that a highly available setup with at least three nodes is required for production.
-
-| Managed Infrastructure Size | Maximum Number of Clusters | Maximum Number of Nodes | vCPUs | RAM   |
-|-----------------------------|----------------------------|-------------------------|-------|-------|
-| Small                       | 150                        | 1500                    | 4     | 16 GB |
-| Medium                      | 300                        | 3000                    | 8     | 32 GB |
-| Large (*)                   | 500                        | 5000                    | 16    | 64 GB |
-
-(*): Large deployments require that you [follow best practices](../../../reference-guides/best-practices/rancher-server/tuning-and-best-practices-for-rancher-at-scale.md) for adequate performance.
-
-Refer to the RKE documentation for more detailed information on [general requirements](https://rke.docs.rancher.com/os).
-
-### Docker
-
-The following table lists minimum CPU and memory requirements for a [single Docker node installation of Rancher](../other-installation-methods/rancher-on-a-single-node-with-docker/rancher-on-a-single-node-with-docker.md).
-
-Please note that a Docker installation is only suitable for development or testing purposes and is not meant to be used in production environments.
-
-| Managed Infrastructure Size | Maximum Number of Clusters | Maximum Number of Nodes | vCPUs | RAM  |
-|-----------------------------|----------------------------|-------------------------|-------|------|
-| Small                       | 5                          | 50                      | 1     | 4 GB |
-| Medium                      | 15                         | 200                     | 2     | 8 GB |
-
 ## Ingress
 
 Each node in the Kubernetes cluster that Rancher is installed on should run an Ingress.
 
 The Ingress should be deployed as DaemonSet to ensure your load balancer can successfully route traffic to all nodes.
 
-For RKE, RKE2 and K3s installations, you don't have to install the Ingress manually because it is installed by default.
+For RKE2 and K3s installations, you don't have to install the Ingress manually because it is installed by default.
 
 For hosted Kubernetes clusters (EKS, GKE, AKS), you will need to set up the ingress.
 
@@ -33278,11 +32205,7 @@ If you use a load balancer, it should be be HTTP/2 compatible.
 
 To receive help from SUSE Support, Rancher Prime customers who use load balancers (or any other middleboxes such as firewalls), must use one that is HTTP/2 compatible.
 
-When HTTP/2 is not available, Rancher falls back to HTTP/1.1. However, since HTTP/2 offers improved web application performance, using HTTP/1.1 can create performance issues. 
-
-## Dockershim Support
-
-For more information on Dockershim support, refer to [this page](dockershim.md).
+When HTTP/2 is not available, Rancher falls back to HTTP/1.1. However, since HTTP/2 offers improved web application performance, using HTTP/1.1 can create performance issues.
 
 
 ---
@@ -33310,7 +32233,7 @@ The following table lists the ports that need to be open to and from nodes that 
 
 The port requirements differ based on the Rancher server architecture.
 
-Rancher can be installed on any Kubernetes cluster. For Rancher installs on a K3s, RKE, or RKE2 Kubernetes cluster, refer to the tabs below. For other Kubernetes distributions, refer to the distribution's documentation for the port requirements for cluster nodes.
+Rancher can be installed on any Kubernetes cluster. For Rancher installs on a K3s or RKE2 Kubernetes cluster, refer to the tabs below. For other Kubernetes distributions, refer to the distribution's documentation for the port requirements for cluster nodes.
 
 :::note Notes:
 
@@ -33358,52 +32281,6 @@ The following tables break down the port requirements for inbound and outbound t
 | TCP      | 443  | git.rancher.io |  Rancher catalog                     |
 | TCP      | 2376 | Any node IP from a node created using Node driver        | Docker daemon TLS port used by Docker Machine |
 | TCP      | 6443 | Hosted/Imported Kubernetes API                           | Kubernetes API server                         |
-
-</details>
-
-### Ports for Rancher Server Nodes on RKE
-
-<details>
-  <summary>Click to expand</summary>
-
-Typically Rancher is installed on three RKE nodes that all have the etcd, control plane and worker roles.
-
-The following tables break down the port requirements for traffic between the Rancher nodes:
-
-<figcaption>Rules for traffic between Rancher nodes</figcaption>
-
-| Protocol | Port | Description |
-|-----|-----|----------------|
-| TCP | 443 | Rancher agents |
-| TCP | 2379 | etcd client requests |
-| TCP | 2380 | etcd peer communication |
-| TCP | 6443 | Kubernetes apiserver |
-| TCP | 8443 | Nginx Ingress's Validating Webhook |
-| UDP | 8472 | Canal/Flannel VXLAN overlay networking |
-| TCP | 9099 | Canal/Flannel livenessProbe/readinessProbe |
-| TCP | 10250 | Metrics server communication with all nodes |
-| TCP | 10254 | Ingress controller livenessProbe/readinessProbe |
-
-The following tables break down the port requirements for inbound and outbound traffic:
-
-<figcaption>Inbound Rules for Rancher Nodes</figcaption>
-
-| Protocol | Port | Source | Description |
-|-----|-----|----------------|---|
-| TCP | 22 | RKE CLI | SSH provisioning of node by RKE |
-| TCP | 80 | Load Balancer/Reverse Proxy | HTTP traffic to Rancher UI/API |
-| TCP | 443 | <ul><li>Load Balancer/Reverse Proxy</li><li>IPs of all cluster nodes and other API/UI clients</li></ul> | HTTPS traffic to Rancher UI/API |
-| TCP | 6443 | Kubernetes API clients | HTTPS traffic to Kubernetes API |
-
-<figcaption>Outbound Rules for Rancher Nodes</figcaption>
-
-| Protocol | Port | Destination | Description |
-|-----|-----|----------------|---|
-| TCP | 443 | git.rancher.io | Rancher catalog |
-| TCP | 22 | Any node created using a node driver | SSH provisioning of node by node driver |
-| TCP | 2376 | Any node created using a node driver | Docker daemon TLS port used by node driver |
-| TCP | 6443 | Hosted/Imported Kubernetes API                           | Kubernetes API server                         |
-| TCP | Provider dependent | Port of the Kubernetes API endpoint in hosted cluster | Kubernetes API |
 
 </details>
 
@@ -37080,7 +35957,7 @@ title: Air-Gapped Helm CLI Install
 
 This section is about using the Helm CLI to install the Rancher server in an air gapped environment. An air gapped environment could be where Rancher server will be installed offline, behind a firewall, or behind a proxy.
 
-The installation steps differ depending on whether Rancher is installed on an RKE Kubernetes cluster, a K3s Kubernetes cluster, or a single Docker container.
+The installation steps differ depending on whether Rancher is installed on a K3s Kubernetes cluster or a single Docker container.
 
 For more information on each installation option, refer to [this page.](../../installation-and-upgrade.md)
 
@@ -37480,7 +36357,7 @@ This section describes how to install a Kubernetes cluster according to our [bes
 
 Rancher can be installed on any Kubernetes cluster, including hosted Kubernetes providers.
 
-The steps to set up an air-gapped Kubernetes cluster on RKE, RKE2, or K3s are shown below.
+The steps to set up an air-gapped Kubernetes cluster on RKE2 or K3s are shown below.
 
 <Tabs>
 <TabItem value="K3s">
@@ -37756,100 +36633,7 @@ Upgrading an air-gap environment can be accomplished in the following manner:
 3. Restart the RKE2 service.
 
 </TabItem>
-<TabItem value="RKE">
-We will create a Kubernetes cluster using Rancher Kubernetes Engine (RKE). Before being able to start your Kubernetes cluster, you’ll need to install RKE and create a RKE config file.
-
-## 1. Install RKE
-
-Install RKE by following the instructions in the [RKE documentation.](https://rancher.com/docs/rke/latest/en/installation/)
-
-:::note
-
-Certified version(s) of RKE based on the Rancher version can be found in the [Rancher Support Matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/).
-
-:::
-
-## 2. Create an RKE Config File
-
-From a system that can access ports 22/TCP and 6443/TCP on the Linux host node(s) that you set up in a previous step, use the sample below to create a new file named `rancher-cluster.yml`.
-
-This file is an RKE configuration file, which is a configuration for the cluster you're deploying Rancher to.
-
-Replace values in the code sample below with help of the _RKE Options_ table. Use the IP address or DNS names of the three nodes you created.
-
-:::tip
-
-For more details on the options available, see the RKE [Config Options](https://rancher.com/docs/rke/latest/en/config-options/).
-
-:::
-
-<figcaption>RKE Options</figcaption>
-
-| Option             | Required             | Description                                                                             |
-| ------------------ | -------------------- | --------------------------------------------------------------------------------------- |
-| `address`          | ✓                    | The DNS or IP address for the node within the air gapped network.                          |
-| `user`             | ✓                    | A user that can run Docker commands.                                                    |
-| `role`             | ✓                    | List of Kubernetes roles assigned to the node.                                          |
-| `internal_address` | optional<sup>1</sup> | The DNS or IP address used for internal cluster traffic.                                |
-| `ssh_key_path`     |                      | Path to the SSH private key used to authenticate to the node (defaults to `~/.ssh/id_rsa`). |
-
-> <sup>1</sup> Some services like AWS EC2 require setting the `internal_address` if you want to use self-referencing security groups or firewalls.
-
-```yaml
-nodes:
-  - address: 10.10.3.187 # node air gap network IP
-    internal_address: 172.31.7.22 # node intra-cluster IP
-    user: rancher
-    role: ['controlplane', 'etcd', 'worker']
-    ssh_key_path: /home/user/.ssh/id_rsa
-  - address: 10.10.3.254 # node air gap network IP
-    internal_address: 172.31.13.132 # node intra-cluster IP
-    user: rancher
-    role: ['controlplane', 'etcd', 'worker']
-    ssh_key_path: /home/user/.ssh/id_rsa
-  - address: 10.10.3.89 # node air gap network IP
-    internal_address: 172.31.3.216 # node intra-cluster IP
-    user: rancher
-    role: ['controlplane', 'etcd', 'worker']
-    ssh_key_path: /home/user/.ssh/id_rsa
-
-private_registries:
-  - url: <REGISTRY.YOURDOMAIN.COM:PORT> # private registry url
-    user: rancher
-    password: '*********'
-    is_default: true
-```
-
-## 3. Run RKE
-
-After configuring `rancher-cluster.yml`, bring up your Kubernetes cluster:
-
-```
-rke up --config ./rancher-cluster.yml
-```
-
-## 4. Save Your Files
-
-:::note Important:
-
-The files mentioned below are needed to maintain, troubleshoot, and upgrade your cluster.
-
-:::
-
-Save a copy of the following files in a secure location:
-
-- `rancher-cluster.yml`: The RKE cluster configuration file.
-- `kube_config_cluster.yml`: The [Kubeconfig file](https://rancher.com/docs/rke/latest/en/kubeconfig/) for the cluster, this file contains credentials for full access to the cluster.
-- `rancher-cluster.rkestate`: The [Kubernetes Cluster State file](https://rancher.com/docs/rke/latest/en/installation/#kubernetes-cluster-state), this file contains the current state of the cluster including the RKE configuration and the certificates.<br/><br/>_The Kubernetes Cluster State file is only created when using RKE v0.2.0 or higher._
-
-</TabItem>
 </Tabs>
-
-:::note
-
-The "rancher-cluster" parts of the two latter file names are dependent on how you name the RKE cluster configuration file.
-
-:::
 
 ## Issues or Errors?
 
@@ -38437,7 +37221,7 @@ title: '2. Install Kubernetes'
 
 Once the infrastructure is ready, you can continue with setting up a Kubernetes cluster to install Rancher in.
 
-The steps to set up RKE, RKE2, or K3s are shown below.
+The steps to set up RKE2 or K3s are shown below.
 
 For convenience, export the IP address and port of your proxy into an environment variable and set up the `HTTP_PROXY` variables for your current shell on every node:
 
@@ -38534,152 +37318,6 @@ kubectl get pods --all-namespaces
 ```
 
 </TabItem>
-<TabItem value="RKE">
-
-First, you have to install Docker and setup the HTTP proxy on all three Linux nodes. For this perform the following steps on all three nodes.
-
-Next configure apt to use this proxy when installing packages. If you are not using Ubuntu, you have to adapt this step accordingly:
-
-```
-cat <<'EOF' | sudo tee /etc/apt/apt.conf.d/proxy.conf > /dev/null
-Acquire::http::Proxy "http://${proxy_host}/";
-Acquire::https::Proxy "http://${proxy_host}/";
-EOF
-```
-
-Now you can install Docker:
-
-```
-curl -sL https://releases.rancher.com/install-docker/19.03.sh | sh
-```
-
-Then ensure that your current user is able to access the Docker daemon without sudo:
-
-```
-sudo usermod -aG docker YOUR_USERNAME
-```
-
-And configure the Docker daemon to use the proxy to pull images:
-
-```
-sudo mkdir -p /etc/systemd/system/docker.service.d
-cat <<'EOF' | sudo tee /etc/systemd/system/docker.service.d/http-proxy.conf > /dev/null
-[Service]
-Environment="HTTP_PROXY=http://${proxy_host}"
-Environment="HTTPS_PROXY=http://${proxy_host}"
-Environment="NO_PROXY=127.0.0.0/8,10.0.0.0/8,cattle-system.svc,172.16.0.0/12,192.168.0.0/16"
-EOF
-```
-
-To apply the configuration, restart the Docker daemon:
-
-```
-sudo systemctl daemon-reload
-sudo systemctl restart docker
-```
-
-#### Air-gapped proxy
-
-You can now provision node driver clusters from an air-gapped cluster configured to use a proxy for outbound connections.
-
-In addition to setting the default rules for a proxy server, you must also add the rules shown below to provision node driver clusters from a proxied Rancher environment.
-
-You will configure your filepath according to your setup, e.g., `/etc/apt/apt.conf.d/proxy.conf`:
-
-```
-acl SSL_ports port 22
-acl SSL_ports port 2376
-
-acl Safe_ports port 22      # ssh
-acl Safe_ports port 2376    # docker port
-```
-
-### Creating the RKE Cluster
-
-You need several command line tools on the host where you have SSH access to the Linux nodes to create and interact with the cluster:
-
-*  [RKE CLI binary](https://rancher.com/docs/rke/latest/en/installation/#download-the-rke-binary)
-
-```
-sudo curl -fsSL -o /usr/local/bin/rke https://github.com/rancher/rke/releases/download/v1.1.4/rke_linux-amd64
-sudo chmod +x /usr/local/bin/rke
-```
-
-* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
-
-```
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin/kubectl
-```
-
-Next, create a YAML file that describes the RKE cluster. Ensure that the IP addresses of the nodes and the SSH username are correct. For more information on the cluster YAML, have a look at the [RKE documentation](https://rancher.com/docs/rke/latest/en/example-yamls/).
-
-```yml
-nodes:
-  - address: 10.0.1.200
-    user: ubuntu
-    role: [controlplane,worker,etcd]
-  - address: 10.0.1.201
-    user: ubuntu
-    role: [controlplane,worker,etcd]
-  - address: 10.0.1.202
-    user: ubuntu
-    role: [controlplane,worker,etcd]
-
-services:
-  etcd:
-    backup_config:
-      interval_hours: 12
-      retention: 6
-```
-
-After that, you can create the Kubernetes cluster by running:
-
-```
-rke up --config rancher-cluster.yaml
-```
-
-RKE creates a state file called `rancher-cluster.rkestate`, this is needed if you want to perform updates, modify your cluster configuration or restore it from a backup. It also creates a `kube_config_cluster.yaml` file, that you can use to connect to the remote Kubernetes cluster locally with tools like kubectl or Helm. Make sure to save all of these files in a secure location, for example by putting them into a version control system.
-
-To have a look at your cluster run:
-
-```
-export KUBECONFIG=kube_config_cluster.yaml
-kubectl cluster-info
-kubectl get pods --all-namespaces
-```
-
-You can also verify that your external load balancer works, and the DNS entry is set up correctly. If you send a request to either, you should receive HTTP 404 response from the ingress controller:
-
-```
-$ curl 10.0.1.100
-default backend - 404
-$ curl rancher.example.com
-default backend - 404
-```
-
-### Save Your Files
-
-:::note Important:
-
-The files mentioned below are needed to maintain, troubleshoot and upgrade your cluster.
-
-:::
-
-Save a copy of the following files in a secure location:
-
-- `rancher-cluster.yml`: The RKE cluster configuration file.
-- `kube_config_cluster.yml`: The [Kubeconfig file](https://rancher.com/docs/rke/latest/en/kubeconfig/) for the cluster, this file contains credentials for full access to the cluster.
-- `rancher-cluster.rkestate`: The [Kubernetes Cluster State file](https://rancher.com/docs/rke/latest/en/installation/#kubernetes-cluster-state), this file contains the current state of the cluster including the RKE configuration and the certificates.
-
-:::note
-
-The "rancher-cluster" parts of the two latter file names are dependent on how you name the RKE cluster configuration file.
-
-:::
-
-</TabItem>
 </Tabs>
 
 ### Issues or errors?
@@ -38701,7 +37339,7 @@ title: 3. Install Rancher
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-behind-an-http-proxy/install-rancher"/>
 </head>
 
-Now that you have a running RKE cluster, you can install Rancher in it. For security reasons all traffic to Rancher must be encrypted with TLS. For this tutorial you are going to automatically issue a self-signed certificate through [cert-manager](https://cert-manager.io/). In a real-world use-case you will likely use Let's Encrypt or provide your own certificate.
+Now that you have a running RKE2/K3s cluster, you can install Rancher in it. For security reasons all traffic to Rancher must be encrypted with TLS. For this tutorial you are going to automatically issue a self-signed certificate through [cert-manager](https://cert-manager.io/). In a real-world use-case you will likely use Let's Encrypt or provide your own certificate.
 
 ### Install the Helm CLI
 
@@ -38836,7 +37474,7 @@ title: '1. Set up Infrastructure'
 
 In this section, you will provision the underlying infrastructure for your Rancher management server with internet access through a HTTP proxy.
 
-To install the Rancher management server on a high-availability RKE cluster, we recommend setting up the following infrastructure:
+To install the Rancher management server on a high-availability RKE2/K3s cluster, we recommend setting up the following infrastructure:
 
 - **Three Linux nodes,** typically virtual machines, in an infrastructure provider such as Amazon's EC2, Google Compute Engine, or vSphere.
 - **A load balancer** to direct front-end traffic to the three nodes.
@@ -38846,7 +37484,7 @@ These nodes must be in the same region/data center. You may place these servers 
 
 ### Why three nodes?
 
-In an RKE cluster, Rancher server data is stored on etcd. This etcd database runs on all three nodes.
+In an RKE2/K3s cluster, Rancher server data is stored on etcd. This etcd database runs on all three nodes.
 
 The etcd database requires an odd number of nodes so that it can always elect a leader with a majority of the etcd cluster. If the etcd database cannot elect a leader, etcd can suffer from [split brain](https://www.quora.com/What-is-split-brain-in-distributed-systems), requiring the cluster to be restored from backup. If one of the three etcd nodes fails, the two remaining nodes can elect a leader because they have the majority of the total number of etcd nodes.
 
@@ -38862,7 +37500,7 @@ For an example of one way to set up Linux nodes, refer to this [tutorial](../../
 
 You will also need to set up a load balancer to direct traffic to the Rancher replica on both nodes. That will prevent an outage of any single node from taking down communications to the Rancher management server.
 
-When Kubernetes gets set up in a later step, the RKE tool will deploy an NGINX Ingress controller. This controller will listen on ports 80 and 443 of the worker nodes, answering traffic destined for specific hostnames.
+When Kubernetes gets set up in a later step, the RKE2/K3s tool will deploy an NGINX Ingress controller. This controller will listen on ports 80 and 443 of the worker nodes, answering traffic destined for specific hostnames.
 
 When Rancher is installed (also in a later step), the Rancher system creates an Ingress resource. That Ingress tells the NGINX Ingress controller to listen for traffic destined for the Rancher hostname. The NGINX Ingress controller, when receiving traffic destined for the Rancher hostname, will forward that traffic to the running Rancher pods in the cluster.
 
@@ -39667,6 +38305,7 @@ Each Rancher version is designed to be compatible with a single version of the w
 
 | Rancher Version | Webhook Version | Availability in Prime | Availability in Community |
 |-----------------|-----------------|-----------------------|---------------------------|
+| v2.12.3         |     v0.8.3      | &check;               | &check;                   |
 | v2.12.2         |     v0.8.2      | &check;               | &check;                   |
 | v2.12.1         |     v0.8.1      | &check;               | &check;                   |
 | v2.12.0         |     v0.8.0      | &cross;               | &check;                   |
@@ -40295,11 +38934,11 @@ title: Rancher Server and Components
 
 The majority of Rancher 2.x software runs on the Rancher Server. Rancher Server includes all the software components used to manage the entire Rancher deployment.
 
-The figure below illustrates the high-level architecture of Rancher 2.x. The figure depicts a Rancher Server installation that manages two downstream Kubernetes clusters: one created by RKE and another created by Amazon EKS (Elastic Kubernetes Service).
+The diagram below illustrates the high-level architecture of Rancher 2.x. The figure depicts a Rancher Server installation that manages two downstream Kubernetes clusters: one created by RKE2 and another created by Amazon EKS (Elastic Kubernetes Service).
 
 For the best performance and security, we recommend a dedicated Kubernetes cluster for the Rancher management server. Running user workloads on this cluster is not advised. After deploying Rancher, you can [create or import clusters](../../how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/kubernetes-clusters-in-rancher-setup.md) for running your workloads.
 
-The diagram below shows how users can manipulate both [Rancher-launched Kubernetes](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md) clusters and [hosted Kubernetes](../../how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-clusters-from-hosted-kubernetes-providers/set-up-clusters-from-hosted-kubernetes-providers.md) clusters through Rancher's authentication proxy:
+The diagram shows how users can manipulate both [Rancher-launched Kubernetes](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md) clusters and [hosted Kubernetes](../../how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-clusters-from-hosted-kubernetes-providers/set-up-clusters-from-hosted-kubernetes-providers.md) clusters through Rancher's authentication proxy:
 
 <figcaption>Managing Kubernetes Clusters through Rancher's Authentication Proxy</figcaption>
 
@@ -42317,7 +40956,7 @@ description: To create a cluster with custom nodes, you’ll need to access serv
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/use-existing-nodes"/>
 </head>
 
-When you create a custom cluster, Rancher uses RKE (the Rancher Kubernetes Engine) to create a Kubernetes cluster in on-prem bare-metal servers, on-prem virtual machines, or in any node hosted by an infrastructure provider.
+When you create a custom cluster, Rancher can use RKE2/K3s to create a Kubernetes cluster in on-prem bare-metal servers, on-prem virtual machines, or in any node hosted by an infrastructure provider.
 
 To use this option you'll need access to servers you intend to use in your Kubernetes cluster. Provision each server according to the [requirements](../../../../how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/node-requirements-for-rancher-managed-clusters.md), which includes some hardware specifications and Docker. After you install Docker on each server, you willl also run the command provided in the Rancher UI on each server to turn each one into a Kubernetes node.
 
@@ -43261,7 +41900,7 @@ Choose the default security group or configure a security group.
 
 Please refer to [Amazon EC2 security group when using Node Driver](../../../../getting-started/installation-and-upgrade/installation-requirements/port-requirements.md#rancher-aws-ec2-security-group) to see what rules are created in the `rancher-nodes` Security Group.
 
-If you provide your own security group for an EC2 instance, please note that Rancher will not modify it. As such, you will be responsible for ensuring that your security group is set to allow the [necessary ports for Rancher to provision the instance](../../../../getting-started/installation-and-upgrade/installation-requirements/port-requirements.md#ports-for-rancher-server-nodes-on-rke). For more information on controlling inbound and outbound traffic to EC2 instances with security groups, refer [here](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#WorkingWithSecurityGroups).
+If you provide your own security group for an EC2 instance, please note that Rancher will not modify it. As such, you will be responsible for ensuring that your security group is set to allow the [necessary ports for Rancher to provision the instance](../../../../getting-started/installation-and-upgrade/installation-requirements/port-requirements.md#ports-for-rancher-server-nodes-on-rke2). For more information on controlling inbound and outbound traffic to EC2 instances with security groups, refer [here](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#WorkingWithSecurityGroups).
 
 ### Instance Options
 
@@ -45925,6 +44564,8 @@ Rancher is committed to informing the community of security issues in our produc
 
 | ID | Description | Date | Resolution |
 |----|-------------|------|------------|
+| [CVE-2023-32199](https://github.com/rancher/rancher/security/advisories/GHSA-j4vr-pcmw-hx59) | Rancher now removes the corresponding ClusterRoleBindings whenever the admin GlobalRole or its GlobalRoleBindings are deleted. Previously orphaned ClusterRoleBindings were marked with the annotation `authz.cluster.cattle.io/admin-globalrole-missing=true`. | 23 Oct 2025 | Rancher [v2.12.3](https://github.com/rancher/rancher/releases/tag/v2.12.3) and [v2.11.7](https://github.com/rancher/rancher/releases/tag/v2.11.7) |
+| [CVE-2024-58269](https://github.com/rancher/rancher/security/advisories/GHSA-mw39-9qc2-f7mg) | The Rancher audit log redaction process has changed to the following: <br/><br/><ul><li> It now redacts `kubectl.kubernetes.io/last-applied-configuration` annotations on both Response and Request body contents. Previously it did not redact Response body content.</li><li> It now redacts Cluster Import URLs on both Request URLs and Referer headers. Previously it did not redact Referer headers.</li></ul> | 23 Oct 2025 | Rancher [v2.12.3](https://github.com/rancher/rancher/releases/tag/v2.12.3) |
 | [CVE-2024-58260](https://github.com/rancher/rancher/security/advisories/GHSA-q82v-h4rq-5c86) | Setting the username of one user as the same username of another user causes an error when either user attempts to log in. Therefore, a user with the `Manage Users` permission could potentially deny any user, including admins, from logging in. To prevent this, usernames have been made immutable once set, and it is not possible to update or create a user with a username that is already in use. | 25 Sep 2025 | Rancher [v2.12.2](https://github.com/rancher/rancher/releases/tag/v2.12.2), [v2.11.6](https://github.com/rancher/rancher/releases/tag/v2.11.6), [v2.10.10](https://github.com/rancher/rancher/releases/tag/v2.10.10), and [v2.9.12](https://github.com/rancher/rancher/releases/tag/v2.9.12) |
 | [CVE-2024-58267](https://github.com/rancher/rancher/security/advisories/GHSA-v3vj-5868-2ch2) | The Rancher CLI is modified to print the `requestId` more visibly than as part of the login URL. It also adds a `cli=true` origin marker to the URL. The dashboard is modified to recognize the presence of the `requestId` and uses that to show a warning message to the user, asking for verification that they initiated a CLI login with the related Id. The non-presence of the origin marker enables the dashboard to distinguish between the modified CLI and older CLI’s, and adjust the message accordingly. | 25 Sep 2025 | Rancher [v2.12.2](https://github.com/rancher/rancher/releases/tag/v2.12.2), [v2.11.6](https://github.com/rancher/rancher/releases/tag/v2.11.6), [v2.10.10](https://github.com/rancher/rancher/releases/tag/v2.10.10), and [v2.9.12](https://github.com/rancher/rancher/releases/tag/v2.9.12) |
 | [CVE-2025-54468](https://github.com/rancher/rancher/security/advisories/GHSA-mjcp-rj3c-36fr) | `Impersonate-*` headers are removed for requests made through the `/meta/proxy` Rancher endpoint (e.g. when cloud credentials are being created) as the headers may contain identifiable and/or sensitive information. | 25 Sep 2025 | Rancher [v2.12.2](https://github.com/rancher/rancher/releases/tag/v2.12.2), [v2.11.6](https://github.com/rancher/rancher/releases/tag/v2.11.6), [v2.10.10](https://github.com/rancher/rancher/releases/tag/v2.10.10), and [v2.9.12](https://github.com/rancher/rancher/releases/tag/v2.9.12) |
