@@ -27408,3 +27408,17 @@ You can check the current environment variables in a running Rancher Pod with th
 
 `kubectl exec --namespace cattle-system <RANCHER-POD> -- env`
 
+
+
+---
+
+## Article: 000022124.md
+
+# What is the difference between short and long join tokens in K3s/RKE2 clusters?
+
+**Article Number:** [000022124](https://support.scc.suse.com/s/kb/What-is-the-difference-between-short-and-long-join-tokens-in-K3s-RKE2-clusters)
+
+## **Environment**
+
+A standalone or Rancher-provisioned K3s or RKE2 cluster
+
