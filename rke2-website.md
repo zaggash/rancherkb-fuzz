@@ -867,982 +867,6 @@ RKE1 and RKE2 both support Calico and Canal CNI, so migration-agent will be able
 
 ---
 
-## Article: release-notes/v1.30.X.md
-
----
-hide_table_of_contents: true
-sidebar_position: 5
-title: v1.30.X
----
-
-
-:::warning Upgrade Notice
-Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent Upgrade Notes](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#urgent-upgrade-notes).
-:::
-
-| Version | Release date | Kubernetes | Etcd | Containerd | Runc | Metrics-server | CoreDNS | Ingress-Nginx | Helm-controller | Canal (Default) | Calico | Cilium | Multus |
-| ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| [v1.30.14+rke2r4](v1.30.X.md#release-v13014rke2r4) | Sep 18 2025| [v1.30.14](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13014) | [v3.5.21-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.21-k3s1) | [v1.7.27-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.27-k3s1) | [v1.2.7](https://github.com/opencontainers/runc/releases/tag/v1.2.7) | [v0.8.0](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.0) | [v1.12.3](https://github.com/coredns/coredns/releases/tag/v1.12.3) | [v1.12.4-hardened7](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.4-hardened7) | [v0.16.13](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.13) | [Flannel v0.27.2](https://github.com/flannel-io/flannel/releases/tag/v0.27.2)<br/>[Calico v3.30.2](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v3.30.2](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v1.18.0](https://github.com/cilium/cilium/releases/tag/v1.18.0) | [v4.2.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.2) |
-| [v1.30.14+rke2r2](v1.30.X.md#release-v13014rke2r2) | Jul 25 2025| [v1.30.14](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13014) | [v3.5.21-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.21-k3s1) | [v1.7.27-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.27-k3s1) | [v1.2.6](https://github.com/opencontainers/runc/releases/tag/v1.2.6) | [v0.8.0](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.0) | [v1.12.2](https://github.com/coredns/coredns/releases/tag/v1.12.2) | [v1.12.4-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.4-hardened2) | [v0.16.13](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.13) | [Flannel v0.27.1](https://github.com/flannel-io/flannel/releases/tag/v0.27.1)<br/>[Calico v3.30.2](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v3.30.1](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v1.17.6](https://github.com/cilium/cilium/releases/tag/v1.17.6) | [v4.2.1](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.1) |
-| [v1.30.14+rke2r1](v1.30.X.md#release-v13014rke2r1) | Jun 27 2025| [v1.30.14](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13014) | [v3.5.21-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.21-k3s1) | [v1.7.27-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.27-k3s1) | [v1.2.6](https://github.com/opencontainers/runc/releases/tag/v1.2.6) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.2](https://github.com/coredns/coredns/releases/tag/v1.12.2) | [v1.12.2-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.2-hardened2) | [v0.16.11](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.11) | [Flannel v0.27.0](https://github.com/flannel-io/flannel/releases/tag/v0.27.0)<br/>[Calico v3.30.1](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v3.30.1](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v1.17.4](https://github.com/cilium/cilium/releases/tag/v1.17.4) | [v4.2.1](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.1) |
-| [v1.30.13+rke2r1](v1.30.X.md#release-v13013rke2r1) | May 21 2025| [v1.30.13](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13013) | [v3.5.21-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.21-k3s1) | [v1.7.27-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.27-k3s1) | [v1.2.6](https://github.com/opencontainers/runc/releases/tag/v1.2.6) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.1](https://github.com/coredns/coredns/releases/tag/v1.12.1) | [v1.12.1-hardened6](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.1-hardened6) | [v0.16.10](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.10) | [Flannel v0.26.7](https://github.com/flannel-io/flannel/releases/tag/v0.26.7)<br/>[Calico v3.30.0](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v3.30.0](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v1.17.3](https://github.com/cilium/cilium/releases/tag/v1.17.3) | [v4.2.0](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.0) |
-| [v1.30.12+rke2r1](v1.30.X.md#release-v13012rke2r1) | May 01 2025| [v1.30.12](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13012) | [v3.5.21-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.21-k3s1) | [v1.7.26-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.26-k3s1) | [v1.2.5](https://github.com/opencontainers/runc/releases/tag/v1.2.5) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.1](https://github.com/coredns/coredns/releases/tag/v1.12.1) | [v1.12.1-hardened3](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.1-hardened3) | [v0.16.10](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.10) | [Flannel v0.26.6](https://github.com/flannel-io/flannel/releases/tag/v0.26.6)<br/>[Calico v3.29.3](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.3](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.17.3](https://github.com/cilium/cilium/releases/tag/v1.17.3) | [v4.2.0](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.0) |
-| [v1.30.11+rke2r1](v1.30.X.md#release-v13011rke2r1) | Mar 26 2025| [v1.30.11](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13011) | [v3.5.19-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.19-k3s1) | [v1.7.26-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.26-k3s1) | [v1.2.5](https://github.com/opencontainers/runc/releases/tag/v1.2.5) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.0](https://github.com/coredns/coredns/releases/tag/v1.12.0) | [v1.12.1-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.1-hardened1) | [v0.16.6](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.6) | [Flannel v0.26.5](https://github.com/flannel-io/flannel/releases/tag/v0.26.5)<br/>[Calico v3.29.2](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.2](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.17.1](https://github.com/cilium/cilium/releases/tag/v1.17.1) | [v4.1.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.4) |
-| [v1.30.10+rke2r1](v1.30.X.md#release-v13010rke2r1) | Feb 27 2025| [v1.30.10](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13010) | [v3.5.18-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.18-k3s1) | [v1.7.23-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.23-k3s2) | [v1.2.4](https://github.com/opencontainers/runc/releases/tag/v1.2.4) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.0](https://github.com/coredns/coredns/releases/tag/v1.12.0) | [v1.12.0-hardened6](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.0-hardened6) | [v0.16.6](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.6) | [Flannel v0.26.4](https://github.com/flannel-io/flannel/releases/tag/v0.26.4)<br/>[Calico v3.29.2](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.2](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.17.0](https://github.com/cilium/cilium/releases/tag/v1.17.0) | [v4.1.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.4) |
-| [v1.30.9+rke2r1](v1.30.X.md#release-v1309rke2r1) | Jan 27 2025| [v1.30.9](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1309) | [v3.5.16-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.16-k3s1) | [v1.7.23-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.23-k3s2) | [v1.2.4](https://github.com/opencontainers/runc/releases/tag/v1.2.4) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.0](https://github.com/coredns/coredns/releases/tag/v1.12.0) | [v1.12.0-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.0-hardened2) | [v0.16.5](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.5) | [Flannel v0.26.3](https://github.com/flannel-io/flannel/releases/tag/v0.26.3)<br/>[Calico v3.29.1](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.1](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.16.5](https://github.com/cilium/cilium/releases/tag/v1.16.5) | [v4.1.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.4) |
-| [v1.30.8+rke2r1](v1.30.X.md#release-v1308rke2r1) | Dec 18 2024| [v1.30.8](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1308) | [v3.5.16-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.16-k3s1) | [v1.7.23-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.23-k3s2) | [v1.1.14](https://github.com/opencontainers/runc/releases/tag/v1.1.14) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.12.0](https://github.com/coredns/coredns/releases/tag/v1.12.0) | [v1.10.5-hardened6](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.5-hardened6) | [v0.16.5](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.5) | [Flannel v0.26.1](https://github.com/flannel-io/flannel/releases/tag/v0.26.1)<br/>[Calico v3.29.1](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.1](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.16.4](https://github.com/cilium/cilium/releases/tag/v1.16.4) | [v4.1.3](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.3) |
-| [v1.30.7+rke2r1](v1.30.X.md#release-v1307rke2r1) | Dec 06 2024| [v1.30.7](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1307) | [v3.5.16-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.16-k3s1) | [v1.7.23-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.23-k3s2) | [v1.1.14](https://github.com/opencontainers/runc/releases/tag/v1.1.14) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.3](https://github.com/coredns/coredns/releases/tag/v1.11.3) | [v1.10.5-hardened4](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.5-hardened4) | [v0.16.5](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.5) | [Flannel v0.26.0](https://github.com/flannel-io/flannel/releases/tag/v0.26.0)<br/>[Calico v3.29.0](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.0](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.16.3](https://github.com/cilium/cilium/releases/tag/v1.16.3) | [v4.1.3](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.3) |
-| [v1.30.6+rke2r1](v1.30.X.md#release-v1306rke2r1) | Oct 30 2024| [v1.30.6](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1306) | [v3.5.13-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.13-k3s1) | [v1.7.22-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.22-k3s1) | [v1.1.14](https://github.com/opencontainers/runc/releases/tag/v1.1.14) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.3](https://github.com/coredns/coredns/releases/tag/v1.11.3) | [v1.10.5-hardened3](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.5-hardened3) | [v0.16.5](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.5) | [Flannel v0.25.7](https://github.com/flannel-io/flannel/releases/tag/v0.25.7)<br/>[Calico v3.28.2](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v3.28.2](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v1.16.2](https://github.com/cilium/cilium/releases/tag/v1.16.2) | [v4.1.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.2) |
-| [v1.30.5+rke2r1](v1.30.X.md#release-v1305rke2r1) | Sep 23 2024| [v1.30.5](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1305) | [v3.5.13-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.13-k3s1) | [v1.7.21-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.21-k3s2) | [v1.1.14](https://github.com/opencontainers/runc/releases/tag/v1.1.14) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [v1.10.4-hardened3](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.4-hardened3) | [v0.16.4](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.4) | [Flannel v0.25.6](https://github.com/flannel-io/flannel/releases/tag/v0.25.6)<br/>[Calico v3.28.1](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v3.28.1](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v1.16.1](https://github.com/cilium/cilium/releases/tag/v1.16.1) | [v4.1.0](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.0) |
-| [v1.30.4+rke2r1](v1.30.X.md#release-v1304rke2r1) | Aug 26 2024| [v1.30.4](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1304) | [v3.5.13-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.13-k3s1) | [v1.7.20-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.20-k3s1) | [v1.1.12](https://github.com/opencontainers/runc/releases/tag/v1.1.12) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [v1.10.4-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.4-hardened2) | [v0.16.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.1) | [Flannel v0.25.5](https://github.com/flannel-io/flannel/releases/tag/v0.25.5)<br/>[Calico v3.28.1](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v3.28.1](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v1.16.0](https://github.com/cilium/cilium/releases/tag/v1.16.0) | [v4.0.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.0.2) |
-| [v1.30.3+rke2r1](v1.30.X.md#release-v1303rke2r1) | Aug 01 2024| [v1.30.3](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1303) | [v3.5.13-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.13-k3s1) | [v1.7.17-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.17-k3s1) | [v1.1.12](https://github.com/opencontainers/runc/releases/tag/v1.1.12) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [v1.10.1-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.1-hardened1) | [v0.16.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.1) | [Flannel v0.25.4](https://github.com/flannel-io/flannel/releases/tag/v0.25.4)<br/>[Calico v3.28.0](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v1.15.5](https://github.com/cilium/cilium/releases/tag/v1.15.5) | [v4.0.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.0.2) |
-| [v1.30.2+rke2r1](v1.30.X.md#release-v1302rke2r1) | Jul 01 2024| [v1.30.2](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1302) | [v3.5.13-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.13-k3s1) | [v1.7.17-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.17-k3s1) | [v1.1.12](https://github.com/opencontainers/runc/releases/tag/v1.1.12) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [v1.10.1-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.1-hardened1) | [v0.16.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.1) | [Flannel v0.25.4](https://github.com/flannel-io/flannel/releases/tag/v0.25.4)<br/>[Calico v3.28.0](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v1.15.5](https://github.com/cilium/cilium/releases/tag/v1.15.5) | [v4.0.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.0.2) |
-| [v1.30.1+rke2r1](v1.30.X.md#release-v1301rke2r1) | May 22 2024| [v1.30.1](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1301) | [v3.5.9-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.9-k3s1) | [v1.7.11-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.11-k3s2) | [v1.1.12](https://github.com/opencontainers/runc/releases/tag/v1.1.12) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [nginx-1.9.6-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/nginx-1.9.6-hardened1) | [v0.16.1-0.20240502205943-2f32059d43e6](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.1-0.20240502205943-2f32059d43e6) | [Flannel v0.25.1](https://github.com/flannel-io/flannel/releases/tag/v0.25.1)<br/>[Calico v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v1.15.5](https://github.com/cilium/cilium/releases/tag/v1.15.5) | [v4.0.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.0.2) |
-| [v1.30.0+rke2r1](v1.30.X.md#release-v1300rke2r1) | May 09 2024| [v1.30.0](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1300) | [v3.5.9-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.9-k3s1) | [v1.7.11-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.11-k3s2) | [v1.1.12](https://github.com/opencontainers/runc/releases/tag/v1.1.12) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [nginx-1.9.6-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/nginx-1.9.6-hardened1) | [v0.16.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.1) | [Flannel v0.25.1](https://github.com/flannel-io/flannel/releases/tag/v0.25.1)<br/>[Calico v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v1.15.4](https://github.com/cilium/cilium/releases/tag/v1.15.4) | [v4.0.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.0.2) |
-
-<br />
-
-## Release [v1.30.14+rke2r4](https://github.com/rancher/rke2/releases/tag/v1.30.14+rke2r4)
-<!-- v1.30.14+rke2r4 -->
-
-This release updates Kubernetes to v1.30.14.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.14+rke2r2:
-
-* CNI Bumps for Aug 25 release [(#8689)](https://github.com/rancher/rke2/pull/8689)
-* Bump rancher vsphere csi to 3.3.1-rancher10 [(#8678)](https://github.com/rancher/rke2/pull/8678)
-* Update to cilium v1.18.000 [(#8719)](https://github.com/rancher/rke2/pull/8719)
-* Bump ingress-nginx to v1.12.4-hardened6 [(#8735)](https://github.com/rancher/rke2/pull/8735)
-* Update Kubernetes Metrics Server chart 3.13.000 [(#8744)](https://github.com/rancher/rke2/pull/8744)
-* Add prime ribs index upload and cache invalidation [(#8708)](https://github.com/rancher/rke2/pull/8708)
-* Publish prime-only assets [(#8754)](https://github.com/rancher/rke2/pull/8754)
-* Update K8s to v1.30.14 r3 [(#8770)](https://github.com/rancher/rke2/pull/8770)
-* Fix missing ECM config [(#8775)](https://github.com/rancher/rke2/pull/8775)
-* Fix uploader authentication [(#8780)](https://github.com/rancher/rke2/pull/8780)
-* Bump ingress-nginx to hardened7 [(#8792)](https://github.com/rancher/rke2/pull/8792)
-* Add REGISTRY env into package windows images step [(#8794)](https://github.com/rancher/rke2/pull/8794)
-* Remove docker login from publish-manifest-runtime [(#8800)](https://github.com/rancher/rke2/pull/8800)
-* Bump coredns chart and image (#8736) [(#8799)](https://github.com/rancher/rke2/pull/8799)
-* Bump runc 1.2.7 to fix CPU affinity issue [(#8852)](https://github.com/rancher/rke2/pull/8852)
-* Update kubernetes [(#8922)](https://github.com/rancher/rke2/pull/8922)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.18.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.18.000.tgz) |
-| rke2-canal | [v3.30.2-build2025073100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.30.2-build2025073100.tgz) |
-| rke2-calico | [v3.30.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.30.200.tgz) |
-| rke2-calico-crd | [v3.30.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.30.200.tgz) |
-| rke2-coredns | [1.43.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.43.101.tgz) |
-| rke2-ingress-nginx | [4.12.404](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.404.tgz) |
-| rke2-metrics-server | [3.13.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.13.000.tgz) |
-| rancher-vsphere-csi | [3.3.1-rancher1000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher1000.tgz) |
-| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
-| harvester-cloud-provider | [0.2.1000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1000.tgz) |
-| harvester-csi-driver | [0.1.2400](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2400.tgz) |
-| rke2-snapshot-controller | [4.0.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.003.tgz) |
-| rke2-snapshot-controller-crd | [4.0.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.003.tgz) |
-| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
-
-
------
-## Release [v1.30.14+rke2r2](https://github.com/rancher/rke2/releases/tag/v1.30.14+rke2r2)
-<!-- v1.30.14+rke2r2 -->
-
-This release updates Kubernetes to v1.30.14.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.14+rke2r1:
-
-* Use custom golang setup for integration tests [(#8453)](https://github.com/rancher/rke2/pull/8453)
-* Update Canal chart to latest version [(#8532)](https://github.com/rancher/rke2/pull/8532)
-* Bump multus and whereabouts chart [(#8542)](https://github.com/rancher/rke2/pull/8542)
-* Update Kubernetes Metrics Server chart 3.12.203 [(#8558)](https://github.com/rancher/rke2/pull/8558)
-* Bump ingress-nginx to v1.12.4-hardened1 [(#8571)](https://github.com/rancher/rke2/pull/8571)
-* Update shell completion command to new structure [(#8575)](https://github.com/rancher/rke2/pull/8575)
-* Charts: Bump Harvester CSI driver 0.1.24 [(#8504)](https://github.com/rancher/rke2/pull/8504)
-  * - Support online resize
-  * - Support external storage
-* Allow for zypper remove 104 code on uninstall [(#8580)](https://github.com/rancher/rke2/pull/8580)
-* - Fix snapshot controller backwards compatibility [(#8594)](https://github.com/rancher/rke2/pull/8594)
-* Update flannel chart v0.27.100 [(#8604)](https://github.com/rancher/rke2/pull/8604)
-* Backports for 2025-07 [(#8609)](https://github.com/rancher/rke2/pull/8609)
-* Update K8s to `v1.30.14 r2` [(#8622)](https://github.com/rancher/rke2/pull/8622)
-* Bump ingress-nginx to hardened2 [(#8633)](https://github.com/rancher/rke2/pull/8633)
-* Update to cilium `v1.17.6` [(#8646)](https://github.com/rancher/rke2/pull/8646)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.17.600](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.600.tgz) |
-| rke2-canal | [v3.30.2-build2025071100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.30.2-build2025071100.tgz) |
-| rke2-calico | [v3.30.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.30.100.tgz) |
-| rke2-calico-crd | [v3.30.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.30.100.tgz) |
-| rke2-coredns | [1.42.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.42.302.tgz) |
-| rke2-ingress-nginx | [4.12.401](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.401.tgz) |
-| rke2-metrics-server | [3.12.203](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.203.tgz) |
-| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
-| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
-| harvester-cloud-provider | [0.2.1000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1000.tgz) |
-| harvester-csi-driver | [0.1.2400](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2400.tgz) |
-| rke2-snapshot-controller | [4.0.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.003.tgz) |
-| rke2-snapshot-controller-crd | [4.0.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.003.tgz) |
-| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
-
-
------
-## Release [v1.30.14+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.14+rke2r1)
-<!-- v1.30.14+rke2r1 -->
-
-This release updates Kubernetes to v1.30.14.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.13+rke2r1:
-
-* June 2025 CNI bumps [(#8322)](https://github.com/rancher/rke2/pull/8322)
-* Windows: Allow for silent/non confirmation use of uninstall.ps1 (#8147) [(#8344)](https://github.com/rancher/rke2/pull/8344)
-* Testing Overhaul Backports [(#8361)](https://github.com/rancher/rke2/pull/8361)
-* Bump canal, flannel and cilium charts (#8359) [(#8385)](https://github.com/rancher/rke2/pull/8385)
-* Bump multus and whereabouts (#8360) [(#8393)](https://github.com/rancher/rke2/pull/8393)
-* Support profile: etcd [(#8368)](https://github.com/rancher/rke2/pull/8368)
-* Bump for etcd, cloud provider, crictl, containerd and runc [(#8406)](https://github.com/rancher/rke2/pull/8406)
-* Backports for 2025-06 [(#8420)](https://github.com/rancher/rke2/pull/8420)
-* Update Kubernetes Metrics Server chart 3.12.2 [(#8424)](https://github.com/rancher/rke2/pull/8424)
-* Update CoreDNS chart 1.42.3 [(#8428)](https://github.com/rancher/rke2/pull/8428)
-* Bump ingress-nginx to v1.12.2 and hardened-dns-node for CVE fixes [(#8402)](https://github.com/rancher/rke2/pull/8402)
-* Bump K3s version [(#8437)](https://github.com/rancher/rke2/pull/8437)
-* June K8s `v1.30.14` patch [(#8443)](https://github.com/rancher/rke2/pull/8443)
-* Update runc to the newest image [(#8468)](https://github.com/rancher/rke2/pull/8468)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.17.401](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.401.tgz) |
-| rke2-canal | [v3.30.1-build2025061101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.30.1-build2025061101.tgz) |
-| rke2-calico | [v3.30.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.30.100.tgz) |
-| rke2-calico-crd | [v3.30.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.30.100.tgz) |
-| rke2-coredns | [1.42.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.42.302.tgz) |
-| rke2-ingress-nginx | [4.12.201](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.201.tgz) |
-| rke2-metrics-server | [3.12.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.202.tgz) |
-| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
-| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
-| harvester-cloud-provider | [0.2.1000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1000.tgz) |
-| harvester-csi-driver | [0.1.2300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2300.tgz) |
-| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
-| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
-| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
-
-
------
-## Release [v1.30.13+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.13+rke2r1)
-<!-- v1.30.13+rke2r1 -->
-
-This release updates Kubernetes to v1.30.13.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.12+rke2r1:
-
-* Upload prime ribs assets [(#8181)](https://github.com/rancher/rke2/pull/8181)
-* Feat: bump harvester-cloud-provider to v0.2.10 [(#8185)](https://github.com/rancher/rke2/pull/8185)
-* Backports for 2025-05 [(#8198)](https://github.com/rancher/rke2/pull/8198)
-* Udpate calico chart to v3.30.0 and Canal image [(#8204)](https://github.com/rancher/rke2/pull/8204)
-* Bump nginx version [(#8175)](https://github.com/rancher/rke2/pull/8175)
-* Update to Kubernetes Metrics Server 3.12.201 [(#8213)](https://github.com/rancher/rke2/pull/8213)
-* Update to flannel v0.26.700 [(#8221)](https://github.com/rancher/rke2/pull/8221)
-* Update cilium and multus to cni-plugins v1.7.1 [(#8229)](https://github.com/rancher/rke2/pull/8229)
-* Upgrade nginx chart [(#8234)](https://github.com/rancher/rke2/pull/8234)
-* Update to flannel v0.26.701 and canal v3.30.0-build2025051500 [(#8260)](https://github.com/rancher/rke2/pull/8260)
-* Update to CoreDNS 1.42.000 [(#8268)](https://github.com/rancher/rke2/pull/8268)
-* Update k8s to v1.30.13 and Go to v1.23.8 [(#8244)](https://github.com/rancher/rke2/pull/8244)
-* Fix race conditions in startup readiness checks [(#8278)](https://github.com/rancher/rke2/pull/8278)
-* Fix secrets syntax [(#8280)](https://github.com/rancher/rke2/pull/8280)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.17.301](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.301.tgz) |
-| rke2-canal | [v3.30.0-build2025051500](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.30.0-build2025051500.tgz) |
-| rke2-calico | [v3.30.001](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.30.001.tgz) |
-| rke2-calico-crd | [v3.30.001](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.30.001.tgz) |
-| rke2-coredns | [1.42.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.42.000.tgz) |
-| rke2-ingress-nginx | [4.12.103](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.103.tgz) |
-| rke2-metrics-server | [3.12.201](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.201.tgz) |
-| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
-| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
-| harvester-cloud-provider | [0.2.1000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1000.tgz) |
-| harvester-csi-driver | [0.1.2300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2300.tgz) |
-| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
-| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
-| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
-
-
------
-## Release [v1.30.12+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.12+rke2r1)
-<!-- v1.30.12+rke2r1 -->
-
-This release updates Kubernetes to v1.30.12.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.11+rke2r1:
-
-* Bump multus version [(#7991)](https://github.com/rancher/rke2/pull/7991)
-* Update CNI charts [(#7998)](https://github.com/rancher/rke2/pull/7998)
-* Bump whereabouts to v0.9.0 [(#8003)](https://github.com/rancher/rke2/pull/8003)
-* Update to coredns `1.39.201` [(#8012)](https://github.com/rancher/rke2/pull/8012)
-* Bump flannel and canal versions [(#8027)](https://github.com/rancher/rke2/pull/8027)
-* Chore: Bump nginx to v1.12.1-hardened3 [(#8058)](https://github.com/rancher/rke2/pull/8058)
-* Update to flannel `v0.26.601` and canal `v3.29.3-build2025040801` [(#8063)](https://github.com/rancher/rke2/pull/8063)
-* K3s bump and backports for 2025-04 [(#8059)](https://github.com/rancher/rke2/pull/8059)
-* Update to cilium `v1.17.3` [(#8085)](https://github.com/rancher/rke2/pull/8085)
-* Bump kine for nats-server/v2 CVE-2025-30215 [(#8091)](https://github.com/rancher/rke2/pull/8091)
-* Bump K3s version [(#8104)](https://github.com/rancher/rke2/pull/8104)
-* Bump traefik to v2.11.24 [(#8110)](https://github.com/rancher/rke2/pull/8110)
-* Update k8s to v1.30.12 [(#8114)](https://github.com/rancher/rke2/pull/8114)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.17.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.300.tgz) |
-| rke2-canal | [v3.29.3-build2025040801](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.3-build2025040801.tgz) |
-| rke2-calico | [v3.29.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.300.tgz) |
-| rke2-calico-crd | [v3.29.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.101.tgz) |
-| rke2-coredns | [1.39.201](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.39.201.tgz) |
-| rke2-ingress-nginx | [4.12.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.101.tgz) |
-| rke2-metrics-server | [3.12.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.200.tgz) |
-| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
-| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
-| harvester-cloud-provider | [0.2.900](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.900.tgz) |
-| harvester-csi-driver | [0.1.2300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2300.tgz) |
-| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
-| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
-| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
-
-
------
-## Release [v1.30.11+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.11+rke2r1)
-<!-- v1.30.11+rke2r1 -->
-
-This release updates Kubernetes to v1.30.11, and upgrades rke2-ingress-nginx to controller v1.12.1-hardened1 (chart version 4.12.1). This addresses [CVE-2025-1974](https://github.com/advisories/GHSA-mgvx-rpfc-9mpv) as well as all other [recently announced](https://groups.google.com/g/kubernetes-security-announce/c/2qa9DFtN0cQ) vulnerabilities in ingress-nginx.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.10+rke2r1:
-
-* Update to cilium `v1.17.1` [(#7851)](https://github.com/rancher/rke2/pull/7851)
-* Bump coredns to v1.39.100 [(#7860)](https://github.com/rancher/rke2/pull/7860)
-* Update multus with new CNI plugin image with bond included [(#7866)](https://github.com/rancher/rke2/pull/7866)
-* Update to flannel v0.26.500 and canal v3.29.2-build2025030601 [(#7876)](https://github.com/rancher/rke2/pull/7876)
-* Bump ingress-nginx to hardened10 [(#7887)](https://github.com/rancher/rke2/pull/7887)
-* Backports for 2025-03 [(#7892)](https://github.com/rancher/rke2/pull/7892)
-* Bump K3s for apiserver addresses fix [(#7914)](https://github.com/rancher/rke2/pull/7914)
-* Update k8s [(#7925)](https://github.com/rancher/rke2/pull/7925)
-* Bump ingress-nginx to v1.12.1-hardened1, chart to 4.12.1 [(#7960)](https://github.com/rancher/rke2/pull/7960)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.17.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.100.tgz) |
-| rke2-canal | [v3.29.2-build2025030601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.2-build2025030601.tgz) |
-| rke2-calico | [v3.29.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.200.tgz) |
-| rke2-calico-crd | [v3.29.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.101.tgz) |
-| rke2-coredns | [1.39.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.39.100.tgz) |
-| rke2-ingress-nginx | [4.12.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.100.tgz) |
-| rke2-metrics-server | [3.12.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.200.tgz) |
-| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
-| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
-| harvester-cloud-provider | [0.2.900](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.900.tgz) |
-| harvester-csi-driver | [0.1.2300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2300.tgz) |
-| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
-| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
-| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
-
-
------
-## Release [v1.30.10+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.10+rke2r1)
-<!-- v1.30.10+rke2r1 -->
-
-This release updates Kubernetes to v1.30.10.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.9+rke2r1:
-
-* Update to cilium `v1.16.6` [(#7682)](https://github.com/rancher/rke2/pull/7682)
-* Charts: bump Harvester CSI Driver v0.1.23 [(#7669)](https://github.com/rancher/rke2/pull/7669)
-  * Enhance the Harvester CSI controller affinity/anti-affinity
-* Bump canal, flannel and multus charts [(#7714)](https://github.com/rancher/rke2/pull/7714)
-* Update cilium to v1.17.0 [(#7710)](https://github.com/rancher/rke2/pull/7710)
-* Update Calico and Canal to v3.29.2 [(#7725)](https://github.com/rancher/rke2/pull/7725)
-* Bump k3s, traefik, etcd, crictl [(#7740)](https://github.com/rancher/rke2/pull/7740)
-  * Update k3s to fix registry auth in containerd config template
-  * Update traefik to v2.11.20
-  * Update etcd to v3.5.18
-  * Update crictl to v1.30.1
-  * Update rke2-ingress-nginx chart to fix typo in default backend image template
-* Bump vsphere CSI to v3.3.1-rancher9 [(#7732)](https://github.com/rancher/rke2/pull/7732)
-* Update to v1.30.10 and Go to 1.22.12 [(#7758)](https://github.com/rancher/rke2/pull/7758)
-* Bump ingress-nginx to v1.12.0-hardened6 [(#7775)](https://github.com/rancher/rke2/pull/7775)
-* Bump canal and flannel images to build20250218 [(#7789)](https://github.com/rancher/rke2/pull/7789)
-* Sync images to Prime registry [(#7801)](https://github.com/rancher/rke2/pull/7801)
-* Bump K3s version for release-1.30 [(#7806)](https://github.com/rancher/rke2/pull/7806)
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.17.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.000.tgz) |
-| rke2-canal | [v3.29.2-build2025021800](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.2-build2025021800.tgz) |
-| rke2-calico | [v3.29.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.200.tgz) |
-| rke2-calico-crd | [v3.29.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.101.tgz) |
-| rke2-coredns | [1.36.102](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.36.102.tgz) |
-| rke2-ingress-nginx | [4.12.005](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.005.tgz) |
-| rke2-metrics-server | [3.12.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.200.tgz) |
-| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
-| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
-| harvester-cloud-provider | [0.2.900](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.900.tgz) |
-| harvester-csi-driver | [0.1.2300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2300.tgz) |
-| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
-| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
-| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
-
------
-## Release [v1.30.9+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.9+rke2r1)
-<!-- v1.30.9+rke2r1 -->
-
-This release updates Kubernetes to v1.30.9.
-
-**Important Note**
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-### Changes since v1.30.8+rke2r1:
-* Charts: bump Harvester CSI Driver v0.1.22 [(#7472)](https://github.com/rancher/rke2/pull/7472)
-  * Bump Harvester-csi-driver v0.1.22
-* Bump flannel, canal and multus charts [(#7503)](https://github.com/rancher/rke2/pull/7503)
-* Update to Cilium `v1.16.5` [(#7528)](https://github.com/rancher/rke2/pull/7528)
-* Feat: bump harvester-cloud-provider to v0.2.9 [(#7491)](https://github.com/rancher/rke2/pull/7491)
-  * Bump Harvester-cloud-provider v0.2.9
-* Updated calico chart to fix IP autodetect in case of IPv6 only [(#7537)](https://github.com/rancher/rke2/pull/7537)
-* Update metrics-server to `3.2.12` [(#7552)](https://github.com/rancher/rke2/pull/7552)
-* Update canal to `v3.29.1-build2025011000` [(#7568)](https://github.com/rancher/rke2/pull/7568)
-* Add runtime classes hook and runtimes chart [(#7580)](https://github.com/rancher/rke2/pull/7580)
-* Backports for 2025-01 [(#7589)](https://github.com/rancher/rke2/pull/7589)
-* Bump ingress-nginx v1.12.0 [(#7559)](https://github.com/rancher/rke2/pull/7559)
-* Add Release downstream components in release workflow [(#7600)](https://github.com/rancher/rke2/pull/7600)
-* Bump k3s version for master and add/enhance tests [(#7607)](https://github.com/rancher/rke2/pull/7607)
-* Update k8s [(#7611)](https://github.com/rancher/rke2/pull/7611)
-* Bump ingress-nginx to v1.12.0-hardened2 [(#7621)](https://github.com/rancher/rke2/pull/7621)
-* Bump K3s version for split-role fix [(#7637)](https://github.com/rancher/rke2/pull/7637)
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.16.501](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.501.tgz) |
-| rke2-canal | [v3.29.1-build2025011000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.1-build2025011000.tgz) |
-| rke2-calico | [v3.29.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.101.tgz) |
-| rke2-calico-crd | [v3.29.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.101.tgz) |
-| rke2-coredns | [1.36.102](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.36.102.tgz) |
-| rke2-ingress-nginx | [4.12.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.003.tgz) |
-| rke2-metrics-server | [3.12.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.200.tgz) |
-| rancher-vsphere-csi | [3.3.1-rancher700](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher700.tgz) |
-| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
-| harvester-cloud-provider | [0.2.900](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.900.tgz) |
-| harvester-csi-driver | [0.1.2200](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2200.tgz) |
-| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
-| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
-| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
-
------
-## Release [v1.30.8+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.8+rke2r1)
-<!-- v1.30.8+rke2r1 -->
-
-This release updates Kubernetes to v1.30.8.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.7+rke2r1:
-
-* Update to Cilium v1.16.4 [(#7326)](https://github.com/rancher/rke2/pull/7326)
-* Updated Calico version to `v3.29.1` [(#7352)](https://github.com/rancher/rke2/pull/7352)
-* Bump harvester csi driver v0.1.21 [(#7284)](https://github.com/rancher/rke2/pull/7284)
-  * Bump Harvester-csi-driver v0.1.21
-* Update k3s for loadbalancer improvements [(#7398)](https://github.com/rancher/rke2/pull/7398)
-* Update Flannel and Canal version [(#7407)](https://github.com/rancher/rke2/pull/7407)
-* Bump ingress-nginx to hardened6 [(#7415)](https://github.com/rancher/rke2/pull/7415)
-* Bump dns-node-cache to 1.24.0 [(#7419)](https://github.com/rancher/rke2/pull/7419)
-* Bump hardened k8s and build base [(#7425)](https://github.com/rancher/rke2/pull/7425)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.16.400](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.400.tgz) |
-| rke2-canal | [v3.29.1-build2024121100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.1-build2024121100.tgz) |
-| rke2-calico | [v3.29.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.100.tgz) |
-| rke2-calico-crd | [v3.29.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.100.tgz) |
-| rke2-coredns | [1.36.102](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.36.102.tgz) |
-| rke2-ingress-nginx | [4.10.503](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.503.tgz) |
-| rke2-metrics-server | [3.12.004](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.004.tgz) |
-| rancher-vsphere-csi | [3.3.1-rancher700](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher700.tgz) |
-| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
-| harvester-cloud-provider | [0.2.600](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.600.tgz) |
-| harvester-csi-driver | [0.1.2100](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2100.tgz) |
-| rke2-snapshot-controller | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-3.0.601.tgz) |
-| rke2-snapshot-controller-crd | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-3.0.601.tgz) |
-| rke2-snapshot-validation-webhook | [1.9.001](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.9.001.tgz) |
-
-
------
-## Release [v1.30.7+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.7+rke2r1)
-<!-- v1.30.7+rke2r1 -->
-
-This release updates Kubernetes to v1.30.7.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.6+rke2r1:
-
-* Backport E2E GHA fixes [(#7176)](https://github.com/rancher/rke2/pull/7176)
-* Bump multus, cilium and flannel charts [(#7199)](https://github.com/rancher/rke2/pull/7199)
-* Bump ingress-nginx to v1.10.5-hardened4 [(#7186)](https://github.com/rancher/rke2/pull/7186)
-* Bump canal chart to v3.29.0 [(#7221)](https://github.com/rancher/rke2/pull/7221)
-* Bump rke2-calico to v3.29.0 [(#7231)](https://github.com/rancher/rke2/pull/7231)
-* Backport missing E2E PRs [(#7204)](https://github.com/rancher/rke2/pull/7204)
-  * Refactor run_tests.sh script 
-  * Update to newer OS images for install testing
-  * Add cleanup to e2e tests in vagrant env
-  * Add e2e validation test for kine
-* Bump vSphere CSI/CPI charts to 1.9.1 and 3.3.1-rancher700 [(#7249)](https://github.com/rancher/rke2/pull/7249)
-* Update Flannel to v0.26.1 [(#7258)](https://github.com/rancher/rke2/pull/7258)
-* Fix e2e ci by ignoring FOG warnings [(#7269)](https://github.com/rancher/rke2/pull/7269)
-* Bump rke2-coredns to 1.33.005 [(#7277)](https://github.com/rancher/rke2/pull/7277)
-* Backports for 2024-11 [(#7290)](https://github.com/rancher/rke2/pull/7290)
-  * Bump etcd to 3.5.16
-  * Bump containerd to v1.7.23
-  * Fix issue on nodes with large datastores and slow disk that would cause RKE2 to fail to start due to the etcd defrag timing out after 30 seconds.
-  * Fix issue where RKE2 killall script could remove data from pod volumes that failed to unmount correctly
-* Update upstream version [(#7319)](https://github.com/rancher/rke2/pull/7319)
-* Restore AWS node-name support and add IMDSv2 support [(#7355)](https://github.com/rancher/rke2/pull/7355)
-* Bump containerd for image rewrite fix [(#7378)](https://github.com/rancher/rke2/pull/7378)
-  * Bump containerd to v1.7.23-k3s2
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.16.303](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.303.tgz) |
-| rke2-canal | [v3.29.0-build2024110400](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.0-build2024110400.tgz) |
-| rke2-calico | [v3.29.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.000.tgz) |
-| rke2-calico-crd | [v3.29.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.000.tgz) |
-| rke2-coredns | [1.33.005](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.33.005.tgz) |
-| rke2-ingress-nginx | [4.10.502](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.502.tgz) |
-| rke2-metrics-server | [3.12.004](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.004.tgz) |
-| rancher-vsphere-csi | [3.3.1-rancher700](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher700.tgz) |
-| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
-| harvester-cloud-provider | [0.2.600](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.600.tgz) |
-| harvester-csi-driver | [0.1.2000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2000.tgz) |
-| rke2-snapshot-controller | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-3.0.601.tgz) |
-| rke2-snapshot-controller-crd | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-3.0.601.tgz) |
-| rke2-snapshot-validation-webhook | [1.9.001](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.9.001.tgz) |
-
-
------
-## Release [v1.30.6+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.6+rke2r1)
-<!-- v1.30.6+rke2r1 -->
-
-This release updates Kubernetes to v1.30.6.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.5+rke2r1:
-
-* Fixed windows CNI setup in case cni none is configured [(#6832)](https://github.com/rancher/rke2/pull/6832)
-* Fix e2e test bug in mixedosbgp [(#6844)](https://github.com/rancher/rke2/pull/6844)
-* Bump Calico v3.28.2 [(#6879)](https://github.com/rancher/rke2/pull/6879)
-* Add trivy scanning to PR reports [(#6837)](https://github.com/rancher/rke2/pull/6837)
-* Fix typo in dispatch workflow [(#6895)](https://github.com/rancher/rke2/pull/6895)
-* Bump coredns chart [(#6903)](https://github.com/rancher/rke2/pull/6903)
-* Fix uninstall for amazon linux 2 [(#6919)](https://github.com/rancher/rke2/pull/6919)
-* Update to Cilium v1.16.2 [(#6938)](https://github.com/rancher/rke2/pull/6938)
-* Bump traefik to chart 27.0.2 [(#6958)](https://github.com/rancher/rke2/pull/6958)
-* Update Canal to v3.28.2-build2024100300 and Flannel to v0.25.7 [(#6972)](https://github.com/rancher/rke2/pull/6972)
-* Bump containerd to v1.7.22 [(#7002)](https://github.com/rancher/rke2/pull/7002)
-* Ingress-nginx and rke2-cloud-provider bumps [(#6992)](https://github.com/rancher/rke2/pull/6992)
-* Bump csi snapshot charts [(#7024)](https://github.com/rancher/rke2/pull/7024)
-* Update multus to v4.1.2 [(#7019)](https://github.com/rancher/rke2/pull/7019)
-* Bump k3s [(#7033)](https://github.com/rancher/rke2/pull/7033)
-* Bump Harvester CSI driver v0.1.20 [(#7048)](https://github.com/rancher/rke2/pull/7048)
-  * Bump Harvester-csi-driver v0.1.20
-* Bump K3s/CCM version [(#7057)](https://github.com/rancher/rke2/pull/7057)
-* Add org.opencontainers.image url and source labels to dockerfiles [(#7063)](https://github.com/rancher/rke2/pull/7063)
-* Bump CSI snapshot controller chart for CRD updates [(#7069)](https://github.com/rancher/rke2/pull/7069)
-* Rke2-runtime signing and manifests (#7089) [(#7101)](https://github.com/rancher/rke2/pull/7101)
-* Update hardened chart images [(#7097)](https://github.com/rancher/rke2/pull/7097)
-* October K8s patch [(#7105)](https://github.com/rancher/rke2/pull/7105)
-* Update crictl source image for CVE bump [(#7115)](https://github.com/rancher/rke2/pull/7115)
-* Bump coredns chart and image [(#7085)](https://github.com/rancher/rke2/pull/7085)
-* Fix hardened-flannel airgap image for rke2-flannel [(#7120)](https://github.com/rancher/rke2/pull/7120)
-* Fix release workflow [(#7125)](https://github.com/rancher/rke2/pull/7125)
-* Use buildkit [(#7132)](https://github.com/rancher/rke2/pull/7132)
-* Fix publish windows runtime [(#7146)](https://github.com/rancher/rke2/pull/7146)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.16.201](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.201.tgz) |
-| rke2-canal | [v3.28.2-build2024101601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.28.2-build2024101601.tgz) |
-| rke2-calico | [v3.28.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.28.200.tgz) |
-| rke2-calico-crd | [v3.28.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.28.200.tgz) |
-| rke2-coredns | [1.33.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.33.002.tgz) |
-| rke2-ingress-nginx | [4.10.501](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.501.tgz) |
-| rke2-metrics-server | [3.12.004](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.004.tgz) |
-| rancher-vsphere-csi | [3.3.0-rancher100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.0-rancher100.tgz) |
-| rancher-vsphere-cpi | [1.8.000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.8.000.tgz) |
-| harvester-cloud-provider | [0.2.600](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.600.tgz) |
-| harvester-csi-driver | [0.1.2000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2000.tgz) |
-| rke2-snapshot-controller | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-3.0.601.tgz) |
-| rke2-snapshot-controller-crd | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-3.0.601.tgz) |
-| rke2-snapshot-validation-webhook | [1.9.001](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.9.001.tgz) |
-
-
------
-## Release [v1.30.5+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.5+rke2r1)
-<!-- v1.30.5+rke2r1 -->
-
-This release updates Kubernetes to v1.30.5.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.4+rke2r1:
-
-* Update to cilium v1.16.1 [(#6653)](https://github.com/rancher/rke2/pull/6653)
-* Bump canal to v3.28.1-build20240827 [(#6670)](https://github.com/rancher/rke2/pull/6670)
-* Bump canal to v3.28.1-build20240830 [(#6688)](https://github.com/rancher/rke2/pull/6688)
-* 1.30 Bump harvester cloud provider v0.2.6 [(#6631)](https://github.com/rancher/rke2/pull/6631)
-* Update chart with CNI plugins on Flannel and Cilium [(#6701)](https://github.com/rancher/rke2/pull/6701)
-* Update cilium chart to `1.16.103` [(#6715)](https://github.com/rancher/rke2/pull/6715)
-* Bump multus chart to v4.1.000 [(#6743)](https://github.com/rancher/rke2/pull/6743)
-* Remove sriov images from airgap tarball [(#6753)](https://github.com/rancher/rke2/pull/6753)
-* Add ctr to shell completion [(#6730)](https://github.com/rancher/rke2/pull/6730)
-* Bump k3s/containerd/runc/ccm versions [(#6763)](https://github.com/rancher/rke2/pull/6763)
-* Bump charts and images to fix go CVE [(#6782)](https://github.com/rancher/rke2/pull/6782)
-* Bump hardened images [(#6776)](https://github.com/rancher/rke2/pull/6776)
-* Update Calico image for Canal with updated CNI plugins [(#6794)](https://github.com/rancher/rke2/pull/6794)
-* Bump ingress-nginx to v1.10.4-hardened3 [(#6799)](https://github.com/rancher/rke2/pull/6799)
-* Bump etcd and CCM builds [(#6803)](https://github.com/rancher/rke2/pull/6803)
-* September K8s patch [(#6811)](https://github.com/rancher/rke2/pull/6811)
-* Update cilium e2e test [(#6815)](https://github.com/rancher/rke2/pull/6815)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.16.104](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.104.tgz) |
-| rke2-canal | [v3.28.1-build2024091100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.28.1-build2024091100.tgz) |
-| rke2-calico | [v3.28.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.28.100.tgz) |
-| rke2-calico-crd | [v3.28.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.28.100.tgz) |
-| rke2-coredns | [1.29.006](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.006.tgz) |
-| rke2-ingress-nginx | [4.10.402](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.402.tgz) |
-| rke2-metrics-server | [3.12.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.003.tgz) |
-| rancher-vsphere-csi | [3.3.0-rancher100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.0-rancher100.tgz) |
-| rancher-vsphere-cpi | [1.8.000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.8.000.tgz) |
-| harvester-cloud-provider | [0.2.600](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.600.tgz) |
-| harvester-csi-driver | [0.1.1800](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1800.tgz) |
-| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
-| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
-| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
-
-
------
-## Release [v1.30.4+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.4+rke2r1)
-<!-- v1.30.4+rke2r1 -->
-
-This release updates Kubernetes to v1.30.4.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.3+rke2r1:
-
-* - Bump rke2-coredns to add option to use nodelocal dns cache with cilium [(#6432)](https://github.com/rancher/rke2/pull/6432)
-* Bump rke2-calico chart to v3.28.100 [(#6489)](https://github.com/rancher/rke2/pull/6489)
-* Bump nginx to hardened2 [(#6482)](https://github.com/rancher/rke2/pull/6482)
-* Update for CNI flannel, Cilium and Canal [(#6515)](https://github.com/rancher/rke2/pull/6515)
-* Fix external etcd connection [(#6465)](https://github.com/rancher/rke2/pull/6465)
-* Rke2 shell completion [(#6460)](https://github.com/rancher/rke2/pull/6460)
-* Bump k3s and containerd [(#6524)](https://github.com/rancher/rke2/pull/6524)
-* Fixed hns clean only in case of reboot [(#6538)](https://github.com/rancher/rke2/pull/6538)
-* Bump harvester csi driver v0.1.18 [(#6395)](https://github.com/rancher/rke2/pull/6395)
-  * Bump Harvester-csi-driver v0.1.18
-* Bump containerd/crictl/runc versions [(#6552)](https://github.com/rancher/rke2/pull/6552)
-* Fix kill all to not delete data dir [(#6564)](https://github.com/rancher/rke2/pull/6564)
-* Add netpol template for traefik [(#6570)](https://github.com/rancher/rke2/pull/6570)
-* Update Kubernetes to v1.30.4 [(#6574)](https://github.com/rancher/rke2/pull/6574)
-* Fix windows airgap image packaging [(#6585)](https://github.com/rancher/rke2/pull/6585)
-* Fixed Flannel chart to rightly disable nft [(#6607)](https://github.com/rancher/rke2/pull/6607)
-* Bump ingress-nginx to v1.10.4-hardened2 [(#6611)](https://github.com/rancher/rke2/pull/6611)
-* Fix traefik netpol port names [(#6620)](https://github.com/rancher/rke2/pull/6620)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.16.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.000.tgz) |
-| rke2-canal | [v3.28.1-build2024080600](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.28.1-build2024080600.tgz) |
-| rke2-calico | [v3.28.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.28.100.tgz) |
-| rke2-calico-crd | [v3.28.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.28.100.tgz) |
-| rke2-coredns | [1.29.004](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.004.tgz) |
-| rke2-ingress-nginx | [4.10.401](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.401.tgz) |
-| rke2-metrics-server | [3.12.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.002.tgz) |
-| rancher-vsphere-csi | [3.3.0-rancher100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.0-rancher100.tgz) |
-| rancher-vsphere-cpi | [1.8.000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.8.000.tgz) |
-| harvester-cloud-provider | [0.2.400](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.400.tgz) |
-| harvester-csi-driver | [0.1.1800](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1800.tgz) |
-| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
-| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
-| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
-
-
------
-## Release [v1.30.3+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.3+rke2r1)
-<!-- v1.30.3+rke2r1 -->
-
-This release updates Kubernetes to v1.30.3.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.2+rke2r1:
-
-* Update stable channel to v1.28.11+rke2r1 [(#6277)](https://github.com/rancher/rke2/pull/6277)
-* Update Vagrantfile of a few e2e tests [(#6274)](https://github.com/rancher/rke2/pull/6274)
-* GHA Migration [(#6062)](https://github.com/rancher/rke2/pull/6062)
-* Bump multus to v4.0.206 [(#6353)](https://github.com/rancher/rke2/pull/6353)
-* Version bumps and backports for 2024-07 release cycle [(#6317)](https://github.com/rancher/rke2/pull/6317)
-* Bump vsphere csi chart to 3.3.0-rancher100 and cpi to 1.8.000 [(#6341)](https://github.com/rancher/rke2/pull/6341)
-* Fix secrets for commit id uploads [(#6366)](https://github.com/rancher/rke2/pull/6366)
-* Update Kubernetes to v1.30.3 [(#6364)](https://github.com/rancher/rke2/pull/6364)
-* Publish binaries in dapper [(#6379)](https://github.com/rancher/rke2/pull/6379)
-* Add missing package windows step in release [(#6388)](https://github.com/rancher/rke2/pull/6388)
-* Add manifest pipeline for rke2-runtime docker image [(#6398)](https://github.com/rancher/rke2/pull/6398)
-* Fix dispatch script [(#6406)](https://github.com/rancher/rke2/pull/6406)
-* Add traefik airgap image tarball [(#6441)](https://github.com/rancher/rke2/pull/6441)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.15.500](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.15.500.tgz) |
-| rke2-canal | [v3.28.0-build2024062503](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.28.0-build2024062503.tgz) |
-| rke2-calico | [v3.27.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.27.300.tgz) |
-| rke2-calico-crd | [v3.27.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.27.002.tgz) |
-| rke2-coredns | [1.29.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.002.tgz) |
-| rke2-ingress-nginx | [4.10.102](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.102.tgz) |
-| rke2-metrics-server | [3.12.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.002.tgz) |
-| rancher-vsphere-csi | [3.3.0-rancher100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.0-rancher100.tgz) |
-| rancher-vsphere-cpi | [1.8.000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.8.000.tgz) |
-| harvester-cloud-provider | [0.2.400](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.400.tgz) |
-| harvester-csi-driver | [0.1.1700](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1700.tgz) |
-| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
-| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
-| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
-
-
------
-## Release [v1.30.2+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.2+rke2r1)
-<!-- v1.30.2+rke2r1 -->
-
-This release updates Kubernetes to v1.30.2.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.1+rke2r1:
-
-* Improve rke2-uninstall.ps1 script [(#5779)](https://github.com/rancher/rke2/pull/5779)
-* Add cilium no proxy e2e test [(#5885)](https://github.com/rancher/rke2/pull/5885)
-* Apply netpols async with retry [(#5909)](https://github.com/rancher/rke2/pull/5909)
-* Remove cisnetworkpolicy finalizer when controller is disabled [(#5856)](https://github.com/rancher/rke2/pull/5856)
-* Update cloud-provider image which now uses scratch as base [(#5933)](https://github.com/rancher/rke2/pull/5933)
-  * Rke2-cloud-provider uses now scratch base image
-* Update flannel chart to fix vni error [(#5953)](https://github.com/rancher/rke2/pull/5953)
-  * Use vni=4096 as default for rke2-flannel
-* Add a Kine fix when rke2 restart apiserver [(#5931)](https://github.com/rancher/rke2/pull/5931)
-  * Fix apiserver delay to restart when apiserver is using kine
-* Fix incorrect wrangler package import [(#6007)](https://github.com/rancher/rke2/pull/6007)
-* Update channel server for may 2024 [(#5951)](https://github.com/rancher/rke2/pull/5951)
-* Add extra log in e2e tests [(#5955)](https://github.com/rancher/rke2/pull/5955)
-* Bump nginx to v1.10.1 [(#6022)](https://github.com/rancher/rke2/pull/6022)
-* Update rke2-killall.sh [(#4111)](https://github.com/rancher/rke2/pull/4111)
-* Changed systemctl command from 'restart' to 'try-restart' for fapolicyd  in rke2-uninstall.sh [(#5811)](https://github.com/rancher/rke2/pull/5811)
-* Allow disabling injection of cluster config into HelmCharts [(#6010)](https://github.com/rancher/rke2/pull/6010)
-  * Injection of cluster config variables into HelmChart resources found on disk can now be disabled per-chart by adding a `rke2.cattle.io/inject-cluster-config: "false"` annotation to HelmChart resources, or by setting the RKE2_INJECT_CLUSTER_CONFIG=false environment variable to disable it for all resources that do not set the annotation to false.
-* Bump multus and whereabouts version [(#6015)](https://github.com/rancher/rke2/pull/6015)
-* Bump flannel to v0.25.201 and canal to v3.28.0-build2024052800 [(#6043)](https://github.com/rancher/rke2/pull/6043)
-* Add ADR for branching strategy [(#4078)](https://github.com/rancher/rke2/pull/4078)
-* Add easy support for single node sqlite with kine [(#5954)](https://github.com/rancher/rke2/pull/5954)
-  * New behavior when --disable-etcd is used without --server, rke2 will use sqlite as the default database
-* Bump harvester-cloud-provider v0.2.4 [(#5980)](https://github.com/rancher/rke2/pull/5980)
-* Bump K3s version for v1.30 [(#6073)](https://github.com/rancher/rke2/pull/6073)
-* Fix loadManifests function [(#6058)](https://github.com/rancher/rke2/pull/6058)
-* Bump K3s version for v1.30 [(#6104)](https://github.com/rancher/rke2/pull/6104)
-* Bump flannel version [(#6116)](https://github.com/rancher/rke2/pull/6116)
-  * Bump flannel cni version to v0.25.3
-* Bump containerd to correctly built tag [(#6126)](https://github.com/rancher/rke2/pull/6126)
-* Improve rke2-uninstall.ps1 [(#6098)](https://github.com/rancher/rke2/pull/6098)
-* Update to the latest SR-IOV image versions [(#5889)](https://github.com/rancher/rke2/pull/5889)
-* Bump flannel image in rke2-canal [(#6136)](https://github.com/rancher/rke2/pull/6136)
-* Slim down E2E artifacts [(#6097)](https://github.com/rancher/rke2/pull/6097)
-* Add custom golang setup action for better caching [(#6144)](https://github.com/rancher/rke2/pull/6144)
-* Support MixedOS E2E local testing [(#6137)](https://github.com/rancher/rke2/pull/6137)
-* Use `rancher/permissions` dependency [(#6138)](https://github.com/rancher/rke2/pull/6138)
-* Bump K3s version for v1.30 [(#6164)](https://github.com/rancher/rke2/pull/6164)
-* Update flannel version to v0.25.4 [(#6172)](https://github.com/rancher/rke2/pull/6172)
-  * Bump flannel to v0.25.4 to fix windows-vxlan issue
-* Update Kubernetes to v1.30.2 [(#6191)](https://github.com/rancher/rke2/pull/6191)
-* Fix drone pipeline [(#6199)](https://github.com/rancher/rke2/pull/6199)
-* Update drone build base image [(#6206)](https://github.com/rancher/rke2/pull/6206)
-* Bump K3s version for v1.30 to fix regression in agent's supervisor port [(#6200)](https://github.com/rancher/rke2/pull/6200)
-* Bump rke2-ingress-nginx chart to revert watchIngressWithoutClass default [(#6216)](https://github.com/rancher/rke2/pull/6216)
-* Update hardened kubernetes [(#6225)](https://github.com/rancher/rke2/pull/6225)
-* Bump K3s version for snapshot fix [(#6230)](https://github.com/rancher/rke2/pull/6230)
-  * Fix issue that allowed multiple simultaneous snapshots to be allowed
-* Revert rke2-ingress-nginx bump back to v1.9.6 [(#6238)](https://github.com/rancher/rke2/pull/6238)
-* Reinstate newest rke2-ingress-nginx [(#6253)](https://github.com/rancher/rke2/pull/6253)
-* Pass install_type as a string in the mixedos e2e test [(#6251)](https://github.com/rancher/rke2/pull/6251)
-* Update calico image to v3.28.0-build20240625 [(#6257)](https://github.com/rancher/rke2/pull/6257)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.15.500](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.15.500.tgz) |
-| rke2-canal | [v3.28.0-build2024062503](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.28.0-build2024062503.tgz) |
-| rke2-calico | [v3.27.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.27.300.tgz) |
-| rke2-calico-crd | [v3.27.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.27.002.tgz) |
-| rke2-coredns | [1.29.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.002.tgz) |
-| rke2-ingress-nginx | [4.10.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.101.tgz) |
-| rke2-metrics-server | [3.12.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.002.tgz) |
-| rancher-vsphere-csi | [3.1.2-rancher400](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.1.2-rancher400.tgz) |
-| rancher-vsphere-cpi | [1.7.001](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.7.001.tgz) |
-| harvester-cloud-provider | [0.2.400](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.400.tgz) |
-| harvester-csi-driver | [0.1.1700](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1700.tgz) |
-| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
-| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
-| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
-
-
------
-## Release [v1.30.1+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.1+rke2r1)
-<!-- v1.30.1+rke2r1 -->
-
-This release updates Kubernetes to v1.30.1.
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.30.0+rke2r1:
-
-* Add E2E as a GitHub Action [(#5864)](https://github.com/rancher/rke2/pull/5864)
-* Bump ubuntu from 22.04 to 24.04 [(#5861)](https://github.com/rancher/rke2/pull/5861)
-* Update channels for 1.30 [(#5911)](https://github.com/rancher/rke2/pull/5911)
-* Update k8s v1.30.1 and Go [(#5914)](https://github.com/rancher/rke2/pull/5914)
-* Windows changes [(#5918)](https://github.com/rancher/rke2/pull/5918)
-* Cilium version bump to 1.15.5 [(#5935)](https://github.com/rancher/rke2/pull/5935)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.15.500](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.15.500.tgz) |
-| rke2-canal | [v3.27.3-build2024042301](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.27.3-build2024042301.tgz) |
-| rke2-calico | [v3.27.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.27.300.tgz) |
-| rke2-calico-crd | [v3.27.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.27.002.tgz) |
-| rke2-coredns | [1.29.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.002.tgz) |
-| rke2-ingress-nginx | [4.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.9.100.tgz) |
-| rke2-metrics-server | [3.12.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.002.tgz) |
-| rancher-vsphere-csi | [3.1.2-rancher400](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.1.2-rancher400.tgz) |
-| rancher-vsphere-cpi | [1.7.001](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.7.001.tgz) |
-| harvester-cloud-provider | [0.2.300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.300.tgz) |
-| harvester-csi-driver | [0.1.1700](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1700.tgz) |
-| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
-| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
-| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
-
-
------
-## Release [v1.30.0+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.0+rke2r1)
-<!-- v1.30.0+rke2r1 -->
-
-This release is RKE2's first in the v1.30 line. This release updates Kubernetes to v1.30.0.
-
-Before upgrading from earlier releases, be sure to read the [Kubernetes Changelog](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#changelog-since-v1290)
-
-**Important Note**
-
-If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
-
-You may retrieve the token value from any server already joined to the cluster:
-```bash
-cat /var/lib/rancher/rke2/server/token
-```
-
-### Changes since v1.29.4+rke2r1:
-
-* Update stable channel to v1.28.9+rke2r1 [(#5870)](https://github.com/rancher/rke2/pull/5870)
-* Add mixedos BGP e2e test [(#5859)](https://github.com/rancher/rke2/pull/5859)
-* Remove flannel-v6.4096 when rke2-killall.sh [(#5795)](https://github.com/rancher/rke2/pull/5795)
-* Update e2e test [(#5880)](https://github.com/rancher/rke2/pull/5880)
-* Bump k3s to 1.30 [(#5888)](https://github.com/rancher/rke2/pull/5888)
-* Move to fatal error for cis-1.23 profile value [(#5781)](https://github.com/rancher/rke2/pull/5781)
-* Remove cni parameter from agent config in e2e tests [(#5881)](https://github.com/rancher/rke2/pull/5881)
-* Add script to validate flannel versions [(#5788)](https://github.com/rancher/rke2/pull/5788)
-* Bump k3s to deprecate pod-infra-container-image [(#5900)](https://github.com/rancher/rke2/pull/5900)
-* Fix mixedosbgp e2e test [(#5886)](https://github.com/rancher/rke2/pull/5886)
-
-
-## Charts Versions
-| Component | Version |
-| --- | --- |
-| rke2-cilium | [1.15.400](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.15.400.tgz) |
-| rke2-canal | [v3.27.3-build2024042301](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.27.3-build2024042301.tgz) |
-| rke2-calico | [v3.27.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.27.300.tgz) |
-| rke2-calico-crd | [v3.27.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.27.002.tgz) |
-| rke2-coredns | [1.29.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.002.tgz) |
-| rke2-ingress-nginx | [4.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.9.100.tgz) |
-| rke2-metrics-server | [3.12.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.002.tgz) |
-| rancher-vsphere-csi | [3.1.2-rancher400](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.1.2-rancher400.tgz) |
-| rancher-vsphere-cpi | [1.7.001](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.7.001.tgz) |
-| harvester-cloud-provider | [0.2.300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.300.tgz) |
-| harvester-csi-driver | [0.1.1700](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1700.tgz) |
-| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
-| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
-| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
-
-
------
-
-
----
-
 ## Article: release-notes/v1.31.X.md
 
 ---
@@ -2107,7 +1131,7 @@ cat /var/lib/rancher/rke2/server/token
 * Upload prime ribs assets [(#8170)](https://github.com/rancher/rke2/pull/8170)
 * Feat: bump harvester-cloud-provider to v0.2.10 [(#8184)](https://github.com/rancher/rke2/pull/8184)
 * Backports for 2025-05 [(#8197)](https://github.com/rancher/rke2/pull/8197)
-* Udpate calico chart to v3.30.0 and Canal image [(#8203)](https://github.com/rancher/rke2/pull/8203)
+* Update calico chart to v3.30.0 and Canal image [(#8203)](https://github.com/rancher/rke2/pull/8203)
 * Bump nginx version [(#8176)](https://github.com/rancher/rke2/pull/8176)
 * Update to Kubernetes Metrics Server 3.12.201 [(#8212)](https://github.com/rancher/rke2/pull/8212)
 * Update to flannel v0.26.700 [(#8220)](https://github.com/rancher/rke2/pull/8220)
@@ -2934,7 +1958,7 @@ cat /var/lib/rancher/rke2/server/token
 * Upload prime ribs assets [(#8171)](https://github.com/rancher/rke2/pull/8171)
 * Feat: bump harvester-cloud-provider to v0.2.10 [(#8182)](https://github.com/rancher/rke2/pull/8182)
 * Backports for 2025-05 [(#8196)](https://github.com/rancher/rke2/pull/8196)
-* Udpate calico chart to v3.30.0 and Canal image [(#8202)](https://github.com/rancher/rke2/pull/8202)
+* Update calico chart to v3.30.0 and Canal image [(#8202)](https://github.com/rancher/rke2/pull/8202)
 * Bump nginx version [(#8177)](https://github.com/rancher/rke2/pull/8177)
 * Update to Kubernetes Metrics Server 3.12.201 [(#8211)](https://github.com/rancher/rke2/pull/8211)
 * Update to flannel v0.26.700 [(#8219)](https://github.com/rancher/rke2/pull/8219)
@@ -3474,7 +2498,7 @@ cat /var/lib/rancher/rke2/server/token
 * Upload prime ribs assets [(#8172)](https://github.com/rancher/rke2/pull/8172)
 * Feat: bump harvester-cloud-provider to v0.2.10 [(#8183)](https://github.com/rancher/rke2/pull/8183)
 * Backports for 2025-05 [(#8195)](https://github.com/rancher/rke2/pull/8195)
-* Udpate calico chart to v3.30.0 and Canal image [(#8201)](https://github.com/rancher/rke2/pull/8201)
+* Update calico chart to v3.30.0 and Canal image [(#8201)](https://github.com/rancher/rke2/pull/8201)
 * Bump nginx version [(#8178)](https://github.com/rancher/rke2/pull/8178)
 * Update to Kubernetes Metrics Server 3.12.201 [(#8210)](https://github.com/rancher/rke2/pull/8210)
 * Update to flannel v0.26.700 [(#8218)](https://github.com/rancher/rke2/pull/8218)
@@ -4186,7 +3210,7 @@ title: CNCF AI Conformance
 
 The [CNCF Kubernetes AI Conformance](https://docs.google.com/document/d/1hXoSdh9FEs13Yde8DivCYjjXyxa7j4J8erjZPEGWuzc/edit?tab=t.0) defines a set of additional capabilities, APIs, and configurations that a Kubernetes cluster MUST offer, on top of standard CNCF Kubernetes Conformance, to reliably and efficiently run AI/ML workloads.
 
-This document demonstrates how some of these requirements can be met. For the rest, please refer to the SUSE AI document (TBD).
+This document demonstrates how these requirements can be met using RKE2 v1.34.1+rke2r1.
 
 ## Support Dynamic Resource Allocation (DRA) ##
 
@@ -4247,6 +3271,101 @@ It will say:
 ```json
 "message":"Handled by Traefik controller","observedGeneration":1,"reason":"Handled","status":"True","type":"Accepted"
 ```
+
+## Gang Scheduling ##
+
+A gang scheduling solution, that ensures all-or-nothing scheduling for distributed AI workloads, must be possible to install (e.g. Kueue or Volcano).
+
+We will install Volcano in RKE2 and make a quick test:
+```bash
+helm repo add volcano-sh https://volcano-sh.github.io/helm-charts
+helm repo update
+helm install volcano volcano-sh/volcano -n volcano-system --create-namespace
+```
+That should install three deployments in the volcano-system namespace:
+```
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/volcano-admission     1/1     1            1           130m
+deployment.apps/volcano-controllers   1/1     1            1           130m
+deployment.apps/volcano-scheduler     1/1     1            1           130m
+```
+
+This is enough evidence for the requirement, however, let's test if it is working correctly. In a cluster with two GPUs, we can create a gang job with two tasks which require an nvidia GPU:
+
+```yaml
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: gpu-nbody-gang-job
+  namespace: default
+spec:
+  minAvailable: 2 
+  schedulerName: volcano
+  
+  tasks:
+    - name: nbody-task-1
+      replicas: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          runtimeClassName: nvidia 
+          containers:
+            - name: cuda-container-1
+              image: nvcr.io/nvidia/k8s/cuda-sample:nbody
+              command: ["/bin/bash", "-c"]
+              args:  
+                - "while true; do sleep 5 && cuda-samples/nbody -gpu -benchmark; done"
+              resources:
+                limits:
+                  nvidia.com/gpu: 1
+    
+    - name: nbody-task-2
+      replicas: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          runtimeClassName: nvidia
+          containers:
+            - name: cuda-container-2
+              image: nvcr.io/nvidia/k8s/cuda-sample:nbody
+              command: ["/bin/bash", "-c"]
+              args:  
+                - "while true; do sleep 5 && cuda-samples/nbody -gpu -benchmark; done"
+              resources:
+                limits:
+                  nvidia.com/gpu: 1
+```
+
+After a few seconds, we should see both pods running. 
+
+If we start again and now modify the manifest and use: `minAvailable: 3` add a third task:
+```yaml
+    - name: nbody-task-3
+      replicas: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          runtimeClassName: nvidia
+          containers:
+            - name: cuda-container-3
+              image: nvcr.io/nvidia/k8s/cuda-sample:nbody
+              command: ["/bin/bash", "-c"]
+              args:  
+                - "while true; do sleep 5 && cuda-samples/nbody -gpu -benchmark; done"
+              resources:
+                limits:
+                  nvidia.com/gpu: 1
+```
+
+We'll see that the three pods will not run with STATUS Pending:
+```bash
+default          gpu-nbody-gang-job-nbody-task-1-0                             0/1     Pending     0          50s 
+default          gpu-nbody-gang-job-nbody-task-2-0                             0/1     Pending     0          50s
+default          gpu-nbody-gang-job-nbody-task-3-0                             0/1     Pending     0          50s
+```
+
+Demonstrating that gang scheduling is working as expected.
+
 
 ## Cluster autoscaler ##
 
@@ -4323,6 +3442,65 @@ spec:
 
 When increasing the load on ollama, the gpu utilization will reach 70 and that will trigger the deployment of new ollama pods. 
 
+## Accelerator Performance Metrics ##
+
+The requirement states that it must be possible to allow for the installation and successful operation of at least one accelerator metrics solution that exposes fine-grained performance metrics via a standardized, machine-readable metrics endpoint. This must include a core set of metrics for per-accelerator utilization and memory usage.
+
+If the NVIDIA GPU operator is installed as described in the [docs](../add-ons/gpu_operators.md#deploy-nvidia-operator), a daemonset with the name `nvidia-dcgm-exporter` is deployed together with the service `nvidia-dcgm-exporter`. We can query this service to collect the required GPU metrics: accelerator utilization, memory usage, temperature, power usage, etc.
+
+From within the cluster, for example if we ssh into one cluster node:
+
+```bash
+# Get the clusterIP
+svcIP=$(kubectl get svc nvidia-dcgm-exporter -n gpu-operator -o jsonpath='{.spec.clusterIP}')
+# Get the port
+svcPort=$(kubectl get svc nvidia-dcgm-exporter -n gpu-operator -o jsonpath='{.spec.ports[0].port}')
+# Output the metrics
+curl -sL http://${svcIP}:${svcPort}/metrics
+```
+
+That will show the metrics exposed using the OpenMetrics text format. In the next section, it is explained how to use Prometheus and Grafana to consume those.
+
+
+## AI Job & Inference Service Metrics ##
+
+It is required that there is a system which is capable of discovering and collecting metrics from workloads the expose the in a standard format.
+
+We can use Prometheus/Grafana for that. First we install them:
+
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus-stack prometheus-community/kube-prometheus-stack \
+>   --namespace monitoring \
+>   --create-namespace
+```
+
+Once everything is running, we must create a ServiceMonitor that will scrape the metrics from any workload. As an example, we will tell Prometheus to collect metrics from the DCGM, a component present in the NVIDIA GPU Operator and described in the previous section:
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nvidia-dcgm-monitor
+  namespace: monitoring
+  labels:
+    release: prometheus-stack 
+spec:
+  selector:
+    matchLabels:
+      app: nvidia-dcgm-exporter
+  namespaceSelector:
+    matchNames:
+      - gpu-operator
+  endpoints:
+  - port: gpu-metrics
+    path: /metrics
+    interval: 15s
+```
+
+After a few minutes, the Grafana board will show the DCGM metrics, for example: `DCGM_FI_DEV_GPU_UTIL`.
+
 ## Secure accelerator access ##
 
 We must ensure that access to accelerators from within containers is properly isolated and mediated by the Kubernetes. In order to achieve this, we must install the NVIDIA GPU Operator as described in the [docs](../add-ons/gpu_operators.md#deploy-nvidia-operator).
@@ -4396,6 +3574,66 @@ The first pod will run correctly and in the logs you will see that it is able to
 The second pod will not be scheduled by Kubernetes because the only GPU available in the cluster is already being consumed by the first pod.
 
 The third pod will run but in the logs you will see that it does not find any GPU available. Therefore, the isolation is working.
+
+
+## Robust CRD and Controller Operation ##
+
+The requirement states that at least one complex AI operator with CRD can be installed and functions reliably. To test it, it recommends checking that CRDs are correctly registered and any invalid configuration is rejected by an admission webhook.
+
+We are going to install Kubeflow in RKE2 to verify this requirement.
+
+Unfortunately, kubeflow does not include a helm chart, but there is a workaround we can use to install it:
+
+```bash
+kubectl apply -k "github.com/kubeflow/training-operator/manifests/overlays/standalone?ref=v1.8.0"
+```
+
+After some seconds, everything should be up and running and we should be able to verify that CRDs are installed and the webhook is registered:
+
+```bash
+$> kubectl get crds | grep kubeflow
+mpijobs.kubeflow.org                                       2025-10-24T13:04:27Z
+mxjobs.kubeflow.org                                        2025-10-24T13:04:27Z
+paddlejobs.kubeflow.org                                    2025-10-24T13:04:28Z
+pytorchjobs.kubeflow.org                                   2025-10-24T13:04:28Z
+tfjobs.kubeflow.org                                        2025-10-24T13:04:29Z
+xgboostjobs.kubeflow.org                                   2025-10-24T13:04:29Z
+
+$> kubectl get validatingwebhookconfigurations
+validator.training-operator.kubeflow.org   5          10m
+
+$> kubectl get pods -n kubeflow
+NAME                                READY   STATUS    RESTARTS   AGE
+training-operator-f7d4b59f6-vdnh9   1/1     Running   0          9m54s
+```
+
+If now we try running a TFJob which is missing a field, for example:
+```yaml
+# saved as invalid-tfjob.yaml
+apiVersion: kubeflow.org/v1
+kind: TFJob
+metadata:
+  name: tfjob-invalid-test
+spec:
+  tfReplicaSpecs:
+    Chief:
+      replicas: 1
+      template:
+        spec:
+          containers:
+            - name: tensorflow 
+              # INTENTIONAL ERROR: Missing the 'image' field
+              # image: tensorflow/tensorflow:latest
+              # command: ["/bin/bash", "-c"]
+              # args: ["echo 'Chief running'; sleep 10;"]
+```
+
+We get the expected error from the admission webhook:
+```bash
+Error from server (Forbidden): error when creating "invalid-tfjob.yaml": admission webhook "validator.tfjob.training-operator.kubeflow.org" denied the request: spec.tfReplicaSpecs[Chief].template.spec.containers[0].image: Required value: must be required
+```
+
+If we remove the comments in the previous example and re-try it, we can see how it works
 
 
 
@@ -6033,7 +5271,7 @@ title: CIS 1.10 Self-Assessment Guide
 
 This document is a companion to the RKE2 security hardening guide. The hardening guide provides prescriptive guidance for hardening a production installation of RKE2, and this benchmark guide is meant to help you evaluate the level of security of the hardened cluster against each control in the CIS Kubernetes benchmark. It is to be used by RKE2 operators, security teams, auditors, and decision makers.
 
-This guide is specific to the **v1.28-1.33** release line of RKE2 and the **v1.10** release of the CIS Kubernetes Benchmark.
+This guide is specific to the **v1.28-1.31** release line of RKE2 and the **v1.10** release of the CIS Kubernetes Benchmark.
 
 For more information about each control, including detailed rationales and descriptions checks, you can refer to the corresponding section of the CIS Kubernetes Benchmark v1.8. You can download the benchmark, after creating a free account, in [Center for Internet Security (CIS)](https://www.cisecurity.org/benchmark/kubernetes/).
 
@@ -9589,6 +8827,4192 @@ suggested list of SecurityContexts, you may refer to the CIS Security Benchmark 
 Containers.
 
 #### 5.7.4 The default namespace should not be used (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Ensure that namespaces are created to allow for appropriate segregation of Kubernetes
+resources and that all new resources are created in a specific namespace.
+
+
+
+---
+
+## Article: security/cis_self_assessment111.md
+
+---
+title: CIS 1.11 Self-Assessment Guide
+---
+
+## Overview
+
+This document is a companion to the RKE2 security hardening guide. The hardening guide provides prescriptive guidance for hardening a production installation of RKE2, and this benchmark guide is meant to help you evaluate the level of security of the hardened cluster against each control in the CIS Kubernetes benchmark. It is to be used by RKE2 operators, security teams, auditors, and decision makers.
+
+This guide is specific to the **v1.29-1.34** release line of RKE2 and the **v1.11** release of the CIS Kubernetes Benchmark.
+
+For more information about each control, including detailed rationales and descriptions checks, you can refer to the corresponding section of the CIS Kubernetes Benchmark v1.8. You can download the benchmark, after creating a free account, in [Center for Internet Security (CIS)](https://www.cisecurity.org/benchmark/kubernetes/).
+
+### Testing controls methodology
+
+Each control in the CIS Kubernetes Benchmark was evaluated against a RKE2 cluster that was configured according to the accompanying hardening guide.
+
+These are the possible results for each control:
+
+- **PASS** - The control is automated (scored: true). The RKE2 cluster under test passed the audit outlined in the benchmark.
+- **Not Applicable** - The control is not applicable (type: skip) to RKE2 because of how it is designed to operate. The rationale section will explain why this is so.
+- **WARN** - The control is manual (scored: false) in the CIS benchmark and depends on the manual operator intervention. The remediation section will provide guidance on how to achieve a PASS result.
+
+## 1 Control Plane Security Configuration
+
+### 1.1 Control Plane Node Configuration Files
+
+#### 1.1.1 Ensure that the API server pod specification file permissions are set to 600 or more restrictive (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+stat -c permissions=%a /var/lib/rancher/rke2/agent/pod-manifests/kube-apiserver.yaml
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the
+control plane node.
+For example, `chmod 600 /var/lib/rancher/rke2/agent/pod-manifests/kube-apiserver.yaml`
+</details>
+
+#### 1.1.2 Ensure that the API server pod specification file ownership is set to root:root (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/pod-manifests/kube-apiserver.yaml; then stat -c %U:%G /var/lib/rancher/rke2/agent/pod-manifests/kube-apiserver.yaml; fi'
+```
+
+**Expected Result:** 'root:root' is equal to 'root:root'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example, `chown root:root /var/lib/rancher/rke2/agent/pod-manifests/kube-apiserver.yaml`
+</details>
+
+#### 1.1.3 Ensure that the controller manager pod specification file permissions are set to 600 or more restrictive (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/pod-manifests/kube-controller-manager.yaml; then stat -c permissions=%a /var/lib/rancher/rke2/agent/pod-manifests/kube-controller-manager.yaml; fi'
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example, `chmod 600 /var/lib/rancher/rke2/agent/pod-manifests/kube-controller-manager.yaml`
+</details>
+
+#### 1.1.4 Ensure that the controller manager pod specification file ownership is set to root:root (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/pod-manifests/kube-controller-manager.yaml; then stat -c %U:%G /var/lib/rancher/rke2/agent/pod-manifests/kube-controller-manager.yaml; fi'
+```
+
+**Expected Result:** 'root:root' is equal to 'root:root'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example, `chown root:root /var/lib/rancher/rke2/agent/pod-manifests/kube-controller-manager.yaml`
+</details>
+
+#### 1.1.5 Ensure that the scheduler pod specification file permissions are set to 600 or more restrictive (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/pod-manifests/kube-scheduler.yaml; then stat -c permissions=%a /var/lib/rancher/rke2/agent/pod-manifests/kube-scheduler.yaml; fi'
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example, `chmod 600 /var/lib/rancher/rke2/agent/pod-manifests/kube-scheduler.yaml`
+</details>
+
+#### 1.1.6 Ensure that the scheduler pod specification file ownership is set to root:root (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/pod-manifests/kube-scheduler.yaml; then stat -c %U:%G /var/lib/rancher/rke2/agent/pod-manifests/kube-scheduler.yaml; fi'
+```
+
+**Expected Result:** 'root:root' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example, `chown root:root /var/lib/rancher/rke2/agent/pod-manifests/kube-scheduler.yaml`
+</details>
+
+#### 1.1.7 Ensure that the etcd pod specification file permissions are set to 600 or more restrictive (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/pod-manifests/etcd.yaml; then stat -c permissions=%a /var/lib/rancher/rke2/agent/pod-manifests/etcd.yaml; fi'
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+If running master only with no etcd role, this check is Not applicable.
+If controlplane and etcd roles are present on the same nodes but this check is warn then
+Run the below command (based on the file location on your system) on the control plane node.
+For example,
+`chmod 600 /var/lib/rancher/rke2/agent/pod-manifests/etcd.yaml`
+</details>
+
+#### 1.1.8 Ensure that the etcd pod specification file ownership is set to root:root (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/pod-manifests/etcd.yaml; then stat -c %U:%G /var/lib/rancher/rke2/agent/pod-manifests/etcd.yaml; fi'
+```
+
+**Expected Result:** 'root:root' is equal to 'root:root'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+If running master only with no etcd role, this check is Not applicable.
+If controlplane and etcd roles are present on the same nodes but this check is warn then
+Run the below command (based on the file location on your system) on the control plane node.
+For example,
+`chown root:root /var/lib/rancher/rke2/agent/pod-manifests/etcd.yaml`
+</details>
+
+#### 1.1.9 Ensure that the Container Network Interface file permissions are set to 600 or more restrictive (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Note that for many CNIs, a lock file is created with permissions 750. This is expected and can be ignored.
+Run the below command (based on the file location on your system) on the control plane node.
+For example, `chmod 600 /var/lib/cni/networks/<filename> and chmod 600 /etc/cni/net.d/<filename>`
+
+#### 1.1.10 Ensure that the Container Network Interface file ownership is set to root:root (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+ps -fC ${kubeletbin:-kubelet} | grep -- --cni-conf-dir || echo "/etc/cni/net.d" | sed 's%.*cni-conf-dir[= ]\([^ ]*\).*%\1%' | xargs -I{} find {} -mindepth 1 | xargs --no-run-if-empty stat -c %U:%G
+find /var/lib/cni/networks -type f 2> /dev/null | xargs --no-run-if-empty stat -c %U:%G
+```
+
+**Expected Result:** 'root:root' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+root:root
+root:root
+root:root
+root:root
+root:root
+root:root
+root:root
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example,
+`chown root:root <path/to/cni/files>`
+</details>
+
+#### 1.1.11 Ensure that the etcd data directory permissions are set to 700 or more restrictive (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+stat -c permissions=%a /var/lib/rancher/rke2/server/db/etcd
+```
+
+**Expected Result:** permissions has permissions 700, expected 700 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=700
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+If running master only with no etcd role, this check is Not applicable.
+If controlplane and etcd roles are present on the same nodes but this check is warn then
+On the etcd server node, get the etcd data directory, passed as an argument --data-dir,
+from the command 'ps -ef | grep etcd'.
+Run the below command (based on the etcd data directory found above). For example,
+`chmod 700 /var/lib/rancher/rke2/server/db/etcd`
+</details>
+
+#### 1.1.12 Ensure that the etcd data directory ownership is set to etcd:etcd (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+stat -c %U:%G /var/lib/rancher/rke2/server/db/etcd
+```
+
+**Expected Result:** 'etcd:etcd' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+etcd:etcd
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+If running master only with no etcd role, this check is Not applicable.
+If controlplane and etcd roles are present on the same nodes but this check is warn then
+On the etcd server node, get the etcd data directory, passed as an argument --data-dir,
+from the command 'ps -ef | grep etcd'.
+Run the below command (based on the etcd data directory found above).
+For example, `chown etcd:etcd /var/lib/rancher/rke2/server/db/etcd`
+</details>
+
+#### 1.1.13 Ensure that the admin.conf file permissions are set to 600 or more restrictive (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+stat -c permissions=%a /var/lib/rancher/rke2/server/cred/admin.kubeconfig
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example, `chmod 600 /var/lib/rancher/rke2/server/cred/admin.kubeconfig`
+</details>
+
+#### 1.1.14 Ensure that the admin.conf file ownership is set to root:root (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+stat -c %U:%G /var/lib/rancher/rke2/server/cred/admin.kubeconfig
+```
+
+**Expected Result:** 'root:root' is equal to 'root:root'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example, `chown root:root /var/lib/rancher/rke2/server/cred/admin.kubeconfig`
+</details>
+
+#### 1.1.15 Ensure that the scheduler.conf file permissions are set to 600 or more restrictive (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/server/cred/scheduler.kubeconfig; then stat -c permissions=%a /var/lib/rancher/rke2/server/cred/scheduler.kubeconfig; fi'
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example,
+`chmod 600 /var/lib/rancher/rke2/server/cred/scheduler.kubeconfig`
+</details>
+
+#### 1.1.16 Ensure that the scheduler.conf file ownership is set to root:root (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+stat -c %U:%G /var/lib/rancher/rke2/server/cred/scheduler.kubeconfig
+```
+
+**Expected Result:** 'root:root' is equal to 'root:root'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example,
+`chown root:root /var/lib/rancher/rke2/server/cred/scheduler.kubeconfig`
+</details>
+
+#### 1.1.17 Ensure that the controller-manager.conf file permissions are set to 600 or more restrictive (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/server/cred/controller.kubeconfig; then stat -c permissions=%a /var/lib/rancher/rke2/server/cred/controller.kubeconfig; fi'
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example,
+`chmod 600 /var/lib/rancher/rke2/server/cred/controller.kubeconfig`
+</details>
+
+#### 1.1.18 Ensure that the controller-manager.conf file ownership is set to root:root (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+stat -c %U:%G /var/lib/rancher/rke2/server/cred/controller.kubeconfig
+```
+
+**Expected Result:** 'root:root' is equal to 'root:root'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example,
+`chown root:root /var/lib/rancher/rke2/server/cred/controller.kubeconfig`
+</details>
+
+#### 1.1.19 Ensure that the Kubernetes PKI directory and file ownership is set to root:root (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+stat -c %U:%G /var/lib/rancher/rke2/server/tls
+```
+
+**Expected Result:** 'root:root' is equal to 'root:root'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example,
+`chown -R root:root /var/lib/rancher/rke2/server/tls`
+</details>
+
+#### 1.1.20 Ensure that the Kubernetes PKI certificate file permissions are set to 644 or more restrictive (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+stat -c permissions=%a /var/lib/rancher/rke2/server/tls/*.crt
+```
+
+**Expected Result:** permissions has permissions 644, expected 644 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=644
+permissions=644
+permissions=644
+permissions=644
+permissions=644
+permissions=644
+permissions=644
+permissions=644
+permissions=644
+permissions=644
+permissions=644
+permissions=644
+permissions=644
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example,
+`chmod -R 644 /var/lib/rancher/rke2/server/tls/*.crt`
+By default, RKE2 sets PKI certificate file permissions to 644, more restrictive permissions such as 600 are supported.
+</details>
+
+#### 1.1.21 Ensure that the Kubernetes PKI key file permissions are set to 600 (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+stat -c permissions=%a /var/lib/rancher/rke2/server/tls/*.key
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the control plane node.
+For example,
+`chmod -R 600 /var/lib/rancher/rke2/server/tls/*.key`
+</details>
+
+### 1.2 API Server
+
+#### 1.2.1 Ensure that the --anonymous-auth argument is set to false (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--anonymous-auth' is equal to 'false'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --anonymous-auth argument to false.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove anything similar to below.
+```
+kube-apiserver-arg:
+  - "anonymous-auth=true"
+```
+</details>
+
+#### 1.2.2 Ensure that the --token-auth-file parameter is not set (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--token-auth-file' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Follow the documentation and configure alternate mechanisms for authentication.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove anything similar to below.
+```
+kube-apiserver-arg:
+  - "token-auth-file=<path>"
+```
+</details>
+
+#### 1.2.3 Ensure that the --DenyServiceExternalIPs is set (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+By default, RKE2 does not set DenyServiceExternalIPs.
+To enable this flag, edit the RKE2 config file /etc/rancher/rke2/config.yaml like below.
+```
+kube-apiserver-arg:
+  - "enable-admission-plugins=DenyServiceExternalIPs"
+```
+
+#### 1.2.4 Ensure that the --kubelet-client-certificate and --kubelet-client-key arguments are set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--kubelet-client-certificate' is present AND '--kubelet-client-key' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 automatically provides the kubelet client certificate and key.
+They are generated and located at /var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt and /var/lib/rancher/rke2/server/tls/client-kube-apiserver.key
+If for some reason you need to provide your own certificate and key, you can set the
+below parameters in the RKE2 config file /etc/rancher/rke2/config.yaml.
+```
+kube-apiserver-arg:
+  - "kubelet-client-certificate=<path/to/client-cert-file>"
+  - "kubelet-client-key=<path/to/client-key-file>"
+```
+</details>
+
+#### 1.2.5 Ensure that the --kubelet-certificate-authority argument is set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--kubelet-certificate-authority' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 automatically provides the kubelet CA cert file, at /var/lib/rancher/rke2/server/tls/server-ca.crt.
+If for some reason you need to provide your own ca certificate, look at using the rke2 certificate command line tool.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-apiserver-arg:
+  - "kubelet-certificate-authority=<path/to/ca-cert-file>"
+```
+</details>
+
+#### 1.2.6 Ensure that the --authorization-mode argument is not set to AlwaysAllow (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--authorization-mode' does not have 'AlwaysAllow'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the --authorization-mode to AlwaysAllow.
+If this check fails, edit RKE2 config file /etc/rancher/rke2/config.yaml, remove any lines like below.
+```
+kube-apiserver-arg:
+  - "authorization-mode=AlwaysAllow"
+```
+</details>
+
+#### 1.2.7 Ensure that the --authorization-mode argument includes Node (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--authorization-mode' has 'Node'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --authorization-mode to Node and RBAC.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml,
+ensure that you are not overriding authorization-mode.
+</details>
+
+#### 1.2.8 Ensure that the --authorization-mode argument includes RBAC (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--authorization-mode' has 'RBAC'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --authorization-mode to Node and RBAC.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml,
+ensure that you are not overriding authorization-mode.
+</details>
+
+#### 1.2.9 Ensure that the admission control plugin EventRateLimit is set (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Follow the Kubernetes documentation and set the desired limits in a configuration file.
+Then, edit the RKE2 config file /etc/rancher/rke2/config.yaml and set the below parameters.
+```
+kube-apiserver-arg:
+  - "enable-admission-plugins=...,EventRateLimit,..."
+  - "admission-control-config-file=<path/to/configuration/file>"
+```
+
+#### 1.2.10 Ensure that the admission control plugin AlwaysAdmit is not set (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--enable-admission-plugins' does not have 'AlwaysAdmit' OR '--enable-admission-plugins' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the --enable-admission-plugins to AlwaysAdmit.
+If this check fails, edit RKE2 config file /etc/rancher/rke2/config.yaml, remove any lines like below.
+```
+kube-apiserver-arg:
+  - "enable-admission-plugins=AlwaysAdmit"
+```
+</details>
+
+#### 1.2.11 Ensure that the admission control plugin AlwaysPullImages is set (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Permissive, per CIS guidelines,
+"This setting could impact offline or isolated clusters, which have images pre-loaded and
+do not have access to a registry to pull in-use images. This setting is not appropriate for
+clusters which use this configuration."
+Edit the RKE2 config file /etc/rancher/rke2/config.yaml
+on the control plane node and set the --enable-admission-plugins parameter to include
+AlwaysPullImages.
+--enable-admission-plugins=...,AlwaysPullImages,...
+
+#### 1.2.12 Ensure that the admission control plugin ServiceAccount is set (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--disable-admission-plugins' is present OR '--disable-admission-plugins' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the --disable-admission-plugins to anything.
+Follow the documentation and create ServiceAccount objects as per your environment.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-apiserver-arg:
+  - "disable-admission-plugins=ServiceAccount"
+```
+</details>
+
+#### 1.2.13 Ensure that the admission control plugin NamespaceLifecycle is set (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--disable-admission-plugins' is present OR '--disable-admission-plugins' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the --disable-admission-plugins to anything.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-apiserver-arg:
+  - "disable-admission-plugins=...,NamespaceLifecycle,..."
+```
+</details>
+
+#### 1.2.14 Ensure that the admission control plugin NodeRestriction is set (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--enable-admission-plugins' has 'NodeRestriction'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --enable-admission-plugins to NodeRestriction.
+Check the RKE2 config file /etc/rancher/rke2/config.yaml, and ensure that you are not overriding the admission plugins.
+If you are, include NodeRestriction in the list.
+```
+kube-apiserver-arg:
+  - "enable-admission-plugins=...,NodeRestriction,..."
+```
+</details>
+
+#### 1.2.15 Ensure that the --profiling argument is set to false (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--profiling' is equal to 'false'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --profiling argument to false.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-apiserver-arg:
+  - "profiling=true"
+```
+</details>
+
+#### 1.2.16 Ensure that the --audit-log-path argument is set (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--audit-log-path' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --audit-log-path argument to /var/lib/rancher/rke2/server/logs/audit.log
+If you want to change this, edit the RKE2 config file /etc/rancher/rke2/config.yaml
+on the control plane node and set the --audit-log-path parameter to a suitable path and
+file where you would like audit logs to be written, for example,
+```
+kube-apiserver-arg:
+  - "audit-log-path=/var/log/rke2/audit.log"
+```
+</details>
+
+#### 1.2.17 Ensure that the --audit-log-maxage argument is set to 30 or as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--audit-log-maxage' is greater or equal to 30
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --audit-log-maxage argument to 30 days.
+If you want to change this, edit the RKE2 config file /etc/rancher/rke2/config.yaml
+on the control plane node and set the --audit-log-maxage parameter to an appropriate number of days, for example,
+```
+kube-apiserver-arg:
+  - "audit-log-maxage=40"
+```
+</details>
+
+#### 1.2.18 Ensure that the --audit-log-maxbackup argument is set to 10 or as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--audit-log-maxbackup' is greater or equal to 10
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --audit-log-maxbackup argument to 10.
+If you want to change this, edit the RKE2 config file /etc/rancher/rke2/config.yaml
+on the control plane node and set the --audit-log-maxbackup parameter to an appropriate value.
+For example,
+```
+kube-apiserver-arg:
+  - "audit-log-maxbackup=15"
+```
+</details>
+
+#### 1.2.19 Ensure that the --audit-log-maxsize argument is set to 100 or as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--audit-log-maxsize' is greater or equal to 100
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --audit-log-maxsize argument to 100 MB.
+If you want to change this, edit the RKE2 config file /etc/rancher/rke2/config.yaml
+on the control plane node and set the --audit-log-maxsize parameter to an appropriate size in MB.
+For example,
+```
+kube-apiserver-arg:
+  - "audit-log-maxsize=150"
+```
+</details>
+
+#### 1.2.20 Ensure that the --request-timeout argument is set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--request-timeout' is not present OR '--request-timeout' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Permissive, per CIS guidelines,
+"it is recommended to set this limit as appropriate and change the default limit of 60 seconds only if needed".
+Edit the RKE2 config file /etc/rancher/rke2/config.yaml
+and set the below parameter if needed. For example,
+```
+kube-apiserver-arg:
+  - "request-timeout=300s"
+```
+</details>
+
+#### 1.2.21 Ensure that the --service-account-lookup argument is set to true (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--service-account-lookup' is not present OR '--service-account-lookup' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the --service-account-lookup argument.
+Edit the RKE2 config file /etc/rancher/rke2/config.yaml and set the service-account-lookup. For example,
+```
+kube-apiserver-arg:
+  - "service-account-lookup=true"
+```
+Alternatively, you can delete the service-account-lookup parameter from this file so
+that the default takes effect.
+</details>
+
+#### 1.2.22 Ensure that the --service-account-key-file argument is set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--service-account-key-file' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+RKE2 automatically generates and sets the service account key file.
+It is located at /var/lib/rancher/rke2/server/tls/service.key.
+If this check fails, edit RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-apiserver-arg:
+  - "service-account-key-file=<path>"
+```
+</details>
+
+#### 1.2.23 Ensure that the --etcd-certfile and --etcd-keyfile arguments are set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--etcd-certfile' is present AND '--etcd-keyfile' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+RKE2 automatically generates and sets the etcd certificate and key files.
+They are located at /var/lib/rancher/rke2/server/tls/etcd/client.crt and /var/lib/rancher/rke2/server/tls/etcd/client.key.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-apiserver-arg:
+  - "etcd-certfile=<path>"
+  - "etcd-keyfile=<path>"
+```
+</details>
+
+#### 1.2.24 Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--tls-cert-file' is present AND '--tls-private-key-file' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 automatically generates and provides the TLS certificate and private key for the apiserver.
+They are generated and located at /var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt and /var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-apiserver-arg:
+  - "tls-cert-file=<path>"
+  - "tls-private-key-file=<path>"
+```
+</details>
+
+#### 1.2.25 Ensure that the --client-ca-file argument is set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--client-ca-file' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 automatically provides the client certificate authority file.
+It is generated and located at /var/lib/rancher/rke2/server/tls/client-ca.crt.
+If for some reason you need to provide your own ca certificate, look at using the rke2 certificate command line tool.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-apiserver-arg:
+  - "client-ca-file=<path>"
+```
+</details>
+
+#### 1.2.26 Ensure that the --etcd-cafile argument is set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--etcd-cafile' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 automatically provides the etcd certificate authority file.
+It is generated and located at /var/lib/rancher/rke2/server/tls/client-ca.crt.
+If for some reason you need to provide your own ca certificate, look at using the rke2 certificate command line tool.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-apiserver-arg:
+  - "etcd-cafile=<path>"
+```
+</details>
+
+#### 1.2.27 Ensure that the --encryption-provider-config argument is set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--encryption-provider-config' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+RKE2 always is configured to encrypt secrets.
+Secrets encryption is managed with the rke2 secrets-encrypt command line tool.
+If needed, you can find the generated encryption config at /var/lib/rancher/rke2/server/cred/encryption-config.json
+</details>
+
+#### 1.2.28 Ensure that encryption providers are appropriately configured (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+ENCRYPTION_PROVIDER_CONFIG=$(ps -ef | grep kube-apiserver | grep -- --encryption-provider-config | sed 's%.*encryption-provider-config[= ]\([^ ]*\).*%\1%')
+if test -e $ENCRYPTION_PROVIDER_CONFIG; then grep -o 'providers\"\:\[.*\]' $ENCRYPTION_PROVIDER_CONFIG | grep -o "[A-Za-z]*" | head -2 | tail -1  | sed 's/^/provider=/'; fi
+```
+
+**Expected Result:** 'provider' contains valid elements from 'aescbc,kms,secretbox'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+provider=aescbc
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+RKE2 always is configured to use the aescbc encryption provider to encrypt secrets.
+Secrets encryption is managed with the rke2 secrets-encrypt command line tool.
+If needed, you can find the generated encryption config at /var/lib/rancher/rke2/server/cred/encryption-config.json
+</details>
+
+#### 1.2.29 Ensure that the API Server only makes use of Strong Cryptographic Ciphers (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--tls-cipher-suites' contains valid elements from 'TLS_AES_128_GCM_SHA256,TLS_AES_256_GCM_SHA384,TLS_CHACHA20_POLY1305_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, the RKE2 kube-apiserver complies with this test. Changes to these values may cause regression, therefore ensure that all apiserver clients support the new TLS configuration before applying it in production deployments.
+If a custom TLS configuration is required, consider also creating a custom version of this rule that aligns with your requirements.
+If this check fails, remove any custom configuration around `tls-cipher-suites` or update the /etc/rancher/rke2/config.yaml file to match the default by adding the following:
+kube-apiserver-arg:
+- "tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"
+</details>
+
+#### 1.2.30 Ensure that the --service-account-extend-token-expiration parameter is set to false (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-apiserver
+```
+
+**Expected Result:** '--service-account-extend-token-expiration' is equal to 'false'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Edit the RKE2 config file /etc/rancher/rke2/config.yaml and set the --service-account-extend-token-expiration parameter to false before reloading rke2, as below:
+ kube-apiserver-arg:
+  - "service-account-extend-token-expiration=false"
+By default, this parameter is set to true.
+</details>
+
+### 1.3 Controller Manager
+
+#### 1.3.1 Ensure that the --terminated-pod-gc-threshold argument is set as appropriate (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-controller-manager
+```
+
+**Expected Result:** '--terminated-pod-gc-threshold' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18380    2666  1 16:15 ?        00:00:04 kube-controller-manager --permit-port-sharing=true --flex-volume-plugin-dir=/var/lib/kubelet/volumeplugins --terminated-pod-gc-threshold=1000 --allocate-node-cidrs=true --authentication-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --authorization-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --bind-address=127.0.0.1 --cluster-cidr=10.42.0.0/16 --cluster-signing-kube-apiserver-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kube-apiserver-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kubelet-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-serving-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-kubelet-serving-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --cluster-signing-legacy-unknown-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-legacy-unknown-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --configure-cloud-routes=false --controllers=*,tokencleaner,-service,-route,-cloud-node-lifecycle --kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --profiling=false --root-ca-file=/var/lib/rancher/rke2/server/tls/server-ca.crt --secure-port=10257 --service-account-private-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --tls-cert-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.crt --tls-private-key-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.key --use-service-account-credentials=true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets a terminated-pod-gc-threshold of 1000.
+If you need to change this value, edit the RKE2 config file /etc/rancher/rke2/config.yaml on the control plane node
+and set the --terminated-pod-gc-threshold to an appropriate threshold,
+```
+kube-controller-manager-arg:
+  - "terminated-pod-gc-threshold=10"
+```
+</details>
+
+#### 1.3.2 Ensure that the --profiling argument is set to false (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-controller-manager
+```
+
+**Expected Result:** '--profiling' is equal to 'false'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18380    2666  1 16:15 ?        00:00:04 kube-controller-manager --permit-port-sharing=true --flex-volume-plugin-dir=/var/lib/kubelet/volumeplugins --terminated-pod-gc-threshold=1000 --allocate-node-cidrs=true --authentication-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --authorization-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --bind-address=127.0.0.1 --cluster-cidr=10.42.0.0/16 --cluster-signing-kube-apiserver-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kube-apiserver-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kubelet-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-serving-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-kubelet-serving-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --cluster-signing-legacy-unknown-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-legacy-unknown-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --configure-cloud-routes=false --controllers=*,tokencleaner,-service,-route,-cloud-node-lifecycle --kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --profiling=false --root-ca-file=/var/lib/rancher/rke2/server/tls/server-ca.crt --secure-port=10257 --service-account-private-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --tls-cert-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.crt --tls-private-key-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.key --use-service-account-credentials=true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --profiling argument to false.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-controller-manager-arg:
+  - "profiling=true"
+```
+</details>
+
+#### 1.3.3 Ensure that the --use-service-account-credentials argument is set to true (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-controller-manager
+```
+
+**Expected Result:** '--use-service-account-credentials' is not equal to 'false'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18380    2666  1 16:15 ?        00:00:04 kube-controller-manager --permit-port-sharing=true --flex-volume-plugin-dir=/var/lib/kubelet/volumeplugins --terminated-pod-gc-threshold=1000 --allocate-node-cidrs=true --authentication-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --authorization-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --bind-address=127.0.0.1 --cluster-cidr=10.42.0.0/16 --cluster-signing-kube-apiserver-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kube-apiserver-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kubelet-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-serving-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-kubelet-serving-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --cluster-signing-legacy-unknown-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-legacy-unknown-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --configure-cloud-routes=false --controllers=*,tokencleaner,-service,-route,-cloud-node-lifecycle --kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --profiling=false --root-ca-file=/var/lib/rancher/rke2/server/tls/server-ca.crt --secure-port=10257 --service-account-private-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --tls-cert-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.crt --tls-private-key-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.key --use-service-account-credentials=true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --use-service-account-credentials argument to true.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-controller-manager-arg:
+  - "use-service-account-credentials=false"
+```
+</details>
+
+#### 1.3.4 Ensure that the --service-account-private-key-file argument is set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-controller-manager
+```
+
+**Expected Result:** '--service-account-private-key-file' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18380    2666  1 16:15 ?        00:00:04 kube-controller-manager --permit-port-sharing=true --flex-volume-plugin-dir=/var/lib/kubelet/volumeplugins --terminated-pod-gc-threshold=1000 --allocate-node-cidrs=true --authentication-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --authorization-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --bind-address=127.0.0.1 --cluster-cidr=10.42.0.0/16 --cluster-signing-kube-apiserver-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kube-apiserver-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kubelet-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-serving-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-kubelet-serving-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --cluster-signing-legacy-unknown-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-legacy-unknown-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --configure-cloud-routes=false --controllers=*,tokencleaner,-service,-route,-cloud-node-lifecycle --kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --profiling=false --root-ca-file=/var/lib/rancher/rke2/server/tls/server-ca.crt --secure-port=10257 --service-account-private-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --tls-cert-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.crt --tls-private-key-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.key --use-service-account-credentials=true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 automatically provides the service account private key file.
+It is generated and located at /var/lib/rancher/rke2/server/tls/service.current.key.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-controller-manager-arg:
+  - "service-account-private-key-file=<path>"
+```
+</details>
+
+#### 1.3.5 Ensure that the --root-ca-file argument is set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-controller-manager
+```
+
+**Expected Result:** '--root-ca-file' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18380    2666  1 16:15 ?        00:00:04 kube-controller-manager --permit-port-sharing=true --flex-volume-plugin-dir=/var/lib/kubelet/volumeplugins --terminated-pod-gc-threshold=1000 --allocate-node-cidrs=true --authentication-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --authorization-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --bind-address=127.0.0.1 --cluster-cidr=10.42.0.0/16 --cluster-signing-kube-apiserver-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kube-apiserver-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kubelet-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-serving-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-kubelet-serving-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --cluster-signing-legacy-unknown-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-legacy-unknown-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --configure-cloud-routes=false --controllers=*,tokencleaner,-service,-route,-cloud-node-lifecycle --kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --profiling=false --root-ca-file=/var/lib/rancher/rke2/server/tls/server-ca.crt --secure-port=10257 --service-account-private-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --tls-cert-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.crt --tls-private-key-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.key --use-service-account-credentials=true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 automatically provides the root CA file.
+It is generated and located at /var/lib/rancher/rke2/server/tls/server-ca.crt.
+If for some reason you need to provide your own ca certificate, look at using the rke2 certificate command line tool.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-controller-manager-arg:
+  - "root-ca-file=<path>"
+```
+</details>
+
+#### 1.3.6 Ensure that the RotateKubeletServerCertificate argument is set to true (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-controller-manager
+```
+
+**Expected Result:** '--feature-gates' is present OR '--feature-gates' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18380    2666  1 16:15 ?        00:00:04 kube-controller-manager --permit-port-sharing=true --flex-volume-plugin-dir=/var/lib/kubelet/volumeplugins --terminated-pod-gc-threshold=1000 --allocate-node-cidrs=true --authentication-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --authorization-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --bind-address=127.0.0.1 --cluster-cidr=10.42.0.0/16 --cluster-signing-kube-apiserver-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kube-apiserver-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kubelet-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-serving-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-kubelet-serving-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --cluster-signing-legacy-unknown-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-legacy-unknown-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --configure-cloud-routes=false --controllers=*,tokencleaner,-service,-route,-cloud-node-lifecycle --kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --profiling=false --root-ca-file=/var/lib/rancher/rke2/server/tls/server-ca.crt --secure-port=10257 --service-account-private-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --tls-cert-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.crt --tls-private-key-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.key --use-service-account-credentials=true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the RotateKubeletServerCertificate feature gate.
+If you have enabled this feature gate, you should remove it.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml, remove any lines like below.
+```
+kube-controller-manager-arg:
+  - "feature-gate=RotateKubeletServerCertificate"
+```
+</details>
+
+#### 1.3.7 Ensure that the --bind-address argument is set to 127.0.0.1 (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-controller-manager
+```
+
+**Expected Result:** '--bind-address' is equal to '127.0.0.1' OR '--bind-address' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18380    2666  1 16:15 ?        00:00:04 kube-controller-manager --permit-port-sharing=true --flex-volume-plugin-dir=/var/lib/kubelet/volumeplugins --terminated-pod-gc-threshold=1000 --allocate-node-cidrs=true --authentication-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --authorization-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --bind-address=127.0.0.1 --cluster-cidr=10.42.0.0/16 --cluster-signing-kube-apiserver-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kube-apiserver-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kubelet-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-serving-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-kubelet-serving-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --cluster-signing-legacy-unknown-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-legacy-unknown-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --configure-cloud-routes=false --controllers=*,tokencleaner,-service,-route,-cloud-node-lifecycle --kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --profiling=false --root-ca-file=/var/lib/rancher/rke2/server/tls/server-ca.crt --secure-port=10257 --service-account-private-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --tls-cert-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.crt --tls-private-key-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.key --use-service-account-credentials=true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --bind-address argument to 127.0.0.1
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-controller-manager-arg:
+  - "bind-address=<IP>"
+```
+</details>
+
+### 1.4 Scheduler
+
+#### 1.4.1 Ensure that the --profiling argument is set to false (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-scheduler
+```
+
+**Expected Result:** '--profiling' is equal to 'false'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18054    2705  0 16:15 ?        00:00:01 kube-scheduler --permit-port-sharing=true --authentication-kubeconfig=/var/lib/rancher/rke2/server/cred/scheduler.kubeconfig --authorization-kubeconfig=/var/lib/rancher/rke2/server/cred/scheduler.kubeconfig --bind-address=127.0.0.1 --kubeconfig=/var/lib/rancher/rke2/server/cred/scheduler.kubeconfig --profiling=false --secure-port=10259 --tls-cert-file=/var/lib/rancher/rke2/server/tls/kube-scheduler/kube-scheduler.crt --tls-private-key-file=/var/lib/rancher/rke2/server/tls/kube-scheduler/kube-scheduler.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --profiling argument to false.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-scheduler-arg:
+  - "profiling=true"
+```
+</details>
+
+#### 1.4.2 Ensure that the --bind-address argument is set to 127.0.0.1 (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -fC kube-scheduler
+```
+
+**Expected Result:** '--bind-address' is equal to '127.0.0.1' OR '--bind-address' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       18054    2705  0 16:15 ?        00:00:01 kube-scheduler --permit-port-sharing=true --authentication-kubeconfig=/var/lib/rancher/rke2/server/cred/scheduler.kubeconfig --authorization-kubeconfig=/var/lib/rancher/rke2/server/cred/scheduler.kubeconfig --bind-address=127.0.0.1 --kubeconfig=/var/lib/rancher/rke2/server/cred/scheduler.kubeconfig --profiling=false --secure-port=10259 --tls-cert-file=/var/lib/rancher/rke2/server/tls/kube-scheduler/kube-scheduler.crt --tls-private-key-file=/var/lib/rancher/rke2/server/tls/kube-scheduler/kube-scheduler.key
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --bind-address argument to 127.0.0.1
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines like below.
+```
+kube-scheduler-arg:
+  - "bind-address=<IP>"
+```
+</details>
+
+## 2 Etcd Node Configuration
+
+### 2 Etcd Node Configuration
+
+#### 2.1 Ensure that the --cert-file and --key-file arguments are set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+cat /var/lib/rancher/rke2/server/db/etcd/config
+```
+
+**Expected Result:** '.client-transport-security.cert-file' is equal to '/var/lib/rancher/rke2/server/tls/etcd/server-client.crt' AND '.client-transport-security.key-file' is equal to '/var/lib/rancher/rke2/server/tls/etcd/server-client.key'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+advertise-client-urls: https://10.10.10.100:2379
+client-transport-security:
+  cert-file: /var/lib/rancher/rke2/server/tls/etcd/server-client.crt
+  client-cert-auth: true
+  key-file: /var/lib/rancher/rke2/server/tls/etcd/server-client.key
+  trusted-ca-file: /var/lib/rancher/rke2/server/tls/etcd/server-ca.crt
+data-dir: /var/lib/rancher/rke2/server/db/etcd
+election-timeout: 5000
+experimental-initial-corrupt-check: true
+experimental-watch-progress-notify-interval: 5000000000
+heartbeat-interval: 500
+initial-advertise-peer-urls: https://10.10.10.100:2380
+initial-cluster: server-0-d66375b4=https://10.10.10.100:2380
+initial-cluster-state: new
+listen-client-http-urls: https://127.0.0.1:2382
+listen-client-urls: https://127.0.0.1:2379,https://10.10.10.100:2379
+listen-metrics-urls: http://127.0.0.1:2381
+listen-peer-urls: https://127.0.0.1:2380,https://10.10.10.100:2380
+log-outputs:
+- stderr
+logger: zap
+name: server-0-d66375b4
+peer-transport-security:
+  cert-file: /var/lib/rancher/rke2/server/tls/etcd/peer-server-client.crt
+  client-cert-auth: true
+  key-file: /var/lib/rancher/rke2/server/tls/etcd/peer-server-client.key
+  trusted-ca-file: /var/lib/rancher/rke2/server/tls/etcd/peer-ca.crt
+snapshot-count: 10000
+socket-options:
+  reuse-address: true
+  reuse-port: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 generates cert and key files for etcd.
+These are located in /var/lib/rancher/rke2/server/tls/etcd/.
+If this check fails, ensure that the configuration file /var/lib/rancher/rke2/server/db/etcd/config
+has not been modified to use custom cert and key files.
+</details>
+
+#### 2.2 Ensure that the --client-cert-auth argument is set to true (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+cat /var/lib/rancher/rke2/server/db/etcd/config
+```
+
+**Expected Result:** 'ETCD_CLIENT_CERT_AUTH' is present OR '.client-transport-security.client-cert-auth' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=server-0
+ETCD_UNSUPPORTED_ARCH=
+FILE_HASH=e37e99a1db555b43d54d98f8bd294bd808aed0b4791c9d1d94b05bcc783e66d6
+NO_PROXY=.svc,.cluster.local,10.42.0.0/16,10.43.0.0/16
+HOME=/
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --client-cert-auth parameter to true.
+If this check fails, ensure that the configuration file /var/lib/rancher/rke2/server/db/etcd/config
+has not been modified to disable client certificate authentication.
+</details>
+
+#### 2.3 Ensure that the --auto-tls argument is not set to true (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+cat /var/lib/rancher/rke2/server/db/etcd/config
+```
+
+**Expected Result:** 'ETCD_AUTO_TLS' is not present OR 'ETCD_AUTO_TLS' is present OR '.client-transport-security.auto-tls' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=server-0
+ETCD_UNSUPPORTED_ARCH=
+FILE_HASH=e37e99a1db555b43d54d98f8bd294bd808aed0b4791c9d1d94b05bcc783e66d6
+NO_PROXY=.svc,.cluster.local,10.42.0.0/16,10.43.0.0/16
+HOME=/
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the --auto-tls parameter.
+If this check fails, edit the etcd pod specification file /var/lib/rancher/rke2/server/db/etcd/config on the master
+node and either remove the --auto-tls parameter or set it to false.
+client-transport-security:
+  auto-tls: false
+</details>
+
+#### 2.4 Ensure that the --peer-cert-file and --peer-key-file arguments are set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+cat /var/lib/rancher/rke2/server/db/etcd/config
+```
+
+**Expected Result:** '.peer-transport-security.cert-file' is equal to '/var/lib/rancher/rke2/server/tls/etcd/peer-server-client.crt' AND '.peer-transport-security.key-file' is equal to '/var/lib/rancher/rke2/server/tls/etcd/peer-server-client.key'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+advertise-client-urls: https://10.10.10.100:2379
+client-transport-security:
+  cert-file: /var/lib/rancher/rke2/server/tls/etcd/server-client.crt
+  client-cert-auth: true
+  key-file: /var/lib/rancher/rke2/server/tls/etcd/server-client.key
+  trusted-ca-file: /var/lib/rancher/rke2/server/tls/etcd/server-ca.crt
+data-dir: /var/lib/rancher/rke2/server/db/etcd
+election-timeout: 5000
+experimental-initial-corrupt-check: true
+experimental-watch-progress-notify-interval: 5000000000
+heartbeat-interval: 500
+initial-advertise-peer-urls: https://10.10.10.100:2380
+initial-cluster: server-0-d66375b4=https://10.10.10.100:2380
+initial-cluster-state: new
+listen-client-http-urls: https://127.0.0.1:2382
+listen-client-urls: https://127.0.0.1:2379,https://10.10.10.100:2379
+listen-metrics-urls: http://127.0.0.1:2381
+listen-peer-urls: https://127.0.0.1:2380,https://10.10.10.100:2380
+log-outputs:
+- stderr
+logger: zap
+name: server-0-d66375b4
+peer-transport-security:
+  cert-file: /var/lib/rancher/rke2/server/tls/etcd/peer-server-client.crt
+  client-cert-auth: true
+  key-file: /var/lib/rancher/rke2/server/tls/etcd/peer-server-client.key
+  trusted-ca-file: /var/lib/rancher/rke2/server/tls/etcd/peer-ca.crt
+snapshot-count: 10000
+socket-options:
+  reuse-address: true
+  reuse-port: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 generates peer cert and key files for etcd.
+These are located in /var/lib/rancher/rke2/server/tls/etcd/.
+If this check fails, ensure that the configuration file /var/lib/rancher/rke2/server/db/etcd/config
+has not been modified to use custom peer cert and key files.
+</details>
+
+#### 2.5 Ensure that the --peer-client-cert-auth argument is set to true (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+cat /var/lib/rancher/rke2/server/db/etcd/config
+```
+
+**Expected Result:** 'ETCD_PEER_CLIENT_CERT_AUTH' is present OR '.peer-transport-security.client-cert-auth' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=server-0
+ETCD_UNSUPPORTED_ARCH=
+FILE_HASH=e37e99a1db555b43d54d98f8bd294bd808aed0b4791c9d1d94b05bcc783e66d6
+NO_PROXY=.svc,.cluster.local,10.42.0.0/16,10.43.0.0/16
+HOME=/
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --peer-cert-auth parameter to true.
+If this check fails, ensure that the configuration file /var/lib/rancher/rke2/server/db/etcd/config
+has not been modified to disable peer client certificate authentication.
+</details>
+
+#### 2.6 Ensure that the --peer-auto-tls argument is not set to true (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+cat /var/lib/rancher/rke2/server/db/etcd/config
+```
+
+**Expected Result:** 'ETCD_PEER_AUTO_TLS' is not present OR 'ETCD_PEER_AUTO_TLS' is present OR '.peer-transport-security.auto-tls' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=server-0
+ETCD_UNSUPPORTED_ARCH=
+FILE_HASH=e37e99a1db555b43d54d98f8bd294bd808aed0b4791c9d1d94b05bcc783e66d6
+NO_PROXY=.svc,.cluster.local,10.42.0.0/16,10.43.0.0/16
+HOME=/
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the --peer-auto-tls parameter.
+If this check fails, edit the etcd pod specification file /var/lib/rancher/rke2/server/db/etcd/config on the master
+node and either remove the --peer-auto-tls parameter or set it to false.
+peer-transport-security:
+  auto-tls: false
+</details>
+
+#### 2.7 Ensure that a unique Certificate Authority is used for etcd (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+cat /var/lib/rancher/rke2/server/db/etcd/config
+```
+
+**Expected Result:** 'ETCD_TRUSTED_CA_FILE' is present OR '.peer-transport-security.trusted-ca-file' is equal to '/var/lib/rancher/rke2/server/tls/etcd/peer-ca.crt'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=server-0
+ETCD_UNSUPPORTED_ARCH=
+FILE_HASH=e37e99a1db555b43d54d98f8bd294bd808aed0b4791c9d1d94b05bcc783e66d6
+NO_PROXY=.svc,.cluster.local,10.42.0.0/16,10.43.0.0/16
+HOME=/
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 generates a unique certificate authority for etcd.
+This is located at /var/lib/rancher/rke2/server/tls/etcd/peer-ca.crt.
+If this check fails, ensure that the configuration file /var/lib/rancher/rke2/server/db/etcd/config
+has not been modified to use a shared certificate authority.
+</details>
+
+## 3 Control Plane Configuration
+
+### 3.1 Authentication and Authorization
+
+#### 3.1.1 Client certificate authentication should not be used for users (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Alternative mechanisms provided by Kubernetes such as the use of OIDC should be
+implemented in place of client certificates.
+
+#### 3.1.2 Service account token authentication should not be used for users (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Alternative mechanisms provided by Kubernetes such as the use of OIDC should be implemented
+in place of service account tokens.
+
+#### 3.1.3 Bootstrap token authentication should not be used for users (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Alternative mechanisms provided by Kubernetes such as the use of OIDC should be implemented
+in place of bootstrap tokens.
+
+### 3.2 Logging
+
+#### 3.2.1 Ensure that a minimal audit policy is created (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/ps -ef | grep kube-apiserver | grep -v grep
+```
+
+**Expected Result:** '--audit-policy-file' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root       18280   17706  5 16:15 ?        00:00:16 kube-apiserver --admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml --audit-policy-file=/etc/rancher/rke2/audit-policy.yaml --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --audit-log-path=/var/lib/rancher/rke2/server/logs/audit.log --advertise-address=10.10.10.100 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.cluster.local,rke2 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --cert-dir=/var/lib/rancher/rke2/server/tls/temporary-certs --client-ca-file=/var/lib/rancher/rke2/server/tls/client-ca.crt --egress-selector-config-file=/var/lib/rancher/rke2/server/etc/egress-selector-config.yaml --enable-admission-plugins=NodeRestriction --enable-aggregator-routing=true --enable-bootstrap-token-auth=true --encryption-provider-config=/var/lib/rancher/rke2/server/cred/encryption-config.json --encryption-provider-config-automatic-reload=true --etcd-cafile=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt --etcd-certfile=/var/lib/rancher/rke2/server/tls/etcd/client.crt --etcd-keyfile=/var/lib/rancher/rke2/server/tls/etcd/client.key --etcd-servers=https://127.0.0.1:2379 --kubelet-certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --kubelet-client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --kubelet-client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --profiling=false --proxy-client-cert-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt --proxy-client-key-file=/var/lib/rancher/rke2/server/tls/client-auth-proxy.key --requestheader-allowed-names=system:auth-proxy --requestheader-client-ca-file=/var/lib/rancher/rke2/server/tls/request-header-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-extend-token-expiration=false --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/var/lib/rancher/rke2/server/tls/service.key --service-account-signing-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --service-node-port-range=30000-32767 --storage-backend=etcd3 --tls-cert-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 --tls-private-key-file=/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key
+root       18380    2666  1 16:15 ?        00:00:04 kube-controller-manager --permit-port-sharing=true --flex-volume-plugin-dir=/var/lib/kubelet/volumeplugins --terminated-pod-gc-threshold=1000 --allocate-node-cidrs=true --authentication-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --authorization-kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --bind-address=127.0.0.1 --cluster-cidr=10.42.0.0/16 --cluster-signing-kube-apiserver-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kube-apiserver-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-client-cert-file=/var/lib/rancher/rke2/server/tls/client-ca.nochain.crt --cluster-signing-kubelet-client-key-file=/var/lib/rancher/rke2/server/tls/client-ca.key --cluster-signing-kubelet-serving-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-kubelet-serving-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --cluster-signing-legacy-unknown-cert-file=/var/lib/rancher/rke2/server/tls/server-ca.nochain.crt --cluster-signing-legacy-unknown-key-file=/var/lib/rancher/rke2/server/tls/server-ca.key --configure-cloud-routes=false --controllers=*,tokencleaner,-service,-route,-cloud-node-lifecycle --kubeconfig=/var/lib/rancher/rke2/server/cred/controller.kubeconfig --profiling=false --root-ca-file=/var/lib/rancher/rke2/server/tls/server-ca.crt --secure-port=10257 --service-account-private-key-file=/var/lib/rancher/rke2/server/tls/service.current.key --service-cluster-ip-range=10.43.0.0/16 --tls-cert-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.crt --tls-private-key-file=/var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.key --use-service-account-credentials=true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Create an audit policy file for your cluster.
+</details>
+
+#### 3.2.2 Ensure that the audit policy covers key security concerns (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Review the audit policy provided for the cluster and ensure that it covers
+at least the following areas,
+- Access to Secrets managed by the cluster. Care should be taken to only
+  log Metadata for requests to Secrets, ConfigMaps, and TokenReviews, in
+  order to avoid risk of logging sensitive data.
+- Modification of Pod and Deployment objects.
+- Use of `pods/exec`, `pods/portforward`, `pods/proxy` and `services/proxy`.
+For most requests, minimally logging at the Metadata level is recommended
+(the most basic level of logging).
+
+## 4 Worker Node Security Configuration
+
+### 4.1 Worker Node Configuration Files
+
+#### 4.1.1 Ensure that the kubelet service file permissions are set to 600 or more restrictive (Automated)
+
+**Result:** Not Applicable
+
+**Rationale:**
+
+The kubelet is managed by the RKE2 process. There is no kubelet service file, all configuration is passed in as arguments at runtime.
+
+#### 4.1.2 Ensure that the kubelet service file ownership is set to root:root (Automated)
+
+**Result:** Not Applicable
+
+**Rationale:**
+
+The kubelet is managed by the RKE2 process. There is no kubelet service file, all configuration is passed in as arguments at runtime.
+
+#### 4.1.3 If proxy kubeconfig file exists ensure permissions are set to 600 or more restrictive (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/kubeproxy.kubeconfig; then stat -c permissions=%a /var/lib/rancher/rke2/agent/kubeproxy.kubeconfig; fi' 
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the each worker node.
+For example,
+`chmod 600 /var/lib/rancher/rke2/agent/kubeproxy.kubeconfig`
+</details>
+
+#### 4.1.4 If proxy kubeconfig file exists ensure ownership is set to root:root (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/kubeproxy.kubeconfig; then stat -c %U:%G /var/lib/rancher/rke2/agent/kubeproxy.kubeconfig; fi' 
+```
+
+**Expected Result:** 'root:root' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the each worker node.
+For example, `chown root:root /var/lib/rancher/rke2/agent/kubeproxy.kubeconfig`
+</details>
+
+#### 4.1.5 Ensure that the --kubeconfig kubelet.conf file permissions are set to 600 or more restrictive (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/kubelet.kubeconfig; then stat -c permissions=%a /var/lib/rancher/rke2/agent/kubelet.kubeconfig; fi' 
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the each worker node.
+For example,
+`chmod 600 /var/lib/rancher/rke2/agent/kubelet.kubeconfig`
+</details>
+
+#### 4.1.6 Ensure that the --kubeconfig kubelet.conf file ownership is set to root:root (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/kubelet.kubeconfig; then stat -c %U:%G /var/lib/rancher/rke2/agent/kubelet.kubeconfig; fi' 
+```
+
+**Expected Result:** 'root:root' is equal to 'root:root'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the each worker node.
+For example,
+`chown root:root /var/lib/rancher/rke2/agent/kubelet.kubeconfig`
+</details>
+
+#### 4.1.7 Ensure that the certificate authorities file permissions are set to 600 or more restrictive (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/client-ca.crt; then stat -c permissions=%a /var/lib/rancher/rke2/agent/client-ca.crt; fi' 
+```
+
+**Expected Result:** permissions has permissions 600, expected 600 or more restrictive
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+permissions=600
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the below command (based on the file location on your system) on the each worker node.
+For example,
+`chmod 600 /var/lib/rancher/rke2/agent/client-ca.crt`
+</details>
+
+#### 4.1.8 Ensure that the client certificate authorities file ownership is set to root:root (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /var/lib/rancher/rke2/agent/client-ca.crt; then stat -c %U:%G /var/lib/rancher/rke2/agent/client-ca.crt; fi' 
+```
+
+**Expected Result:** 'root:root' is equal to 'root:root'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+root:root
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Run the following command to modify the ownership of the --client-ca-file.
+`chown root:root /var/lib/rancher/rke2/agent/client-ca.crt`
+</details>
+
+#### 4.1.9 If the kubelet config.yaml configuration file is being used validate permissions set to 600 or more restrictive (Automated)
+
+**Result:** Not Applicable
+
+**Rationale:**
+
+The kubelet is managed by the RKE2 process. There is no kubelet config file, all configuration is passed in as arguments at runtime.
+
+#### 4.1.10 If the kubelet config.yaml configuration file is being used validate file ownership is set to root:root (Automated)
+
+**Result:** Not Applicable
+
+**Rationale:**
+
+The kubelet is managed by the RKE2 process. There is no kubelet config file, all configuration is passed in as arguments at runtime.
+
+### 4.2 Kubelet
+
+#### 4.2.1 Ensure that the --anonymous-auth argument is set to false (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/cat /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf
+```
+
+**Expected Result:** '.authentication.anonymous.enabled' is equal to 'false'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+address: 0.0.0.0
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 2m0s
+    enabled: true
+  x509:
+    clientCAFile: /var/lib/rancher/rke2/agent/client-ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 5m0s
+    cacheUnauthorizedTTL: 30s
+cgroupDriver: systemd
+clusterDNS:
+- 10.43.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: unix:///run/k3s/containerd/containerd.sock
+cpuManagerReconcilePeriod: 10s
+crashLoopBackOff: {}
+evictionHard:
+  imagefs.available: 5%
+  nodefs.available: 5%
+evictionMinimumReclaim:
+  imagefs.available: 10%
+  nodefs.available: 10%
+evictionPressureTransitionPeriod: 5m0s
+failSwapOn: false
+fileCheckFrequency: 20s
+healthzBindAddress: 127.0.0.1
+httpCheckFrequency: 20s
+imageMaximumGCAge: 0s
+imageMinimumGCAge: 2m0s
+kind: KubeletConfiguration
+logging:
+  flushFrequency: 5s
+  format: text
+  options:
+    json:
+      infoBufferSize: "0"
+    text:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 5m0s
+nodeStatusUpdateFrequency: 10s
+protectKernelDefaults: true
+resolvConf: /run/systemd/resolve/resolv.conf
+runtimeRequestTimeout: 2m0s
+serializeImagePulls: false
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /var/lib/rancher/rke2/agent/pod-manifests
+streamingConnectionIdleTimeout: 4h0m0s
+syncFrequency: 1m0s
+tlsCertFile: /var/lib/rancher/rke2/agent/serving-kubelet.crt
+tlsPrivateKeyFile: /var/lib/rancher/rke2/agent/serving-kubelet.key
+volumeStatsAggPeriod: 1m0s
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --anonymous-auth to false.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml, remove any lines similar to below.
+```
+kubelet-arg:
+  - "anonymous-auth=true"
+```
+Based on your system, restart the RKE2 service. For example,
+systemctl restart rke2-server.service
+</details>
+
+#### 4.2.2 Ensure that the --authorization-mode argument is not set to AlwaysAllow (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/cat /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf
+```
+
+**Expected Result:** '.authorization.mode' does not have 'AlwaysAllow'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+address: 0.0.0.0
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 2m0s
+    enabled: true
+  x509:
+    clientCAFile: /var/lib/rancher/rke2/agent/client-ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 5m0s
+    cacheUnauthorizedTTL: 30s
+cgroupDriver: systemd
+clusterDNS:
+- 10.43.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: unix:///run/k3s/containerd/containerd.sock
+cpuManagerReconcilePeriod: 10s
+crashLoopBackOff: {}
+evictionHard:
+  imagefs.available: 5%
+  nodefs.available: 5%
+evictionMinimumReclaim:
+  imagefs.available: 10%
+  nodefs.available: 10%
+evictionPressureTransitionPeriod: 5m0s
+failSwapOn: false
+fileCheckFrequency: 20s
+healthzBindAddress: 127.0.0.1
+httpCheckFrequency: 20s
+imageMaximumGCAge: 0s
+imageMinimumGCAge: 2m0s
+kind: KubeletConfiguration
+logging:
+  flushFrequency: 5s
+  format: text
+  options:
+    json:
+      infoBufferSize: "0"
+    text:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 5m0s
+nodeStatusUpdateFrequency: 10s
+protectKernelDefaults: true
+resolvConf: /run/systemd/resolve/resolv.conf
+runtimeRequestTimeout: 2m0s
+serializeImagePulls: false
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /var/lib/rancher/rke2/agent/pod-manifests
+streamingConnectionIdleTimeout: 4h0m0s
+syncFrequency: 1m0s
+tlsCertFile: /var/lib/rancher/rke2/agent/serving-kubelet.crt
+tlsPrivateKeyFile: /var/lib/rancher/rke2/agent/serving-kubelet.key
+volumeStatsAggPeriod: 1m0s
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the --authorization-mode to AlwaysAllow.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml, remove any lines similar to below.
+```
+kubelet-arg:
+  - "authorization-mode=AlwaysAllow"
+```
+Based on your system, restart the RKE2 service. For example,
+systemctl restart rke2-server.service
+</details>
+
+#### 4.2.3 Ensure that the --client-ca-file argument is set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/cat /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf
+```
+
+**Expected Result:** '.authentication.x509.clientCAFile' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+address: 0.0.0.0
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 2m0s
+    enabled: true
+  x509:
+    clientCAFile: /var/lib/rancher/rke2/agent/client-ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 5m0s
+    cacheUnauthorizedTTL: 30s
+cgroupDriver: systemd
+clusterDNS:
+- 10.43.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: unix:///run/k3s/containerd/containerd.sock
+cpuManagerReconcilePeriod: 10s
+crashLoopBackOff: {}
+evictionHard:
+  imagefs.available: 5%
+  nodefs.available: 5%
+evictionMinimumReclaim:
+  imagefs.available: 10%
+  nodefs.available: 10%
+evictionPressureTransitionPeriod: 5m0s
+failSwapOn: false
+fileCheckFrequency: 20s
+healthzBindAddress: 127.0.0.1
+httpCheckFrequency: 20s
+imageMaximumGCAge: 0s
+imageMinimumGCAge: 2m0s
+kind: KubeletConfiguration
+logging:
+  flushFrequency: 5s
+  format: text
+  options:
+    json:
+      infoBufferSize: "0"
+    text:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 5m0s
+nodeStatusUpdateFrequency: 10s
+protectKernelDefaults: true
+resolvConf: /run/systemd/resolve/resolv.conf
+runtimeRequestTimeout: 2m0s
+serializeImagePulls: false
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /var/lib/rancher/rke2/agent/pod-manifests
+streamingConnectionIdleTimeout: 4h0m0s
+syncFrequency: 1m0s
+tlsCertFile: /var/lib/rancher/rke2/agent/serving-kubelet.crt
+tlsPrivateKeyFile: /var/lib/rancher/rke2/agent/serving-kubelet.key
+volumeStatsAggPeriod: 1m0s
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 automatically provides the client ca certificate for the Kubelet.
+It is generated and located at /var/lib/rancher/rke2/agent/client-ca.crt
+</details>
+
+#### 4.2.4 Verify that if defined, the --read-only-port argument is set to 0 (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/cat /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf
+```
+
+**Expected Result:** '--read-only-port' is equal to '0' OR '--read-only-port' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       17649   17422  2 16:15 ?        00:00:08 kubelet --volume-plugin-dir=/var/lib/kubelet/volumeplugins --file-check-frequency=5s --sync-frequency=30s --cloud-provider=external --config-dir=/var/lib/rancher/rke2/agent/etc/kubelet.conf.d --containerd=/run/k3s/containerd/containerd.sock --hostname-override=server-0 --kubeconfig=/var/lib/rancher/rke2/agent/kubelet.kubeconfig --node-ip=10.10.10.100 --node-labels= --read-only-port=0
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 sets the --read-only-port to 0. If you have set this to a different value, you
+should set it back to 0. Edit the RKE2 config file /etc/rancher/rke2/config.yaml, remove any lines similar to below.
+```
+kubelet-arg:
+  - "read-only-port=XXXX"
+```
+Based on your system, restart the RKE2 service. For example,
+systemctl restart rke2-server.service
+</details>
+
+#### 4.2.5 Ensure that the --streaming-connection-idle-timeout argument is not set to 0 (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/cat /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf
+```
+
+**Expected Result:** '.streamingConnectionIdleTimeout' is not equal to '0' OR '.streamingConnectionIdleTimeout' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+address: 0.0.0.0
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 2m0s
+    enabled: true
+  x509:
+    clientCAFile: /var/lib/rancher/rke2/agent/client-ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 5m0s
+    cacheUnauthorizedTTL: 30s
+cgroupDriver: systemd
+clusterDNS:
+- 10.43.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: unix:///run/k3s/containerd/containerd.sock
+cpuManagerReconcilePeriod: 10s
+crashLoopBackOff: {}
+evictionHard:
+  imagefs.available: 5%
+  nodefs.available: 5%
+evictionMinimumReclaim:
+  imagefs.available: 10%
+  nodefs.available: 10%
+evictionPressureTransitionPeriod: 5m0s
+failSwapOn: false
+fileCheckFrequency: 20s
+healthzBindAddress: 127.0.0.1
+httpCheckFrequency: 20s
+imageMaximumGCAge: 0s
+imageMinimumGCAge: 2m0s
+kind: KubeletConfiguration
+logging:
+  flushFrequency: 5s
+  format: text
+  options:
+    json:
+      infoBufferSize: "0"
+    text:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 5m0s
+nodeStatusUpdateFrequency: 10s
+protectKernelDefaults: true
+resolvConf: /run/systemd/resolve/resolv.conf
+runtimeRequestTimeout: 2m0s
+serializeImagePulls: false
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /var/lib/rancher/rke2/agent/pod-manifests
+streamingConnectionIdleTimeout: 4h0m0s
+syncFrequency: 1m0s
+tlsCertFile: /var/lib/rancher/rke2/agent/serving-kubelet.crt
+tlsPrivateKeyFile: /var/lib/rancher/rke2/agent/serving-kubelet.key
+volumeStatsAggPeriod: 1m0s
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Edit the RKE2 config file /etc/rancher/rke2/config.yaml, set the following parameter to an appropriate value.
+```
+kubelet-arg:
+  - "streaming-connection-idle-timeout=5m"
+```
+Based on your system, restart the RKE2 service. For example,
+systemctl restart rke2-server.service
+</details>
+
+#### 4.2.6 Ensure that the --make-iptables-util-chains argument is set to true (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/cat /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf
+```
+
+**Expected Result:** '.makeIPTablesUtilChains' is present OR '.makeIPTablesUtilChains' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+address: 0.0.0.0
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 2m0s
+    enabled: true
+  x509:
+    clientCAFile: /var/lib/rancher/rke2/agent/client-ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 5m0s
+    cacheUnauthorizedTTL: 30s
+cgroupDriver: systemd
+clusterDNS:
+- 10.43.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: unix:///run/k3s/containerd/containerd.sock
+cpuManagerReconcilePeriod: 10s
+crashLoopBackOff: {}
+evictionHard:
+  imagefs.available: 5%
+  nodefs.available: 5%
+evictionMinimumReclaim:
+  imagefs.available: 10%
+  nodefs.available: 10%
+evictionPressureTransitionPeriod: 5m0s
+failSwapOn: false
+fileCheckFrequency: 20s
+healthzBindAddress: 127.0.0.1
+httpCheckFrequency: 20s
+imageMaximumGCAge: 0s
+imageMinimumGCAge: 2m0s
+kind: KubeletConfiguration
+logging:
+  flushFrequency: 5s
+  format: text
+  options:
+    json:
+      infoBufferSize: "0"
+    text:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 5m0s
+nodeStatusUpdateFrequency: 10s
+protectKernelDefaults: true
+resolvConf: /run/systemd/resolve/resolv.conf
+runtimeRequestTimeout: 2m0s
+serializeImagePulls: false
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /var/lib/rancher/rke2/agent/pod-manifests
+streamingConnectionIdleTimeout: 4h0m0s
+syncFrequency: 1m0s
+tlsCertFile: /var/lib/rancher/rke2/agent/serving-kubelet.crt
+tlsPrivateKeyFile: /var/lib/rancher/rke2/agent/serving-kubelet.key
+volumeStatsAggPeriod: 1m0s
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Edit the RKE2 config file /etc/rancher/rke2/config.yaml, set the following parameter.
+```
+kubelet-arg:
+  - "make-iptables-util-chains=true"
+```
+Or, remove the --make-iptables-util-chains argument to let RKE2 use the default value.
+Based on your system, restart the RKE2 service. For example,
+systemctl restart rke2-server.service
+</details>
+
+#### 4.2.7 Ensure that the --hostname-override argument is not set (Automated)
+
+**Result:** Not Applicable
+
+**Rationale:**
+
+By default, RKE2 does set the --hostname-override argument. Per CIS guidelines, this is to comply
+with cloud providers that require this flag to ensure that hostname matches node names.
+
+#### 4.2.8 Ensure that the eventRecordQPS argument is set to a level which ensures appropriate event capture (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/cat /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf
+```
+
+**Expected Result:** '.eventRecordQPS' is present OR '.eventRecordQPS' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+address: 0.0.0.0
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 2m0s
+    enabled: true
+  x509:
+    clientCAFile: /var/lib/rancher/rke2/agent/client-ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 5m0s
+    cacheUnauthorizedTTL: 30s
+cgroupDriver: systemd
+clusterDNS:
+- 10.43.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: unix:///run/k3s/containerd/containerd.sock
+cpuManagerReconcilePeriod: 10s
+crashLoopBackOff: {}
+evictionHard:
+  imagefs.available: 5%
+  nodefs.available: 5%
+evictionMinimumReclaim:
+  imagefs.available: 10%
+  nodefs.available: 10%
+evictionPressureTransitionPeriod: 5m0s
+failSwapOn: false
+fileCheckFrequency: 20s
+healthzBindAddress: 127.0.0.1
+httpCheckFrequency: 20s
+imageMaximumGCAge: 0s
+imageMinimumGCAge: 2m0s
+kind: KubeletConfiguration
+logging:
+  flushFrequency: 5s
+  format: text
+  options:
+    json:
+      infoBufferSize: "0"
+    text:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 5m0s
+nodeStatusUpdateFrequency: 10s
+protectKernelDefaults: true
+resolvConf: /run/systemd/resolve/resolv.conf
+runtimeRequestTimeout: 2m0s
+serializeImagePulls: false
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /var/lib/rancher/rke2/agent/pod-manifests
+streamingConnectionIdleTimeout: 4h0m0s
+syncFrequency: 1m0s
+tlsCertFile: /var/lib/rancher/rke2/agent/serving-kubelet.crt
+tlsPrivateKeyFile: /var/lib/rancher/rke2/agent/serving-kubelet.key
+volumeStatsAggPeriod: 1m0s
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Edit the RKE2 config file /etc/rancher/rke2/config.yaml, set the following parameter to an appropriate value.
+```
+kubelet-arg:
+  - "event-qps=<value>"
+```
+Based on your system, restart the RKE2 service. For example,
+systemctl restart rke2-server.service
+</details>
+
+#### 4.2.9 Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/cat /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf
+```
+
+**Expected Result:** '.tlsCertFile' is present AND '.tlsPrivateKeyFile' is present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+address: 0.0.0.0
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 2m0s
+    enabled: true
+  x509:
+    clientCAFile: /var/lib/rancher/rke2/agent/client-ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 5m0s
+    cacheUnauthorizedTTL: 30s
+cgroupDriver: systemd
+clusterDNS:
+- 10.43.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: unix:///run/k3s/containerd/containerd.sock
+cpuManagerReconcilePeriod: 10s
+crashLoopBackOff: {}
+evictionHard:
+  imagefs.available: 5%
+  nodefs.available: 5%
+evictionMinimumReclaim:
+  imagefs.available: 10%
+  nodefs.available: 10%
+evictionPressureTransitionPeriod: 5m0s
+failSwapOn: false
+fileCheckFrequency: 20s
+healthzBindAddress: 127.0.0.1
+httpCheckFrequency: 20s
+imageMaximumGCAge: 0s
+imageMinimumGCAge: 2m0s
+kind: KubeletConfiguration
+logging:
+  flushFrequency: 5s
+  format: text
+  options:
+    json:
+      infoBufferSize: "0"
+    text:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 5m0s
+nodeStatusUpdateFrequency: 10s
+protectKernelDefaults: true
+resolvConf: /run/systemd/resolve/resolv.conf
+runtimeRequestTimeout: 2m0s
+serializeImagePulls: false
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /var/lib/rancher/rke2/agent/pod-manifests
+streamingConnectionIdleTimeout: 4h0m0s
+syncFrequency: 1m0s
+tlsCertFile: /var/lib/rancher/rke2/agent/serving-kubelet.crt
+tlsPrivateKeyFile: /var/lib/rancher/rke2/agent/serving-kubelet.key
+volumeStatsAggPeriod: 1m0s
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 automatically provides the TLS certificate and private key for the Kubelet.
+They are generated and located at /var/lib/rancher/rke2/agent/serving-kubelet.crt and /var/lib/rancher/rke2/agent/serving-kubelet.key
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml and remove any lines similar to below.
+```
+kubelet-arg:
+  - "tls-cert-file=<path/to/tls-cert-file>"
+  - "tls-private-key-file=<path/to/tls-private-key-file>"
+```
+</details>
+
+#### 4.2.10 Ensure that the --rotate-certificates argument is not set to false (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/cat /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf
+```
+
+**Expected Result:** '.rotateCertificates' is present OR '.rotateCertificates' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+address: 0.0.0.0
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 2m0s
+    enabled: true
+  x509:
+    clientCAFile: /var/lib/rancher/rke2/agent/client-ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 5m0s
+    cacheUnauthorizedTTL: 30s
+cgroupDriver: systemd
+clusterDNS:
+- 10.43.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: unix:///run/k3s/containerd/containerd.sock
+cpuManagerReconcilePeriod: 10s
+crashLoopBackOff: {}
+evictionHard:
+  imagefs.available: 5%
+  nodefs.available: 5%
+evictionMinimumReclaim:
+  imagefs.available: 10%
+  nodefs.available: 10%
+evictionPressureTransitionPeriod: 5m0s
+failSwapOn: false
+fileCheckFrequency: 20s
+healthzBindAddress: 127.0.0.1
+httpCheckFrequency: 20s
+imageMaximumGCAge: 0s
+imageMinimumGCAge: 2m0s
+kind: KubeletConfiguration
+logging:
+  flushFrequency: 5s
+  format: text
+  options:
+    json:
+      infoBufferSize: "0"
+    text:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 5m0s
+nodeStatusUpdateFrequency: 10s
+protectKernelDefaults: true
+resolvConf: /run/systemd/resolve/resolv.conf
+runtimeRequestTimeout: 2m0s
+serializeImagePulls: false
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /var/lib/rancher/rke2/agent/pod-manifests
+streamingConnectionIdleTimeout: 4h0m0s
+syncFrequency: 1m0s
+tlsCertFile: /var/lib/rancher/rke2/agent/serving-kubelet.crt
+tlsPrivateKeyFile: /var/lib/rancher/rke2/agent/serving-kubelet.key
+volumeStatsAggPeriod: 1m0s
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the --rotate-certificates argument.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml, remove any rotate-certificates parameter.
+Based on your system, restart the RKE2 service. For example,
+systemctl restart rke2-server.service
+</details>
+
+#### 4.2.11 Verify that the RotateKubeletServerCertificate argument is set to true (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/cat /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf
+```
+
+**Expected Result:** '.featureGates.RotateKubeletServerCertificate' is present OR '.featureGates.RotateKubeletServerCertificate' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+address: 0.0.0.0
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 2m0s
+    enabled: true
+  x509:
+    clientCAFile: /var/lib/rancher/rke2/agent/client-ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 5m0s
+    cacheUnauthorizedTTL: 30s
+cgroupDriver: systemd
+clusterDNS:
+- 10.43.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: unix:///run/k3s/containerd/containerd.sock
+cpuManagerReconcilePeriod: 10s
+crashLoopBackOff: {}
+evictionHard:
+  imagefs.available: 5%
+  nodefs.available: 5%
+evictionMinimumReclaim:
+  imagefs.available: 10%
+  nodefs.available: 10%
+evictionPressureTransitionPeriod: 5m0s
+failSwapOn: false
+fileCheckFrequency: 20s
+healthzBindAddress: 127.0.0.1
+httpCheckFrequency: 20s
+imageMaximumGCAge: 0s
+imageMinimumGCAge: 2m0s
+kind: KubeletConfiguration
+logging:
+  flushFrequency: 5s
+  format: text
+  options:
+    json:
+      infoBufferSize: "0"
+    text:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 5m0s
+nodeStatusUpdateFrequency: 10s
+protectKernelDefaults: true
+resolvConf: /run/systemd/resolve/resolv.conf
+runtimeRequestTimeout: 2m0s
+serializeImagePulls: false
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /var/lib/rancher/rke2/agent/pod-manifests
+streamingConnectionIdleTimeout: 4h0m0s
+syncFrequency: 1m0s
+tlsCertFile: /var/lib/rancher/rke2/agent/serving-kubelet.crt
+tlsPrivateKeyFile: /var/lib/rancher/rke2/agent/serving-kubelet.key
+volumeStatsAggPeriod: 1m0s
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+By default, RKE2 does not set the RotateKubeletServerCertificate feature gate.
+If this check fails, edit the RKE2 config file /etc/rancher/rke2/config.yaml, remove any RotateKubeletServerCertificate parameter.
+Based on your system, restart the RKE2 service. For example,
+systemctl restart rke2-server.service
+</details>
+
+#### 4.2.12 Ensure that the Kubelet only makes use of Strong Cryptographic Ciphers (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Edit the RKE2 config file /etc/rancher/rke2/config.yaml,
+```
+kubelet-arg:
+  - "tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"
+```
+or to a subset of these values.
+Based on your system, restart the RKE2 service. For example,
+systemctl restart rke2-server.service
+
+#### 4.2.13 Ensure that a limit is set on pod PIDs (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Edit the RKE2 config file /etc/rancher/rke2/config.yaml, set the following parameter to an appropriate value.
+```
+kubelet-arg:
+  - "pod-max-pids=<value>"
+```
+Based on your system, restart the RKE2 service. For example,
+systemctl restart rke2-server.service
+
+#### 4.2.14 Ensure that the --seccomp-default parameter is set to true (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+If enabled, the kubelet will use the RuntimeDefault seccomp profile by default, which is defined by the container runtime, instead of using the Unconfined (seccomp disabled) mode (default).
+If using a RKE2 config file /etc/rancher/rke2/config.yaml, edit the file to set `seccomp-default` to
+kubelet-arg:
+ - "seccomp-default=true"
+
+### 4.3 kube-proxy
+
+#### 4.3.1 Ensure that the kube-proxy metrics service is bound to localhost (Automated)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+/bin/sh -c 'if test -e /etc/kubernetes/addons/kube-proxy-daemonset.yaml; then cat /etc/kubernetes/addons/kube-proxy-daemonset.yaml; fi'
+```
+
+**Expected Result:** '--metrics-bind-address' is present OR '--metrics-bind-address' is not present
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+UID          PID    PPID  C STIME TTY          TIME CMD
+root       19921   19868  0 16:17 ?        00:00:00 kube-proxy --cluster-cidr=10.42.0.0/16 --conntrack-max-per-core=0 --conntrack-tcp-timeout-close-wait=0s --conntrack-tcp-timeout-established=0s --healthz-bind-address=127.0.0.1 --hostname-override=server-0 --kubeconfig=/var/lib/rancher/rke2/agent/kubeproxy.kubeconfig --proxy-mode=iptables
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Modify or remove any values which bind the metrics service to a non-localhost address.
+The default value is 127.0.0.1:10249.
+</details>
+
+## 5 Kubernetes Policies
+
+### 5.1 RBAC and Service Accounts
+
+#### 5.1.1 Ensure that the cluster-admin role is only used where required (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+kubectl get clusterrolebindings -o=custom-columns=ROLE:.roleRef.name,NAME:.metadata.name,SUBJECT:.subjects[*].name --no-headers |  grep cluster-admin
+```
+
+**Expected Result:** 'cluster-admin' matched by regex expression 'cluster-admin|helm-kube-system-rke2-.*'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+cluster-admin                                                   cluster-admin                                                   system:masters
+cluster-admin                                                   helm-kube-system-rke2-canal                                     helm-rke2-canal
+cluster-admin                                                   helm-kube-system-rke2-coredns                                   helm-rke2-coredns
+cluster-admin                                                   helm-kube-system-rke2-ingress-nginx                             helm-rke2-ingress-nginx
+cluster-admin                                                   helm-kube-system-rke2-metrics-server                            helm-rke2-metrics-server
+cluster-admin                                                   helm-kube-system-rke2-runtimeclasses                            helm-rke2-runtimeclasses
+cluster-admin                                                   helm-kube-system-rke2-snapshot-controller                       helm-rke2-snapshot-controller
+cluster-admin                                                   helm-kube-system-rke2-snapshot-controller-crd                   helm-rke2-snapshot-controller-crd
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Identify all clusterrolebindings to the cluster-admin role. Check if they are used and
+if they need this role or if they could use a role with fewer privileges. RKE2 gives exceptions
+to the helm-kube-system-rke2-* clusterrolebindings which handles the installation of all rke2 managed components.
+Where possible, first bind users to a lower privileged role and then remove the
+clusterrolebinding to the cluster-admin role:
+```
+kubectl delete clusterrolebinding [name]
+```
+</details>
+
+#### 5.1.2 Minimize access to secrets (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Where possible, remove get, list and watch access to Secret objects in the cluster.
+
+#### 5.1.3 Minimize wildcard use in Roles and ClusterRoles (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+# Check Roles
+kubectl get roles --all-namespaces -o custom-columns=ROLE_NAMESPACE:.metadata.namespace,ROLE_NAME:.metadata.name --no-headers | while read -r role_namespace role_name
+do
+  role_rules=$(kubectl get role -n "${role_namespace}" "${role_name}" -o=json | jq -c '.rules')
+  if echo "${role_rules}" | grep -q "\[\"\*\"\]"; then
+    printf "**role_name: %-50s  role_namespace: %-25s role_rules: %s is_compliant: false\n" "${role_name}" "${role_namespace}" "${role_rules}"
+  else
+    printf "**role_name: %-50s role_namespace: %-25s is_compliant: true\n" "${role_name}" "${role_namespace}"
+  fi;
+done
+
+cr_whitelist="cluster-admin rke2-cloud-controller-manager local-path-provisioner-role"
+cr_whitelist="$cr_whitelist system:kube-controller-manager system:kubelet-api-admin system:controller:namespace-controller"
+cr_whitelist="$cr_whitelist system:controller:disruption-controller system:controller:generic-garbage-collector"
+cr_whitelist="$cr_whitelist system:controller:horizontal-pod-autoscaler system:controller:resourcequota-controller"
+# Check ClusterRoles
+kubectl get clusterroles -o custom-columns=CLUSTERROLE_NAME:.metadata.name --no-headers | while read -r clusterrole_name
+do
+  clusterrole_rules=$(kubectl get clusterrole "${clusterrole_name}" -o=json | jq -c '.rules')
+  if echo "${cr_whitelist}" | grep -q "${clusterrole_name}"; then
+    printf "**clusterrole_name: %-50s is_whitelist: true  is_compliant: true\n" "${clusterrole_name}"
+  elif echo "${clusterrole_rules}" | grep -q "\[\"\*\"\]"; then
+    echo "**clusterrole_name: ${clusterrole_name} clusterrole_rules: ${clusterrole_rules} is_compliant: false"
+  else
+    printf "**clusterrole_name: %-50s is_whitelist: false is_compliant: true\n" "${clusterrole_name}"
+  fi;
+done
+```
+
+**Expected Result:** 'is_compliant' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+**role_name: system:controller:bootstrap-signer                 role_namespace: kube-public               is_compliant: true
+**role_name: extension-apiserver-authentication-reader          role_namespace: kube-system               is_compliant: true
+**role_name: rke2-ingress-nginx                                 role_namespace: kube-system               is_compliant: true
+**role_name: rke2-snapshot-controller                           role_namespace: kube-system               is_compliant: true
+**role_name: system::leader-locking-kube-controller-manager     role_namespace: kube-system               is_compliant: true
+**role_name: system::leader-locking-kube-scheduler              role_namespace: kube-system               is_compliant: true
+**role_name: system:controller:bootstrap-signer                 role_namespace: kube-system               is_compliant: true
+**role_name: system:controller:cloud-provider                   role_namespace: kube-system               is_compliant: true
+**role_name: system:controller:token-cleaner                    role_namespace: kube-system               is_compliant: true
+**clusterrole_name: admin                                              is_whitelist: true  is_compliant: true
+**clusterrole_name: calico-node                                        is_whitelist: false is_compliant: true
+**clusterrole_name: cluster-admin                                      is_whitelist: true  is_compliant: true
+**clusterrole_name: edit                                               is_whitelist: false is_compliant: true
+**clusterrole_name: flannel                                            is_whitelist: false is_compliant: true
+**clusterrole_name: rke2-cloud-controller-manager                      is_whitelist: true  is_compliant: true
+**clusterrole_name: rke2-coredns-rke2-coredns                          is_whitelist: false is_compliant: true
+**clusterrole_name: rke2-coredns-rke2-coredns-autoscaler               is_whitelist: false is_compliant: true
+**clusterrole_name: rke2-ingress-nginx                                 is_whitelist: false is_compliant: true
+**clusterrole_name: rke2-snapshot-controller                           is_whitelist: false is_compliant: true
+**clusterrole_name: system:aggregate-to-admin                          is_whitelist: false is_compliant: true
+**clusterrole_name: system:aggregate-to-edit                           is_whitelist: false is_compliant: true
+**clusterrole_name: system:aggregate-to-view                           is_whitelist: false is_compliant: true
+**clusterrole_name: system:auth-delegator                              is_whitelist: false is_compliant: true
+**clusterrole_name: system:basic-user                                  is_whitelist: false is_compliant: true
+**clusterrole_name: system:certificates.k8s.io:certificatesigningrequests:nodeclient is_whitelist: false is_compliant: true
+**clusterrole_name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient is_whitelist: false is_compliant: true
+**clusterrole_name: system:certificates.k8s.io:kube-apiserver-client-approver is_whitelist: false is_compliant: true
+**clusterrole_name: system:certificates.k8s.io:kube-apiserver-client-kubelet-approver is_whitelist: false is_compliant: true
+**clusterrole_name: system:certificates.k8s.io:kubelet-serving-approver is_whitelist: false is_compliant: true
+**clusterrole_name: system:certificates.k8s.io:legacy-unknown-approver is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:attachdetach-controller          is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:certificate-controller           is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:clusterrole-aggregation-controller is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:cronjob-controller               is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:daemon-set-controller            is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:deployment-controller            is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:disruption-controller            is_whitelist: true  is_compliant: true
+**clusterrole_name: system:controller:endpoint-controller              is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:endpointslice-controller         is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:endpointslicemirroring-controller is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:ephemeral-volume-controller      is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:expand-controller                is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:generic-garbage-collector        is_whitelist: true  is_compliant: true
+**clusterrole_name: system:controller:horizontal-pod-autoscaler        is_whitelist: true  is_compliant: true
+**clusterrole_name: system:controller:job-controller                   is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:legacy-service-account-token-cleaner is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:namespace-controller             is_whitelist: true  is_compliant: true
+**clusterrole_name: system:controller:node-controller                  is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:persistent-volume-binder         is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:pod-garbage-collector            is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:pv-protection-controller         is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:pvc-protection-controller        is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:replicaset-controller            is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:replication-controller           is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:resourcequota-controller         is_whitelist: true  is_compliant: true
+**clusterrole_name: system:controller:root-ca-cert-publisher           is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:route-controller                 is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:service-account-controller       is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:service-controller               is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:statefulset-controller           is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:ttl-after-finished-controller    is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:ttl-controller                   is_whitelist: false is_compliant: true
+**clusterrole_name: system:controller:validatingadmissionpolicy-status-controller is_whitelist: false is_compliant: true
+**clusterrole_name: system:discovery                                   is_whitelist: false is_compliant: true
+**clusterrole_name: system:heapster                                    is_whitelist: false is_compliant: true
+**clusterrole_name: system:kube-aggregator                             is_whitelist: false is_compliant: true
+**clusterrole_name: system:kube-controller-manager                     is_whitelist: true  is_compliant: true
+**clusterrole_name: system:kube-dns                                    is_whitelist: false is_compliant: true
+**clusterrole_name: system:kube-proxy                                  is_whitelist: false is_compliant: true
+**clusterrole_name: system:kube-scheduler                              is_whitelist: false is_compliant: true
+**clusterrole_name: system:kubelet-api-admin                           is_whitelist: true  is_compliant: true
+**clusterrole_name: system:monitoring                                  is_whitelist: false is_compliant: true
+**clusterrole_name: system:node                                        is_whitelist: false is_compliant: true
+**clusterrole_name: system:node-bootstrapper                           is_whitelist: false is_compliant: true
+**clusterrole_name: system:node-problem-detector                       is_whitelist: false is_compliant: true
+**clusterrole_name: system:node-proxier                                is_whitelist: false is_compliant: true
+**clusterrole_name: system:persistent-volume-provisioner               is_whitelist: false is_compliant: true
+**clusterrole_name: system:public-info-viewer                          is_whitelist: false is_compliant: true
+**clusterrole_name: system:rke2-controller                             is_whitelist: false is_compliant: true
+**clusterrole_name: system:rke2-metrics-server                         is_whitelist: false is_compliant: true
+**clusterrole_name: system:rke2-metrics-server-aggregated-reader       is_whitelist: false is_compliant: true
+**clusterrole_name: system:service-account-issuer-discovery            is_whitelist: false is_compliant: true
+**clusterrole_name: system:volume-scheduler                            is_whitelist: false is_compliant: true
+**clusterrole_name: view                                               is_whitelist: false is_compliant: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Where possible replace any use of wildcards in clusterroles and roles with specific objects or actions.
+RKE2 gives exceptions for following cluster roles, which are required for regular operations:
+- rke2-cloud-controller-manager, local-path-provisioner-role, cluster-admin
+- system:kube-controller-manager, system:kubelet-api-admin, system:controller:namespace-controller,
+- system:controller:disruption-controller, system:controller:generic-garbage-collector,
+- system:controller:horizontal-pod-autoscaler, system:controller:resourcequota-controller
+</details>
+
+#### 5.1.4 Minimize access to create pods (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+echo "canCreatePodsAsSystemAuthenticated: $(kubectl auth can-i create pods --all-namespaces --as=system:authenticated)"
+```
+
+**Expected Result:** 'canCreatePodsAsSystemAuthenticated' is equal to 'no'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+canCreatePodsAsSystemAuthenticated: no
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Where possible, remove create access to pod objects in the cluster.
+</details>
+
+#### 5.1.5 Ensure that default service accounts are not actively used. (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+kubectl get serviceaccounts --all-namespaces --field-selector metadata.name=default \
+-o custom-columns=N:.metadata.namespace,SA:.metadata.name,ASA:.automountServiceAccountToken --no-headers \
+| while read -r namespace serviceaccount automountserviceaccounttoken
+do
+  if [ "${automountserviceaccounttoken}" = "<none>" ]; then
+    automountserviceaccounttoken="notset"
+  fi
+  if [ "${namespace}" != "kube-system" ] && [ "${automountserviceaccounttoken}" != "false" ]; then
+    printf "**namespace: %-20s service_account: %-10s automountServiceAccountToken: %-6s is_compliant: false\n" "${namespace}" "${serviceaccount}" "${automountserviceaccounttoken}"
+  else
+    printf "**namespace: %-20s service_account: %-10s automountServiceAccountToken: %-6s is_compliant: true\n" "${namespace}" "${serviceaccount}" "${automountserviceaccounttoken}"
+  fi
+done
+```
+
+**Expected Result:** 'is_compliant' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+**namespace: default              service_account: default    automountServiceAccountToken: false  is_compliant: true
+**namespace: kube-node-lease      service_account: default    automountServiceAccountToken: false  is_compliant: true
+**namespace: kube-public          service_account: default    automountServiceAccountToken: false  is_compliant: true
+**namespace: kube-system          service_account: default    automountServiceAccountToken: false  is_compliant: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Create explicit service accounts wherever a Kubernetes workload requires specific access
+to the Kubernetes API server.
+Modify the configuration of each default service account to include this value
+automountServiceAccountToken: false
+Or using kubectl:
+```bash
+kubectl patch serviceaccount --namespace <NAMESPACE>lt;NAMESPACE<NAMESPACE>gt; default --patch '{"automountServiceAccountToken": false}'
+```
+</details>
+
+#### 5.1.6 Ensure that Service Account Tokens are only mounted where necessary (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+kubectl get pods --all-namespaces -o custom-columns=POD_NAMESPACE:.metadata.namespace,POD_NAME:.metadata.name,POD_SERVICE_ACCOUNT:.spec.serviceAccount,POD_IS_AUTOMOUNTSERVICEACCOUNTTOKEN:.spec.automountServiceAccountToken --no-headers | while read -r pod_namespace pod_name pod_service_account pod_is_automountserviceaccounttoken
+do
+  # Skip pods with no service account
+  if [ "${pod_service_account}" = "<none>" ]; then
+    continue
+  fi
+  # Retrieve automountServiceAccountToken's value for ServiceAccount and Pod, set to notset if null or <none>.
+  svacc_is_automountserviceaccounttoken=$(kubectl get serviceaccount -n "${pod_namespace}" "${pod_service_account}" -o json | jq -r '.automountServiceAccountToken' | sed -e 's/<none>/notset/g' -e 's/null/notset/g')
+  pod_is_automountserviceaccounttoken=$(echo "${pod_is_automountserviceaccounttoken}" | sed -e 's/<none>/notset/g' -e 's/null/notset/g')
+  if [ "${svacc_is_automountserviceaccounttoken}" = "false" ] && ( [ "${pod_is_automountserviceaccounttoken}" = "false" ] || [ "${pod_is_automountserviceaccounttoken}" = "notset" ] ); then
+    is_compliant="true"
+  elif [ "${svacc_is_automountserviceaccounttoken}" = "true" ] && [ "${pod_is_automountserviceaccounttoken}" = "false" ]; then
+    is_compliant="true"
+  else
+    is_compliant="false"
+  fi
+  # Whitelist kube-system namespace as these pods are expected to contact the apiserver
+  if [ "${pod_namespace}" = "kube-system" ]; then
+    is_compliant="true"
+  fi
+  echo "**namespace: ${pod_namespace} pod_name: ${pod_name} service_account: ${pod_service_account} pod_is_automountserviceaccounttoken: ${pod_is_automountserviceaccounttoken} svacc_is_automountServiceAccountToken: ${svacc_is_automountserviceaccounttoken} is_compliant: ${is_compliant}"
+done
+```
+
+**Expected Result:** 'is_compliant' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+**namespace: kube-system pod_name: helm-install-rke2-canal-789dp service_account: helm-rke2-canal pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: true is_compliant: true
+**namespace: kube-system pod_name: helm-install-rke2-coredns-c8whl service_account: helm-rke2-coredns pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: true is_compliant: true
+**namespace: kube-system pod_name: helm-install-rke2-ingress-nginx-gqtvn service_account: helm-rke2-ingress-nginx pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: true is_compliant: true
+**namespace: kube-system pod_name: helm-install-rke2-metrics-server-7jckf service_account: helm-rke2-metrics-server pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: true is_compliant: true
+**namespace: kube-system pod_name: helm-install-rke2-runtimeclasses-2zdbw service_account: helm-rke2-runtimeclasses pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: true is_compliant: true
+**namespace: kube-system pod_name: helm-install-rke2-snapshot-controller-crd-9njtl service_account: helm-rke2-snapshot-controller-crd pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: true is_compliant: true
+**namespace: kube-system pod_name: helm-install-rke2-snapshot-controller-rm764 service_account: helm-rke2-snapshot-controller pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: true is_compliant: true
+**namespace: kube-system pod_name: rke2-canal-bqn2x service_account: canal pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: notset is_compliant: true
+**namespace: kube-system pod_name: rke2-coredns-rke2-coredns-6464f98784-7mc2x service_account: coredns pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: notset is_compliant: true
+**namespace: kube-system pod_name: rke2-coredns-rke2-coredns-autoscaler-67bb49dff-lks69 service_account: rke2-coredns-rke2-coredns-autoscaler pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: notset is_compliant: true
+**namespace: kube-system pod_name: rke2-ingress-nginx-controller-2pjn6 service_account: rke2-ingress-nginx pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: true is_compliant: true
+**namespace: kube-system pod_name: rke2-metrics-server-75d485c65b-djgst service_account: rke2-metrics-server pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: notset is_compliant: true
+**namespace: kube-system pod_name: rke2-snapshot-controller-696989ffdd-ctddn service_account: rke2-snapshot-controller pod_is_automountserviceaccounttoken: notset svacc_is_automountServiceAccountToken: notset is_compliant: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Modify the definition of ServiceAccounts and Pods which do not need to mount service
+account tokens to disable it, with `automountServiceAccountToken: false`.
+RKE2 gives exceptions to the ServiceAccounts in kube-system namespace, as these are expected contact the apiserver.
+When in cis mode, RKE2 disables the automountServiceAccountToken for namespaces:
+- kube-public, default, kube-node-lease
+If both the ServiceAccount and the Pod's .spec specify a value for automountServiceAccountToken, the Pod spec takes precedence.
+Condition: Pod is_compliant to true when
+  - ServiceAccount is automountServiceAccountToken: false and Pod is automountServiceAccountToken: false or notset
+  - ServiceAccount is automountServiceAccountToken: true/notset and Pod is automountServiceAccountToken: false
+</details>
+
+#### 5.1.7 Avoid use of system:masters group (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Remove the system:masters group from all users in the cluster.
+
+#### 5.1.8 Limit use of the Bind, Impersonate and Escalate permissions in the Kubernetes cluster (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Where possible, remove the impersonate, bind and escalate rights from subjects.
+
+#### 5.1.9 Minimize access to create persistent volumes (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Where possible, remove create access to PersistentVolume objects in the cluster.
+
+#### 5.1.10 Minimize access to the proxy sub-resource of nodes (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Where possible, remove access to the proxy sub-resource of node objects.
+
+#### 5.1.11 Minimize access to the approval sub-resource of certificatesigningrequests objects (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Where possible, remove access to the approval sub-resource of certificatesigningrequests objects.
+
+#### 5.1.12 Minimize access to webhook configuration objects (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Where possible, remove access to the validatingwebhookconfigurations or mutatingwebhookconfigurations objects
+
+#### 5.1.13 Minimize access to the service account token creation (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Where possible, remove access to the token sub-resource of serviceaccount objects.
+
+### 5.2 Pod Security Standards
+
+#### 5.2.1 Ensure that the cluster has at least one active policy control mechanism in place (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Ensure that either Pod Security Admission or an external policy control system is in place
+for every namespace which contains user workloads.
+
+#### 5.2.2 Minimize the admission of privileged containers (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+whitelist="kube-flannel calico-node kube-proxy"
+kubectl get pods --all-namespaces -o custom-columns=POD_NAME:.metadata.name,POD_NAMESPACE:.metadata.namespace --no-headers | while read -r pod_name pod_namespace
+do
+  # Retrieve container(s) for each Pod.
+  kubectl get pod "${pod_name}" --namespace "${pod_namespace}" -o json | jq -c '.spec.containers[]' | while read -r container
+  do
+    # Retrieve container's name.
+    container_name=$(echo ${container} | jq -r '.name')
+    # Retrieve container's .securityContext.privileged value.
+    container_privileged=$(echo ${container} | jq -r '.securityContext.privileged' | sed -e 's/null/notset/g')
+    # Check if container name is in whitelist.
+    if echo "${whitelist}" | grep -q "${container_name}"; then
+      echo "***pod_name: ${pod_name} container_name: ${container_name} pod_namespace: ${pod_namespace} is_container_privileged: ${container_privileged} is_whitelist: true is_compliant: true"
+    elif [ "${container_privileged}" = "false" ] || [ "${container_privileged}" = "notset" ] ; then
+      echo "***pod_name: ${pod_name} container_name: ${container_name} pod_namespace: ${pod_namespace} is_container_privileged: ${container_privileged} is_compliant: true"
+    else
+      echo "***pod_name: ${pod_name} container_name: ${container_name} pod_namespace: ${pod_namespace} is_container_privileged: ${container_privileged} is_compliant: false"
+    fi
+  done
+done
+```
+
+**Expected Result:** 'is_compliant' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+***pod_name: cloud-controller-manager-server-0 container_name: cloud-controller-manager pod_namespace: kube-system is_container_privileged: false is_compliant: true
+***pod_name: etcd-server-0 container_name: etcd pod_namespace: kube-system is_container_privileged: false is_compliant: true
+***pod_name: helm-install-rke2-canal-789dp container_name: helm pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: helm-install-rke2-coredns-c8whl container_name: helm pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: helm-install-rke2-ingress-nginx-gqtvn container_name: helm pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: helm-install-rke2-metrics-server-7jckf container_name: helm pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: helm-install-rke2-runtimeclasses-2zdbw container_name: helm pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-crd-9njtl container_name: helm pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-rm764 container_name: helm pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: kube-apiserver-server-0 container_name: kube-apiserver pod_namespace: kube-system is_container_privileged: false is_compliant: true
+***pod_name: kube-controller-manager-server-0 container_name: kube-controller-manager pod_namespace: kube-system is_container_privileged: false is_compliant: true
+***pod_name: kube-proxy-server-0 container_name: kube-proxy pod_namespace: kube-system is_container_privileged: true is_whitelist: true is_compliant: true
+***pod_name: kube-scheduler-server-0 container_name: kube-scheduler pod_namespace: kube-system is_container_privileged: false is_compliant: true
+***pod_name: rke2-canal-bqn2x container_name: calico-node pod_namespace: kube-system is_container_privileged: true is_whitelist: true is_compliant: true
+***pod_name: rke2-canal-bqn2x container_name: kube-flannel pod_namespace: kube-system is_container_privileged: true is_whitelist: true is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-6464f98784-7mc2x container_name: coredns pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-autoscaler-67bb49dff-lks69 container_name: autoscaler pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: rke2-ingress-nginx-controller-2pjn6 container_name: rke2-ingress-nginx-controller pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: rke2-metrics-server-75d485c65b-djgst container_name: metrics-server pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+***pod_name: rke2-snapshot-controller-696989ffdd-ctddn container_name: rke2-snapshot-controller pod_namespace: kube-system is_container_privileged: notset is_compliant: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Add policies to each namespace in the cluster which has user workloads to restrict the
+admission of privileged containers.
+RKE2 gives exceptions to the following pods, which are required for regular operations:
+- kube-flannel, calico-node, kube-proxy
+Audit: the audit list all pods' containers to retrieve their .securityContext.privileged value.
+Condition: is_compliant is false if container's `.securityContext.privileged` is set to `true`.
+Default: by default, there are no restrictions on the creation of privileged containers.
+</details>
+
+#### 5.2.3 Minimize the admission of containers wishing to share the host process ID namespace (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+kubectl get pods --all-namespaces -o custom-columns=POD_NAME:.metadata.name,POD_NAMESPACE:.metadata.namespace --no-headers | while read -r pod_name pod_namespace
+do
+  # Retrieve spec.hostPID for each pod.
+  pod_hostpid=$(kubectl get pod "${pod_name}" --namespace "${pod_namespace}" -o jsonpath='{.spec.hostPID}' 2>/dev/null)
+  if [ -z "${pod_hostpid}" ]; then
+    pod_hostpid="false"
+    echo "***pod_name: ${pod_name} pod_namespace: ${pod_namespace} is_pod_hostpid: ${pod_hostpid} is_compliant: true"
+  else
+    echo "***pod_name: ${pod_name} pod_namespace: ${pod_namespace} is_pod_hostpid: ${pod_hostpid} is_compliant: false"
+  fi
+done
+```
+
+**Expected Result:** 'is_compliant' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+***pod_name: cloud-controller-manager-server-0 pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: etcd-server-0 pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: helm-install-rke2-canal-789dp pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: helm-install-rke2-coredns-c8whl pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: helm-install-rke2-ingress-nginx-gqtvn pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: helm-install-rke2-metrics-server-7jckf pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: helm-install-rke2-runtimeclasses-2zdbw pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-crd-9njtl pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-rm764 pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: kube-apiserver-server-0 pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: kube-controller-manager-server-0 pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: kube-proxy-server-0 pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: kube-scheduler-server-0 pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: rke2-canal-bqn2x pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-6464f98784-7mc2x pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-autoscaler-67bb49dff-lks69 pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: rke2-ingress-nginx-controller-2pjn6 pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: rke2-metrics-server-75d485c65b-djgst pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+***pod_name: rke2-snapshot-controller-696989ffdd-ctddn pod_namespace: kube-system is_pod_hostpid: false is_compliant: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Add policies to each namespace in the cluster which has user workloads to restrict the
+admission of `hostPID` containers.
+Audit: the audit retrieves each Pod' spec.hostPID.
+Condition: is_compliant is false if Pod's spec.hostPID is set to `true`.
+Default: by default, there are no restrictions on the creation of hostPID containers.
+</details>
+
+#### 5.2.4 Minimize the admission of containers wishing to share the host IPC namespace (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+kubectl get pods --all-namespaces -o custom-columns=POD_NAME:.metadata.name,POD_NAMESPACE:.metadata.namespace --no-headers | while read -r pod_name pod_namespace
+do
+  # Retrieve spec.hostIPC for each pod.
+  pod_hostipc=$(kubectl get pod "${pod_name}" --namespace "${pod_namespace}" -o jsonpath='{.spec.hostIPC}' 2>/dev/null)
+  if [ -z "${pod_hostipc}" ]; then
+    pod_hostipc="false"
+    echo "***pod_name: ${pod_name} pod_namespace: ${pod_namespace} is_pod_hostipc: ${pod_hostipc} is_compliant: true"
+  else
+    echo "***pod_name: ${pod_name} pod_namespace: ${pod_namespace} is_pod_hostipc: ${pod_hostipc} is_compliant: false"
+  fi
+done
+```
+
+**Expected Result:** 'is_compliant' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+***pod_name: cloud-controller-manager-server-0 pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: etcd-server-0 pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: helm-install-rke2-canal-789dp pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: helm-install-rke2-coredns-c8whl pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: helm-install-rke2-ingress-nginx-gqtvn pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: helm-install-rke2-metrics-server-7jckf pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: helm-install-rke2-runtimeclasses-2zdbw pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-crd-9njtl pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-rm764 pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: kube-apiserver-server-0 pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: kube-controller-manager-server-0 pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: kube-proxy-server-0 pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: kube-scheduler-server-0 pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: rke2-canal-bqn2x pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-6464f98784-7mc2x pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-autoscaler-67bb49dff-lks69 pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: rke2-ingress-nginx-controller-2pjn6 pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: rke2-metrics-server-75d485c65b-djgst pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+***pod_name: rke2-snapshot-controller-696989ffdd-ctddn pod_namespace: kube-system is_pod_hostipc: false is_compliant: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Add policies to each namespace in the cluster which has user workloads to restrict the
+admission of `hostIPC` containers.
+Audit: the audit retrieves each Pod' spec.IPC.
+Condition: is_compliant is false if Pod's spec.hostIPC is set to `true`.
+Default: by default, there are no restrictions on the creation of hostIPC containers.
+</details>
+
+#### 5.2.5 Minimize the admission of containers wishing to share the host network namespace (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+whitelist="cloud-controller-manager etcd rke2-canal rke2-coredns kube-apiserver kube-scheduler kube-proxy kube-controller-manager"
+is_in_whitelist() {
+  for entry in $whitelist; do
+    case "${pod_name}" in
+      *"${entry}"*)
+        return 0
+        ;;
+    esac
+  done
+  return 1
+}
+kubectl get pods --all-namespaces -o custom-columns=POD_NAME:.metadata.name,POD_NAMESPACE:.metadata.namespace --no-headers | while read -r pod_name pod_namespace
+do
+  # Retrieve spec.hostNetwork for each pod.
+  pod_hostnetwork=$(kubectl get pod "${pod_name}" --namespace "${pod_namespace}" -o jsonpath='{.spec.hostNetwork}' 2>/dev/null)
+  echo "${whitelist}" | grep -q "${pod_name}"
+  if [ "${pod_namespace}" = 'kube-system' ] && is_in_whitelist; then
+    echo "***pod_name: ${pod_name} pod_namespace: ${pod_namespace} is_pod_hostnetwork: ${pod_hostnetwork} is_whitelist: true is_compliant: true"
+  elif [ -z "${pod_hostnetwork}" ]; then
+    pod_hostnetwork="false"
+    echo "***pod_name: ${pod_name} pod_namespace: ${pod_namespace} is_pod_hostnetwork: ${pod_hostnetwork} is_compliant: true"
+  else
+    echo "***pod_name: ${pod_name} pod_namespace: ${pod_namespace} is_pod_hostnetwork: ${pod_hostnetwork} is_compliant: false"
+  fi
+done
+```
+
+**Expected Result:** 'is_compliant' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+***pod_name: cloud-controller-manager-server-0 pod_namespace: kube-system is_pod_hostnetwork: true is_whitelist: true is_compliant: true
+***pod_name: etcd-server-0 pod_namespace: kube-system is_pod_hostnetwork: true is_whitelist: true is_compliant: true
+***pod_name: helm-install-rke2-canal-789dp pod_namespace: kube-system is_pod_hostnetwork: true is_whitelist: true is_compliant: true
+***pod_name: helm-install-rke2-coredns-c8whl pod_namespace: kube-system is_pod_hostnetwork: true is_whitelist: true is_compliant: true
+***pod_name: helm-install-rke2-ingress-nginx-gqtvn pod_namespace: kube-system is_pod_hostnetwork: false is_compliant: true
+***pod_name: helm-install-rke2-metrics-server-7jckf pod_namespace: kube-system is_pod_hostnetwork: false is_compliant: true
+***pod_name: helm-install-rke2-runtimeclasses-2zdbw pod_namespace: kube-system is_pod_hostnetwork: false is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-crd-9njtl pod_namespace: kube-system is_pod_hostnetwork: false is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-rm764 pod_namespace: kube-system is_pod_hostnetwork: false is_compliant: true
+***pod_name: kube-apiserver-server-0 pod_namespace: kube-system is_pod_hostnetwork: true is_whitelist: true is_compliant: true
+***pod_name: kube-controller-manager-server-0 pod_namespace: kube-system is_pod_hostnetwork: true is_whitelist: true is_compliant: true
+***pod_name: kube-proxy-server-0 pod_namespace: kube-system is_pod_hostnetwork: true is_whitelist: true is_compliant: true
+***pod_name: kube-scheduler-server-0 pod_namespace: kube-system is_pod_hostnetwork: true is_whitelist: true is_compliant: true
+***pod_name: rke2-canal-bqn2x pod_namespace: kube-system is_pod_hostnetwork: true is_whitelist: true is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-6464f98784-7mc2x pod_namespace: kube-system is_pod_hostnetwork:  is_whitelist: true is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-autoscaler-67bb49dff-lks69 pod_namespace: kube-system is_pod_hostnetwork:  is_whitelist: true is_compliant: true
+***pod_name: rke2-ingress-nginx-controller-2pjn6 pod_namespace: kube-system is_pod_hostnetwork: false is_compliant: true
+***pod_name: rke2-metrics-server-75d485c65b-djgst pod_namespace: kube-system is_pod_hostnetwork: false is_compliant: true
+***pod_name: rke2-snapshot-controller-696989ffdd-ctddn pod_namespace: kube-system is_pod_hostnetwork: false is_compliant: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Add policies to each namespace in the cluster which has user workloads to restrict the
+admission of `hostNetwork` containers.
+RKE2 gives exceptions to the following pods in the kube-system namespace, which are required for regular operations:
+- cloud-controller-manager, etcd, rke2-canal, rke2-coredns, kube-apiserver,
+- kube-scheduler, kube-proxy, kube-controller-manager
+Audit: the audit retrieves each Pod' spec.hostNetwork.
+Condition: is_compliant is false if Pod's spec.hostNetwork is set to `true`.
+Default: by default, there are no restrictions on the creation of hostNetwork containers.
+</details>
+
+#### 5.2.6 Minimize the admission of containers with allowPrivilegeEscalation (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+kubectl get pods --all-namespaces -o custom-columns=POD_NAME:.metadata.name,POD_NAMESPACE:.metadata.namespace --no-headers | while read -r pod_name pod_namespace
+do
+  # Retrieve container(s) for each Pod.
+  kubectl get pod "${pod_name}" --namespace "${pod_namespace}" -o json | jq -c '.spec.containers[]' | while read -r container
+  do
+    # Retrieve container's name
+    container_name=$(echo ${container} | jq -r '.name')
+    # Retrieve container's .securityContext.allowPrivilegeEscalation
+    container_allowprivesc=$(echo ${container} | jq -r '.securityContext.allowPrivilegeEscalation' | sed -e 's/null/notset/g')
+    if [ "${container_allowprivesc}" = "false" ] || [ "${container_allowprivesc}" = "notset" ]; then
+      echo "***pod_name: ${pod_name} container_name: ${container_name} pod_namespace: ${pod_namespace} is_container_allowprivesc: ${container_allowprivesc} is_compliant: true"
+    else
+      echo "***pod_name: ${pod_name} container_name: ${container_name} pod_namespace: ${pod_namespace} is_container_allowprivesc: ${container_allowprivesc} is_compliant: false"
+    fi
+  done
+done
+```
+
+**Expected Result:** 'is_compliant' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+***pod_name: cloud-controller-manager-server-0 container_name: cloud-controller-manager pod_namespace: kube-system is_container_allowprivesc: notset is_compliant: true
+***pod_name: etcd-server-0 container_name: etcd pod_namespace: kube-system is_container_allowprivesc: notset is_compliant: true
+***pod_name: helm-install-rke2-canal-789dp container_name: helm pod_namespace: kube-system is_container_allowprivesc: false is_compliant: true
+***pod_name: helm-install-rke2-coredns-c8whl container_name: helm pod_namespace: kube-system is_container_allowprivesc: false is_compliant: true
+***pod_name: helm-install-rke2-ingress-nginx-gqtvn container_name: helm pod_namespace: kube-system is_container_allowprivesc: false is_compliant: true
+***pod_name: helm-install-rke2-metrics-server-7jckf container_name: helm pod_namespace: kube-system is_container_allowprivesc: false is_compliant: true
+***pod_name: helm-install-rke2-runtimeclasses-2zdbw container_name: helm pod_namespace: kube-system is_container_allowprivesc: false is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-crd-9njtl container_name: helm pod_namespace: kube-system is_container_allowprivesc: false is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-rm764 container_name: helm pod_namespace: kube-system is_container_allowprivesc: false is_compliant: true
+***pod_name: kube-apiserver-server-0 container_name: kube-apiserver pod_namespace: kube-system is_container_allowprivesc: notset is_compliant: true
+***pod_name: kube-controller-manager-server-0 container_name: kube-controller-manager pod_namespace: kube-system is_container_allowprivesc: notset is_compliant: true
+***pod_name: kube-proxy-server-0 container_name: kube-proxy pod_namespace: kube-system is_container_allowprivesc: notset is_compliant: true
+***pod_name: kube-scheduler-server-0 container_name: kube-scheduler pod_namespace: kube-system is_container_allowprivesc: notset is_compliant: true
+***pod_name: rke2-canal-bqn2x container_name: calico-node pod_namespace: kube-system is_container_allowprivesc: notset is_compliant: true
+***pod_name: rke2-canal-bqn2x container_name: kube-flannel pod_namespace: kube-system is_container_allowprivesc: notset is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-6464f98784-7mc2x container_name: coredns pod_namespace: kube-system is_container_allowprivesc: false is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-autoscaler-67bb49dff-lks69 container_name: autoscaler pod_namespace: kube-system is_container_allowprivesc: notset is_compliant: true
+***pod_name: rke2-ingress-nginx-controller-2pjn6 container_name: rke2-ingress-nginx-controller pod_namespace: kube-system is_container_allowprivesc: false is_compliant: true
+***pod_name: rke2-metrics-server-75d485c65b-djgst container_name: metrics-server pod_namespace: kube-system is_container_allowprivesc: false is_compliant: true
+***pod_name: rke2-snapshot-controller-696989ffdd-ctddn container_name: rke2-snapshot-controller pod_namespace: kube-system is_container_allowprivesc: notset is_compliant: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Add policies to each namespace in the cluster which has user workloads to restrict the
+admission of containers with `.securityContext.allowPrivilegeEscalation` set to `true`.
+Audit: the audit retrieves each Pod's container(s) `.securityContext.allowPrivilegeEscalation`.
+Condition: is_compliant is false if container's `.securityContext.allowPrivilegeEscalation` is set to `true`.
+Default: If notset, privilege escalation is allowed (default to true). However if PSP/PSA is used with a `restricted` profile,
+privilege escalation is explicitly disallowed unless configured otherwise.
+</details>
+
+#### 5.2.7 Minimize the admission of root containers (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Create a policy for each namespace in the cluster, ensuring that either `MustRunAsNonRoot`
+or `MustRunAs` with the range of UIDs not including 0, is set.
+
+#### 5.2.8 Minimize the admission of containers with the NET_RAW capability (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Add policies to each namespace in the cluster which has user workloads to restrict the
+admission of containers with the `NET_RAW` capability.
+
+#### 5.2.9 Minimize the admission of containers with added capabilities (Manual)
+
+**Result:** PASS
+
+**Audit:**
+```bash
+whitelist="rke2-ingress-nginx-controller coredns"
+kubectl get pods --all-namespaces -o custom-columns=POD_NAME:.metadata.name,POD_NAMESPACE:.metadata.namespace --no-headers | while read -r pod_name pod_namespace
+do
+  # Retrieve container(s) for each Pod.
+  kubectl get pod "${pod_name}" --namespace "${pod_namespace}" -o json | jq -c '.spec.containers[]' | while read -r container
+  do
+    # Retrieve container's name
+    container_name=$(echo ${container} | jq -r '.name')
+    # Retrieve container's added capabilities
+    container_caps_add=$(echo ${container} | jq -r '.securityContext.capabilities.add' | sed -e 's/null/notset/g')
+    # Set is_compliant to true by default.
+    is_compliant=true
+    is_whitelist=false
+    caps_list=""
+    if [ "${container_caps_add}" != "notset" ]; then
+      # Loop through all caps and append caps_list, then set is_compliant to false.
+      for cap in $(echo "${container_caps_add}" | jq -r '.[]'); do
+        caps_list="${caps_list}${cap},"
+        is_compliant=false
+      done
+      # Remove trailing comma for the last list member.
+      caps_list=${caps_list%,}
+    fi
+    # Remove newline from container_caps_add for final output.
+    container_caps_add=$(echo "${container_caps_add}" | tr -d '\n')
+    if [ "${pod_namespace}" = "kube-system" ] && echo "${whitelist}" | grep -q "${container_name}"; then
+      echo "***pod_name: ${pod_name} container_name: ${container_name} pod_namespace: ${pod_namespace} container_caps_add: ${container_caps_add} is_whitelist: true is_compliant: true"
+    elif [ "${is_compliant}" = true ]; then
+      echo "***pod_name: ${pod_name} container_name: ${container_name} pod_namespace: ${pod_namespace} container_caps_add: ${container_caps_add} is_compliant: true"
+    else
+      echo "***pod_name: ${pod_name} container_name: ${container_name} pod_namespace: ${pod_namespace} container_caps_add: ${caps_list} is_compliant: false"
+    fi
+  done
+done
+```
+
+**Expected Result:** 'is_compliant' is equal to 'true'
+
+<details>
+<summary><b>Returned Value:</b></summary>
+
+```console
+***pod_name: cloud-controller-manager-server-0 container_name: cloud-controller-manager pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: etcd-server-0 container_name: etcd pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: helm-install-rke2-canal-789dp container_name: helm pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: helm-install-rke2-coredns-c8whl container_name: helm pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: helm-install-rke2-ingress-nginx-gqtvn container_name: helm pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: helm-install-rke2-metrics-server-7jckf container_name: helm pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: helm-install-rke2-runtimeclasses-2zdbw container_name: helm pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-crd-9njtl container_name: helm pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: helm-install-rke2-snapshot-controller-rm764 container_name: helm pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: kube-apiserver-server-0 container_name: kube-apiserver pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: kube-controller-manager-server-0 container_name: kube-controller-manager pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: kube-proxy-server-0 container_name: kube-proxy pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: kube-scheduler-server-0 container_name: kube-scheduler pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: rke2-canal-bqn2x container_name: calico-node pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: rke2-canal-bqn2x container_name: kube-flannel pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-6464f98784-7mc2x container_name: coredns pod_namespace: kube-system container_caps_add: [  "NET_BIND_SERVICE"] is_whitelist: true is_compliant: true
+***pod_name: rke2-coredns-rke2-coredns-autoscaler-67bb49dff-lks69 container_name: autoscaler pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: rke2-ingress-nginx-controller-2pjn6 container_name: rke2-ingress-nginx-controller pod_namespace: kube-system container_caps_add: [  "NET_BIND_SERVICE"] is_whitelist: true is_compliant: true
+***pod_name: rke2-metrics-server-75d485c65b-djgst container_name: metrics-server pod_namespace: kube-system container_caps_add: notset is_compliant: true
+***pod_name: rke2-snapshot-controller-696989ffdd-ctddn container_name: rke2-snapshot-controller pod_namespace: kube-system container_caps_add: notset is_compliant: true
+```
+</details>
+
+<details>
+<summary><b>Remediation:</b></summary>
+
+Ensure that `allowedCapabilities` is not present in policies for the cluster unless
+it is set to an empty array.
+RKE2 gives exceptions to the following pods in the kube-system namespace, which are required for regular operations:
+- rke2-ingress-ngninx-controller, coredns
+Audit: the audit retrieves each Pod's container(s) added capabilities.
+Condition: is_compliant is false if added capabilities are added for a given container.
+Default: Containers run with a default set of capabilities as assigned by the Container Runtime.
+</details>
+
+#### 5.2.10 Minimize the admission of containers with capabilities assigned (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Review the use of capabilities in applications running on your cluster. Where a namespace
+contains applications which do not require any Linux capabities to operate consider adding
+a PSP which forbids the admission of containers which do not drop all capabilities.
+
+#### 5.2.11 Minimize the admission of Windows HostProcess containers (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Add policies to each namespace in the cluster which has user workloads to restrict the
+admission of containers that have `.securityContext.windowsOptions.hostProcess` set to `true`.
+
+#### 5.2.12 Minimize the admission of HostPath volumes (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Add policies to each namespace in the cluster which has user workloads to restrict the
+admission of containers with `hostPath` volumes.
+
+#### 5.2.13 Minimize the admission of containers which use HostPorts (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Add policies to each namespace in the cluster which has user workloads to restrict the
+admission of containers which use `hostPort` sections.
+
+### 5.3 Network Policies and CNI
+
+#### 5.3.1 Ensure that the CNI in use supports NetworkPolicies (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+If the CNI plugin in use does not support network policies, consideration should be given to
+making use of a different plugin, or finding an alternate mechanism for restricting traffic
+in the Kubernetes cluster.
+
+#### 5.3.2 Ensure that all Namespaces have NetworkPolicies defined (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Follow the documentation and create NetworkPolicy objects as you need them.
+
+### 5.4 Secrets Management
+
+#### 5.4.1 Prefer using Secrets as files over Secrets as environment variables (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+If possible, rewrite application code to read Secrets from mounted secret files, rather than
+from environment variables.
+
+#### 5.4.2 Consider external secret storage (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Refer to the Secrets management options offered by your cloud provider or a third-party
+secrets management solution.
+
+### 5.5 Extensible Admission Control
+
+#### 5.5.1 Configure Image Provenance using ImagePolicyWebhook admission controller (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Follow the Kubernetes documentation and setup image provenance.
+
+### 5.6 General Policies
+
+#### 5.6.1 Create administrative boundaries between resources using namespaces (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Follow the documentation and create namespaces for objects in your deployment as you need
+them.
+
+#### 5.6.2 Ensure that the seccomp profile is set to docker/default in your Pod definitions (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Use `securityContext` to enable the docker/default seccomp profile in your pod definitions.
+An example is as below:
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
+
+#### 5.6.3 Apply SecurityContext to your Pods and Containers (Manual)
+
+**Result:** WARN
+
+**Remediation:**
+Follow the Kubernetes documentation and apply SecurityContexts to your Pods. For a
+suggested list of SecurityContexts, you may refer to the CIS Security Benchmark for Docker
+Containers.
+
+#### 5.6.4 The default namespace should not be used (Manual)
 
 **Result:** WARN
 
@@ -27308,14 +30732,14 @@ title: CIS Hardening Guide
 This document provides prescriptive guidance for hardening a production installation of RKE2. It outlines the configurations and controls required to address Kubernetes benchmark controls from the Center for Internet Security (CIS).
 
 For more details about evaluating a hardened cluster against the official CIS benchmark, refer to the appropriate CIS Self-Assessment Guide:
-- [CIS Self-Assessment Guide v1.9](cis_self_assessment19.md) for RKE2 v1.27 and newer
-- [CIS Self-Assessment Guide v1.8](cis_self_assessment18.md) for RKE2 v1.26
-- [CIS Self-Assessment Guide v1.7](cis_self_assessment17.md) for RKE2 v1.25
+- [CIS Self-Assessment Guide v1.11](cis_self_assessment19.md) for RKE2 v1.29 and newer
+- [CIS Self-Assessment Guide v1.10](cis_self_assessment19.md) for RKE2 v1.29-v1.31
+- [CIS Self-Assessment Guide v1.9](cis_self_assessment19.md) for RKE2 v1.27-v1.29
 
 RKE2 is designed to be "hardened by default" and pass the majority of the Kubernetes CIS controls without modification. There are a few notable exceptions to this that require manual intervention to fully pass the CIS Benchmark:
 
 1. RKE2 will not modify the host operating system. Therefore, you, the operator, must make a few host-level modifications.
-2. Certain CIS controls for Network Policies and Pod Security Standards (or Pod Security Policies (PSP) on RKE2 versions prior to v1.25) will restrict the functionality of the cluster. You must opt into having RKE2 configure these for you. To help ensure these requirements are met, RKE2 can be started with the `profile` flag set to `cis`, `cis-1.23`, or `cis-1.6` depending on the RKE2 version. 
+2. Certain CIS controls for Network Policies and Pod Security Standards (or Pod Security Policies (PSP) on RKE2 versions prior to v1.25) will restrict the functionality of the cluster. You must opt into having RKE2 configure these for you. To help ensure these requirements are met, RKE2 can be started with the `profile` flag set to `cis` or `cis-1.23` depending on the RKE2 version. 
 
 :::note
 This guide assumes that RKE2 has been installed, but is not yet running. If you have already started RKE2, you will need to stop the RKE2 service.
@@ -27385,7 +30809,16 @@ The `etcd` user and group must be defined in the traditional database files at /
 
 
 <Tabs groupId="rke2-version">
-<TabItem value='v1.25 and Newer' default>
+<TabItem value='v1.29 and Newer' default>
+
+```yaml
+profile: "cis"
+# For cis-1.11 only, not needed on cis-1.9/cis-1.10
+kube-apiserver-arg:
+  - 'service-account-extend-token-expiration=false'
+```
+</TabItem>
+<TabItem value='v1.25 - v1.28'>
 
 ### Generic CIS configuration
 :::info Version Gate
@@ -27404,7 +30837,7 @@ A rough mapping of RKE2 versions to CIS benchmark versions is as follows:
 
 | RKE2 Minors | Applicable CIS Benchmark | Profile Flag |
 | - | - | - |
-| 1.27+ | 1.9 | `cis` |
+| 1.27-v1.28 | 1.9 | `cis` |
 | 1.26 | 1.8 | `cis-1.23`, `cis` |
 | 1.25 | 1.7 | `cis-1.23`, `cis` |
 | 1.24 | 1.24 | `cis-1.23` |
@@ -31310,7 +34743,7 @@ RKE2 supports two alternatives for image registries:
 
 ---
 hide_table_of_contents: true
-sidebar_position: 6
+sidebar_position: 7
 title: v1.24.X
 ---
 
@@ -31872,7 +35305,7 @@ cat /var/lib/rancher/rke2/server/token
 
 ---
 hide_table_of_contents: true
-sidebar_position: 5
+sidebar_position: 6
 title: v1.25.X
 ---
 
@@ -32567,7 +36000,7 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 
 ---
 hide_table_of_contents: true
-sidebar_position: 4
+sidebar_position: 5
 title: v1.26.X
 ---
 
@@ -33303,7 +36736,7 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 
 ---
 hide_table_of_contents: true
-sidebar_position: 3
+sidebar_position: 4
 title: v1.27.X
 ---
 
@@ -34203,7 +37636,7 @@ cat /var/lib/rancher/rke2/server/token
 
 ---
 hide_table_of_contents: true
-sidebar_position: 2
+sidebar_position: 3
 title: v1.28.X
 ---
 
@@ -35039,7 +38472,7 @@ cat /var/lib/rancher/rke2/server/token
 
 ---
 hide_table_of_contents: true
-sidebar_position: 1
+sidebar_position: 2
 title: v1.29.X
 ---
 
@@ -35991,6 +39424,982 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 | rke2-snapshot-controller         | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz)                         |
 | rke2-snapshot-controller-crd     | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz)                     |
 | rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz)         |
+
+
+-----
+
+
+---
+
+## Article: release-notes-old/v1.30.X.md
+
+---
+hide_table_of_contents: true
+sidebar_position: 1
+title: v1.30.X
+---
+
+
+:::warning Upgrade Notice
+Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent Upgrade Notes](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#urgent-upgrade-notes).
+:::
+
+| Version | Release date | Kubernetes | Etcd | Containerd | Runc | Metrics-server | CoreDNS | Ingress-Nginx | Helm-controller | Canal (Default) | Calico | Cilium | Multus |
+| ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| [v1.30.14+rke2r4](v1.30.X.md#release-v13014rke2r4) | Sep 18 2025| [v1.30.14](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13014) | [v3.5.21-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.21-k3s1) | [v1.7.27-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.27-k3s1) | [v1.2.7](https://github.com/opencontainers/runc/releases/tag/v1.2.7) | [v0.8.0](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.0) | [v1.12.3](https://github.com/coredns/coredns/releases/tag/v1.12.3) | [v1.12.4-hardened7](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.4-hardened7) | [v0.16.13](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.13) | [Flannel v0.27.2](https://github.com/flannel-io/flannel/releases/tag/v0.27.2)<br/>[Calico v3.30.2](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v3.30.2](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v1.18.0](https://github.com/cilium/cilium/releases/tag/v1.18.0) | [v4.2.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.2) |
+| [v1.30.14+rke2r2](v1.30.X.md#release-v13014rke2r2) | Jul 25 2025| [v1.30.14](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13014) | [v3.5.21-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.21-k3s1) | [v1.7.27-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.27-k3s1) | [v1.2.6](https://github.com/opencontainers/runc/releases/tag/v1.2.6) | [v0.8.0](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.0) | [v1.12.2](https://github.com/coredns/coredns/releases/tag/v1.12.2) | [v1.12.4-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.4-hardened2) | [v0.16.13](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.13) | [Flannel v0.27.1](https://github.com/flannel-io/flannel/releases/tag/v0.27.1)<br/>[Calico v3.30.2](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v3.30.1](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v1.17.6](https://github.com/cilium/cilium/releases/tag/v1.17.6) | [v4.2.1](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.1) |
+| [v1.30.14+rke2r1](v1.30.X.md#release-v13014rke2r1) | Jun 27 2025| [v1.30.14](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13014) | [v3.5.21-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.21-k3s1) | [v1.7.27-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.27-k3s1) | [v1.2.6](https://github.com/opencontainers/runc/releases/tag/v1.2.6) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.2](https://github.com/coredns/coredns/releases/tag/v1.12.2) | [v1.12.2-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.2-hardened2) | [v0.16.11](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.11) | [Flannel v0.27.0](https://github.com/flannel-io/flannel/releases/tag/v0.27.0)<br/>[Calico v3.30.1](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v3.30.1](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v1.17.4](https://github.com/cilium/cilium/releases/tag/v1.17.4) | [v4.2.1](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.1) |
+| [v1.30.13+rke2r1](v1.30.X.md#release-v13013rke2r1) | May 21 2025| [v1.30.13](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13013) | [v3.5.21-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.21-k3s1) | [v1.7.27-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.27-k3s1) | [v1.2.6](https://github.com/opencontainers/runc/releases/tag/v1.2.6) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.1](https://github.com/coredns/coredns/releases/tag/v1.12.1) | [v1.12.1-hardened6](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.1-hardened6) | [v0.16.10](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.10) | [Flannel v0.26.7](https://github.com/flannel-io/flannel/releases/tag/v0.26.7)<br/>[Calico v3.30.0](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v3.30.0](https://docs.tigera.io/calico/latest/release-notes/#v3.30) | [v1.17.3](https://github.com/cilium/cilium/releases/tag/v1.17.3) | [v4.2.0](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.0) |
+| [v1.30.12+rke2r1](v1.30.X.md#release-v13012rke2r1) | May 01 2025| [v1.30.12](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13012) | [v3.5.21-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.21-k3s1) | [v1.7.26-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.26-k3s1) | [v1.2.5](https://github.com/opencontainers/runc/releases/tag/v1.2.5) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.1](https://github.com/coredns/coredns/releases/tag/v1.12.1) | [v1.12.1-hardened3](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.1-hardened3) | [v0.16.10](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.10) | [Flannel v0.26.6](https://github.com/flannel-io/flannel/releases/tag/v0.26.6)<br/>[Calico v3.29.3](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.3](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.17.3](https://github.com/cilium/cilium/releases/tag/v1.17.3) | [v4.2.0](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.0) |
+| [v1.30.11+rke2r1](v1.30.X.md#release-v13011rke2r1) | Mar 26 2025| [v1.30.11](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13011) | [v3.5.19-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.19-k3s1) | [v1.7.26-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.26-k3s1) | [v1.2.5](https://github.com/opencontainers/runc/releases/tag/v1.2.5) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.0](https://github.com/coredns/coredns/releases/tag/v1.12.0) | [v1.12.1-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.1-hardened1) | [v0.16.6](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.6) | [Flannel v0.26.5](https://github.com/flannel-io/flannel/releases/tag/v0.26.5)<br/>[Calico v3.29.2](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.2](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.17.1](https://github.com/cilium/cilium/releases/tag/v1.17.1) | [v4.1.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.4) |
+| [v1.30.10+rke2r1](v1.30.X.md#release-v13010rke2r1) | Feb 27 2025| [v1.30.10](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v13010) | [v3.5.18-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.18-k3s1) | [v1.7.23-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.23-k3s2) | [v1.2.4](https://github.com/opencontainers/runc/releases/tag/v1.2.4) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.0](https://github.com/coredns/coredns/releases/tag/v1.12.0) | [v1.12.0-hardened6](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.0-hardened6) | [v0.16.6](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.6) | [Flannel v0.26.4](https://github.com/flannel-io/flannel/releases/tag/v0.26.4)<br/>[Calico v3.29.2](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.2](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.17.0](https://github.com/cilium/cilium/releases/tag/v1.17.0) | [v4.1.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.4) |
+| [v1.30.9+rke2r1](v1.30.X.md#release-v1309rke2r1) | Jan 27 2025| [v1.30.9](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1309) | [v3.5.16-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.16-k3s1) | [v1.7.23-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.23-k3s2) | [v1.2.4](https://github.com/opencontainers/runc/releases/tag/v1.2.4) | [v0.7.2](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.2) | [v1.12.0](https://github.com/coredns/coredns/releases/tag/v1.12.0) | [v1.12.0-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.12.0-hardened2) | [v0.16.5](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.5) | [Flannel v0.26.3](https://github.com/flannel-io/flannel/releases/tag/v0.26.3)<br/>[Calico v3.29.1](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.1](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.16.5](https://github.com/cilium/cilium/releases/tag/v1.16.5) | [v4.1.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.4) |
+| [v1.30.8+rke2r1](v1.30.X.md#release-v1308rke2r1) | Dec 18 2024| [v1.30.8](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1308) | [v3.5.16-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.16-k3s1) | [v1.7.23-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.23-k3s2) | [v1.1.14](https://github.com/opencontainers/runc/releases/tag/v1.1.14) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.12.0](https://github.com/coredns/coredns/releases/tag/v1.12.0) | [v1.10.5-hardened6](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.5-hardened6) | [v0.16.5](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.5) | [Flannel v0.26.1](https://github.com/flannel-io/flannel/releases/tag/v0.26.1)<br/>[Calico v3.29.1](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.1](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.16.4](https://github.com/cilium/cilium/releases/tag/v1.16.4) | [v4.1.3](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.3) |
+| [v1.30.7+rke2r1](v1.30.X.md#release-v1307rke2r1) | Dec 06 2024| [v1.30.7](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1307) | [v3.5.16-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.16-k3s1) | [v1.7.23-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.23-k3s2) | [v1.1.14](https://github.com/opencontainers/runc/releases/tag/v1.1.14) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.3](https://github.com/coredns/coredns/releases/tag/v1.11.3) | [v1.10.5-hardened4](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.5-hardened4) | [v0.16.5](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.5) | [Flannel v0.26.0](https://github.com/flannel-io/flannel/releases/tag/v0.26.0)<br/>[Calico v3.29.0](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.0](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.16.3](https://github.com/cilium/cilium/releases/tag/v1.16.3) | [v4.1.3](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.3) |
+| [v1.30.6+rke2r1](v1.30.X.md#release-v1306rke2r1) | Oct 30 2024| [v1.30.6](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1306) | [v3.5.13-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.13-k3s1) | [v1.7.22-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.22-k3s1) | [v1.1.14](https://github.com/opencontainers/runc/releases/tag/v1.1.14) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.3](https://github.com/coredns/coredns/releases/tag/v1.11.3) | [v1.10.5-hardened3](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.5-hardened3) | [v0.16.5](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.5) | [Flannel v0.25.7](https://github.com/flannel-io/flannel/releases/tag/v0.25.7)<br/>[Calico v3.28.2](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v3.28.2](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v1.16.2](https://github.com/cilium/cilium/releases/tag/v1.16.2) | [v4.1.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.2) |
+| [v1.30.5+rke2r1](v1.30.X.md#release-v1305rke2r1) | Sep 23 2024| [v1.30.5](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1305) | [v3.5.13-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.13-k3s1) | [v1.7.21-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.21-k3s2) | [v1.1.14](https://github.com/opencontainers/runc/releases/tag/v1.1.14) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [v1.10.4-hardened3](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.4-hardened3) | [v0.16.4](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.4) | [Flannel v0.25.6](https://github.com/flannel-io/flannel/releases/tag/v0.25.6)<br/>[Calico v3.28.1](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v3.28.1](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v1.16.1](https://github.com/cilium/cilium/releases/tag/v1.16.1) | [v4.1.0](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.0) |
+| [v1.30.4+rke2r1](v1.30.X.md#release-v1304rke2r1) | Aug 26 2024| [v1.30.4](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1304) | [v3.5.13-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.13-k3s1) | [v1.7.20-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.20-k3s1) | [v1.1.12](https://github.com/opencontainers/runc/releases/tag/v1.1.12) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [v1.10.4-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.4-hardened2) | [v0.16.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.1) | [Flannel v0.25.5](https://github.com/flannel-io/flannel/releases/tag/v0.25.5)<br/>[Calico v3.28.1](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v3.28.1](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v1.16.0](https://github.com/cilium/cilium/releases/tag/v1.16.0) | [v4.0.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.0.2) |
+| [v1.30.3+rke2r1](v1.30.X.md#release-v1303rke2r1) | Aug 01 2024| [v1.30.3](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1303) | [v3.5.13-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.13-k3s1) | [v1.7.17-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.17-k3s1) | [v1.1.12](https://github.com/opencontainers/runc/releases/tag/v1.1.12) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [v1.10.1-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.1-hardened1) | [v0.16.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.1) | [Flannel v0.25.4](https://github.com/flannel-io/flannel/releases/tag/v0.25.4)<br/>[Calico v3.28.0](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v1.15.5](https://github.com/cilium/cilium/releases/tag/v1.15.5) | [v4.0.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.0.2) |
+| [v1.30.2+rke2r1](v1.30.X.md#release-v1302rke2r1) | Jul 01 2024| [v1.30.2](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1302) | [v3.5.13-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.13-k3s1) | [v1.7.17-k3s1](https://github.com/k3s-io/containerd/releases/tag/v1.7.17-k3s1) | [v1.1.12](https://github.com/opencontainers/runc/releases/tag/v1.1.12) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [v1.10.1-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.1-hardened1) | [v0.16.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.1) | [Flannel v0.25.4](https://github.com/flannel-io/flannel/releases/tag/v0.25.4)<br/>[Calico v3.28.0](https://docs.tigera.io/calico/latest/release-notes/#v3.28) | [v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v1.15.5](https://github.com/cilium/cilium/releases/tag/v1.15.5) | [v4.0.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.0.2) |
+| [v1.30.1+rke2r1](v1.30.X.md#release-v1301rke2r1) | May 22 2024| [v1.30.1](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1301) | [v3.5.9-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.9-k3s1) | [v1.7.11-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.11-k3s2) | [v1.1.12](https://github.com/opencontainers/runc/releases/tag/v1.1.12) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [nginx-1.9.6-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/nginx-1.9.6-hardened1) | [v0.16.1-0.20240502205943-2f32059d43e6](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.1-0.20240502205943-2f32059d43e6) | [Flannel v0.25.1](https://github.com/flannel-io/flannel/releases/tag/v0.25.1)<br/>[Calico v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v1.15.5](https://github.com/cilium/cilium/releases/tag/v1.15.5) | [v4.0.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.0.2) |
+| [v1.30.0+rke2r1](v1.30.X.md#release-v1300rke2r1) | May 09 2024| [v1.30.0](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#v1300) | [v3.5.9-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.9-k3s1) | [v1.7.11-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.11-k3s2) | [v1.1.12](https://github.com/opencontainers/runc/releases/tag/v1.1.12) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.11.1](https://github.com/coredns/coredns/releases/tag/v1.11.1) | [nginx-1.9.6-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/nginx-1.9.6-hardened1) | [v0.16.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.1) | [Flannel v0.25.1](https://github.com/flannel-io/flannel/releases/tag/v0.25.1)<br/>[Calico v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v3.27.3](https://docs.tigera.io/calico/latest/release-notes/#v3.27) | [v1.15.4](https://github.com/cilium/cilium/releases/tag/v1.15.4) | [v4.0.2](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.0.2) |
+
+<br />
+
+## Release [v1.30.14+rke2r4](https://github.com/rancher/rke2/releases/tag/v1.30.14+rke2r4)
+<!-- v1.30.14+rke2r4 -->
+
+This release updates Kubernetes to v1.30.14.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.14+rke2r2:
+
+* CNI Bumps for Aug 25 release [(#8689)](https://github.com/rancher/rke2/pull/8689)
+* Bump rancher vsphere csi to 3.3.1-rancher10 [(#8678)](https://github.com/rancher/rke2/pull/8678)
+* Update to cilium v1.18.000 [(#8719)](https://github.com/rancher/rke2/pull/8719)
+* Bump ingress-nginx to v1.12.4-hardened6 [(#8735)](https://github.com/rancher/rke2/pull/8735)
+* Update Kubernetes Metrics Server chart 3.13.000 [(#8744)](https://github.com/rancher/rke2/pull/8744)
+* Add prime ribs index upload and cache invalidation [(#8708)](https://github.com/rancher/rke2/pull/8708)
+* Publish prime-only assets [(#8754)](https://github.com/rancher/rke2/pull/8754)
+* Update K8s to v1.30.14 r3 [(#8770)](https://github.com/rancher/rke2/pull/8770)
+* Fix missing ECM config [(#8775)](https://github.com/rancher/rke2/pull/8775)
+* Fix uploader authentication [(#8780)](https://github.com/rancher/rke2/pull/8780)
+* Bump ingress-nginx to hardened7 [(#8792)](https://github.com/rancher/rke2/pull/8792)
+* Add REGISTRY env into package windows images step [(#8794)](https://github.com/rancher/rke2/pull/8794)
+* Remove docker login from publish-manifest-runtime [(#8800)](https://github.com/rancher/rke2/pull/8800)
+* Bump coredns chart and image (#8736) [(#8799)](https://github.com/rancher/rke2/pull/8799)
+* Bump runc 1.2.7 to fix CPU affinity issue [(#8852)](https://github.com/rancher/rke2/pull/8852)
+* Update kubernetes [(#8922)](https://github.com/rancher/rke2/pull/8922)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.18.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.18.000.tgz) |
+| rke2-canal | [v3.30.2-build2025073100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.30.2-build2025073100.tgz) |
+| rke2-calico | [v3.30.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.30.200.tgz) |
+| rke2-calico-crd | [v3.30.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.30.200.tgz) |
+| rke2-coredns | [1.43.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.43.101.tgz) |
+| rke2-ingress-nginx | [4.12.404](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.404.tgz) |
+| rke2-metrics-server | [3.13.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.13.000.tgz) |
+| rancher-vsphere-csi | [3.3.1-rancher1000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher1000.tgz) |
+| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
+| harvester-cloud-provider | [0.2.1000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1000.tgz) |
+| harvester-csi-driver | [0.1.2400](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2400.tgz) |
+| rke2-snapshot-controller | [4.0.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.003.tgz) |
+| rke2-snapshot-controller-crd | [4.0.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.003.tgz) |
+| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
+
+
+-----
+## Release [v1.30.14+rke2r2](https://github.com/rancher/rke2/releases/tag/v1.30.14+rke2r2)
+<!-- v1.30.14+rke2r2 -->
+
+This release updates Kubernetes to v1.30.14.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.14+rke2r1:
+
+* Use custom golang setup for integration tests [(#8453)](https://github.com/rancher/rke2/pull/8453)
+* Update Canal chart to latest version [(#8532)](https://github.com/rancher/rke2/pull/8532)
+* Bump multus and whereabouts chart [(#8542)](https://github.com/rancher/rke2/pull/8542)
+* Update Kubernetes Metrics Server chart 3.12.203 [(#8558)](https://github.com/rancher/rke2/pull/8558)
+* Bump ingress-nginx to v1.12.4-hardened1 [(#8571)](https://github.com/rancher/rke2/pull/8571)
+* Update shell completion command to new structure [(#8575)](https://github.com/rancher/rke2/pull/8575)
+* Charts: Bump Harvester CSI driver 0.1.24 [(#8504)](https://github.com/rancher/rke2/pull/8504)
+  * - Support online resize
+  * - Support external storage
+* Allow for zypper remove 104 code on uninstall [(#8580)](https://github.com/rancher/rke2/pull/8580)
+* - Fix snapshot controller backwards compatibility [(#8594)](https://github.com/rancher/rke2/pull/8594)
+* Update flannel chart v0.27.100 [(#8604)](https://github.com/rancher/rke2/pull/8604)
+* Backports for 2025-07 [(#8609)](https://github.com/rancher/rke2/pull/8609)
+* Update K8s to `v1.30.14 r2` [(#8622)](https://github.com/rancher/rke2/pull/8622)
+* Bump ingress-nginx to hardened2 [(#8633)](https://github.com/rancher/rke2/pull/8633)
+* Update to cilium `v1.17.6` [(#8646)](https://github.com/rancher/rke2/pull/8646)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.17.600](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.600.tgz) |
+| rke2-canal | [v3.30.2-build2025071100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.30.2-build2025071100.tgz) |
+| rke2-calico | [v3.30.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.30.100.tgz) |
+| rke2-calico-crd | [v3.30.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.30.100.tgz) |
+| rke2-coredns | [1.42.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.42.302.tgz) |
+| rke2-ingress-nginx | [4.12.401](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.401.tgz) |
+| rke2-metrics-server | [3.12.203](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.203.tgz) |
+| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
+| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
+| harvester-cloud-provider | [0.2.1000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1000.tgz) |
+| harvester-csi-driver | [0.1.2400](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2400.tgz) |
+| rke2-snapshot-controller | [4.0.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.003.tgz) |
+| rke2-snapshot-controller-crd | [4.0.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.003.tgz) |
+| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
+
+
+-----
+## Release [v1.30.14+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.14+rke2r1)
+<!-- v1.30.14+rke2r1 -->
+
+This release updates Kubernetes to v1.30.14.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.13+rke2r1:
+
+* June 2025 CNI bumps [(#8322)](https://github.com/rancher/rke2/pull/8322)
+* Windows: Allow for silent/non confirmation use of uninstall.ps1 (#8147) [(#8344)](https://github.com/rancher/rke2/pull/8344)
+* Testing Overhaul Backports [(#8361)](https://github.com/rancher/rke2/pull/8361)
+* Bump canal, flannel and cilium charts (#8359) [(#8385)](https://github.com/rancher/rke2/pull/8385)
+* Bump multus and whereabouts (#8360) [(#8393)](https://github.com/rancher/rke2/pull/8393)
+* Support profile: etcd [(#8368)](https://github.com/rancher/rke2/pull/8368)
+* Bump for etcd, cloud provider, crictl, containerd and runc [(#8406)](https://github.com/rancher/rke2/pull/8406)
+* Backports for 2025-06 [(#8420)](https://github.com/rancher/rke2/pull/8420)
+* Update Kubernetes Metrics Server chart 3.12.2 [(#8424)](https://github.com/rancher/rke2/pull/8424)
+* Update CoreDNS chart 1.42.3 [(#8428)](https://github.com/rancher/rke2/pull/8428)
+* Bump ingress-nginx to v1.12.2 and hardened-dns-node for CVE fixes [(#8402)](https://github.com/rancher/rke2/pull/8402)
+* Bump K3s version [(#8437)](https://github.com/rancher/rke2/pull/8437)
+* June K8s `v1.30.14` patch [(#8443)](https://github.com/rancher/rke2/pull/8443)
+* Update runc to the newest image [(#8468)](https://github.com/rancher/rke2/pull/8468)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.17.401](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.401.tgz) |
+| rke2-canal | [v3.30.1-build2025061101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.30.1-build2025061101.tgz) |
+| rke2-calico | [v3.30.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.30.100.tgz) |
+| rke2-calico-crd | [v3.30.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.30.100.tgz) |
+| rke2-coredns | [1.42.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.42.302.tgz) |
+| rke2-ingress-nginx | [4.12.201](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.201.tgz) |
+| rke2-metrics-server | [3.12.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.202.tgz) |
+| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
+| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
+| harvester-cloud-provider | [0.2.1000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1000.tgz) |
+| harvester-csi-driver | [0.1.2300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2300.tgz) |
+| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
+| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
+| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
+
+
+-----
+## Release [v1.30.13+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.13+rke2r1)
+<!-- v1.30.13+rke2r1 -->
+
+This release updates Kubernetes to v1.30.13.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.12+rke2r1:
+
+* Upload prime ribs assets [(#8181)](https://github.com/rancher/rke2/pull/8181)
+* Feat: bump harvester-cloud-provider to v0.2.10 [(#8185)](https://github.com/rancher/rke2/pull/8185)
+* Backports for 2025-05 [(#8198)](https://github.com/rancher/rke2/pull/8198)
+* Update calico chart to v3.30.0 and Canal image [(#8204)](https://github.com/rancher/rke2/pull/8204)
+* Bump nginx version [(#8175)](https://github.com/rancher/rke2/pull/8175)
+* Update to Kubernetes Metrics Server 3.12.201 [(#8213)](https://github.com/rancher/rke2/pull/8213)
+* Update to flannel v0.26.700 [(#8221)](https://github.com/rancher/rke2/pull/8221)
+* Update cilium and multus to cni-plugins v1.7.1 [(#8229)](https://github.com/rancher/rke2/pull/8229)
+* Upgrade nginx chart [(#8234)](https://github.com/rancher/rke2/pull/8234)
+* Update to flannel v0.26.701 and canal v3.30.0-build2025051500 [(#8260)](https://github.com/rancher/rke2/pull/8260)
+* Update to CoreDNS 1.42.000 [(#8268)](https://github.com/rancher/rke2/pull/8268)
+* Update k8s to v1.30.13 and Go to v1.23.8 [(#8244)](https://github.com/rancher/rke2/pull/8244)
+* Fix race conditions in startup readiness checks [(#8278)](https://github.com/rancher/rke2/pull/8278)
+* Fix secrets syntax [(#8280)](https://github.com/rancher/rke2/pull/8280)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.17.301](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.301.tgz) |
+| rke2-canal | [v3.30.0-build2025051500](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.30.0-build2025051500.tgz) |
+| rke2-calico | [v3.30.001](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.30.001.tgz) |
+| rke2-calico-crd | [v3.30.001](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.30.001.tgz) |
+| rke2-coredns | [1.42.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.42.000.tgz) |
+| rke2-ingress-nginx | [4.12.103](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.103.tgz) |
+| rke2-metrics-server | [3.12.201](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.201.tgz) |
+| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
+| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
+| harvester-cloud-provider | [0.2.1000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1000.tgz) |
+| harvester-csi-driver | [0.1.2300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2300.tgz) |
+| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
+| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
+| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
+
+
+-----
+## Release [v1.30.12+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.12+rke2r1)
+<!-- v1.30.12+rke2r1 -->
+
+This release updates Kubernetes to v1.30.12.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.11+rke2r1:
+
+* Bump multus version [(#7991)](https://github.com/rancher/rke2/pull/7991)
+* Update CNI charts [(#7998)](https://github.com/rancher/rke2/pull/7998)
+* Bump whereabouts to v0.9.0 [(#8003)](https://github.com/rancher/rke2/pull/8003)
+* Update to coredns `1.39.201` [(#8012)](https://github.com/rancher/rke2/pull/8012)
+* Bump flannel and canal versions [(#8027)](https://github.com/rancher/rke2/pull/8027)
+* Chore: Bump nginx to v1.12.1-hardened3 [(#8058)](https://github.com/rancher/rke2/pull/8058)
+* Update to flannel `v0.26.601` and canal `v3.29.3-build2025040801` [(#8063)](https://github.com/rancher/rke2/pull/8063)
+* K3s bump and backports for 2025-04 [(#8059)](https://github.com/rancher/rke2/pull/8059)
+* Update to cilium `v1.17.3` [(#8085)](https://github.com/rancher/rke2/pull/8085)
+* Bump kine for nats-server/v2 CVE-2025-30215 [(#8091)](https://github.com/rancher/rke2/pull/8091)
+* Bump K3s version [(#8104)](https://github.com/rancher/rke2/pull/8104)
+* Bump traefik to v2.11.24 [(#8110)](https://github.com/rancher/rke2/pull/8110)
+* Update k8s to v1.30.12 [(#8114)](https://github.com/rancher/rke2/pull/8114)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.17.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.300.tgz) |
+| rke2-canal | [v3.29.3-build2025040801](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.3-build2025040801.tgz) |
+| rke2-calico | [v3.29.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.300.tgz) |
+| rke2-calico-crd | [v3.29.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.101.tgz) |
+| rke2-coredns | [1.39.201](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.39.201.tgz) |
+| rke2-ingress-nginx | [4.12.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.101.tgz) |
+| rke2-metrics-server | [3.12.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.200.tgz) |
+| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
+| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
+| harvester-cloud-provider | [0.2.900](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.900.tgz) |
+| harvester-csi-driver | [0.1.2300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2300.tgz) |
+| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
+| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
+| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
+
+
+-----
+## Release [v1.30.11+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.11+rke2r1)
+<!-- v1.30.11+rke2r1 -->
+
+This release updates Kubernetes to v1.30.11, and upgrades rke2-ingress-nginx to controller v1.12.1-hardened1 (chart version 4.12.1). This addresses [CVE-2025-1974](https://github.com/advisories/GHSA-mgvx-rpfc-9mpv) as well as all other [recently announced](https://groups.google.com/g/kubernetes-security-announce/c/2qa9DFtN0cQ) vulnerabilities in ingress-nginx.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.10+rke2r1:
+
+* Update to cilium `v1.17.1` [(#7851)](https://github.com/rancher/rke2/pull/7851)
+* Bump coredns to v1.39.100 [(#7860)](https://github.com/rancher/rke2/pull/7860)
+* Update multus with new CNI plugin image with bond included [(#7866)](https://github.com/rancher/rke2/pull/7866)
+* Update to flannel v0.26.500 and canal v3.29.2-build2025030601 [(#7876)](https://github.com/rancher/rke2/pull/7876)
+* Bump ingress-nginx to hardened10 [(#7887)](https://github.com/rancher/rke2/pull/7887)
+* Backports for 2025-03 [(#7892)](https://github.com/rancher/rke2/pull/7892)
+* Bump K3s for apiserver addresses fix [(#7914)](https://github.com/rancher/rke2/pull/7914)
+* Update k8s [(#7925)](https://github.com/rancher/rke2/pull/7925)
+* Bump ingress-nginx to v1.12.1-hardened1, chart to 4.12.1 [(#7960)](https://github.com/rancher/rke2/pull/7960)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.17.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.100.tgz) |
+| rke2-canal | [v3.29.2-build2025030601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.2-build2025030601.tgz) |
+| rke2-calico | [v3.29.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.200.tgz) |
+| rke2-calico-crd | [v3.29.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.101.tgz) |
+| rke2-coredns | [1.39.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.39.100.tgz) |
+| rke2-ingress-nginx | [4.12.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.100.tgz) |
+| rke2-metrics-server | [3.12.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.200.tgz) |
+| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
+| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
+| harvester-cloud-provider | [0.2.900](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.900.tgz) |
+| harvester-csi-driver | [0.1.2300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2300.tgz) |
+| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
+| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
+| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
+
+
+-----
+## Release [v1.30.10+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.10+rke2r1)
+<!-- v1.30.10+rke2r1 -->
+
+This release updates Kubernetes to v1.30.10.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.9+rke2r1:
+
+* Update to cilium `v1.16.6` [(#7682)](https://github.com/rancher/rke2/pull/7682)
+* Charts: bump Harvester CSI Driver v0.1.23 [(#7669)](https://github.com/rancher/rke2/pull/7669)
+  * Enhance the Harvester CSI controller affinity/anti-affinity
+* Bump canal, flannel and multus charts [(#7714)](https://github.com/rancher/rke2/pull/7714)
+* Update cilium to v1.17.0 [(#7710)](https://github.com/rancher/rke2/pull/7710)
+* Update Calico and Canal to v3.29.2 [(#7725)](https://github.com/rancher/rke2/pull/7725)
+* Bump k3s, traefik, etcd, crictl [(#7740)](https://github.com/rancher/rke2/pull/7740)
+  * Update k3s to fix registry auth in containerd config template
+  * Update traefik to v2.11.20
+  * Update etcd to v3.5.18
+  * Update crictl to v1.30.1
+  * Update rke2-ingress-nginx chart to fix typo in default backend image template
+* Bump vsphere CSI to v3.3.1-rancher9 [(#7732)](https://github.com/rancher/rke2/pull/7732)
+* Update to v1.30.10 and Go to 1.22.12 [(#7758)](https://github.com/rancher/rke2/pull/7758)
+* Bump ingress-nginx to v1.12.0-hardened6 [(#7775)](https://github.com/rancher/rke2/pull/7775)
+* Bump canal and flannel images to build20250218 [(#7789)](https://github.com/rancher/rke2/pull/7789)
+* Sync images to Prime registry [(#7801)](https://github.com/rancher/rke2/pull/7801)
+* Bump K3s version for release-1.30 [(#7806)](https://github.com/rancher/rke2/pull/7806)
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.17.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.17.000.tgz) |
+| rke2-canal | [v3.29.2-build2025021800](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.2-build2025021800.tgz) |
+| rke2-calico | [v3.29.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.200.tgz) |
+| rke2-calico-crd | [v3.29.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.101.tgz) |
+| rke2-coredns | [1.36.102](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.36.102.tgz) |
+| rke2-ingress-nginx | [4.12.005](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.005.tgz) |
+| rke2-metrics-server | [3.12.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.200.tgz) |
+| rancher-vsphere-csi | [3.3.1-rancher900](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher900.tgz) |
+| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
+| harvester-cloud-provider | [0.2.900](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.900.tgz) |
+| harvester-csi-driver | [0.1.2300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2300.tgz) |
+| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
+| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
+| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
+
+-----
+## Release [v1.30.9+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.9+rke2r1)
+<!-- v1.30.9+rke2r1 -->
+
+This release updates Kubernetes to v1.30.9.
+
+**Important Note**
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+### Changes since v1.30.8+rke2r1:
+* Charts: bump Harvester CSI Driver v0.1.22 [(#7472)](https://github.com/rancher/rke2/pull/7472)
+  * Bump Harvester-csi-driver v0.1.22
+* Bump flannel, canal and multus charts [(#7503)](https://github.com/rancher/rke2/pull/7503)
+* Update to Cilium `v1.16.5` [(#7528)](https://github.com/rancher/rke2/pull/7528)
+* Feat: bump harvester-cloud-provider to v0.2.9 [(#7491)](https://github.com/rancher/rke2/pull/7491)
+  * Bump Harvester-cloud-provider v0.2.9
+* Updated calico chart to fix IP autodetect in case of IPv6 only [(#7537)](https://github.com/rancher/rke2/pull/7537)
+* Update metrics-server to `3.2.12` [(#7552)](https://github.com/rancher/rke2/pull/7552)
+* Update canal to `v3.29.1-build2025011000` [(#7568)](https://github.com/rancher/rke2/pull/7568)
+* Add runtime classes hook and runtimes chart [(#7580)](https://github.com/rancher/rke2/pull/7580)
+* Backports for 2025-01 [(#7589)](https://github.com/rancher/rke2/pull/7589)
+* Bump ingress-nginx v1.12.0 [(#7559)](https://github.com/rancher/rke2/pull/7559)
+* Add Release downstream components in release workflow [(#7600)](https://github.com/rancher/rke2/pull/7600)
+* Bump k3s version for master and add/enhance tests [(#7607)](https://github.com/rancher/rke2/pull/7607)
+* Update k8s [(#7611)](https://github.com/rancher/rke2/pull/7611)
+* Bump ingress-nginx to v1.12.0-hardened2 [(#7621)](https://github.com/rancher/rke2/pull/7621)
+* Bump K3s version for split-role fix [(#7637)](https://github.com/rancher/rke2/pull/7637)
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.16.501](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.501.tgz) |
+| rke2-canal | [v3.29.1-build2025011000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.1-build2025011000.tgz) |
+| rke2-calico | [v3.29.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.101.tgz) |
+| rke2-calico-crd | [v3.29.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.101.tgz) |
+| rke2-coredns | [1.36.102](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.36.102.tgz) |
+| rke2-ingress-nginx | [4.12.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.12.003.tgz) |
+| rke2-metrics-server | [3.12.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.200.tgz) |
+| rancher-vsphere-csi | [3.3.1-rancher700](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher700.tgz) |
+| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
+| harvester-cloud-provider | [0.2.900](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.900.tgz) |
+| harvester-csi-driver | [0.1.2200](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2200.tgz) |
+| rke2-snapshot-controller | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.0.002.tgz) |
+| rke2-snapshot-controller-crd | [4.0.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.0.002.tgz) |
+| rke2-snapshot-validation-webhook | [0.0.0](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-0.0.0.tgz) |
+
+-----
+## Release [v1.30.8+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.8+rke2r1)
+<!-- v1.30.8+rke2r1 -->
+
+This release updates Kubernetes to v1.30.8.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.7+rke2r1:
+
+* Update to Cilium v1.16.4 [(#7326)](https://github.com/rancher/rke2/pull/7326)
+* Updated Calico version to `v3.29.1` [(#7352)](https://github.com/rancher/rke2/pull/7352)
+* Bump harvester csi driver v0.1.21 [(#7284)](https://github.com/rancher/rke2/pull/7284)
+  * Bump Harvester-csi-driver v0.1.21
+* Update k3s for loadbalancer improvements [(#7398)](https://github.com/rancher/rke2/pull/7398)
+* Update Flannel and Canal version [(#7407)](https://github.com/rancher/rke2/pull/7407)
+* Bump ingress-nginx to hardened6 [(#7415)](https://github.com/rancher/rke2/pull/7415)
+* Bump dns-node-cache to 1.24.0 [(#7419)](https://github.com/rancher/rke2/pull/7419)
+* Bump hardened k8s and build base [(#7425)](https://github.com/rancher/rke2/pull/7425)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.16.400](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.400.tgz) |
+| rke2-canal | [v3.29.1-build2024121100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.1-build2024121100.tgz) |
+| rke2-calico | [v3.29.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.100.tgz) |
+| rke2-calico-crd | [v3.29.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.100.tgz) |
+| rke2-coredns | [1.36.102](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.36.102.tgz) |
+| rke2-ingress-nginx | [4.10.503](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.503.tgz) |
+| rke2-metrics-server | [3.12.004](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.004.tgz) |
+| rancher-vsphere-csi | [3.3.1-rancher700](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher700.tgz) |
+| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
+| harvester-cloud-provider | [0.2.600](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.600.tgz) |
+| harvester-csi-driver | [0.1.2100](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2100.tgz) |
+| rke2-snapshot-controller | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-3.0.601.tgz) |
+| rke2-snapshot-controller-crd | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-3.0.601.tgz) |
+| rke2-snapshot-validation-webhook | [1.9.001](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.9.001.tgz) |
+
+
+-----
+## Release [v1.30.7+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.7+rke2r1)
+<!-- v1.30.7+rke2r1 -->
+
+This release updates Kubernetes to v1.30.7.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.6+rke2r1:
+
+* Backport E2E GHA fixes [(#7176)](https://github.com/rancher/rke2/pull/7176)
+* Bump multus, cilium and flannel charts [(#7199)](https://github.com/rancher/rke2/pull/7199)
+* Bump ingress-nginx to v1.10.5-hardened4 [(#7186)](https://github.com/rancher/rke2/pull/7186)
+* Bump canal chart to v3.29.0 [(#7221)](https://github.com/rancher/rke2/pull/7221)
+* Bump rke2-calico to v3.29.0 [(#7231)](https://github.com/rancher/rke2/pull/7231)
+* Backport missing E2E PRs [(#7204)](https://github.com/rancher/rke2/pull/7204)
+  * Refactor run_tests.sh script 
+  * Update to newer OS images for install testing
+  * Add cleanup to e2e tests in vagrant env
+  * Add e2e validation test for kine
+* Bump vSphere CSI/CPI charts to 1.9.1 and 3.3.1-rancher700 [(#7249)](https://github.com/rancher/rke2/pull/7249)
+* Update Flannel to v0.26.1 [(#7258)](https://github.com/rancher/rke2/pull/7258)
+* Fix e2e ci by ignoring FOG warnings [(#7269)](https://github.com/rancher/rke2/pull/7269)
+* Bump rke2-coredns to 1.33.005 [(#7277)](https://github.com/rancher/rke2/pull/7277)
+* Backports for 2024-11 [(#7290)](https://github.com/rancher/rke2/pull/7290)
+  * Bump etcd to 3.5.16
+  * Bump containerd to v1.7.23
+  * Fix issue on nodes with large datastores and slow disk that would cause RKE2 to fail to start due to the etcd defrag timing out after 30 seconds.
+  * Fix issue where RKE2 killall script could remove data from pod volumes that failed to unmount correctly
+* Update upstream version [(#7319)](https://github.com/rancher/rke2/pull/7319)
+* Restore AWS node-name support and add IMDSv2 support [(#7355)](https://github.com/rancher/rke2/pull/7355)
+* Bump containerd for image rewrite fix [(#7378)](https://github.com/rancher/rke2/pull/7378)
+  * Bump containerd to v1.7.23-k3s2
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.16.303](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.303.tgz) |
+| rke2-canal | [v3.29.0-build2024110400](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.29.0-build2024110400.tgz) |
+| rke2-calico | [v3.29.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.29.000.tgz) |
+| rke2-calico-crd | [v3.29.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.29.000.tgz) |
+| rke2-coredns | [1.33.005](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.33.005.tgz) |
+| rke2-ingress-nginx | [4.10.502](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.502.tgz) |
+| rke2-metrics-server | [3.12.004](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.004.tgz) |
+| rancher-vsphere-csi | [3.3.1-rancher700](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.1-rancher700.tgz) |
+| rancher-vsphere-cpi | [1.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.9.100.tgz) |
+| harvester-cloud-provider | [0.2.600](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.600.tgz) |
+| harvester-csi-driver | [0.1.2000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2000.tgz) |
+| rke2-snapshot-controller | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-3.0.601.tgz) |
+| rke2-snapshot-controller-crd | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-3.0.601.tgz) |
+| rke2-snapshot-validation-webhook | [1.9.001](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.9.001.tgz) |
+
+
+-----
+## Release [v1.30.6+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.6+rke2r1)
+<!-- v1.30.6+rke2r1 -->
+
+This release updates Kubernetes to v1.30.6.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.5+rke2r1:
+
+* Fixed windows CNI setup in case cni none is configured [(#6832)](https://github.com/rancher/rke2/pull/6832)
+* Fix e2e test bug in mixedosbgp [(#6844)](https://github.com/rancher/rke2/pull/6844)
+* Bump Calico v3.28.2 [(#6879)](https://github.com/rancher/rke2/pull/6879)
+* Add trivy scanning to PR reports [(#6837)](https://github.com/rancher/rke2/pull/6837)
+* Fix typo in dispatch workflow [(#6895)](https://github.com/rancher/rke2/pull/6895)
+* Bump coredns chart [(#6903)](https://github.com/rancher/rke2/pull/6903)
+* Fix uninstall for amazon linux 2 [(#6919)](https://github.com/rancher/rke2/pull/6919)
+* Update to Cilium v1.16.2 [(#6938)](https://github.com/rancher/rke2/pull/6938)
+* Bump traefik to chart 27.0.2 [(#6958)](https://github.com/rancher/rke2/pull/6958)
+* Update Canal to v3.28.2-build2024100300 and Flannel to v0.25.7 [(#6972)](https://github.com/rancher/rke2/pull/6972)
+* Bump containerd to v1.7.22 [(#7002)](https://github.com/rancher/rke2/pull/7002)
+* Ingress-nginx and rke2-cloud-provider bumps [(#6992)](https://github.com/rancher/rke2/pull/6992)
+* Bump csi snapshot charts [(#7024)](https://github.com/rancher/rke2/pull/7024)
+* Update multus to v4.1.2 [(#7019)](https://github.com/rancher/rke2/pull/7019)
+* Bump k3s [(#7033)](https://github.com/rancher/rke2/pull/7033)
+* Bump Harvester CSI driver v0.1.20 [(#7048)](https://github.com/rancher/rke2/pull/7048)
+  * Bump Harvester-csi-driver v0.1.20
+* Bump K3s/CCM version [(#7057)](https://github.com/rancher/rke2/pull/7057)
+* Add org.opencontainers.image url and source labels to dockerfiles [(#7063)](https://github.com/rancher/rke2/pull/7063)
+* Bump CSI snapshot controller chart for CRD updates [(#7069)](https://github.com/rancher/rke2/pull/7069)
+* Rke2-runtime signing and manifests (#7089) [(#7101)](https://github.com/rancher/rke2/pull/7101)
+* Update hardened chart images [(#7097)](https://github.com/rancher/rke2/pull/7097)
+* October K8s patch [(#7105)](https://github.com/rancher/rke2/pull/7105)
+* Update crictl source image for CVE bump [(#7115)](https://github.com/rancher/rke2/pull/7115)
+* Bump coredns chart and image [(#7085)](https://github.com/rancher/rke2/pull/7085)
+* Fix hardened-flannel airgap image for rke2-flannel [(#7120)](https://github.com/rancher/rke2/pull/7120)
+* Fix release workflow [(#7125)](https://github.com/rancher/rke2/pull/7125)
+* Use buildkit [(#7132)](https://github.com/rancher/rke2/pull/7132)
+* Fix publish windows runtime [(#7146)](https://github.com/rancher/rke2/pull/7146)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.16.201](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.201.tgz) |
+| rke2-canal | [v3.28.2-build2024101601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.28.2-build2024101601.tgz) |
+| rke2-calico | [v3.28.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.28.200.tgz) |
+| rke2-calico-crd | [v3.28.200](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.28.200.tgz) |
+| rke2-coredns | [1.33.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.33.002.tgz) |
+| rke2-ingress-nginx | [4.10.501](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.501.tgz) |
+| rke2-metrics-server | [3.12.004](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.004.tgz) |
+| rancher-vsphere-csi | [3.3.0-rancher100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.0-rancher100.tgz) |
+| rancher-vsphere-cpi | [1.8.000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.8.000.tgz) |
+| harvester-cloud-provider | [0.2.600](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.600.tgz) |
+| harvester-csi-driver | [0.1.2000](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2000.tgz) |
+| rke2-snapshot-controller | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-3.0.601.tgz) |
+| rke2-snapshot-controller-crd | [3.0.601](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-3.0.601.tgz) |
+| rke2-snapshot-validation-webhook | [1.9.001](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.9.001.tgz) |
+
+
+-----
+## Release [v1.30.5+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.5+rke2r1)
+<!-- v1.30.5+rke2r1 -->
+
+This release updates Kubernetes to v1.30.5.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.4+rke2r1:
+
+* Update to cilium v1.16.1 [(#6653)](https://github.com/rancher/rke2/pull/6653)
+* Bump canal to v3.28.1-build20240827 [(#6670)](https://github.com/rancher/rke2/pull/6670)
+* Bump canal to v3.28.1-build20240830 [(#6688)](https://github.com/rancher/rke2/pull/6688)
+* 1.30 Bump harvester cloud provider v0.2.6 [(#6631)](https://github.com/rancher/rke2/pull/6631)
+* Update chart with CNI plugins on Flannel and Cilium [(#6701)](https://github.com/rancher/rke2/pull/6701)
+* Update cilium chart to `1.16.103` [(#6715)](https://github.com/rancher/rke2/pull/6715)
+* Bump multus chart to v4.1.000 [(#6743)](https://github.com/rancher/rke2/pull/6743)
+* Remove sriov images from airgap tarball [(#6753)](https://github.com/rancher/rke2/pull/6753)
+* Add ctr to shell completion [(#6730)](https://github.com/rancher/rke2/pull/6730)
+* Bump k3s/containerd/runc/ccm versions [(#6763)](https://github.com/rancher/rke2/pull/6763)
+* Bump charts and images to fix go CVE [(#6782)](https://github.com/rancher/rke2/pull/6782)
+* Bump hardened images [(#6776)](https://github.com/rancher/rke2/pull/6776)
+* Update Calico image for Canal with updated CNI plugins [(#6794)](https://github.com/rancher/rke2/pull/6794)
+* Bump ingress-nginx to v1.10.4-hardened3 [(#6799)](https://github.com/rancher/rke2/pull/6799)
+* Bump etcd and CCM builds [(#6803)](https://github.com/rancher/rke2/pull/6803)
+* September K8s patch [(#6811)](https://github.com/rancher/rke2/pull/6811)
+* Update cilium e2e test [(#6815)](https://github.com/rancher/rke2/pull/6815)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.16.104](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.104.tgz) |
+| rke2-canal | [v3.28.1-build2024091100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.28.1-build2024091100.tgz) |
+| rke2-calico | [v3.28.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.28.100.tgz) |
+| rke2-calico-crd | [v3.28.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.28.100.tgz) |
+| rke2-coredns | [1.29.006](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.006.tgz) |
+| rke2-ingress-nginx | [4.10.402](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.402.tgz) |
+| rke2-metrics-server | [3.12.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.003.tgz) |
+| rancher-vsphere-csi | [3.3.0-rancher100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.0-rancher100.tgz) |
+| rancher-vsphere-cpi | [1.8.000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.8.000.tgz) |
+| harvester-cloud-provider | [0.2.600](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.600.tgz) |
+| harvester-csi-driver | [0.1.1800](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1800.tgz) |
+| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
+| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
+| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
+
+
+-----
+## Release [v1.30.4+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.4+rke2r1)
+<!-- v1.30.4+rke2r1 -->
+
+This release updates Kubernetes to v1.30.4.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.3+rke2r1:
+
+* - Bump rke2-coredns to add option to use nodelocal dns cache with cilium [(#6432)](https://github.com/rancher/rke2/pull/6432)
+* Bump rke2-calico chart to v3.28.100 [(#6489)](https://github.com/rancher/rke2/pull/6489)
+* Bump nginx to hardened2 [(#6482)](https://github.com/rancher/rke2/pull/6482)
+* Update for CNI flannel, Cilium and Canal [(#6515)](https://github.com/rancher/rke2/pull/6515)
+* Fix external etcd connection [(#6465)](https://github.com/rancher/rke2/pull/6465)
+* Rke2 shell completion [(#6460)](https://github.com/rancher/rke2/pull/6460)
+* Bump k3s and containerd [(#6524)](https://github.com/rancher/rke2/pull/6524)
+* Fixed hns clean only in case of reboot [(#6538)](https://github.com/rancher/rke2/pull/6538)
+* Bump harvester csi driver v0.1.18 [(#6395)](https://github.com/rancher/rke2/pull/6395)
+  * Bump Harvester-csi-driver v0.1.18
+* Bump containerd/crictl/runc versions [(#6552)](https://github.com/rancher/rke2/pull/6552)
+* Fix kill all to not delete data dir [(#6564)](https://github.com/rancher/rke2/pull/6564)
+* Add netpol template for traefik [(#6570)](https://github.com/rancher/rke2/pull/6570)
+* Update Kubernetes to v1.30.4 [(#6574)](https://github.com/rancher/rke2/pull/6574)
+* Fix windows airgap image packaging [(#6585)](https://github.com/rancher/rke2/pull/6585)
+* Fixed Flannel chart to rightly disable nft [(#6607)](https://github.com/rancher/rke2/pull/6607)
+* Bump ingress-nginx to v1.10.4-hardened2 [(#6611)](https://github.com/rancher/rke2/pull/6611)
+* Fix traefik netpol port names [(#6620)](https://github.com/rancher/rke2/pull/6620)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.16.000](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.16.000.tgz) |
+| rke2-canal | [v3.28.1-build2024080600](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.28.1-build2024080600.tgz) |
+| rke2-calico | [v3.28.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.28.100.tgz) |
+| rke2-calico-crd | [v3.28.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.28.100.tgz) |
+| rke2-coredns | [1.29.004](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.004.tgz) |
+| rke2-ingress-nginx | [4.10.401](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.401.tgz) |
+| rke2-metrics-server | [3.12.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.002.tgz) |
+| rancher-vsphere-csi | [3.3.0-rancher100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.0-rancher100.tgz) |
+| rancher-vsphere-cpi | [1.8.000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.8.000.tgz) |
+| harvester-cloud-provider | [0.2.400](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.400.tgz) |
+| harvester-csi-driver | [0.1.1800](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1800.tgz) |
+| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
+| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
+| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
+
+
+-----
+## Release [v1.30.3+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.3+rke2r1)
+<!-- v1.30.3+rke2r1 -->
+
+This release updates Kubernetes to v1.30.3.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.2+rke2r1:
+
+* Update stable channel to v1.28.11+rke2r1 [(#6277)](https://github.com/rancher/rke2/pull/6277)
+* Update Vagrantfile of a few e2e tests [(#6274)](https://github.com/rancher/rke2/pull/6274)
+* GHA Migration [(#6062)](https://github.com/rancher/rke2/pull/6062)
+* Bump multus to v4.0.206 [(#6353)](https://github.com/rancher/rke2/pull/6353)
+* Version bumps and backports for 2024-07 release cycle [(#6317)](https://github.com/rancher/rke2/pull/6317)
+* Bump vsphere csi chart to 3.3.0-rancher100 and cpi to 1.8.000 [(#6341)](https://github.com/rancher/rke2/pull/6341)
+* Fix secrets for commit id uploads [(#6366)](https://github.com/rancher/rke2/pull/6366)
+* Update Kubernetes to v1.30.3 [(#6364)](https://github.com/rancher/rke2/pull/6364)
+* Publish binaries in dapper [(#6379)](https://github.com/rancher/rke2/pull/6379)
+* Add missing package windows step in release [(#6388)](https://github.com/rancher/rke2/pull/6388)
+* Add manifest pipeline for rke2-runtime docker image [(#6398)](https://github.com/rancher/rke2/pull/6398)
+* Fix dispatch script [(#6406)](https://github.com/rancher/rke2/pull/6406)
+* Add traefik airgap image tarball [(#6441)](https://github.com/rancher/rke2/pull/6441)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.15.500](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.15.500.tgz) |
+| rke2-canal | [v3.28.0-build2024062503](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.28.0-build2024062503.tgz) |
+| rke2-calico | [v3.27.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.27.300.tgz) |
+| rke2-calico-crd | [v3.27.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.27.002.tgz) |
+| rke2-coredns | [1.29.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.002.tgz) |
+| rke2-ingress-nginx | [4.10.102](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.102.tgz) |
+| rke2-metrics-server | [3.12.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.002.tgz) |
+| rancher-vsphere-csi | [3.3.0-rancher100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.3.0-rancher100.tgz) |
+| rancher-vsphere-cpi | [1.8.000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.8.000.tgz) |
+| harvester-cloud-provider | [0.2.400](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.400.tgz) |
+| harvester-csi-driver | [0.1.1700](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1700.tgz) |
+| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
+| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
+| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
+
+
+-----
+## Release [v1.30.2+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.2+rke2r1)
+<!-- v1.30.2+rke2r1 -->
+
+This release updates Kubernetes to v1.30.2.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.1+rke2r1:
+
+* Improve rke2-uninstall.ps1 script [(#5779)](https://github.com/rancher/rke2/pull/5779)
+* Add cilium no proxy e2e test [(#5885)](https://github.com/rancher/rke2/pull/5885)
+* Apply netpols async with retry [(#5909)](https://github.com/rancher/rke2/pull/5909)
+* Remove cisnetworkpolicy finalizer when controller is disabled [(#5856)](https://github.com/rancher/rke2/pull/5856)
+* Update cloud-provider image which now uses scratch as base [(#5933)](https://github.com/rancher/rke2/pull/5933)
+  * Rke2-cloud-provider uses now scratch base image
+* Update flannel chart to fix vni error [(#5953)](https://github.com/rancher/rke2/pull/5953)
+  * Use vni=4096 as default for rke2-flannel
+* Add a Kine fix when rke2 restart apiserver [(#5931)](https://github.com/rancher/rke2/pull/5931)
+  * Fix apiserver delay to restart when apiserver is using kine
+* Fix incorrect wrangler package import [(#6007)](https://github.com/rancher/rke2/pull/6007)
+* Update channel server for may 2024 [(#5951)](https://github.com/rancher/rke2/pull/5951)
+* Add extra log in e2e tests [(#5955)](https://github.com/rancher/rke2/pull/5955)
+* Bump nginx to v1.10.1 [(#6022)](https://github.com/rancher/rke2/pull/6022)
+* Update rke2-killall.sh [(#4111)](https://github.com/rancher/rke2/pull/4111)
+* Changed systemctl command from 'restart' to 'try-restart' for fapolicyd  in rke2-uninstall.sh [(#5811)](https://github.com/rancher/rke2/pull/5811)
+* Allow disabling injection of cluster config into HelmCharts [(#6010)](https://github.com/rancher/rke2/pull/6010)
+  * Injection of cluster config variables into HelmChart resources found on disk can now be disabled per-chart by adding a `rke2.cattle.io/inject-cluster-config: "false"` annotation to HelmChart resources, or by setting the RKE2_INJECT_CLUSTER_CONFIG=false environment variable to disable it for all resources that do not set the annotation to false.
+* Bump multus and whereabouts version [(#6015)](https://github.com/rancher/rke2/pull/6015)
+* Bump flannel to v0.25.201 and canal to v3.28.0-build2024052800 [(#6043)](https://github.com/rancher/rke2/pull/6043)
+* Add ADR for branching strategy [(#4078)](https://github.com/rancher/rke2/pull/4078)
+* Add easy support for single node sqlite with kine [(#5954)](https://github.com/rancher/rke2/pull/5954)
+  * New behavior when --disable-etcd is used without --server, rke2 will use sqlite as the default database
+* Bump harvester-cloud-provider v0.2.4 [(#5980)](https://github.com/rancher/rke2/pull/5980)
+* Bump K3s version for v1.30 [(#6073)](https://github.com/rancher/rke2/pull/6073)
+* Fix loadManifests function [(#6058)](https://github.com/rancher/rke2/pull/6058)
+* Bump K3s version for v1.30 [(#6104)](https://github.com/rancher/rke2/pull/6104)
+* Bump flannel version [(#6116)](https://github.com/rancher/rke2/pull/6116)
+  * Bump flannel cni version to v0.25.3
+* Bump containerd to correctly built tag [(#6126)](https://github.com/rancher/rke2/pull/6126)
+* Improve rke2-uninstall.ps1 [(#6098)](https://github.com/rancher/rke2/pull/6098)
+* Update to the latest SR-IOV image versions [(#5889)](https://github.com/rancher/rke2/pull/5889)
+* Bump flannel image in rke2-canal [(#6136)](https://github.com/rancher/rke2/pull/6136)
+* Slim down E2E artifacts [(#6097)](https://github.com/rancher/rke2/pull/6097)
+* Add custom golang setup action for better caching [(#6144)](https://github.com/rancher/rke2/pull/6144)
+* Support MixedOS E2E local testing [(#6137)](https://github.com/rancher/rke2/pull/6137)
+* Use `rancher/permissions` dependency [(#6138)](https://github.com/rancher/rke2/pull/6138)
+* Bump K3s version for v1.30 [(#6164)](https://github.com/rancher/rke2/pull/6164)
+* Update flannel version to v0.25.4 [(#6172)](https://github.com/rancher/rke2/pull/6172)
+  * Bump flannel to v0.25.4 to fix windows-vxlan issue
+* Update Kubernetes to v1.30.2 [(#6191)](https://github.com/rancher/rke2/pull/6191)
+* Fix drone pipeline [(#6199)](https://github.com/rancher/rke2/pull/6199)
+* Update drone build base image [(#6206)](https://github.com/rancher/rke2/pull/6206)
+* Bump K3s version for v1.30 to fix regression in agent's supervisor port [(#6200)](https://github.com/rancher/rke2/pull/6200)
+* Bump rke2-ingress-nginx chart to revert watchIngressWithoutClass default [(#6216)](https://github.com/rancher/rke2/pull/6216)
+* Update hardened kubernetes [(#6225)](https://github.com/rancher/rke2/pull/6225)
+* Bump K3s version for snapshot fix [(#6230)](https://github.com/rancher/rke2/pull/6230)
+  * Fix issue that allowed multiple simultaneous snapshots to be allowed
+* Revert rke2-ingress-nginx bump back to v1.9.6 [(#6238)](https://github.com/rancher/rke2/pull/6238)
+* Reinstate newest rke2-ingress-nginx [(#6253)](https://github.com/rancher/rke2/pull/6253)
+* Pass install_type as a string in the mixedos e2e test [(#6251)](https://github.com/rancher/rke2/pull/6251)
+* Update calico image to v3.28.0-build20240625 [(#6257)](https://github.com/rancher/rke2/pull/6257)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.15.500](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.15.500.tgz) |
+| rke2-canal | [v3.28.0-build2024062503](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.28.0-build2024062503.tgz) |
+| rke2-calico | [v3.27.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.27.300.tgz) |
+| rke2-calico-crd | [v3.27.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.27.002.tgz) |
+| rke2-coredns | [1.29.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.002.tgz) |
+| rke2-ingress-nginx | [4.10.101](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.10.101.tgz) |
+| rke2-metrics-server | [3.12.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.002.tgz) |
+| rancher-vsphere-csi | [3.1.2-rancher400](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.1.2-rancher400.tgz) |
+| rancher-vsphere-cpi | [1.7.001](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.7.001.tgz) |
+| harvester-cloud-provider | [0.2.400](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.400.tgz) |
+| harvester-csi-driver | [0.1.1700](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1700.tgz) |
+| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
+| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
+| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
+
+
+-----
+## Release [v1.30.1+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.1+rke2r1)
+<!-- v1.30.1+rke2r1 -->
+
+This release updates Kubernetes to v1.30.1.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.30.0+rke2r1:
+
+* Add E2E as a GitHub Action [(#5864)](https://github.com/rancher/rke2/pull/5864)
+* Bump ubuntu from 22.04 to 24.04 [(#5861)](https://github.com/rancher/rke2/pull/5861)
+* Update channels for 1.30 [(#5911)](https://github.com/rancher/rke2/pull/5911)
+* Update k8s v1.30.1 and Go [(#5914)](https://github.com/rancher/rke2/pull/5914)
+* Windows changes [(#5918)](https://github.com/rancher/rke2/pull/5918)
+* Cilium version bump to 1.15.5 [(#5935)](https://github.com/rancher/rke2/pull/5935)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.15.500](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.15.500.tgz) |
+| rke2-canal | [v3.27.3-build2024042301](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.27.3-build2024042301.tgz) |
+| rke2-calico | [v3.27.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.27.300.tgz) |
+| rke2-calico-crd | [v3.27.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.27.002.tgz) |
+| rke2-coredns | [1.29.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.002.tgz) |
+| rke2-ingress-nginx | [4.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.9.100.tgz) |
+| rke2-metrics-server | [3.12.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.002.tgz) |
+| rancher-vsphere-csi | [3.1.2-rancher400](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.1.2-rancher400.tgz) |
+| rancher-vsphere-cpi | [1.7.001](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.7.001.tgz) |
+| harvester-cloud-provider | [0.2.300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.300.tgz) |
+| harvester-csi-driver | [0.1.1700](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1700.tgz) |
+| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
+| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
+| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
+
+
+-----
+## Release [v1.30.0+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.30.0+rke2r1)
+<!-- v1.30.0+rke2r1 -->
+
+This release is RKE2's first in the v1.30 line. This release updates Kubernetes to v1.30.0.
+
+Before upgrading from earlier releases, be sure to read the [Kubernetes Changelog](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md#changelog-since-v1290)
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.29.4+rke2r1:
+
+* Update stable channel to v1.28.9+rke2r1 [(#5870)](https://github.com/rancher/rke2/pull/5870)
+* Add mixedos BGP e2e test [(#5859)](https://github.com/rancher/rke2/pull/5859)
+* Remove flannel-v6.4096 when rke2-killall.sh [(#5795)](https://github.com/rancher/rke2/pull/5795)
+* Update e2e test [(#5880)](https://github.com/rancher/rke2/pull/5880)
+* Bump k3s to 1.30 [(#5888)](https://github.com/rancher/rke2/pull/5888)
+* Move to fatal error for cis-1.23 profile value [(#5781)](https://github.com/rancher/rke2/pull/5781)
+* Remove cni parameter from agent config in e2e tests [(#5881)](https://github.com/rancher/rke2/pull/5881)
+* Add script to validate flannel versions [(#5788)](https://github.com/rancher/rke2/pull/5788)
+* Bump k3s to deprecate pod-infra-container-image [(#5900)](https://github.com/rancher/rke2/pull/5900)
+* Fix mixedosbgp e2e test [(#5886)](https://github.com/rancher/rke2/pull/5886)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.15.400](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.15.400.tgz) |
+| rke2-canal | [v3.27.3-build2024042301](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.27.3-build2024042301.tgz) |
+| rke2-calico | [v3.27.300](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.27.300.tgz) |
+| rke2-calico-crd | [v3.27.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.27.002.tgz) |
+| rke2-coredns | [1.29.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.29.002.tgz) |
+| rke2-ingress-nginx | [4.9.100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.9.100.tgz) |
+| rke2-metrics-server | [3.12.002](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.12.002.tgz) |
+| rancher-vsphere-csi | [3.1.2-rancher400](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.1.2-rancher400.tgz) |
+| rancher-vsphere-cpi | [1.7.001](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.7.001.tgz) |
+| harvester-cloud-provider | [0.2.300](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.300.tgz) |
+| harvester-csi-driver | [0.1.1700](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.1700.tgz) |
+| rke2-snapshot-controller | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-1.7.202.tgz) |
+| rke2-snapshot-controller-crd | [1.7.202](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-1.7.202.tgz) |
+| rke2-snapshot-validation-webhook | [1.7.302](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-validation-webhook/rke2-snapshot-validation-webhook-1.7.302.tgz) |
 
 
 -----
