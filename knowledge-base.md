@@ -8829,28 +8829,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -26454,6 +26460,99 @@ spec:
 
 ---
 
+## Article: 000022061.md
+
+# Pod with encrypted Longhorn PVC fails to start with volume mount error  "in use by the system; will not make a filesystem here"
+
+**Article Number:** [000022061](https://support.scc.suse.com/s/kb/Pod-with-encrypted-Longhorn-PVC-fails-to-start-with-volume-mount-error-in-use-by-the-system-will-not-make-a-filesystem-here)
+
+## **Environment**
+
+SUSE Rancher Longhorn v1.6.2, v1.7.0  
+K3s cluster
+
+## **Situation**
+
+A workload pod using an encrypted Longhorn volume fails to start because the volume cannot be mounted. This issue occurs in a Rancher K3s cluster, particularly after the k3s-agent service is restarted on a node. This article explains a known bug related to encrypted volumes in K3s clusters and provides a solution to resolve the problem.
+
+## **Cause**
+
+- This is a known issue with encrypted Longhorn volumes on K3S cluster, as explained in the GitHub [issue](https://github.com/longhorn/longhorn/issues/9385).
+- When the k3s-agent service on a worker node is restarted, or if a worker node becomes temporarily unreachable, Kubernetes will attempt to move the workload to another scheduled worker node. If the worker node becomes available again, the workload might not be moved, and the volume will be reattached.
+- In this scenario, Longhorn does not properly close the encrypted volume using the cryptsetup commands, resulting in the encrypted volume being considered open, and the volume has been reattached.
+
+## **Resolution**
+
+There could be a situation while using an encrypted volume for a pod where the pod fails to start, indicating volume mount failure. The following error is seen in longhorn-csi-plugin logs:
+
+```
+2025-08-18T11:17:22.978803544+10:00 time="2025-08-18T01:17:22Z" level=error msg="NodeStageVolume: err: rpc error: code = Internal desc = format of disk \"/dev/mapper/pvc-xxxxx-xxxx-xxxx-x
+xxx-xxxxxxxx\" failed: type:(\"ext4\") target:(\"/var/lib/kubelet/plugins/kubernetes.io/csi/driver.longhorn.io/1f3db0f37bxxxxxbd43c85397bd005d208xxxxx1f413ff5294a9635b9e3/globalmoun
+t\") options:(\"defaults\") errcode:(exit status 1) output:(mke2fs 1.46.4 (18-Aug-2021)\n/dev/mapper/pvc-xxxxx-xxxx-xxxx-x
+xxx-xxxxxxxx is apparently in use by the system; will not mak
+e a filesystem here!\n) " func=csi.logGRPC file="server.go:138"
+```
+
+Messages on the node also show that the disk format also failed:
+
+```
+Aug 13 13:11:42 example-node1 k3s[417005]: E0813 13:11:42.819061  417005 nestedpendingoperations.go:348] Operation for "{volumeName:kubernetes.io/csi/driver.longhorn.io^pvc-f1b45c27-e434-40cf
+-9a5d-874f452db250 podName: nodeName:}" failed. No retries permitted until 2025-08-13 13:13:44.819036862 +1000 AEST m=+577.297768151 (durationBeforeRetry 2m2s). Error: MountVolume.MountDevic
+e failed for volume "pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx" (UniqueName: "kubernetes.io/csi/driver.longhorn.io^pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx") pod "test-xxxx-xxxx" (
+UID: "xxxxxx-xxxxx-xxxxx-xxxx-xxxxxxxx") : rpc error: code = Internal desc = format of disk "/dev/mapper/pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx" failed: type:("ext4") target:("/var/lib
+/kubelet/plugins/kubernetes.io/csi/driver.longhorn.io/1f3db0f37bxxxxxbd43c85397bd005d208xxxxx1f413ff5294a9635b9e3/globalmount") options:("defaults") errcode:(exit status 1) output:(mke2
+fs 1.46.4 (18-Aug-2021)
+Aug 13 13:11:42 example-node1 k3s[417005]: Warning: could not erase sector 2: Input/output error
+Aug 13 13:11:42 example-node1 k3s[417005]: Creating filesystem with 10481664 4k blocks and 2621440 inodes
+Aug 13 13:11:42 example-node1 k3s[417005]: Filesystem UUID: xxxx-xxxx-xxxxx-xxxx-xxxxxxxx
+Aug 13 13:11:42 example-node1 k3s[417005]: Superblock backups stored on blocks:
+Aug 13 13:11:42 example-node1 k3s[417005]: #01132768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+Aug 13 13:11:42 example-node1 k3s[417005]: #0114096000, 7962624
+Aug 13 13:11:42 example-node1 k3s[417005]: Allocating group tables:   0/320#010#010#010#010#010#010#010       #010#010#010#010#010#010#010done
+Aug 13 13:11:42 example-node1 k3s[417005]: Warning: could not read block 0: Input/output error
+Aug 13 13:11:42 example-node1 k3s[417005]: Warning: could not erase sector 0: Input/output error
+Aug 13 13:11:42 example-node1 k3s[417005]: Writing inode tables:   0/320#010#010#010#010#010#010#010       #010#010#010#010#010#010#010done
+Aug 13 13:11:42 example-node1 k3s[417005]: Creating journal (65536 blocks): done
+Aug 13 13:11:42 example-node1 k3s[417005]: Writing superblocks and filesystem accounting information:   0/320#010#010#010#010#010#010#010mkfs.ext4: Input/output error while writing out and cl
+osing file system
+```
+
+### Resolution:
+
+- Run commands like "lsof**"** or “ps aux” to confirm any process holding the volume.
+- If the above commands do not show any outputs, then run the command below to workaround the issue, pointing to the affected volume's full path to understand the processes holding the volume:
+
+```
+# fuser -v /dev/mapper/pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+```
+
+- Note the PID of the process from the above command. Then kill the process using the command below:
+
+```
+# fuser -k /dev/mapper/pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+```
+
+- Since the volume is encrypted, deactivate the opened LUKS/dm-crypt device:
+
+```
+# cryptsetup close pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+```
+
+- Verify that no processes are using the volume and it has also been deactivated from the encryption layer:
+
+```
+# fuser -v /dev/mapper/pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+# cryptsetup status pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+```
+
+- Scale up the workload and confirm the volume mounts successfully.
+
+Since this is a known bug which is fixed in Longhorn version v1.8.0, it is recommended to upgrade Longhorn version to v1.8.0+ for a persistent fix.
+
+
+
+---
+
 ## Article: 000022065.md
 
 # How to create a network bond for Elemental OS Machine
@@ -27429,4 +27528,26 @@ RKE2 (all versions)
 ## **Environment**
 
 A standalone or Rancher-provisioned K3s or RKE2 cluster
+
+
+
+---
+
+## Article: 000022138.md
+
+# How to collect cattle-cluster-agent metrics through Rancher Manager
+
+**Article Number:** [000022138](https://support.scc.suse.com/s/kb/How-to-collect-cattle-cluster-agent-metrics-through-Rancher-Manager)
+
+## **Environment**
+
+Rancher 2.10+
+
+## **Procedure**
+
+Rancher support might ask you to collect the Prometheus metrics for the cattle-cluster-agent.
+
+They are available through the Rancher local cluster. You should be able to collect them navigating to:
+
+https://&lt;RANCHER-URL/k8s/clusters/&lt;CLUSTER-ID&gt;/metrics
 
