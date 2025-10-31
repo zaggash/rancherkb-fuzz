@@ -59,23 +59,23 @@ An overview of the components and how they interact on a high level.
 # Create a Bundle Resource
 
 Bundles are automatically created by Fleet when a `GitRepo` is created. In most cases `Bundles` should not be created
-manually by the user. If you want to deploy resources from a git repository use a
-[GitRepo](https://fleet.rancher.io/gitrepo-add) instead.
+manually by the user. To deploy resources from a git repository use a
+[GitRepo](./gitrepo-add.md) instead.
 
 
-If you want to deploy resources without a git repository follow this guide to create a `Bundle`.
+To deploy resources without a git repository follow this guide to create a `Bundle`.
 
 :::note
 If you want to deploy resources without running a Fleet controller, also take a look at the [Fleet CLI](ref-bundle-stages#examining-the-bundle-lifecycle-with-the-cli).
 :::
 
-When creating a `GitRepo` Fleet will fetch the resources from a git repository, and add them to a Bundle.
+When creating a `GitRepo` Fleet fetches the resources from a git repository, and add them to a Bundle.
 When creating a `Bundle` resources need to be explicitly specified in the `Bundle` Spec.
 Resources can be compressed with gz. See [here](https://github.com/rancher/rancher/blob/main/pkg/controllers/provisioningv2/managedchart/managedchart.go#L149-L153)
 an example of how Rancher uses compression in go code.
 
 If you would like to deploy in downstream clusters, you need to define targets. Targets work similarly to targets in `GitRepo`.
-See [Mapping to Downstream Clusters](https://fleet.rancher.io/gitrepo-targets#defining-targets).
+See [Mapping to Downstream Clusters](./gitrepo-targets.md#defining-targets).
 
 The following example creates a nginx `Deployment` in the local cluster:
 
@@ -544,69 +544,20 @@ cluster API.  This style is more compatible if you wish to manage the creation o
 clusters through GitOps using something like [cluster-api](https://github.com/kubernetes-sigs/cluster-api)
 or [Rancher](https://github.com/rancher/rancher).
 
-```mermaid
-graph TD
-    subgraph "Upstream (Management Cluster)"
-        direction LR
-        subgraph "Flow 1: Agent-Initiated"
-            direction TB
-            A0(Optional: Admin Creates Cluster with clientID) --> A1
-
-            A1(Admin Creates<br>ClusterRegistrationToken) --> A2{Fleet Controller Creates Secret<br>for a temporary 'import' ServiceAccount}
-        end
-        subgraph "Flow 2: Manager-Initiated (for existing cluster)"
-            direction TB
-            B1(Admin Creates Kubeconfig Secret<br>for an existing cluster) --> B2(Admin Creates Cluster Resource<br>referencing the Kubeconfig Secret.<br>Can define a clientID here)
-            B2 --> B3{Fleet Controller uses admin-provided<br>kubeconfig to deploy agent}
-        end
-    end
-
-    subgraph "Downstream (Managed Cluster)"
-        direction LR
-        subgraph "Agent Install (Flow 1)"
-            direction TB
-            A3(Admin installs Fleet Agent via Helm<br>using the 'import' token secret.<br>Can provide clientID)
-        end
-        subgraph "Agent Deployed (Flow 2)"
-             direction TB
-             B4(Agent & bootstrap secret are deployed.<br>Bootstrap contains an 'import' kubeconfig.)
-        end
-    end
-
-    subgraph "Common Registration Stages (Identity Handshake)"
-        direction TB
-        C1(Agent pod starts, using its local 'agent' SA.<br>Finds & uses the 'import' kubeconfig<br>from the bootstrap secret to talk to Upstream.)
-        C1 --> C2(Using its 'import' identity, Agent creates<br>a ClusterRegistration resource on Upstream)
-        C2 --> C3{Upstream Controller creates a permanent<br>'request' ServiceAccount & a new,<br>long-term kubeconfig/secret for it.}
-        C3 --> C4(Agent receives and persists the<br>'request' SA credentials.<br>The temporary bootstrap secret is deleted.)
-        C4 --> C5{Upstream Controller creates a dedicated<br>Cluster Namespace for this agent.}
-        C5 --> C6(✅ Agent Fully Registered.<br>Uses its 'request' identity to watch<br>for workloads in its namespace.)
-    end
-
-    %% Styling
-    style A0 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
-    style A1 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
-    style B1 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
-    style A3 fill:#d1fae5,stroke:#10b981,stroke-width:2px
-    style B2 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
-
-    style A2 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style B3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style B4 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-
-    style C1 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
-    style C2 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
-    style C3 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
-    style C4 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
-    style C5 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
-    style C6 fill:#dcfce7,stroke:#22c55e,stroke-width:2px,font-weight:bold
-
-    %% Connections
-    A2 --> A3
-    B3 --> B4
-    A3 --> C1
-    B4 --> C1
-```
+| Feature | Agent-Initiated Registration | Manager-Initiated Registration (Rancher Mode) |
+| :--- | :--- | :--- |
+| **Registration Initiator** | The downstream cluster initiates the registration process by deploying the agent. | The Fleet Manager (upstream cluster) initiates the registration process. |
+| **Prerequisite: Upstream Admin Action** | **Requires manual administrative action** to create a `ClusterRegistrationToken` resource upstream. This token is required for agent authorization. | Requires creating a `Cluster` resource in the Fleet Manager that references a Kubernetes **Secret containing a valid kubeconfig** for the downstream cluster. |
+| **Primary Mechanism** | Installing the Fleet agent via Helm on the downstream cluster using the manually generated **cluster registration token**. | The Fleet Controller uses the provided **kubeconfig** to make an API call to the downstream cluster's API server and deploy the agent. |
+| **Registration Network Direction** | Communication flows **from** the managed cluster to the Fleet Controller (upstream). This is a PULL mechanism for registration credentials. | The Manager initiates a connection (PUSH) to the downstream cluster API server to deploy the agent. |
+| **Network Requirement (Manager)** | The Fleet Manager **does not need direct inbound** network access to the downstream cluster API. Clusters can run in private networks/behind NATs. | The Fleet Manager **must be able to communicate directly** with the downstream cluster API server during the registration phase. |
+| **Network Requirement (Agent)** | The downstream cluster must be able to make **outbound HTTPS calls** to the Fleet Manager. | The downstream cluster must be able to make outbound HTTPS calls to the Fleet Manager (post-deployment, for communication and data synchronization). |
+| **Data Synchronization (Pull)** | The agent pulls configuration bundles and agent updates from the Fleet Controller (part of the two-stage pull model). | The agent pulls configuration bundles and agent updates from the Fleet Controller. |
+| **Agent Management (Push/Redeploy)** | The upstream controller typically **lacks** the direct network access/credentials required for proactive management actions (PUSH) on the agent deployment. | The initial deployment mechanism grants the Manager explicit access. This infrastructure can be used for administrative management actions (e.g., triggering deployment using the kubeconfig). |
+| **Agent Redeployment Control Field** | The `redeployAgentGeneration` field (on `ClusterSpec`) is **not used** by the upstream controller to trigger redeployment, as the manager lacks the API access necessary to directly manipulate the downstream agent deployment. | The `redeployAgentGeneration` field on the `ClusterSpec` **can be incremented to force redeployment** of the agent by the Fleet Controller. |
+| **Agent Adoption Post-Registration** | After initial registration using the token, the agent is adopted into the standard management lifecycle via bundles created by the `manageagent` controller. |
+| **Rancher Context** | This method is **not commonly used** when registering clusters through the Rancher dashboard. | This method **is used** when adding a cluster via the Rancher dashboard (often via a Rancher agent proxying the downstream kubeconfig upstream). |
+| **Post-Registration Token Status** | The agent forgets the registration token after success; a new token must be generated for re-registration. | N/A; registration token/kubeconfig management is handled internally by the Fleet Manager. |
 
 ## Agent Initiated
 
@@ -1331,9 +1282,9 @@ Git repos are added to the Fleet manager using the `GitRepo` custom resource typ
 - `fleet-default` will contain all the downstream clusters that are already registered through Rancher.
 - `fleet-local` will contain the local cluster by default.
 
-If you are using Fleet in a [single cluster](./concepts.md) style, the namespace will always be **fleet-local**. Check [here](https://fleet.rancher.io/namespaces#fleet-local) for more on the `fleet-local` namespace.
+If you are using Fleet in a [single cluster](./concepts.md) style, the namespace will always be **fleet-local**. Check [here](./namespaces.md#cluster-registration-namespace-fleet-local) for more on the `fleet-local` namespace.
 
-For a [multi-cluster](./concepts.md) style, please ensure you use the correct repo that will map to the right target clusters.
+For a [multi-cluster](./concepts.md) style, please ensure you use the correct repo that maps to the right target clusters.
 
 ## Override Workload's Namespace
 
@@ -1462,7 +1413,7 @@ referenced in a `GitRepo` as well as to a possible `gitcredential` secret, if no
 
 ### Using HTTP Auth
 
-Create a secret containing username and password. You can replace the password with a personal access token if necessary. Also see [HTTP secrets in Github](./troubleshooting#http-secrets-in-github).
+Create a secret containing username and password. You can replace the password with a personal access token if necessary. Also see [HTTP secrets in Github](./troubleshooting.md#http-secrets-in-github).
 
 ```text
 kubectl create secret generic basic-auth-secret -n namespace-of-your-gitrepo --type=kubernetes.io/basic-auth --from-literal=username=$user --from-literal=password=$pat
@@ -1687,7 +1638,7 @@ have been re-created.
 
 ### Pausing
 
-A [paused](./ref-gitrepo) GitRepo will lead to paused bundles and bundle deployments. This means that:
+A [paused](./ref-gitrepo.md) GitRepo will lead to paused bundles and bundle deployments. This means that:
 * when deleting a bundle deployment coming from a paused GitRepo, Fleet will not re-create that bundle deployment until
 the GitRepo is unpaused
 * when deleting a bundle coming from a paused GitRepo, Fleet will delete the bundle deployments coming from that bundle,
@@ -1696,7 +1647,7 @@ the GitRepo is unpaused
 Besides, pausing a GitRepo only prevents bundles and bundle deployments from being created or updated for that GitRepo.
 In other words, it only affects _controller_ operations, not Fleet _agent_ operations. To prevent user resources,
 contained in a bundle, from being deleted when deleting a bundle deployment,
-[keepResources](./ref-bundle) should be used instead.
+[keepResources](./ref-bundle.md) should be used instead.
 
 # Troubleshooting
 
@@ -1710,13 +1661,19 @@ See Fleet Troubleshooting section [here](./troubleshooting.md).
 # Git Repository Contents
 
 Fleet will create bundles from a git repository. This happens either explicitly by specifying paths, or when a `fleet.yaml` is found.
+The folder could contain a Helm chart, or reference one. It could be a plain Kubernetes manifest, or a Kustomize folder. Each bundle is converted to a single Helm chart for deployment.
 
-Each bundle is created from paths in a GitRepo and modified further by reading the discovered `fleet.yaml` file.
-Bundle lifecycles are tracked between releases by the helm releaseName field added to each bundle. If the releaseName is not
-specified within fleet.yaml it is generated from `GitRepo.name + path`. Long names are truncated and a `-<hash>` prefix is added.
+The `fleet.yaml` file contains all the options for the deployment.
+
+## Bundle Names
 
 By default, bundle names will also be generated from the GitRepo's name and the path from which the bundle is created.
 However, a bundle's name can be overridden by using the `name` field in a `fleet.yaml` file.
+
+Bundle lifecycles are tracked between releases by the Helm `releaseName` field added to each bundle. If the releaseName is not
+specified within fleet.yaml it is generated from `GitRepo.name + path`. Long names are truncated and a `-<hash>` prefix is added.
+
+## How repos are scanned
 
 **The git repository has no explicitly required structure.** It is important
 to realize the scanned resources will be saved as a resource in Kubernetes so
@@ -1724,7 +1681,6 @@ you want to make sure the directories you are scanning in git do not contain
 arbitrarily large resources. Right now there is a limitation that the resources
 deployed must **gzip to less than 1MB**.
 
-## How repos are scanned
 
 Multiple paths can be defined for a `GitRepo` and each path is scanned independently.
 Internally each scanned path will become a [bundle](./concepts.md) that Fleet will manage,
@@ -1741,6 +1697,7 @@ The following files are looked for to determine the how the resources will be de
 | **overlays/`{name}`** | / relative to `path` | When deploying using raw YAML (not Kustomize or Helm) `overlays` is a special directory for customizations. |
 
 ### Alternative scan, explicitly defined by the user
+
 In addition to the previously described method, Fleet also supports a more direct, user-driven approach for defining Bundles.
 
 In this mode, Fleet will load all resources found within the specified base directory. It will only attempt to locate a `fleet.yaml` file at the root of that directory if an options file is not explicitly provided.
@@ -2365,7 +2322,7 @@ A downstream cluster is a Kubernetes cluster where user workloads will run, with
 
 ## fleet.yaml
 
-A `fleet.yaml` file lives in a git repository and stores options for a bundle and bundle deployments to be generated from that bundle. More information is available [here](https://fleet.rancher.io/ref-fleet-yaml).
+A `fleet.yaml` file lives in a git repository and stores options for a bundle and bundle deployments to be generated from that bundle. More information is available [here](./ref-fleet-yaml.md).
 
 ## GitOps
 
@@ -2757,7 +2714,7 @@ Once change is made into git repository, fleet will read through the change and 
 
 ### Configuration Management
 
-Fleet is fundamentally a set of Kubernetes [custom resource definitions (CRDs)](https://fleet.rancher.io/concepts) and controllers that manage GitOps for a single Kubernetes cluster or a large scale deployment of Kubernetes clusters. It is a distributed initialization system that makes it easy to customize applications and manage HA clusters from a single point.
+Fleet is fundamentally a set of Kubernetes [custom resource definitions (CRDs)](./concepts.md) and controllers that manage GitOps for a single Kubernetes cluster or a large scale deployment of Kubernetes clusters. It is a distributed initialization system that makes it easy to customize applications and manage HA clusters from a single point.
 
 
 ---
@@ -3627,7 +3584,7 @@ This will uninstall all deployed bundles, except for the fleet agent, from the d
 
 If you are using Fleet in a [single cluster](./concepts.md) style, the namespace
 will always be **fleet-local**. Check
-[here](https://fleet.rancher.io/namespaces#fleet-local) for more on the
+[here](./namespaces.md#cluster-registration-namespace-fleet-local) for more on the
 `fleet-local` namespace.
 
 For a [multi-cluster](./concepts.md) style, please ensure you use the correct
@@ -4052,7 +4009,7 @@ cd fleet-test-data
 fleet apply -n fleet-local -o bundle.yaml testbundle simple-chart/
 ```
 
-More information on how to create bundles with `fleet apply` can be found in the [section on bundles](https://fleet.rancher.io/bundle-add).
+More information on how to create bundles with `fleet apply` can be found in the [section on bundles](./bundle-add.md).
 
 ### fleet target
 
@@ -4282,7 +4239,7 @@ Annotations used by fleet:
 ## Fleet agent configuration
 
 Tolerations, affinity and resources can be customized for the Fleet agent. These fields can be provided when creating a
-[Cluster](https://fleet.rancher.io/ref-crds#clusterspec), see [Registering Downstream Cluster](https://fleet.rancher.io/cluster-registration) for more info on how to create
+[Cluster](./ref-crds.md#clusterspec), see [Registering Downstream Cluster](./cluster-registration.md) for more info on how to create
 Clusters. Default configuration will be used if these fields are not provided.
 
 If you change the resources limits, make sure the limits allow the fleet-agent to work normally.
@@ -5521,7 +5478,7 @@ For more information on how to use the `fleet.yaml` to customize bundles see
 
 The content of the fleet.yaml corresponds to the `FleetYAML` struct at
 [pkg/apis/fleet.cattle.io/v1alpha1/fleetyaml.go](https://github.com/rancher/fleet/blob/main/pkg/apis/fleet.cattle.io/v1alpha1/fleetyaml.go),
-which contains the [BundleSpec](./ref-crds#bundlespec).
+which contains the [BundleSpec](./ref-crds.md#bundlespec).
 
 ## Full Example
 
@@ -5943,9 +5900,9 @@ Options for the downloaded Helm chart.
 | helm.valuesFiles | A list of paths to values files that will be passed to Helm during installation. | Helm |
 | helm.valuesFrom | Allows you to use values files from ConfigMaps or Secrets defined in the downstream clusters. | Helm |
 
-It is not necessary to specify a chart's own `values.yaml` via `valuesFiles:`. It will always be used as a default when the agent installs the chart. See [Using Helm Values](./gitrepo-content#using-helm-values) for more details.
+It is not necessary to specify a chart's own `values.yaml` via `valuesFiles:`. It will always be used as a default when the agent installs the chart. See [Using Helm Values](./gitrepo-content.md#using-helm-values) for more details.
 
-Values are processed in different stages of the lifecycle: https://fleet.rancher.io/ref-bundle-stages
+Values are processed in different stages of the [Bundle lifecycle](./ref-bundle-stages.md)
 
 * fleet.yaml `values:` and `valuesFile:` are added to the bundle's values when it is created.
 * helm values templating, e.g. with `${ }` happens when the bundle is targeted at a cluster, cluster labels filled in, etc.
@@ -6037,7 +5994,7 @@ These options control how changes are rolled out across a fleet of clusters and 
 | rolloutStrategy.autoPartitionSize | The number or percentage used to automatically partition clusters if no specific partitioning strategy is configured. | All |
 | rolloutStrategy.partitions | A list of partition definitions that group clusters for a phased rollout. | All |
 
-More details on rollout strategies and how they work [here](./rollout).
+More details on rollout strategies and how they work [here](./rollout.md).
 
 ## Targeting and Customization
 
@@ -6284,7 +6241,7 @@ The process is identical for the local cluster or any downstream cluster. It sta
 
 In this step a `ClusterRegistationToken` and an "import" service account are created based on a `Cluster` resource.
 
-The Fleet controller creates a [`ClusterRegistrationToken`](https://fleet.rancher.io/architecture#security)
+The Fleet controller creates a [`ClusterRegistrationToken`](./architecture.md#security)
 and waits for it to be complete. The `ClusterRegistationToken` triggers the creation of the "import" service account, which can create
 `ClusterRegistrations` and read any secret in the system registration namespace (eg "cattle-fleet-clusters-system"). The `import.go` controller will
 enqueue itself until the "import" service account exists, because that account is needed to create the `fleet-agent-bootstrap` secret.
@@ -6318,7 +6275,7 @@ The API server URL and CA are copied from the bootstrap secret, which inherited 
 
 The bootstrap secret is deleted. When the agent restarts, it will not re-register, since the bootstrap secret is missing.
 
-The agent starts watching its "[Cluster Namespace](https://fleet.rancher.io/namespaces#cluster-namespaces)" for `BundleDeployments`. At this point the agent is ready to deploy workloads.
+The agent starts watching its "[Cluster Namespace](./namespaces.md#cluster-namespaces)" for `BundleDeployments`. At this point the agent is ready to deploy workloads.
 
 ### Notes
 
@@ -6329,6 +6286,72 @@ The agent starts watching its "[Cluster Namespace](https://fleet.rancher.io/name
 
 
 ## Diagram
+
+### Registration Flow
+
+```mermaid
+graph TD
+    subgraph "Upstream (Management Cluster)"
+        direction LR
+        subgraph "Flow 1: Agent-Initiated"
+            direction TB
+            A0(Optional: Admin Creates Cluster with clientID) --> A1
+
+            A1(Admin Creates<br>ClusterRegistrationToken) --> A2{Fleet Controller Creates Secret<br>for a temporary 'import' ServiceAccount}
+        end
+        subgraph "Flow 2: Manager-Initiated (for existing cluster)"
+            direction TB
+            B1(Admin Creates Kubeconfig Secret<br>for an existing cluster) --> B2(Admin Creates Cluster Resource<br>referencing the Kubeconfig Secret.<br>Can define a clientID here)
+            B2 --> B3{Fleet Controller uses admin-provided<br>kubeconfig to deploy agent}
+        end
+    end
+
+    subgraph "Downstream (Managed Cluster)"
+        direction LR
+        subgraph "Agent Install (Flow 1)"
+            direction TB
+            A3(Admin installs Fleet Agent via Helm<br>using the 'import' token secret.<br>Can provide clientID)
+        end
+        subgraph "Agent Deployed (Flow 2)"
+             direction TB
+             B4(Agent & bootstrap secret are deployed.<br>Bootstrap contains an 'import' kubeconfig.)
+        end
+    end
+
+    subgraph "Common Registration Stages (Identity Handshake)"
+        direction TB
+        C1(Agent pod starts, using its local 'agent' SA.<br>Finds & uses the 'import' kubeconfig<br>from the bootstrap secret to talk to Upstream.)
+        C1 --> C2(Using its 'import' identity, Agent creates<br>a ClusterRegistration resource on Upstream)
+        C2 --> C3{Upstream Controller creates a permanent<br>'request' ServiceAccount & a new,<br>long-term kubeconfig/secret for it.}
+        C3 --> C4(Agent receives and persists the<br>'request' SA credentials.<br>The temporary bootstrap secret is deleted.)
+        C4 --> C5{Upstream Controller creates a dedicated<br>Cluster Namespace for this agent.}
+        C5 --> C6(✅ Agent Fully Registered.<br>Uses its 'request' identity to watch<br>for workloads in its namespace.)
+    end
+
+    %% Styling
+    style A0 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
+    style A1 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
+    style B1 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
+    style A3 fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style B2 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
+
+    style A2 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style B3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style B4 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+
+    style C1 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style C2 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style C3 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style C4 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style C5 fill:#f3e8ff,stroke:#8b5cf6,stroke-width:2px
+    style C6 fill:#dcfce7,stroke:#22c55e,stroke-width:2px,font-weight:bold
+
+    %% Connections
+    A2 --> A3
+    B3 --> B4
+    A3 --> C1
+    B4 --> C1
+```
 
 ### Registration Process and Controllers
 
@@ -7284,7 +7307,7 @@ spec:
 In this case, the `Schedule` allows updates to `Clusters` labeled with *env=dev* **every 3 hours**, for a **duration of 1 hour**.
 
 The way you define target `Clusters` is **identical** to how targets are defined for `GitRepo` resources.
-The existing documentation at [https://fleet.rancher.io/gitrepo-targets](https://fleet.rancher.io/gitrepo-targets) also applies to `Schedule` targets.
+The existing documentation at [GitRepo Targets](./gitrepo-targets.md) also applies to `Schedule` targets.
 
 You can view the full CRD for `Schedule` [here](ref-schedule.md)
 

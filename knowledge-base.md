@@ -3791,26 +3791,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# How to confirm a version upgrade of Rancher v2.x is completed successfully
+# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
-- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
+- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
+- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
 
 ## **Situation**
 
-This article details how to confirm that a Rancher version upgrade has successfully completed.
+この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
 
 ## **Resolution**
 
-The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
+Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
 
-- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
-- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
-- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
+- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
+- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
+- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
 
 
 
@@ -26195,6 +26195,117 @@ https://kubernetes.io/docs/concepts/architecture/garbage-collection/#image-maxim
 
 ---
 
+## Article: 000022049.md
+
+# Unused Machine Configs (rke-machine-config.cattle.io) are automatically cleaned up in Rancher v2.10+
+
+**Article Number:** [000022049](https://support.scc.suse.com/s/kb/Unused-Machine-Configs-rke-machine-config-cattle-io-Are-Automatically-Cleaned-Up-in-Rancher-v2-10)
+
+## **Environment**
+
+- SUSE Rancher Prime v2.10.x till v2.11.x
+- RKE2
+- VMware vSphere
+- AWS EC2
+
+## **Situation**
+
+- After upgrading to Rancher v2.10, VmwarevsphereConfigs created via Terraform (rancher2\_machine\_config\_v2) are automatically deleted after one day if they are not associated with any downstream cluster. This occurs when a machine config is not bound in the Terraform code. There is no alert or notification prior to deletion.
+- A similar scenario occurs when a Machine Pool is configured through the UI but left without nodes for an extended period. In such cases, Rancher automatically deletes some underlying resources (e.g., vmwarevsphereconfig, amazonec2configs). This causes the pool to become uneditable in the UI and blocks the creation of new pools.
+
+## **Cause**
+
+The automatic deletion of orphaned machine configs was introduced in Rancher v2.10 as a resource optimization measure. A cronjob was deployed to clean up machine configs that lack owner references and are older than one hour.
+
+## **Resolution**
+
+- The deletion of unbound machine configs is an expected behavior in Rancher v2.10+. A cronjob, which runs every 24 hours, deletes machine configs that have no owner references and are older than 1 hour.
+- The cronjob responsible for cleaning up unused machine configs is:
+
+```markup
+kubectl get cronjob -n fleet-default
+NAME                                 SCHEDULE    SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+rke2-machineconfig-cleanup-cronjob   5 0 * * *   False     0        5h53m           67d
+```
+
+- However, it will become a problem when an existing pool is scaled down to zero, as it prevents updates to the pool or the creation of new machine pools.
+- Staring Rancher v2.12.1 this behavior has been changed. Machine configs in `rke-machine-config.cattle.io` are added back with `ownerReferences` when the cluster is edited to modify the node pool.
+- As a workaround in older versions, this issue can be mitigated by [suspending](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#schedule-suspension) the cleanup cronjob.
+- The suspension will remain effective until Rancher is restarted and can be applied via:  
+  Rancher → Explore "Local" cluster → More Resources → Batch → Cronjobs → Select "fleet-default" namespace → Suspend
+
+Caution**:** Suspending the cronjob may leave orphaned configurations in the cluster for an extended period.
+
+
+
+---
+
+## Article: 000022051.md
+
+# Automating SUSE Application Collection's App Deployment with Rancher API HelmChart Object
+
+**Article Number:** [000022051](https://support.scc.suse.com/s/kb/Automating-SUSE-Application-Collection-App-Deployment-with-Rancher-API-HelmChart-Object)
+
+## **Environment**
+
+Rancher, RKE2, SUSE Application Collection,Helm, OCI chart repository
+
+## **Situation**
+
+When attempting to automate the deployment of SUSE Application Collection products using the Rancher API object "HelmChart," the deployment fails. The user has configured the Repository Suse App Collection with a Suse service account and is trying to use a HelmChart YAML file to deploy applications. The initial attempt with the oci// scheme fails, indicating that the scheme is not supported. 
+
+```
+Error: looks like "oci://dp.apps.rancher.io/charts" is not a valid chart repository or cannot be reached: failed to perform "FetchReference" on source: invalid reference
+```
+
+Switching to https results in a 401 Unauthorized error. 
+
+```
+Error: looks like "https://dp.apps.rancher.io/charts" is not a valid chart repository or cannot be reached: failed to fetch https://dp.apps.rancher.io/charts/index.yaml : 401 Unauthorized
+```
+
+## **Cause**
+
+The primary cause of the issue is the incorrect configuration of the HelmChart YAML file for deploying applications from the SUSE Application Collection.
+
+## **Resolution**
+
+Adding the proper parameters for the OCI chart and secrets resolved the issue.
+
+ 
+
+1. Configure the OCI chart repository directly in the HelmChart YAML file as specified in the example application(redis).
+2. Create a single docker registry secret in the kube-system namespace for pulling the Helm chart.
+3. Create a secret in each application namespace for pulling specific images from the app collection.
+
+Note: Both secrets dockerRegistrySecret and imagePullSecrets are [docker registry secrets](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_create/kubectl_create_secret_docker-registry/)
+
+Here is an example application(redis) YAML configuration:
+
+```
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: redis
+  namespace: kube-system
+spec:
+  chart: oci://dp.apps.rancher.io/charts/redis
+  version: 2.3.0
+  targetNamespace: appnamespace
+  dockerRegistrySecret:
+    name: helm-oci-registry
+  valuesContent: |-
+    global:
+      imagePullSecrets:
+        - name: application-collection
+    persistence:
+      enabled: false
+```
+
+
+
+---
+
 ## Article: 000022052.md
 
 # Why can't I see the list of the default admission controller plugins in the kube-apiserver configuration?
@@ -27467,6 +27578,60 @@ The secret azuread-access-token in the cattle-global-data namespace got recreate
 
 ---
 
+## Article: 000022101.md
+
+# How to disable annotation collection with rancher-logging?
+
+**Article Number:** [000022101](https://support.scc.suse.com/s/kb/How-to-disable-annotation-collection-with-rancher-logging)
+
+## **Environment**
+
+SUSE Rancher Prime - All versions
+
+Rancher-logging-105.3.x+
+
+## **Procedure**
+
+- There could be situations where users might want to disable annotation collection with rancher-logging in order to reduce the amount of data being transferred on the output.
+- Disabling annotation collection in the logs can be achieved by customising a record\_transformer filter plugin in the ClusterFlow/Flow as shown in the example below:
+
+```
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+ name: test-output
+ namespace: cattle-logging-system
+spec:
+ file:
+    path: /tmp/logs/${tag}/%Y/%m/%d/%H.%M
+    buffer:
+      timekey: 1m
+      timekey_wait: 10s
+      timekey_use_utc: true
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: drop-annotations
+  namespace: cattle-logging-system
+spec:
+  filters:
+    - record_transformer:
+        remove_keys: "$.kubernetes.annotations"
+  globalOutputRefs:
+    - test-output
+```
+
+- Verify that the annotations are not collected from the Fluentd logs. In the example shown above, the logs from path /tmp/logs/ stored inside rancher-logging-root-fluentd-0 pod can be reviewed. Below is an example of such log snippet that does not collect annotation:
+
+```
+2025-10-14T08:48:45+00:00       kubernetes.var.log.containers.test-logging-pod_cattle-logging-system_sak-8ee60280b8735d9f14f81a7ce3fb4e58985da1cc419d2feb6ec0b1b8320b43a6.log   {"time":"2025-10-14T08:48:45.108926277Z","stream":"stdout","logtag":"F","message":"Hello World from Rancher Logging!","kubernetes":{"pod_name":"test-logging-pod","namespace_name":"cattle-logging-system","pod_id":"f4f2e04c-8fdf-4564-aad9-992071724ef2","labels":{"logging-test":"true","objectset.rio.cattle.io/hash":"a933de1454495e4c5d41a35ca4b9cb9caf7f1181"},"host":"abhishekh-do-abhishekh-do-rn7hx-9xwxt","container_name":"sak","docker_id":"8ee60280b8735d9f14f81a7ce3fb4e58985da1cc419d2feb6ec0b1b8320b43a6","container_hash":"docker.io/rancherlabs/swiss-army-knife@sha256:af25a3ace6269adb9e494b693644bc2f897ec872076d78f78bc5ded69f2ee222","container_image":"docker.io/rancherlabs/swiss-army-knife:latest"},"kubernetes_namespace":{"name":"cattle-logging-system","labels":{"kubernetes.io/metadata.name":"cattle-logging-system"}}}
+```
+
+
+
+---
+
 ## Article: 000022103.md
 
 # How to configure environment variables for a Rancher Deployment
@@ -27528,6 +27693,79 @@ RKE2 (all versions)
 ## **Environment**
 
 A standalone or Rancher-provisioned K3s or RKE2 cluster
+
+
+
+---
+
+## Article: 000022134.md
+
+# Preserve custom add-on config during Kubernetes upgrade of Rancher-provisioned RKE2 or K3s cluster
+
+**Article Number:** [000022134](https://support.scc.suse.com/s/kb/Preserve-custom-add-on-config-during-Kubernetes-upgrade-of-Rancher-provisioned-RKE2-or-K3s-cluster)
+
+## **Environment**
+
+- Rancher v2.6 - v2.12
+- A Rancher-provisioned RKE2 or K3s cluster with customizations to add-on configurations
+
+## **Procedure**
+
+In Rancher-provisioned RKE2 and K3s clusters the cluster components, such as the CNI or Cloud Provider, are managed via add-ons. The version of an add-on, and the available configuration, in addition to as default values, are tied to the particular RKE2 or K3s Kubernetes version.
+
+In the UI form for add-on configuration (e.g. Cluster Management -&gt; Edit Config -&gt; Add-on: Calico) a warning is displayed: "Add-On Configuration can vary between Kubernetes versions. Changing the Kubernetes version may reset the values below." Upgrading the Kubernetes version (Cluster Management -&gt; Edit Config -&gt; Basics -&gt; Kubernetes Version) and clicking 'Save' will display a warning: "Changing the Kubernetes Version can reset Add-On values. You should check that the values are as expected before continuing." If a user clicks 'Continue' and the upgrade is performed, without first re-applying any add-on configuration customizations, add-on configuration may revert to the default values, resulting in unexpected behaviour or cluster errors.
+
+In order to mitigate this and ensure that any custom add-on configuration is persisted across the upgrade, the following procedure should be used:
+
+- Take a copy of the add-on custom configurations
+- Change the Kubernetes Version
+- Navigate back to the add-on configurations and re-apply any custom values that have been erased as a result of the change in Kubernetes Version
+- Click on Save to apply the changes, and click Continue when the Add-On Reset warning is displayed
+
+In Rancher v2.13 improvements have been made to the UI handling of custom add-on configuration values, as detailed in [https://github.com/rancher/dashboard/issues/5837](https://github.com/rancher/dashboard/issues/5837)
+
+
+
+---
+
+## Article: 000022137.md
+
+# FailedCreatePodSandBox "cannot allocate new block due to per host block limit" events in an RKE2 cluster with the Calico CNI
+
+**Article Number:** [000022137](https://support.scc.suse.com/s/kb/FailedCreatePodSandBox-cannot-allocate-new-block-due-to-per-host-block-limit-events-in-an-RKE2-cluster-with-the-Calico-CNI)
+
+## **Environment**
+
+A Rancher-provisioned or standalone RKE2 cluster with the Calico CNI
+
+## **Situation**
+
+Creating new Pods is failing with a FailedCreatePodSandBox event containing a message of the following format:
+
+```markup
+failed to setup network for sandbox "<hash>": plugin type="calico" failed (add): cannot allocate new block due to per host block limit 
+```
+
+## **Cause**
+
+If endpoints are not cleanly removed from Calico, this can result in leaked addresses, which consume IP space within the cluster. Following the process documented above will release these addresses, ensuring the IPAM handles are consistent, and all unused IP addresses are available to the cluster.
+
+## **Resolution**
+
+The [calicoctl CLI](https://docs.tigera.io/calico/latest/operations/calicoctl/) can be used to [query for leaked addresses and release these](https://docs.tigera.io/calico/latest/reference/calicoctl/ipam/check#examples), freeing IP space within the cluster.
+
+ 
+
+1. First, install calicoctl locally with a version matching the Calico version in the affected RKE2 cluster, per the [Calico documentation](https://docs.tigera.io/calico/latest/operations/calicoctl/install).
+2. Source a kubeconfig, with cluster admin permissions, for the affected RKE2 cluster: \``export KUBECONFIG=<path to kubeconfig>`\`
+3. Query and release any leaked addresses:
+   
+   ```markup
+   calicoctl datastore migrate lock
+   calicoctl ipam check -o report.json
+   calicoctl ipam release --from-report report.json
+   calicoctl datastore migrate unlock
+   ```
 
 
 
