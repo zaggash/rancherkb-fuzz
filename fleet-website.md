@@ -1449,8 +1449,14 @@ With the necessary data at hand, create a secret containing those fields:
 kubectl -n namespace-of-your-gitrepo create secret generic github-app-secret \
     --from-literal=github_app_id=<app-id> \
     --from-literal=github_app_installation_id=<installation-id> \
-    --from-file=github_app_private_key=<path-to-private-key-file>
+    --from-literal=github_app_private_key="<private-key>"
 ```
+
+Using a literal instead of a file for the private key can help prevent PEM decoding errors at execution time.
+Before creating the secret, the private key can be sourced from a file exporting environment variable, to prevent the
+key itself from appearing in shell history.
+Surrounding the value, or the environment variable name (e.g. `--from-literal=github_app_private_key="$MY_VAR"`) with
+double quotes ensures that its full contents are taken into account, including possible line breaks.
 
 Make sure you reference that secret in your GitRepo resource via `clientSecretName`.
 
@@ -1797,6 +1803,16 @@ With this new way of defining Bundles, Fleet becomes much more direct and also s
 In the example, we can see a complete kustomize use case where for each Bundle, we can specify which version we want.
 
 With the previous scanning option, Fleet cannot determine which YAML we want to use to configure the Bundle, so it attempts to find it on its own (Which, at times, does not provide enough flexibility.)
+
+:::warning excluding irrelevant files from user-scanned bundles
+When using this bundle scanning mode, Fleet does not exclude bundle configuration files which are not explicitly
+referenced in the GitRepo. For instance, in the above example file structure:
+* by default, neither `prod.yaml` nor `test.yaml` would be excluded from the bundle using `dev.yaml` as its options file
+* similarly, by default, neither `dev.yaml` nor `prod.yaml` would be excluded from the bundle using `test.yaml` as its options file
+
+This can be mitigated by using a `.fleetignore` file next to `{dev,test,prod}.yaml` excluding all three of them.
+See the next section for more details on `.fleetignore` files.
+:::
 
 ### Excluding files and directories from bundles
 
