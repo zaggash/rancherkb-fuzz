@@ -3151,35 +3151,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -9029,59 +9023,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -27788,4 +27790,274 @@ Rancher support might ask you to collect the Prometheus metrics for the cattle-c
 They are available through the Rancher local cluster. You should be able to collect them navigating to:
 
 https://&lt;RANCHER-URL/k8s/clusters/&lt;CLUSTER-ID&gt;/metrics
+
+
+
+---
+
+## Article: 000022141.md
+
+# Issue with DNS while using NodeLocalDNS and network policy in RKE2
+
+**Article Number:** [000022141](https://support.scc.suse.com/s/kb/Issue-with-DNS-while-using-NodeLocalDNS-and-network-policy-in-RKE2)
+
+## **Environment**
+
+Rancher, RKE2, NetworkPolicy
+
+## **Situation**
+
+Network policies that worked in RKE2 are not functioning correctly after NodeLocalDNS is enabled. Specifically, DNS resolution fails for pods even when network policies are configured to allow DNS traffic on port 53. The issue occurs despite explicitly allowing such traffic in the network policy.
+
+For example, the following egress rule was present in the network policy for allowing outgoing connections to coredns
+
+```
+  - to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+```
+
+## **Cause**
+
+The issue occurred due to the absence of proper NetworkPolicies for NodeLocalDNS. When NodeLocalDNS is enabled, DNS queries are handled locally on each node, and the network policies must be configured to allow traffic to the NodeLocalDNS IP.
+
+## **Resolution**
+
+Using podSelector( k8s-app: node-local-dns) to allow egress in policy will not work because NodeLocalDNS pods run in hostnetwork and bind 10.43.0.10 on the host, traffic destined for 10.43.0.10 (169.254.20.10) directly reaches those IPs and is not DNATed to the NodeLocalDNS (host network IP) or CoreDNS pod IPs. So essentially, after NodeLocalDNS is installed, the IP 10.43.0.10 is no longer the Kubernetes service IP. 
+
+To resolve the DNS resolution issues with network policies in RKE2 clusters, modify the network policies to include the following egress rules:
+
+```
+- to:
+    - ipBlock:
+        cidr: 10.43.0.10/32
+    ports:
+    - port: 53
+      protocol: TCP
+    - port: 53
+      protocol: UDP
+```
+
+
+
+---
+
+## Article: 000022144.md
+
+# Fleet Agent CrashLoop and Outdated RKE Metadata After Rancher v2.11.x Upgrade
+
+**Article Number:** [000022144](https://support.scc.suse.com/s/kb/Fleet-Agent-CrashLoop-and-Outdated-RKE-Metadata-After-Rancher-v2-11-x-Upgrade)
+
+## **Environment**
+
+- SUSE Rancher Prime: v2.11.x
+- Fleet: v0.12
+
+## **Situation**
+
+After upgrading Rancher to v2.11.x:
+
+- Downstream k3s clusters remain stuck in an *updating* state.
+- The `fleet-agent-0` pod enters a *CrashLoopBackOff* with the error:
+
+```markup
+panic: leaseDuration must be greater than renewDeadline
+```
+
+- The cluster creation page displays outdated RKE2/k3s versions.
+
+## **Cause**
+
+- The Fleet crashloop is caused by a **Fleet 0.12 bug** that breaks the leader election configuration.
+- The outdated RKE metadata occurs when `rke-metadata-config` references an older Rancher version, resulting in outdated RKE2/k3s versions being shown.
+
+## **Resolution**
+
+- **Force update Fleet clusters**
+  
+  - Navigate to: *Rancher UI &gt;&gt; Continuous Delivery &gt;&gt; Clusters*
+  - Select the affected cluster → Click **Force Update**
+  - This will bring the Fleet agent back online and resolve the crashloop issue.
+- **Update RKE metadata configuration**
+  
+  - Navigate to: *Rancher UI &gt;&gt; Global Settings &gt;&gt; Settings &gt;&gt; rke-metadata-config*
+  - Edit the settings and update the version-specific URL to match the current Rancher version → Save
+
+
+
+---
+
+## Article: 000022149.md
+
+# DNS Capture and Auto-Allocation Issues After Rancher Istio Upgrade
+
+**Article Number:** [000022149](https://support.scc.suse.com/s/kb/DNS-Capture-and-Auto-Allocation-Issues-After-Rancher-Istio-Upgrade)
+
+## **Environment**
+
+Rancher Istio chart upgraded to [107.2.0+up1.26.2](https://github.com/rancher/charts/tree/dev-v2.12/charts/rancher-istio/107.2.0%2Bup1.26.2) from any lower version.
+
+## **Situation**
+
+- After upgrading from rancher-istio v1.24 to v1.26 via Rancher UI, DNS capture and auto-allocation stopped working as expected.
+
+```markup
+ meshConfig:
+    defaultConfig:
+      proxyMetadata:
+        ISTIO_META_DNS_CAPTURE: "true"
+        ISTIO_META_DNS_AUTO_ALLOCATE: "true"
+```
+
+- When accessing services, DNS resolves incorrectly, sometimes pointing to another service’s IP or port. This happens particularly when multiple ServiceEntries use the same domain but different ports.
+- Prior to the upgrade, this setup worked without issues.
+
+## **Cause**
+
+In rancher-istio v1.26, an upstream change causes each ServiceEntry with the same domain to receive its own VIP, resulting in DNS resolution conflicts.
+
+```markup
+# kubectl get se local-ssh   -o yaml | yq '.status.addresses'
+- host: sshhttps.test
+  value: 240.240.0.5
+# kubectl get se local-https   -o yaml | yq '.status.addresses'
+- host: sshhttps.test
+  value: 240.240.0.4
+```
+
+## **Resolution**
+
+This can be handled by any of the approaches mentioned below:
+
+1] Maintain a single ServiceEntry that uses the same domain with different ports:
+
+```markup
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: local
+spec:
+  hosts: ["sshhttps.test"]
+  location: MESH_EXTERNAL
+  resolution: DNS
+  ports:
+  - number: 443
+    name: tls-https
+    protocol: TLS
+  - number: 22
+    name: tcp-ssh
+    protocol: TCP
+```
+
+2] Manually hardcode the same IP address for each ServiceEntry that shares the same domain name.
+
+```
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: local-https
+spec:
+  hosts: ["dummy.local"]
+  addresses:
+    - 240.240.0.5
+  location: MESH_EXTERNAL
+  resolution: DNS
+  ports:
+  - number: 443
+    name: tls-port
+    protocol: TLS
+---
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: local-ssh
+spec:
+  hosts: ["dummy.local"]
+  addresses:
+    - 240.240.0.5
+  location: MESH_EXTERNAL
+  resolution: DNS
+  ports:
+  - number: 22
+    name: tcp-port
+    protocol: TCP
+```
+
+
+
+---
+
+## Article: 000022158.md
+
+# Kubewarden certificate rotation issues with ArgoCD
+
+**Article Number:** [000022158](https://support.scc.suse.com/s/kb/Kubewarden-certificate-rotation-issues-with-ArgoCD)
+
+## **Environment**
+
+Rancher, ArgoCD  
+Kubewarden-controller v3.1.0
+
+## **Situation**
+
+After upgrading Kubewarden and running it on an RKE2 cluster managed by ArgoCD, the TLS certificate rotates, leading to 'unknown issuer' errors.
+
+At a certain point, ArgoCD detected a change and triggered a controller sync, resulting in the rotation of the secret certificate
+
+```markup
+{"level":"info","ts":"2025-01-17T08:41:25Z","logger":"controller-runtime.certwatcher","msg":"Updated current TLS certificate"}
+```
+
+The kubewarden policy-server doesn't always recognize the certificate rotation, causing discrepancies between the certificate presented by the policy server and the one in the secret.
+
+```markup
+Post "https://policy-server-default.kubewarden.svc:8443/validate/clusterwide-fs-group?timeout=30s": tls: failed to verify certificate: x509: certificate signed by unknown authority (possibly because of "x509: ECDSA verification failure" while trying to verify candidate authority certificate "kubewarden-controller-ca")
+```
+
+## **Cause**
+
+The issue is caused by dynamically generating certificates during the Helm chart runtime, which ArgoCD detects as changes, triggering a sync and certificate rotation.After deployment, ArgoCD renders the chart again for comparison, which generates new certificates. The comparison detects differences, making the application out-of-sync right away. If auto-sync with self-heal is enabled, ArgoCD forcefully syncs the chart every 24 hours when the rendered chart cache expires. This behaviour can be simulated at any time by performing a hard refresh of the application from the ArgoCD UI. Since the CA certificate changes, the cert-controller has to rotate the policy server certificate after some time, which eventually causes the issue
+
+## **Resolution**
+
+Modify the ArgoCD Application to include `ignoreDifferences` to prevent ArgoCD from detecting changes in the dynamically generated certificates.
+
+Add the following configurations to the ArgoCD application, adjusting the namespace as necessary:
+
+```
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: kubewarden-ca
+      namespace: kubewarden-system
+      jsonPointers:
+        - "/data"
+    - group: ""
+      kind: Secret
+      name: kubewarden-webhook-server-cert
+      namespace: kubewarden-system
+      jsonPointers:
+        - "/data"
+    - group: 'admissionregistration.k8s.io'
+      kind: 'ValidatingWebhookConfiguration'
+      name: 'kubewarden-controller-validating-webhook-configuration'
+      jqPathExpressions:
+        - '.webhooks[]?.clientConfig.caBundle'
+    - group: 'admissionregistration.k8s.io'
+      kind: 'MutatingWebhookConfiguration'
+      name: 'kubewarden-controller-mutating-webhook-configuration'
+      jqPathExpressions:
+        - '.webhooks[]?.clientConfig.caBundle'
+```
+
+ 
+
+Restart the policy server after applying the `ignoreDifferences` configuration to ensure it picks up the new certificate.
 
