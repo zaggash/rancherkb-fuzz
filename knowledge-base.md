@@ -20188,6 +20188,48 @@ In the [official patch](https://github.com/rancher/rancher/pull/47642), we chang
 
 ---
 
+## Article: 000021600.md
+
+# Error when enabling CIS profile on RKE2 cluster post-provisioning
+
+**Article Number:** [000021600](https://support.scc.suse.com/s/kb/Error-when-enabling-CIS-profile-on-RKE2-cluster-post-provisioning)
+
+## **Environment**
+
+A Kubernetes cluster provisioned by the RKE2 CLI or Rancher v2.x
+
+## **Situation**
+
+To enable the CIS profile on an already provisioned RKE2 cluster, users must first manually stop the rke2-server process on etcd nodes. This step is necessary because the etcd database remains memory-mapped and open for writing, which can lead to issues.
+
+ 
+
+Although this requirement is mentioned in the [documentation](https://docs.rke2.io/security/hardening_guide#host-level-requirements), it is not clearly communicated in the UI. As a result, many users overlook this step and enable the CIS profile directly, causing issues with the etcd database, specifically the "permission denied" error mentioned below:
+
+```markup
+{"level":"panic","ts": "caller":"backend/backend.go:189","msg":"failed to open database","path":"/var/lib/rancher/rke2/server/db/etcd/member/snap/db","error":"open /var/lib/rancher/rke2/server/db/etcd/member/snap/db: permission denied"}
+```
+
+## **Cause**
+
+By design, the RKE2 server service must be in a stopped state before enabling the CIS Profile. This step is required because the etcd database remains memory-mapped and open for writing while the service is running, which can lead to etcd permission denied issue as mentioned above.
+
+## **Resolution**
+
+Manually update the file permissions for the etcd database directory to grant etcd access, allowing it to start successfully:
+
+```markup
+chown -R etcd:etcd /var/lib/rancher/rke2/server/db/etcd
+```
+
+Note: This can only be done for 'test' or non-critical clusters if one accidentally enables this post-cluster provisioning and is stuck with this issue.
+
+Please note that the UI [improvement](https://github.com/rancher/dashboard/issues/11873) request is fixed in rancher v2.12.0, this enhancement will provide clarity for users who enable the CIS profile through the UI.
+
+
+
+---
+
 ## Article: 000021604.md
 
 # User retains active session after its password is changed by an admin
@@ -20526,6 +20568,63 @@ The rollback process is described below, for the purpose of this example, a roll
    2. Remove the rke2 db directory on the other server nodes as follows: \`rm -rf /var/lib/rancher/rke2/server/db\`
    3. Start the rke2-server service on other server nodes with the following command: \`systemctl start rke2-server\`
 6. Finally, start the rke2-agent service on any agent nodes: \`systemctl start rke2-agent\`
+
+
+
+---
+
+## Article: 000021620.md
+
+# How to Include additional resource labels in kube-state-metrics for prometheus
+
+**Article Number:** [000021620](https://support.scc.suse.com/s/kb/How-to-Include-Additional-Resource-Labels-in-kube-state-metrics-for-Prometheus)
+
+## **Environment**
+
+A Kubernetes cluster provisioned by the RKE2 CLI or Rancher v2.x
+
+## **Situation**
+
+By default, kube-state-metrics in Rancher Monitoring exports only a limited set of Kubernetes labels to help optimize resource usage and avoid excessive data collection in Prometheus. If you need additional labels to be included in the metrics for better monitoring or alerting, you can easily customize the values.yaml file of the rancher-monitoring chart to export those labels.
+
+## **Resolution**
+
+Why Customize Labels?
+
+Sometimes, you may need more granular insights into your Kubernetes cluster. For example, you might want to track node group labels, application versions, or specific zone information. By exporting additional labels, you can enrich your metrics and enable more precise monitoring, alerting, and troubleshooting.
+
+ 
+
+How to Export Additional Labels
+
+To export additional labels, you can modify the metricLabelsAllowlist setting in the values.yaml file of the rancher-monitoring chart. This configuration lets you specify which labels to include for specific Kubernetes resources like nodes, pods, or namespaces.
+
+Go to Rancher UI ☰ &gt; Apps &gt; Installed apps &gt; rancher-monitoring, click on Edit/Upgrade option and then edit the helm values.
+
+ 
+
+Example: Include All Labels for Nodes
+
+If you need to include all labels for nodes (which can be useful but should be used cautiously due to performance considerations), you can use the wildcard \*:
+
+ 
+
+`kube-state-metrics:`  
+`metricLabelsAllowlist:`  
+`- nodes=[*]`
+
+Warning: Using * will include **all** labels for nodes, which may increase the resource usage in Prometheus. 
+
+ 
+
+If you want to add specific labels for namespaces and pods, you can configure it like this:
+
+ 
+
+`kube-state-metrics:`  
+`metricLabelsAllowlist:`  
+`- namespaces=["k8s-label-1", "k8s-label-2"]`  
+`- pods=["app", "version"]`
 
 
 
@@ -24762,6 +24861,169 @@ Labels on the PVCs can be used to automate the assignment of Longhorn recurring 
 
 ---
 
+## Article: 000021917.md
+
+# How to configure NFS Backup in Longhorn using YAML
+
+**Article Number:** [000021917](https://support.scc.suse.com/s/kb/How-to-configure-longhorn-NFS-backup-with-CLI)
+
+## **Environment**
+
+SUSE Rancher Longhorn
+
+## **Situation**
+
+While the Longhorn UI offers a convenient way to configure backup targets and manage backups, using the CLI or YAML is often more practical in environments where the UI is unavailable—such as air-gapped setups—or when users prefer working directly with Kubernetes resources.
+
+## **Resolution**
+
+Ensure that you have a running NFS server. In this example, we are using a Linux NFS server; however, it can also be a Windows NFS server. Longhorn only requires an accessible NFS share for backups.
+
+Step 1: Configure the NFS Export on Your Server
+
+This step involves setting up an NFS share on your chosen server where Longhorn will store its backups.
+
+1. Edit the NFS exports file:  
+   Open the /etc/exports file using a text editor with root privileges:
+   
+   ```markup
+   sudo vi /etc/exports
+   ```
+2. Add the NFS export line:  
+   Add the following line to the end of the file. This example sets up /opt/longhorn-backupstore as the shared directory.
+   
+   ```markup
+   /opt/longhorn-backupstore *(rw,sync,no_subtree_check,no_root_squash)
+   ```
+   
+   Tip: For enhanced security, replace * with the specific Kubernetes cluster's subnet (e.g., 192.168.0.0/24) to restrict access to only your cluster nodes. Remember to create the directory /opt/longhorn-backupstore if it doesn't already exist.
+3. Apply the export changes:  
+   After saving the /etc/exports file, apply the new export rules without restarting the entire NFS service:
+   
+   ```markup
+   sudo exportfs -ra
+   ```
+4. Enable and restart the NFS server:  
+   Ensure the NFS server service is enabled to start on boot and then restart it to apply all changes:
+   
+   ```markup
+   sudo systemctl enable nfs-server
+   sudo systemctl restart nfs-server
+   ```
+
+Step 2: Add the NFS Backup Target in Longhorn
+
+Now, you need to configure Longhorn to recognise your newly created NFS share as a backup target. You can do this via the Longhorn UI or by applying a Kubernetes Custom Resource (CR).
+
+**Option A: Using Longhorn UI**
+
+1. 1. Navigate to Longhorn UI:  
+      Open your web browser and go to the Longhorn UI.
+   2. Go to Settings:  
+      From the left navigation pane, click on Settings.
+   3. Configure Backup Target:  
+      Scroll down or search for the "Backup Target" setting.
+      
+      - Set the target as:  
+        Enter the NFS server IP and the exported path, along with recommended NFS mount options. Replace &lt;nfs-server-ip&gt; with the actual IP address of your NFS server.
+        
+        ```markup
+        nfs://<nfs-server-ip>:/opt/longhorn-backupstore?nfsOptions=soft,timeo=330,retrans=3
+        ```
+   4. Credential Field: Leave the credential field empty unless your NFS server requires specific authentication.
+   5. Save Changes: Click Save. Longhorn will attempt to validate the connection to the NFS target. Wait for the validation to complete successfully.
+
+**Option B: Using YAML (Custom Resource)**
+
+This method involves creating a BackupTarget Custom Resource Definition (CRD) directly.
+
+1. Create a YAML file (e.g., nfs-backup-target.yaml) with the following content. Remember to replace &lt;nfs-server-ip&gt; with the actual IP address of your NFS server.
+   
+   ```markup
+   apiVersion: longhorn.io/v1beta2
+   kind: BackupTarget
+   metadata:
+     name: nfs-backup-target  # Choose a descriptive name for your backup target
+     namespace: longhorn-system
+   spec:
+     backupTargetURL: "nfs://<nfs-server-ip>:/opt/longhorn-backupstore?nfsOptions=soft,timeo=330,retrans=3"
+     credentialSecret: "" # Leave empty if no credentials are required
+     pollInterval: 5m0s # How often Longhorn checks the backup target for new backups
+   ```
+2. Apply the resource:
+   
+   ```markup
+   kubectl apply -f nfs-backup-target.yaml
+   ```
+3. Confirm the status:
+   
+   Check if the BackupTarget resource has been created and is active:
+   
+   ```markup
+   kubectl get backuptargets -n longhorn-system
+   ```
+
+           You should see an entry for nfs-backup-target (or whatever name you chose)
+
+Step 3: Create and Trigger a Volume Backup
+
+Once your NFS backup target is configured, you can start creating backups of your Longhorn volumes. This typically involves first creating a snapshot and then creating a backup from that snapshot.
+
+1. Create a YAML file (e.g., volume-backup.yaml) to define both a snapshot and a backup. Replace &lt;snapshot-name&gt; and &lt;volume-name&gt; with appropriate values for your scenario.
+   
+   ```markup
+   apiVersion: longhorn.io/v1beta2
+   kind: Snapshot
+   metadata:
+     name: <snapshot-name> # e.g., my-app-volume-snapshot-initial
+     namespace: longhorn-system
+   spec:
+     createSnapshot: true
+     volume: <volume-name> # The name of the Longhorn volume you want to back up
+   ---
+   apiVersion: longhorn.io/v1beta2
+   kind: Backup
+   metadata:
+     name: <backup-name> # e.g., my-app-volume-backup-initial
+     namespace: longhorn-system
+     labels:
+       backup-volume: <volume-name> # Label for easy identification
+   spec:
+     snapshotName: <snapshot-name> # Must match the name of the snapshot created above
+   ```
+   
+   Note: A snapshot of the volume is always required before a backup can be triggered. The above YAML effectively creates a snapshot        and then initiates a backup using that snapshot.
+2. Apply the resource:
+   
+   ```markup
+   kubectl apply -f volume-backup.yaml
+   ```
+
+Step 4: Verify the Resources
+
+After initiating a backup, you can monitor its progress and confirm its creation using kubectl commands.
+
+1. Check the status of snapshots:
+   
+   ```markup
+   kubectl get snapshots.longhorn.io -n longhorn-system
+   ```
+   
+   Look for your snapshot; its State should eventually show Ready.
+2. Check the status of backups:
+   
+   ```markup
+   kubectl get backups.longhorn.io -n longhorn-system
+   ```
+   
+   Monitor the State of your backup. It should progress through Creating, InProgress, and finally Completed.
+
+Once your Backup resource shows a Completed state, your NFS backup target is functional, and the volume data has been successfully backed up to your configured NFS share.
+
+
+
+---
+
 ## Article: 000021920.md
 
 # How to change the open files limits for the systemd service and components in kubernetes cluster?
@@ -26892,6 +27154,237 @@ The issue is also scheduled to be addressed in the upcoming **Rancher 2.13.0** r
 
 ---
 
+## Article: 000022072.md
+
+# Configuring multus CNI for rancher RKE2 clusters
+
+**Article Number:** [000022072](https://support.scc.suse.com/s/kb/Configuring-multus-CNI-for-rancher-RKE2-clusters)
+
+## **Environment**
+
+RKE2
+
+## **Procedure**
+
+## Overview
+
+By default, every pod in Kubernetes is assigned a single network interface connected to the cluster network. However, certain workloads require additional network interfaces to meet specific requirements:
+
+- Database pods may need separate networks for backup traffic to avoid impacting production performance
+- Network functions (such as firewalls or routers) require multiple networks to route traffic between different network segments
+- Security-sensitive workloads benefit from traffic isolation for compliance or performance optimisation
+
+## What is Multus CNI?
+
+Multus CNI is a Container Network Interface (CNI) plugin that enables attaching multiple network interfaces to Kubernetes pods. Rather than replacing existing CNI plugins, Multus functions as a CNI plugin multiplexer, coordinating multiple network attachments.
+
+Multus is particularly valuable for network-intensive workloads that require additional interfaces supporting dataplane acceleration techniques such as SR-IOV.
+
+For comprehensive information about Multus, refer to the [official Multus CNI documentation](https://github.com/k8snetworkplumbingwg/multus-cni?tab=readme-ov-file#comprehensive-documentation).
+
+### Important Prerequisites
+
+Multus cannot be deployed as a standalone solution. It always requires at least one conventional CNI plugin that fulfills Kubernetes cluster network requirements. This CNI plugin becomes the default for Multus and provides the primary network interface for all pods.
+
+* * *
+
+## Installation and Configuration
+
+### Option 1: Rancher Downstream Cluster
+
+When creating a downstream cluster through the Rancher UI, select the appropriate Multus CNI option during cluster creation:
+
+1. Navigate to the cluster creation workflow
+2. Under networking options, select both Multus and your primary CNI (e.g., Calico)
+3. Complete cluster creation
+
+![](https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=068Tr00000bJgHZ&operationContext=DELIVERY&contentId=05TTr00000nvs68&page=0&d=%2Fa%2FTr00000HteCj%2FXZLsNgZn.eIzZDQAMI81J8zqQTpBbFIOxsCBV3zRWfk&oid=00D1i000000gLOd&dpt=null&viewId=) 
+
+### Option 2: Standalone RKE2 Cluster
+
+For standalone RKE2 clusters, configure Multus by modifying the RKE2 configuration file:
+
+```
+# /etc/rancher/rke2/config.yaml
+cni:
+  - multus
+  - canal
+```
+
+Note: The configuration uses lowercase cni (not Cni). The primary CNI plugin (in this example, canal) handles the default pod network, while Multus enables additional network attachments.
+
+For additional network configuration options, refer to the [RKE2 Network Options documentation](https://docs.rke2.io/install/network_options#using-multus).
+
+## Verification
+
+### Verify Multus DaemonSet
+
+After installation, confirm that the Multus DaemonSet is running correctly:
+
+```
+kubectl get pods --all-namespaces | grep -i multus
+```
+
+Expected output should show Multus pods running on each cluster node.
+
+### Understanding the Multus DaemonSet
+
+The Multus DaemonSet performs the following operations:
+
+1. Binary deployment: Places the Multus CNI binary in /opt/cni/bin on each node
+2. Configuration generation:
+   
+   - Reads the lexicographically (alphabetically) first configuration file in /etc/cni/net.d
+   - Generates a new Multus configuration file at /etc/cni/net.d/00-multus.conf based on the default network configuration
+3. API authentication: Creates /etc/cni/net.d/multus.d directory containing credentials for Multus to access the Kubernetes API
+
+### Additional Verification
+
+Validate the installation by checking the CNI configuration directory:
+
+```
+ls -la /etc/cni/net.d/
+```
+
+Ensure that the auto-generated /etc/cni/net.d/00-multus.conf file exists and corresponds to your default CNI plugin configuration.
+
+For detailed configuration options, refer to the [Multus Configuration Reference](https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/configuration.md).
+
+## Creating NetworkAttachmentDefinitions
+
+### What is a NetworkAttachmentDefinition?
+
+A NetworkAttachmentDefinition is a Kubernetes Custom Resource Definition (CRD) that defines how pods connect to additional networks beyond the default cluster network. It is the primary mechanism for configuring secondary network interfaces when using Multus CNI.
+
+Key characteristics:
+
+- Describes network configurations using JSON specifications
+- Configures parameters such as IP ranges, gateways, network types (macvlan, ipvlan, SR-IOV, bridge), and plugin-specific properties
+- Enables pods to request additional network attachments through annotations in their YAML definitions
+
+### NetworkAttachmentDefinition Structure
+
+Use the following template as a starting point:
+
+```markup
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: <network-attachment-name>
+  namespace: <target-namespace>
+spec:
+  config: |
+    {
+      "cniVersion": "0.3.1",
+      "type": "<plugin-type>",
+      "name": "<network-name>",
+      <plugin-specific-configuration>
+    }
+```
+
+Important notes:
+
+```
+
+```
+
+```
+
+```
+
+- The config block must contain valid JSON matching the schema required by your chosen CNI plugin
+- IP Address Management (IPAM) parameters (subnet, gateway, rangeStart, rangeEnd) are configured within the IPAM section when required by the plugin
+- The configuration syntax varies depending on the selected CNI plugin type
+
+### Configuration Considerations
+
+When designing a NetworkAttachmentDefinition, consider the following factors:
+
+FactorConsiderationsCNI Plugin SelectionChoose an appropriate plugin: macvlan, ipvlan, bridge, SR-IOV, etc.Network InterfaceEnsure the specified interface name exists on all target nodesNetwork ModeSelect mode based on plugin capabilities (bridge/L2/L3)IP ManagementDetermine IPAM strategy: DHCP, static assignment, host-local, etc.Namespace IsolationPlan for namespace-level security and network segregationPerformance RequirementsUse SR-IOV for high-speed requirements; overlays for flexibilityCompatibilityVerify compatibility with your Kubernetes/RKE2 version and infrastructure
+
+### Available CNI Plugins
+
+For a complete list of officially supported CNI plugins and their configuration options, refer to the [CNI Plugin Reference documentation](https://www.cni.dev/plugins/current/).
+
+### Example NetworkAttachmentDefinition
+
+Here's a practical example using macvlan:
+
+```markup
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: macvlan-conf
+  namespace: default
+spec:
+  config: |
+    {
+      "cniVersion": "0.3.1",
+      "type": "macvlan",
+      "master": "eth0",
+      "mode": "bridge",
+      "ipam": {
+        "type": "host-local",
+        "subnet": "192.168.1.0/24",
+        "rangeStart": "192.168.1.200",
+        "rangeEnd": "192.168.1.250",
+        "gateway": "192.168.1.1"
+      }
+    }
+```
+
+```
+
+```
+
+```
+
+```
+
+### Using NetworkAttachmentDefinitions in Pods
+
+To attach additional networks to a pod, add the k8s.v1.cni.cncf.io/networks annotation:
+
+```markup
+apiVersion: v1
+kind: Pod
+metadata:
+  name: samplepod
+  annotations:
+    k8s.v1.cni.cncf.io/networks: macvlan-conf
+spec:
+  containers:
+  - name: samplecontainer
+    image: nginx
+```
+
+```
+
+```
+
+```
+
+```
+
+For multiple network attachments, use a comma-separated list:
+
+```
+annotations:
+  k8s.v1.cni.cncf.io/networks: network1,network2,network3
+```
+
+## Additional Resources
+
+- [Multus CNI Official Documentation](https://github.com/k8snetworkplumbingwg/multus-cni)
+- [Multus Configuration Reference](https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/configuration.md)
+- [RKE2 Network Options](https://docs.rke2.io/install/network_options)
+- [CNI Plugin Reference](https://www.cni.dev/plugins/current/)
+- [SUSE Rancher Documentation](https://www.rancher.com/docs/)
+
+
+
+---
+
 ## Article: 000022073.md
 
 # cilium-operator fails to schedule on controlplane/etcd role nodes in RKE2 clusters running rke2-cilium v1.18.0 or v1.18.1
@@ -27580,6 +28073,157 @@ The secret azuread-access-token in the cattle-global-data namespace got recreate
 
 ---
 
+## Article: 000022100.md
+
+# Configuring rancher logging to output logs to Graylog server
+
+**Article Number:** [000022100](https://support.scc.suse.com/s/kb/Configuring-rancher-logging-to-output-logs-to-Graylog-server)
+
+## **Environment**
+
+SUSE Rancher
+
+## **Procedure**
+
+Overview
+
+This knowledge base article explains how to configure Rancher Logging to send Kubernetes cluster logs to a Graylog server using the GELF (Graylog Extended Log Format) protocol.
+
+Rancher Logging uses Fluentd/Fluent Bit to collect pod logs and forward them to defined outputs. In this setup:
+
+- ClusterOutput/Output defines the destination (Graylog)
+- ClusterFlow/Flow defines which logs to collect and route to that output
+
+Prerequisites
+
+- Rancher Logging chart installed
+- Graylog server reachable from your Kubernetes cluster
+
+Step-by-Step Configuration
+
+Step 1: Configure GELF Input on Graylog
+
+1. Log in to your Graylog Web UI.
+2. Go to System → Inputs.
+3. From the “Select input” dropdown, choose GELF UDP.
+4. Click Launch new input.
+5. Configure it:
+   
+   - Bind address: 0.0.0.0
+   - Port: 12201
+   - Title: Kubernetes GELF Input
+6. Click Save to start the input.
+
+        If UDP doesn’t work in your environment, you can alternatively create a GELF TCP input, just ensure you adjust the protocol in your 
+
+        Kubernetes configuration accordingly.
+
+Step 2: Deploy Logging Configuration
+
+#### Sample configuration: Send Logs from Specific Namespaces
+
+```markup
+---
+# ClusterOutput for Graylog
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: graylog-gelf
+  namespace: cattle-logging-system
+spec:
+  gelf:
+    host: 10.0.0.1            # Replace with your Graylog server address
+    port: 12201
+    protocol: udp
+    compress: true
+    buffer:
+      timekey: 30s
+      timekey_use_utc: true
+      timekey_wait: 10s
+      flush_interval: 5s
+      flush_thread_count: 2
+      retry_type: exponential_backoff
+      retry_wait: 10s
+      retry_max_interval: 300s
+      overflow_action: block
+---
+# ClusterFlow for selected namespaces
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: cluster-to-graylog
+  namespace: cattle-logging-system
+spec:
+  globalOutputRefs:
+    - graylog-gelf
+  match:
+    - select:
+        namespaces:
+          - default
+          - production
+          - staging
+```
+
+Step 3: Deploy a Test Pod
+
+```markup
+apiVersion: v1
+kind: Pod
+metadata:
+  name: log-generator-test
+  namespace: default
+  labels:
+    app: log-test
+spec:
+  containers:
+  - name: logger
+    image: busybox
+    command: ["/bin/sh"]
+    args:
+      - -c
+      - |
+        counter=1
+        while true; do
+          echo "INFO: Test log message #$counter from Kubernetes pod - $(date)"
+          echo "WARN: Warning message #$counter"
+          echo "ERROR: Error message #$counter"
+          counter=$((counter+1))
+          sleep 10
+        done
+  restartPolicy: Always
+```
+
+Step 4: Verify Logs in Graylog
+
+1. Open the Graylog Web UI.
+2. Go to the Search tab.
+3. You should see logs from your Kubernetes cluster
+
+If logs appear as expected, your setup is working.
+
+Troubleshooting
+
+If logs do not show up or you face issues:
+
+- Verify connectivity from your cluster nodes to the Graylog server and port 12201 (for UDP/TCP).
+- Check if firewall rules or network policies may block traffic.
+- Inspect the logs from the logging pods (Fluentd / Fluent Bit) — look for error messages.
+- Ensure your ClusterFlow selectors match the namespaces from which logs should be forwarded.
+- Confirm that the correct protocol (UDP or TCP) is configured on both Graylog input and ClusterOutput.
+
+For detailed troubleshooting steps specific to Rancher Logging, you can refer to the SUSE support article:  
+[How to troubleshoot Rancher Logging](https://support.scc.suse.com/s/kb/How-to-troubleshoot-rancher-logging?language=en_US)
+
+Additional Resources
+
+- [Kube Logging GELF Output Plugin Documentation](https://kube-logging.dev/docs/configuration/plugins/outputs/gelf/)
+- [Graylog Official Documentation](https://go2docs.graylog.org/current/Default.htm)
+- [Fluentd → Graylog Integration Guide](https://docs.fluentd.org/how-to-guides/graylog)
+
+
+
+---
+
 ## Article: 000022101.md
 
 # How to disable annotation collection with rancher-logging?
@@ -27695,6 +28339,143 @@ RKE2 (all versions)
 ## **Environment**
 
 A standalone or Rancher-provisioned K3s or RKE2 cluster
+
+
+
+---
+
+## Article: 000022130.md
+
+# Unintended terraform configuration drift caused by machine pool ordering
+
+**Article Number:** [000022130](https://support.scc.suse.com/s/kb/Unintended-terraform-configuration-drift-caused-by-machine-pool-ordering)
+
+## **Environment**
+
+Terraform provisioned RKE2 downstream cluster.
+
+## **Situation**
+
+When adding a new machine pool to an existing Rancher2 RKE2 cluster, Terraform may plan to modify existing machine pools that were provisioned in previous runs, causing unintended updates to control plane and worker nodes.
+
+## **Cause**
+
+Terraform maps are unordered collections. When the Rancher provider converts a map into the provider's TypeList, keys are sorted lexicographically. Machine pools are matched by position (index) inside that list — not by name. Adding a new pool changes the alphabetical order, which shifts indexes. Terraform then incorrectly associates existing list positions with different pool configurations and plans in-place updates to the wrong pools. 
+
+### Impact
+
+- Unexpected in-place modifications of existing pools.
+- Potential disruption of node roles (control/etcd/worker) and pod scheduling.
+
+### Illustrative Example
+
+Assume a scenario where existing cluster has two machine pools: control and worker.
+
+### Initial Terraform run
+
+```markup
+Map input (unordered):
+
+control -> control_plane: true, quantity: 3
+worker -> worker_role: true, quantity: 2
+
+Lexicographical sort creates ordered list:
+
+[0] control -> creates control pool
+[1] worker -> creates worker pool
+```
+
+### Adding new pool NEW-POOL
+
+```markup
+Map input (unordered):
+
+control -> control_plane: true, quantity: 3
+worker -> worker_role: true, quantity: 2
+NEW-POOL -> worker_role: true, quantity: 1
+
+Lexicographical sort creates new ordered list:
+
+[0] NEW-POOL -> (index 0 already exists)
+[1] control -> (index 1 already exists)
+[2] worker -> new
+```
+
+Result (incorrect):
+
+- Terraform sees index mismatches and plans to:
+  
+  - Modify existing pool at index 0 (previously control) to NEW-POOL configuration.
+  - Modify existing pool at index 1 (previously worker) to control configuration.
+  - Create a new worker pool at index 2.
+
+Expected: Create one new NEW-POOL pool without modifying control or worker.
+
+## Example Terraform plan snippet (illustrative)
+
+```markup
+# rancher2_cluster_v2.cluster_rke2 will be updated in-place
+~ resource "rancher2_cluster_v2" "cluster_rke2" {
+~ rke_config {
+# Index [0]: Existing "control" pool → incorrectly changed to "NEW-POOL"
+~ machine_pools {
+~ name = "control" -> "NEW-POOL"
+~ control_plane_role = true -> false
+~ etcd_role = true -> false
+~ worker_role = false -> true
+~ quantity = 3 -> 1
+~ machine_labels = {
+~ "nodepool" = "control" -> "worker"
+}
+}
+# Index [1]: Existing "worker" pool → incorrectly changed to "control"
+~ machine_pools {
+~ name = "worker" -> "control"
+~ control_plane_role = false -> true
+~ etcd_role = false -> true
+~ worker_role = true -> false
+~ quantity = 2 -> 3
+~ machine_labels = {
+~ "nodepool" = "worker" -> "control"
+}
+}
+# Index [2]: New pool created as "worker" (expected "NEW-POOL")
++ machine_pools {
++ name = "worker"
++ control_plane_role = false
++ worker_role = true
++ quantity = 2
+}
+}
+}
+
+Plan: 0 to add, 1 to change, 0 to destroy.
+```
+
+## **Resolution**
+
+Stable ordering of keys is the simplest and most reliable workaround until a provider-level fix is available.
+
+- Use ordered keys (prefix keys with numbers) in the map so that lexicographical sorting produces a stable list order. Example:
+
+```markup
+1-control:
+name: control
+control_plane_role: true
+quantity: 3
+2-worker:
+name: worker
+worker_role: true
+quantity: 2
+3-NEW-POOL:
+name: NEW-POOL
+worker_role: true
+quantity: 1
+```
+
+- When adding pools:
+  
+  - Add the new entry with a key that maintains the intended final alphabetical order (using numeric prefixes as above). Test in a non-production environment before applying to production clusters.
 
 
 
@@ -27894,6 +28675,117 @@ panic: leaseDuration must be greater than renewDeadline
 
 ---
 
+## Article: 000022146.md
+
+# Fleet SSH GitRepo Connections Fail After Rancher Upgrade Because of Unknown Host Key
+
+**Article Number:** [000022146](https://support.scc.suse.com/s/kb/Fleet-SSH-GitRepo-Connections-Fail-After-Rancher-Upgrade-Because-of-Unknown-Host-Key)
+
+## **Environment**
+
+Rancher v2.12, Fleet v0.13
+
+## **Situation**
+
+After upgrading Rancher to v2.12, connections to SSH-based Git repositories fail with an error as below
+
+```markup
+ssh: handshake failed: knownhosts: key is unknown
+
+OR
+
+Ssh: handshake failed: knownhosts: key is unknown:failed to clone repo from branch repo="git@..." branch="main" revision="" path="/workspace": ssh: handshake failed: knownhosts: key is unknown
+```
+
+## **Cause**
+
+The issue is caused by a security enhancement in Fleet v0.13, which enforces SSH host key verification. This change requires users to explicitly trust the host key of their Git repositories, preventing potential man-in-the-middle attacks.
+
+## **Resolution**
+
+1\. Add the SSH host key fingerprint of the Git repository to the \`known\_hosts\` field of each secret in the Git repository configuration. This is the recommended solution.
+
+```markup
+kubectl create secret generic customkey  -n fleet-default --from-file=ssh-privatekey=private_key --from-file=known_hosts=known_hosts --type=kubernetes.io/ssh-auth
+```
+
+2\. When you don't specify an individual secret for gitrepo and you rely on "gitcredential" secret, known\_host must be added in that secret, located in either the fleet-default or fleet-local namespace, depending on where the gitrepo is added.
+
+```markup
+kubectl create secret generic gitcredential  -n fleet-local --from-file=ssh-privatekey=private_key --from-file=known_hosts=known_hosts --type=kubernetes.io/ssh-auth
+```
+
+3\. Alternatively, add the private repository's host key fingerprint manually to the \`known-hosts\` configmap after backing up the existing configmap. This is not a recommended solution
+
+```markup
+kubectl -n cattle-fleet-system get cm known-hosts  -o yaml > known-hosts.yaml
+kubectl -n cattle-fleet-system edit cm known-hosts
+```
+
+Note: Host key fingerprints are already added for popular cloud-based Git repositories like GitHub, Bitbucket etc.
+
+
+
+---
+
+## Article: 000022148.md
+
+# Git URL Validation Fails in Rancher UI Fleet GitRepo After Upgrade
+
+**Article Number:** [000022148](https://support.scc.suse.com/s/kb/Git-URL-Validation-Fails-in-Rancher-UI-Fleet-GitRepo-After-Upgrade)
+
+## **Environment**
+
+Rancher 2.12.1
+
+## **Situation**
+
+After upgrading Rancher to 2.12.x, validation of Git Repository URLs fails in the Rancher UI when editing the configuration under Continous Delivery &gt; Resources &gt; Git Repos &gt; Edit Config. The UI displays the following error message 
+
+```markup
+It must be a valid HTTP(s) or SSH URL with no trailing spaces. 
+```
+
+ 
+
+The Git URLs use the ssh style format. This issue prevents editing of existing GitRepo configurations through Rancher UI, although the URLs themselves are functional
+
+For example, for a GitHub repository, the following SSH style URL doesn't pass the validation in the Rancher UI.
+
+```markup
+ssh://git@github.com/username/repo.git
+```
+
+## **Cause**
+
+The UI validation for Git Repository URLs in Rancher version 2.12.1 incorrectly validates SSH URLs. This validation issue is a bug in the Rancher UI code.
+
+## **Resolution**
+
+To address the Git-URL validation failure in the Rancher UI, use either of the following workarounds
+
+ 
+
+**Workarounds:**
+
+- Use SCP-style format as below. It will allow you to edit the gitrepo through the Rancher UI
+
+```markup
+git@github.com:username/repo.git
+```
+
+- If you want to continue using SSH-style URL, you may edit the GitRepo configuration directly via YAML, which will allow you to bypass the UI validation.
+
+ 
+
+**Fix:**
+
+- UI validation issue fix is scheduled to be released with Rancher v2.13.0
+
+
+
+---
+
 ## Article: 000022149.md
 
 # DNS Capture and Auto-Allocation Issues After Rancher Istio Upgrade
@@ -27994,6 +28886,95 @@ spec:
 
 ---
 
+## Article: 000022152.md
+
+# Adding a node pool to an existing GKE cluster using Rancher2 Terraform provider causes full cluster recreation
+
+**Article Number:** [000022152](https://support.scc.suse.com/s/kb/Adding-a-node-pool-to-an-existing-GKE-cluster-using-Rancher2-Terraform-provider-causes-full-cluster-recreation)
+
+## **Environment**
+
+Rancher &lt; v2.10.7, &lt; v2.11.3  and Terraform provisioned GKE Cluster
+
+## **Situation**
+
+When using the Rancher2 Terraform provider to manage GKE clusters, adding a node pool to an existing cluster triggers the recreation of the entire cluster. This behavior is not observed when using the Rancher UI or the Google Cloud Terraform provider.
+
+ 
+
+Terraform plan output below shows that adding the node\_pools block forces the replacement of the rancher2\_cluster.gke\_cluster resource
+
+```markup
+  # rancher2_cluster.gke_cluster must be replaced
+-/+ resource "rancher2_cluster" "gke_cluster" {
+      ~ annotations                                                = {
+
+
+          + node_pools {
+              + initial_node_count  = 1
+              + max_pods_constraint = 110
+              + name                = "second-pool"
+              + version             = "1.30.11-gke.1157000"
+
+              + autoscaling (known after apply)
+
+              + config (known after apply) # forces replacement
+
+              + management (known after apply)
+
+  # rancher2_cluster_sync.sync must be replaced
+-/+ resource "rancher2_cluster_sync" "sync" {
+      ~ cluster_id         = "c-jstj7" -> (known after apply) # forces replacement
+```
+
+Note: Any configuration changes on existing nodepools or removing existing nodepools doesn't initiate cluster recreation
+
+## **Cause**
+
+The Rancher2 Terraform provider lacked the granular control necessary to manage individual node pools separately. So it treats the entire list as a single entity. Any change to the node\_pools list was interpreted as a complete replacement of the existing configuration, leading to a full cluster replacement.
+
+## **Resolution**
+
+The issue is resolved in the Rancher versions v2.10.7, v2.11.3 and v2.12.0, and Rancher2 Terraform provider versions v6.7.0, v7.3.0 and v8.0.0
+
+Upgrade to these versions to avoid full cluster recreation when adding node pools.
+
+ 
+
+After the fix is applied, as shown in the output, Terraform detects the addition of a new node pool and performs an in-place modification of the rancher2\_cluster.gke\_cluster.
+
+```markup
+  # rancher2_cluster.gke_cluster will be updated in-place
+  ~ resource "rancher2_cluster" "gke_cluster" {
+        id                         = "c-c7mg5"
+        name                       = "gke-sh"
+
+      ~ gke_config_v2 {
+            name                     = "gke-sh"
+
+          + node_pools {
+              + initial_node_count  = 1
+              + max_pods_constraint = 110
+              + name                = "second-pool"
+              + version             = "1.30.12-gke.1208000"
+
+              + autoscaling (known after apply)
+
+              + config (known after apply)
+
+              + management (known after apply)
+            }
+
+rancher2_cluster.gke_cluster: Modifying... [id=c-c7mg5]
+rancher2_cluster.gke_cluster: Modifications complete after 1s [id=c-c7mg5]
+
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+```
+
+
+
+---
+
 ## Article: 000022158.md
 
 # Kubewarden certificate rotation issues with ArgoCD
@@ -28060,4 +29041,233 @@ Add the following configurations to the ArgoCD application, adjusting the namesp
  
 
 Restart the policy server after applying the `ignoreDifferences` configuration to ensure it picks up the new certificate.
+
+
+
+---
+
+## Article: 000022162.md
+
+# How to upgrade longhorn installed with helm controller in air-gapped cluster
+
+**Article Number:** [000022162](https://support.scc.suse.com/s/kb/How-to-upgrade-longhorn-installed-with-helm-controller-in-air-gapped-cluster)
+
+## **Environment**
+
+SUSE Rancher longhorn   
+RKE2 cluster
+
+## **Procedure**
+
+## Overview
+
+This guide provides a step-by-step process for installing and upgrading Longhorn in an air-gapped RKE2 cluster using the Helm Controller and containerd local image store. The approach supports environments without access to external container registries.
+
+It demonstrates:
+
+- Installation of Longhorn v1.8.0
+- Upgrade to Longhorn v1.8.1
+
+## Prerequisites
+
+- RKE2 cluster with sudo/root access to nodes
+- kubectl configured for the cluster
+- Staging machine with internet access for downloading images and charts
+
+## Part 1: Installing Longhorn v1.8.0
+
+### Step 1: Obtain Longhorn Image List
+
+Download the official list of Longhorn v1.8.0 images:
+
+```markup
+wget https://github.com/longhorn/longhorn/releases/download/v1.8.0/longhorn-images.txt
+```
+
+### Step 2: Load Images into RKE2 Containerd Store
+
+RKE2 requires container images to be present locally in /var/lib/rancher/rke2/agent/images/ on all nodes in air-gapped environments.
+
+Methods:
+
+1. Manual Pull and Export:  
+   Follow the [RKE2 Offline Image Import Guide](https://docs.rke2.io/add-ons/import-images?import-images=Offline%20image%20importing#pre-import-images) to pull and export images listed in longhorn-images.txt.
+2. Automated Script:  
+   A script can automate pulling and exporting all images:
+   
+   ```markup
+   #!/bin/bash
+   
+   # === CONFIG ===
+   IMAGE_LIST="longhorn-images.txt"
+   WORK_DIR="./longhorn-tars"
+   IMAGE_DIR="/var/lib/rancher/rke2/agent/images"
+   CTR="/var/lib/rancher/rke2/bin/ctr"
+   CONTAINERD_SOCK="/run/k3s/containerd/containerd.sock"
+   
+   # === SETUP ===
+   mkdir -p "$WORK_DIR"
+   
+   # === PROCESS IMAGES ===
+   while read -r image; do
+     [[ -z "$image" || "$image" =~ ^# ]] && continue
+   
+     echo "Pulling image: docker.io/${image}"
+     sudo $CTR --address "$CONTAINERD_SOCK" -n k8s.io images pull "docker.io/${image}"
+   
+     safe_name=$(echo "$image" | tr '/:@' '_')
+     tar_file="${WORK_DIR}/${safe_name}.tar"
+   
+     echo "Exporting to: $tar_file"
+     sudo $CTR --address "$CONTAINERD_SOCK" -n k8s.io images export "$tar_file" "docker.io/${image}"
+   
+     echo "Compressing: $tar_file"
+     zstd -f "$tar_file"
+     rm -f "$tar_file"
+   
+   done < "$IMAGE_LIST"
+   
+   # === COPY TO RKE2 IMAGE DIR ===
+   echo "Copying compressed tars to: $IMAGE_DIR"
+   sudo cp "$WORK_DIR"/*.tar.zst "$IMAGE_DIR/"
+   
+   echo "Done..."
+   ```
+   
+   This script reads longhorn-images.txt, pulls each image using ctr, and exports them to the containerd local store. Perform this steps on all nodes.
+
+### Step 3: Prepare Helm Chart for v1.8.0
+
+Download and package the Helm chart for offline use:
+
+```markup
+wget https://github.com/longhorn/longhorn/releases/download/v1.8.0/charts.tar.gz
+tar -xf charts.tar.gz
+cd charts
+tar czf longhorn-chart.tgz longhorn
+base64 -w 0 longhorn-chart.tgz > longhorn-chart.tgz.b64
+cd ..
+```
+
+### Step 4: Create HelmChart Resource
+
+Create a HelmChart manifest to install Longhorn:
+
+```markup
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  annotations:
+    helmcharts.cattle.io/managed-by: helm-controller
+  name: longhorn-install
+  namespace: kube-system
+spec:
+  chart: longhorn
+  chartContent: $(cat longhorn-chart.tgz.b64)
+  createNamespace: true
+  failurePolicy: abort
+  repo: https://charts.longhorn.io
+  # This fields in spec.set can be set as per the requirements 
+  set:
+    global.clusterCIDR: 10.42.0.0/16 
+    global.clusterCIDRv4: 10.42.0.0/16
+    global.clusterDNS: 10.43.0.10
+    global.clusterDomain: cluster.local
+    global.rke2DataDir: /var/lib/rancher/rke2
+    global.serviceCIDR: 10.43.0.0/16
+    global.systemDefaultIngressClass: ingress-nginx
+  targetNamespace: longhorn-system
+  version: v1.8.0
+```
+
+Deployment options:
+
+- Apply the manifest directly:
+  
+  ```markup
+  kubectl apply -f longhorn-v1.8.0.yaml
+  ```
+  
+  Or place it in the RKE2 manifests directory for automatic management:
+  
+  ```markup
+  cp longhorn-v1.8.0.yaml /var/lib/rancher/rke2/server/manifests/
+  ```
+
+### Step 5: Verify Installation
+
+```markup
+kubectl get helmchart -n kube-system longhorn-install -w
+kubectl get pods -n longhorn-system -w
+kubectl -n longhorn-system get deployment longhorn-manager -o jsonpath='{.spec.template.spec.containers[0].image}'
+```
+
+## Part 2: Upgrading Longhorn to v1.8.1
+
+### Step 1: Obtain Longhorn v1.8.1 Image List
+
+```markup
+wget https://github.com/longhorn/longhorn/releases/download/v1.8.1/longhorn-images.txt
+```
+
+### Step 2: Load v1.8.1 Images into RKE2 Containerd Store
+
+Use the same script as for installation: (refer to part1, step2 for more context)
+
+```markup
+sudo bash lh-images-export.sh
+```
+
+### Step 3: Prepare Helm Chart for v1.8.1
+
+```markup
+wget https://github.com/longhorn/longhorn/releases/download/v1.8.1/charts.tar.gz
+tar -xf charts.tar.gz
+cd charts
+tar czf longhorn-chart.tgz longhorn
+base64 -w 0 longhorn-chart.tgz > longhorn-chart.tgz.b64
+cd ..
+```
+
+### Step 4: Update HelmChart Resource
+
+Patch the existing HelmChart resource to upgrade Longhorn:
+
+```markup
+spec:
+  version: v1.8.1
+  chart: longhorn
+  repo: https://charts.longhorn.io
+  chartContent: $(cat longhorn-chart.tgz.b64)
+```
+
+Apply the patch:
+
+```markup
+kubectl patch helmchart longhorn-install -n kube-system --type merge --patch-file longhorn-v1.8.1-patch.yaml
+```
+
+Or copy to the manifests directory for consistency:
+
+```markup
+cp longhorn-v1.8.1-patch.yaml /var/lib/rancher/rke2/server/manifests/
+```
+
+### Step 5: Monitor Upgrade
+
+```markup
+kubectl -n longhorn-system get pods -w
+kubectl -n longhorn-system rollout status deployment/longhorn-manager
+```
+
+### Step 6: Post-Upgrade Validation
+
+- Verify all Longhorn components are running the correct version
+- Confirm volume health and accessibility
+
+References
+
+- [Longhorn Install with Helm Controller Longhorn](https://longhorn.io/docs/1.10.0/deploy/install/install-with-helm-controller/)
+- [RKE2 Air‑Gap Install Guide](https://docs.rke2.io/install/airgap)
+- [Longhorn Upgrade Guide — “Upgrade with Helm Controller”](https://longhorn.io/docs/1.10.0/deploy/upgrade/longhorn-manager/#upgrade-with-helm-controller) [Longhorn](https://longhorn.io/docs/1.10.0/deploy/upgrade/longhorn-manager/?utm_source=chatgpt.com)
 
