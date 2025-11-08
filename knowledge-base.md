@@ -10576,13 +10576,13 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
 - [SUSE Rancher Product Lifecycle Information](https://www.suse.com/lifecycle)
 - [SUSE Rancher Product Support Matrices](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions)
-- [SUSE Rancher Support Advisories](https://www.suse.com/support/kb/doc/?id=000020543)
-- [SUSE Rancher Hosted FAQ](https://www.suse.com/support/kb/doc/?id=000020556)
+- [SUSE Rancher Support Advisories](https://support.scc.suse.com/s/kb/Rancher-Support-Advisories)
+- [SUSE Rancher Hosted FAQ](https://support.scc.suse.com/s/kb/Rancher-Prime-Hosted-FAQ)
 - [SUSE Customer Center (SCC)](https://scc.suse.com/login) (Support Portal)
 - [SCC sign-in help](https://myaccount.suse.com/help/login)
-- [Rancher 2.x Linux log collector script](https://www.suse.com/support/kb/doc/?id=000020191)
-- [Rancher 2.x Windows log collector script](https://www.suse.com/support/kb/doc?id=000020064)
-- [Rancher 2.x Systems summary script](https://www.suse.com/support/kb/doc/?id=000020192)
+- [Rancher 2.x Linux log collector script](https://support.scc.suse.com/s/kb/https-www-suse-com-support-kb-doc-id-000020191)
+- [Rancher 2.x Windows log collector script](https://support.scc.suse.com/s/kb/360050943552)
+- [Rancher 2.x Systems summary script](https://support.scc.suse.com/s/kb/360039113891)
 
  
 
@@ -16586,9 +16586,19 @@ echo "Building cluster_recovery.rkestate..."
 kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | base64 -d | jq -r . > cluster_recovery.rkestate
 ```
 
- 
-
 Once the execution is completed, you will find two files in the folder of execution: cluster\_recovery.yml and cluster\_recovery.rkestate, which correspond to a copy of the Cluster Configuration File and the Kubernetes Cluster State file.
+
+### **Important: make sure you change the keys in the cluster\_recovery.yml to use snake case instead of camel case.**
+
+**Example:**
+
+> ClusterCidr: 10.43.0.0/16
+> 
+> becomes
+> 
+> cluster\_cidr: 10.43.0.0/16
+
+You can compare the keys to the output of "rke config --empty --name empty\_config.yml".
 
 After the recovery is done, please back up these files in a secure location to avoid future loss.
 
@@ -26348,6 +26358,107 @@ References:
 
 ---
 
+## Article: 000022027.md
+
+# How to enable EventRateLimit in RKE2.
+
+**Article Number:** [000022027](https://support.scc.suse.com/s/kb/How-to-enable-EventRateLimit-in-RKE2)
+
+## **Environment**
+
+Rancher, RKE2 and K3s
+
+## **Procedure**
+
+Enabling EventRateLimit in RKE2
+
+This article outlines the steps required to enable the EventRateLimit admission configuration in an RKE2 cluster.
+
+ 
+
+Step 1: Create the Admission Control Configuration File
+
+On each control plane node, create the file:  
+/etc/rancher/rke2/admission-control-config.yaml
+
+Note: This YAML also includes a PodSecurityConfiguration TemplateName section, which sets the default policy to privileged. Adjust this configuration if you require stricter security policies or remove it entirely if not needed.
+
+```markup
+apiVersion: apiserver.config.k8s.io/v1
+kind: AdmissionConfiguration
+plugins:
+- name: EventRateLimit
+  configuration:
+    apiVersion: eventratelimit.admission.k8s.io/v1alpha1
+    kind: Configuration
+    limits:
+    - type: Server
+      qps: 5000
+      burst: 20000
+- name: PodSecurity
+  configuration:
+    apiVersion: pod-security.admission.config.k8s.io/v1
+    kind: PodSecurityConfiguration
+    defaults:
+      enforce: privileged
+      enforce-version: latest
+      audit: privileged
+      audit-version: latest
+      warn: privileged
+      warn-version: latest
+    exemptions:
+      namespaces:
+      - cattle-fleet-system
+      - cattle-impersonation-system
+      - cattle-system
+      - cert-manager
+      - kube-node-lease
+      - kube-public
+      - kube-system
+      - longhorn-system
+   
+```
+
+Tip: For initial testing, configure lower qps and burst values, and increase them later as required for production workloads.
+
+ 
+
+Step 2: Update the API Server Arguments
+
+1. Log in to the Rancher UI.
+2. Navigate to ☰ &gt; Cluster Management.
+3. On the Clusters page, edit the configuration of the target cluster.
+4. Click on Advanced Options.
+5. Under API Server Args, add the following parameters and save the changes:
+   
+   ```markup
+   --enable-admission-plugins=EventRateLimit
+   --admission-control-config-file=/etc/rancher/rke2/new-admission-control-config.yaml
+   ```
+
+```
+
+```
+
+Step 3: Verify the Configuration
+
+On a control plane node, confirm that the API server is using the specified admission plugins:
+
+```markup
+ps -C kube-apiserver -o pid,cmd | grep -i enable-admission-plugins
+```
+
+If configured correctly, the command output should include EventRateLimit along with other enabled plugins.
+
+Additional Notes
+
+- If you are using the default Pod Security Admission Configuration Template, you might see the --admission-control-config-file argument listed twice in the kube-apiserver pod specification.
+- The --admission-control-config-file argument only accepts a single value; if multiple values are present, the last one takes precedence.
+
+
+
+---
+
 ## Article: 000022039.md
 
 # Resolving Pod Distribution Issues with Topology Spread Constraints
@@ -27234,7 +27345,7 @@ The Multus DaemonSet performs the following operations:
 1. Binary deployment: Places the Multus CNI binary in /opt/cni/bin on each node
 2. Configuration generation:
    
-   - Reads the lexicographically (alphabetically) first configuration file in /etc/cni/net.d
+   - Reads the lexicographically first configuration file in /etc/cni/net.d
    - Generates a new Multus configuration file at /etc/cni/net.d/00-multus.conf based on the default network configuration
 3. API authentication: Creates /etc/cni/net.d/multus.d directory containing credentials for Multus to access the Kubernetes API
 
@@ -27284,15 +27395,7 @@ spec:
 
 Important notes:
 
-```
-
-```
-
-```
-
-```
-
-- The config block must contain valid JSON matching the schema required by your chosen CNI plugin
+- The config block must contain valid JSON matching the schema required by your chosen CNI plugin
 - IP Address Management (IPAM) parameters (subnet, gateway, rangeStart, rangeEnd) are configured within the IPAM section when required by the plugin
 - The configuration syntax varies depending on the selected CNI plugin type
 
@@ -27333,15 +27436,7 @@ spec:
     }
 ```
 
-```
-
-```
-
-```
-
-```
-
-### Using NetworkAttachmentDefinitions in Pods
+Using NetworkAttachmentDefinitions in Pods
 
 To attach additional networks to a pod, add the k8s.v1.cni.cncf.io/networks annotation:
 
@@ -27358,28 +27453,41 @@ spec:
     image: nginx
 ```
 
-```
+For multiple network attachments, use a comma-separated list: 
 
-```
-
-```
-
-```
-
-For multiple network attachments, use a comma-separated list:
-
-```
 annotations:
-  k8s.v1.cni.cncf.io/networks: network1,network2,network3
-```
 
-## Additional Resources
+     k8s.v1.cni.cncf.io/networks: network1,network2,network3
+
+ 
+
+**Additional Resources**
 
 - [Multus CNI Official Documentation](https://github.com/k8snetworkplumbingwg/multus-cni)
 - [Multus Configuration Reference](https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/configuration.md)
 - [RKE2 Network Options](https://docs.rke2.io/install/network_options)
 - [CNI Plugin Reference](https://www.cni.dev/plugins/current/)
 - [SUSE Rancher Documentation](https://www.rancher.com/docs/)
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
 
 
 
@@ -28339,6 +28447,113 @@ RKE2 (all versions)
 ## **Environment**
 
 A standalone or Rancher-provisioned K3s or RKE2 cluster
+
+
+
+---
+
+## Article: 000022128.md
+
+# Longhorn monitoring with grafana and prometheus
+
+**Article Number:** [000022128](https://support.scc.suse.com/s/kb/Longhorn-monitoring-with-grafana-and-prometheus)
+
+## **Environment**
+
+SUSE Rancher Longhorn
+
+## **Procedure**
+
+### Overview
+
+Longhorn integrates seamlessly with Prometheus, providing comprehensive visibility into the health and performance of your storage environment. Prometheus collects a wide range of metrics across Longhorn and related system components, enabling effective monitoring of volumes, disks, and nodes throughout the cluster.
+
+Rancher integrates Prometheus and Grafana to monitor Kubernetes nodes, components, and workloads. To enable Rancher Monitoring refer the official [documentation](https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/enable-monitoring).
+
+If Rancher Monitoring is already enabled, Longhorn metrics can be scraped by deploying a ServiceMonitor in the Longhorn-system namespace.
+
+### Step 1: Deploy Longhorn ServiceMonitor
+
+Apply the following manifest:
+
+```markup
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: longhorn-prometheus-servicemonitor
+  namespace: longhorn-system
+  labels:
+    name: longhorn-prometheus-servicemonitor
+spec:
+  selector:
+    matchLabels:
+      app: longhorn-manager
+  namespaceSelector:
+    matchNames:
+    - longhorn-system
+  endpoints:
+  - port: manager
+```
+
+After deployment, Prometheus will automatically discover and collect Longhorn metrics.
+
+Validation:  
+Check metrics by running a query such as below in the Prometheus UI or check if the prometheus target is showing UP:
+
+```markup
+longhorn_disk_usage_bytes
+```
+
+### Step 2: Visualizing Metrics in Grafana
+
+### Accessing Grafana
+
+1. In Rancher UI, navigate to your Cluster
+2. Go to Cluster Tools (or Apps depending on Rancher version)
+3. Select Monitoring
+4. Click the Grafana icon/link to open in a new tab
+5. Log in (default credentials if unchanged):
+   
+   - Username: `admin`
+   - Password: `prom-operator`
+
+### Option A — Import a Prebuilt Longhorn Dashboard
+
+Please refer to the community Grafana [dashboard library](https://grafana.com/grafana/dashboards/?dataSource=nobl9agent%2Cprometheus&search=longhorn) for Longhorn.
+
+Steps:
+
+1. Go to Dashboards → New → Import
+2. Select and import one of the available Longhorn dashboards  
+   Example: Dashboard ID 13032
+3. Select Prometheus as the data source
+
+This provides visualization of common Longhorn storage performance metrics.
+
+### Option B — Create Custom Panels
+
+1. In Grafana: From the sidebar, click → Dashboard → Add new dashboard → Add Visualization
+2. Select Prometheus as the data source
+3. You can either use the Query Builder to construct queries visually, or switch to the Code mode to write PromQL directly.
+
+Example PromQL for node storage utilization percentage:
+
+```markup
+(longhorn_node_storage_usage_bytes / longhorn_node_storage_capacity_bytes) * 100
+```
+
+  Additional recommended metrics:
+
+- longhorn\_node\_count\_total
+- longhorn\_instance\_manager\_cpu\_usage\_millicpu
+- longhorn\_node\_cpu\_capacity\_millicpu
+
+Adjust panel type, legends, and thresholds as required
+
+### Step 3: Save Dashboard
+
+- Provide a descriptive name in title section and save the dashboard
+- Optionally export as JSON for reuse across environments
 
 
 
