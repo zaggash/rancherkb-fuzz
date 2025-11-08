@@ -11269,6 +11269,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000022027/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable EventRateLimit in RKE2.
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000022039/" class="md-nav__link">
         
   
@@ -11752,26 +11775,8 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#using-networkattachmentdefinitions-in-pods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using NetworkAttachmentDefinitions in Pods
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-resources" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Resources
-    </span>
-  </a>
   
 </li>
       
@@ -12142,6 +12147,29 @@
   
   <span class="md-ellipsis">
     What is the difference between short and long join tokens in K3s/RKE2 clusters?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022128/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Longhorn monitoring with grafana and prometheus
     
   </span>
   
@@ -12642,26 +12670,8 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#using-networkattachmentdefinitions-in-pods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using NetworkAttachmentDefinitions in Pods
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-resources" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Resources
-    </span>
-  </a>
   
 </li>
       
@@ -12732,7 +12742,7 @@ cni:
 <p>Configuration generation:</p>
 </li>
 <li>
-<p>Reads the lexicographically (alphabetically) first configuration file in /etc/cni/net.d</p>
+<p>Reads the lexicographically first configuration file in /etc/cni/net.d</p>
 </li>
 <li>Generates a new Multus configuration file at /etc/cni/net.d/00-multus.conf based on the default network configuration</li>
 <li>API authentication: Creates /etc/cni/net.d/multus.d directory containing credentials for Multus to access the Kubernetes API</li>
@@ -12769,12 +12779,8 @@ spec:
     }
 </code></pre></div>
 <p>Important notes:</p>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
 <ul>
-<li>The config block must contain valid JSON matching the schema required by your chosen CNI plugin</li>
+<li>The config block must contain valid JSON matching the schema required by your chosen CNI plugin</li>
 <li>IP Address Management (IPAM) parameters (subnet, gateway, rangeStart, rangeEnd) are configured within the IPAM section when required by the plugin</li>
 <li>The configuration syntax varies depending on the selected CNI plugin type</li>
 </ul>
@@ -12806,11 +12812,7 @@ spec:
       }
     }
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<h3 id="using-networkattachmentdefinitions-in-pods">Using NetworkAttachmentDefinitions in Pods</h3>
+<p>Using NetworkAttachmentDefinitions in Pods</p>
 <p>To attach additional networks to a pod, add the k8s.v1.cni.cncf.io/networks annotation:</p>
 <div class="highlight"><pre><span></span><code>apiVersion: v1
 kind: Pod
@@ -12823,15 +12825,10 @@ spec:
   - name: samplecontainer
     image: nginx
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<p>For multiple network attachments, use a comma-separated list:</p>
-<div class="highlight"><pre><span></span><code>annotations:
-  k8s.v1.cni.cncf.io/networks: network1,network2,network3
-</code></pre></div>
-<h2 id="additional-resources">Additional Resources</h2>
+<p>For multiple network attachments, use a comma-separated list: </p>
+<p>annotations:</p>
+<p>k8s.v1.cni.cncf.io/networks: network1,network2,network3</p>
+<p><strong>Additional Resources</strong></p>
 <ul>
 <li><a href="https://github.com/k8snetworkplumbingwg/multus-cni">Multus CNI Official Documentation</a></li>
 <li><a href="https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/configuration.md">Multus Configuration Reference</a></li>
@@ -12839,6 +12836,16 @@ spec:
 <li><a href="https://www.cni.dev/plugins/current/">CNI Plugin Reference</a></li>
 <li><a href="https://www.rancher.com/docs/">SUSE Rancher Documentation</a></li>
 </ul>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
 
 
 

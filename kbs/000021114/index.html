@@ -7618,6 +7618,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#important-make-sure-you-change-the-keys-in-the-cluster_recoveryyml-to-use-snake-case-instead-of-camel-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Important: make sure you change the keys in the cluster_recovery.yml to use snake case instead of camel case.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -11362,6 +11377,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000022027/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to enable EventRateLimit in RKE2.
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000022039/" class="md-nav__link">
         
   
@@ -12006,6 +12044,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../000022128/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Longhorn monitoring with grafana and prometheus
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000022130/" class="md-nav__link">
         
   
@@ -12357,6 +12418,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#important-make-sure-you-change-the-keys-in-the-cluster_recoveryyml-to-use-snake-case-instead-of-camel-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Important: make sure you change the keys in the cluster_recovery.yml to use snake case instead of camel case.
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -12466,6 +12542,14 @@ echo &quot;Building cluster_recovery.rkestate...&quot;
 kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | base64 -d | jq -r . &gt; cluster_recovery.rkestate
 </code></pre></div>
 <p>Once the execution is completed, you will find two files in the folder of execution: cluster_recovery.yml and cluster_recovery.rkestate, which correspond to a copy of the Cluster Configuration File and the Kubernetes Cluster State file.</p>
+<h3 id="important-make-sure-you-change-the-keys-in-the-cluster_recoveryyml-to-use-snake-case-instead-of-camel-case"><strong>Important: make sure you change the keys in the cluster_recovery.yml to use snake case instead of camel case.</strong></h3>
+<p><strong>Example:</strong></p>
+<blockquote>
+<p>ClusterCidr: 10.43.0.0/16</p>
+<p>becomes</p>
+<p>cluster_cidr: 10.43.0.0/16</p>
+</blockquote>
+<p>You can compare the keys to the output of "rke config --empty --name empty_config.yml".</p>
 <p>After the recovery is done, please back up these files in a secure location to avoid future loss.</p>
 
 
