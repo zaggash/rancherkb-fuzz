@@ -8088,59 +8088,64 @@ With this sysctl correctly enabled, Pod ingress and egress will be able to funct
 
 **Article Number:** [000020167](https://support.scc.suse.com/s/kb/360041395971)
 
+## **Environment**
+
+- Rancher v2.6+
+- A Rancher-provisioned RKE, RKE2 or K3s cluster
+
 ## **Situation**
 
-#### Task
-
 If you are expecting to use Rancher to deploy a Kubernetes cluster with more than 256 nodes, you'll need to make sure you adjust the default cluster CIDR settings. The default settings only allows clusters of 256 nodes or less.
-
-#### Requirements
-
-- Rancher v2.x
-- A lot of hardware or VMs!
-
-#### Background
 
 Kubernetes provides each pod with an IP address and each node with a block of IP addresses. Each cluster is also provided a block of IP addresses that is distributed to each node.
 
 This is controlled by two settings, the `cluster_cidr` block and `node-cidr-mask-size`. By default, the `cluster_cidr` block is 10.42.0.0/16 and the `node-cidr-mask-size` is 24. This gives the cluster 256 blocks of /24 networks to distribute out to the pool of nodes. For example, node1 will get 10.24.0.0/24, node2 will get 10.42.1.0/24, node3 will get 10.42.2.0/24 and so on.
 
-#### Solution
-
-To support more than 256 nodes, you will need to use a larger cluster\_cidr block, a smaller node-cidr-mask-size, or adjust both. For example, if you want to support up to 512 nodes you can set:
-
-- `cluster_cidr` to 10.40.0.0/15
-- `node-cidr-mask-size` to 24
-
-OR
-
-- `cluster_cidr` to 10.42.0.0/16
-- `node-cidr-mask-size` to 25
-
-To support up to 1024 nodes, you can use a larger `cluster_cidr`, smaller `node-cidr-mask-size`, or combination of both:
-
-- `cluster_cidr` to 10.38.0.0/14
-- `node-cidr-mask-size` to 24
-
-OR
-
-- `cluster_cidr` to 10.42.0.0/16
-- `node-cidr-mask-size` to 26
-
-OR
-
-- `cluster_cidr` to 10.40.0.0/15
-- `node-cidr-mask-size` to 25
+## **Resolution**
 
 You should be aware of the following caveats when specifying your `cluster_cidr` and `node-cidr-mask-size` settings:
 
-- Make sure you don't set your `cluster_cidr` to overlap with the default cluster service network of 10.43.0.0/16. That's why the examples above used 10.40.0.0/15 and 10.38.0.0/14. A CIDR of 10.42.0.0/15 will clash with the default cluster service CIDR.
+- These values can only be set at cluster creation and cannot be changed afterwards. Once your cluster has been deployed, these values cannot change.
+- Make sure you don't set your `cluster_cidr` to overlap with the default cluster service network of 10.43.0.0/16.
 - Make sure you don't set your `cluster_cidr` to overlap with IP address ranges already used in your enterprise infrastructure such as your node IPs, firewalls, load balancers, DNS, or other internal networks.
 - Make sure your `node-cidr-mask-size` is large enough to accommodate the number of pods you want to run on each node. A size of 24 will give enough IP addresses for about 250 pods per node, which is well above the 110 maximum. However a size of 26 will only give you about 60 IPs, which is below the 110 maximum. If you plan to raise the default pod per node limit beyond 110, make sure sure your `node-cidr-mask-size` is large enough to support it. Note that pods that have `hostNetwork: true` do not count toward this total.
-- Set it right the first time! Once your cluster has been deployed, these values cannot change. You'll need to decommission your cluster and start over again if you don't set it right.
-- As of v1.17, Kubernetes supports clusters up to 5000 nodes. If you plan to go beyond this, you're venturing into unknown territory. For the latest large cluster best practices, see https://kubernetes.io/docs/setup/best-practices/cluster-large/
+- As of v1.34, Kubernetes supports clusters up to 5000 nodes. If you plan to go beyond this, you're venturing into unknown territory. For the latest large cluster best practices, see [https://kubernetes.io/docs/setup/best-practices/cluster-large/](https://kubernetes.io/docs/setup/best-practices/cluster-large/)
 
-Setting these values can be done when first creating the cluster. You'll need to click on the `Edit as YAML` button and merge in the following YAML:
+To support more than 256 nodes, you will need to use a larger `cluster_cidr` block, a smaller `node-cidr-mask-size`, or adjust both. For example, if you want to support up to 512 nodes you can set:
+
+- `cluster_cidr` to 10.40.0.0/15
+- `node-cidr-mask-size` to 24
+
+OR
+
+- `cluster_cidr` to 10.42.0.0/16
+- `node-cidr-mask-size` to 25
+
+To support up to 1024 nodes, you can use a larger `cluster_cidr`, smaller `node-cidr-mask-size`, or combination of both:
+
+- `cluster_cidr` to 10.38.0.0/14
+- `node-cidr-mask-size` to 24
+
+OR
+
+- `cluster_cidr` to 10.42.0.0/16
+- `node-cidr-mask-size` to 26
+
+OR
+
+- `cluster_cidr` to 10.40.0.0/15
+- `node-cidr-mask-size` to 25
+
+**RKE2 and K3s**
+
+To set your custom `cluster_cidr` and `node-cidr-mask-size` when creating an RKE2 or K3s cluster via Rancher:
+
+1. Click on the **Networking** tab under **Cluster Configuration** and enter the `cluster_cidr` value (e.g. 10.40.0.0/15) into the **Cluster CIDR** field
+2. Click on the **Advanced** tab under **Cluster Configuration** and click **Add** under **Additional Controller Manager Args**, then enter the `node-cidr-mask-size` argument and value (e.g. node-cidr-mask-size=25) into the new field
+
+**RKE**
+
+To set your custom `cluster_cidr` and `node-cidr-mask-size` when creating an RKE cluster via Rancher, click on the **Edit as YAML** button and merge in the following YAML with your values:
 
 ```yaml
 rancher_kubernetes_engine_config:
@@ -8150,8 +8155,6 @@ rancher_kubernetes_engine_config:
       extra_args:
         node-cidr-mask-size: 25
 ```
-
-The above configuration should allow you to have about 120 pods per node and 1024 nodes in your cluster. That's over 100,000 pods, wow!
 
 
 
