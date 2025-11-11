@@ -3591,53 +3591,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      Resolution
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Requirements
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#background" class="md-nav__link">
-    <span class="md-ellipsis">
-      Background
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#solution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Solution
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -12355,53 +12331,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       Situation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Task
+      Resolution
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Requirements
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#background" class="md-nav__link">
-    <span class="md-ellipsis">
-      Background
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#solution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Solution
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -12423,52 +12375,57 @@
 
 <h1 id="how-to-setup-your-network-cidr-for-a-large-cluster">How to setup your network CIDR for a large cluster</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360041395971">000020167</a></p>
-<h2 id="situation"><strong>Situation</strong></h2>
-<h4 id="task">Task</h4>
-<p>If you are expecting to use Rancher to deploy a Kubernetes cluster with more than 256 nodes, you'll need to make sure you adjust the default cluster CIDR settings. The default settings only allows clusters of 256 nodes or less.</p>
-<h4 id="requirements">Requirements</h4>
+<h2 id="environment"><strong>Environment</strong></h2>
 <ul>
-<li>Rancher v2.x</li>
-<li>A lot of hardware or VMs!</li>
+<li>Rancher v2.6+</li>
+<li>A Rancher-provisioned RKE, RKE2 or K3s cluster</li>
 </ul>
-<h4 id="background">Background</h4>
+<h2 id="situation"><strong>Situation</strong></h2>
+<p>If you are expecting to use Rancher to deploy a Kubernetes cluster with more than 256 nodes, you'll need to make sure you adjust the default cluster CIDR settings. The default settings only allows clusters of 256 nodes or less.</p>
 <p>Kubernetes provides each pod with an IP address and each node with a block of IP addresses. Each cluster is also provided a block of IP addresses that is distributed to each node.</p>
 <p>This is controlled by two settings, the <code>cluster_cidr</code> block and <code>node-cidr-mask-size</code>. By default, the <code>cluster_cidr</code> block is 10.42.0.0/16 and the <code>node-cidr-mask-size</code> is 24. This gives the cluster 256 blocks of /24 networks to distribute out to the pool of nodes. For example, node1 will get 10.24.0.0/24, node2 will get 10.42.1.0/24, node3 will get 10.42.2.0/24 and so on.</p>
-<h4 id="solution">Solution</h4>
-<p>To support more than 256 nodes, you will need to use a larger cluster_cidr block, a smaller node-cidr-mask-size, or adjust both. For example, if you want to support up to 512 nodes you can set:</p>
-<ul>
-<li><code>cluster_cidr</code> to 10.40.0.0/15</li>
-<li><code>node-cidr-mask-size</code> to 24</li>
-</ul>
-<p>OR</p>
-<ul>
-<li><code>cluster_cidr</code> to 10.42.0.0/16</li>
-<li><code>node-cidr-mask-size</code> to 25</li>
-</ul>
-<p>To support up to 1024 nodes, you can use a larger <code>cluster_cidr</code>, smaller <code>node-cidr-mask-size</code>, or combination of both:</p>
-<ul>
-<li><code>cluster_cidr</code> to 10.38.0.0/14</li>
-<li><code>node-cidr-mask-size</code> to 24</li>
-</ul>
-<p>OR</p>
-<ul>
-<li><code>cluster_cidr</code> to 10.42.0.0/16</li>
-<li><code>node-cidr-mask-size</code> to 26</li>
-</ul>
-<p>OR</p>
-<ul>
-<li><code>cluster_cidr</code> to 10.40.0.0/15</li>
-<li><code>node-cidr-mask-size</code> to 25</li>
-</ul>
+<h2 id="resolution"><strong>Resolution</strong></h2>
 <p>You should be aware of the following caveats when specifying your <code>cluster_cidr</code> and <code>node-cidr-mask-size</code> settings:</p>
 <ul>
-<li>Make sure you don't set your <code>cluster_cidr</code> to overlap with the default cluster service network of 10.43.0.0/16. That's why the examples above used 10.40.0.0/15 and 10.38.0.0/14. A CIDR of 10.42.0.0/15 will clash with the default cluster service CIDR.</li>
+<li>These values can only be set at cluster creation and cannot be changed afterwards. Once your cluster has been deployed, these values cannot change.</li>
+<li>Make sure you don't set your <code>cluster_cidr</code> to overlap with the default cluster service network of 10.43.0.0/16.</li>
 <li>Make sure you don't set your <code>cluster_cidr</code> to overlap with IP address ranges already used in your enterprise infrastructure such as your node IPs, firewalls, load balancers, DNS, or other internal networks.</li>
 <li>Make sure your <code>node-cidr-mask-size</code> is large enough to accommodate the number of pods you want to run on each node. A size of 24 will give enough IP addresses for about 250 pods per node, which is well above the 110 maximum. However a size of 26 will only give you about 60 IPs, which is below the 110 maximum. If you plan to raise the default pod per node limit beyond 110, make sure sure your <code>node-cidr-mask-size</code> is large enough to support it. Note that pods that have <code>hostNetwork: true</code> do not count toward this total.</li>
-<li>Set it right the first time! Once your cluster has been deployed, these values cannot change. You'll need to decommission your cluster and start over again if you don't set it right.</li>
-<li>As of v1.17, Kubernetes supports clusters up to 5000 nodes. If you plan to go beyond this, you're venturing into unknown territory. For the latest large cluster best practices, see https://kubernetes.io/docs/setup/best-practices/cluster-large/</li>
+<li>As of v1.34, Kubernetes supports clusters up to 5000 nodes. If you plan to go beyond this, you're venturing into unknown territory. For the latest large cluster best practices, see <a href="https://kubernetes.io/docs/setup/best-practices/cluster-large/">https://kubernetes.io/docs/setup/best-practices/cluster-large/</a></li>
 </ul>
-<p>Setting these values can be done when first creating the cluster. You'll need to click on the <code>Edit as YAML</code> button and merge in the following YAML:</p>
+<p>To support more than 256 nodes, you will need to use a larger <code>cluster_cidr</code> block, a smaller <code>node-cidr-mask-size</code>, or adjust both. For example, if you want to support up to 512 nodes you can set:</p>
+<ul>
+<li><code>cluster_cidr</code> to 10.40.0.0/15</li>
+<li><code>node-cidr-mask-size</code> to 24</li>
+</ul>
+<p>OR</p>
+<ul>
+<li><code>cluster_cidr</code> to 10.42.0.0/16</li>
+<li><code>node-cidr-mask-size</code> to 25</li>
+</ul>
+<p>To support up to 1024 nodes, you can use a larger <code>cluster_cidr</code>, smaller <code>node-cidr-mask-size</code>, or combination of both:</p>
+<ul>
+<li><code>cluster_cidr</code> to 10.38.0.0/14</li>
+<li><code>node-cidr-mask-size</code> to 24</li>
+</ul>
+<p>OR</p>
+<ul>
+<li><code>cluster_cidr</code> to 10.42.0.0/16</li>
+<li><code>node-cidr-mask-size</code> to 26</li>
+</ul>
+<p>OR</p>
+<ul>
+<li><code>cluster_cidr</code> to 10.40.0.0/15</li>
+<li><code>node-cidr-mask-size</code> to 25</li>
+</ul>
+<p><strong>RKE2 and K3s</strong></p>
+<p>To set your custom <code>cluster_cidr</code> and <code>node-cidr-mask-size</code> when creating an RKE2 or K3s cluster via Rancher:</p>
+<ol>
+<li>Click on the <strong>Networking</strong> tab under <strong>Cluster Configuration</strong> and enter the <code>cluster_cidr</code> value (e.g. 10.40.0.0/15) into the <strong>Cluster CIDR</strong> field</li>
+<li>Click on the <strong>Advanced</strong> tab under <strong>Cluster Configuration</strong> and click <strong>Add</strong> under <strong>Additional Controller Manager Args</strong>, then enter the <code>node-cidr-mask-size</code> argument and value (e.g. node-cidr-mask-size=25) into the new field</li>
+</ol>
+<p><strong>RKE</strong></p>
+<p>To set your custom <code>cluster_cidr</code> and <code>node-cidr-mask-size</code> when creating an RKE cluster via Rancher, click on the <strong>Edit as YAML</strong> button and merge in the following YAML with your values:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">rancher_kubernetes_engine_config</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">services</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">kube-controller</span><span class="p">:</span>
@@ -12476,7 +12433,6 @@
 <span class="w">      </span><span class="nt">extra_args</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">node-cidr-mask-size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25</span>
 </code></pre></div>
-<p>The above configuration should allow you to have about 120 pods per node and 1024 nodes in your cluster. That's over 100,000 pods, wow!</p>
 
 
 
