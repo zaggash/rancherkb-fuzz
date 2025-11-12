@@ -9026,67 +9026,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -26706,70 +26698,67 @@ A standalone or Rancher-provisioned RKE2 or K3s cluster
 
 ## **Environment**
 
-- RKE2
-- K3s Cluster
+- A Rancher-provisioned or standalone RKE2 or K3s cluster
 
 ## **Procedure**
 
-To configure CPU Manager Policy:
+This article details how to configure [Kubernetes CPU Manager Policy](https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#configuration) in an RKE2 or K3s cluster. The policy is configured via the kubelet `--cpu-manager-policy` flag, alongside the related [`--kube-reserved`, `--system-reserved`, `--reserved-cpus` and `--cpu-manager-policy-options` flags](https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#configuration).
 
-**For RKE2 or K3s Rancher-provisioned cluster:**
+**Rancher-provisioned RKE2 or K3s clusters**
 
-  **a.1 Configure the CPU Manager Policy at cluster creation time**
+**Configuration at cluster creation time**
 
-   Create the new cluster from Cluster Management, fill in with the common set of configurations (kubernetes version, CNI version, Node Os Image, Node Os, sizing,Private registry, etc…), and  then select  “Edit as YAML” on the bottom section of the page:
+1. After filling in all desired configuration via the **Cluster Configuration** form, click **Edit as YAML** on the bottom section of the page.
+2. Add the required kubelet-arg flags into the machineGlobalConfig block under rkeConfig, per the following example:
+   
+   ```markup
+   [...]
+   spec:
+     [...]
+     rkeConfig:
+       [...]
+       machineGlobalConfig:
+         kubelet-arg:
+           - cpu-manager-policy=static
+           - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
+   [...]
+   ```
+3. Then click **Create** to create the cluster.
 
-![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000rrPZ&feoid=00NTr00000R90Sn&refid=0EMTr00000GIFQn)
+**Configuration after initial cluster creation**
 
- 
+1. Navigate to **Cluster** **Management**
+2. Click **Edit Config** for the desired downstream cluster
+3. Click **Edit as YAML**
+4. Add the required kubelet-arg flags into the machineGlobalConfig block under rkeConfig, per the following example:
+   
+   ```markup
+   [...]
+   spec:
+     [...]
+     rkeConfig:
+       [...]
+       machineGlobalConfig:
+         kubelet-arg:
+           - cpu-manager-policy=static
+           - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
+   [...]
+   ```
+5. Click **Save** to update the cluster with the new CPU Manager Policy.
+6. The cluster will transition to an Updating status, and the cluster's nodes will get stuck in a Reconciling state with the message "Waiting for probes: kubelet"
+7. When a node enters this state, open an SSH session to it, and remove the old CPU Manager state file:
+   
+   ```markup
+   # rm -rf /var/lib/kubelet/cpu_manager_state
+   ```
+8. The node will then complete reconciling successfully.
+9. Repeat step 6 until all the nodes are successfully reconciled and the cluster returns to an Active state.
 
-Add the following configuration snippet under the section spec → rkeConfig → MachineGlobalConfig:
+**Standalone RKE2 or K3s clusters**
 
-```
-    machineGlobalConfig:
-      kubelet-arg:
-        - cpu-manager-policy=static
-        - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
-```
+**Configuration at cluster creation time**
 
- 
-
-**a.2 Configure the CPU Manager Policy on a provisioned-cluster**
-
-To configure the CPU Manager Policy on existing rancher-provisioned clusters, go to Cluster Management -&gt; Select your desired Downstream cluster, Edit Cluster as YAML:
-
-Add the configuration:
-
-Add the following configuration snippet under the section spec → rkeConfig → MachineGlobalConfig:
-
-```
-    machineGlobalConfig:
-      kubelet-arg:
-        - cpu-manager-policy=static
-        - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
-```
-
-The cluster will transition to Updating status, and the Cluster nodes will show "waiting for the Kubelet to start"
-
-Remove the old CPU Manager State file:
-
-ssh into each node, and execute the following command:
-
-```markup
-# rm -rf /var/lib/kubelet/cpu_manager_state
-```
-
-Then, the cluster will transition to "Ready" status.
-
- 
-
-**b) For RKE2 or K3s standalone clusters:**
-
- 
-
-**b.1 Configure CPU Manager Policy at cluster creation time:**
-
-**RKE2:** The CPU Manager Policy can be configured in the  /etc/rancher/k3s/config.yaml file, adding the lines:
+The required kubelet flags should be defined in the [RKE2](https://docs.rke2.io/install/configuration#multiple-config-files) or [K3s](https://docs.k3s.io/installation/configuration#configuration-file) configuration file on each node, before starting the rke2-server, rke2-agent or k3s service for the first time, e.g.:
 
 ```markup
 kubelet-arg:
@@ -26778,63 +26767,32 @@ kubelet-arg:
 
 ```
 
-Then, continue with the [standard bootstrap of the RKE2 cluster](https://docs.rke2.io/install/quickstart). 
+**Configuration after initial cluster creation**
 
-**K3s:** The CPU Manager Policy can be configured  in the  /etc/rancher/k3s/config.yaml, adding the lines:
+You can perform the configuration update on each node in the cluster, following the [process outlined in the Kubernetes CPU Manager Policy documentation](https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#changing-the-cpu-manager-policy):
 
-```markup
-kubelet-arg:
-  - cpu-manager-policy=static
-  - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
-```
-
-Then, proceed with the [standard bootstrap of the K3s cluster](https://docs.k3s.io/installation) 
-
-**b.2 Configure CPU Manager Policy on already-provisioned RKE2/k3s clusters:**
-
-Perform the same steps as in case b.1, and additionally,  ssh into each node to remove the CPU Manager state file:
-
-```markup
-# rm -rf /var/lib/kubelet/cpu_manager_state
-```
-
-After that, perform the following steps:
-
-RKE2:
-
-Server nodes:
-
-```markup
-systemctl stop rke2-server
-rke2-killall.sh
-systemctl start rke2-server
-```
-
-Agent nodes:
-
-k3s:
-
-Server nodes:
-
-```markup
-systemctl stop k3s
-k3s-killall.sh
-systemctl start k3s
-```
-
-Agent nodes:
-
-```markup
-systemctl stop k3s-agent
-k3s-killall.sh
-systemctl start k3s-agent
-```
-
- 
-
-Additional docs:
-
-\[1] - [Changing the CPU Policy Manager](https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#changing-the-cpu-manager-policy)
+1. Drain the node
+2. Stop the RKE2 or K3s processes:
+   
+   1. On RKE2 server nodes run `systemctl stop rke2-server` and `rke2-killall.sh`
+   2. On RKE2 worker nodes run `systemctl stop rke2-agent` and `rke2-killall.sh`
+   3. On K3s server nodes run `systemctl stop k3s` and `k3s-killall.sh`
+   4. On K3s agent nodes run`systemctl stop k3s-agent`and `k3s-killall.sh`
+3. Remove the CPU Manager state file: `rm -rf /var/lib/kubelet/cpu_manager_state`
+4. Define the required kubelet flags in the [RKE2](https://docs.rke2.io/install/configuration#multiple-config-files) or [K3s](https://docs.k3s.io/installation/configuration#configuration-file) configuration file on the node, e.g.:
+   
+   ```markup
+   kubelet-arg:
+     - cpu-manager-policy=static
+     - system-reserved=cpu=1,memory=1548Mi,ephemeral-storage=30Gi
+   
+   ```
+5. Start the RKE2 or K3s service:
+   
+   1. On RKE2 server nodes run `systemctl start rke2-server`
+   2. On RKE2 agent nodes run `systemctl start rke2-agent`
+   3. On K3s server nodes run `systemctl start k3s`
+   4. On K3s agents nodes run `systemctl start k3s-agent`
 
 
 
@@ -28436,6 +28394,68 @@ You can check the current environment variables in a running Rancher Pod with th
 SUSE Rancher Prime 2.x
 
 RKE2 (all versions)
+
+
+
+---
+
+## Article: 000022119.md
+
+# How to configure system-default-registry with a registry namespace in RKE2 and K3s clusters
+
+**Article Number:** [000022119](https://support.scc.suse.com/s/kb/How-to-configure-system-default-registry-with-a-registry-namespace-in-RKE2-and-K3s-clusters)
+
+## **Environment**
+
+- Rancher v2.6+
+- A Rancher-provisioned RKE2 or K3s cluster
+- A private registry with Rancher images under a registry namespace, e.g. registry.example.com/docker.io
+
+## **Procedure**
+
+This article details how to configure the system-default-registry settings, for Rancher-provisioned RKE2 and K3s clusters, if you have a private registry where the rancher images from a public repo, e.g. DockerHub or other, are mirrored under a registry namespace, for example docker.io (registry.example.com/docker.io/rancher/hardened-kubernetes:v1.33.5-rke2r1-build20250910), i.e. your global system-default-registry setting within Rancher is registry.example.com/docker.io
+
+This is necessary, as the Rancher global system-default-registry setting will accept a registry hostname with a namespace, but the RKE2/K3s system-default-registry setting accepts a hostname only.
+
+**The Rancher and cluster-level system-default-registry setting**
+
+The [system-default-registry setting within Rancher](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/global-default-private-registry#set-a-private-registry-with-no-credentials-as-the-default-registry) is used to configure the registry for all Rancher-deployed images (e.g., cattle-cluster-agent, fleet-agent, etc.), as well as the default system-default-registry parameter for all Rancher-provisioned [RKE2](https://docs.rke2.io/reference/server_config#agentruntime) and [K3s](https://docs.k3s.io/cli/server#k3s-server-cli-help) clusters that do not have a cluster-level system-default-registry configured.
+
+**How to configure a system-default-registry with a registry namespace**
+
+To use a private registry with a namespace (e.g. registry.example.com/docker.io) as the system-default-registry in an RKE2 or K3s cluster you need to configure a registry rewrite rule. The cluster-level system-default-registry for the RKE2 or K3s clusters is set to the registry hostname only (e.g. registry.example.com), a registry mirror configuration is then defined, to rewrite the registry path for rancher images in this private registry to the required namespace (docker.io in this example).
+
+The following snippet from a cluster.provisioning.cattle.io resource configures a private repository available under [registry.example.com/docker.io](), as the system-default-registry for a cluster. 
+
+```markup
+    machine_selector_config {
+      config = {
+        system-default-registry: "registry.example.com"
+      }
+    }
+
+    registries {
+      mirrors {
+        endpoints = ["https://registry.example.com"]
+        hostname  = "registry.example.com"
+        rewrites  = {
+          "^rancher/(.*)" = "/docker.io/$1"
+        }
+      }
+    }
+```
+
+These options can be configured by navigating to **Cluster Management**, selecting **Edit Config** for a cluster, then clicking on the **Registries** tab:
+
+1. Under **Container Registry** enter the private registry hostname (e.g. registry.example.com)
+2. Click **Show Advanced**
+3. In **Registry Hostname** enter the private registry hostname (e.g. registry.example.com)
+4. In **Mirror Endpoints** enter the private registry with the protocol, and port if required (e.g. https://registry.example.com)
+5. Click **Add Rewrite Config**
+6. In **Rewrite pattern** enter ^rancher/(.\*)
+7. In **Rewrite replacement** enter /&lt;namespace&gt;/$1 (e.g. /docker.io/$1)
+
+After setting up this configuration, any Rancher-deployed workload images (e.g. the cluster-agent) are pulled according to the Rancher global system-default-registry setting (e.g. registry.example.com/docker.io), without any rewriting, whilst RKE2/K3s images use the cluster-level system-default-registry (e.g. registry.example.com) and are rewritten (e.g. under registry.example.com/docker.io).
 
 
 
