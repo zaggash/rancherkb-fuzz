@@ -1606,31 +1606,31 @@ The `values.yaml` file contains items used to tweak a deployment of this chart.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | image.csi.attacher.repository | string | `"longhornio/csi-attacher"` | Repository for the CSI attacher image. When unspecified, Longhorn uses the default value. |
-| image.csi.attacher.tag | string | `"v4.9.0-20250826"` | Tag for the CSI attacher image. When unspecified, Longhorn uses the default value. |
+| image.csi.attacher.tag | string | `"v4.10.0-20251030"` | Tag for the CSI attacher image. When unspecified, Longhorn uses the default value. |
 | image.csi.livenessProbe.repository | string | `"longhornio/livenessprobe"` | Repository for the CSI liveness probe image. When unspecified, Longhorn uses the default value. |
-| image.csi.livenessProbe.tag | string | `"v2.16.0-20250826"` | Tag for the CSI liveness probe image. When unspecified, Longhorn uses the default value. |
+| image.csi.livenessProbe.tag | string | `"v2.17.0-20251030"` | Tag for the CSI liveness probe image. When unspecified, Longhorn uses the default value. |
 | image.csi.nodeDriverRegistrar.repository | string | `"longhornio/csi-node-driver-registrar"` | Repository for the CSI Node Driver Registrar image. When unspecified, Longhorn uses the default value. |
-| image.csi.nodeDriverRegistrar.tag | string | `"v2.14.0-20250826"` | Tag for the CSI Node Driver Registrar image. When unspecified, Longhorn uses the default value. |
+| image.csi.nodeDriverRegistrar.tag | string | `"v2.15.0-20251030"` | Tag for the CSI Node Driver Registrar image. When unspecified, Longhorn uses the default value. |
 | image.csi.provisioner.repository | string | `"longhornio/csi-provisioner"` | Repository for the CSI Provisioner image. When unspecified, Longhorn uses the default value. |
-| image.csi.provisioner.tag | string | `"v5.3.0-20250826"` | Tag for the CSI Provisioner image. When unspecified, Longhorn uses the default value. |
+| image.csi.provisioner.tag | string | `"v5.3.0-20251030"` | Tag for the CSI Provisioner image. When unspecified, Longhorn uses the default value. |
 | image.csi.resizer.repository | string | `"longhornio/csi-resizer"` | Repository for the CSI Resizer image. When unspecified, Longhorn uses the default value. |
-| image.csi.resizer.tag | string | `"v1.14.0-20250826"` | Tag for the CSI Resizer image. When unspecified, Longhorn uses the default value. |
+| image.csi.resizer.tag | string | `"v1.14.0-20251030"` | Tag for the CSI Resizer image. When unspecified, Longhorn uses the default value. |
 | image.csi.snapshotter.repository | string | `"longhornio/csi-snapshotter"` | Repository for the CSI Snapshotter image. When unspecified, Longhorn uses the default value. |
-| image.csi.snapshotter.tag | string | `"v8.3.0-20250826"` | Tag for the CSI Snapshotter image. When unspecified, Longhorn uses the default value. |
+| image.csi.snapshotter.tag | string | `"v8.4.0-20251030"` | Tag for the CSI Snapshotter image. When unspecified, Longhorn uses the default value. |
 | image.longhorn.backingImageManager.repository | string | `"longhornio/backing-image-manager"` | Repository for the Backing Image Manager image. When unspecified, Longhorn uses the default value. |
-| image.longhorn.backingImageManager.tag | string | `"v1.10.0"` | Tag for the Backing Image Manager image. When unspecified, Longhorn uses the default value. |
+| image.longhorn.backingImageManager.tag | string | `"v1.10.1"` | Tag for the Backing Image Manager image. When unspecified, Longhorn uses the default value. |
 | image.longhorn.engine.repository | string | `"longhornio/longhorn-engine"` | Repository for the Longhorn Engine image. |
-| image.longhorn.engine.tag | string | `"v1.10.0"` | Tag for the Longhorn Engine image. |
+| image.longhorn.engine.tag | string | `"v1.10.1"` | Tag for the Longhorn Engine image. |
 | image.longhorn.instanceManager.repository | string | `"longhornio/longhorn-instance-manager"` | Repository for the Longhorn Instance Manager image. |
-| image.longhorn.instanceManager.tag | string | `"v1.10.0"` | Tag for the Longhorn Instance Manager image. |
+| image.longhorn.instanceManager.tag | string | `"v1.10.1"` | Tag for the Longhorn Instance Manager image. |
 | image.longhorn.manager.repository | string | `"longhornio/longhorn-manager"` | Repository for the Longhorn Manager image. |
-| image.longhorn.manager.tag | string | `"v1.10.0"` | Tag for the Longhorn Manager image. |
+| image.longhorn.manager.tag | string | `"v1.10.1"` | Tag for the Longhorn Manager image. |
 | image.longhorn.shareManager.repository | string | `"longhornio/longhorn-share-manager"` | Repository for the Longhorn Share Manager image. |
-| image.longhorn.shareManager.tag | string | `"v1.10.0"` | Tag for the Longhorn Share Manager image. |
+| image.longhorn.shareManager.tag | string | `"v1.10.1"` | Tag for the Longhorn Share Manager image. |
 | image.longhorn.supportBundleKit.repository | string | `"longhornio/support-bundle-kit"` | Repository for the Longhorn Support Bundle Manager image. |
-| image.longhorn.supportBundleKit.tag | string | `"v0.0.69"` | Tag for the Longhorn Support Bundle Manager image. |
+| image.longhorn.supportBundleKit.tag | string | `"v0.0.71"` | Tag for the Longhorn Support Bundle Manager image. |
 | image.longhorn.ui.repository | string | `"longhornio/longhorn-ui"` | Repository for the Longhorn UI image. |
-| image.longhorn.ui.tag | string | `"v1.10.0"` | Tag for the Longhorn UI image. |
+| image.longhorn.ui.tag | string | `"v1.10.1"` | Tag for the Longhorn UI image. |
 | image.openshift.oauthProxy.repository | string | `""` | Repository for the OAuth Proxy image. Specify the upstream image (for example, "quay.io/openshift/origin-oauth-proxy"). This setting applies only to OpenShift users. |
 | image.openshift.oauthProxy.tag | float | `""` | Tag for the OAuth Proxy image. Specify OCP/OKD version 4.1 or later (including version 4.15, which is available at quay.io/openshift/origin-oauth-proxy:4.15). This setting applies only to OpenShift users. |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy that applies to all user-deployed Longhorn components, such as Longhorn Manager, Longhorn driver, and Longhorn UI. |
@@ -2148,6 +2148,7 @@ weight: 1
   - [Automatically Clean up System Generated Snapshot](#automatically-clean-up-system-generated-snapshot)
   - [Automatically Clean up Outdated Snapshots of Recurring Backup Jobs](#automatically-clean-up-outdated-snapshots-of-recurring-backup-jobs)
   - [Automatically Delete Workload Pod when The Volume Is Detached Unexpectedly](#automatically-delete-workload-pod-when-the-volume-is-detached-unexpectedly)
+  - [Blacklist for Automatic Workload Pod Deletion on Unexpected Volume Detachment](#blacklist-for-automatic-workload-pod-deletion-on-unexpected-volume-detachment)
   - [Automatic Salvage](#automatic-salvage)
   - [Concurrent Automatic Engine Upgrade Per Node Limit](#concurrent-automatic-engine-upgrade-per-node-limit)
   - [Concurrent Volume Backup Restore Per Node Limit](#concurrent-volume-backup-restore-per-node-limit)
@@ -2359,6 +2360,14 @@ If disabled, Longhorn will not delete the workload pod that is managed by a cont
 > **Note:** This setting doesn't apply to below cases.
 > - The workload pods don't have a controller; Longhorn never deletes them.
 > - Workload pods with *cluster network* RWX volumes. The setting does not apply to such pods because the Longhorn Share Manager, which provides the RWX NFS service, has its own resilience mechanism. This mechanism ensures availability until the volume is reattached without relying on the pod lifecycle to trigger volume reattachment. The setting does apply, however, to workload pods with *storage network* RWX volumes. For more information, see [ReadWriteMany (RWX) Volume](../../nodes-and-volumes/volumes/rwx-volumes) and [Storage Network](../../advanced-resources/deploy/storage-network#limitation).
+
+#### Blacklist for Automatic Workload Pod Deletion on Unexpected Volume Detachment
+
+> Default: `""`
+
+Blacklist of controller api/kind values for the setting [Automatically Delete Workload Pod when the Volume Is Detached Unexpectedly](#automatically-delete-workload-pod-when-the-volume-is-detached-unexpectedly). If a workload pod is managed by a controller whose api/kind is listed in this blacklist, Longhorn will not automatically delete the pod when its volume is unexpectedly detached. Multiple controller api/kind entries can be specified, separated by semicolons. For example: `apps/v1/StatefulSet;apps/v1/DaemonSet`.
+
+> **Note:** The controller api/kind is case sensitive and must exactly match the api/kind in the workload pod's owner reference.
 
 #### Automatic Salvage
 
@@ -3569,7 +3578,6 @@ This page summarizes the key notes for Longhorn v{{< current-version >}}.
 For the full release note, see [here](https://github.com/longhorn/longhorn/releases/tag/v{{< current-version >}}).
 
 - [Warning](#warning)
-  - [HotFix](#hotfix)
   - [Upgrade](#upgrade)
     - [Migration Requirement Before Longhorn v1.10 Upgrade](#migration-requirement-before-longhorn-v110-upgrade)
     - [Migration Verification](#migration-verification)
@@ -3577,6 +3585,7 @@ For the full release note, see [here](https://github.com/longhorn/longhorn/relea
       - [Downgrade Procedure (kubectl Installation)](#downgrade-procedure-kubectl-installation)
       - [Downgrade Procedure (Helm Installation)](#downgrade-procedure-helm-installation)
       - [Post-Downgrade](#post-downgrade)
+- [Important Fixes](#important-fixes)
 - [Removal](#removal)
   - [`longhorn.io/v1beta1` API](#longhorniov1beta1-api)
   - [`replica.status.evictionRequested` Field](#replicastatusevictionrequested-field)
@@ -3610,24 +3619,6 @@ For the full release note, see [here](https://github.com/longhorn/longhorn/relea
     - [V2 Data Engine Volume Expansion](#v2-data-engine-volume-expansion)
 
 ## Warning
-
-## HotFix
-
-The `longhorn-manager:v1.10.0` image is affected by a [regression issue](https://github.com/longhorn/longhorn/issues/11939) introduced by the new share-manager pod backoff logic. This bug may cause a nil pointer dereference panic in the longhorn-manager, leading to repeated crashes and failure to deploy new share-manager pods after an upgrade. To mitigate this issue, replace `longhorn-manager:v1.10.0` with the hotfixed image `longhorn-manager:v1.10.0-hotfix-1`.
-
-You can apply the update by following these steps:
-
-1. **Disable the upgrade version check**
-   - Helm users: Set `upgradeVersionCheck` to `false` in the `values.yaml` file.
-   - Manifest users: Remove the `--upgrade-version-check` flag from the deployment manifest.
-
-2. **Update the `longhorn-manager` image**
-   - Change the image tag from `v1.10.0` to `v1.10.0-hotfix-1` in the appropriate file:
-     - For Helm: Update `values.yaml`
-     - For manifests: Update the deployment manifest directly.
-
-3. **Proceed with the upgrade**
-   - Apply the changes using your standard Helm upgrade command or reapply the updated manifest.
 
 ### Upgrade
 
@@ -3744,6 +3735,34 @@ If Longhorn was installed using Helm, the downgrade is allowed by disabling the 
 ##### Post-Downgrade
 
 Once the downgrade is complete and the Longhorn system is stable on the v1.9.x version, you must immediately follow the steps outlined in the [Manual CRD Migration Guide](#migration-requirement-before-longhorn-v110-upgrade). This step is crucial to migrate all remaining `v1beta1` CRs to `v1beta2` before attempting the Longhorn v1.10 upgrade again.
+
+## Important Fixes
+
+This release includes several critical stability and performance improvements:
+
+### Goroutine Leak in Instance Manager (V2 Data Engine)
+
+Fixed a goroutine leak in the instance manager when using the V2 data engine. This issue could lead to increased memory usage and potential stability problems over time.
+
+For more details, see [Issue #11962](https://github.com/longhorn/longhorn/issues/11962).
+
+### V2 Volume Attachment Failure in Interrupt Mode
+
+Fixed an issue where V2 volumes using interrupt mode with NVMe disks could fail to complete the attachment process, causing volumes to remain stuck in the attaching state indefinitely.
+
+For more details, see [Issue #11816](https://github.com/longhorn/longhorn/issues/11816).
+
+### UI Deployment Failure on IPv4-Only Nodes
+
+Fixed a bug introduced in v1.10.0 where the Longhorn UI failed to deploy on nodes with only IPv4 enabled. The UI now correctly supports IPv4-only configurations without requiring IPv6.
+
+For more details, see [Issue #11875](https://github.com/longhorn/longhorn/issues/11875).
+
+### Share Manager Excessive Memory Usage
+
+Fixed excessive memory consumption in the share manager for RWX (ReadWriteMany) volumes. The component now maintains stable memory usage under normal operation.
+
+For more details, see [Issue #12043](https://github.com/longhorn/longhorn/issues/12043).
 
 ## Removal
 
@@ -3900,7 +3919,7 @@ While interrupt mode lowers CPU consumption, it may introduce slightly higher I/
 
 For more information, see [Interrupt Mode](../v2-data-engine/features/interrupt-mode) for more information.
 
-> **Limitation:** Interrupt mode currently supports only AIO disks.
+> **Note:** In Longhorn v1.10.0, interrupt mode supports only **AIO disks**. Interrupt mode for **NVMe disks** is supported starting in v1.10.1.
 
 #### V2 Data Engine Volume Clone Support
 
@@ -8427,14 +8446,14 @@ You may manually install these components by executing the following steps.
 > For example, on a vanilla Kubernetes cluster, update the namespace from `default` to `kube-system` prior to issuing the `kubectl create` command.
 
 Install the Snapshot CRDs:
-1. Download the files from https://github.com/kubernetes-csi/external-snapshotter/tree/v8.2.0/client/config/crd
-because Longhorn v{{< current-version >}} uses [CSI external-snapshotter](https://kubernetes-csi.github.io/docs/external-snapshotter.html) v8.2.0
+1. Download the files from https://github.com/kubernetes-csi/external-snapshotter/tree/v8.4.0/client/config/crd
+because Longhorn v{{< current-version >}} uses [CSI external-snapshotter](https://kubernetes-csi.github.io/docs/external-snapshotter.html) v8.4.0
 2. Run `kubectl create -k client/config/crd`.
 3. Do this once per cluster.
 
 Install the Common Snapshot Controller:
-1. Download the files from https://github.com/kubernetes-csi/external-snapshotter/tree/v8.2.0/deploy/kubernetes/snapshot-controller
-because Longhorn v{{< current-version >}} uses [CSI external-snapshotter](https://kubernetes-csi.github.io/docs/external-snapshotter.html) v8.2.0
+1. Download the files from https://github.com/kubernetes-csi/external-snapshotter/tree/v8.4.0/deploy/kubernetes/snapshot-controller
+because Longhorn v{{< current-version >}} uses [CSI external-snapshotter](https://kubernetes-csi.github.io/docs/external-snapshotter.html) v8.4.0
 2. Update the namespace to an appropriate value for your environment (e.g. `kube-system`)
 3. Run `kubectl create -k deploy/kubernetes/snapshot-controller`.
 3. Do this once per cluster.
@@ -16706,6 +16725,21 @@ Interrupt mode is particularly suitable for clusters with limited CPU resources 
 - Longhorn v1.10.0 or later
 - V2 data engine enabled
 - No attached v2 volumes when changing the setting
+- For NVMe disks, IOMMU must be enabled. To verify:
+    ```bash
+    find /sys/kernel/iommu_groups/ -type l
+    ```
+    Example output (IOMMU enabled):
+    ```
+    /sys/kernel/iommu_groups/0/devices/0000:e6:0b.1
+    /sys/kernel/iommu_groups/1/devices/0000:34:0a.6
+    /sys/kernel/iommu_groups/2/devices/0000:a0:00.0
+    ```
+    If the command returns no output, IOMMU is not enabled.
+
+    > **Note:** IOMMU support may not be exposed on virtualized instances. If unsure, consider using a bare-metal instance, or consult your cloud provider’s documentation or support team.
+
+    For more information, see the official [SPDK documentation](https://spdk.io/doc/system_configuration.html).
 
 ## Configuration
 
@@ -16747,10 +16781,6 @@ The current V2 volume interrupt mode uses a hybrid approach for NVMe/TCP transpo
 
 - **Setting Changes**: Cannot be modified while V2 volumes are attached
 - **Global Scope**: Applies globally; no per-volume override is available
-
-### Disk Support
-
-- Interrupt mode currently supports AIO disks only.
 
 
 ---

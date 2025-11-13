@@ -9089,7 +9089,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 # The Rancher v2.x Linux log collector script
 
-**Article Number:** [000020191](https://support.scc.suse.com/s/kb/https-www-suse-com-support-kb-doc-id-000020191)
+**Article Number:** [000020191](https://support.scc.suse.com/s/kb/The-Rancher-v2-x-Linux-log-collector-script)
 
 ## **Environment**
 
@@ -19244,6 +19244,75 @@ In addition to the configuration of Proxy Settings for the Windows Server, under
 4. Restart the Windows node.
 
 Once the authenticated proxy is configured from Windows settings, the node should be able to access the internet via the proxy. The node registration should finish as expected after this proxy configuration.
+
+
+
+---
+
+## Article: 000021462.md
+
+# RKE2 cluster provisioning failing, with failing kube-apiserver healthchecks due to inability to resolve localhost
+
+**Article Number:** [000021462](https://support.scc.suse.com/s/kb/RKE2-cluster-provisioning-failing-with-failing-kube-apiserver-healthchecks-due-to-inability-to-resolve-localhost)
+
+## **Environment**
+
+- Rancher v2.6+
+- A Rancher-provisioned RKE2 cluster
+
+## **Situation**
+
+There are a high number of restarts for cluster component Pods in the affected downstream RKE2 cluster:
+
+```
+NAMESPACE      NAME                                           READY   STATUS     RESTARTS            
+cattle-fleet-system fleet-agent-cc8c97f97-bvx78               1/1    Running      185
+cattle-system cattle-cluster-agent-b1460cbd-8ct5c             1/1    Running      115
+cattle-system cattle-cluster-agent-b1460cbd-l2l8l             1/1    Running      168
+kube-system kube-apiserver-cluster-suse-cp-f777105c-2qgvh     0/1    Running      314
+kube-system kube-controller-manager-cluster-suse-cp-5c-2qgvh  1/1    Running      491
+kube-system cloud-controller-manager-cluster-suse-cp-5c-2qgvh 1/1    Running      501
+```
+
+The kube-apiserver Pod flaps between a ready and not ready status:
+
+```
+NAMESPACE              NAME                                 READY   STATUS     RESTARTS 
+
+kube-system kube-apiserver-cluster-suse-cp-f777105c-2qgvh     0/1   Running    314
+```
+
+The kubelet logs register failing probes against the kube-apiserver.
+
+## **Cause**
+
+The /etc/hosts file on the node was empty and did not contain any localhost references, causing DNS resolution failures for the kube-apiserver liveness probes to localhost.
+
+## **Resolution**
+
+1. Enable kubelet debug logging
+   
+   1. Navigate to **Cluster Management**
+   2. Click **Edit Config** for the affected downstream RKE2 cluster
+   3. Click the **Advanced** tab in the **Cluster Configuration** form
+   4. Under **Additional Kubelet Args** click **Add Global Argument**
+   5. In the new argument field enter v=9
+   6. Click **Save**
+2. Replicate the liveness probe and check the kubelet logs
+   
+   1. Open an SSH session to a master node in the affected RKE2 downstream cluster
+   2. Check the kubelet log (`tail -f /var/lib/rancher/rke2/agent/logs/kubelet.log | grep kube-apiserver`) for failing kube-apiserver liveness probes
+   3. Execute the following command to simulate the liveness probe for the kube-apiserver Pod, which should fail, if encountering the issue:
+      
+      ```markup
+      /var/lib/rancher/rke2/bin/crictl --runtime-endpoint unix:///run/k3s/containerd/containerd.sock exec $(/var/lib/rancher/rke2/bin/crictl --runtime-endpoint unix:///run/k3s/containerd/containerd.sock ps | grep kube-apiserver | awk '{print $1}') kubectl get --server=https://localhost:6443/ --client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --raw=/livez
+      ```
+   4. Perform the simulated liveness probe for the kube-apiserver again, replacing localhost with 127.0.0.1, which should succeed:
+      
+      ```markup
+      /var/lib/rancher/rke2/bin/crictl --runtime-endpoint unix:///run/k3s/containerd/containerd.sock exec $(/var/lib/rancher/rke2/bin/crictl --runtime-endpoint unix:///run/k3s/containerd/containerd.sock ps | grep kube-apiserver | awk '{print $1}') kubectl get --server=https://127.0.0.1:6443/ --client-certificate=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.crt --client-key=/var/lib/rancher/rke2/server/tls/client-kube-apiserver.key --certificate-authority=/var/lib/rancher/rke2/server/tls/server-ca.crt --raw=/livez
+      ```
+3. Fix the host or host template, to ensure a valid /etc/hosts file is present, with an entry mapping localhost to 127.0.0.1, as expected.
 
 
 
