@@ -3718,7 +3718,7 @@ After Setting up the Debug log level, it can be checked viewing the 'Canal' pod 
 
 # How to enable legacy TLS versions for ingress-nginx in Rancher Kubernetes Engine (RKE) CLI and Rancher v2.x provisioned RKE Kubernetes clusters
 
-**Article Number:** [000020076](https://support.scc.suse.com/s/kb/360050943372)
+**Article Number:** [000020076](https://support.scc.suse.com/s/kb/How-to-enable-legacy-TLS-versions-for-ingress-nginx-in-Rancher-Kubernetes-Engine-RKE-CLI-and-Rancher-v2-x-provisioned-RKE-Kubernetes-clusters)
 
 ## **Environment**
 
