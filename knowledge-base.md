@@ -8086,7 +8086,7 @@ With this sysctl correctly enabled, Pod ingress and egress will be able to funct
 
 # How to setup your network CIDR for a large cluster
 
-**Article Number:** [000020167](https://support.scc.suse.com/s/kb/360041395971)
+**Article Number:** [000020167](https://support.scc.suse.com/s/kb/How-to-setup-your-network-CIDR-for-a-large-cluster)
 
 ## **Environment**
 
@@ -10585,8 +10585,8 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
  
 
-- [How do I change the severity level on an open case?](https://www.suse.com/support/kb/doc/?id=000020296)
-- [Could you illustrate the severity levels with subject lines of sample support cases?](https://www.suse.com/support/kb/doc/?id=000020502)
+- [How do I change the severity level on an open case?](https://support.scc.suse.com/s/kb/Rancher-How-do-I-change-severity-level-on-an-open-ticket?language=en_US)
+- [Could you illustrate the severity levels with subject lines of sample support cases?](https://support.scc.suse.com/s/kb/Rancher-Could-you-illustrate-the-severity-levels-with-subject-lines-of-sample-support-cases?language=en_US)
 
  
 
@@ -10594,9 +10594,7 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
  
 
-- [What is the difference between "stable" and "latest" release tags?](https://www.suse.com/support/kb/doc/?id=000020430)
-- [What does 'Developer Support" mean?](https://www.suse.com/support/kb/doc/?id=000020431)
-- [What are the definitions in the new Rancher Prime Release Cycle?](https://www.suse.com/support/kb/doc/?id=000021405)
+- [What are the definitions in the new Rancher Prime Release Cycle?](https://support.scc.suse.com/s/kb/What-are-the-definitions-in-the-new-Prime-Release-Cycle?language=en_US)
 
  
 
@@ -10604,23 +10602,20 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
  
 
-- [Can Rancher Support validate our planned upgrade?](https://www.suse.com/support/kb/doc/?id=000020437)
-- [We run a burst of high-profile events (e.g., big sale) that run as k8s workloads managed by Rancher. Can Rancher Support join our team remotely for the duration of these events?](https://www.suse.com/support/kb/doc/?id=000020438)
-- [Can Rancher Support join me as I do my upgrade?](https://www.suse.com/support/kb/doc/?id=000020440)
-- [We need help validating our deployment design and operational readiness, can Rancher Support help?](https://www.suse.com/support/kb/doc/?id=000020441)
+- [Can Rancher Support validate our planned upgrade?](https://support.scc.suse.com/s/kb/Rancher-Can-Rancher-Support-validate-our-planned-upgrade?language=en_US)
+- [We run a burst of high-profile events (e.g., big sale) that run as k8s workloads managed by Rancher. Can Rancher Support join our team remotely for the duration of these events?](https://support.scc.suse.com/s/kb/Rancher-We-run-a-burst-of-high-profile-events-e-g-big-sale-that-run-as-k8s-workloads-managed-by-Rancher-Can-Rancher-Support-join-our-team-remotely-for-the-duration-of-these-events?language=en_US)
+- [Can Rancher Support join me as I do my upgrade?](https://support.scc.suse.com/s/kb/Rancher-Can-Rancher-Support-join-me-as-I-do-my-upgrade?language=en_US)
+- [We need help validating our deployment design and operational readiness, can Rancher Support help?](https://support.scc.suse.com/s/kb/Rancher-We-need-help-validating-our-deployment-design-and-operational-readiness-can-Rancher-Support-help?language=en_US)
 
  
 
 ## Rancher and RancherOS
 
- 
-
-- [Can I run other, non-Rancher workloads on the same Kubernetes cluster that Rancher is installed on?](https://www.suse.com/support/kb/doc/?id=000020442)
-- [Could you help us understand the development and support status of RancherOS for 2020 and beyond?](https://www.suse.com/support/kb/doc/?id=000020443)
-- [Does Rancher support migration from single node installation to high availability installation?](https://www.suse.com/support/kb/doc/?id=000020445)
-- [Does Rancher Support cover single node installations?](https://www.suse.com/support/kb/doc/?id=000020446)
-- [Is Rancher software itself completely free?](https://www.suse.com/support/kb/doc/?id=000020474)
-- [Does Rancher include any 3rd party, commercial software components?](https://www.suse.com/support/kb/doc/?id=000020473)
+- [Can I run other, non-Rancher workloads on the same Kubernetes cluster that Rancher is installed on?](https://support.scc.suse.com/s/kb/Rancher-Can-I-run-other-non-Rancher-workloads-on-the-same-Kubernetes-cluster-that-Rancher-is-installed-on?language=en_US)
+- [Could you help us understand the development and support status of RancherOS for 2020 and beyond?](https://support.scc.suse.com/s/kb/Rancher-Could-you-help-us-understand-the-development-and-support-status-of-RancherOS-for-2020-and-beyond?language=en_US)
+- [Does Rancher support migration from single node installation to high availability installation?](https://support.scc.suse.com/s/kb/Rancher-Does-Rancher-support-migration-from-single-node-installation-to-high-availability-installation?language=en_US)
+- [Does Rancher Support cover single node installations?](https://support.scc.suse.com/s/kb/Rancher-Does-Rancher-Support-cover-single-node-installations?language=en_US)
+- [Is Rancher software itself completely free?](https://support.scc.suse.com/s/kb/Is-Rancher-software-itself-completely-free?language=en_US)
 
  
 
@@ -10628,40 +10623,37 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
  
 
-- [I plan to import my legacy k8s cluster into Rancher and having issues with my legacy cluster. Can Rancher Support help troubleshoot the issue?](https://www.suse.com/support/kb/doc/?id=000020449)
-- [Will Rancher fix the issue and release a patch, if the problem is root-caused in Kubernetes?](https://www.suse.com/support/kb/doc/?id=000020451)
-- [As part of a Rancher upgrade, do I need to upgrade my k8s cluster to a version listed in the support matrix for that Rancher version? If I do not, will the cluster continue to work fine as is? Will Rancher support this cluster?](https://www.suse.com/support/kb/doc/?id=000020452)
-- [Is Rancher Support only for RKE-provisioned clusters?](https://www.suse.com/support/kb/doc/?id=000020450)
-- [Could you help us understand the Rancher approach to supporting specific k8s versions and how Rancher keeps up with new k8s releases?](https://www.suse.com/support/kb/doc/?id=000020448)
+- [I plan to import my legacy k8s cluster into Rancher and having issues with my legacy cluster. Can Rancher Support help troubleshoot the issue?](https://support.scc.suse.com/s/kb/Rancher-I-plan-to-import-my-legacy-k8s-cluster-into-Rancher-and-having-issues-with-my-legacy-cluster-Can-Rancher-Support-help-troubleshoot-the-issue?language=en_US)
+- [Will Rancher fix the issue and release a patch, if the problem is root-caused in Kubernetes?](https://support.scc.suse.com/s/kb/Rancher-Will-Rancher-fix-the-issue-and-release-a-patch-if-the-problem-is-root-caused-in-Kubernetes?language=en_US)
+- [As part of a Rancher upgrade, do I need to upgrade my k8s cluster to a version listed in the support matrix for that Rancher version? If I do not, will the cluster continue to work fine as is? Will Rancher support this cluster?](https://support.scc.suse.com/s/kb/Rancher-As-part-of-a-Rancher-upgrade-do-I-need-to-upgrade-my-k8s-cluster-to-a-version-listed-in-the-support-matrix-for-that-Rancher-version-If-I-do-not-will-the-cluster-continue-to-work-fine-as-is-Will-Rancher-support-this-cluster?language=en_US)
+- [Is Rancher Support only for RKE-provisioned clusters?](https://support.scc.suse.com/s/kb/Rancher-Is-Rancher-Support-only-for-RKE-provisioned-clusters?language=en_US)
 
-   
  
 
 ## Security
 
  
 
-- [How would Rancher Support troubleshoot issues on systems where any external access is not allowed, for reasons of security and compliance?](https://www.suse.com/support/kb/doc/?id=000020475)
-- [How (quickly) does Rancher respond to / resolve industry-reported vulnerabilities?](https://www.suse.com/support/kb/doc/?id=000020476)
-- [Can we run Antivirus on our cluster nodes?](https://www.suse.com/support/kb/doc/?id=000020477)
+- [How would Rancher Support troubleshoot issues on systems where any external access is not allowed, for reasons of security and compliance?](https://support.scc.suse.com/s/kb/Rancher-How-would-Rancher-Support-troubleshoot-issues-on-systems-where-any-external-access-is-not-allowed-for-reasons-of-security-and-compliance?language=en_US)
+- [How (quickly) does Rancher respond to / resolve industry-reported vulnerabilities?](https://support.scc.suse.com/s/kb/Rancher-How-quickly-does-Rancher-respond-to-resolve-industry-reported-vulnerabilities?language=en_US)
+- [Can we run Antivirus on our cluster nodes?](https://support.scc.suse.com/s/kb/Rancher-We-need-to-run-Antivirus-on-our-cluster-nodes-Would-that-impact-the-terms-of-service-of-our-Rancher-Support-SLA?language=en_US)
 
-   
  
 
 ## Included Open Source Software Components
 
  
 
-- [Will Rancher fix the issue and release a patch, if the problem is root-caused in Prometheus and Grafana?](https://www.suse.com/support/kb/doc/?id=000020462)
-- [Is support for Prometheus/Grafana available only with a valid support subscription for Rancher 2.x?](https://www.suse.com/support/kb/doc/?id=000020463)
-- [Will Rancher fix the issue and release a patch, if the problem is root-caused in Jenkins?](https://www.suse.com/support/kb/doc/?id=000020465)
-- [What is the nature of Rancher support for log aggregation services such as Elasticsearch, Splunk, Kafka, Syslog, Fluentd?](https://www.suse.com/support/kb/doc/?id=000020466)
-- [Will Rancher fix problems root-caused to be in nginx?](https://www.suse.com/support/kb/doc/?id=000020467)
-- [Does my Rancher Support cover Prometheus/Grafana deployments that did not originate from Rancher?](https://www.suse.com/support/kb/doc/?id=000020464)
-- [Will Rancher fix the issue and release a patch, if the problem is root-caused in one of the Rancher 2.x CNI plugin add-ons such as Weave, Cisco ACI, Cilium, and Calico?](https://www.suse.com/support/kb/doc/?id=000020468)
-- [Will Rancher fix the issue and release a patch, if the problem is root-caused in Flannel and Canal?](https://www.suse.com/support/kb/doc/?id=000020470)
-- [Will Rancher fix the issue and release a patch, if the problem is root-caused in Istio?](https://www.suse.com/support/kb/doc/?id=000020471)
-- [We came across a mention of Fluentd as a software Rancher provides Support SLA on. Could you clarify what that covers?](https://www.suse.com/support/kb/doc/?id=000020472)
+- [Will Rancher fix the issue and release a patch, if the problem is root-caused in Prometheus and Grafana?](https://support.scc.suse.com/s/kb/Will-Rancher-fix-the-issue-and-release-a-patch-if-the-problem-is-root-caused-in-Prometheus-and-Grafana?language=en_US)
+- [Is support for Prometheus/Grafana available only with a valid support subscription for Rancher 2.x?](https://support.scc.suse.com/s/kb/Is-support-for-Prometheus-Grafana-available-only-with-a-valid-Rancher-support-subscription?language=en_US)
+- [Will Rancher fix the issue and release a patch, if the problem is root-caused in Jenkins?](https://support.scc.suse.com/s/kb/Will-Rancher-fix-the-issue-and-release-a-patch-if-the-problem-is-root-caused-in-Jenkins?language=en_US)
+- [What is the nature of Rancher support for log aggregation services such as Elasticsearch, Splunk, Kafka, Syslog, Fluentd?](https://support.scc.suse.com/s/kb/Rancher-What-is-the-nature-of-Rancher-support-for-log-aggregation-services-such-as-Elasticsearch-Splunk-Kafka-Syslog-Fluentd?language=en_US)
+- [Will Rancher fix problems root-caused to be in nginx?](https://support.scc.suse.com/s/kb/Rancher-Will-Rancher-fix-problems-root-caused-to-be-in-nginx?language=en_US)
+- [Does my Rancher Support cover Prometheus/Grafana deployments that did not originate from Rancher?](https://support.scc.suse.com/s/kb/Rancher-Does-my-Rancher-Support-cover-Prometheus-Grafana-deployments-that-did-not-originate-from-Rancher?language=en_US)
+- [Will Rancher fix the issue and release a patch, if the problem is root-caused in one of the Rancher 2.x CNI plugin add-ons such as Weave, Cisco ACI, Cilium, and Calico?](https://support.scc.suse.com/s/kb/Rancher-Will-Rancher-fix-the-issue-and-release-a-patch-if-the-problem-is-root-caused-in-one-of-the-Rancher-2-x-CNI-plugin-add-ons-such-as-Weave-Cisco-ACI-Cilium-and-Calico?language=en_US)
+- [Will Rancher fix the issue and release a patch, if the problem is root-caused in Flannel and Canal?](https://support.scc.suse.com/s/kb/Rancher-Will-Rancher-fix-the-issue-and-release-a-patch-if-the-problem-is-root-caused-in-Flannel-and-Canal?language=en_US)
+- [Will Rancher fix the issue and release a patch, if the problem is root-caused in Istio?](https://support.scc.suse.com/s/kb/Rancher-Will-Rancher-fix-the-issue-and-release-a-patch-if-the-problem-is-root-caused-in-Istio?language=en_US)
+- [We came across a mention of Fluentd as a software Rancher provides Support SLA on. Could you clarify what that covers?](https://support.scc.suse.com/s/kb/Rancher-We-came-across-a-mention-of-Fluentd-as-a-software-Rancher-provides-Support-SLA-on-Could-you-clarify-what-that-covers?language=en_US)
 
    
  
@@ -10670,20 +10662,19 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
  
 
-- [Would  Rancher Support provide assistance if we use components that are not listed in the Rancher support matrix?](https://www.suse.com/support/kb/doc/?id=000020478)
-- [Would Rancher Support provide assistance if we change the default configurations of one or more of these components listed in Rancher support matrix?](https://www.suse.com/support/kb/doc/?id=000020479)
+- [Would  Rancher Support provide assistance if we use components that are not listed in the Rancher support matrix?](https://support.scc.suse.com/s/kb/Rancher-We-use-components-that-are-not-listed-in-the-Rancher-support-matrix-Would-Rancher-Support-be-not-valid-then?language=en_US)
+- [Would Rancher Support provide assistance if we change the default configurations of one or more of these components listed in Rancher support matrix?](https://support.scc.suse.com/s/kb/Would-Rancher-Support-provide-assistance-if-we-change-the-default-configurations-of-one-or-more-of-these-components-listed-in-Rancher-support-matrix?language=en_US)
 
-   
  
 
 ## Certified Integrations
 
  
 
-- [What are the certified integrations with persistent volume plugins covered by Rancher Support?](https://www.suse.com/support/kb/doc/?id=000020480)
-- [What are the certified integrations with storage class provisioners covered by Rancher Support?](https://www.suse.com/support/kb/doc/?id=000020481)
-- [What are the certified integrations with authentication providers covered by Rancher Support?](https://www.suse.com/support/kb/doc/?id=000020482)
-- [Could you clarify what you generally mean by a "certified integration" to another software system or service?](https://www.suse.com/support/kb/doc/?id=000020483)
+- [What are the certified integrations with persistent volume plugins covered by Rancher Support?](https://support.scc.suse.com/s/kb/Rancher-What-are-the-certified-integrations-with-persistent-volume-plugins-covered-by-Rancher-Support?language=en_US)
+- [What are the certified integrations with storage class provisioners covered by Rancher Support?](https://support.scc.suse.com/s/kb/Rancher-What-are-the-certified-integrations-with-storage-class-provisioners-covered-by-Rancher-Support?language=en_US)
+- [What are the certified integrations with authentication providers covered by Rancher Support?](https://support.scc.suse.com/s/kb/Rancher-What-are-the-certified-integrations-with-authentication-providers-covered-by-Rancher-Support?language=en_US)
+- [Could you clarify what you generally mean by a "certified integration" to another software system or service?](https://support.scc.suse.com/s/kb/Rancher-Could-you-clarify-what-you-generally-mean-by-a-certified-integration-to-another-software-system-or-service?language=en_US)
 
  
 
@@ -10691,9 +10682,9 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
  
 
-- [Does Rancher Support covers OpenStack clusters?](https://www.suse.com/support/kb/doc/?id=000020491)
-- [I see node drivers tagged as "Built-in". What does that mean?](https://www.suse.com/support/kb/doc/?id=000020493)
-- [I see some node drivers tagged as "Active" when I install Rancher. What does this mean?](https://www.suse.com/support/kb/doc/?id=000020494)
+- [Does Rancher Support covers OpenStack clusters?](https://support.scc.suse.com/s/kb/Does-Rancher-Support-covers-OpenStack-clusters?language=en_US)
+- [I see node drivers tagged as "Built-in". What does that mean?](https://support.scc.suse.com/s/kb/I-see-node-drivers-tagged-as-Built-in-What-does-that-mean?language=en_US)
+- [I see some node drivers tagged as "Active" when I install Rancher. What does this mean?](https://support.scc.suse.com/s/kb/I-see-some-node-drivers-tagged-as-Active-when-I-install-Rancher-What-does-this-mean?language=en_US)
 
  
 
@@ -10701,7 +10692,7 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
  
 
-- [What are the Kubernetes cloud providers supported by Rancher?](https://www.suse.com/support/kb/doc/?id=000020453)
+- [What are the Kubernetes cloud providers supported by Rancher?](https://support.scc.suse.com/s/kb/What-are-the-Kubernetes-cloud-providers-supported-by-Rancher?language=en_US)
 
  
 
@@ -10709,16 +10700,15 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
  
 
-- [I filed an RFE as a support case. What should I expect on how it will be followed up on?](https://www.suse.com/support/kb/doc/?id=000020434)
+- [I filed an RFE as a support case. What should I expect on how it will be followed up on?](https://support.scc.suse.com/s/kb/Rancher-I-filed-an-RFE-as-a-support-case-What-should-I-expect-on-how-it-will-be-followed-up-on?language=en_US)
 
-   
  
 
 ## Localization
 
  
 
-- [What language(s) is Rancher Support service offered in?](https://www.suse.com/support/kb/doc/?id=000020460)
+- [What language(s) is Rancher Support service offered in?](https://support.scc.suse.com/s/kb/Rancher-What-language-s-is-Rancher-Support-service-offered-in?language=en_US)
 
  
 
@@ -10726,12 +10716,11 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
  
 
-- [Does my support subscription to Rancher include support for Longhorn?](https://www.suse.com/support/kb/doc/?id=000020495)
-- [Can we have a mix of unsupported and supported nodes at our choice/discretion?](https://www.suse.com/support/kb/doc/?id=000020496)
-- [Can we have a mix of unsupported and supported clusters at our choice/discretion?](https://www.suse.com/support/kb/doc/?id=000020497)
-- [How does Rancher track our license usage?](https://www.suse.com/support/kb/doc/?id=000020498)
-- [Is Rancher Support only for production environments?](https://www.suse.com/support/kb/doc/?id=000020499)
-- [Does my Rancher Prime Support subscription for production environment also covers testing and staging environments?](https://www.suse.com/support/kb/doc/?id=000020500)
+- [Does my support subscription to Rancher include support for Longhorn?](https://support.scc.suse.com/s/kb/Rancher-Does-my-support-subscription-to-Rancher-include-support-for-Longhorn?language=en_US)
+- [Can we have a mix of unsupported and supported nodes at our choice/discretion?](https://support.scc.suse.com/s/kb/Rancher-Can-we-have-a-mix-of-unsupported-and-supported-nodes-at-our-choice-discretion?language=en_US)
+- [How does Rancher track our license usage?](https://support.scc.suse.com/s/kb/How-does-Rancher-track-our-license-usage?language=en_US)
+- [Is Rancher Support only for production environments?](https://support.scc.suse.com/s/kb/Is-Rancher-Prime-support-only-for-production-environments?language=en_US)
+- [Does my Rancher Prime Support subscription for production environment also covers testing and staging environments?](https://support.scc.suse.com/s/kb/Does-my-Rancher-Prime-Support-subscription-for-production-environment-also-covers-testing-and-staging-enviroments?language=en_US)
 
  
 
@@ -10739,7 +10728,7 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 
  
 
-- [What about support for Harvester, Longhorn, Rancher Desktop, Opni?](https://www.suse.com/support/kb/doc/?id=000020454)
+- [What about support for Harvester, Longhorn, Rancher Desktop, Opni?](https://support.scc.suse.com/s/kb/What-about-support-for-Harvester-Longhorn-Rancher-Desktop-Opni?language=en_US)
 
 
 
