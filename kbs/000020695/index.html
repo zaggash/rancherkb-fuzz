@@ -15129,7 +15129,7 @@
 <ol>
 <li>Click on the node and select <code>View in API</code>, click the delete button for the object</li>
 <li>If this does not succeed, using <code>kubectl</code> or the Cluster Explorer for the Rancher local cluster, edit the corresponding <code>nodes.management.cattle.io</code> object in the namespace that matches the downstream cluster ID to remove the <code>finalizers</code> field</li>
-<li>Add a clean node back to the cluster with the <code>all</code> role (control plane, etcd, worker). The IP address does not have to match any of the previous nodes. If the node has previously been used in a cluster, use the <a href="https://www.suse.com/support/kb/doc/?id=000020162">extended cleanup script steps</a> to remove any previous configuration.</li>
+<li>Add a clean node back to the cluster with the <code>all</code> role (control plane, etcd, worker). The IP address does not have to match any of the previous nodes. If the node has previously been used in a cluster, use the <a href="https://support.scc.suse.com/s/kb/360042000771?language=en_US">extended cleanup script steps</a> to remove any previous configuration.</li>
 </ol>
 </blockquote>
 <p>The newly added node will fail to successfully register to the downstream cluster, it won't proceed past "Waiting to register with Kubernetes", this is normal.
