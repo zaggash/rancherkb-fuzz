@@ -12298,7 +12298,7 @@ Please use the following steps as a guideline to recover the cluster, from this 
    > 
    > 1. Click on the node and select `View in API`, click the delete button for the object
    > 2. If this does not succeed, using `kubectl` or the Cluster Explorer for the Rancher local cluster, edit the corresponding `nodes.management.cattle.io` object in the namespace that matches the downstream cluster ID to remove the `finalizers` field
-3. Add a clean node back to the cluster with the `all` role (control plane, etcd, worker). The IP address does not have to match any of the previous nodes. If the node has previously been used in a cluster, use the [extended cleanup script steps](https://www.suse.com/support/kb/doc/?id=000020162) to remove any previous configuration.
+3. Add a clean node back to the cluster with the `all` role (control plane, etcd, worker). The IP address does not have to match any of the previous nodes. If the node has previously been used in a cluster, use the [extended cleanup script steps](https://support.scc.suse.com/s/kb/360042000771?language=en_US) to remove any previous configuration.
    
    The newly added node will fail to successfully register to the downstream cluster, it won't proceed past "Waiting to register with Kubernetes", this is normal.
 4. Copy the snapshot into place on the new node, under the `/opt/rke/etcd-snapshots` directory structure.
