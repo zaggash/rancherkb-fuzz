@@ -685,7 +685,7 @@ For more information, refer to comments on https://github.com/rancher/rke2/issue
 Kubernetes removed PodSecurityPolicy from v1.25 in favor of Pod Security Standards. You can read more about PSS in the [upstream documentation](https://kubernetes.io/docs/concepts/security/pod-security-standards/). For RKE2, there are some manual steps that must be taken if the `profile` flag has been set on the nodes.
 
 1. On all nodes, update the `profile` value to `cis-1.23`, but do not restart or upgrade RKE2 yet.
-2. Perform the upgrade as normal. If using [Automated Upgrades](./upgrades/automated_upgrade.md), ensure that the namespace where the `system-upgrade-controller` pod is running in is setup to be privileged in accordance with the [Pod Security levels](https://kubernetes.io/docs/concepts/security/pod-security-admission/#pod-security-levels):
+2. Perform the upgrade as normal. If using [Automated Upgrades](./upgrades/automated.md), ensure that the namespace where the `system-upgrade-controller` pod is running in is setup to be privileged in accordance with the [Pod Security levels](https://kubernetes.io/docs/concepts/security/pod-security-admission/#pod-security-levels):
 ```yaml
 apiVersion: v1
 kind: Namespace
@@ -2646,7 +2646,7 @@ cat /var/lib/rancher/rke2/server/token
 
 ---
 
-## Article: upgrades/automated_upgrade.md
+## Article: upgrades/automated.md
 
 ---
 title: Automated Upgrades
@@ -2654,78 +2654,73 @@ title: Automated Upgrades
 
 ## Overview
 
-You can manage RKE2 cluster upgrades using Rancher's system-upgrade-controller. This is a Kubernetes-native approach to cluster upgrades. It leverages a [custom resource definition (CRD)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#custom-resources), the `plan`, and a [controller](https://kubernetes.io/docs/concepts/architecture/controller/) that schedules upgrades based on the configured plans.
+You can manage RKE2 cluster upgrades using Rancher's system-upgrade-controller. This is a Kubernetes-native approach to cluster upgrades. It leverages a [`Plan`](https://github.com/rancher/system-upgrade-controller/blob/master/doc/plan.md#planspec) Custom Resource to declaratively describe what nodes to upgrade, and to what version.
 
-A plan defines upgrade policies and requirements. This documentation will provide plans with defaults appropriate for upgrading a rke2 cluster. For more advanced plan configuration options, please review the [CRD](https://github.com/rancher/system-upgrade-controller/blob/master/pkg/apis/upgrade.cattle.io/v1/types.go).
+The plan defines upgrade policies and requirements. It also defines which nodes should be upgraded through a [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/). See below for plans with defaults appropriate for upgrading a RKE2 cluster. For more advanced plan configuration options, see the Plan documentation linked above.
 
-The controller schedules upgrades by monitoring plans and selecting nodes to run upgrade [jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) on. A plan defines which nodes should be upgraded through a [label selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/). When a job has run to completion successfully, the controller will label the node on which it ran accordingly.
+The System Upgrade controller schedules upgrades by monitoring plans and selecting nodes to run upgrade [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) on. When a Job has run to completion successfully, the controller will label the node on which it ran accordingly.
 
->**Note:** The upgrade job that is launched must be highly privileged. It is configured with the following:
->
-- Host `IPC`, `NET`, and `PID` namespaces
-- The `CAP_SYS_BOOT` capability
-- Host root mounted at `/host` with read and write permissions
+:::warning
+If the RKE2 cluster is managed by Rancher, you should use the Rancher UI to manage upgrades.
+- If the RKE2 cluster was imported (registered) into Rancher, Rancher will by default manage the system-upgrade-controller deployment and plans. Do not follow the steps on this page unless you have disabled version management in Rancher.  
+  See [Configuring Version Management for RKE2 and RKE2 Clusters](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/register-existing-clusters#configuring-version-management-for-rke2-and-k3s-clusters) for more information.
+- If the RKE2 cluster was provisioned by Rancher, Rancher will use system agent to manage version upgrades. Do not follow the steps on this page.
+- If the RKE2 cluster is *not* managed by Rancher, you may follow the steps below.
+:::
 
-For more details on the design and architecture of the system-upgrade-controller or its integration with rke2, see the following Git repositories:
+## Using the System Upgrade Controller
+
+To automate upgrades , you must do the following:
+
+1. Install the system-upgrade-controller into your cluster
+1. Create plans describing which groups of nodes to upgrade, and how.
+
+For more details on the design and architecture of the system-upgrade-controller or its integration with RKE2, see the following Git repositories:
 
 - [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller)
 - [rke2-upgrade](https://github.com/rancher/rke2-upgrade)
 
-To automate upgrades in this manner you must:
-
-1. Install the system-upgrade-controller into your cluster
-2. Configure plans
-
 :::tip
-When attempting to upgrade to a new version of RKE2, the [Kubernetes version skew policy](https://kubernetes.io/docs/setup/release/version-skew-policy/) applies. Ensure that your plan does not skip intermediate minor versions when upgrading. The system-upgrade-controller itself will not protect against unsupported changes to the Kubernetes version.
+When attempting to upgrade to a new version of RKE2, the [Kubernetes version skew policy](https://kubernetes.io/releases/version-skew-policy/) applies. Ensure that your plan does not skip intermediate minor versions when upgrading. The system-upgrade-controller itself will not protect against unsupported changes to the Kubernetes version.
 :::
 
-:::warning
-Automated upgrades are currently not supported on Windows nodes
-:::
+### Installation
 
-## Install the system-upgrade-controller
-The system-upgrade-controller can be installed as a deployment into your cluster. The deployment requires a service-account, clusterRoleBinding, and a configmap. To install these components, run the following command:
-```
-kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
-```
-The controller can be configured and customized via the previously mentioned configmap, but the controller must be redeployed for the changes to be applied.
+ The system-upgrade-controller manifest installs a custom resource definition, deployment, service account, cluster role binding, and configmap. To install these components, run the following command:
 
-To be able to apply plans, the system-upgrade-controller CRD needs to be deployed:
+```bash
+kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/crd.yaml -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
 ```
-kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/crd.yaml
-```
+The controller can be configured and customized via the previously mentioned configmap, but the controller pod must be deleted for the changes to be applied.
 
+### Configuration
+Server nodes should always be upgraded before agent nodes.
+For this reason, it is recommended you create at least two plans: a plan for upgrading server (control-plane) nodes, and a plan for upgrading agent nodes.
+You can create additional plans as needed to control the rollout of the upgrade across nodes.
+Once the plans are created, the controller will pick them up and begin to upgrade your cluster.  
 
-## Configure plans
-It is recommended that you minimally create two plans: a plan for upgrading server (master / control-plane) nodes and a plan for upgrading agent (worker) nodes. As needed, you can create additional plans to control the rollout of the upgrade across nodes. The following two example plans will upgrade your cluster to rke2 v1.30.1+rke2r1. Once the plans are created, the controller will pick them up and begin to upgrade your cluster.
-```
+The following two example plans will continuously keep your your cluster upgraded to the current stable release, by targeting the stable [release channel](manual.md#release-channels):
+
+```yaml
 # Server plan
 apiVersion: upgrade.cattle.io/v1
 kind: Plan
 metadata:
   name: server-plan
   namespace: system-upgrade
-  labels:
-    rke2-upgrade: server
 spec:
   concurrency: 1
+  cordon: true
   nodeSelector:
     matchExpressions:
-       # When using k8s version 1.19 or older, swap control-plane with master
-       - {key: node-role.kubernetes.io/control-plane, operator: In, values: ["true"]}
-  tolerations:
-  - key: "CriticalAddonsOnly"
-    operator: "Equal"
-    value: "true"
-    effect: "NoExecute"
+    - key: node-role.kubernetes.io/control-plane
+      operator: In
+      values:
+      - "true"
   serviceAccountName: system-upgrade
-  cordon: true
-#  drain:
-#    force: true
   upgrade:
     image: rancher/rke2-upgrade
-  version: v1.30.1-rke2r1
+  channel: https://update.rke2.io/v1-release/channels/stable
 ---
 # Agent plan
 apiVersion: upgrade.cattle.io/v1
@@ -2733,69 +2728,94 @@ kind: Plan
 metadata:
   name: agent-plan
   namespace: system-upgrade
-  labels:
-    rke2-upgrade: agent
 spec:
-  concurrency: 2
+  concurrency: 1
+  cordon: true
   nodeSelector:
     matchExpressions:
-      - {key: kubernetes.io/os, operator: In, values: ["linux"]}
-      # When using k8s version 1.19 or older, swap control-plane with master
-      - {key: node-role.kubernetes.io/control-plane, operator: NotIn, values: ["true"]}
-      # Optionally limit the upgrade to nodes that have an "rke2-upgrade" label, and
-      # exclude nodes where the label value is "disabled" or "false". To upgrade all
-      # agent nodes, remove the following two items.
-      - {key: rke2-upgrade, operator: Exists}
-      - {key: rke2-upgrade, operator: NotIn, values: ["disabled", "false"]}
+    - key: node-role.kubernetes.io/control-plane
+      operator: DoesNotExist
   prepare:
     args:
     - prepare
     - server-plan
     image: rancher/rke2-upgrade
   serviceAccountName: system-upgrade
-  cordon: true
-  drain:
-    force: true
   upgrade:
     image: rancher/rke2-upgrade
-  version: v1.30.1-rke2r1
-
+  channel: https://update.rke2.io/v1-release/channels/stable
 ```
-
 
 There are a few important things to call out regarding these plans:
 
 1. The plans must be created in the same namespace where the controller was deployed.
-
 2. The `concurrency` field indicates how many nodes can be upgraded at the same time. 
+3. The server-plan targets server nodes by specifying a label selector that selects nodes with the `node-role.kubernetes.io/control-plane` label. The agent-plan targets agent nodes by specifying a label selector that select nodes without that label.
+4. The `prepare` step in the agent-plan will cause upgrade jobs for that plan to wait for the server-plan to complete before they execute. This logic is built into the image used for the prepare step, and is not part of system-upgrade-controller itself.
+5. Both plans have the `channel` field set to the stable release channel URL. This will cause the controller to monitor that URL and upgrade the cluster any time it resolves to a new release. This works well with the [release channels](manual.md#release-channels). Thus, you can configure your plans with the following channel to ensure your cluster is always automatically upgraded to the newest stable release of RKE2. Alternatively, you can omit the `channel` field and set the `version` field to a specific release of RKE2:
+   ```yaml
+   apiVersion: upgrade.cattle.io/v1
+   kind: Plan
+   # ...
+   spec:
+     # ...
+     version: v1.33.4+rke2r1
+   ```
 
-3. The server-plan targets server nodes by specifying a label selector that selects nodes with the `node-role.kubernetes.io/control-plane` label (`node-role.kubernetes.io/master` for 1.19 or older). The agent-plan targets agent nodes by specifying a label selector that select nodes without that label. Optionally, additional labels can be included, like in the example above, which requires label "rke2-upgrade" to exist and not have the value "disabled" or "false".
-
-4. The `prepare` step in the agent-plan will cause upgrade jobs for that plan to wait for the server-plan to complete before they execute.
-
-5. Both plans have the `version` field set to v1.30.1+rke2r1. Alternatively, you can omit the `version` field and set the `channel` field to a URL that resolves to a release of rke2. This will cause the controller to monitor that URL and upgrade the cluster any time it resolves to a new release. This works well with the [release channels](manual_upgrade.md#release-channels). Thus, you can configure your plans with the following channel to ensure your cluster is always automatically upgraded to the newest stable release of rke2:
-```
-apiVersion: upgrade.cattle.io/v1
-kind: Plan
-...
-spec:
-  ...
-  channel: https://update.rke2.io/v1-release/channels/stable
-
-```
-
-As stated, the upgrade will begin as soon as the controller detects that a plan was created. Updating a plan will cause the controller to re-evaluate the plan and determine if another upgrade is needed.
+The upgrade will begin as soon as the controller detects the target version for a plan has been resolved, either from the version field, or by polling the channel server.
+Modifying a plan will cause the controller to re-evaluate the plan and determine if another upgrade is needed.
+If a channel has been configured, the URL is also polled periodically to check for new versions.
 
 You can monitor the progress of an upgrade by viewing the plan and jobs via kubectl:
+```bash
+kubectl -n system-upgrade get plans -o wide
+kubectl -n system-upgrade get jobs
 ```
-kubectl -n system-upgrade get plans -o yaml
-kubectl -n system-upgrade get jobs -o yaml
+
+### Scheduling Upgrades
+
+Plans can be restricted to occurring within a specific time window by setting the `window` field within the plan spec.
+The time window fields are compatible with and take the same format as [kured schedule options](https://kured.dev/docs/configuration/#setting-a-schedule).
+For example:
+```yaml
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+# ...
+spec:
+  # ...
+  window:
+    days:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+    startTime: 19:00
+    endTime: 21:00
+    timeZone: UTC
 ```
+
+Jobs to execute upgrades for a plan will not be created outside the time window. Once jobs are created, may continue running once the window has closed.
+
+## Downgrade Prevention
+
+Kubernetes does not support downgrades of control-plane components. The rke2-upgrade image used by upgrade plans does not currently include any checks to prevent a Plan from downgrading the Kubernetes version.
+
+Clusters provisioned by Rancher may be downgraded alongside restoration of an etcd snapshot that contains data that is guaranteed to be usable by the target version of Kubernetes. For more information, see the Rancher docs.
+
+Clusters not provisioned by Rancher may be manually rolled back to a prior release accompanied by restoration of an etcd snapshot. For more information, see [Rolling Back RKE2](roll-back.md).
+
+## Security
+The upgrade job that is launched must be highly privileged in order to effect change to the underlying nodes. By default, it is configured with the following:
+- Host `IPC`, `NET`, and `PID` namespaces
+- The `CAP_SYS_BOOT` capability
+- Host root mounted at `/host` with read and write permissions
+
 
 
 ---
 
-## Article: upgrades/manual_upgrade.md
+## Article: upgrades/manual.md
 
 ---
 title: Manual Upgrades
@@ -2810,7 +2830,7 @@ Upgrade the server nodes first, one at a time. Once all servers have been upgrad
 
 ## Release Channels
 
-Upgrades performed via the installation script or using our [automated upgrades](automated_upgrade.md) feature can be tied to different release channels. The following channels are available:
+Upgrades performed via the installation script or using our [automated upgrades](automated.md) feature can be tied to different release channels. The following channels are available:
 
 | Channel         |   Description  |
 |-----------------|---------|
@@ -3110,9 +3130,9 @@ title: Upgrading RKE2 Clusters
 
 This section describes how to upgrade your rke2 cluster.
 
-[Manual Upgrades](manual_upgrade.md) describes several techniques for upgrading your cluster manually. It can also be used as a basis for upgrading through third-party Infrastructure-as-Code tools like [Terraform](https://www.terraform.io/).
+[Manual Upgrades](manual.md) describes several techniques for upgrading your cluster manually. It can also be used as a basis for upgrading through third-party Infrastructure-as-Code tools like [Terraform](https://www.terraform.io/).
 
-[Automated Upgrades](automated_upgrade.md) describes how to perform Kubernetes-native automated upgrades using Rancher's [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller).
+[Automated Upgrades](automated.md) describes how to perform Kubernetes-native automated upgrades using Rancher's [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller).
 
 
 ---
@@ -31651,12 +31671,12 @@ INSTALL_RKE2_ARTIFACT_PATH=/root/rke2-artifacts sh install.sh
 Upgrading an air-gap environment can be accomplished in the following manner:
 
 1. Download the new air-gap images (tar files) from the [releases](https://github.com/rancher/rke2/releases) page for the version of RKE2 you will be upgrading to. Place the tar in the `/var/lib/rancher/rke2/agent/images/` directory on each node. Delete the old tar files.
-2. Follow the steps of the [manual upgrade method](../upgrades/manual_upgrade.md#manually-upgrade-rke2-using-the-binary)
+2. Follow the steps of the [manual upgrade method](../upgrades/manual.md#manually-upgrade-rke2-using-the-binary)
 
 </TabItem>
 <TabItem value="Automated Upgrade">
 
-RKE2 supports [automated upgrades](../upgrades/automated_upgrade.md). To enable this in air-gapped environments, you must ensure the required images are available in your private registry.
+RKE2 supports [automated upgrades](../upgrades/automated.md). To enable this in air-gapped environments, you must ensure the required images are available in your private registry.
 
 You will need the version of rancher/rke2-upgrade that corresponds to the version of RKE2 you intend to upgrade to. Note, the image tag replaces the `+` in the RKE2 release with a `-` because Docker images do not support `+`.
 
@@ -31667,7 +31687,7 @@ rancher/system-upgrade-controller:v0.15.2
 rancher/kubectl:v1.30.3
 ```
 
-Once you have added the necessary rancher/rke2-upgrade, rancher/system-upgrade-controller, and rancher/kubectl images to your private registry, follow the [automated upgrades](../upgrades/automated_upgrade.md) guide.
+Once you have added the necessary rancher/rke2-upgrade, rancher/system-upgrade-controller, and rancher/kubectl images to your private registry, follow the [automated upgrades](../upgrades/automated.md) guide.
 
 </TabItem>
 </Tabs>
