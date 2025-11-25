@@ -3151,35 +3151,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -8832,28 +8826,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -29666,4 +29666,108 @@ References
 - [Longhorn Install with Helm Controller Longhorn](https://longhorn.io/docs/1.10.0/deploy/install/install-with-helm-controller/)
 - [RKE2 Air‑Gap Install Guide](https://docs.rke2.io/install/airgap)
 - [Longhorn Upgrade Guide — “Upgrade with Helm Controller”](https://longhorn.io/docs/1.10.0/deploy/upgrade/longhorn-manager/#upgrade-with-helm-controller) [Longhorn](https://longhorn.io/docs/1.10.0/deploy/upgrade/longhorn-manager/?utm_source=chatgpt.com)
+
+
+
+---
+
+## Article: 000022178.md
+
+# Configuring kube-proxy to use the nftables iptables backend with RKE2
+
+**Article Number:** [000022178](https://support.scc.suse.com/s/kb/Configuring-kube-proxy-to-use-the-nftables-iptables-backend-in-RKE2)
+
+## **Environment**
+
+RKE2
+
+## **Situation**
+
+In some circumstances, the auto-detection of the iptables backend used by `kube-proxy` may switch between the **legacy** and **nftables** backends. This can result in inconsistent or missing NAT rules, causing network communication issues between pods, services, or nodes.  
+This article explains how to explicitly configure `kube-proxy` to use the **nftables** (modern) backend by setting the `IPTABLES_MODE` environment variable.
+
+You may observe one or more of the following symptoms:
+
+- The `iptables` NAT table appears incomplete or missing expected rules
+- Traffic between pods or services intermittently fails
+- The node's OS uses the **nftables** backend (`iptables-nft` package), but `kube-proxy` is managing rules with the **legacy** backend
+
+This can be confirmed on RKE2 nodes where the issue is suspected:
+
+- List all of the kube-proxy pods:
+
+```markup
+kubectl get pods -n kube-system -l component=kube-proxy -o wide
+```
+
+- Update the commands to run the kubectl exec commands on the kube-proxy pod of the related node(s):
+
+```markup
+kubectl exec -it -n kube-system kube-proxy-xxxx -- /usr/sbin/iptables-legacy-save
+  # Compare with nft
+kubectl exec -it -n kube-system kube-proxy-xxxx -- /usr/sbin/iptables-nft-save
+```
+
+- The output for legacy should either not contain any rules, or only the default chains with no rules. The threshold for auto-detection is 10 rules, so there should at least be fewer than 10 legacy rules
+- Review any legacy rules, if the rules are not added by any Kubernetes components, these custom rules should be updated to ensure they are added to the NFT backend. Avoiding these legacy rules may be related to the auto-detection switching to the legacy backend
+
+## **Cause**
+
+CNI's, runtimes and kube-proxy rely on internal logic to detect the iptables mode (`nft` or `legacy`) in use on the OS. In some corner cases, this auto-detection can fail and use the incorrect backend — for example:
+
+- When both legacy and nft iptables binaries are installed (`/usr/sbin/iptables` and `/usr/sbin/iptables-legacy`) and may be used by different scripts, applications or incorrectly symlinked. As mentioned above, the 10 rule threshold could be met if custom rules are added to the incorrect backed
+- When the system alternates between iptables providers during OS updates or security patching
+- If the OS is heavily contended for resources the auto-detection logic may fail during startup and default to the incorrect backend
+
+This can lead to **inconsistent NAT rule management** — kube-proxy writes rules to one backend (e.g., legacy) while the kernel actually uses nftables rules already in place.
+
+## **Resolution**
+
+If the auto-detection has switched, as a preventative measure it is recommended to ensure consistent networking behaviour and explicitly pin `kube-proxy` to use the nftables backend in all nodes in the cluster, this can be accomplished by [setting the environment variable](https://docs.rke2.io/reference/linux_agent_config#components) `IPTABLES_MODE=nft`.
+
+## Steps (via Rancher UI)
+
+1. In the Rancher UI, go to **Cluster Management** → **Clusters**
+2. Select the affected **downstream cluster**
+3. Click **⋮ → Edit Config**
+4. Choose **Edit as YAML**
+5. Locate the `machineGlobalConfig` section and add the following:
+   
+   ```markup
+   machineGlobalConfig:
+     # existing configuration
+     kube-proxy-extra-env:
+       - IPTABLES_MODE=nft
+   ```
+6. Click **Save**  
+   The configuration will roll out to each node, and the `kube-proxy` pods will automatically restart with the updated environment variable
+
+> **Note** the same change can be accomplished on standalone clusters that aren't managed by Rancher, by adding [the same kube-proxy-extra-env field](https://docs.rke2.io/reference/linux_agent_config#components) in the config.yaml of each node. The rke2-agent/server service will need to be restarted to apply the change
+
+## Verification
+
+After the configuration is applied:
+
+1. Check that `kube-proxy` is running with the correct environment:
+   
+   ```markup
+   kubectl -n kube-system exec -it kube-proxy-xxxx -- env | grep IPTABLES_MODE
+   ```
+   
+   Expected output:
+   
+    
+   
+   `IPTABLES_MODE=nft`
+2. Confirm that NAT rules are populated and accurate under nftables:
+   
+   ```markup
+   kubectl exec -it -n kube-system kube-proxy-xxxx -- /usr/sbin/iptables-nft -nvL
+   ```
+   
+   or on the node directly
+   
+   ```markup
+   nft list ruleset | grep KUBE-
+   ```
 
