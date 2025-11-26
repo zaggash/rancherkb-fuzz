@@ -8826,34 +8826,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -11819,55 +11813,55 @@ SUSE will continue to keep you updated with related news on the roadmap from our
 
 ## General
 
-- [What is Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020155)
-- [What do I need to provide to get started on Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020023)
-- [Do you have a whitepaper available for Rancher Prime Hosted?](https://www.suse.com/support/kb/doc/?id=000020557)
-- [Can I move from self-managed Rancher to Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020040)
-- [What if I no longer want Rancher Prime Hosted to manage my downstream clusters?](https://www.suse.com/support/kb/doc/?id=000020559)
-- [Is it possible to have alpha, beta, or release candidate (RC) versions on Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020087)
-- [Can Rancher Prime Hosted manage my on-premise clusters running on VMWare or bare metal servers?](https://www.suse.com/support/kb/doc?id=000020090)
-- [Is there any limit on the number of downstream clusters or nodes Rancher Prime Hosted can manage?](https://www.suse.com/support/kb/doc?id=000020091)
-- [Do I have access to the Rancher Prime Hosted "local" cluster in the management UI?](https://www.suse.com/support/kb/doc?id=000020096)
-- [Where is Rancher Prime Hosted hosted?](https://www.suse.com/support/kb/doc?id=000020127)
-- [Can I have more than one Rancher Prime Hosted environment?](https://www.suse.com/support/kb/doc?id=000020130)
-- [What type of cluster is Rancher Prime Hosted running on?](https://www.suse.com/support/kb/doc?id=000020136)
-- [Does Rancher Prime Hosted provide downstream clusters?](https://www.suse.com/support/kb/doc?id=000020150)
-- [Can I move an existing cluster to Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020156)
-- [How is Rancher Prime Hosted different from the open-source Rancher I can download for free?](https://www.suse.com/support/kb/doc?id=000020093)
+- [What is Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360041905472)
+- [What do I need to provide to get started on Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360059094992)
+- [Do you have a whitepaper available for Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/Do-you-have-a-whitepaper-available-for-Rancher-Hosted-Prime)
+- [Can I move from self-managed Rancher to Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360054671072)
+- [What if I no longer want Rancher Prime Hosted to manage my downstream clusters?](https://support.scc.suse.com/s/kb/What-if-I-no-longer-want-Rancher-Hosted-Prime-to-manage-my-downstream-clusters)
+- [Is it possible to have alpha, beta, or release candidate (RC) versions on Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360050604391)
+- [Can Rancher Prime Hosted manage my on-premise clusters running on VMWare or bare metal servers?](https://support.scc.suse.com/s/kb/360045694392)
+- [Is there any limit on the number of downstream clusters or nodes Rancher Prime Hosted can manage?](https://support.scc.suse.com/s/kb/360046117931)
+- [Do I have access to the Rancher Prime Hosted "local" cluster in the management UI?](https://support.scc.suse.com/s/kb/360045694332)
+- [Where is Rancher Prime Hosted hosted?](https://support.scc.suse.com/s/kb/360044335491)
+- [Can I have more than one Rancher Prime Hosted environment?](https://support.scc.suse.com/s/kb/360044335431)
+- [What type of cluster is Rancher Prime Hosted running on?](https://support.scc.suse.com/s/kb/360043119391)
+- [Does Rancher Prime Hosted provide downstream clusters?](https://support.scc.suse.com/s/kb/360042522612)
+- [Can I move an existing cluster to Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360041905452)
+- [How is Rancher Prime Hosted different from the open-source Rancher I can download for free?](https://support.scc.suse.com/s/kb/360045694352)
 
 ## Maintenance &amp; Operations
 
-- [Who creates user accounts in Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020059)
-- [How is my Rancher Prime Hosted environment monitored?](https://www.suse.com/support/kb/doc?id=000020085)
-- [How often is maintenance performed on Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020086)
-- [Can the admin password be reset if I’m locked out of my Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020088)
-- [Who upgrades Kubernetes on my Rancher Prime Hosted downstream clusters?](https://www.suse.com/support/kb/doc?id=000020089)
-- [Does Rancher Prime Hosted offer a support SLA?](https://www.suse.com/support/kb/doc?id=000020131)
-- [How often are backups taken and retained on Rancher Prime Hosted?](https://www.suse.com/support/kb/doc/?id=000020132)
+- [Who creates user accounts in Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360054834991)
+- [How is my Rancher Prime Hosted environment monitored?](https://support.scc.suse.com/s/kb/360050138132)
+- [How often is maintenance performed on Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360050604411)
+- [Can the admin password be reset if I’m locked out of my Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360045694432)
+- [Who upgrades Kubernetes on my Rancher Prime Hosted downstream clusters?](https://support.scc.suse.com/s/kb/360045694412)
+- [Does Rancher Prime Hosted offer a support SLA?](https://support.scc.suse.com/s/kb/360043881192)
+- [How often are backups taken and retained on Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360043881172)
 
 ## Upgrades &amp; Uptime
 
-- [What can be expected during a Rancher Prime Hosted upgrade?](https://www.suse.com/support/kb/doc/?id=000020558)
-- [How often is Rancher Prime Hosted upgraded?](https://www.suse.com/support/kb/doc?id=000020092)
-- [How is uptime measured for my Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020128)
-- [Does Rancher Prime Hosted offer an uptime SLA?](https://www.suse.com/support/kb/doc?id=000020129)
+- [What can be expected during a Rancher Prime Hosted upgrade?](https://support.scc.suse.com/s/kb/What-can-be-expected-during-a-Rancher-Hosted-Prime-upgrade)
+- [How often is Rancher Prime Hosted upgraded?](https://support.scc.suse.com/s/kb/360046117911)
+- [How is uptime measured for my Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360043881212)
+- [Does Rancher Prime Hosted offer an uptime SLA?](https://support.scc.suse.com/s/kb/360044335451)
 
 ## Network, Security, &amp; Logging
 
-- [What are the networking requirements for using Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020024)
-- [Can I use my own SSL/TLS certificates with Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020025)
-- [How to connect your Rancher Prime Hosted network to your AWS transit gateway?](https://www.suse.com/support/kb/doc/?id=000020561)
-- [How to make a VPN connection to your Rancher Prime Hosted network?](https://www.suse.com/support/kb/doc/?id=000020562)
-- [Can I integrate Rancher Prime Hosted with my Active Directory, SAML, or LDAP-based directory service?](https://www.suse.com/support/kb/doc?id=000020094)
-- [Does Rancher Prime Hosted support multi-factor authentication (MFA)?](https://www.suse.com/support/kb/doc?id=000020095)
-- [Are API audit logs enabled in Rancher Prime Hosted?](https://www.suse.com/support/kb/doc?id=000020102)
-- [Can I get a copy of the Rancher API audit logs?](https://www.suse.com/support/kb/doc/?id=000020563)
-- [What information is stored in Rancher Prime Hosted and where is it stored?](https://www.suse.com/support/kb/doc?id=000020103)
-- [Do SUSE employees have a login account for my Rancher Prime Hosted environment?](https://www.suse.com/support/kb/doc?id=000020134)
-- [Do SUSE employees have the credentials to my “admin” account?](https://www.suse.com/support/kb/doc?id=000020135)
-- [Is Rancher Prime Hosted data encrypted at rest?](https://www.suse.com/support/kb/doc/?id=000020277)
-- [Is Rancher Prime Hosted SOC2 compliant?](https://www.suse.com/support/kb/doc/?id=000021379)
-- [What permissions does the admin account have in Rancher Prime Hosted?](https://www.suse.com/support/kb/doc/?id=000021832)
+- [What are the networking requirements for using Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360059094972)
+- [Can I use my own SSL/TLS certificates with Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360059524451)
+- [How to connect your Rancher Prime Hosted network to your AWS transit gateway?](https://support.scc.suse.com/s/kb/How-to-connect-your-Rancher-Hosted-Prime-network-to-your-AWS-transit-gateway)
+- [How to make a VPN connection to your Rancher Prime Hosted network?](https://support.scc.suse.com/s/kb/How-to-make-a-VPN-connection-to-your-Rancher-Hosted-Prime-network)
+- [Can I integrate Rancher Prime Hosted with my Active Directory, SAML, or LDAP-based directory service?](https://support.scc.suse.com/s/kb/360046117891)
+- [Does Rancher Prime Hosted support multi-factor authentication (MFA)?](https://support.scc.suse.com/s/kb/360046117871)
+- [Are API audit logs enabled in Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/360044305872)
+- [Can I get a copy of the Rancher API audit logs?](https://support.scc.suse.com/s/kb/Can-I-get-a-copy-of-the-Rancher-API-audit-logs)
+- [What information is stored in Rancher Prime Hosted and where is it stored?](https://support.scc.suse.com/s/kb/360044752171)
+- [Do SUSE employees have a login account for my Rancher Prime Hosted environment?](https://support.scc.suse.com/s/kb/360043119431)
+- [Do SUSE employees have the credentials to my “admin” account?](https://support.scc.suse.com/s/kb/360043119411)
+- [Is Rancher Prime Hosted data encrypted at rest?](https://support.scc.suse.com/s/kb/Is-Rancher-Hosted-Prime-Data-Encrypted-at-Rest)
+- [Is Rancher Prime Hosted SOC2 compliant?](https://support.scc.suse.com/s/kb/Is-Rancher-Prime-Hosted-SOC2-Compliant)
+- [What permissions does the admin account have in Rancher Prime Hosted?](https://support.scc.suse.com/s/kb/What-permissions-does-the-admin-account-have-in-Rancher-Prime-Hosted)
 
 
 
@@ -27937,6 +27931,39 @@ If both formats are present in a single git repository, which takes precedence w
 ## **Resolution**
 
 When an index.yaml file is present on the repository, this takes precedence and Rancher will load the list of charts and the referenced chart archives from the index file. This skips the process of walking the repository directory to build the index dynamically from charts in sub-directories.
+
+
+
+---
+
+## Article: 000022092.md
+
+# IPv6 connection issues when the ICMPv6 Protocol is blocked
+
+**Article Number:** [000022092](https://support.scc.suse.com/s/kb/ICMPv6-Protocol-rules-when-using-IPv6)
+
+## **Environment**
+
+Any RKE2 environment using the IPv6 protocol
+
+## **Situation**
+
+IPv6 connection issues when the ICMPv6 Protocol is blocked
+
+## **Resolution**
+
+When using IPv6 in an RKE2 or K3s cluster and network traffic is restricted due to security policies, please be aware that unlike IPv4, IPv6 relies heavily on the ICMPv6 protocol.
+
+Firewall rules must allow critical ICMPv6 traffic. The following IPv6 CIDR ranges should be open:
+
+- fe80::/10 - for link-local prefixes
+- ff02::/16 - for multicast
+
+This will ensure proper operation of IPv6 features such as neighbor discovery, path MTU discovery, and autoconfiguration.
+
+For information on filterable ICMPv6 message types, [see this link](https://datatracker.ietf.org/doc/html/rfc4890#section-4).
+
+We recommend allowing all types for now, but once you've verified that your policy is working properly, you can consider further restricting traffic to specific ICMPv6 types. These types are specified [here](https://datatracker.ietf.org/doc/html/rfc4890#section-4.3) and [here](https://datatracker.ietf.org/doc/html/rfc4890#section-4.4).
 
 
 
