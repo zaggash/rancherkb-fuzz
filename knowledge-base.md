@@ -10577,7 +10577,7 @@ kubectl delete pod -n cattle-system -l app=rancher-webhook
 - [SUSE Rancher Hosted FAQ](https://support.scc.suse.com/s/kb/Rancher-Prime-Hosted-FAQ)
 - [SUSE Customer Center (SCC)](https://scc.suse.com/login) (Support Portal)
 - [SCC sign-in help](https://myaccount.suse.com/help/login)
-- [Rancher 2.x Linux log collector script](https://support.scc.suse.com/s/kb/https-www-suse-com-support-kb-doc-id-000020191)
+- [Rancher 2.x Linux log collector script](https://support.scc.suse.com/s/kb/The-Rancher-v2-x-Linux-log-collector-script?language=en_US)
 - [Rancher 2.x Windows log collector script](https://support.scc.suse.com/s/kb/360050943552)
 - [Rancher 2.x Systems summary script](https://support.scc.suse.com/s/kb/360039113891)
 
