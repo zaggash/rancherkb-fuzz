@@ -8826,28 +8826,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -29693,6 +29699,62 @@ References
 - [Longhorn Install with Helm Controller Longhorn](https://longhorn.io/docs/1.10.0/deploy/install/install-with-helm-controller/)
 - [RKE2 Air‑Gap Install Guide](https://docs.rke2.io/install/airgap)
 - [Longhorn Upgrade Guide — “Upgrade with Helm Controller”](https://longhorn.io/docs/1.10.0/deploy/upgrade/longhorn-manager/#upgrade-with-helm-controller) [Longhorn](https://longhorn.io/docs/1.10.0/deploy/upgrade/longhorn-manager/?utm_source=chatgpt.com)
+
+
+
+---
+
+## Article: 000022163.md
+
+# How to configure TLS ciphers for Kubernetes components in an RKE2/K3s cluster
+
+**Article Number:** [000022163](https://support.scc.suse.com/s/kb/How-to-configure-TLS-ciphers-for-Kubernetes-components-in-an-RKE2-K3s-cluster)
+
+## **Environment**
+
+- A Rancher-provisioned or standalone RKE2 or K3s cluster
+
+## **Procedure**
+
+It is possible to customise the TLS 1.0 - 1.2 cipher suites that are used by the kube-apiserver, kube-controller-manager, kube-scheduler and kubelet, via the tls-cipher-suites argument. The list of possible ciphers suites can  be found in the Go documentation at [https://pkg.go.dev/crypto/tls#pkg-constants](https://pkg.go.dev/crypto/tls#pkg-constants) Please note that it is not possible to manually configure TLS 1.3 cipher suites, [which is a restriction by design in Go](https://github.com/golang/go/issues/29349#issuecomment-449143820).
+
+**Standalone RKE2 or K3s clusters**
+
+1. Add the tls-cipher-suites argument, with the list of desired cipher suites, to components via the [RKE2](https://docs.rke2.io/install/configuration#multiple-config-files) Or [K3s](https://docs.k3s.io/installation/configuration#configuration-file) configuration file on the cluster nodes. In the example below, the argument is set on the kube-controller-manager and the kube-scheduler:
+   
+   ```yaml
+   kube-controller-manager-arg:
+   - tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+   kube-scheduler-arg:
+   - tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+   ```
+2. Apply the change, by restarting the RKE2 or K3s service on the nodes:
+   
+   - `systemctl restart rke2-server` on RKE2 server nodes
+   - `systemctl restart rke2-agent` on RKE2 worker nodes
+   - `systemctl restart k3s` on K3s server nodes
+   - `systemctl restart k3s-agent` on K3s worker nodes
+3. Check that the TLS-ciphers have been correctly applied:
+   
+   ```
+   nmap --script ssl-enum-ciphers -p 
+   ```
+
+**Rancher-provisioned RKE2 or K3s clusters**
+
+1. Navigate to **Cluster Management** within the Rancher UI and click **Edit Config** for the desired cluster
+2. Under **Cluster Configuration** click **Advanced**
+3. Click **Add a new row** under the Additional Args section for the desired components, and enter the tls-cipher-suites, per the following example:
+   
+   ```yaml
+   tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+   ```
+4. Click on **Save** to apply the changes
+5. Check that the TLS-ciphers have been correctly applied:
+   
+   ```
+   nmap --script ssl-enum-ciphers -p 
+   ```
 
 
 
