@@ -4639,23 +4639,29 @@ Until the dashboard goes into a General Release status, there is a requirement f
 
 # Slow etcd performance (performance testing and optimization)
 
-**Article Number:** [000020100](https://support.scc.suse.com/s/kb/360045276411)
+**Article Number:** [000020100](https://support.scc.suse.com/s/kb/slow-etcd-performance-testing-and-optimization)
+
+## **Environment**
+
+RKE2  
+K3s  
+etcd
 
 ## **Situation**
 
-#### Issue
-
-If your etcd logs start showing messages like the following, your storage might be too slow for etcd or the server might be doing too much for etcd to operate properly:
+#### If your etcd logs start showing messages like the following, your storage might be too slow for etcd or the server might be doing too much for etcd to operate properly:
 
 ```
 2019-08-11 23:27:04.344948 W | etcdserver: read-only range request "key:\"/registry/services/specs/default/kubernetes\" " with result "range_response_count:1 size:293" took too long (1.530802357s) to execute
 ```
 
-If your storage is really slow you will even see it throwing alerts in your monitoring system. What can you do to the verify the performance of your storage? If the storage is is not performing correctly, how can you fix it? After researching this I found an IBM article that went over this extensively. Their findings on how to test were very helpful. The biggest factor is your storage latency. If it is not well below 10ms in the 99th percentile, you will see warnings in the etcd logs. We can test this with a tool called fio which I will outline below.
+If your storage is really slow you will even see it throwing alerts in your monitoring system. What can you do to the verify the performance of your storage? If the storage is is not performing correctly, how can you fix it?
+
+The biggest factor is your storage latency. If it is not well below 10ms in the 99th percentile, you will see warnings in the etcd logs. We can test this with a tool called fio or the etcd benchmarking tool. The use of fio will be outlined below.
 
 #### Testing etcd performance
 
-1. Download and install the latest version of fio. This is important because older versions do not provide storage latency. I have a very simple script below to download and install this.
+1. Download and install the latest version of fio or etcd also has its own benchmarking tool (see links below). This is important because older versions do not provide storage latency. I have a very simple script below to download and install this.
    
    ```bash
    curl -LO https://github.com/rancherlabs/support-tools/raw/master/instant-fio-master/instant-fio-master.sh
@@ -4670,7 +4676,7 @@ If your storage is really slow you will even see it throwing alerts in your moni
    ```
 3. Below is an example output from an etcd,controlplane,worker node of a Rancher installation cluster running on an AWS ec2 instance type of t2.large.
    
-   ```
+   ```bash
    [root@ip-172-31-14-184 ~]# fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=100m --bs=2300 --name=mytest
    mytest: (g=0): rw=write, bs=(R) 2300B-2300B, (W) 2300B-2300B, (T) 2300B-2300B, ioengine=sync, iodepth=1
    fio-3.15-23-g937e
@@ -4712,9 +4718,9 @@ If your storage is really slow you will even see it throwing alerts in your moni
 
 In the fsync data section you can see that the 99th percentile is 2245 or about 2.2ms of latency. This storage is well suited for an etcd node. [The etcd documentation suggests](https://github.com/etcd-io/etcd/blob/master/Documentation/faq.md#what-does-the-etcd-warning-failed-to-send-out-heartbeat-on-time-mean) that for storage to be fast enough, the 99th percentile of fdatasync invocations when writing to the WAL file must be less than 10ms.
 
-#### Resolution
+## **Resolution**
 
-What if your node's storage isn't fast enough? The simple solution is to upgrade the storage but that isn't always an option. If you are on the cusp of acceptable, there are things you can do to optimize your storage so that etcd is happy.
+#### What if your node's storage isn't fast enough? The simple solution is to upgrade the storage but that isn't always an option. If you are on the cusp of acceptable, there are things you can do to optimize your storage so that etcd is happy.
 
 1. Don't run etcd on a node with other roles. A general rule of thumb is to never have the worker role on the same node as etcd. However many environments have etcd and controlplane roles on the same node and run just fine. If this is the case for your environment then you should consider separating etcd and controlplane nodes.
 2. If you've separated etcd and the controlplane node and are still having issues, you can mount a separate volume for etcd so that read write operations for everything else on the node do not impact etcd's performance. This is mostly applicable to Cloud hosted nodes since each volume mounted has its own allocated set of resources.
@@ -4722,20 +4728,9 @@ What if your node's storage isn't fast enough? The simple solution is to upgrade
 4. Always use SSD's for your etcd nodes, whether it is dedicated or in the cloud.
 5. Set the priority of the etcd container so that it is higher than other processes but not too high that it overwhelms the server.
    
-   ```bash
+   ```
    ionice -c2 -n0 -p `pgrep -x etcd`
    ```
-
-#### Further reading
-
-Below is a list of links that I used for my research. I highly recommend reading these as they contain more information than I've posted in this article.
-
-- [IBM blog post on use of fio to test etcd storage performance](https://www.ibm.com/cloud/blog/using-fio-to-tell-whether-your-storage-is-fast-enough-for-etcd)
-- [etcd performance documentation](https://github.com/etcd-io/etcd/blob/master/Documentation/faq.md#performance)
-- [etcd documentation on node sizing examples](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/hardware.md#example-hardware-configurations)
-- [etcd metrics documentation](https://etcd.io/docs/v3.4.0/metrics/)
-- [etcd tuning documentation](https://etcd.io/docs/v3.4.0/tuning/)
-- [AWS blog post on the difference between burst and baseline performance in EC2 storage](https://aws.amazon.com/blogs/database/understanding-burst-vs-baseline-performance-with-amazon-rds-and-gp2/)
 
 
 
