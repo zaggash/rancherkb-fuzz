@@ -2725,6 +2725,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2737,10 +2748,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#if-your-etcd-logs-start-showing-messages-like-the-following-your-storage-might-be-too-slow-for-etcd-or-the-server-might-be-doing-too-much-for-etcd-to-operate-properly" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Issue
+        If your etcd logs start showing messages like the following, your storage might be too slow for etcd or the server might be doing too much for etcd to operate properly:
       
     </span>
   </a>
@@ -2758,7 +2769,12 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2767,13 +2783,14 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
+  <a href="#what-if-your-nodes-storage-isnt-fast-enough-the-simple-solution-is-to-upgrade-the-storage-but-that-isnt-always-an-option-if-you-are-on-the-cusp-of-acceptable-there-are-things-you-can-do-to-optimize-your-storage-so-that-etcd-is-happy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Further reading
+        What if your node's storage isn't fast enough? The simple solution is to upgrade the storage but that isn't always an option. If you are on the cusp of acceptable, there are things you can do to optimize your storage so that etcd is happy.
       
     </span>
   </a>
@@ -15148,6 +15165,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -15160,10 +15188,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#issue" class="md-nav__link">
+  <a href="#if-your-etcd-logs-start-showing-messages-like-the-following-your-storage-might-be-too-slow-for-etcd-or-the-server-might-be-doing-too-much-for-etcd-to-operate-properly" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Issue
+        If your etcd logs start showing messages like the following, your storage might be too slow for etcd or the server might be doing too much for etcd to operate properly:
       
     </span>
   </a>
@@ -15181,7 +15209,12 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -15190,13 +15223,14 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Resolution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
+  <a href="#what-if-your-nodes-storage-isnt-fast-enough-the-simple-solution-is-to-upgrade-the-storage-but-that-isnt-always-an-option-if-you-are-on-the-cusp-of-acceptable-there-are-things-you-can-do-to-optimize-your-storage-so-that-etcd-is-happy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Further reading
+        What if your node's storage isn't fast enough? The simple solution is to upgrade the storage but that isn't always an option. If you are on the cusp of acceptable, there are things you can do to optimize your storage so that etcd is happy.
       
     </span>
   </a>
@@ -15226,16 +15260,20 @@
 
 
 <h1 id="slow-etcd-performance-performance-testing-and-optimization">Slow etcd performance (performance testing and optimization)</h1>
-<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360045276411">000020100</a></p>
+<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/slow-etcd-performance-testing-and-optimization">000020100</a></p>
+<h2 id="environment"><strong>Environment</strong></h2>
+<p>RKE2<br />
+K3s<br />
+etcd</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<h4 id="issue">Issue</h4>
-<p>If your etcd logs start showing messages like the following, your storage might be too slow for etcd or the server might be doing too much for etcd to operate properly:</p>
+<h4 id="if-your-etcd-logs-start-showing-messages-like-the-following-your-storage-might-be-too-slow-for-etcd-or-the-server-might-be-doing-too-much-for-etcd-to-operate-properly">If your etcd logs start showing messages like the following, your storage might be too slow for etcd or the server might be doing too much for etcd to operate properly:</h4>
 <div class="highlight"><pre><span></span><code>2019-08-11 23:27:04.344948 W | etcdserver: read-only range request &quot;key:\&quot;/registry/services/specs/default/kubernetes\&quot; &quot; with result &quot;range_response_count:1 size:293&quot; took too long (1.530802357s) to execute
 </code></pre></div>
-<p>If your storage is really slow you will even see it throwing alerts in your monitoring system. What can you do to the verify the performance of your storage? If the storage is is not performing correctly, how can you fix it? After researching this I found an IBM article that went over this extensively. Their findings on how to test were very helpful. The biggest factor is your storage latency. If it is not well below 10ms in the 99th percentile, you will see warnings in the etcd logs. We can test this with a tool called fio which I will outline below.</p>
+<p>If your storage is really slow you will even see it throwing alerts in your monitoring system. What can you do to the verify the performance of your storage? If the storage is is not performing correctly, how can you fix it?</p>
+<p>The biggest factor is your storage latency. If it is not well below 10ms in the 99th percentile, you will see warnings in the etcd logs. We can test this with a tool called fio or the etcd benchmarking tool. The use of fio will be outlined below.</p>
 <h4 id="testing-etcd-performance">Testing etcd performance</h4>
 <ol>
-<li>Download and install the latest version of fio. This is important because older versions do not provide storage latency. I have a very simple script below to download and install this.</li>
+<li>Download and install the latest version of fio or etcd also has its own benchmarking tool (see links below). This is important because older versions do not provide storage latency. I have a very simple script below to download and install this.</li>
 </ol>
 <p><div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-LO<span class="w"> </span>https://github.com/rancherlabs/support-tools/raw/master/instant-fio-master/instant-fio-master.sh
 bash<span class="w"> </span>instant-fio-master.sh
@@ -15246,47 +15284,47 @@ mkdir<span class="w"> </span>test-data
 fio<span class="w"> </span>--rw<span class="o">=</span>write<span class="w"> </span>--ioengine<span class="o">=</span>sync<span class="w"> </span>--fdatasync<span class="o">=</span><span class="m">1</span><span class="w"> </span>--directory<span class="o">=</span>test-data<span class="w"> </span>--size<span class="o">=</span>100m<span class="w"> </span>--bs<span class="o">=</span><span class="m">2300</span><span class="w"> </span>--name<span class="o">=</span>mytest
 </code></pre></div>
 3. Below is an example output from an etcd,controlplane,worker node of a Rancher installation cluster running on an AWS ec2 instance type of t2.large.</p>
-<div class="highlight"><pre><span></span><code>[root@ip-172-31-14-184 ~]# fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=100m --bs=2300 --name=mytest
-mytest: (g=0): rw=write, bs=(R) 2300B-2300B, (W) 2300B-2300B, (T) 2300B-2300B, ioengine=sync, iodepth=1
+<div class="highlight"><pre><span></span><code><span class="o">[</span>root@ip-172-31-14-184<span class="w"> </span>~<span class="o">]</span><span class="c1"># fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=100m --bs=2300 --name=mytest</span>
+mytest:<span class="w"> </span><span class="o">(</span><span class="nv">g</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>:<span class="w"> </span><span class="nv">rw</span><span class="o">=</span>write,<span class="w"> </span><span class="nv">bs</span><span class="o">=(</span>R<span class="o">)</span><span class="w"> </span>2300B-2300B,<span class="w"> </span><span class="o">(</span>W<span class="o">)</span><span class="w"> </span>2300B-2300B,<span class="w"> </span><span class="o">(</span>T<span class="o">)</span><span class="w"> </span>2300B-2300B,<span class="w"> </span><span class="nv">ioengine</span><span class="o">=</span>sync,<span class="w"> </span><span class="nv">iodepth</span><span class="o">=</span><span class="m">1</span>
 fio-3.15-23-g937e
-Starting 1 process
-mytest: Laying out IO file (1 file / 100MiB)
-Jobs: 1 (f=1): [W(1)][100.0%][w=2684KiB/s][w=1195 IOPS][eta 00m:00s]
-mytest: (groupid=0, jobs=1): err= 0: pid=21203: Sun Aug 11 23:47:30 2019
-  write: IOPS=1196, BW=2687KiB/s (2752kB/s)(99.0MiB/38105msec)
-    clat (nsec): min=2840, max=99026, avg=8551.56, stdev=3187.53
-      lat (nsec): min=3337, max=99664, avg=9191.92, stdev=3285.92
-    clat percentiles (nsec):
-      |  1.00th=[ 4640],  5.00th=[ 5536], 10.00th=[ 5728], 20.00th=[ 6176],
-      | 30.00th=[ 6624], 40.00th=[ 7264], 50.00th=[ 7968], 60.00th=[ 8768],
-      | 70.00th=[ 9408], 80.00th=[10304], 90.00th=[11840], 95.00th=[13760],
-      | 99.00th=[19328], 99.50th=[23168], 99.90th=[35584], 99.95th=[44288],
-      | 99.99th=[63744]
-    bw (  KiB/s): min= 2398, max= 2852, per=99.95%, avg=2685.79, stdev=104.84, samples=76
-    iops        : min= 1068, max= 1270, avg=1195.96, stdev=46.66, samples=76
-  lat (usec)   : 4=0.52%, 10=76.28%, 20=22.34%, 50=0.82%, 100=0.04%
-  fsync/fdatasync/sync_file_range:
-    sync (usec): min=352, max=21253, avg=822.36, stdev=652.94
-    sync percentiles (usec):
-      |  1.00th=[  400],  5.00th=[  420], 10.00th=[  437], 20.00th=[  457],
-      | 30.00th=[  478], 40.00th=[  529], 50.00th=[  906], 60.00th=[  947],
-      | 70.00th=[  988], 80.00th=[ 1020], 90.00th=[ 1090], 95.00th=[ 1156],
-      | 99.00th=[ 2245], 99.50th=[ 5932], 99.90th=[ 8717], 99.95th=[11600],
-      | 99.99th=[16581]
-  cpu          : usr=0.79%, sys=7.38%, ctx=119920, majf=0, minf=35
-  IO depths    : 1=200.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, &gt;=64=0.0%
-      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &gt;=64=0.0%
-      complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, &gt;=64=0.0%
-      issued rwts: total=0,45590,0,0 short=45590,0,0,0 dropped=0,0,0,0
-      latency   : target=0, window=0, percentile=100.00%, depth=1
-Run status group 0 (all jobs):
-  WRITE: bw=2687KiB/s (2752kB/s), 2687KiB/s-2687KiB/s (2752kB/s-2752kB/s), io=99.0MiB (105MB), run=38105-38105msec
-Disk stats (read/write):
-  xvda: ios=0/96829, merge=0/3, ticks=0/47440, in_queue=47432, util=92.25%
+Starting<span class="w"> </span><span class="m">1</span><span class="w"> </span>process
+mytest:<span class="w"> </span>Laying<span class="w"> </span>out<span class="w"> </span>IO<span class="w"> </span>file<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span>file<span class="w"> </span>/<span class="w"> </span>100MiB<span class="o">)</span>
+Jobs:<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">(</span><span class="nv">f</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>:<span class="w"> </span><span class="o">[</span>W<span class="o">(</span><span class="m">1</span><span class="o">)][</span><span class="m">100</span>.0%<span class="o">][</span><span class="nv">w</span><span class="o">=</span>2684KiB/s<span class="o">][</span><span class="nv">w</span><span class="o">=</span><span class="m">1195</span><span class="w"> </span>IOPS<span class="o">][</span>eta<span class="w"> </span>00m:00s<span class="o">]</span>
+mytest:<span class="w"> </span><span class="o">(</span><span class="nv">groupid</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">jobs</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>:<span class="w"> </span><span class="nv">err</span><span class="o">=</span><span class="w"> </span><span class="m">0</span>:<span class="w"> </span><span class="nv">pid</span><span class="o">=</span><span class="m">21203</span>:<span class="w"> </span>Sun<span class="w"> </span>Aug<span class="w"> </span><span class="m">11</span><span class="w"> </span><span class="m">23</span>:47:30<span class="w"> </span><span class="m">2019</span>
+<span class="w">  </span>write:<span class="w"> </span><span class="nv">IOPS</span><span class="o">=</span><span class="m">1196</span>,<span class="w"> </span><span class="nv">BW</span><span class="o">=</span>2687KiB/s<span class="w"> </span><span class="o">(</span>2752kB/s<span class="o">)(</span><span class="m">99</span>.0MiB/38105msec<span class="o">)</span>
+<span class="w">    </span>clat<span class="w"> </span><span class="o">(</span>nsec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">2840</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">99026</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">8551</span>.56,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">3187</span>.53
+<span class="w">      </span>lat<span class="w"> </span><span class="o">(</span>nsec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">3337</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">99664</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">9191</span>.92,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">3285</span>.92
+<span class="w">    </span>clat<span class="w"> </span>percentiles<span class="w"> </span><span class="o">(</span>nsec<span class="o">)</span>:
+<span class="w">      </span><span class="p">|</span><span class="w">  </span><span class="m">1</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">4640</span><span class="o">]</span>,<span class="w">  </span><span class="m">5</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">5536</span><span class="o">]</span>,<span class="w"> </span><span class="m">10</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">5728</span><span class="o">]</span>,<span class="w"> </span><span class="m">20</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">6176</span><span class="o">]</span>,
+<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">30</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">6624</span><span class="o">]</span>,<span class="w"> </span><span class="m">40</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">7264</span><span class="o">]</span>,<span class="w"> </span><span class="m">50</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">7968</span><span class="o">]</span>,<span class="w"> </span><span class="m">60</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">8768</span><span class="o">]</span>,
+<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">70</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">9408</span><span class="o">]</span>,<span class="w"> </span><span class="m">80</span>.00th<span class="o">=[</span><span class="m">10304</span><span class="o">]</span>,<span class="w"> </span><span class="m">90</span>.00th<span class="o">=[</span><span class="m">11840</span><span class="o">]</span>,<span class="w"> </span><span class="m">95</span>.00th<span class="o">=[</span><span class="m">13760</span><span class="o">]</span>,
+<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">99</span>.00th<span class="o">=[</span><span class="m">19328</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.50th<span class="o">=[</span><span class="m">23168</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.90th<span class="o">=[</span><span class="m">35584</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.95th<span class="o">=[</span><span class="m">44288</span><span class="o">]</span>,
+<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">99</span>.99th<span class="o">=[</span><span class="m">63744</span><span class="o">]</span>
+<span class="w">    </span>bw<span class="w"> </span><span class="o">(</span><span class="w">  </span>KiB/s<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="w"> </span><span class="m">2398</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="w"> </span><span class="m">2852</span>,<span class="w"> </span><span class="nv">per</span><span class="o">=</span><span class="m">99</span>.95%,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">2685</span>.79,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">104</span>.84,<span class="w"> </span><span class="nv">samples</span><span class="o">=</span><span class="m">76</span>
+<span class="w">    </span>iops<span class="w">        </span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="w"> </span><span class="m">1068</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="w"> </span><span class="m">1270</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">1195</span>.96,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">46</span>.66,<span class="w"> </span><span class="nv">samples</span><span class="o">=</span><span class="m">76</span>
+<span class="w">  </span>lat<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span><span class="w">   </span>:<span class="w"> </span><span class="nv">4</span><span class="o">=</span><span class="m">0</span>.52%,<span class="w"> </span><span class="nv">10</span><span class="o">=</span><span class="m">76</span>.28%,<span class="w"> </span><span class="nv">20</span><span class="o">=</span><span class="m">22</span>.34%,<span class="w"> </span><span class="nv">50</span><span class="o">=</span><span class="m">0</span>.82%,<span class="w"> </span><span class="nv">100</span><span class="o">=</span><span class="m">0</span>.04%
+<span class="w">  </span>fsync/fdatasync/sync_file_range:
+<span class="w">    </span>sync<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">352</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">21253</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">822</span>.36,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">652</span>.94
+<span class="w">    </span>sync<span class="w"> </span>percentiles<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span>:
+<span class="w">      </span><span class="p">|</span><span class="w">  </span><span class="m">1</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">400</span><span class="o">]</span>,<span class="w">  </span><span class="m">5</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">420</span><span class="o">]</span>,<span class="w"> </span><span class="m">10</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">437</span><span class="o">]</span>,<span class="w"> </span><span class="m">20</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">457</span><span class="o">]</span>,
+<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">30</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">478</span><span class="o">]</span>,<span class="w"> </span><span class="m">40</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">529</span><span class="o">]</span>,<span class="w"> </span><span class="m">50</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">906</span><span class="o">]</span>,<span class="w"> </span><span class="m">60</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">947</span><span class="o">]</span>,
+<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">70</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">988</span><span class="o">]</span>,<span class="w"> </span><span class="m">80</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">1020</span><span class="o">]</span>,<span class="w"> </span><span class="m">90</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">1090</span><span class="o">]</span>,<span class="w"> </span><span class="m">95</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">1156</span><span class="o">]</span>,
+<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">99</span>.00th<span class="o">=[</span><span class="w"> </span><span class="m">2245</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.50th<span class="o">=[</span><span class="w"> </span><span class="m">5932</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.90th<span class="o">=[</span><span class="w"> </span><span class="m">8717</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.95th<span class="o">=[</span><span class="m">11600</span><span class="o">]</span>,
+<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">99</span>.99th<span class="o">=[</span><span class="m">16581</span><span class="o">]</span>
+<span class="w">  </span>cpu<span class="w">          </span>:<span class="w"> </span><span class="nv">usr</span><span class="o">=</span><span class="m">0</span>.79%,<span class="w"> </span><span class="nv">sys</span><span class="o">=</span><span class="m">7</span>.38%,<span class="w"> </span><span class="nv">ctx</span><span class="o">=</span><span class="m">119920</span>,<span class="w"> </span><span class="nv">majf</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">minf</span><span class="o">=</span><span class="m">35</span>
+<span class="w">  </span>IO<span class="w"> </span>depths<span class="w">    </span>:<span class="w"> </span><span class="nv">1</span><span class="o">=</span><span class="m">200</span>.0%,<span class="w"> </span><span class="nv">2</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">4</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">8</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">16</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">32</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span>&gt;<span class="o">=</span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%
+<span class="w">      </span>submit<span class="w">    </span>:<span class="w"> </span><span class="nv">0</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">4</span><span class="o">=</span><span class="m">100</span>.0%,<span class="w"> </span><span class="nv">8</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">16</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">32</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span>&gt;<span class="o">=</span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%
+<span class="w">      </span><span class="nb">complete</span><span class="w">  </span>:<span class="w"> </span><span class="nv">0</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">4</span><span class="o">=</span><span class="m">100</span>.0%,<span class="w"> </span><span class="nv">8</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">16</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">32</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span>&gt;<span class="o">=</span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%
+<span class="w">      </span>issued<span class="w"> </span>rwts:<span class="w"> </span><span class="nv">total</span><span class="o">=</span><span class="m">0</span>,45590,0,0<span class="w"> </span><span class="nv">short</span><span class="o">=</span><span class="m">45590</span>,0,0,0<span class="w"> </span><span class="nv">dropped</span><span class="o">=</span><span class="m">0</span>,0,0,0
+<span class="w">      </span>latency<span class="w">   </span>:<span class="w"> </span><span class="nv">target</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">window</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">percentile</span><span class="o">=</span><span class="m">100</span>.00%,<span class="w"> </span><span class="nv">depth</span><span class="o">=</span><span class="m">1</span>
+Run<span class="w"> </span>status<span class="w"> </span>group<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">(</span>all<span class="w"> </span><span class="nb">jobs</span><span class="o">)</span>:
+<span class="w">  </span>WRITE:<span class="w"> </span><span class="nv">bw</span><span class="o">=</span>2687KiB/s<span class="w"> </span><span class="o">(</span>2752kB/s<span class="o">)</span>,<span class="w"> </span>2687KiB/s-2687KiB/s<span class="w"> </span><span class="o">(</span>2752kB/s-2752kB/s<span class="o">)</span>,<span class="w"> </span><span class="nv">io</span><span class="o">=</span><span class="m">99</span>.0MiB<span class="w"> </span><span class="o">(</span>105MB<span class="o">)</span>,<span class="w"> </span><span class="nv">run</span><span class="o">=</span><span class="m">38105</span>-38105msec
+Disk<span class="w"> </span>stats<span class="w"> </span><span class="o">(</span>read/write<span class="o">)</span>:
+<span class="w">  </span>xvda:<span class="w"> </span><span class="nv">ios</span><span class="o">=</span><span class="m">0</span>/96829,<span class="w"> </span><span class="nv">merge</span><span class="o">=</span><span class="m">0</span>/3,<span class="w"> </span><span class="nv">ticks</span><span class="o">=</span><span class="m">0</span>/47440,<span class="w"> </span><span class="nv">in_queue</span><span class="o">=</span><span class="m">47432</span>,<span class="w"> </span><span class="nv">util</span><span class="o">=</span><span class="m">92</span>.25%
 </code></pre></div>
 <p>In the fsync data section you can see that the 99th percentile is 2245 or about 2.2ms of latency. This storage is well suited for an etcd node. <a href="https://github.com/etcd-io/etcd/blob/master/Documentation/faq.md#what-does-the-etcd-warning-failed-to-send-out-heartbeat-on-time-mean">The etcd documentation suggests</a> that for storage to be fast enough, the 99th percentile of fdatasync invocations when writing to the WAL file must be less than 10ms.</p>
-<h4 id="resolution">Resolution</h4>
-<p>What if your node's storage isn't fast enough? The simple solution is to upgrade the storage but that isn't always an option. If you are on the cusp of acceptable, there are things you can do to optimize your storage so that etcd is happy.</p>
+<h2 id="resolution"><strong>Resolution</strong></h2>
+<h4 id="what-if-your-nodes-storage-isnt-fast-enough-the-simple-solution-is-to-upgrade-the-storage-but-that-isnt-always-an-option-if-you-are-on-the-cusp-of-acceptable-there-are-things-you-can-do-to-optimize-your-storage-so-that-etcd-is-happy">What if your node's storage isn't fast enough? The simple solution is to upgrade the storage but that isn't always an option. If you are on the cusp of acceptable, there are things you can do to optimize your storage so that etcd is happy.</h4>
 <ol>
 <li>Don't run etcd on a node with other roles. A general rule of thumb is to never have the worker role on the same node as etcd. However many environments have etcd and controlplane roles on the same node and run just fine. If this is the case for your environment then you should consider separating etcd and controlplane nodes.</li>
 <li>If you've separated etcd and the controlplane node and are still having issues, you can mount a separate volume for etcd so that read write operations for everything else on the node do not impact etcd's performance. This is mostly applicable to Cloud hosted nodes since each volume mounted has its own allocated set of resources.</li>
@@ -15294,18 +15332,8 @@ Disk stats (read/write):
 <li>Always use SSD's for your etcd nodes, whether it is dedicated or in the cloud.</li>
 <li>Set the priority of the etcd container so that it is higher than other processes but not too high that it overwhelms the server.</li>
 </ol>
-<div class="highlight"><pre><span></span><code>ionice<span class="w"> </span>-c2<span class="w"> </span>-n0<span class="w"> </span>-p<span class="w"> </span><span class="sb">`</span>pgrep<span class="w"> </span>-x<span class="w"> </span>etcd<span class="sb">`</span>
+<div class="highlight"><pre><span></span><code>ionice -c2 -n0 -p `pgrep -x etcd`
 </code></pre></div>
-<h4 id="further-reading">Further reading</h4>
-<p>Below is a list of links that I used for my research. I highly recommend reading these as they contain more information than I've posted in this article.</p>
-<ul>
-<li><a href="https://www.ibm.com/cloud/blog/using-fio-to-tell-whether-your-storage-is-fast-enough-for-etcd">IBM blog post on use of fio to test etcd storage performance</a></li>
-<li><a href="https://github.com/etcd-io/etcd/blob/master/Documentation/faq.md#performance">etcd performance documentation</a></li>
-<li><a href="https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/hardware.md#example-hardware-configurations">etcd documentation on node sizing examples</a></li>
-<li><a href="https://etcd.io/docs/v3.4.0/metrics/">etcd metrics documentation</a></li>
-<li><a href="https://etcd.io/docs/v3.4.0/tuning/">etcd tuning documentation</a></li>
-<li><a href="https://aws.amazon.com/blogs/database/understanding-burst-vs-baseline-performance-with-amazon-rds-and-gp2/">AWS blog post on the difference between burst and baseline performance in EC2 storage</a></li>
-</ul>
 
 
 
