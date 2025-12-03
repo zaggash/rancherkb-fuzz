@@ -15097,6 +15097,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022194/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrating an RKE2/K3s Downstream Cluster to a new Subnet in an infrastructure provider
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -15246,8 +15274,11 @@ ETCDCTL_ENDPOINTS=$(crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --k
 <!--THE END-->
 
 <ul>
-<li>etcdctl compact (<strong>Note:</strong><code>"etcdctl compact"</code> is a <strong>blocking</strong> operation—each member pauses writes during compaction; acceptable in read-only incidents, but be aware that it will block writes for multiple seconds on larger clusters and plan accordingly)</li>
+<li>etcdctl compact</li>
 </ul>
+<blockquote>
+<p><strong>Note:</strong><code>"etcdctl compact"</code> is a <strong>blocking</strong> operation—each member pauses writes during compaction; acceptable in read-only incidents, but be aware that it will block writes for multiple seconds on larger clusters and plan accordingly.</p>
+</blockquote>
 <div class="highlight"><pre><span></span><code>Command:
 $ rev=$(crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS endpoint status --write-out fields | grep Revision | cut -d: -f2)
 
@@ -15274,7 +15305,7 @@ $ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --c
 <p>You can run the etcd <strong>member list/endpoint status/endpoint health</strong> commands to confirm the database size has decreased and that the cluster has recovered. For more details, refer to the <strong>Additional Information</strong> section below.</p>
 <p><strong>Part 2: Increase quota-backend-bytes to extend the etcd keyspace limit in RKE2</strong></p>
 <p>Sometimes the cluster won’t allow <code>compact</code> or <code>defrag</code>: all attempts fail because etcd has raised a <strong>NOSPACE</strong> alarm with no free headroom. The alarm blocks writes, and <code>defrag</code> still requires some writable space. <strong>Temporarily free disk space</strong> (e.g., remove old snapshots/logs or expand the volume) <strong>or increase <code>quota-backend-bytes</code></strong> to create headroom, then run <strong><code>compact</code></strong> followed by <strong><code>defrag</code></strong> .</p>
-<p>For a standalone RKE2 cluster, you can increase the etcd database size by modifying the RKE2 configuration file /etc/rancher/rke2/config.yaml. (This example sets the value to <strong>8,589,934,592</strong> (<strong>8 GiB</strong>); you can choose a different size as needed.)</p>
+<p><strong>For a standalone RKE2 cluster</strong>, you can increase the etcd database size by modifying the RKE2 configuration file /etc/rancher/rke2/config.yaml. (This example sets the value to <strong>8,589,934,592</strong> (<strong>8 GiB</strong>); you can choose a different size as needed.)</p>
 <div class="highlight"><pre><span></span><code>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>etcd-arg:
@@ -15283,13 +15314,21 @@ $ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --c
 <p>and restart rke2-server</p>
 <div class="highlight"><pre><span></span><code>systemctl restart rke2-server
 </code></pre></div>
-<p>For a cluster managed by Rancher, go to Rancher, Cluster Management -&gt; select the cluster and edit the YAML ( which you will get from the 3 dots). </p>
-<p>Add quota-backend-bytes under machineSelectorConfig.config.etcd-arg.  For example:</p>
-<div class="highlight"><pre><span></span><code> machineSelectorConfig:
+<p><strong>For a cluster managed by Rancher</strong>, go to Rancher, Cluster Management -&gt; select the cluster and Edit YAML (which you will get from the 3 dot menu). </p>
+<p>Add quota-backend-bytes as an etcd-arg under spec.rkeConfig.machineSelectorConfig. For example, set the quota to 5GiB:</p>
+<div class="highlight"><pre><span></span><code>    machineSelectorConfig:
       - config:
-          etcd-arg: quota-backend-bytes=8589934592
-        matchLabels:
-          rke.cattle.io/etcd-role: &#39;true&#39;
+          etcd-arg:
+            - quota-backend-bytes=5368709120
+        machineLabelSelector:
+          matchLabels:
+            rke.cattle.io/etcd-role: &#39;true&#39;
+</code></pre></div>
+<p>Under some conditions, the cluster object may be receiving frequent updates, which can make it difficult to save YAML changes easily in the Rancher dashboard. In this case, a "kubectl patch" command using a kubeconfig for the Rancher management (local) cluster can be used instead.</p>
+<p>The following example uses a 5GiB quota size:</p>
+<div class="highlight"><pre><span></span><code>CLUSTER_NAME=&lt;name of the cluster in Rancher&gt;
+
+kubectl patch -n fleet-default cluster.provisioning.cattle.io $CLUSTER_NAME --type=merge -p &#39;{&quot;spec&quot;: {&quot;rkeConfig&quot;: {&quot;machineSelectorConfig&quot;: [ {&quot;config&quot;: {&quot;etcd-arg&quot;: [&quot;quota-backend-bytes=5368709120&quot;]}, &quot;machineLabelSelector&quot;: {&quot;matchLabels&quot;: {&quot;rke.cattle.io/etcd-role&quot;: &quot;true&quot;}}} ]}}}&#39;
 </code></pre></div>
 <p>Increasing the etcd database size can help mitigate etcd storage consumption issues and ensure the cluster remains stable and responsive.</p>
 
