@@ -22781,8 +22781,6 @@ The etcd database size is primarily influenced by the number of objects stored, 
 
 Start by **compacting and defragmenting the etcd database** to resolve the issue. Follow the steps below:
 
- 
-
 **Prework (Important)**
 
 ```markup
@@ -22798,7 +22796,9 @@ ETCDCTL_ENDPOINTS=$(crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --k
 
 <!--THE END-->
 
-- etcdctl compact (**Note:**`"etcdctl compact"` is a **blocking** operation—each member pauses writes during compaction; acceptable in read-only incidents, but be aware that it will block writes for multiple seconds on larger clusters and plan accordingly)
+- etcdctl compact
+
+> **Note:**`"etcdctl compact"` is a **blocking** operation—each member pauses writes during compaction; acceptable in read-only incidents, but be aware that it will block writes for multiple seconds on larger clusters and plan accordingly.
 
 ```markup
 Command:
@@ -22835,7 +22835,7 @@ You can run the etcd **member list/endpoint status/endpoint health** commands to
 
 Sometimes the cluster won’t allow `compact` or `defrag`: all attempts fail because etcd has raised a **NOSPACE** alarm with no free headroom. The alarm blocks writes, and `defrag` still requires some writable space. **Temporarily free disk space** (e.g., remove old snapshots/logs or expand the volume) **or increase `quota-backend-bytes`** to create headroom, then run **`compact`** followed by **`defrag`** .
 
-For a standalone RKE2 cluster, you can increase the etcd database size by modifying the RKE2 configuration file /etc/rancher/rke2/config.yaml. (This example sets the value to **8,589,934,592** (**8 GiB**); you can choose a different size as needed.)
+**For a standalone RKE2 cluster**, you can increase the etcd database size by modifying the RKE2 configuration file /etc/rancher/rke2/config.yaml. (This example sets the value to **8,589,934,592** (**8 GiB**); you can choose a different size as needed.)
 
 ```
 
@@ -22852,16 +22852,28 @@ and restart rke2-server
 systemctl restart rke2-server
 ```
 
-For a cluster managed by Rancher, go to Rancher, Cluster Management -&gt; select the cluster and edit the YAML ( which you will get from the 3 dots). 
+**For a cluster managed by Rancher**, go to Rancher, Cluster Management -&gt; select the cluster and Edit YAML (which you will get from the 3 dot menu). 
 
-Add quota-backend-bytes under machineSelectorConfig.config.etcd-arg.  For example:
+Add quota-backend-bytes as an etcd-arg under spec.rkeConfig.machineSelectorConfig. For example, set the quota to 5GiB:
 
 ```markup
- machineSelectorConfig:
+    machineSelectorConfig:
       - config:
-          etcd-arg: quota-backend-bytes=8589934592
-        matchLabels:
-          rke.cattle.io/etcd-role: 'true'
+          etcd-arg:
+            - quota-backend-bytes=5368709120
+        machineLabelSelector:
+          matchLabels:
+            rke.cattle.io/etcd-role: 'true'
+```
+
+Under some conditions, the cluster object may be receiving frequent updates, which can make it difficult to save YAML changes easily in the Rancher dashboard. In this case, a "kubectl patch" command using a kubeconfig for the Rancher management (local) cluster can be used instead.
+
+The following example uses a 5GiB quota size:
+
+```markup
+CLUSTER_NAME=<name of the cluster in Rancher>
+
+kubectl patch -n fleet-default cluster.provisioning.cattle.io $CLUSTER_NAME --type=merge -p '{"spec": {"rkeConfig": {"machineSelectorConfig": [ {"config": {"etcd-arg": ["quota-backend-bytes=5368709120"]}, "machineLabelSelector": {"matchLabels": {"rke.cattle.io/etcd-role": "true"}}} ]}}}'
 ```
 
 Increasing the etcd database size can help mitigate etcd storage consumption issues and ensure the cluster remains stable and responsive.
@@ -29854,4 +29866,107 @@ After the configuration is applied:
    ```markup
    nft list ruleset | grep KUBE-
    ```
+
+
+
+---
+
+## Article: 000022194.md
+
+# Migrating an RKE2/K3s Downstream Cluster to a new Subnet in an infrastructure provider
+
+**Article Number:** [000022194](https://support.scc.suse.com/s/kb/Migrating-an-RKE2-K3s-Downstream-Cluster-to-a-new-subnet-in-an-infrastructure-provider)
+
+## **Environment**
+
+- Rancher
+- RKE2/K3S provisioned by Rancher in an infrastructure provider (node driver)
+
+## **Situation**
+
+A downstream Kubernetes cluster (RKE2 or K3S) was provisioned through Rancher using any infrastructure provider / node driver. The environment requires the cluster nodes to be migrated to a new network or subnet(s).
+
+Some questions may exist, such as:
+
+- Can the existing cluster be edited to swap to the new network/subnet?
+- Can nodes be moved to the new network?
+- Should the cluster be deleted and recreated?
+
+## **Cause**
+
+Clusters provisioned through the node driver embed network configuration (port/security groups, IP ranges, cloud-init settings, etc.) inside the machine and pool definitions. Existing nodes cannot be reassigned to a new subnet by editing the cluster config alone. Additionally, Kubernetes nodes rely on stable IPs and overlay networking behaviour, which can break if the underlying network is changed in-place.
+
+To safely migrate to a new subnet without downtime or loss of etcd quorum, new nodes must be introduced into the cluster using the new network configuration.
+
+## **Resolution**
+
+The recommended and safest approach for RKE2/K3s clusters is a **node-by-node migration** using new machine pools. It is assumed that nodes can communicate between the old and new subnets, at least during the migration period.
+
+### **1. Prepare the New Subnet**
+
+Before making any changes:
+
+- Ensure all **firewall rules** between the new subnet and all cluster components are allowed (etcd ports, kube-apiserver, kubelet, VXLAN/Canal/Cilium ports, etc.)
+- Confirm port/security groups and DHCP/static IP assignments are correctly configured
+
+Take **full backups**:
+
+- **RKE2/K3s etcd snapshot**
+- **VM snapshots**, if allowed in your environment
+- Rancher’s cluster config (for reference)
+
+### **2. Create a New Machine Pool using the new Network**
+
+In Rancher:
+
+- Edit the downstream cluster
+- Add a new machine pool
+- Assign control-plane/etcd/worker roles as required to mirror an existing machine pool
+- Configure the **new subnet, new port group, VLAN, or network settings**
+- Save and allow Rancher to provision new nodes in the new network
+- It is strongly recommended to bring up nodes **in small batches** (even one at a time) and verify:
+  
+  - Node registration
+  - Kubelet health
+  - Pod networking / overlay network connectivity
+  - Ability to join etcd quorum (for CP/etcd nodes)
+
+> **Note**, this is also a good time to make other node-specific changes in the new machine pool(s) if desired
+
+### **3. Validate the New Nodes**
+
+Once the new nodes come up
+
+- Ensure pods are scheduled successfully on worker nodes
+- Verify control-plane logs
+- Check etcd health
+
+### **4. Drain and Remove Old Nodes**
+
+After confirming stability:
+
+- **Drain** the old node:
+- **Remove** the node from Cluster Management in the Rancher dashboard
+- Rancher deletes the node from the provider
+- Repeat this process node-by-node, always maintaining:
+  
+  - **Etcd quorum**
+  - **Control-plane availability**
+
+### **5. Decommission the Old Machine Pool**
+
+- After all old nodes are safely removed:
+  
+  - Delete the old machine pool from Rancher
+  - Clean up any unused objects, IP reservations, or port/security group references
+
+### **6. Validate Cluster Stability**
+
+When the migration is complete:
+
+- Confirm all nodes are in the new subnet
+- Validate workloads, ingress, CNI, and storage
+- Check etcd health and control-plane responsiveness
+
+This completes the migration without needing to recreate the cluster.
 
