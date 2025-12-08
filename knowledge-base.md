@@ -8821,34 +8821,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -29969,4 +29963,45 @@ When the migration is complete:
 - Check etcd health and control-plane responsiveness
 
 This completes the migration without needing to recreate the cluster.
+
+
+
+---
+
+## Article: 000022206.md
+
+# How to get the Resource Usage per Namespace using Rancher monitoring
+
+**Article Number:** [000022206](https://support.scc.suse.com/s/kb/How-to-get-the-Resource-Usage-per-Namespace-using-Rancher-monitoring)
+
+## **Environment**
+
+- Rancher 2.x
+- Rancher Monitoring
+
+## **Procedure**
+
+- To get the resource usage (CPU/Memory) per namespace using the Rancher monitoring chart, navigate to ***Rancher UI → Cluster → Monitoring→ Grafana Dashboard → Kubernetes → Compute Resources → Namespace (pod)***.
+
+<!--THE END-->
+
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK5)
+
+- If the requirement is to get the ***namespace-aggregated dashboard***, Rancher monitoring does not provide one by default. However, you can import the Grafana community [dashboard](https://grafana.com/grafana/dashboards/16734-kubernetes-cluster-ram-and-cpu-utilization/) to get a customized version. 
+  
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK6)
+
+ 
+
+- To import the community dashboard in Grafana, navigate to ***Grafana UI → Login using default credentials \`admin/prom-operator\` → navigate to Dashboards → New → Import → Enter Dashboard ID or Enter Dashboard JSON***. **Note** : The dashboard ID and Dashboard JSON are available [here](https://grafana.com/grafana/dashboards/16734-kubernetes-cluster-ram-and-cpu-utilization/)
+  
+  \- Get Dashboard ID or JSON from \[1] : 
+  
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdELh)
+  
+  \- Import Dashboard into Grafana : 
+  
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK7)  
+  
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK8)
 
