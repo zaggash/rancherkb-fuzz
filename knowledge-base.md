@@ -3151,29 +3151,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -3785,26 +3791,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+# How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
-- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
+- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
+- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
 
 ## **Situation**
 
-この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
+This article details how to confirm that a Rancher version upgrade has successfully completed.
 
 ## **Resolution**
 
-Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
+The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
 
-- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
-- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
-- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
+- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
+- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
+- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
 
 
 
@@ -8821,28 +8827,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -9015,67 +9027,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -26585,53 +26589,6 @@ spec:
 
 ---
 
-## Article: 000022045.md
-
-# Configuring imageMaximumGCAge for kubelet in Rancher managed RKE2 clusters
-
-**Article Number:** [000022045](https://support.scc.suse.com/s/kb/Configuring-imageMaximumGCAge-for-kubelet-in-Rancher-managed-RKE2-clusters)
-
-## **Environment**
-
-Rancher managed RKE2 clusters
-
-## **Procedure**
-
-To configure the imageMaximumGCAge setting for kubelet in Rancher managed RKE2 clusters, follow these steps:
-
-Create a config file for each node. For example: `/etc/rancher/rke2/kubelet-config.yaml`.  The content of the file should be similar to:
-
-```
-cat /etc/rancher/rke2/kubelet-config.yaml
-apiVersion: kubelet.config.k8s.io/v1beta1
-kind: KubeletConfiguration
-imageMaximumGCAge: 12h
-```
-
-Ensure this file is created on each node.
-
-Pass the config file to the kubelet:
-
-- Go to Cluster Management → Clusters.
-- Select the target RKE2 cluster.
-- Edit Cluster Configuration: Click ⋮ (Ellipsis Menu) → Edit Config.
-- Scroll to Advanced Options → Additional Arguments →  Additional Kubelet args
-- Point to the file created in step 1.
-  
-  - config=`/etc/rancher/rke2/kubelet-config.yaml`.
-
-Note: As of Kubernetes v1.30, the `imageMaximumGCAge` feature is enabled by default, and the value should be a time duration (e.g., `12h45m`) rather than a boolean. The `feature-gates` argument is deprecated and should be set via a config file. 
-
- 
-
-**Additional information**
-
-https://kubernetes.io/docs/concepts/architecture/garbage-collection/#image-maximum-age-gc
-
-
-
----
-
 ## Article: 000022049.md
 
 # Unused Machine Configs (rke-machine-config.cattle.io) are automatically cleaned up in Rancher v2.10+
@@ -29761,6 +29718,115 @@ It is possible to customise the TLS 1.0 - 1.2 cipher suites that are used by the
 
 ---
 
+## Article: 000022176.md
+
+# How to add a kubelet configuration file to nodes in a Rancher-provisioned RKE2 or K3s cluster
+
+**Article Number:** [000022176](https://support.scc.suse.com/s/kb/How-to-add-a-kubelet-configuration-file-to-nodes-in-a-Rancher-provisioned-RKE2-or-K3s-cluster)
+
+## **Environment**
+
+- Rancher v2.7.2+
+- A Rancher-provisioned RKE2 or K3s cluster
+
+## **Procedure**
+
+This article details how to configure the Kubernetes kubelet parameters by providing a [custom configuration file](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/) in a Rancher-provisioned RKE2/K3s cluster. Whilst it is still possible to pass kubelet parameters as arguments, even though this is noted as deprecated in the Kubernetes documentation, the following steps enable deployment via a configuration file.
+
+Per the [RKE2](https://docs.rke2.io/install/configuration#kubelet-configuration) and [K3s](https://docs.k3s.io/installation/configuration#kubelet-configuration-files) documentation there are two methods for passing a kubelet configuration file:
+
+1. In Kubernetes v1.32+ a drop-in configuration file can be written to the directory /var/lib/rancher/&lt;rke2/k3s&gt;/agent/etc/kubelet.conf.d/
+2. The kubelet argument config can be set to reference a specific kubelet configuration file at another location
+
+The steps below make use of a [machineSelectorFiles block](https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineselectorfiles) on the cluster resource, to enable deployment of a file across nodes in a Rancher-provisioned cluster.
+
+In this example the [imageMaximumGCAge](https://kubernetes.io/docs/concepts/architecture/garbage-collection/#image-maximum-age-gc) parameter is configured to 12h.
+
+**1. Create a ConfigMap or Secret in the Rancher local cluster**
+
+Create a ConfigMap or Secret within the fleet-default Namespace in the Rancher local cluster, containing your custom kubelet configuration.
+
+ The Secret or ConfigMap must meet the following requirements:
+
+1. It must exist within the same fleet workspace as the cluster itself, for Rancher-deployed clusters this is fleet-default by default.
+2. It must have the annotation `rke.cattle.io/object-authorized-for-clusters: <cluster-name1>,<cluster-name2>`with a comma separated list of the clusters which are permitted to use it.
+
+In the example below a ConfigMap is created, with access granted to the cluster named rke2custom, and a kubelet configuration to define imageMaximumGCAge.
+
+```markup
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-kubelet-config
+  namespace: fleet-default
+  annotations:
+    rke.cattle.io/object-authorized-for-clusters: rke2custom
+data:
+  kubelet-config.yaml: |
+    apiVersion: kubelet.config.k8s.io/v1beta1
+    kind: KubeletConfiguration
+    imageMaximumGCAge: 12h
+```
+
+**2a. In Kubernetes v1.32+**
+
+The recommended method for passing a custom kubelet configuration in Kubernetes v1.32+ is the use of a drop-in file, which removes the requirement to pass an additional config argument to instruct kubelet to read the file.
+
+In the example below, the kubelet configuration ConfigMap created above is written to the kubelet configuration drop-in directory on the nodes of an RKE2 cluster (/var/lib/rancher/rke2/agent/etc/kubelet.conf.d/).
+
+To define this [machineSelectorFiles](https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineselectorfiles) block in a Rancher-provisioned RKE2 or K3s cluster, navigate to **Cluster Management** in the Rancher UI and click **Edit Config** for the relevant cluster. Then click **Edit as YAML** to enter the machineSelectorFiles block, before clicking **Save** to apply the change.
+
+ 
+
+```markup
+[...]
+spec:
+  [...]
+  rkeConfig:
+    [...]
+    machineSelectorFiles:
+      - fileSources:
+          - configMap:
+              items:
+                - key: kubelet-config.yaml
+                  path: /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/01-custom.conf
+              name: custom-kubelet-config
+[...]
+```
+
+**2b. In Kubernetes &lt;v1.32**
+
+In Kubernetes &lt; v1.32, it is not possible to use the drop-in file feature, so the file must be written to a location (via a [machineSelectorFiles](https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineselectorfiles) block) which is then explicitly passed to the kubelet via the config argument (using a [machineSelectorConfig](https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineselectorconfig) block).
+
+In the example below, the kubelet configuration ConfigMap created above is written to the file /etc/rancher/rke2/kubelet-config-custom.yaml on the nodes of an RKE2 cluster, which is then referenced in the config argument passed to the kubelet.
+
+To define the [machineSelectorFiles](https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineselectorfiles) and [machineSelectorConfig](https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineselectorconfig) blocks in a Rancher-provisioned RKE2 or K3s cluster, navigate to **Cluster Management** in the Rancher UI and click **Edit Config** for the relevant cluster. Then click **Edit as YAML** to enter the blocks, before clicking **Save** to apply the change.
+
+```markup
+[...]
+spec:
+  [...]
+  rkeConfig:
+   [...]
+    machineSelectorConfig:
+      - config:
+          kubelet-arg:
+            - config=/etc/rancher/rke2/kubelet-config-custom.yaml
+    [...]
+    machineSelectorFiles:
+      - fileSources:
+          - configMap:
+              items:
+                - key: kubelet-config.yaml
+                  path: /etc/rancher/rke2/kubelet-config-custom.yaml
+              name: custom-kubelet-config
+[...]
+```
+
+
+
+---
+
 ## Article: 000022178.md
 
 # Configuring kube-proxy to use the nftables iptables backend with RKE2
@@ -30004,4 +30070,41 @@ This completes the migration without needing to recreate the cluster.
   ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK7)  
   
   ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK8)
+
+
+
+---
+
+## Article: 000022207.md
+
+# How to restrict access to the SSH Shell feature for RKE2 Cluster Nodes in Rancher UI
+
+**Article Number:** [000022207](https://support.scc.suse.com/s/kb/How-to-restrict-access-to-the-SSH-Shell-feature-for-RKE2-Cluster-Nodes-in-Rancher-UI)
+
+## **Environment**
+
+- Rancher 2.x
+
+## **Procedure**
+
+By removing the \```manage-node` `` permission, you can restrict users from accessing the SSH Shell feature, enhancing the security posture of your RKE2 cluster nodes.
+
+To disable the SSH Shell feature for RKE2 cluster nodes in Rancher, follow these steps:
+
+- **Identify the User Role:** Determine the specific user role for which you want to disable SSH Shell access.
+- **Remove the** `manage-node` **Permission:**
+  
+  - Navigate to the Rancher UI.
+  - Go to the Cluster Management section.
+  - Select the specific cluster.
+  - Access the Cluster Members or Users section.
+  - Locate the user or group whose permissions you need to modify.
+  - Edit the user's roles and permissions.
+  - Remove the `manage-node` permission from the user's roles.
+- **Verify the Change:** After removing the `manage-node` permission, verify that the SSH Shell option is no longer available for the modified user role when accessing the RKE2 cluster nodes through the Rancher UI.   
+  Eg : 
+  
+   ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o7l&feoid=00NTr00000R90Sn&refid=0EMTr00000IdHwH)
+
+**Note:** Currently, the only available option is to modify RBAC roles. We have an internal RFE open to provide a helm option or a way to disable SSH access during DS cluster provisioning.
 
