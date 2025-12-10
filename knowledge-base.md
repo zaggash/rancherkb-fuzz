@@ -9107,7 +9107,7 @@ Note: This script may not collect all necessary information when run on nodes in
 
 ## **Situation**
 
-#### When troubleshooting your issue, the Support team may request that you generate and provide a Support Bundle. If you are unable to generate a Support Bundle from the Rancher UI, you can manually collect the logs from the Linux Kubernetes nodes using the Rancher v2.x Linux log collector.
+#### When troubleshooting your issue, the Support team may request that you generate and provide a log bundle containing diagnostic information.
 
 ## **Resolution**
 
