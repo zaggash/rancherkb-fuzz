@@ -3151,35 +3151,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -8827,34 +8821,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -30029,6 +30017,144 @@ When the migration is complete:
 - Check etcd health and control-plane responsiveness
 
 This completes the migration without needing to recreate the cluster.
+
+
+
+---
+
+## Article: 000022203.md
+
+# How to Change the MTU Value for the Canal CNI in an RKE2 Cluster
+
+**Article Number:** [000022203](https://support.scc.suse.com/s/kb/How-to-Change-the-MTU-Value-for-the-Canal-CNI-in-an-RKE2-Cluster)
+
+## **Environment**
+
+All RKE2 using Canal CNI
+
+## **Situation**
+
+This article explains how to modify the MTU value used by the Canal CNI plugin on RKE2 clusters.
+
+In Canal deployments, Calico’s `vethuMTU` is rendered as `veth_mtu` in the Calico [configuration](https://github.com/rancher/rke2-charts/blob/main-source/packages/rke2-canal/charts/templates/config.yaml#L24), as documented in the upstream chart [templates](https://docs.tigera.io/calico/latest/networking/configuring/mtu).
+
+## **Resolution**
+
+## **1. Create a HelmChartConfig to Override the MTU**
+
+**For Rancher Provisioned RKE2 cluster:**  
+Under **Cluster Management** locate the desired cluster. Click on the **3-dot** menu on the right of the cluster, and select **Edit Config** -&gt; **Cluster Configuration** -&gt; **Add-on: Canal**. Look for the vethuMTU field and change the value as desired.
+
+**![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000139qz&feoid=00N1i000002LdMN&refid=0EMTr00000Igb0n)**
+
+ 
+
+**For Standalone RKE2 cluster:**  
+Create the following file **on each RKE2 server node**:
+
+**`/var/lib/rancher/rke2/server/manifests/rke2-canal-config.yaml`**
+
+```markup
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-canal
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    calico:
+      vethuMTU: 1400
+```
+
+> **Note**: RKE2 server nodes will automatically detect and apply changes made to files in the manifests directory
+
+## **2. Restart the Canal DaemonSet**
+
+After applying the configuration, restart Canal to load the updated MTU settings:
+
+```markup
+kubectl rollout restart ds rke2-canal -n kube-system
+```
+
+```
+
+```
+
+## **3. Verify That the Configuration Was Applied**
+
+Check that the new MTU value is present in the generated Canal ConfigMap:
+
+```markup
+ kubectl -n kube-system get configmap rke2-canal-config -o yaml | grep -A2 veth_mtu
+```
+
+You should see the value applied in Step 1, for example:
+
+```markup
+veth_mtu: "1400"
+```
+
+```
+
+```
+
+## **4. Important Note: MTU changes take effect for newly created pods**
+
+Calico applies MTU settings **only when a pod network interface is created**.  
+This means:
+
+- Existing pods **retain the old MTU**
+- New pods created after the configuration change will use the updated MTU
+- This behaviour is consistent with Calico’s MTU design
+
+To test the new MTU, you must create a **new pod**.
+
+## **5. Test With a New Pod**
+
+Create a test pod to verify that Calico now provisions interfaces using the updated MTU:
+
+```markup
+kubectl run mtu-test --image=busybox -it --restart=Never -- sh
+```
+
+## **6. Verify MTU on the Node**
+
+You can inspect MTU values using:
+
+```markup
+ip link show
+# or
+ip addr
+# or
+ifconfig -a
+```
+
+You may still see older `caliXXXX` interfaces at the previous MTU. Only **new pod veth interfaces** will reflect the updated MTU.
+
+Then, on the node where the pod is scheduled:
+
+```markup
+ip link show | grep -A1 cali
+```
+
+**Example Output (Lab Validation)**
+
+```bash
+11: cali1ec7f9e9a2d@if2: ... mtu 1450 ...
+27: calif30d30f9a04@if2: ... mtu 1450 ...
+29: calie10924b7eb7@if2: ... mtu 1450 ...
+34: cali18f8745c1f0@if2: ... mtu 1400 ...
+```
+
+Interface **34** corresponds to the new pod and correctly reflects the MTU value of **1400**.
+
+```
+
+```
+
+```
+
+```
 
 
 
