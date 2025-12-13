@@ -3151,29 +3151,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -8821,28 +8827,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -9015,59 +9027,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -12622,15 +12642,19 @@ If you are currently experiencing data loss during upgrades, it may be necessary
 
 ## **Environment**
 
-As of writing this article, there are now two main branches that we will be working on. When you navigate to the rancher/rancher [GitHub](https://github.com/rancher/rancher), you will see **two branches**: the **latest** branch and the **stable** branch. These two branches are now different, and when upgrading Rancher, **we recommend using the stable branch as our team has not verified and certified the latest branch**.
+If you are using the community version of Rancher: As of writing this article, there are now two main branches that we will be working on. When you navigate to the rancher/rancher [GitHub](https://github.com/rancher/rancher), you will see **two branches**: the **latest** branch and the **stable** branch. These two branches are now different, and when upgrading Rancher, **we recommend using the stable branch as our team has not verified and certified the latest branch**.
+
+ 
+
+If you are using Rancher Prime, ensure that the version you wish to upgrade to is present is in the prime registry.
 
 ## **Situation**
 
-As we near the end of maintenance, end of life, and end of support for Rancher 2.6, we felt it pertinent to provide a one-stop FAQ page as customers begin to plan their upgrades.
+As we have reached, the end of support for Rancher 2.8, we felt it pertinent to provide a one-stop FAQ page as customers begin to plan their upgrades.
 
-All upgrades should go from the latest to the latest. For instance, if you are on 2.6.10, you should go to 2.6.newest-stable and then to 2.7.newest-stable. The stop on 2.6.newest-stable should be about a week to ensure you can catch any issues before moving forward.
+All upgrades should go from the latest to the latest. For instance, if you are on 2.8.10, you should go to 2.8.newest-stable (which is 2.8.15) and then to 2.9.newest-stable (2.9.10 as of editing). The stop on 2.8.newest-stable should be about a week to ensure you can catch any issues before moving forward. **Please note, that this can apply to any Rancher branch (minor version upgrade) and is meant as a general rule of thumb.** 
 
-After the upgrade to 2.7.newest-stable, you should then upgrade the underlying Kubernetes version to the latest supported version of the Rancher release. And again, the new Kubernetes version should be tested and verified for around one week. From there, progress to the next Rancher upgrade, test, and then Kubernetes.
+After the upgrade to 2.9.newest-stable, you should then upgrade the underlying Kubernetes version to the latest supported version of the Rancher release. And again, the new Kubernetes version should be tested and verified for around one week. From there, progress to the next Rancher upgrade, test, and then Kubernetes.
 
 Many customers ask why we recommend one week. The 1-week recommendation is because this is often enough time for your clusters and app to be thoroughly tested and any issues flagged. We have seen customers who do less of a testing phase and only find issues when their cluster is being fully used and under normal "strain."
 
@@ -30233,4 +30257,79 @@ To disable the SSH Shell feature for RKE2 cluster nodes in Rancher, follow these
    ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o7l&feoid=00NTr00000R90Sn&refid=0EMTr00000IdHwH)
 
 **Note:** Currently, the only available option is to modify RBAC roles. We have an internal RFE open to provide a helm option or a way to disable SSH access during DS cluster provisioning.
+
+
+
+---
+
+## Article: 000022208.md
+
+# HPA shown as "Missing" in Rancher UI due to API version mismatch
+
+**Article Number:** [000022208](https://support.scc.suse.com/s/kb/HPA-shown-as-Missing-in-Rancher-UI-due-to-API-version-mismatch)
+
+## **Environment**
+
+Rancher Prime
+
+Kubernetes 1.23+
+
+## **Situation**
+
+In the Apps interface in the Rancher UI, Horizontal Pod Autoscalers (HPAs) for some installed apps display a "Missing" state, even though the HPAs are active and functioning correctly.
+
+## **Cause**
+
+In Kubernetes 1.23 and later, the autoscaling API group has a preferred version of v2.
+
+When a autoscaling resource (such as a HPA) is deployed using the autoscaling/v1 API, the Kubernetes API server accepts the request and silently migrates this resource to autoscaling/v2.
+
+Rancher tracks resources associated with an App using the app.catalog.cattle.io custom resource. Because the Helm chart specified v1 during deployment, the app.catalog.cattle.io object records the HPA resource version as autoscaling/v1.
+
+Rancher's cluster cache in newer versions watches for autoscaling/v2 resources, due to the preferred apiVersion. The UI attempts to look up the autoscaling/v1 object defined in the App metadata, but since the cache contains only autoscaling/v2 objects, the lookup fails, resulting in the "Missing" status.
+
+## **Resolution**
+
+### Temporary workaround
+
+- Edit the `app.catalog.cattle.io` object and set `apiVersion` for the HPA under `spec.resources` to `autoscaling/v2`:
+
+```
+kubectl edit app.catalog.cattle.io <app-name> -n <namespace>
+```
+
+- Locate the `spec.resources` section. Find the entry corresponding to the HorizontalPodAutoscaler
+
+```
+- apiVersion: autoscaling/v1
+  kind: HorizontalPodAutoscaler
+  name: <hpa-name>
+  namespace: <namespace>
+```
+
+- Change the `apiVersion` to `autoscaling/v2`
+
+```
+- apiVersion: autoscaling/v2  # Updated from v1
+  kind: HorizontalPodAutoscaler
+  name: <hpa-name>
+  namespace: <namespace>
+```
+
+- Save and exit the editor
+- Refresh the Rancher UI
+
+ The HPA should now transition to an "Active" state in the **Apps** view.
+
+> **Note**: This change will be reverted if the Helm release is upgraded or rolled back
+
+### Permanent Solution
+
+The underlying Helm chart must be updated by the chart maintainer.
+
+Update the Helm chart templates to use `autoscaling/v2` for HorizontalPodAutoscaler resources.
+
+Publish the updated chart.
+
+Upgrade the App in Rancher using the new chart version, this ensures the `app.catalog.cattle.io` resource is created with the correct `v2` metadata automatically.
 
