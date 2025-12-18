@@ -32069,8 +32069,19 @@ RKE2 uses a default kubelet configuration which is stored under `/var/lib/ranche
 
 1. (Recommended) Drop a config file in `/var/lib/rancher/rke2/agent/etc/kubelet.conf.d/`
 2. By using the flag `--kubelet-arg=config=$PATHTOFILE`, where `$PATHTOFILE` is the path to a file that includes kubelet config parameters (e.g. `/etc/rancher/rke2/kubelet.conf`) or the flag `--kubelet-arg=config-dir=$PATHTODIR`, where `$PATHTODIR` is the path to a directory which can include files that contain kubelet config parameters (e.g. `/etc/rancher/rke2/kubelet.conf.d`)
-3. By using the flag `--kubelet-arg=$FLAG`, where `$FLAG` is a kubelet configuration parameter (e.g. `image-gc-high-threshold=100`). 
+3. By using the flag `--kubelet-arg=$FLAG`, where `$FLAG` is a kubelet configuration parameter (e.g. `image-gc-high-threshold=100`).
 
+### Legacy kubelet logging flags
+
+RKE2 supports additional flags to configure kubelet logging that were previously supported by the kubelet itself. These flags are intercepted by RKE2, and control how RKE2 wraps logs written to stdout and stderr by the kubelet:
+
+| Flag | Type | Description
+| --------|------|------------
+| `logtostderr` | bool | Controls whether log messages are written only to stderr (Default `false`)
+| `alsologtostderr` | bool | Controls whether log messages are also written to stderr in addition to the specified log file (Default `false`)
+| `stderrthreshold` | string | This flag is intercepted by RKE2, but not used (Default `FATAL`)
+| `log-file` | string | Specifies the absolute path and filename where the component's log messages should be written (Default `/var/lib/rancher/rke2/agent/logs/kubelet.log`)
+| `log-file-max-size` | int | Specifies the maximum size (in megabytes) a log file can reach before it is rotated (Default `50`)
 
 
 ## Configuring the Linux Installation Script
@@ -33702,6 +33713,33 @@ spec:
 ```
 
 For more information about values available for the Calico chart, please refer to the [rke2-charts repository](https://github.com/rancher/rke2-charts/blob/main/charts/rke2-calico/rke2-calico/v3.26.300/values.yaml)
+
+<details>
+<summary>**eBPF dataplane**</summary>
+Calico offers an efficient eBPF dataplane that can be enabled in place of the default iptables-based implementation. Calico's dataplane can also be used to replace the default Kubernetes kube-proxy implementation.
+
+To enable Calico's eBPF dataplane, deploy RKE2 with `disable-kube-proxy: true` in the configuration file and use the following HelmChartConfig:
+```yaml
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-calico
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    installation:
+      calicoNetwork:
+        bpfNetworkBootstrap: Enabled
+        kubeProxyManagement: Enabled
+        linuxDataplane: BPF
+    kubernetesServiceEndpoint:
+      host: "localhost"
+      port: "6443"
+```
+
+For more information on Calico's eBPF dataplane, refer to [Calico's documentation](https://docs.tigera.io/calico/latest/operations/ebpf/).
+</details>
 
 :::note
 Calico requires the iptables or xtables-nft package  to be installed on the node.
