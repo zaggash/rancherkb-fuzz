@@ -3791,26 +3791,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+# How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
-- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
+- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
+- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
 
 ## **Situation**
 
-この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
+This article details how to confirm that a Rancher version upgrade has successfully completed.
 
 ## **Resolution**
 
-Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
+The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
 
-- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
-- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
-- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
+- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
+- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
+- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
 
 
 
@@ -4649,38 +4649,26 @@ Until the dashboard goes into a General Release status, there is a requirement f
 
 ## **Environment**
 
-RKE2  
-K3s  
-etcd
+A Rancher-provisioned or standalone RKE2 or K3s cluster
 
 ## **Situation**
 
-#### If your etcd logs start showing messages like the following, your storage might be too slow for etcd or the server might be doing too much for etcd to operate properly:
+If the etcd logs in a cluster contain messages of the following format, this indicates that the backing storage is too slow or that the server is too highly loaded for etcd queries to complete in a timely manner:
 
-```
-2019-08-11 23:27:04.344948 W | etcdserver: read-only range request "key:\"/registry/services/specs/default/kubernetes\" " with result "range_response_count:1 size:293" took too long (1.530802357s) to execute
-```
+`2019-08-11 23:27:04.344948 W | etcdserver: read-only range request "key:\"/registry/services/specs/default/kubernetes\" " with result "range_response_count:1 size:293" took too long (1.530802357s) to execute`etcd queries are expected to complete in a low (sub-10 ms) timeframe. Where requests take longer than 100 ms, etcd logs "*request took too long messages*" of the format above. Slow etcd queries will result in slow cluster controlplane operation and, if slow enough, kube-apiserver request timeouts and a degraded controlplane.
 
-If your storage is really slow you will even see it throwing alerts in your monitoring system. What can you do to the verify the performance of your storage? If the storage is is not performing correctly, how can you fix it?
+This article outlines how to verify etcd I/O performance at a single point in time, as well as how to use rancher-monitoring to monitor this over time. It also includes recommendations on how to increase etcd I/O performance.
 
-The biggest factor is your storage latency. If it is not well below 10ms in the 99th percentile, you will see warnings in the etcd logs. We can test this with a tool called fio or the etcd benchmarking tool. The use of fio will be outlined below.
+**Testing etcd performance (point-in-time test with fio)**
 
-#### Testing etcd performance
-
-1. Download and install the latest version of fio or etcd also has its own benchmarking tool (see links below). This is important because older versions do not provide storage latency. I have a very simple script below to download and install this.
+1. Install `fio` using the package manager on your distribution, e.g. `apt install fio`, `yum install fio` or `zypper install fio`.
+2. Test the storage by creating a directory on the device you want to test and running the `fio` command, as shown below:
    
    ```bash
-   curl -LO https://github.com/rancherlabs/support-tools/raw/master/instant-fio-master/instant-fio-master.sh
-   bash instant-fio-master.sh
-   ```
-2. Test the storage, create a directory on the device you want to test then run the fio command as shown below.
-   
-   ```bash
-   export PATH=/usr/local/bin:$PATH
    mkdir test-data
    fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=100m --bs=2300 --name=mytest
    ```
-3. Below is an example output from an etcd,controlplane,worker node of a Rancher installation cluster running on an AWS ec2 instance type of t2.large.
+3. Below is an example output from a node with all roles (etcd, controlplane and worker) of a Rancher local RKE2 cluster running on an AWS EC2 instance type of t2.large:
    
    ```bash
    [root@ip-172-31-14-184 ~]# fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=100m --bs=2300 --name=mytest
@@ -4722,21 +4710,28 @@ The biggest factor is your storage latency. If it is not well below 10ms in the 
      xvda: ios=0/96829, merge=0/3, ticks=0/47440, in_queue=47432, util=92.25%
    ```
 
-In the fsync data section you can see that the 99th percentile is 2245 or about 2.2ms of latency. This storage is well suited for an etcd node. [The etcd documentation suggests](https://github.com/etcd-io/etcd/blob/master/Documentation/faq.md#what-does-the-etcd-warning-failed-to-send-out-heartbeat-on-time-mean) that for storage to be fast enough, the 99th percentile of fdatasync invocations when writing to the WAL file must be less than 10ms.
+In the fsync data section, you can see that the 99th (99.00th) percentile is 2,245 microseconds, or approximately 2.2 milliseconds, of latency. [The etcd documentation suggests](https://etcd.io/docs/v3.6/faq/#what-does-the-etcd-warning-failed-to-send-out-heartbeat-on-time-mean) that, for the storage to be considered fast enough for etcd, the 99th percentile of fdatasync invocations when writing to the WAL file must be less than 10 ms.
+
+Whilst this value might suggest that the storage is fast enough for etcd, it is important to note that `fio` measures the latency at the single point in time when the test is run. If higher disk latency is intermittent - for example, due to a regularly scheduled task running on the same host, or another host in the case of shared storage - the `fio` results may indicate lower latency because the storage was not heavily loaded at the time of testing. To better understand the latency over time, you can use rancher-monitoring to monitor etcd.
+
+**Monitoring etcd performance (over time with rancher-monitoring)**
+
+1. Install rancher-monitoring into the affected cluster, [per the Rancher documentation](https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/enable-monitoring).
+2. Within the Rancher UI, navigate to the affected cluster and open the rancher-monitoring Grafana UI by selecting **Monitoring** -&gt; **Grafana**.
+3. Within the Grafana UI, navigate to **Dashboards** and click on **etcd** to load the etcd dashboard.
+4. The **Disk Sync Duration** panel contains the relevant data. Mouse over this panel and click the three-dot menu that appears in the top-right corner of the panel, then click **View** to expand it, per the following screenshot:![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000014m0f&feoid=00N1i000002LdMP&refid=0EMTr00000IpUGD)
+5. You can adjust the time range in the top-right corner of the window to view data over a longer period or to inspect data at times when there is a known issue with etcd performance or warnings. The graph displays the 99th percentile WAL fsync and DB fsync values per etcd node. The WAL fsync value should be below 10 ms. If 10 ms is consistently exceeded, or if there are periods where the WAL fsync value spikes substantially above 10 ms, you should look to increase the storage performance.
+
+<!--THE END-->
 
 ## **Resolution**
 
-#### What if your node's storage isn't fast enough? The simple solution is to upgrade the storage but that isn't always an option. If you are on the cusp of acceptable, there are things you can do to optimize your storage so that etcd is happy.
+If the testing above indicates that the storage I/O performance is not sufficient for etcd, the simple solution is to upgrade the storage to provide higher I/O capacity. If performance is close to acceptable, there are several steps you can take to optimize storage:
 
-1. Don't run etcd on a node with other roles. A general rule of thumb is to never have the worker role on the same node as etcd. However many environments have etcd and controlplane roles on the same node and run just fine. If this is the case for your environment then you should consider separating etcd and controlplane nodes.
-2. If you've separated etcd and the controlplane node and are still having issues, you can mount a separate volume for etcd so that read write operations for everything else on the node do not impact etcd's performance. This is mostly applicable to Cloud hosted nodes since each volume mounted has its own allocated set of resources.
-3. If you are on a dedicated server and would like to separate etcd read write operations from the rest of the server, you should install a new storage device for etcd mounts.
-4. Always use SSD's for your etcd nodes, whether it is dedicated or in the cloud.
-5. Set the priority of the etcd container so that it is higher than other processes but not too high that it overwhelms the server.
-   
-   ```
-   ionice -c2 -n0 -p `pgrep -x etcd`
-   ```
+- Always use SSDs for etcd storage, whether on dedicated or in the cloud.
+- Do not run etcd on a node with other roles. As a general rule, never run the worker role on the same node as etcd. Many environments have etcd and controlplane roles on the same node; if this is the case in your environment and etcd performance is insufficient, consider separating etcd and controlplane roles onto different nodes.
+- If the etcd and the controlplane roles have already been separated and etcd is still not performant, mount a separate volume for etcd so that storage I/O operations from other processes on the node do not impact etcd performance. This is mostly applicable to cloud-hosted nodes, where each volume mounted has its own allocated set of resources.
+- If you using dedicated servers and want to separate etcd storage I/O operations from the rest of the system, install a separate storage device for etcd data directory.
 
 
 
@@ -9021,59 +9016,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -12960,67 +12963,65 @@ Please note that I will set up Slack alerts in this example
 
 ## Article: 000020750.md
 
-# Customize Helm Chart values for RKE2 default addons
+# How to customize Helm Chart values for the default addons in an RKE2 or K3s cluster
 
 **Article Number:** [000020750](https://support.scc.suse.com/s/kb/Edit-Helm-Chart-values-on-RKE-default-addons)
 
 ## **Environment**
 
-Rancher 2.6/2.7/2.8  
-RKE2 downstream cluster
+A Rancher-provisioned or standalone RKE2 cluster
 
 ## **Situation**
 
-By default, [RKE2 installs multiple addons](https://docs.rke2.io/helm/#automatically-deploying-manifests-and-helm-charts), including CoreDNS, Local-Storage, Nginx-Ingress, etc.:
+Both [RKE2](https://docs.rke2.io/install/packaged_components) and [K3s](https://docs.k3s.io/installation/packaged-components) deploy several packaged components as add-ons via Helm charts, for example rke2-coredns, rke2-metrics-server, or traefik.
 
-```
-kubectl -n kube-system get addons
-```
+In both [RKE2](https://docs.rke2.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig) and [K3s](https://docs.k3s.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig), these Helm add-ons can be customized using a `HelmChartConfig` resource. Below is an example of a `HelmChartConfig` manifest, taken from the [K3s documentation](https://docs.k3s.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig), to customize the `traefik` HelmChart in a K3s cluster.
 
-Many of these addons are deployed from a Helm chart and represented within the cluster via [a HelmChart custom resource](https://docs.rke2.io/helm/#using-the-helm-crd):
-
-```
-kubectl -n kube-system get helmchart
-```
-
-These built-in addons deployed from a Helm chart can be customized with the use of a [HelmChartConfig custom resource](https://docs.rke2.io/helm/#customizing-packaged-components-with-helmchartconfig):
-
-```
-kubectl -n kube-system get helmchartconfig
-```
-
-This is where you can use the Helm chart values to change an addon's default installation.
-
-## **Resolution**
-
-To edit the values of a Helm chart, you must find the currently installed version. To do this navigate to the RKE2 GitHub repository releases page to find the **Packaged Component Versions** (https://github.com/rancher/rke2/releases/) for the specific RKE release.
-
-For example, [RKE2 1.23.10+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.23.10+rke2r1) uses ingress-nginx 4.1.0 (https://github.com/rancher/rke2/releases/tag/v1.23.10+rke2r1). Checking the [values for this version of the ingress-nginx chart](https://github.com/kubernetes/ingress-nginx/blob/helm-chart-4.1.0/charts/ingress-nginx/values.yaml)  within the ingress-nginx GitHub repository you can determine the possible values  
-(https://github.com/kubernetes/ingress-nginx/blob/helm-chart-4.1.0/charts/ingress-nginx/values.yaml).
-
-Thus, to add tolerations to the ingress-nginx controller, you can use the below manifest as an example. All of the values from the chart can be customised via this schema.
-
-```
----
+```markup
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
-  name: rke2-ingress-nginx
+  name: traefik
   namespace: kube-system
 spec:
   valuesContent: |-
-    controller:
-      tolerations:
-        - key: "key"
-          operator: "Exists"
-          effect: "NoSchedule"
+    image:
+      repository: docker.io/library/traefik
+      tag: 3.3.5
+    ports:
+      web:
+        forwardedHeaders:
+          trustedIPs:
+            - 10.0.0.0/8
 ```
 
-After creating the HelmChartConfig manifest, you need to apply it via Rancher. To do so:  
-1\. Navigate to **Cluster Management**.  
-2\. On the selected cluster, click **Edit Config**.  
-3\. Click on the Add-On Config tab and enter the manifest at the bottom in **Additional Manifest**.  
-![](https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Jpg&versionId=0685q00000Gpeg2&operationContext=DELIVERY&contentId=05T5q00000v3VbC&page=0&d=%2Fa%2F5q0000012rsa%2FfLBhqaiBbLl2qG.kNZC29vFfj7SLX_MUIyb2ZVgg6kE&oid=00D1i000000gLOd&dpt=null&viewId=)
+**RKE2** The Helm chart files for RKE2, including the default `values.yaml`, are located in the [`rke2-charts` GitHub repository](https://github.com/rancher/rke2-charts/tree/main/charts). To identify the correct chart version for your cluster, refer to the "Chart Versions" section of the [RKE2 release notes](https://github.com/rancher/rke2/releases). You can then inspect the `values.yaml` file in the repository to review all available configuration options.
+
+**K3s** The Helm chart files for K3s are hosted in the [`k3s-charts` GitHub repository](https://github.com/k3s-io/k3s-charts/tree/main/charts). You can determine which chart version is deployed in your cluster by running `kubectl get helmchart -A`. Once identified, refer to the corresponding `values.yaml` file in the repository to check the available configuration options.
+
+## **Resolution**
+
+**A standalone RKE2 or K3s cluster**
+
+In an RKE2 or K3s cluster, a `HelmChartConfig` manifest should be written to a file in the manifests directory of server nodes. For RKE2, this is /var/lib/rancher/rke2/server/manifests; for K3s, it is /var/lib/rancher/k3s/server/manifests/.
+
+For example, to customize the `rke2-coredns` Helm chart in an RKE2 cluster, create the file /var/lib/rancher/rke2/server/manifests/rke2-coredns-config.yaml and populate it with the desired [`HelmChartConfig` manifest](https://docs.rke2.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig).
+
+Similarly, to customize the `traefik` HelmChart in a K3s cluster, create the file /var/lib/rancher/k3s/server/manifests/traefik-config.yaml and populate it with the desired [`HelmChartConfig` manifest](https://docs.k3s.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig).
+
+In a standalone RKE2 cluster, this `HelmChartConfig` method can also be used to customize the CNI.
+
+**A Rancher-provisioned RKE2 or K3s cluster**
+
+**Note:** In Rancher-provisioned RKE2 clusters, a `HelmChartConfig` should **not** be used to customize the CNI configuration. Instead of defining a `HelmChartConfig` in the **Additional Manifest** section, you should edit the CNI configuration via the **Add-on: \[CNI Name]** form under **Cluster Configuration**, 
+
+In a Rancher-provisioned RKE2 or K3s cluster, the `HelmChartConfig` manifest can be configured directly within the Rancher UI:
+
+1. Navigate to **Cluster Management** within the Rancher UI
+2. Click **Edit Config** for the desired RKE2 or K3s cluster.
+3. Under **Cluster Configuration**, click **Additional Manifests.**
+4. Enter the desired `HelmChartConfig` manifest into the text area.
+5. Click **Save** to apply the changes.
 
 
 
@@ -18905,70 +18906,63 @@ The documentation reference for that matter can be found [here](https://rancherm
 
 ## Article: 000021401.md
 
-# How to set calico IP_AUTODETECTION_METHOD
+# How to configure Calico Node IP Autodetection in an RKE/RKE2 cluster
 
 **Article Number:** [000021401](https://support.scc.suse.com/s/kb/How-to-set-calico-IP-AUTODETECTION-METHOD)
 
 ## **Environment**
 
-- A Rancher-provisioned or standalone RKE or RKE2 cluster
-- Kubernetes cluster nodes with multiple network interfaces
-- Calico is the Kubernetes cluster CNI plugin
+- A Rancher-provisioned or standalone RKE/RKE2 cluster using the Calico CNI.
+- Kubernetes cluster nodes with multiple network interfaces or interfaces configured with multiple addresses.
 
 ## **Situation**
 
-When Calico has multiple interfaces, by default, it will choose the first-found interface for the vxlan traffic. To change, this behavior, the Calico auto detection method can be configured to point to a specific network interface. More information on the Calico auto detection methods can be found in the [Calico documentation](https://docs.tigera.io/calico/latest/reference/configure-calico-node#ip-autodetection-methods).
+Calico uses a single IPv4 (and/or an IPv6 address if running a dual-stack or IPv6 only cluster) per node to route pod traffic between nodes. By default, Calico selects the first address on the first valid interface, using the ["first-found" autodetection method](https://docs.tigera.io/calico/latest/reference/configure-calico-node#first-found).
+
+In environments with multiple network interfaces on cluster nodes, or multiple addresses on a single interface, this may result in selection of an address that prevents successful routing of pod traffic between some or all nodes in the cluster.
+
+To prevent this, the method used to determine the network interface used by Calico can be specified, [per the Calico documentation](https://docs.tigera.io/calico/latest/reference/configure-calico-node#ip-autodetection-methods).
+
+For example, the `interface` parameter can be used to select a specific network interface by name, or `cidr` can be used to specify CIDRs from which an address on the node should be selected.
 
 ## **Resolution**
 
-The configuration differs based on the Kubernetes distribution. In the examples below the configured interface for Calico is ens192. 
+In the examples below, the `interface` autodetection method is configured so that Calico selects the address from the interface named `ens192`.
 
-## RKE
+**RKE2**
 
-In RKE, you can specify the desired host network interface that Calico will use by creating the following configmap under the kube-system namespace.
+**Rancher-provisioned RKE2 clusters**
 
-```
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: kubernetes-services-endpoint
-  namespace: kube-system
-data:
-  IP_AUTODETECTION_METHOD: interface=ens192
-```
+In a Rancher-provisioned RKE2 cluster, you can specify the Calico autodetection method via the cluster add-on configuration:
 
-## RKE2
+1. Navigate to **Cluster Management** within the Rancher UI.
+2. Click **Edit Config** for the desired RKE2 cluster.
+3. Under **Cluster Configuration** click **Add-on: Calico**.
+4. Enter the desired autodetection method(s) into the calicoNetwork block. In the example below, the IPv4 autodetection method is set to `interface: ens192`.
+   
+   ```
+   affinity: {}
+   apiServer:
+     enabled: false
+   calicoctl:
+     image: rancher/mirrored-calico-ctl
+     tag: v3.28.1
+   [...]
+   installation:
+     [...]
+     calicoNetwork:
+       nodeAddressAutodetectionV4:
+          interface: ens192
+   [...]
+   ```
 
-### Rancher-provisioned RKE2 clusters
+**Standalone RKE2 clusters**
 
-In a Rancher-provisioned RKE2 cluster you can specify the desired host network interface that Calico will use via the cluster add-on configuration:
+In a standalone RKE2 cluster, you can specify the Calico autodetection method via a [HelmChartConfig resource](https://docs.rke2.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig).
 
-1. Navigate to Cluster Management
-2. Select the desired RKE2 Cluster
-3. Edit Config
-4. Add-On Config (under Cluster Configuration).
+Write the HelmChartConfig to a file in the [manifests directory](https://docs.rke2.io/add-ons/helm#automatically-deploying-manifests-and-helm-charts) on the cluster controlplane nodes (i.e. /var/lib/rancher/rke2/server/manifests/rke2-calico-config.yaml).
 
-Here is an example Add-On config with the host network interface set to ens192
-
-```
-affinity: {}
-apiServer:
-  enabled: false
-calicoctl:
-  image: rancher/mirrored-calico-ctl
-  tag: v3.28.1
-[...]
-installation:
-  calicoNetwork:
-    nodeAddressAutodetectionV4:
-       interface: ens192      
-```
-
-### Standalone RKE2 clusters
-
-In a standalone RKE2 cluster, you can specify the desired host network interface that Calico will use via a HelmChartConfig resource ([https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig)](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig%29).
-
-The HelmChartConfig below can used for this purpose by creating /var/lib/rancher/rke2/server/manifests/rke2-calico-config.yaml on one of the server nodes:
+In the example below, the IPv4 autodetection method is set to `interface: ens192`.
 
 ```
 apiVersion: helm.cattle.io/v1
@@ -18982,6 +18976,22 @@ spec:
       calicoNetwork:
         nodeAddressAutodetectionV4:
           interface: ens192
+```
+
+**RKE**
+
+In RKE, you can specify the Calico autodetection method by creating a ConfigMap kubernetes-services-endpoint, in the kube-system namespace, using the field IP\_AUTODETECTION\_METHOD (and IP6\_AUTODETECTION\_METHOD for IPv6).
+
+In the example below, the IPv4 autodetection method is set to `interface: ens192`.
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubernetes-services-endpoint
+  namespace: kube-system
+data:
+  IP_AUTODETECTION_METHOD: interface=ens192
 ```
 
 ```
@@ -25227,46 +25237,6 @@ You can also set container-level limits using the Docker daemon configuration.
 ```markup
 systemctl daemon-reload
 systemctl restart docker
-```
-
-
-
----
-
-## Article: 000021922.md
-
-# How to configure Calico Node IP Autodetection with Specific CIDRs
-
-**Article Number:** [000021922](https://support.scc.suse.com/s/kb/How-to-configure-Calico-Node-IP-Autodetection-with-Specific-CIDRs)
-
-## **Environment**
-
-Rancher 2.x
-
-RKE2
-
-## **Situation**
-
-In environments where Kubernetes nodes (e.g., RKE2) have multiple network interfaces or IP addresses, it's often necessary to explicitly tell the Container Network Interface (CNI), such as Calico, which IP address to use for its internal communication and pod networking. If Calico automatically selects an incorrect interface (e.g., the interface of a management network instead of the intended data network), it can lead to network connectivity issues for pods or between nodes.
-
-## **Resolution**
-
-Add the below config in the downstream cluster under the *Additional Manifest* tab in the Rancher UI during the creation to adjust the auto detection method for Calico:
-
-```markup
-apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
-metadata:
-  name: rke2-calico
-  namespace: kube-system
-spec:
-  valuesContent: |-
-    installation:
-      calicoNetwork:
-        nodeAddressAutodetectionV4:
-          firstFound: false
-          cidrs:
-            - "192.168.1.0/24" # Replace with your target CIDR
 ```
 
 
