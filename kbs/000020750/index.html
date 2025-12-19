@@ -21,15 +21,15 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
-        <title>Customize Helm Chart values for RKE2 default addons - SUSE KBs</title>
+        <title>How to customize Helm Chart values for the default addons in an RKE2 or K3s cluster - SUSE KBs</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#customize-helm-chart-values-for-rke2-default-addons" class="md-skip">
+        <a href="#how-to-customize-helm-chart-values-for-the-default-addons-in-an-rke2-or-k3s-cluster" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Customize Helm Chart values for RKE2 default addons
+              How to customize Helm Chart values for the default addons in an RKE2 or K3s cluster
             
           </span>
         </div>
@@ -2056,7 +2056,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+    How to confirm a version upgrade of Rancher v2.x is completed successfully
   
 
     
@@ -4632,7 +4632,7 @@
   <span class="md-ellipsis">
     
   
-    How to test websocket connections to Rancher v2.x
+    [JP] How to test websocket connections to Rancher v2.x
   
 
     
@@ -7665,7 +7665,7 @@
   <span class="md-ellipsis">
     
   
-    Customize Helm Chart values for RKE2 default addons
+    How to customize Helm Chart values for the default addons in an RKE2 or K3s cluster
   
 
     
@@ -7683,7 +7683,7 @@
   <span class="md-ellipsis">
     
   
-    Customize Helm Chart values for RKE2 default addons
+    How to customize Helm Chart values for the default addons in an RKE2 or K3s cluster
   
 
     
@@ -10480,7 +10480,7 @@
   <span class="md-ellipsis">
     
   
-    How to set calico IP_AUTODETECTION_METHOD
+    How to configure Calico Node IP Autodetection in an RKE/RKE2 cluster
   
 
     
@@ -13133,34 +13133,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000021922/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to configure Calico Node IP Autodetection with Specific CIDRs
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000021930/" class="md-nav__link">
         
   
@@ -15337,46 +15309,47 @@
 
 
 
-<h1 id="customize-helm-chart-values-for-rke2-default-addons">Customize Helm Chart values for RKE2 default addons</h1>
+<h1 id="how-to-customize-helm-chart-values-for-the-default-addons-in-an-rke2-or-k3s-cluster">How to customize Helm Chart values for the default addons in an RKE2 or K3s cluster</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Edit-Helm-Chart-values-on-RKE-default-addons">000020750</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Rancher 2.6/2.7/2.8<br />
-RKE2 downstream cluster</p>
+<p>A Rancher-provisioned or standalone RKE2 cluster</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>By default, <a href="https://docs.rke2.io/helm/#automatically-deploying-manifests-and-helm-charts">RKE2 installs multiple addons</a>, including CoreDNS, Local-Storage, Nginx-Ingress, etc.:</p>
-<div class="highlight"><pre><span></span><code>kubectl -n kube-system get addons
-</code></pre></div>
-<p>Many of these addons are deployed from a Helm chart and represented within the cluster via <a href="https://docs.rke2.io/helm/#using-the-helm-crd">a HelmChart custom resource</a>:</p>
-<div class="highlight"><pre><span></span><code>kubectl -n kube-system get helmchart
-</code></pre></div>
-<p>These built-in addons deployed from a Helm chart can be customized with the use of a <a href="https://docs.rke2.io/helm/#customizing-packaged-components-with-helmchartconfig">HelmChartConfig custom resource</a>:</p>
-<div class="highlight"><pre><span></span><code>kubectl -n kube-system get helmchartconfig
-</code></pre></div>
-<p>This is where you can use the Helm chart values to change an addon's default installation.</p>
-<h2 id="resolution"><strong>Resolution</strong></h2>
-<p>To edit the values of a Helm chart, you must find the currently installed version. To do this navigate to the RKE2 GitHub repository releases page to find the <strong>Packaged Component Versions</strong> (https://github.com/rancher/rke2/releases/) for the specific RKE release.</p>
-<p>For example, <a href="https://github.com/rancher/rke2/releases/tag/v1.23.10+rke2r1">RKE2 1.23.10+rke2r1</a> uses ingress-nginx 4.1.0 (https://github.com/rancher/rke2/releases/tag/v1.23.10+rke2r1). Checking the <a href="https://github.com/kubernetes/ingress-nginx/blob/helm-chart-4.1.0/charts/ingress-nginx/values.yaml">values for this version of the ingress-nginx chart</a>  within the ingress-nginx GitHub repository you can determine the possible values<br />
-(https://github.com/kubernetes/ingress-nginx/blob/helm-chart-4.1.0/charts/ingress-nginx/values.yaml).</p>
-<p>Thus, to add tolerations to the ingress-nginx controller, you can use the below manifest as an example. All of the values from the chart can be customised via this schema.</p>
-<div class="highlight"><pre><span></span><code>---
-apiVersion: helm.cattle.io/v1
+<p>Both <a href="https://docs.rke2.io/install/packaged_components">RKE2</a> and <a href="https://docs.k3s.io/installation/packaged-components">K3s</a> deploy several packaged components as add-ons via Helm charts, for example rke2-coredns, rke2-metrics-server, or traefik.</p>
+<p>In both <a href="https://docs.rke2.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig">RKE2</a> and <a href="https://docs.k3s.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig">K3s</a>, these Helm add-ons can be customized using a <code>HelmChartConfig</code> resource. Below is an example of a <code>HelmChartConfig</code> manifest, taken from the <a href="https://docs.k3s.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig">K3s documentation</a>, to customize the <code>traefik</code> HelmChart in a K3s cluster.</p>
+<div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
-  name: rke2-ingress-nginx
+  name: traefik
   namespace: kube-system
 spec:
   valuesContent: |-
-    controller:
-      tolerations:
-        - key: &quot;key&quot;
-          operator: &quot;Exists&quot;
-          effect: &quot;NoSchedule&quot;
+    image:
+      repository: docker.io/library/traefik
+      tag: 3.3.5
+    ports:
+      web:
+        forwardedHeaders:
+          trustedIPs:
+            - 10.0.0.0/8
 </code></pre></div>
-<p>After creating the HelmChartConfig manifest, you need to apply it via Rancher. To do so:<br />
-1. Navigate to <strong>Cluster Management</strong>.<br />
-2. On the selected cluster, click <strong>Edit Config</strong>.<br />
-3. Click on the Add-On Config tab and enter the manifest at the bottom in <strong>Additional Manifest</strong>.<br />
-<img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Jpg&amp;versionId=0685q00000Gpeg2&amp;operationContext=DELIVERY&amp;contentId=05T5q00000v3VbC&amp;page=0&amp;d=%2Fa%2F5q0000012rsa%2FfLBhqaiBbLl2qG.kNZC29vFfj7SLX_MUIyb2ZVgg6kE&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></p>
+<p><strong>RKE2</strong> The Helm chart files for RKE2, including the default <code>values.yaml</code>, are located in the <a href="https://github.com/rancher/rke2-charts/tree/main/charts"><code>rke2-charts</code> GitHub repository</a>. To identify the correct chart version for your cluster, refer to the "Chart Versions" section of the <a href="https://github.com/rancher/rke2/releases">RKE2 release notes</a>. You can then inspect the <code>values.yaml</code> file in the repository to review all available configuration options.</p>
+<p><strong>K3s</strong> The Helm chart files for K3s are hosted in the <a href="https://github.com/k3s-io/k3s-charts/tree/main/charts"><code>k3s-charts</code> GitHub repository</a>. You can determine which chart version is deployed in your cluster by running <code>kubectl get helmchart -A</code>. Once identified, refer to the corresponding <code>values.yaml</code> file in the repository to check the available configuration options.</p>
+<h2 id="resolution"><strong>Resolution</strong></h2>
+<p><strong>A standalone RKE2 or K3s cluster</strong></p>
+<p>In an RKE2 or K3s cluster, a <code>HelmChartConfig</code> manifest should be written to a file in the manifests directory of server nodes. For RKE2, this is /var/lib/rancher/rke2/server/manifests; for K3s, it is /var/lib/rancher/k3s/server/manifests/.</p>
+<p>For example, to customize the <code>rke2-coredns</code> Helm chart in an RKE2 cluster, create the file /var/lib/rancher/rke2/server/manifests/rke2-coredns-config.yaml and populate it with the desired <a href="https://docs.rke2.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig"><code>HelmChartConfig</code> manifest</a>.</p>
+<p>Similarly, to customize the <code>traefik</code> HelmChart in a K3s cluster, create the file /var/lib/rancher/k3s/server/manifests/traefik-config.yaml and populate it with the desired <a href="https://docs.k3s.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig"><code>HelmChartConfig</code> manifest</a>.</p>
+<p>In a standalone RKE2 cluster, this <code>HelmChartConfig</code> method can also be used to customize the CNI.</p>
+<p><strong>A Rancher-provisioned RKE2 or K3s cluster</strong></p>
+<p><strong>Note:</strong> In Rancher-provisioned RKE2 clusters, a <code>HelmChartConfig</code> should <strong>not</strong> be used to customize the CNI configuration. Instead of defining a <code>HelmChartConfig</code> in the <strong>Additional Manifest</strong> section, you should edit the CNI configuration via the <strong>Add-on: [CNI Name]</strong> form under <strong>Cluster Configuration</strong>, </p>
+<p>In a Rancher-provisioned RKE2 or K3s cluster, the <code>HelmChartConfig</code> manifest can be configured directly within the Rancher UI:</p>
+<ol>
+<li>Navigate to <strong>Cluster Management</strong> within the Rancher UI</li>
+<li>Click <strong>Edit Config</strong> for the desired RKE2 or K3s cluster.</li>
+<li>Under <strong>Cluster Configuration</strong>, click <strong>Additional Manifests.</strong></li>
+<li>Enter the desired <code>HelmChartConfig</code> manifest into the text area.</li>
+<li>Click <strong>Save</strong> to apply the changes.</li>
+</ol>
 
 
 
@@ -15427,10 +15400,10 @@ spec:
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["header.autohide", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
