@@ -941,49 +941,51 @@ Once an admin has configured the kubeconfig TTL, users will need to download the
 
 ## Article: 000020022.md
 
-# How to enable debug logging when using Terraform?
+# How to enable debug logging when using the Rancher2 Terraform Provider
 
 **Article Number:** [000020022](https://support.scc.suse.com/s/kb/360059095032)
 
 ## **Environment**
 
-Rancher Terraform Provider
+Rancher2 Terraform Provider
 
 ## **Situation**
 
-#### If you encounter an issue with the [Rancher2 Terraform Provider](https://registry.terraform.io/providers/rancher/rancher2/latest/docs) it may be helpful to capture debug output from Terraform, so that you can provide this to Rancher Support. This article details how to enable debug output and set the log location for Terraform commands such as `terraform apply`.
+If you encounter an issue with the Rancher2 Terraform Provider, capturing the debug output can be essential for troubleshooting or providing context to Rancher Support. This article explains how to enable debug logging and specify a log file location for Terraform commands, such as `terraform apply`.
 
 ## **Resolution**
 
-You can set the Terraform log level and location via the `TF_LOG` and `TF_LOG_PATH` environment variables.
+You can control the verbosity and destination of logs using the `TF_LOG` and `TF_LOG_PATH` environment variables.
 
-##### Set log level with `TF_LOG`
+**1. Set the log level with `TF_LOG`**
 
-The environment variable`TF_LOG` defines the log level. Valid log levels are (in order of decreasing verbosity): `TRACE`, `DEBUG`, `INFO`, `WARN` or `ERROR`.
+The `TF_LOG` variable defines the verbosity of the output. Valid levels (from most to least verbose) are: `TRACE`, `DEBUG`, `INFO`, `WARN`, or `ERROR`. For most support cases, `DEBUG` or `TRACE` is preferred.
 
-Set the log level in your environment with the appropriate command (substituting your preferred log level):
+Run the appropriate command for your shell:
 
-**Bash:** `export TF_LOG="DEBUG"`
+- **Bash:** `export TF_LOG="DEBUG"`
+- **PowerShell:** `$env:TF_LOG="DEBUG"`
 
-**PowerShell:** `$env:TF_LOG="DEBUG"`
+**2. Redirect logs to a file with `TF_LOG`**
 
-##### Redirect Terraform logs with `TF_LOG`
+The `TF_LOG_PATH` variable specifies the file where Terraform will write its logs. If this is not set, logs are sent to the terminal's standard output. When set, Terraform appends logs from every execution to the specified file.
 
-The environment variable `TF_LOG_PATH` specifies the file in which Terraform will write logs. If `TF_LOG_PATH` is not set, output is sent to standard output and error in the terminal. If the environment variable is set, Terraform will append logs from each run to the specified file.
+Run the appropriate command for your shell:
 
-Set the Terraform log location in your environment with the appropriate command (substituting the path to your preferred file):
+- **Bash:** `export TF_LOG_PATH="tmp/terraform.log"`
+- **PowerShell:** `$env:TF_LOG_PATH="C:\tmp\terraform.log"`
 
-**Bash:** `export TF_LOG_PATH="tmp/terraform.log"`
+**3. Persisting the Settings**
 
-**PowerShell:** `$env:TF_LOG_PATH="C:\tmp\terraform.log"`
+To enable these settings permanently, add the export commands to your shell's profile:
 
-To set them permanently, you can add these environment variables to your `.profile`, `.bashrc`, PowerShell profile (if it exists, the path is stored in `$profile` environment variable) file, or the appropriate profile for your chosen shell.
+- **Linux/macOS**: Add to .bashrc, .bash\_profile, or .zshrc.
+- **Windows:** Add to your PowerShell profile (found at the path stored in the `$profile` variable) or via the "Edit the system environment variables" utility in the Control Panel.
 
-> **N.B.** As this will append the log with the Terraform output *every* time you run a Terraform command, you may wish to configure log rotation for the chosen log file if this is enabled permanently. Alternatively, disable logging to file once you have finished troubleshooting.
+**Important Notes:**
 
-#### Further reading
-
-- [Debugging Terraform (official) documentation](https://www.terraform.io/docs/internals/debugging.html)
+- **Log File Growth:** Since Terraform appends to the log file every time a command is run, the file can grow quite large. It is recommended to either configure log rotation or unset these variables once troubleshooting is complete.
+- **Sensitive Data:** Debug logs (especially at the `TRACE` level) may contain sensitive information. Ensure you review logs before sharing them if they contain secrets or credentials.
 
 
 
@@ -2389,69 +2391,72 @@ kubectl patch felixconfigurations.crd.projectcalico.org default  -p '{"spec":{"u
 
 ## **Environment**
 
-Linux host
+Linux Host / Kubernetes Node
 
 ## **Situation**
 
-The sysctls `fs.inotify.max_user_instances` and `fs.inotify.max_user_watches` define user limits on the number of inotify resources and inotify file watches. If these limits are reached, you may experience processes failing with error messages related to the limits, for example:
+The sysctls `fs.inotify.max_user_instances` and `fs.inotify.max_user_watches` define the upper limits on the number of inotify resources and file watches a user can create. If these limits are reached, processes may fail with errors such as:
 
-```
-ENOSPC: System limit for number of file watchers reached...
-```
+- `ENOSPC: System limit for number of file watchers reached...`
+- `The configured user limit (128) on the number of inotify instances has been reached`
+- `The default defined inotify instances (128) has been reached`
 
-```
-The configured user limit (128) on the number of inotify instances has been reached 
-```
-
-```
-The default defined inotify instances (128) has been reached
-```
-
-In the context of a Kubernetes cluster, this behaviour would exhibit as failing Pods, with inotify related errors in the Pod logs similar to the above. This article details how to check the current limits configured and how to increase these.
+In a Kubernetes cluster, this behavior often results in failing Pods with logs containing the errors above. This article details how to check and increase these limits.
 
 ## **Resolution**
 
-### Check current limits
+**1. Check current limits**
 
-You can check the current inotify user instance limit, with the following:
+To check the current inotify user instance limit, run:
 
-```
+```markup
 cat /proc/sys/fs/inotify/max_user_instances
 ```
 
-Similarly, the current inotify user watch limit can be checked as follows:
+To check the current inotify user watch limit, run:
 
-```
+```markup
 cat /proc/sys/fs/inotify/max_user_watches
 ```
 
-### Update the limits
+**2. Update the limits**
 
-You can update the limits temporarily, with the following commands (setting the values to 8192 and 524288 respectively in this example):
+**Temporary - Applied immediately, lost on reboot**
 
-```
+Run the following commands to increase the limits (using 8,192 and 524,288 as examples):
+
+```markup
 sudo sysctl fs.inotify.max_user_instances=8192
 sudo sysctl fs.inotify.max_user_watches=524288
+```
+
+**Permanent - Persistent across reboots**
+
+Add the following lines to /etc/sysctl.conf (or a dedicated file in /etc/sysctl.d/):
+
+```markup
+fs.inotify.max_user_instances=8192
+fs.inotify.max_user_watches=524288
+```
+
+After saving the file, apply the changes by running:
+
+```markup
 sudo sysctl -p
 ```
 
-In order to make the changes permanent, i.e. to persist a reboot, you can set `fs.inotify.max_user_instances=8192` and `fs.inotify.max_user_watches=524288` in the file `/etc/sysctl.conf`.
+**3. Validate the changes**
 
-After updating the limits, you can validate these on the host again, as above, with `cat /proc/sys/fs/inotify/max_user_instances` and `cat /proc/sys/fs/inotify/max_user_watches`.
+You can verify the updates on the host by re-running the `cat` commands from Step 1.
 
-To check the value as reflected in a running container, exec into the container and cat the files:
+To check if the updated values are reflected within a running pod, execute the following:
 
-```
-docker exec -it <CONTAINER ID> cat /proc/sys/fs/inotify/max_user_instances
-```
-
-and
-
-```
-docker exec -it <CONTAINER ID> cat /proc/sys/fs/inotify/max_user_watches
+```markup
+kubectl exec -it -n <pod-namespace> <pod-name> -- cat /proc/sys/fs/inotify/max_user_instances
+kubectl exec -it -n <pod-namespace> <pod-name> -- cat /proc/sys/fs/inotify/max_user_watches
 ```
 
-If the updated limits are not reflected on a host after running `sysctl -p`, reboot the host after setting the limits in `/etc/sysctl.conf`.
+If changes are not reflected within the Pods, you may need to restart the Pods or reboot the host.
 
 
 
@@ -8822,28 +8827,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -13482,72 +13493,50 @@ kubectl apply -f helm-rancher-config-final.yaml -n cattle-system
 
 ## Article: 000020811.md
 
-# How to set the metadata config using the CATTLE prefixed extra environment variable
+# How to customize and reset the rke-metadata-config setting in Rancher
 
 **Article Number:** [000020811](https://support.scc.suse.com/s/kb/How-to-set-the-RKE-metadata-config-using-the-CATTLE-prefixed-environment-variable)
 
 ## **Environment**
 
-Rancher v2.6.x, v2.7.x, v2.9.x and v2.10.x
+Rancher v2.x
 
 ## **Situation**
 
-Rancher integrates the **RKE metadata feature** (`rke-metadata-config`) to automatically synchronize Kubernetes version metadata at regular intervals. This ensures that Rancher remains aligned with the latest Kubernetes patch versions without requiring a Rancher upgrade.
+[Kontainer Driver Metadata (KDM)](https://github.com/rancher/kontainer-driver-metadata) is a feature that enables Rancher to pull a list of the latest available Kubernetes versions for a Rancher minor release without requiring an upgrade of Rancher itself. By default, the metadata is pulled from a release-specific branch of the [KDM GitHub repository](https://github.com/rancher/kontainer-driver-metadata), hosted at releases.rancher.com. In air-gapped environments, where Rancher is unable to connect to this URL, you may wish to host an internal mirror of this repository to use the feature.
 
-The **rke-metadata-config** feature enhances flexibility by enabling the automatic synchronization of Kubernetes metadata, allowing users to provision clusters with the latest patch versions of Kubernetes without upgrading Rancher. However, upgrading to new minor versions still requires a Rancher upgrade to ensure full compatibility.
+This article details how to customize KDM synchronization via Rancher's `rke-metadata-config` setting, as well as how to reset it to the default.
 
-If the **rke-metadata-config** value has been manually modified at any point, it will not auto-update during a Rancher upgrade, as per its design. This can lead to inconsistencies and potential disruptions in the managed RKE2 downstream clusters.
-
-In some air-gapped environments the RKE metadata setting can be modified to meet security and compliance concerns. In addition users will be able to manage these settings through the Rancher helm values file on installation and/or upgrades.
-
-## **Cause**
-
-The **rke-metadata-config** value is unique to each Rancher version. If the Kubernetes metadata (KDM) version does not match the Rancher version, there is a risk of cluster failures due to inconsistencies between supported Kubernetes versions and system configurations.
+**Note:** There is a separate KDM release branch for each minor release of Rancher, and the correct branch **must** be used for the running Rancher version. When running without a custom configuration, Rancher uses the default value in the `rke-metadata-config` setting, which includes the relevant branch for the current version. If you have set a value for the `rke-metadata-config` setting, the configuration **will not** be updated automatically. In that case, when upgrading Rancher, you should ensure that the release branch is updated in parallel (e.g. using the Helm values method documented below).
 
 ## **Resolution**
 
-**A) Method 1: Customizing the Metadata Settings via Rancher UI** 
+**Customizing the `rke-metadata-config` setting via the Rancher UI**
 
-The metadata config setting can be found in the UI under Global Settings &gt; Settings &gt; rke-metadata-config.
+To customize the `rke-metadata-config` setting via the Rancher UI, following the [process outlined in the Rancher documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/upgrade-kubernetes-without-upgrading-rancher#configuring-the-metadata-synchronization).
 
-In an open environment (with internet access), the default metadata config for Rancher v2.5.x and 2.6.x is to pull/refresh the Kubernetes metadata via a JSON file in the Rancher Git repository.
+**Customizing the `rke-metadata-config` setting via Helm values**
 
-Note: In air-gapped environments, this works differently, i.e. only those Kubernetes versions available and included at the time of the Rancher release will be selectable. To take advantage of later Kubernetes patch versions, the Kontainer Driver Metadata from the Kubernetes metadata repository will need to be mirrored in a location that is accessible to air-gapped installations of Rancher. The default rke-metadata-config URL can be modified to point to the local mirror. Updated system images will also be required.
+The `rke-metadata-config` can be configured via the Rancher environment variable `CATTLE_RKE_METADATA_CONFIG`.
 
-**B) Method 2: Customizing the Metadata Settings via Helm**
+In order to configure this environment variable on the Rancher Helm chart, follow the [Rancher documentation for setting extra environment variables](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#setting-extra-environment-variables).
 
-Using Helm, the rke-metadata-config settings can be passed with --set, using the CATTLE_ prefixed extra environment variables.  
-The example command shown below makes use of the current Rancher release values exported to a file, and the file is referenced during a Helm upgrade.
-
-```
-helm upgrade rancher rancher-stable/rancher   --namespace cattle-system  -f rancher-values.yaml --version <version> --set 'extraEnv[0].name=CATTLE_RKE_METADATA_CONFIG' --set 'extraEnv[0].value=\{\"refresh-interval-minutes\":\"1450"\,\"url"\:\"https://releases.rancher.com/kontainer-driver-metadata/release-v2.6/data.json\"}'
-```
-
-Alternatively, it is also possible to supply the necessary arguments in the values file.
+An example of the Helm values updating the `rke-metadata-config` URL to [https://releases.example.com/kontainer-driver-metadata/release-v2.12/data.json](https://releases.example.com/kontainer-driver-metadata/release-v2.12/data.json) is as follows:
 
 ```
-extraEnv:
-- name: CATTLE_RKE_METADATA_CONFIG
-  value: '{"refresh-interval-minutes":"1450","url":"https://releases.rancher.com/kontainer-driver-metadata/release-v2.6/data.json"}'
+--set 'extraEnv[0].name=CATTLE_RKE_METADATA_CONFIG'
+--set 'extraEnv[0].value=\{\"refresh-interval-minutes\":\"1450"\,\"url"\:\"https://releases.example.com/kontainer-driver-metadata/release-v2.12/data.json\"}'
 ```
 
-Please see below example screenshot taken from the Global Settings &gt; Settings menu in the Rancher UI after applying the rke-metadata-config setting using Helm.
+**Resetting the `rke-metadata-config` setting to the default**
 
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tLRS&feoid=00N1i000002LdMN&refid=0EM5q000000ZqiH)
+As noted above, if you have set a value for the `rke-metadata-config` setting - even if that value matched the default at the time - the URL will **no longer** be updated automatically during Rancher upgrades.
 
-**IMPORTANT NOTE:** 
+If you would like to revert to the default `rke-metadata-config` behavior (pulling from releases.rancher.com with the URL automatically tracking your Rancher version), run the following command in the Rancher local cluster to remove the custom value:
 
-When upgrading Rancher to the next major/minor release (e.g 2.9.x or 210.x), please ensure that the RKE metadata setting matches the release in use, i.e. release-v2.9 or release-v2.10
-
-To ensure that Rancher uses the default `rke-metadata-config` value — which is automatically updated during a Rancher upgrade—  **it is necessary to remove any manually set value in the Rancher local cluster. This helps prevent Kubernetes metadata (KDM) related issues during the upgrade process.**
-
-To reset the configuration, you can use the UI or a valid `kubeconfig` for the Rancher cluster and execute the following command:
-
-```python
-kubectl edit settings rke-metadata-config
+```markup
+kubectl patch setting.management.cattle.io rke-metadata-config --type='merge' -p '{"value":""}'
 ```
-
-Then, set the `value` field to an empty string (`""`) to revert to the default configuration.
 
 
 
@@ -30356,4 +30345,39 @@ spec:
 ```
 
 save and exit the editor.
+
+
+
+---
+
+## Article: 000022236.md
+
+# Upgrade to Rancher Prime v2.13.1 fails in clusters with ingress-nginx
+
+**Article Number:** [000022236](https://support.scc.suse.com/s/kb/Upgrade-to-Rancher-Prime-v2-13-1-fails-in-clusters-with-ingress-nginx)
+
+## **Environment**
+
+Helm chart upgrade to Rancher Prime v2.13.1 in a cluster utilizing the `ingress-nginx` ingress controller.
+
+## **Situation**
+
+When performing a Helm chart upgrade of a Rancher instance to Rancher Prime v2.13.1 in a cluster with the `ingress-nginx` ingress controller, the upgrade fails with an error of the following format:
+
+```markup
+Error: UPGRADE FAILED: failed to create resource: admission webhook "validate.nginx.ingress.kubernetes.io" denied the request: host "<rancher-hostname>" and path "/" is already defined in ingress cattle-system/rancher
+```
+
+## **Cause**
+
+In Rancher Prime v2.13.1, the Helm chart name was changed from `rancher` to `rancher-prime`. Because the Rancher Helm chart templates its resource names based on the chart name by default, the upgrade process attempts to create new resources (suffixed with `rancher-prime`) before the existing resources (suffixed with `rancher`) are fully removed.
+
+The `ingress-nginx` validating webhook admission controller blocks the creation of the new `rancher-rancher-prime` Ingress resource because the existing `rancher` Ingress resource - containing the identical host and path configuration - still exists in the cluster.
+
+## **Resolution**
+
+To resolve this issue, manually delete the existing Rancher Ingress resource in the local cluster and then re-run the Helm upgrade:
+
+1. Delete the existing ingress: `kubectl -n cattle-system delete ingress rancher`
+2. Re-run the Helm upgrade command.
 

@@ -254,7 +254,7 @@ Time to live (TTL) duration in minutes, used to determine when a user auth sessi
 ### auth-user-session-idle-ttl-minutes
 
 Time to live (TTL) without user activity for login sessions tokens, in minutes.
-By default, [`auth-user-session-idle-ttl-minutes`](#auth-user-session-idle-ttl-minutes) is set to the same value as [`auth-user-session-ttl-minutes`](#auth-user-session-ttl-minutes) (for backward compatibility). It must never exceed the value of `auth-user-session-ttl-minutes`.
+By default, `auth-user-session-idle-ttl-minutes` is set to the same value as [`auth-user-session-ttl-minutes`](#auth-user-session-ttl-minutes) (for backward compatibility). It must never exceed the value of `auth-user-session-ttl-minutes`.
 
 ### kubeconfig-default-token-ttl-minutes
 
@@ -787,11 +787,15 @@ spec:
 EOF
 ```
 
-Use `metadata.generateName` to ensure a unique project ID, but note that `kubectl apply` does not work with `metadata.generateName`, so `kubectl create` must be used instead.
+When creating a new project, you have two primary options for setting the name:
+
+- **Automatic Generation:** Use `metadata.generateName` to ensure a unique project ID. However, note that you must use `kubectl create` (instead of `kubectl apply`) with this option, as `kubectl apply` does not support it.
+- **Manual Naming:** You can explicitly set the project ID using `metadata.name`. If a project with that exact name already exists, the name request is denied.
+The display name seen in the UI is set by `spec.displayName`. If `spec.displayName` is not provided, the field `metadata.name` is used instead.
 
 Set `metadata.namespace` and `spec.clusterName` to the ID for the cluster the project belongs to.
 
-If you create a project through a cluster member account, you must include the annotation, `field.cattle.io/creatorId`, and set it to the cluster member account's user ID.
+If you create a project through a cluster member account and want that account to be able to access the project, you must include the annotation `field.cattle.io/creatorId`, and set it to the cluster member account's user ID.
 
 ```bash
 kubectl create -f - <<EOF
@@ -799,8 +803,7 @@ apiVersion: management.cattle.io/v3
 kind: Project
 metadata:
   annotations: 
-  field.cattle.io/creatorId:
-    user-id
+    field.cattle.io/creatorId: user-id
   generateName: p-
   namespace: c-m-abcde
 spec:
@@ -809,7 +812,7 @@ spec:
 EOF
 ```
 
-Setting the `field.cattle.io/creatorId` field allows the cluster member account to see project resources with the `get` command and view the project in the Rancher UI. Cluster owner and admin accounts don't need to set this annotation to perform these tasks.
+Setting the `field.cattle.io/creatorId` field creates a `ProjectRoleTemplateBinding` that grants the specified user the ability to see project resources with the `get` command and view the project in the Rancher UI. Cluster owner and admin accounts don't need to set this annotation to perform these tasks.
 
 Setting the  `field.cattle.io/creator-principal-name` annotation to the user's principal preserves it in a projectroletemplatebinding automatically created for the project owner.
 
@@ -860,9 +863,13 @@ spec:
 EOF
 ```
 
+### Backing Namespace
+
+After creating the project, the field `status.backingNamespace` gets populated. This represents the namespace in the management cluster that is created to manage project related resources. Examples of resources stored in the backing namespace are [project scoped secrets](../../how-to-guides/new-user-guides/kubernetes-resources-setup/secrets.md#creating-secrets-in-projects) and [project role template bindings](../../how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles.md#project-roles).
+
 ## Adding a Member to a Project
 
-Look up the project ID to specify the `metadata.namespace` field and `projectName` field values.
+Look up the project's [backing namespace](#backing-namespace) to specify the `metadata.namespace` field value and look up the project's ID to specify the `projectName` field value.
 
 ```bash
 kubectl --namespace c-m-abcde get projects
@@ -882,7 +889,7 @@ apiVersion: management.cattle.io/v3
 kind: ProjectRoleTemplateBinding
 metadata:
   generateName: prtb-
-  namespace: p-vwxyz
+  namespace: c-m-abcde-p-vwxyz
 projectName: c-m-abcde:p-vwxyz
 roleTemplateName: project-member
 userPrincipalName: keycloak_user://user
@@ -908,16 +915,16 @@ Create a projectroletemplatebinding for each role you want to assign to the proj
 
 ## Listing Project Members
 
-Look up the project ID:
+Look up the project backing namespace:
 
 ```bash
 kubectl --namespace c-m-abcde get projects
 ```
 
-to list projectroletemplatebindings in the project's namespace:
+To list projectroletemplatebindings in the project's backing namespace:
 
 ```bash
-kubectl --namespace p-vwxyz get projectroletemplatebindings
+kubectl --namespace c-m-abcde-p-vwxyz get projectroletemplatebindings
 ```
 
 ## Deleting a Member From a Project
@@ -927,14 +934,14 @@ Lookup the projectroletemplatebinding IDs containing the member in the project's
 Delete the projectroletemplatebinding from the project's namespace:
 
 ```bash
-kubectl --namespace p-vwxyz delete projectroletemplatebindings prtb-qx874 prtb-7zw7s
+kubectl --namespace c-m-abcde-p-vwxyz delete projectroletemplatebindings prtb-qx874 prtb-7zw7s
 ```
 
 ## Creating a Namespace in a Project
 
 The Project resource resides in the management cluster, even if the Project is for a managed cluster. The namespaces under the project reside in the managed cluster.
 
-On the management cluster, look up the project ID for the cluster you are administrating since it generated using `metadata.generateName`:
+On the management cluster, look up the project ID for the cluster you are administrating if generated using `metadata.generateName`:
 
 ```bash
 kubectl --namespace c-m-abcde get projects
@@ -970,6 +977,8 @@ kubectl --namespace c-m-abcde delete project p-vwxyz
 ```
 
 Note that this command doesn't delete the namespaces and resources that formerly belonged to the project.
+
+It does delete all project role template bindings for the projects, so recreating the project will not restore members added to the project, and you have to add users as members again.
 
 
 ---
@@ -17629,7 +17638,7 @@ A project is a group of namespaces, and it is a concept introduced by Rancher. P
 
 :::note
 
-Projects are de-emphasized on the UI because it is not required to create Kubernetes resources within a project scope. However, resources such as [Secrets](../../new-user-guides/kubernetes-resources-setup/secrets.md#creating-secrets-in-projects) can still be created in a project scope if the legacy feature flag is enabled.
+Projects are de-emphasized on the UI because it is not required to create Kubernetes resources within a project scope. However, resources such as [Secrets](../../new-user-guides/kubernetes-resources-setup/secrets.md#creating-secrets-in-projects) can still be created in a project scope.
 
 :::
 
@@ -17812,6 +17821,10 @@ To add a resource quota,
 1. Select **Delete**.
 
 When you delete a project, any namespaces that were formerly associated with the project will remain on the cluster. You can find these namespaces in the Rancher UI, in the **Not in a Project** tab of the **Projects/Namespaces** page. You can reassign these namespaces to a project by [moving](../manage-namespaces.md#moving-namespaces-to-another-project) them.
+
+## Further Reading
+
+You can create projects and project members more programmatically via the [Public API](../../../api/quickstart.md). See the [project workflow doc](../../../api/workflows/projects.md) for more information.
 
 
 ---
@@ -23933,6 +23946,7 @@ Rancher will publish deprecated features as part of the [release notes](https://
 
 | Patch Version |  Release Date |
 |---------------|---------------|
+| [2.13.1](https://github.com/rancher/rancher/releases/tag/v2.13.1) | December 18, 2025 |
 | [2.13.0](https://github.com/rancher/rancher/releases/tag/v2.13.0) | November 25, 2025 |
 
 ## What can I expect when a feature is marked for deprecation?
@@ -27502,6 +27516,7 @@ In order to deploy and run the adapter successfully, you need to ensure its vers
 
 | Rancher Version | Adapter Version  |
 |-----------------|------------------|
+| v2.13.1         |  108.0.0+up8.0.0 |
 | v2.13.0         |  108.0.0+up8.0.0 |
 
 ### 1. Gain Access to the Local Cluster
@@ -32953,7 +32968,23 @@ kubectl -n cattle-system create secret generic tls-ca \
 
 The configured `tls-ca` secret is retrieved when Rancher starts. On a running Rancher installation the updated CA will take effect after new Rancher pods are started.
 
+The certificate chain must be properly formatted, or components may fail to download resources from the Rancher server. 
+
 :::
+
+## Adding Additional CA Certificates
+
+If you are using a node driver that makes API requests with a different CA than the one configured for Rancher, you can add additional root certificates and certificate chains. 
+
+Create a unique file ending in `.pem` for each certificate that is required, and use kubectl to create the 
+`tls-additional` secret in the `cattle-system` namespace.
+
+```console
+kubectl -n cattle-system create secret generic tls-additional \
+  --from-file=cacerts1.pem=cacerts1.pem --from-file=cacerts2.pem=cacerts2.pem
+```
+
+Rancher mounts these CA root certificates and certificate chains into the node driver pod during provisioning.
 
 ## Updating a Private CA Certificate
 
@@ -38826,6 +38857,7 @@ Each Rancher version is designed to be compatible with a single version of the w
 
 | Rancher Version | Webhook Version | Availability in Prime | Availability in Community |
 |-----------------|-----------------|-----------------------|---------------------------|
+| v2.13.1         |     v0.9.1      | &check;               | &check;                   |
 | v2.13.0         |     v0.9.0      | &cross;               | &check;                   |
 
 ## Why Do We Need It?

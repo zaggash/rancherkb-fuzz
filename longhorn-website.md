@@ -2958,7 +2958,7 @@ Enable this setting automatically rebalances replicas when discovered an availab
 
 The available global options are:
 
-- `disabled`. This is the default option. No replica auto-balance will be done.
+- `disabled`. This is the default option. No Replica Auto Balance will be done.
 
 - `least-effort`. This option instructs Longhorn to balance replicas for minimal redundancy.
 
@@ -2973,7 +2973,7 @@ The available volume spec options are:
 
 - `ignored`. This is the default option that instructs Longhorn to inherit from the global setting.
 
-- `disabled`. This option instructs Longhorn no replica auto-balance should be done."
+- `disabled`. This option instructs Longhorn not to perform Replica Auto Balance.
 
 - `least-effort`. This option instructs Longhorn to balance replicas for minimal redundancy.
 
@@ -2993,7 +2993,7 @@ To disable this setting, set the value to **0**.
 
 This setting takes effect only when the following conditions are met:
 
-- [Replica Auto Balance](#replica-auto-balance) is set to **best-effort**. To disable this setting (disk pressure threshold) when replica auto-balance is set to best-effort, set the value of this setting to **0**.
+- [Replica Auto Balance](#replica-auto-balance) is set to **best-effort**. To disable this setting (disk pressure threshold) when Replica Auto Balance is set to best-effort, set the value of this setting to **0**.
 - At least one other disk on the node has sufficient available space.
 
 This setting is not affected by [Replica Node Level Soft Anti-Affinity](#replica-node-level-soft-anti-affinity), which can prevent Longhorn from rebuilding a replica on the same node. Regardless of that setting's value, this setting still allows Longhorn to attempt replica rebuilding on a different disk on the same node for migration purposes.
@@ -3753,7 +3753,7 @@ The `longhorn-manager:v1.10.1` image is affected by
     - [\[BUG\] V2 Volume CSI Clone Slowness Caused by VolumeAttachment Webhook](https://github.com/longhorn/longhorn/issues/12328) that can lead to significant delays during V2 volume cloning operations.
     - [\[BUG\] [Bug] A cloned volume cannot be attached to a workload](https://github.com/longhorn/longhorn/issues/12206) that prevents cloned volumes from being attached to workloads.
   - Replica auto-balance:
-    - [\[BUG\] Replica auto balance disk pressure threshold stalled with stopped volumes](https://github.com/longhorn/longhorn/issues/10837) that can cause the replica auto-balance feature to stall when volumes are stopped under disk pressure conditions.
+    - [\[BUG\] Replica auto balance disk pressure threshold stalled with stopped volumes](https://github.com/longhorn/longhorn/issues/10837) that can cause the Replica Auto Balance feature to stall when volumes are stopped under disk pressure conditions.
 
 To mitigate the issues, replace `longhorn-manager:v1.10.1` with the hotfixed image `longhorn-manager:v1.10.1-hotfix-2`.
 
@@ -16141,7 +16141,7 @@ Drawbacks:
 - The drain operation is significantly slower than for other behaviors. Every replica must be rebuilt on another node
   before it can complete. Drain timeout must be adjusted as appropriate for the amount of data that will move during
   rebuilding.
-- The drain operation is data-intensive, especially when replica auto balance is enabled, as evicted replicas may be
+- The drain operation is data-intensive, especially when Replica Auto Balance is enabled, as evicted replicas may be
   moved back to the drained node when/if it comes back online.
 - Like all of these policies, it triggers on cordon, not on drain. If a user regularly cordons nodes without draining
   them, replicas will be rebuilt pointlessly.
@@ -17395,9 +17395,9 @@ When replicas are scheduled unevenly on nodes or zones, Longhorn `Replica Auto B
 
 ### Global setting
 
-Longhorn supports 3 options for global replica auto-balance setting:
+Longhorn supports 3 options for global Replica Auto Balance setting:
 
-- `disabled`. This is the default option, no replica auto-balance will be done.
+- `disabled`. This is the default option, no Replica Auto Balance will be done.
 
 - `least-effort`. This option instructs Longhorn to balance replicas for minimal redundancy.
   For example, after adding node-2, a volume with 4 off-balanced replicas will only rebalance 1 replica.
@@ -17431,7 +17431,7 @@ There are 4 options available for individual volume setting:
 
 - `Ignored`. This is the default option that instructs Longhorn to inherit from the global setting.
 
-- `disabled`. This option instructs Longhorn no replica auto-balance should be done.
+- `disabled`. This option instructs Longhorn not to perform Replica Auto Balance.
 
 - `least-effort`. This option instructs Longhorn to balance replicas for minimal redundancy.
   For example, after adding node-2, a volume with 4 off-balanced replicas will only rebalance 1 replica.
