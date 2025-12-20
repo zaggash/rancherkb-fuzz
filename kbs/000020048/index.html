@@ -908,7 +908,7 @@
   <span class="md-ellipsis">
     
   
-    How to enable debug logging when using Terraform?
+    How to enable debug logging when using the Rancher2 Terraform Provider
   
 
     
@@ -1522,34 +1522,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#check-current-limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Check current limits
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#update-the-limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Update the limits
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -4600,7 +4572,7 @@
   <span class="md-ellipsis">
     
   
-    How do I edit or upgrade clusters created via RKE Templates?
+    [JP] How do I edit my cluster using RKE Templates?
   
 
     
@@ -7988,7 +7960,7 @@
   <span class="md-ellipsis">
     
   
-    How to set the metadata config using the CATTLE prefixed extra environment variable
+    How to customize and reset the rke-metadata-config setting in Rancher
   
 
     
@@ -15254,6 +15226,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022236/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrade to Rancher Prime v2.13.1 fails in clusters with ingress-nginx
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -15318,34 +15318,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#check-current-limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Check current limits
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#update-the-limits" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Update the limits
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
     </ul>
@@ -15368,39 +15340,44 @@
 <h1 id="how-to-increase-the-inotifymax_user_watches-and-inotifymax_user_instances-sysctls-on-a-linux-host">How to increase the inotify.max_user_watches and inotify.max_user_instances sysctls on a Linux host</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360054835111">000020048</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Linux host</p>
+<p>Linux Host / Kubernetes Node</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>The sysctls <code>fs.inotify.max_user_instances</code> and <code>fs.inotify.max_user_watches</code> define user limits on the number of inotify resources and inotify file watches. If these limits are reached, you may experience processes failing with error messages related to the limits, for example:</p>
-<div class="highlight"><pre><span></span><code>ENOSPC: System limit for number of file watchers reached...
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>The configured user limit (128) on the number of inotify instances has been reached 
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>The default defined inotify instances (128) has been reached
-</code></pre></div>
-<p>In the context of a Kubernetes cluster, this behaviour would exhibit as failing Pods, with inotify related errors in the Pod logs similar to the above. This article details how to check the current limits configured and how to increase these.</p>
+<p>The sysctls <code>fs.inotify.max_user_instances</code> and <code>fs.inotify.max_user_watches</code> define the upper limits on the number of inotify resources and file watches a user can create. If these limits are reached, processes may fail with errors such as:</p>
+<ul>
+<li><code>ENOSPC: System limit for number of file watchers reached...</code></li>
+<li><code>The configured user limit (128) on the number of inotify instances has been reached</code></li>
+<li><code>The default defined inotify instances (128) has been reached</code></li>
+</ul>
+<p>In a Kubernetes cluster, this behavior often results in failing Pods with logs containing the errors above. This article details how to check and increase these limits.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<h3 id="check-current-limits">Check current limits</h3>
-<p>You can check the current inotify user instance limit, with the following:</p>
+<p><strong>1. Check current limits</strong></p>
+<p>To check the current inotify user instance limit, run:</p>
 <div class="highlight"><pre><span></span><code>cat /proc/sys/fs/inotify/max_user_instances
 </code></pre></div>
-<p>Similarly, the current inotify user watch limit can be checked as follows:</p>
+<p>To check the current inotify user watch limit, run:</p>
 <div class="highlight"><pre><span></span><code>cat /proc/sys/fs/inotify/max_user_watches
 </code></pre></div>
-<h3 id="update-the-limits">Update the limits</h3>
-<p>You can update the limits temporarily, with the following commands (setting the values to 8192 and 524288 respectively in this example):</p>
+<p><strong>2. Update the limits</strong></p>
+<p><strong>Temporary - Applied immediately, lost on reboot</strong></p>
+<p>Run the following commands to increase the limits (using 8,192 and 524,288 as examples):</p>
 <div class="highlight"><pre><span></span><code>sudo sysctl fs.inotify.max_user_instances=8192
 sudo sysctl fs.inotify.max_user_watches=524288
-sudo sysctl -p
 </code></pre></div>
-<p>In order to make the changes permanent, i.e. to persist a reboot, you can set <code>fs.inotify.max_user_instances=8192</code> and <code>fs.inotify.max_user_watches=524288</code> in the file <code>/etc/sysctl.conf</code>.</p>
-<p>After updating the limits, you can validate these on the host again, as above, with <code>cat /proc/sys/fs/inotify/max_user_instances</code> and <code>cat /proc/sys/fs/inotify/max_user_watches</code>.</p>
-<p>To check the value as reflected in a running container, exec into the container and cat the files:</p>
-<div class="highlight"><pre><span></span><code>docker exec -it &lt;CONTAINER ID&gt; cat /proc/sys/fs/inotify/max_user_instances
+<p><strong>Permanent - Persistent across reboots</strong></p>
+<p>Add the following lines to /etc/sysctl.conf (or a dedicated file in /etc/sysctl.d/):</p>
+<div class="highlight"><pre><span></span><code>fs.inotify.max_user_instances=8192
+fs.inotify.max_user_watches=524288
 </code></pre></div>
-<p>and</p>
-<div class="highlight"><pre><span></span><code>docker exec -it &lt;CONTAINER ID&gt; cat /proc/sys/fs/inotify/max_user_watches
+<p>After saving the file, apply the changes by running:</p>
+<div class="highlight"><pre><span></span><code>sudo sysctl -p
 </code></pre></div>
-<p>If the updated limits are not reflected on a host after running <code>sysctl -p</code>, reboot the host after setting the limits in <code>/etc/sysctl.conf</code>.</p>
+<p><strong>3. Validate the changes</strong></p>
+<p>You can verify the updates on the host by re-running the <code>cat</code> commands from Step 1.</p>
+<p>To check if the updated values are reflected within a running pod, execute the following:</p>
+<div class="highlight"><pre><span></span><code>kubectl exec -it -n &lt;pod-namespace&gt; &lt;pod-name&gt; -- cat /proc/sys/fs/inotify/max_user_instances
+kubectl exec -it -n &lt;pod-namespace&gt; &lt;pod-name&gt; -- cat /proc/sys/fs/inotify/max_user_watches
+</code></pre></div>
+<p>If changes are not reflected within the Pods, you may need to restart the Pods or reboot the host.</p>
 
 
 

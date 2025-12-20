@@ -25,7 +25,7 @@
     
     
       
-        <title>How to set the metadata config using the CATTLE prefixed extra environment variable - SUSE KBs</title>
+        <title>How to customize and reset the rke-metadata-config setting in Rancher - SUSE KBs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-set-the-metadata-config-using-the-cattle-prefixed-extra-environment-variable" class="md-skip">
+        <a href="#how-to-customize-and-reset-the-rke-metadata-config-setting-in-rancher" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to set the metadata config using the CATTLE prefixed extra environment variable
+              How to customize and reset the rke-metadata-config setting in Rancher
             
           </span>
         </div>
@@ -908,7 +908,7 @@
   <span class="md-ellipsis">
     
   
-    How to enable debug logging when using Terraform?
+    How to enable debug logging when using the Rancher2 Terraform Provider
   
 
     
@@ -4492,7 +4492,7 @@
   <span class="md-ellipsis">
     
   
-    How do I edit or upgrade clusters created via RKE Templates?
+    [JP] How do I edit my cluster using RKE Templates?
   
 
     
@@ -7889,7 +7889,7 @@
   <span class="md-ellipsis">
     
   
-    How to set the metadata config using the CATTLE prefixed extra environment variable
+    How to customize and reset the rke-metadata-config setting in Rancher
   
 
     
@@ -7907,7 +7907,7 @@
   <span class="md-ellipsis">
     
   
-    How to set the metadata config using the CATTLE prefixed extra environment variable
+    How to customize and reset the rke-metadata-config setting in Rancher
   
 
     
@@ -7948,17 +7948,6 @@
     <span class="md-ellipsis">
       
         Situation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Cause
       
     </span>
   </a>
@@ -15237,6 +15226,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022236/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrade to Rancher Prime v2.13.1 fails in clusters with ingress-nginx
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -15293,17 +15310,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Cause
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -15331,41 +15337,29 @@
 
 
 
-<h1 id="how-to-set-the-metadata-config-using-the-cattle-prefixed-extra-environment-variable">How to set the metadata config using the CATTLE prefixed extra environment variable</h1>
+<h1 id="how-to-customize-and-reset-the-rke-metadata-config-setting-in-rancher">How to customize and reset the rke-metadata-config setting in Rancher</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/How-to-set-the-RKE-metadata-config-using-the-CATTLE-prefixed-environment-variable">000020811</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Rancher v2.6.x, v2.7.x, v2.9.x and v2.10.x</p>
+<p>Rancher v2.x</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>Rancher integrates the <strong>RKE metadata feature</strong> (<code>rke-metadata-config</code>) to automatically synchronize Kubernetes version metadata at regular intervals. This ensures that Rancher remains aligned with the latest Kubernetes patch versions without requiring a Rancher upgrade.</p>
-<p>The <strong>rke-metadata-config</strong> feature enhances flexibility by enabling the automatic synchronization of Kubernetes metadata, allowing users to provision clusters with the latest patch versions of Kubernetes without upgrading Rancher. However, upgrading to new minor versions still requires a Rancher upgrade to ensure full compatibility.</p>
-<p>If the <strong>rke-metadata-config</strong> value has been manually modified at any point, it will not auto-update during a Rancher upgrade, as per its design. This can lead to inconsistencies and potential disruptions in the managed RKE2 downstream clusters.</p>
-<p>In some air-gapped environments the RKE metadata setting can be modified to meet security and compliance concerns. In addition users will be able to manage these settings through the Rancher helm values file on installation and/or upgrades.</p>
-<h2 id="cause"><strong>Cause</strong></h2>
-<p>The <strong>rke-metadata-config</strong> value is unique to each Rancher version. If the Kubernetes metadata (KDM) version does not match the Rancher version, there is a risk of cluster failures due to inconsistencies between supported Kubernetes versions and system configurations.</p>
+<p><a href="https://github.com/rancher/kontainer-driver-metadata">Kontainer Driver Metadata (KDM)</a> is a feature that enables Rancher to pull a list of the latest available Kubernetes versions for a Rancher minor release without requiring an upgrade of Rancher itself. By default, the metadata is pulled from a release-specific branch of the <a href="https://github.com/rancher/kontainer-driver-metadata">KDM GitHub repository</a>, hosted at releases.rancher.com. In air-gapped environments, where Rancher is unable to connect to this URL, you may wish to host an internal mirror of this repository to use the feature.</p>
+<p>This article details how to customize KDM synchronization via Rancher's <code>rke-metadata-config</code> setting, as well as how to reset it to the default.</p>
+<p><strong>Note:</strong> There is a separate KDM release branch for each minor release of Rancher, and the correct branch <strong>must</strong> be used for the running Rancher version. When running without a custom configuration, Rancher uses the default value in the <code>rke-metadata-config</code> setting, which includes the relevant branch for the current version. If you have set a value for the <code>rke-metadata-config</code> setting, the configuration <strong>will not</strong> be updated automatically. In that case, when upgrading Rancher, you should ensure that the release branch is updated in parallel (e.g. using the Helm values method documented below).</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p><strong>A) Method 1: Customizing the Metadata Settings via Rancher UI</strong> </p>
-<p>The metadata config setting can be found in the UI under Global Settings &gt; Settings &gt; rke-metadata-config.</p>
-<p>In an open environment (with internet access), the default metadata config for Rancher v2.5.x and 2.6.x is to pull/refresh the Kubernetes metadata via a JSON file in the Rancher Git repository.</p>
-<p>Note: In air-gapped environments, this works differently, i.e. only those Kubernetes versions available and included at the time of the Rancher release will be selectable. To take advantage of later Kubernetes patch versions, the Kontainer Driver Metadata from the Kubernetes metadata repository will need to be mirrored in a location that is accessible to air-gapped installations of Rancher. The default rke-metadata-config URL can be modified to point to the local mirror. Updated system images will also be required.</p>
-<p><strong>B) Method 2: Customizing the Metadata Settings via Helm</strong></p>
-<p>Using Helm, the rke-metadata-config settings can be passed with --set, using the CATTLE_ prefixed extra environment variables.<br />
-The example command shown below makes use of the current Rancher release values exported to a file, and the file is referenced during a Helm upgrade.</p>
-<div class="highlight"><pre><span></span><code>helm upgrade rancher rancher-stable/rancher   --namespace cattle-system  -f rancher-values.yaml --version &lt;version&gt; --set &#39;extraEnv[0].name=CATTLE_RKE_METADATA_CONFIG&#39; --set &#39;extraEnv[0].value=\{\&quot;refresh-interval-minutes\&quot;:\&quot;1450&quot;\,\&quot;url&quot;\:\&quot;https://releases.rancher.com/kontainer-driver-metadata/release-v2.6/data.json\&quot;}&#39;
+<p><strong>Customizing the <code>rke-metadata-config</code> setting via the Rancher UI</strong></p>
+<p>To customize the <code>rke-metadata-config</code> setting via the Rancher UI, following the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/upgrade-kubernetes-without-upgrading-rancher#configuring-the-metadata-synchronization">process outlined in the Rancher documentation</a>.</p>
+<p><strong>Customizing the <code>rke-metadata-config</code> setting via Helm values</strong></p>
+<p>The <code>rke-metadata-config</code> can be configured via the Rancher environment variable <code>CATTLE_RKE_METADATA_CONFIG</code>.</p>
+<p>In order to configure this environment variable on the Rancher Helm chart, follow the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#setting-extra-environment-variables">Rancher documentation for setting extra environment variables</a>.</p>
+<p>An example of the Helm values updating the <code>rke-metadata-config</code> URL to <a href="https://releases.example.com/kontainer-driver-metadata/release-v2.12/data.json">https://releases.example.com/kontainer-driver-metadata/release-v2.12/data.json</a> is as follows:</p>
+<div class="highlight"><pre><span></span><code>--set &#39;extraEnv[0].name=CATTLE_RKE_METADATA_CONFIG&#39;
+--set &#39;extraEnv[0].value=\{\&quot;refresh-interval-minutes\&quot;:\&quot;1450&quot;\,\&quot;url&quot;\:\&quot;https://releases.example.com/kontainer-driver-metadata/release-v2.12/data.json\&quot;}&#39;
 </code></pre></div>
-<p>Alternatively, it is also possible to supply the necessary arguments in the values file.</p>
-<div class="highlight"><pre><span></span><code>extraEnv:
-- name: CATTLE_RKE_METADATA_CONFIG
-  value: &#39;{&quot;refresh-interval-minutes&quot;:&quot;1450&quot;,&quot;url&quot;:&quot;https://releases.rancher.com/kontainer-driver-metadata/release-v2.6/data.json&quot;}&#39;
+<p><strong>Resetting the <code>rke-metadata-config</code> setting to the default</strong></p>
+<p>As noted above, if you have set a value for the <code>rke-metadata-config</code> setting - even if that value matched the default at the time - the URL will <strong>no longer</strong> be updated automatically during Rancher upgrades.</p>
+<p>If you would like to revert to the default <code>rke-metadata-config</code> behavior (pulling from releases.rancher.com with the URL automatically tracking your Rancher version), run the following command in the Rancher local cluster to remove the custom value:</p>
+<div class="highlight"><pre><span></span><code>kubectl patch setting.management.cattle.io rke-metadata-config --type=&#39;merge&#39; -p &#39;{&quot;value&quot;:&quot;&quot;}&#39;
 </code></pre></div>
-<p>Please see below example screenshot taken from the Global Settings &gt; Settings menu in the Rancher UI after applying the rke-metadata-config setting using Helm.</p>
-<p><img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tLRS&amp;feoid=00N1i000002LdMN&amp;refid=0EM5q000000ZqiH" /></p>
-<p><strong>IMPORTANT NOTE:</strong> </p>
-<p>When upgrading Rancher to the next major/minor release (e.g 2.9.x or 210.x), please ensure that the RKE metadata setting matches the release in use, i.e. release-v2.9 or release-v2.10</p>
-<p>To ensure that Rancher uses the default <code>rke-metadata-config</code> value — which is automatically updated during a Rancher upgrade—  <strong>it is necessary to remove any manually set value in the Rancher local cluster. This helps prevent Kubernetes metadata (KDM) related issues during the upgrade process.</strong></p>
-<p>To reset the configuration, you can use the UI or a valid <code>kubeconfig</code> for the Rancher cluster and execute the following command:</p>
-<div class="highlight"><pre><span></span><code><span class="n">kubectl</span> <span class="n">edit</span> <span class="n">settings</span> <span class="n">rke</span><span class="o">-</span><span class="n">metadata</span><span class="o">-</span><span class="n">config</span>
-</code></pre></div>
-<p>Then, set the <code>value</code> field to an empty string (<code>""</code>) to revert to the default configuration.</p>
 
 
 
