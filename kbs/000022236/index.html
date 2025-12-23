@@ -14,6 +14,8 @@
         <link rel="prev" href="../000022212/">
       
       
+        <link rel="next" href="../000022264/">
+      
       
         
       
@@ -1830,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -2054,7 +2056,7 @@
   <span class="md-ellipsis">
     
   
-    How to confirm a version upgrade of Rancher v2.x is completed successfully
+    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
   
 
     
@@ -4630,7 +4632,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How to test websocket connections to Rancher v2.x
+    How to test websocket connections to Rancher v2.x
   
 
     
@@ -15263,6 +15265,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022264/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Unable to Replace an etcd Node in a RKE2 cluster – “Unhealthy Cluster” Error
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022266/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resource naming changes in Rancher Prime v2.13.1 Helm installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -15366,7 +15424,7 @@
 <div class="highlight"><pre><span></span><code>Error: UPGRADE FAILED: failed to create resource: admission webhook &quot;validate.nginx.ingress.kubernetes.io&quot; denied the request: host &quot;&lt;rancher-hostname&gt;&quot; and path &quot;/&quot; is already defined in ingress cattle-system/rancher
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
-<p>In Rancher Prime v2.13.1, the Helm chart name was changed from <code>rancher</code> to <code>rancher-prime</code>. Because the Rancher Helm chart templates its resource names based on the chart name by default, the upgrade process attempts to create new resources (suffixed with <code>rancher-prime</code>) before the existing resources (suffixed with <code>rancher</code>) are fully removed.</p>
+<p>In Rancher Prime v2.13.1, the Helm chart name was changed from <code>rancher</code> to <code>rancher-prime</code>. Because the Rancher Helm chart templates its resource names based on the chart name by default, the upgrade process attempts to create new resources (suffixed with <code>rancher-prime</code>) before the existing resources (named <code>rancher</code>) are fully removed.</p>
 <p>The <code>ingress-nginx</code> validating webhook admission controller blocks the creation of the new <code>rancher-rancher-prime</code> Ingress resource because the existing <code>rancher</code> Ingress resource - containing the identical host and path configuration - still exists in the cluster.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>To resolve this issue, manually delete the existing Rancher Ingress resource in the local cluster and then re-run the Helm upgrade:</p>
@@ -15374,6 +15432,7 @@
 <li>Delete the existing ingress: <code>kubectl -n cattle-system delete ingress rancher</code></li>
 <li>Re-run the Helm upgrade command.</li>
 </ol>
+<p>Alternatively, to maintain the existing chart resource names, apply a nameOverride to the chart values, as documented in: <a href="https://support.scc.suse.com/s/kb/Resouce-naming-changes-in-Rancher-Prime-v2-13-1-Helm-installation?language=en_US">Resource naming changes in Rancher Prime v2.13.1 Helm installation</a>.</p>
 
 
 
