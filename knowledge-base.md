@@ -3156,35 +3156,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -3796,26 +3790,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# How to confirm a version upgrade of Rancher v2.x is completed successfully
+# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
-- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
+- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
+- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
 
 ## **Situation**
 
-This article details how to confirm that a Rancher version upgrade has successfully completed.
+この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
 
 ## **Resolution**
 
-The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
+Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
 
-- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
-- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
-- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
+- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
+- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
+- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
 
 
 
@@ -9027,67 +9021,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -30370,7 +30356,7 @@ Error: UPGRADE FAILED: failed to create resource: admission webhook "validate.ng
 
 ## **Cause**
 
-In Rancher Prime v2.13.1, the Helm chart name was changed from `rancher` to `rancher-prime`. Because the Rancher Helm chart templates its resource names based on the chart name by default, the upgrade process attempts to create new resources (suffixed with `rancher-prime`) before the existing resources (suffixed with `rancher`) are fully removed.
+In Rancher Prime v2.13.1, the Helm chart name was changed from `rancher` to `rancher-prime`. Because the Rancher Helm chart templates its resource names based on the chart name by default, the upgrade process attempts to create new resources (suffixed with `rancher-prime`) before the existing resources (named `rancher`) are fully removed.
 
 The `ingress-nginx` validating webhook admission controller blocks the creation of the new `rancher-rancher-prime` Ingress resource because the existing `rancher` Ingress resource - containing the identical host and path configuration - still exists in the cluster.
 
@@ -30380,4 +30366,112 @@ To resolve this issue, manually delete the existing Rancher Ingress resource in 
 
 1. Delete the existing ingress: `kubectl -n cattle-system delete ingress rancher`
 2. Re-run the Helm upgrade command.
+
+Alternatively, to maintain the existing chart resource names, apply a nameOverride to the chart values, as documented in: [Resource naming changes in Rancher Prime v2.13.1 Helm installation](https://support.scc.suse.com/s/kb/Resouce-naming-changes-in-Rancher-Prime-v2-13-1-Helm-installation?language=en_US).
+
+
+
+---
+
+## Article: 000022264.md
+
+# Unable to Replace an etcd Node in a RKE2 cluster – “Unhealthy Cluster” Error
+
+**Article Number:** [000022264](https://support.scc.suse.com/s/kb/Unable-to-Replace-an-etcd-Node-in-a-RKE2-cluster-Unhealthy-Cluster-Error)
+
+## **Environment**
+
+Rancher 2.x
+
+ RKE2
+
+## **Situation**
+
+While attempting to replace an etcd node, the operation fails and the new node does not join the etcd cluster successfully. On the affected node, only the **kube-proxy** container is observed to be running, while other control plane components do not start.
+
+The etcd logs show the following warning during the node replacement attempt:
+
+```
+{"level":"warn","caller":"etcdserver/server.go:1695","msg":"rejecting member add request; local member has not been connected to all peers, reconfigure breaks active quorum","local-member-id":"a05d36c92035f2b5","requested-member-add":"{ID:a6a5355c5b413436 RaftAttributes:{PeerURLs:[https://<peer>:2380] IsLearner:true} Attributes:{Name: ClientURLs:[]}}","error":"etcdserver: unhealthy cluster"}
+```
+
+This prevents the new etcd member from being added to the cluster.
+
+## **Cause**
+
+This issue occurs when one of the existing etcd members is **not actively peered with all other members**, even though the cluster appears healthy at first glance.
+
+When checking the etcd metrics, the `etcd_network_active_peers` metric shows that one peer connection is inactive (value `0`), while another peer connection is active (value `1`):
+
+```
+# HELP etcd_network_active_peers The current number of active peer connections.
+# TYPE etcd_network_active_peers gauge
+etcd_network_active_peers{Local="a05d36c92035f2b5",Remote="169159dce6da316"} 0
+etcd_network_active_peers{Local="a05d36c92035f2b5",Remote="84123c0970f97229"} 1
+```
+
+Although the etcd endpoint status shows all members present and in sync ( output is pasted below), the lack of an active peer connection causes etcd to treat the cluster as unhealthy, which results in rejecting any new member add requests in order to protect the active quorum.
+
+ 
+
+```
+| https://10.69.x.0:2379 |  169159dce6da316 |  3.5.21 |  304 MB |     false |      false |        30 |  669745205 |          669745205 |        |
+| https://10.69.y.3:2379 | 84123c0970f97229 |  3.5.21 |  302 MB |     false |      false |        30 |  669745205 |          669745205 |        |
+| https://10.69.y.1:2379 | a05d36c92035f2b5 |  3.5.21 |  300 MB |      true |      false |        30 |  669745205 |          669745205 |        |
+```
+
+## **Resolution**
+
+Restarting the affected **etcd container** restores the missing peer connection.
+
+After the restart:
+
+The `etcd_network_active_peers` metric reports active connections to all peers.
+
+The etcd cluster is considered healthy.
+
+The new etcd node is able to join successfully.
+
+The node replacement operation completes as expected.
+
+
+
+---
+
+## Article: 000022266.md
+
+# Resource naming changes in Rancher Prime v2.13.1 Helm installation
+
+**Article Number:** [000022266](https://support.scc.suse.com/s/kb/Resouce-naming-changes-in-Rancher-Prime-v2-13-1-Helm-installation)
+
+## **Environment**
+
+- Rancher Prime v2.13.1 Helm installation
+
+## **Situation**
+
+Starting with Rancher Prime v2.13.1, the Helm chart name has been updated from `rancher` to `rancher-prime`. Due to the internal logic of the Helm chart, this change causes deployed resources (such as the Deployment, Service, and Ingress) to be named `rancher-rancher-prime` by default, rather than the legacy `rancher` name.
+
+## **Cause**
+
+This behavior is driven by the `rancher.fullname` logic within the [Rancher Helm chart](https://github.com/rancher/rancher/blob/v2.13.1/chart/templates/_helpers.tpl#L36-L47).
+
+- **Previous Versions:** Both the **Release Name** (`rancher`) and the **Chart Name** (`rancher`) matched. The `rancher.fullname` template simplifies the name to just `rancher` when these two strings are identical.
+- **v2.13.1:** The **Release Name** (`rancher`) no longer matches the new **Chart Name** (`rancher-prime`), the template concatenates them, resulting in `rancher-rancher-prime`.
+
+## **Resolution**
+
+To maintain the legacy naming convention (`rancher`) and avoid resource name changes during an upgrade, you can explicitly set a `nameOverride` in your Helm command or `values.yaml` file.
+
+**Option 1: Via Helm CLI** Add the following flag to your `helm upgrade` command:
+
+```markup
+--set nameOverride=rancher
+```
+
+**Option 2: Via values.yaml** Add the following line to your configuration file:
+
+```markup
+nameOverride: rancher
+```
 
