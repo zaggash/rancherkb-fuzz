@@ -6030,7 +6030,7 @@ Use the `install` sub-command to install and set up the preflight dependencies b
 ### Installing Prerequisites Using Longhorn Command Line Tool
 
 ```shell
-longhornctl --kube-config ~/.kube/config --image longhornio/longhorn-cli:v{{< current-version >}} install preflight
+longhornctl --kubeconfig ~/.kube/config --image longhornio/longhorn-cli:v{{< current-version >}} install preflight
 ```
 
 Example of result:
@@ -16512,7 +16512,7 @@ worker1:
 
 Make sure everything is correctly configured and installed by
 ```
-longhornctl --kube-config ~/.kube/config --image longhornio/longhorn-cli:v{{< current-version >}} install preflight --enable-spdk
+longhornctl --kubeconfig ~/.kube/config --image longhornio/longhorn-cli:v{{< current-version >}} install preflight --enable-spdk
 ```
 
 See [Longhorn Command Line Tool](../../advanced-resources/longhornctl/) for more information.
