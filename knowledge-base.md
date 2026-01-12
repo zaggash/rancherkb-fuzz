@@ -28528,7 +28528,7 @@ The following snippet from a cluster.provisioning.cattle.io resource configures 
 
     registries {
       mirrors {
-        endpoints = ["https://registry.example.com"]
+        endpoints = ["https://registry.example.com:443"]
         hostname  = "registry.example.com"
         rewrites  = {
           "^rancher/(.*)" = "/docker.io/$1"
@@ -28542,7 +28542,7 @@ These options can be configured by navigating to **Cluster Management**, selecti
 1. Under **Container Registry** enter the private registry hostname (e.g. registry.example.com)
 2. Click **Show Advanced**
 3. In **Registry Hostname** enter the private registry hostname (e.g. registry.example.com)
-4. In **Mirror Endpoints** enter the private registry with the protocol, and port if required (e.g. https://registry.example.com)
+4. In **Mirror Endpoints** enter the private registry with the protocol and port (e.g. https://registry.example.com:433). **N.B.** The port is required, even if this is the default HTTPS port of 443, to ensure that the Registry Hostname and Mirror Endpoint fields are not identical. If these two fields match, the rewrite will be ignored, as detailed in the RKE2 and K3s [rewrites documentation](https://docs.rke2.io/install/private_registry#rewrites).
 5. Click **Add Rewrite Config**
 6. In **Rewrite pattern** enter ^rancher/(.\*)
 7. In **Rewrite replacement** enter /&lt;namespace&gt;/$1 (e.g. /docker.io/$1)
