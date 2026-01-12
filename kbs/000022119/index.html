@@ -15395,7 +15395,7 @@
 
     registries {
       mirrors {
-        endpoints = [&quot;https://registry.example.com&quot;]
+        endpoints = [&quot;https://registry.example.com:443&quot;]
         hostname  = &quot;registry.example.com&quot;
         rewrites  = {
           &quot;^rancher/(.*)&quot; = &quot;/docker.io/$1&quot;
@@ -15408,7 +15408,7 @@
 <li>Under <strong>Container Registry</strong> enter the private registry hostname (e.g. registry.example.com)</li>
 <li>Click <strong>Show Advanced</strong></li>
 <li>In <strong>Registry Hostname</strong> enter the private registry hostname (e.g. registry.example.com)</li>
-<li>In <strong>Mirror Endpoints</strong> enter the private registry with the protocol, and port if required (e.g. https://registry.example.com)</li>
+<li>In <strong>Mirror Endpoints</strong> enter the private registry with the protocol and port (e.g. https://registry.example.com:433). <strong>N.B.</strong> The port is required, even if this is the default HTTPS port of 443, to ensure that the Registry Hostname and Mirror Endpoint fields are not identical. If these two fields match, the rewrite will be ignored, as detailed in the RKE2 and K3s <a href="https://docs.rke2.io/install/private_registry#rewrites">rewrites documentation</a>.</li>
 <li>Click <strong>Add Rewrite Config</strong></li>
 <li>In <strong>Rewrite pattern</strong> enter ^rancher/(.*)</li>
 <li>In <strong>Rewrite replacement</strong> enter /&lt;namespace&gt;/$1 (e.g. /docker.io/$1)</li>
