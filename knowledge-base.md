@@ -8821,34 +8821,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -30474,4 +30468,34 @@ To maintain the legacy naming convention (`rancher`) and avoid resource name cha
 ```markup
 nameOverride: rancher
 ```
+
+
+
+---
+
+## Article: 000022276.md
+
+# Upgrade directly from Rancher v2.12.1 to v2.13.1 fails
+
+**Article Number:** [000022276](https://support.scc.suse.com/s/kb/Upgrade-directly-from-Rancher-v2-12-1-to-v2-13-1-fails)
+
+## **Environment**
+
+A SUSE Rancher v2.12.1 instance upgraded directly to v2.13.1
+
+## **Situation**
+
+After upgrading directly from Rancher v2.12.1 to v2.13.1, new Rancher v2.13.1 Pods crashloop, with error messages of the following format:
+
+```markup
+2026/01/14 15:07:28 [ERROR] Failed to connect to peer wss://10.42.0.90/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
+E0114 15:07:32.031893      43 reflector.go:205] "Failed to watch" err="failed to list *v1.Token: object *v1.TokenList does not implement the protobuf marshalling interface and cannot be encoded to a protobuf message" logger="UnhandledError" reflector="/root/.cache/go/modcache/k8s.io/client-go@v0.34.2/tools/cache/reflector.go:290" type="*v1.Token"
+2026/01/14 15:07:33 [ERROR] Failed to connect to peer wss://10.42.0.93/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
+2026/01/14 15:07:33 [ERROR] Failed to connect to peer wss://10.42.0.90/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
+2026/01/14 15:07:38 [ERROR] Failed to connect to peer wss://10.42.0.93/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
+```
+
+## **Resolution**
+
+Upgrading directly from v2.12.1 to v2.13.1 is against the recommended and supported upgrade path for Rancher. Rancher should be upgraded to the latest patch release of the currently running minor version, before upgrading to the latest patch release of the next minor version. At the time of writing, this means upgrading a SUSE Rancher Prime v2.12.1 instance to v2.12.5, before the upgrade to v2.13.1. With this supported upgrade path the issue is not encountered.
 
