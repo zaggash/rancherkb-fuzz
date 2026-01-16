@@ -7317,9 +7317,9 @@ Rancher
 
 ## **Situation**
 
-Renew the Rancher SSL/TLS certificate with the same CA
+#### Renew the Rancher SSL/TLS certificate with the same CA
 
-#### Pre-requisites
+### Pre-requisites
 
 - Running Rancher v2.x
 - Rancher on a Kubernetes Cluster [see documentation for more information](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster)
@@ -7327,7 +7327,7 @@ Renew the Rancher SSL/TLS certificate with the same CA
 - A copy of the certificate and private key in Base64 format [Doc](https://www.ssls.com/knowledgebase/what-are-certificate-formats-and-what-is-the-difference-between-them/)
 - A copy of the root and intermediate CA certificate (Sometimes called the certificate chain).
 
-#### Assumptions
+### Assumptions
 
 - kubectl access to the Rancher local cluster
 - The certificate is stored as server.crt
@@ -7335,9 +7335,9 @@ Renew the Rancher SSL/TLS certificate with the same CA
 - The root CA is stored as root-ca.crt
 - The intermediate CA is stored as intermediate-ca.crt
 
-#### Resolution
+## **Resolution**
 
-##### Install Steps
+### Install Steps
 
 1. Verify private key doesn't have a passphrase using the command listed below. If the following command asks for a passphrase, then it is password-protected, and this must be removed.
    
@@ -7376,7 +7376,9 @@ Renew the Rancher SSL/TLS certificate with the same CA
    --key=tls.key
    ```
 
-##### Verification Steps
+ 
+
+### Verification Steps
 
 - Run the following command to verify the new certificate. (Replace Rancher with your Rancher URL):
   
@@ -7408,7 +7410,9 @@ Renew the Rancher SSL/TLS certificate with the same CA
 
 - NOTE: Some browsers will cache the certificate. So you might have to close the browser and reopen it in order to get the new certificate.
 
-##### Rollback Steps
+ 
+
+### Rollback Steps
 
 1. Backup the new certificate:
    
