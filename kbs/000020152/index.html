@@ -4036,6 +4036,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#renew-the-rancher-ssltls-certificate-with-the-same-ca" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Renew the Rancher SSL/TLS certificate with the same CA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pre-requisites" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4057,7 +4068,12 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4099,11 +4115,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -15462,6 +15473,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#renew-the-rancher-ssltls-certificate-with-the-same-ca" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Renew the Rancher SSL/TLS certificate with the same CA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pre-requisites" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -15483,7 +15505,12 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -15532,11 +15559,6 @@
     </nav>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
     </ul>
   
@@ -15560,8 +15582,8 @@
 <h2 id="environment"><strong>Environment</strong></h2>
 <p>Rancher</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>Renew the Rancher SSL/TLS certificate with the same CA</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<h4 id="renew-the-rancher-ssltls-certificate-with-the-same-ca">Renew the Rancher SSL/TLS certificate with the same CA</h4>
+<h3 id="pre-requisites">Pre-requisites</h3>
 <ul>
 <li>Running Rancher v2.x</li>
 <li>Rancher on a Kubernetes Cluster <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster">see documentation for more information</a></li>
@@ -15569,7 +15591,7 @@
 <li>A copy of the certificate and private key in Base64 format <a href="https://www.ssls.com/knowledgebase/what-are-certificate-formats-and-what-is-the-difference-between-them/">Doc</a></li>
 <li>A copy of the root and intermediate CA certificate (Sometimes called the certificate chain).</li>
 </ul>
-<h4 id="assumptions">Assumptions</h4>
+<h3 id="assumptions">Assumptions</h3>
 <ul>
 <li>kubectl access to the Rancher local cluster</li>
 <li>The certificate is stored as server.crt</li>
@@ -15577,8 +15599,8 @@
 <li>The root CA is stored as root-ca.crt</li>
 <li>The intermediate CA is stored as intermediate-ca.crt</li>
 </ul>
-<h4 id="resolution">Resolution</h4>
-<h5 id="install-steps">Install Steps</h5>
+<h2 id="resolution"><strong>Resolution</strong></h2>
+<h3 id="install-steps">Install Steps</h3>
 <ol>
 <li>Verify private key doesn't have a passphrase using the command listed below. If the following command asks for a passphrase, then it is password-protected, and this must be removed.</li>
 </ol>
@@ -15604,7 +15626,7 @@ Enter<span class="w"> </span>your<span class="w"> </span>passphrase<span class="
 --cert<span class="o">=</span>tls.crt<span class="w"> </span><span class="se">\</span>
 --key<span class="o">=</span>tls.key
 </code></pre></div>
-<h5 id="verification-steps">Verification Steps</h5>
+<h3 id="verification-steps">Verification Steps</h3>
 <ul>
 <li>Run the following command to verify the new certificate. (Replace Rancher with your Rancher URL):</li>
 </ul>
@@ -15634,7 +15656,7 @@ Enter<span class="w"> </span>your<span class="w"> </span>passphrase<span class="
 <ul>
 <li>NOTE: Some browsers will cache the certificate. So you might have to close the browser and reopen it in order to get the new certificate.</li>
 </ul>
-<h5 id="rollback-steps">Rollback Steps</h5>
+<h3 id="rollback-steps">Rollback Steps</h3>
 <ol>
 <li>Backup the new certificate:</li>
 </ol>
