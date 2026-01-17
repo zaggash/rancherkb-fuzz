@@ -8825,28 +8825,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -20233,48 +20239,6 @@ In the [official patch](https://github.com/rancher/rancher/pull/47642), we chang
 
 ---
 
-## Article: 000021600.md
-
-# Error when enabling CIS profile on RKE2 cluster post-provisioning
-
-**Article Number:** [000021600](https://support.scc.suse.com/s/kb/Error-when-enabling-CIS-profile-on-RKE2-cluster-post-provisioning)
-
-## **Environment**
-
-A Kubernetes cluster provisioned by the RKE2 CLI or Rancher v2.x
-
-## **Situation**
-
-To enable the CIS profile on an already provisioned RKE2 cluster, users must first manually stop the rke2-server process on etcd nodes. This step is necessary because the etcd database remains memory-mapped and open for writing, which can lead to issues.
-
- 
-
-Although this requirement is mentioned in the [documentation](https://docs.rke2.io/security/hardening_guide#host-level-requirements), it is not clearly communicated in the UI. As a result, many users overlook this step and enable the CIS profile directly, causing issues with the etcd database, specifically the "permission denied" error mentioned below:
-
-```markup
-{"level":"panic","ts": "caller":"backend/backend.go:189","msg":"failed to open database","path":"/var/lib/rancher/rke2/server/db/etcd/member/snap/db","error":"open /var/lib/rancher/rke2/server/db/etcd/member/snap/db: permission denied"}
-```
-
-## **Cause**
-
-By design, the RKE2 server service must be in a stopped state before enabling the CIS Profile. This step is required because the etcd database remains memory-mapped and open for writing while the service is running, which can lead to etcd permission denied issue as mentioned above.
-
-## **Resolution**
-
-Manually update the file permissions for the etcd database directory to grant etcd access, allowing it to start successfully:
-
-```markup
-chown -R etcd:etcd /var/lib/rancher/rke2/server/db/etcd
-```
-
-Note: This can only be done for 'test' or non-critical clusters if one accidentally enables this post-cluster provisioning and is stuck with this issue.
-
-Please note that the UI [improvement](https://github.com/rancher/dashboard/issues/11873) request is fixed in rancher v2.12.0, this enhancement will provide clarity for users who enable the CIS profile through the UI.
-
-
-
----
-
 ## Article: 000021604.md
 
 # User retains active session after its password is changed by an admin
@@ -22421,8 +22385,7 @@ For standalone RKE2 clusters, [the HelmChartConfig file can be populated on each
 **RKE1 Mitigation Steps:**  
 If you are using RKE1 and wish to disable the admission webhook, then you can perform the following:
 
-Delete the ValidatingWebhookConfiguration called ingress-nginx-admission
-
+- Delete the ValidatingWebhookConfiguration called ingress-nginx-admission
 - Edit the ingress-nginx-controller DaemonSet, and remove the --validating-webhook argument from the controller container.
 - To further reduce the risk and mitigate CVE-2025-24514, add the --enable-annotation-validation=true argument to the ingress-nginx-controller DaemonSet
 
