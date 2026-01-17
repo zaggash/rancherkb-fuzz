@@ -4492,7 +4492,7 @@
   <span class="md-ellipsis">
     
   
-    How do I edit or upgrade clusters created via RKE Templates?
+    [JP] How do I edit my cluster using RKE Templates?
   
 
     
@@ -11065,34 +11065,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000021600/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Error when enabling CIS profile on RKE2 cluster post-provisioning
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000021604/" class="md-nav__link">
         
   
@@ -15511,8 +15483,8 @@ spec:
 <p>For standalone RKE2 clusters, <a href="https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig">the HelmChartConfig file can be populated on each rke2-server node</a> in the /var/lib/rancher/rke2/server/manifests directory.</p>
 <p><strong>RKE1 Mitigation Steps:</strong><br />
 If you are using RKE1 and wish to disable the admission webhook, then you can perform the following:</p>
-<p>Delete the ValidatingWebhookConfiguration called ingress-nginx-admission</p>
 <ul>
+<li>Delete the ValidatingWebhookConfiguration called ingress-nginx-admission</li>
 <li>Edit the ingress-nginx-controller DaemonSet, and remove the --validating-webhook argument from the controller container.</li>
 <li>To further reduce the risk and mitigate CVE-2025-24514, add the --enable-annotation-validation=true argument to the ingress-nginx-controller DaemonSet</li>
 </ul>
