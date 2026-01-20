@@ -7261,50 +7261,6 @@ No, currently our Rancher Hosted Prime service only includes the Rancher Manager
 
 ---
 
-## Article: 000020151.md
-
-# How to grant users access to Grafana with minimal permissions
-
-**Article Number:** [000020151](https://support.scc.suse.com/s/kb/360042029692)
-
-## **Situation**
-
-## *** Deprecation note \***
-
-### **There is now a "View Monitoring" role in Monitoring v2, which a user can be granted on the System project. This grants user monitoring access. Thus, the article is no more maintained. Please, refer to [this](https://ranchermanager.docs.rancher.com/v2.6/integrations-in-rancher/monitoring-and-alerting/rbac-for-monitoring) for more information on RBAC.**
-
-#### Task
-
-You can follow these directions to create a new user and grant minimal permissions to view cluster monitoring and Grafana graphs in your Kubernetes cluster.
-
-#### Requirements
-
-- Rancher v2.x
-- Monitoring enabled in your cluster
-
-#### Background
-
-You may have a use case to grant permissions to a user to view cluster monitoring metrics and graphs, but don't want that same user to be able to see other information or perform any actions on your cluster. This how-to guide will show you how to achieve this.
-
-#### Solution
-
-1. If you have not already, create a new user in Rancher. Go to the Global view and click on the Users menu. Click the `Add Users` button in the top right corner. Select the desired Username, Password, and Display Name. For Global Permissions, select User-Base and leave all Custom permissions unchecked. Click the `Create` button at the bottom of the form. Let's assume we are using the username `johndoe`.
-2. Go to the Security menu and select Roles. Select the Projects tab and click the `Add Project Role` button. In the name field, enter Services Proxy. Under Grant Resources, click the `+ Add Resource` button. Check the Get and List boxes and enter `services/proxy` in the Resource field. Note, you'll see it changes this to `serivces/proxy (Custom)` which is normal. Click the `Create` button at the bottom to create the new project role.
-3. Next, go to the cluster view for your cluster and select Members from the menu. Click the `Add Members` button in the top right corner. In the Members dropdown, select `johndoe` and select Member for Cluster Permissions. Click the `Create` button at the bottom of the form.
-4. Now navigate to the System project in your cluster. Go to the Members menu and click the `Add Member` button. Enter `johndoe` in the Member field and select `Services Proxy` under Project Permissions. Click the `Create` button at the bottom of the form.
-5. The `johndoe` user should now be able to log into Rancher and see the cluster dashboard with the Grafana icons. Clicking the Grafana icons should open a new browser window that will show the user various graphs and statistics for the cluster. This user should not be able to perform other operations, like view or launch new workloads in the cluster.
-
-#### Further Reading
-
-For more detailed information on how RBAC works in Rancher and Kubernetes, see the following links:
-
-- [Role-Based Access Control (RBAC) in Rancher](https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/)
-- [Using RBAC Authorization in Kubernetes](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
-
-
-
----
-
 ## Article: 000020152.md
 
 # Updating SSL cert in Rancher v2.x with the same CA
@@ -30465,4 +30421,47 @@ E0114 15:07:32.031893      43 reflector.go:205] "Failed to watch" err="failed to
 ## **Resolution**
 
 Upgrading directly from v2.12.1 to v2.13.1 is against the recommended and supported upgrade path for Rancher. Rancher should be upgraded to the latest patch release of the currently running minor version, before upgrading to the latest patch release of the next minor version. At the time of writing, this means upgrading a SUSE Rancher Prime v2.12.1 instance to v2.12.5, before the upgrade to v2.13.1. With this supported upgrade path the issue is not encountered.
+
+
+
+---
+
+## Article: 000022284.md
+
+# Incorrect kubectl image used by system-upgrade-controller in Rancher Prime v2.13.1
+
+**Article Number:** [000022284](https://support.scc.suse.com/s/kb/Incorrect-kubectl-image-used-by-system-upgrade-controller-in-Rancher-Prime-v2-13-1)
+
+## **Environment**
+
+- Rancher Prime v2.13.1
+- A Rancher-provisioned or imported RKE2 or K3s cluster
+
+## **Situation**
+
+The System-Upgrade-Controller (SUC) uses the wrong kubectl container image while applying plans to a downstream RKE2 or K3s cluster. This causes the apply-job pod launched by the SUC to fail to initialize with the following error:
+
+```markup
+ImagePullBackOff (Back-off pulling image "registry.rancher.com/rancher/kubectl:v6.0.0": ErrImagePull: rpc error: code = NotFound desc = failed to pull and unpack image "registry.rancher.com/rancher/kubectl:v6.0.0": failed to resolve reference "registry.rancher.com/rancher/kubectl:v6.0.0": registry.rancher.com/rancher/kubectl:v6.0.0: not found)
+```
+
+## **Cause**
+
+The rancher/kuberlr-kubectl image has been introduced to replace rancher/kubectl in the SUC; however, the ConfigMap has not been updated accordingly.
+
+## **Resolution**
+
+The ConfigMap associated with the system-upgrade-controller deployment must be patched to reference the correct image.
+
+On the downstream cluster:
+
+```markup
+kubectl patch configmap -n cattle-system system-upgrade-controller-config --type='json' -p '[{"op": "replace", "path": "/data/SYSTEM_UPGRADE_JOB_KUBECTL_IMAGE", "value": "registry.rancher.com/rancher/kuberlr-kubectl:v6.0.0"}]'
+```
+
+Then, perform a rollout restart of the deployment for the changes to take effect:
+
+```markup
+kubectl rollout restart deployment system-upgrade-controller -n cattle-system
+```
 

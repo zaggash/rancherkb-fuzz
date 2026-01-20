@@ -31737,18 +31737,15 @@ sudo amazon-linux-extras enable selinux-ng; sudo yum install selinux-policy-targ
 
 ## Configuration
 
-RKE2 support for SELinux amounts to a single configuration item, the `--selinux` boolean flag. This is a pass-through
+RKE2 support for SELinux amounts to a single configuration item, the `selinux` boolean entry in RKE2 `config.yaml` or the `RKE2_SELINUX=true` environment variable. This is a pass-through
 to the [`enable_selinux` boolean in the cri section of the containerd/cri toml](https://github.com/containerd/cri/blob/release/1.4/docs/config.md).
-If RKE2 was installed via tarball then SELinux will not be enabled without additional configuration. The recommended
-method to configure such is via an entry in the RKE2 `config.yaml`, e.g.:
+
+SELinux comes as default for rpms installation, but if the install method was tarball then SELinux will not be enabled without the configuration entry or the environment variable, e.g.:
 
 ```yaml
 # /etc/rancher/rke2/config.yaml is the default location
 selinux: true
 ```
-
-This is equivalent to passing the `--selinux` flag to `rke2 server` or `rke2 agent` command-line or setting the
-`RKE2_SELINUX=true` environment variable.
 
 #### Calico support
 If you choose to use Calico as your CNI with SELinux enabled, you will also need to install specific policies.
@@ -32526,13 +32523,13 @@ Signed RPMs are published for RKE2 within the `rpm-testing.rancher.io` and `rpm.
 
 The RPMs provide `systemd` units for managing `rke2`, but will need to be configured via configuration file before starting the services for the first time.
 
-#### Enterprise Linux 7/8/9
+#### Enterprise Linux 8/9/10
 
 In order to use the RPM repository, on a CentOS or RHEL system, run the following bash snippet:
 
 ```bash
-export RKE2_MINOR=28
-export LINUX_MAJOR=7 # or 8 or 9 etc
+export RKE2_MINOR=33
+export LINUX_MAJOR=8 # or 9 or 10 etc
 cat << EOF > /etc/yum.repos.d/rancher-rke2-1-${RKE2_MINOR}-latest.repo
 [rancher-rke2-common-latest]
 name=Rancher RKE2 Common Latest
