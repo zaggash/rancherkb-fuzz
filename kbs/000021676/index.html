@@ -25,7 +25,7 @@
     
     
       
-        <title>The rke2 certificate check command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster - SUSE KBs</title>
+        <title>The rke2 and k3s certificate check command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned clusters, prior to May 2025 releases - SUSE KBs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#the-rke2-certificate-check-command-does-not-check-the-kube-controller-manager-and-kube-scheduler-certificates-in-rancher-provisioned-rke2-cluster" class="md-skip">
+        <a href="#the-rke2-and-k3s-certificate-check-command-does-not-check-the-kube-controller-manager-and-kube-scheduler-certificates-in-rancher-provisioned-clusters-prior-to-may-2025-releases" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              The rke2 certificate check command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster
+              The rke2 and k3s certificate check command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned clusters, prior to May 2025 releases
             
           </span>
         </div>
@@ -11501,7 +11501,7 @@
   <span class="md-ellipsis">
     
   
-    The rke2 certificate check command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster
+    The rke2 and k3s certificate check command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned clusters, prior to May 2025 releases
   
 
     
@@ -11519,7 +11519,7 @@
   <span class="md-ellipsis">
     
   
-    The rke2 certificate check command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster
+    The rke2 and k3s certificate check command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned clusters, prior to May 2025 releases
   
 
     
@@ -12284,6 +12284,34 @@
     
   
     What is the "PLEG is not healthy" issue?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021816/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hard eviction settings are no longer configured by default in RKE1 v1.26+
   
 
     
@@ -15415,15 +15443,15 @@
 
 
 
-<h1 id="the-rke2-certificate-check-command-does-not-check-the-kube-controller-manager-and-kube-scheduler-certificates-in-rancher-provisioned-rke2-cluster">The <code>rke2 certificate check</code> command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned RKE2 cluster</h1>
+<h1 id="the-rke2-and-k3s-certificate-check-command-does-not-check-the-kube-controller-manager-and-kube-scheduler-certificates-in-rancher-provisioned-clusters-prior-to-may-2025-releases">The rke2 and k3s <code>certificate check</code> command does not check the kube-controller-manager and kube-scheduler certificates in Rancher-provisioned clusters, prior to May 2025 releases</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/The-rke2-certificate-check-command-does-not-check-the-kube-controller-manager-and-kube-scheduler-certificates-in-Rancher-provisioned-RKE2-cluster">000021676</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
 <ul>
 <li>Rancher v2.7+</li>
-<li>A Rancher-provisioned RKE2 cluster</li>
+<li>A Rancher-provisioned RKE2 cluster &lt; v1.30.13+rke2r1, v1.31.9+rke2r1, v1.32.5+rke2r1, or v1.33.1+rke2r1; or a Rancher-provisioned K3s cluster &lt; v1.30.13+k3s1, v1.31.9+k3s1, v1.32.5+k3s1, or v1.33.1+k3s1</li>
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>When the `rke certificate check` command is run on a server node in an Rancher-provisioned RKE2 cluster, output is missing for both the kube-controller-manager and kube-scheduler certificates, when compared with the output for a standalone RKE2 cluster:</p>
+<p>When the `rke2 certificate check` or `k3s certificate check` command is run on a server node in a Rancher-provisioned cluster, for an RKE2 or K3s version released prior to May 2025, output is missing for both the kube-controller-manager and kube-scheduler certificates, when compared with the output for a standalone cluster:</p>
 <div class="highlight"><pre><span></span><code>$ rke2 certificate check
 INFO[0000] Server detected, checking agent and server certificates
 INFO[0000] Checking certificates for kube-proxy
@@ -15473,26 +15501,9 @@ INFO[0000] /var/lib/rancher/rke2/server/tls/etcd/peer-server-client.crt: certifi
 INFO[0000] /var/lib/rancher/rke2/server/tls/etcd/peer-server-client.crt: certificate CN=etcd-peer-ca@1738921307 is ok, expires at 2035-02-05T09:41:47Z
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
-<p>In a Rancher-provisioned RKE2 cluster, there are two new certificates not managed by RKE2 itself:</p>
-<ul>
-<li>
-<p><strong>/var/lib/rancher/rke2/server/tls/kube-scheduler/</strong></p>
-</li>
-<li>
-<p>kube-scheduler.key</p>
-</li>
-<li>kube-scheduler.crt</li>
-<li>
-<p><strong>/var/lib/rancher/rke2/server/tls/kube-controller-manager/</strong></p>
-</li>
-<li>
-<p>kube-controller-manager.crt</p>
-</li>
-<li>kube-controller-manager.key</li>
-</ul>
-<p>These certificates are not created and managed by the RKE2 supervisor process. Instead, they are managed by custom kube-controller-manager and kube-scheduler args added by Rancher that instruct the controller-manager and kube-scheduler to create self-signed certs in these locations.</p>
+<p>In earlier RKE2 and K3s releases, per the versions in the Environment section, the certificates for the kube-scheduler and kube-controller-manager components were not generated by the RKE2/K3s supervisor process, but were auto-generated by the components themselves. In Rancher-provisioned clusters, these certificates were generated in component-specific subdirectories within the rke2 server tls directory, per the --cert-dir argument passed to the kube-scheduler and kube-controller-manager. These directories were not included in the checks performed by the `rke2 certificate check` and `k3s certificate check` commands. This behaviour was changed in the May 2025 releases. In these releases and later, the RKE2/supervisor process generates the kube-scheduler and kube-controller-manager certificates within these subdirectories, and they are included in the certificate check commands.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>For Rancher-provisioned RKE2 clusters, the cluster certificates should be managed and rotated by Rancher, versus the rke2 command directly. Documentation on rotating RKE2 certificates for Rancher-provisioned RKE2 clusters can be found at <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/rotate-certificates">https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/rotate-certificates</a></p>
+<p>Upgrade the RKE2 or K3s cluster to a May 2025 release or later, per the versions in the Environment section above.</p>
 
 
 
