@@ -3156,29 +3156,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -27817,6 +27823,20 @@ When an index.yaml file is present on the repository, this takes precedence and 
 
 ---
 
+## Article: 000022090.md
+
+# How the Rancher pods communicate and manage Downstream clusters
+
+**Article Number:** [000022090](https://support.scc.suse.com/s/kb/How-the-Rancher-pods-communicate-and-serve-requests)
+
+## **Environment**
+
+Rancher 2.9+
+
+
+
+---
+
 ## Article: 000022092.md
 
 # IPv6 connection issues when the ICMPv6 Protocol is blocked
@@ -30521,4 +30541,47 @@ Then, perform a rollout restart of the deployment for the changes to take effect
 ```markup
 kubectl rollout restart deployment system-upgrade-controller -n cattle-system
 ```
+
+
+
+---
+
+## Article: 000022297.md
+
+# Error "Unable to authenticate the request" err="[invalid bearer token, Token has been invalidated]" in K3s or RKE2
+
+**Article Number:** [000022297](https://support.scc.suse.com/s/kb/Error-Unable-to-authenticate-the-request-err-invalid-bearer-token-Token-has-been-invalidated-in-K3s-or-RKE2)
+
+## **Environment**
+
+A Rancher-provisioned or standalone RKE2 or K3s cluster
+
+## **Situation**
+
+The control plane nodes (API Server) in a K3s or RKE2 cluster report the following error in the K3s logs or RKE2 kube-apiserver Pod logs: `"Unable to authenticate the request" err="[invalid bearer token, Token has been invalidated]"`
+
+These errors may appear intermittently and often do not coincide with any observable functional degradation of the Kubernetes cluster.
+
+## **Cause**
+
+This error indicates that a client (a user, a service account, or an automated process) is attempting to communicate with the Kubernetes API using a token that the API server no longer recognizes as valid. Common triggers include:
+
+- **Stale Secrets:** A resource or controller in the cluster may be holding a reference to a secret containing an old token.
+- **Post-Maintenance Artifacts:** This is frequently observed after `etcd` operations or restoring a cluster from an `etcd` snapshot, where previous session tokens are invalidated.
+- **Token Accumulation:** An accumulation of expired or unused tokens from past sessions or integrations.
+- **External Clients:** Individual users or CI/CD pipelines using outdated `kubeconfig` files.
+
+## **Resolution**
+
+If there is no functional impact on cluster operations (e.g., pods are deploying correctly, and the UI is responsive), this message is considered **informational and safe to ignore**. It simply records a rejected authentication attempt.
+
+To identify and silence the source of these errors, you can investigate the origin of the requests:
+
+1. **Enable API Audit Logging:** Audit logs provide details on the source IP, user agent, and specific identity attempting the connection. Refer to the documentation to enable this:
+   
+   - [Enable API audit log in RKE2](https://docs.rke2.io/security/audit_log "null")
+2. **Collect Logs:** Use a logging aggregator to analyze the frequency and source of the 401 Unauthorized responses.
+   
+   - [Collect Audit API logs using Rancher Logging](https://www.suse.com/support/kb/doc/?id=000021022 "null")
+3. **Remediation:** Once the source IP or User-Agent is identified, update the `kubeconfig` or restart the offending pod/service to refresh its service account token.
 

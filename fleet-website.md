@@ -4206,6 +4206,7 @@ The Helm charts accept, at least, the options as shown with their default in `va
 The controllers can be started with these environment variables:
 
 * `CATTLE_DEV_MODE` - used to debug wrangler, not usable
+* `FLEET_BUNDLE_CREATION_MAX_CONCURRENCY` - configures the number of concurrent bundle creation routines for `fleet apply`. Default is 4. Can also be set via the `--bundle-creation-max-concurrency` CLI flag
 * `FLEET_CLUSTER_ENQUEUE_DELAY` - tune how often non-ready clusters are checked
 * `FLEET_CPU_PPROF_PERIOD` - used to turn on [performance profiling](https://github.com/rancher/fleet/blob/main/docs/performance.md)
 
@@ -8605,6 +8606,7 @@ fleet apply [flags] BUNDLE_NAME PATH...
 
 ```
   -b, --bundle-file string                     Location of the raw Bundle resource yaml
+      --bundle-creation-max-concurrency int    Number of concurrent routines to create bundles (default 4)
       --cacerts-file string                    Path of custom cacerts for helm repo
       --commit string                          Commit to assign to the bundle
   -c, --compress                               Force all resources to be compress
@@ -8639,7 +8641,7 @@ fleet apply [flags] BUNDLE_NAME PATH...
       --username string                        Basic auth username for helm repo
       --driven-scan                            Use driven scan. Bundles are defined by the user.
                                                Paths will be defined by the tuple <base, options> separated by a separator.
-                                               The default separator is the character ':'. If you need to use a different one, 
+                                               The default separator is the character ':'. If you need to use a different one,
                                                use the --driven-scan-sep flag.
       --driven-scan-sep                        Separator used for user-driven bundle generation paths. (default: ':')
 ```
@@ -8652,6 +8654,10 @@ cloner does.
 This means that, should you want to run `fleet apply` directly on your host machine, providing it a custom
 value of `KNOWN_HOSTS`, you will need to export `FLEET_KNOWN_HOSTS` beforehand or run it as
 `FLEET_KNOWN_HOSTS=<your_entries> fleet apply <args>`.
+
+The number of concurrent bundle creation routines can be configured via the `--bundle-creation-max-concurrency` flag or the `FLEET_BUNDLE_CREATION_MAX_CONCURRENCY` environment variable. The default value is 4. This can be useful when working with large repositories containing many bundles, as it allows you to control the parallelism of bundle creation. For example:
+
+`FLEET_BUNDLE_CREATION_MAX_CONCURRENCY=8 fleet apply <args>`
 
 ### SEE ALSO
 
@@ -9172,42 +9178,6 @@ fleet target [flags]
       --zap-log-level level               Zap Level to configure the verbosity of logging. Can be one of 'debug', 'info', 'error', or any integer value > 0 which corresponds to custom debug levels of increasing verbosity
       --zap-stacktrace-level level        Zap Level at and above which stacktraces are captured (one of 'info', 'error', 'panic').
       --zap-time-encoding time-encoding   Zap time encoding (one of 'epoch', 'millis', 'nano', 'iso8601', 'rfc3339' or 'rfc3339nano'). Defaults to 'epoch'.
-```
-
-### SEE ALSO
-
-* [fleet](./fleet)	 - 
-
-
-
----
-
-## Article: cli/fleet-cli/fleet_test.md
-
----
-title: ""
-sidebar_label: "fleet test"
----
-## fleet test
-
-Match a bundle to a target and render the output (deprecated)
-
-```
-fleet test [flags]
-```
-
-### Options
-
-```
-  -b, --bundle-file string    Location of the raw Bundle resource yaml
-  -f, --file string           Location of the fleet.yaml
-  -g, --group string          Cluster group to match against
-  -L, --group-label strings   Cluster group labels to match against
-  -h, --help                  help for test
-  -l, --label strings         Cluster labels to match against
-  -N, --name string           Cluster name to match against
-  -q, --quiet                 Just print the match and don't print the resources
-  -t, --target string         Explicit target to match
 ```
 
 ### SEE ALSO
