@@ -3156,35 +3156,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -3796,26 +3790,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+# How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
-- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
+- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
+- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
 
 ## **Situation**
 
-この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
+This article details how to confirm that a Rancher version upgrade has successfully completed.
 
 ## **Resolution**
 
-Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
+The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
 
-- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
-- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
-- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
+- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
+- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
+- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
 
 
 
@@ -26507,6 +26501,256 @@ spec:
   OR  
   if you select `whenUnsatisfiable: ScheduleAnyway`, the scheduler gives higher precedence to topologies that would help reduce the skew.
 - **`labelSelector`** : This is how the scheduler identifies the group of pods it needs to balance. In this case, it looks for any pods with the label `app: web-app`
+
+
+
+---
+
+## Article: 000022040.md
+
+# How to configure Calico in BGP mode on RKE2
+
+**Article Number:** [000022040](https://support.scc.suse.com/s/kb/How-to-configure-Calico-in-BGP-mode-on-RKE2)
+
+## **Environment**
+
+- A Rancher-provisioned or standalone RKE2 cluster
+- Calico is configured as the CNI using the supplied rke2-calico chart
+
+## **Procedure**
+
+When creating an RKE2 cluster, if you choose Calico as the CNI, the defaults will configure VXLAN mode. You can follow the steps below to switch it to BGP mode. This is best done during cluster creation.
+
+> **Note** making large changes to Calico like migrating to BGP or configuring peering **after the cluster has been created** may result in temporary loss of pod network connectivity, it is highly recommended to make changes during cluster creation, or during a maintenance period.
+> 
+> Additionally, these steps assume there are **no other changes**, like the CIDR block, which should remain the same throughout the lifecycle of the cluster.
+
+## Set the Calico mode to BGP - A Rancher-provisioned RKE2 cluster
+
+When creating the cluster in Rancher, in the Add-on: Calico section under Cluster Configuration, modify the values according to the configuration below.
+
+On an existing cluster, instead go to Cluster Management, select the RKE2 downstream cluster you want to modify, Edit Config → Add-on: Calico.
+
+```markup
+...
+installation:
+  calicoNetwork:
+    bgp: Enabled
+    ipPools:
+    # Modify the CIDR based on the current CIDR in use
+    - cidr: 10.42.0.0/16
+      encapsulation: None
+...
+```
+
+## Set the Calico mode to BGP - A standalone RKE2 cluster
+
+You can configure it by creating a [HelmChartConfig](https://docs.rke2.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig) file on every RKE2 server node in the cluster:
+
+```
+cat > /var/lib/rancher/rke2/server/manifests/rke2-calico-config.yaml <<EOF
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+ name: rke2-calico
+ namespace: kube-system
+spec:
+ valuesContent: |-
+   installation:
+     calicoNetwork:
+       bgp: Enabled
+       ipPools:
+      # Modify the CIDR based on the current CIDR in use
+      - cidr: 10.42.0.0/16
+        encapsulation: None
+EOF
+```
+
+On an existing cluster, this can be configured with a file (as above), or a `HelmChartConfig` object can be created in the cluster (below). It is important to do **one or the other, create a HelmChartConfig file or object - not both**
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+ name: rke2-calico
+ namespace: kube-system
+spec:
+ valuesContent: |-
+   installation:
+     calicoNetwork:
+       bgp: Enabled
+       ipPools:
+      # Modify the CIDR based on the current CIDR in use
+      - cidr: 10.42.0.0/16
+        encapsulation: None
+EOF
+```
+
+## Additional steps for existing clusters
+
+### Recreate the default IPv4 IPPool
+
+If switching the mode to BGP on an existing cluster, the tigera-operator pod may show the following logs:
+
+```
+{"level":"error","ts":"2025-09-09T04:29:36Z","logger":"controller_ippool","msg":"Unable to modify IP pools while Calico API server is unavailable","Request.Namespace":"","Request.Name":"periodic-5m0s-reconcile-event","reason":"ResourceNotReady","stacktrace":"github.com/tigera/operator/pkg/controller/status.(*statusManager).SetDegraded\n\t/go/src/github.com/tigera/operator/pkg/controller/status/status.go:356\ngithub.com/tigera/operator/pkg/controller/ippool.(*Reconciler).Reconcile\n\t/go/src/github.com/tigera/operator/pkg/controller/ippool/pool_controller.go:325\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).Reconcile\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:118\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).reconcileHandler\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:314\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).processNextWorkItem\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:265\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).Start.func2.2\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:226"}
+```
+
+So you need to manually recreate the `default-ipv4-ippool`:
+
+```
+kubectl get ippools.crd.projectcalico.org default-ipv4-ippool -oyaml > default-ipv4-ippool-backup.yaml
+kubectl delete ippools.crd.projectcalico.org default-ipv4-ippool
+```
+
+After deletion, the tigera-operator pod will recreate it, and the newly created `default-ipv4-ippool` will not have VXLAN or IPIP-related configurations. It looks like:
+
+```
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: tigera-operator
+  name: default-ipv4-ippool
+spec:
+  allowedUses:
+  - Workload
+  - Tunnel
+  blockSize: 26
+  cidr: 10.42.0.0/16
+  natOutgoing: true
+  nodeSelector: all()
+```
+
+### Recreate the calico-node pods to ensure that each pod uses the new configuration
+
+```
+kubectl -n calico-system delete pod -l k8s-app=calico-node
+```
+
+Once all Pods are running, check whether any tunnel interfaces still exist:
+
+```
+# If there are still residual tunnel interfaces, you can try manually deleting them or rebooting the host.
+ip link show | grep -E "tunl0|vxlan"
+```
+
+## Check BGP sessions are established
+
+The `calicoctl` CLI can be used to verify BGP sessions between nodes in the cluster have been successfully established:
+
+```
+# You can download calicoctl from GitHub: https://github.com/projectcalico/calico
+root@test-0:~# calicoctl node status
+Calico process is running.
+
+IPv4 BGP status
++---------------+-------------------+-------+----------+-------------+
+| PEER ADDRESS  |     PEER TYPE     | STATE |  SINCE   |    INFO     |
++---------------+-------------------+-------+----------+-------------+
+| 172.16.16.143 | node-to-node mesh | up    | 04:38:28 | Established |
+| 172.16.16.148 | node-to-node mesh | up    | 04:38:29 | Established |
+| 172.16.16.149 | node-to-node mesh | up    | 04:38:29 | Established |
++---------------+-------------------+-------+----------+-------------+
+
+IPv6 BGP status
+No IPv6 peers found.
+```
+
+## Optional: Integrate with a BGP router
+
+> **Note** that integrating Calico’s BGP mode with other peers is optional, and relies on BGP support from the underlying physical network and other devices. It is recommended to check with maintainers of the network infrastructure if unsure.
+
+Create a `BGPConfiguration` and a `BGPPeer`:
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: crd.projectcalico.org/v1
+kind: BGPConfiguration
+metadata:
+  name: default
+spec:
+  logSeverityScreen: Info
+  nodeToNodeMeshEnabled: true
+  # BGP AS Number used by Calico
+  asNumber: 64512
+---
+apiVersion: crd.projectcalico.org/v1
+kind: BGPPeer
+metadata:
+  name: peer-to-bgp-router
+spec:
+  # IP and AS Number of the BGP Router
+  asNumber: 64512
+  peerIP: 172.16.16.140
+EOF
+```
+
+After creation, check the session status using `calicoctl`. If the global state shows `Established`, it means the session has been successfully established:
+
+```
+root@dtest-0:~# calicoctl node status
+Calico process is running.
+
+IPv4 BGP status
++---------------+-------------------+-------+----------+-------------+
+| PEER ADDRESS  |     PEER TYPE     | STATE |  SINCE   |    INFO     |
++---------------+-------------------+-------+----------+-------------+
+| 172.16.16.143 | node-to-node mesh | up    | 04:38:28 | Established |
+| 172.16.16.148 | node-to-node mesh | up    | 04:38:29 | Established |
+| 172.16.16.149 | node-to-node mesh | up    | 04:38:29 | Established |
+| 172.16.16.140 | global            | up    | 04:59:01 | Established |
++---------------+-------------------+-------+----------+-------------+
+
+IPv6 BGP status
+No IPv6 peers found.
+```
+
+## Check pod-to-pod networking across nodes
+
+To test whether the overlay is functioning successfully, [an overlay test can be performed](https://ranchermanager.docs.rancher.com/troubleshooting/other-troubleshooting-tips/networking#check-if-overlay-network-is-functioning-correctly). Alternatively, a manual example below uses a curl request to other pods running a web server, indicating successful connectivity:
+
+```
+root@test-0:~# kubectl get pod -owide
+NAME                    READY   STATUS    RESTARTS   AGE   IP              NODE            NOMINATED NODE   READINESS GATES
+nginx-f69bc9b4f-7h56l   1/1     Running   0          12s   10.42.22.91     test-0          <none>           <none>
+nginx-f69bc9b4f-hsb82   1/1     Running   0          19s   10.42.179.17    test-4          <none>           <none>
+nginx-f69bc9b4f-lb2ml   1/1     Running   0          12s   10.42.5.197     test-1          <none>           <none>
+nginx-f69bc9b4f-xrtht   1/1     Running   0          12s   10.42.139.194   test-3          <none>           <none>
+root@test-0:~# kubectl exec -it nginx-f69bc9b4f-7h56l -- curl -I 10.42.179.17
+HTTP/1.1 200 OK
+Server: nginx/1.27.2
+Date: Tue, 09 Sep 2025 04:46:23 GMT
+Content-Type: text/html
+Content-Length: 615
+Last-Modified: Wed, 02 Oct 2024 15:13:19 GMT
+Connection: keep-alive
+ETag: "66fd630f-267"
+Accept-Ranges: bytes
+
+root@test-0:~# kubectl exec -it nginx-f69bc9b4f-7h56l -- curl -I 10.42.5.197
+HTTP/1.1 200 OK
+Server: nginx/1.27.2
+Date: Tue, 09 Sep 2025 04:46:26 GMT
+Content-Type: text/html
+Content-Length: 615
+Last-Modified: Wed, 02 Oct 2024 15:13:19 GMT
+Connection: keep-alive
+ETag: "66fd630f-267"
+Accept-Ranges: bytes
+
+root@test-0:~# kubectl exec -it nginx-f69bc9b4f-7h56l -- curl -I 10.42.139.194
+HTTP/1.1 200 OK
+Server: nginx/1.27.2
+Date: Tue, 09 Sep 2025 04:46:29 GMT
+Content-Type: text/html
+Content-Length: 615
+Last-Modified: Wed, 02 Oct 2024 15:13:19 GMT
+Connection: keep-alive
+ETag: "66fd630f-267"
+Accept-Ranges: bytes
+```
 
 
 
