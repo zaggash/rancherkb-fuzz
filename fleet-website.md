@@ -1690,7 +1690,7 @@ Multiple paths can be defined for a `GitRepo` and each path is scanned independe
 Internally each scanned path will become a [bundle](./concepts.md) that Fleet will manage,
 deploy, and monitor independently.
 
-The following files are looked for to determine the how the resources will be deployed.
+Fleet looks for the following files to determine how the resources will be deployed.
 
 | File | Location | Meaning |
 |------|----------|---------|
@@ -1707,7 +1707,7 @@ In addition to the previously described method, Fleet also supports a more direc
 In this mode, Fleet will load all resources found within the specified base directory. It will only attempt to locate a `fleet.yaml` file at the root of that directory if an options file is not explicitly provided.
 Unlike the traditional scanning method, this one is not recursive and does not attempt to find Bundle definitions other than those explicitly specified by the user.
 
-#### Example File Structure
+#### Example Directory Structure
 ```
 driven
      |___helm
@@ -2070,7 +2070,7 @@ See [Mapping to Downstream Clusters](gitrepo-targets#customization-per-cluster) 
 
 ## Raw YAML Resource Customization
 
-When using Kustomize or Helm the `kustomization.yaml` or the `helm.values` will control how the resource are
+When using Kustomize or Helm the `kustomization.yaml` or the `helm.values` will control how resources are
 customized per target cluster. If you are using raw YAML then the following simple mechanism is built-in and can
 be used.  The `overlays/` folder in the git repo is treated specially as folder containing folders that
 can be selected to overlay on top per target cluster. The resource overlay content
@@ -4424,7 +4424,7 @@ BundleResource represents the content of a single resource from the bundle, like
 | resources | Resources contains the resources that were read from the bundle's path. This includes the content of downloaded helm charts. | \[\][BundleResource](#bundleresource) | false |
 | targets | Targets refer to the clusters which will be deployed to. Targets are evaluated in order and the first one to match is used. | \[\][BundleTarget](#bundletarget) | false |
 | targetRestrictions | TargetRestrictions is an allow list, which controls if a bundledeployment is created for a target. | \[\][BundleTargetRestriction](#bundletargetrestriction) | false |
-| dependsOn | DependsOn refers to the bundles which must be ready before this bundle can be deployed. | \[\][BundleRef](#bundleref) | false |
+| dependsOn | DependsOn refers to the bundles which must be in an accepted state before this bundle can be deployed. | \[\][BundleRef](#bundleref) | false |
 | contentsId | ContentsID stores the contents id when deploying contents using an OCI registry. | string | false |
 
 [Back to Custom Resources](#)
@@ -5479,7 +5479,6 @@ ImageScanYAML is a single entry in the ImageScan list from fleet.yaml.
 
 [Back to Custom Resources](#)
 
-
 ---
 
 ## Article: ref-fleet-yaml.md
@@ -5769,8 +5768,8 @@ targetCustomizations:
       keepFailHistory: false
 
 # dependsOn allows you to configure dependencies to other bundles. The current
-# bundle will only be deployed, after all dependencies are deployed and in a
-# Ready state.
+# bundle will only be deployed, after all dependencies are deployed and in an
+# accepted state. The default accepted state is the Ready state.
 dependsOn:
 
   # Format:
@@ -5789,12 +5788,16 @@ dependsOn:
   #     opni-fleet-examples-fleets-opni-ui-plugin-operator-crd becomes
   #     opni-fleet-examples-fleets-opni-ui-plugin-opera-021f7
   - name: one-multi-cluster-hello-world
-
+    acceptedStates:
+      - Ready
+      - Modified
   # Select bundles to depend on based on their label.
   - selector:
       matchLabels:
         app: weak-monkey
-
+    acceptedStates:
+      - Ready
+      - Modified
 # Ignore fields when monitoring a Bundle. This can be used when Fleet thinks
 # some conditions in Custom Resources makes the Bundle to be in an error state
 # when it shouldn't.
@@ -5826,7 +5829,7 @@ These options define the fundamental properties and behavior of the bundle itsel
 | :---- | :---- | :---- |
 | paused | If true, the bundle will not be updated on downstream clusters. Instead, it will be marked as "OutOfSync." You can then manually approve the deployment. | All |
 | labels | A map of key-value pairs that are set at the bundle level. These can be used in a dependsOn.selector to define dependencies. | All |
-| dependsOn | A list of other bundles that this bundle depends on. The current bundle will only be deployed after all its dependencies are in a "Ready" state. | All |
+| dependsOn | A list of other bundles that this bundle depends on. The current bundle will only be deployed after all its dependencies are in an accepted state. Accepted states correspond to any valid  [bundle states](ref-status-fields/#bundle-statuses). | All |
 | ignore | Specifies fields to ignore when monitoring a bundle's status. This is useful for preventing false error states caused by certain conditions in Custom Resources. | All |
 | overrideTargets | A list of target customizations that will override any targets defined in the GitRepo. If this is provided, the bundle will not inherit any targets from the GitRepo. | All |
 

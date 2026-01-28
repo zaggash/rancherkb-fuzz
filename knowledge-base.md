@@ -3156,29 +3156,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -8981,59 +8987,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -26341,6 +26355,79 @@ References:
 
 ---
 
+## Article: 000022026.md
+
+# Certificate renewal and rotation in RKE2 and K3s clusters
+
+**Article Number:** [000022026](https://support.scc.suse.com/s/kb/Certificate-renewal-and-rotation-in-RKE2-and-K3s-clusters)
+
+## **Environment**
+
+A Rancher-provisioned or standalone RKE2 or K3s cluster
+
+## **Procedure**
+
+This article provides a comprehensive guide on the certificate rotation process for RKE2 and K3s clusters. It covers both standalone deployments and downstream clusters managed by Rancher.
+
+Rotating certificates is a critical maintenance task. RKE2 and K3s utilize client and server certificates to establish trust and secure communication between the cluster components. If certificates expire, authentication between components (such as the kubelet and the Kubernetes API Server) will fail, leading to cluster instability or total service outages.
+
+Per the [RKE2](https://docs.rke2.io/security/certificates#checking-expiration-dates) and [K3s](https://docs.k3s.io/cli/certificate#client-and-server-certificates) certification documentation: the client and server certificates are valid for 365 days from their date of issuance. Any certificates that are expired or within 120 days of expiring are automatically renewed every time RKE2 or K3s starts. This renewal reuses the existing keys, and extends the lifetime of the existing certificates. If you want to generate new certificates and keys, instead of extending the validity of the existing certificates, rotate certificates as documented below.
+
+**N.B.** Prior to the May 2025 releases (RKE2: v1.33.1+rke2r1, v1.32.5+rke2r1, v1.31.9+rke2r1, v1.30.13+rke2r1; K3s: v1.33.1+k3s1, v1.32.5+k3s1, v1.31.9+k3s1, v1.30.13+k3s1), alerts and renewal were triggered at 90 days, instead of 120 days.
+
+### **Monitoring Certificate Expiration**
+
+**Manually checking expiration**
+
+Node certificates and their expiration date can be checked using the `rke2 certificate check --output table` and `k3s certificate check --output table` commands, per the [RKE2](https://docs.rke2.io/security/certificates#checking-expiration-dates) and [K3s](https://docs.k3s.io/cli/certificate#client-and-server-certificates) documentation.
+
+**N.B.**  Prior to the May 2025 releases (as listed above), the kube-scheduler and kube-controller-manager certificates, for Rancher-provisioned clusters, were not included in the output of the certificate check command. In older versions these two certificates can be checked manually with `openssl x509 -enddate -noout -in /var/lib/rancher/rke2/server/tls/kube-scheduler/kube-scheduler.crt` and `openssl x509 -enddate -noout -in /var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.crt` or  `openssl x509 -enddate -noout -in /var/lib/rancher/k3s/server/tls/kube-scheduler/kube-scheduler.crt` and `openssl x509 -enddate -noout -in /var/lib/rancher/k3s/server/tls/kube-controller-manager/kube-controller-manager.crt`
+
+**Automated monitoring**
+
+When a certificate is within 120 days of expiring a Kubernetes Warning Event with `reason: CertificateExpirationWarning` is created, with a relation to the Node using the certificate. These Events can be used as the basis for automated monitoring of certificate expiration.
+
+An alternative approach would be to use the [`x509-certificate-exporter`](https://github.com/enix/x509-certificate-exporter) to track expiration dates and set up proactive alerts using Prometheus and Alertmanager, such as in rancher-monitoring.
+
+### **Renewal Process**
+
+To renew certificates that are expired or within 120 days of expiring, reusing the existing keys, simply restart the RKE2 or K3s supervisor process, i.e. `systemctl restart rke2-server`, `systemctl restart rke2-agent`, `systemctl restart k3s`, or `systemctl restart k3s-agent`
+
+**N.B.** Prior to the May 2025 releases (as listed above), the kube-scheduler and kube-controller-manager certificates, for Rancher-provisioned clusters, were not managed by the RKE2 or K3s supervisor process. As a result restarting the supervisor process will not renew these certificates. To rotate these certificates in older K3s and RKE2 versions, perform a rotation using the Rancher UI, as documented below, or remove the certificate and key files manually before restarting the supervisor, i.e.: `rm /var/lib/rancher/rke2/server/tls/kube-controller-manager/kube-controller-manager.{crt,key} /var/lib/rancher/rke2/server/tls/kube-scheduler/kube-scheduler.{crt,key}` or `rm /var/lib/rancher/k3s/server/tls/kube-controller-manager/kube-controller-manager.{crt,key} /var/lib/rancher/k3s/server/tls/kube-scheduler/kube-scheduler.{crt,key}`
+
+### **Rotation Process**
+
+RKE2 and K3s certificates can be rotated - generating new certificates and keys, versus extending the validity of existing certificates - using the following processes for standalone and Rancher-provisioned clusters.
+
+**Standalone clusters**
+
+To rotate the certificates in a standalone cluster, follow the steps for the certificate rotate subcommand in the [RKE2](https://docs.rke2.io/security/certificates#rotating-client-and-server-certificates-manually) or [K3s](https://docs.k3s.io/cli/certificate#client-and-server-certificates) documentation.
+
+1. Stop the RKE2 or K3s supervisor process: `systemctl stop rke2-server`, `systemctl stop rke2-agent`, `systemctl stop k3s`, or `systemctl stop k3s-agent`
+2. Rotate the certificates: `rke2 certificate rotate` or `k3s certificate rotate`
+3. Start the RKE2 or K3s supervisor process: `systemctl start rke2-server`, `systemctl start rke2-agent`, `systemctl start k3s`, or `systemctl start k3s-agent`
+
+Per the [RKE2](https://docs.rke2.io/security/certificates#rotating-client-and-server-certificates-manually) and [K3s](https://docs.k3s.io/cli/certificate#rotating-client-and-server-certificates) documentation, it is also possible to specify individual services for which to rotate certificates, using the `--service` argument.
+
+**Rancher-provisioned clusters**
+
+To rotate the certificates of a Rancher-provisioned RKE2 or K3s cluster, follow the steps from the [Rancher documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/rotate-certificates#certificate-rotation):
+
+1. In the upper left corner, click **☰ &gt; Cluster Management.**
+2. On the **Clusters** page, go to the cluster you want to rotate certificates for and click **⋮ &gt; Rotate Certificates**.
+3. Choose to **Rotate all Service certificates** (recommended) or select an individual service.
+4. Click **Save**. Rancher will orchestrate the rotation across the nodes automatically.
+
+### **Rotating CA Certificates - Standalone clusters only**
+
+By default, RKE2 and K3s generate self-signed CA certificates during startup of the first server node. These CA certificates are valid for 10 years and do not renew automatically.
+
+For standalone clusters, the CA certificate can be rotated, per the [RKE2](https://docs.rke2.io/security/certificates#rotating-ca-certificates) and [K3s](https://docs.k3s.io/cli/certificate#certificate-authority-ca-certificates) documentation. If the cluster was started with the default self-signed CA certificates, CA rotation will be disruptive. If the new CA certificates are not cross-signed by the old CA certificates, or the root CA is replaced when using custom CA certificates, all nodes will also need to be reconfigured to use the new secure cluster token, and pods will need to be restarted.
+
+
+
+---
+
 ## Article: 000022027.md
 
 # How to enable EventRateLimit in RKE2.
@@ -28616,6 +28703,91 @@ If you need to set an environment variable persistently, add these to the Ranche
 You can check the current environment variables in a running Rancher Pod with the following command:
 
 `kubectl exec --namespace cattle-system <RANCHER-POD> -- env`
+
+
+
+---
+
+## Article: 000022104.md
+
+# How to perform graceful Node Shutdown in RKE2
+
+**Article Number:** [000022104](https://support.scc.suse.com/s/kb/How-to-perform-graceful-Node-Shutdown-in-RKE2)
+
+## **Environment**
+
+- RKE2
+
+## **Procedure**
+
+To perform a graceful node shutdown in RKE2 for maintenance scenarios, follow these steps to cordon and drain the node:
+
+- Mark the node as unschedulable using the command:
+  
+  ```markup
+  kubectl cordon <node name>
+  ```
+- Drain the node to evict all pods, including those with Pod Disruption Budgets, using the command:
+  
+  ```markup
+  kubectl drain <node name> --ignore-daemonsets --force
+  ```
+
+### On worker nodes
+
+      1. Stop the rke2-agent service: 
+
+```markup
+sudo systemctl stop rke2-agent
+```
+
+       2. Check for any remaining container processes that should be stopped:
+
+```markup
+sudo ps auxfww
+```
+
+### On control pane / etcd nodes
+
+1\. Stop the rke2-server service: 
+
+```markup
+sudo systemctl stop rke2-server 
+```
+
+2\. Check for any remaining container processes that should be stopped: 
+
+```markup
+sudo ps auxfww
+```
+
+### Stop remaining processes
+
+If all application workloads have been stopped, this is not needed before shutting down the node, however, in some cases, it may be useful to stop all remaining container processes and components like containerd.
+
+- Verify that no application workloads are running on the node 
+  
+  ```markup
+  kubectl describe node <node name>
+  ```
+- If all application workloads have been scheduled on other nodes, leftover container processes and all the related RKE2 processes can be stopped using the rke2-killall.sh script:
+  
+  ```markup
+  sudo /usr/local/bin/rke2-killall.sh
+  ```
+
+> **Note:** The `rke2-killall.sh` script uses SIGKILL to terminate processes, which may negatively impact stateful application workloads that may still be running. For stateful workloads, consider a solution that sends SIGTERM with a timeout before resorting to SIGKILL. For related information, refer to the documentation: [Best practices for RKE2 cluster maintenance.](https://www.suse.com/support/kb/doc/?id=000021301) Always, make sure to capture an [etcd snapshot](https://docs.rke2.io/datastore/backup_restore#creating-snapshots) before performing any node maintenance activity.
+
+### Start the service again
+
+- After maintenance, start the service:
+- - Worker (agent) nodes: sudo systemctl start rke2-agent
+  - Control plane (server) nodes: sudo systemctl start rke2-server
+- Mark the node as schedulable again:
+  
+  ```markup
+  kubectl uncordon <node name>
+  ```
 
 
 
