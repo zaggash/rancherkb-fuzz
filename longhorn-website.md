@@ -1606,31 +1606,31 @@ The `values.yaml` file contains items used to tweak a deployment of this chart.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | image.csi.attacher.repository | string | `"longhornio/csi-attacher"` | Repository for the CSI attacher image. When unspecified, Longhorn uses the default value. |
-| image.csi.attacher.tag | string | `"v4.10.0-20251030"` | Tag for the CSI attacher image. When unspecified, Longhorn uses the default value. |
+| image.csi.attacher.tag | string | `"v4.10.0-20251226"` | Tag for the CSI attacher image. When unspecified, Longhorn uses the default value. |
 | image.csi.livenessProbe.repository | string | `"longhornio/livenessprobe"` | Repository for the CSI liveness probe image. When unspecified, Longhorn uses the default value. |
-| image.csi.livenessProbe.tag | string | `"v2.17.0-20251030"` | Tag for the CSI liveness probe image. When unspecified, Longhorn uses the default value. |
+| image.csi.livenessProbe.tag | string | `"v2.17.0-20251226"` | Tag for the CSI liveness probe image. When unspecified, Longhorn uses the default value. |
 | image.csi.nodeDriverRegistrar.repository | string | `"longhornio/csi-node-driver-registrar"` | Repository for the CSI Node Driver Registrar image. When unspecified, Longhorn uses the default value. |
-| image.csi.nodeDriverRegistrar.tag | string | `"v2.15.0-20251030"` | Tag for the CSI Node Driver Registrar image. When unspecified, Longhorn uses the default value. |
+| image.csi.nodeDriverRegistrar.tag | string | `"v2.15.0-20251226"` | Tag for the CSI Node Driver Registrar image. When unspecified, Longhorn uses the default value. |
 | image.csi.provisioner.repository | string | `"longhornio/csi-provisioner"` | Repository for the CSI Provisioner image. When unspecified, Longhorn uses the default value. |
-| image.csi.provisioner.tag | string | `"v5.3.0-20251030"` | Tag for the CSI Provisioner image. When unspecified, Longhorn uses the default value. |
+| image.csi.provisioner.tag | string | `"v5.3.0-20251226"` | Tag for the CSI Provisioner image. When unspecified, Longhorn uses the default value. |
 | image.csi.resizer.repository | string | `"longhornio/csi-resizer"` | Repository for the CSI Resizer image. When unspecified, Longhorn uses the default value. |
-| image.csi.resizer.tag | string | `"v1.14.0-20251030"` | Tag for the CSI Resizer image. When unspecified, Longhorn uses the default value. |
+| image.csi.resizer.tag | string | `"v1.14.0-20260119"` | Tag for the CSI Resizer image. When unspecified, Longhorn uses the default value. |
 | image.csi.snapshotter.repository | string | `"longhornio/csi-snapshotter"` | Repository for the CSI Snapshotter image. When unspecified, Longhorn uses the default value. |
-| image.csi.snapshotter.tag | string | `"v8.4.0-20251030"` | Tag for the CSI Snapshotter image. When unspecified, Longhorn uses the default value. |
+| image.csi.snapshotter.tag | string | `"v8.4.0-20251226"` | Tag for the CSI Snapshotter image. When unspecified, Longhorn uses the default value. |
 | image.longhorn.backingImageManager.repository | string | `"longhornio/backing-image-manager"` | Repository for the Backing Image Manager image. When unspecified, Longhorn uses the default value. |
-| image.longhorn.backingImageManager.tag | string | `"v1.10.1"` | Tag for the Backing Image Manager image. When unspecified, Longhorn uses the default value. |
+| image.longhorn.backingImageManager.tag | string | `"v1.10.2"` | Tag for the Backing Image Manager image. When unspecified, Longhorn uses the default value. |
 | image.longhorn.engine.repository | string | `"longhornio/longhorn-engine"` | Repository for the Longhorn Engine image. |
-| image.longhorn.engine.tag | string | `"v1.10.1"` | Tag for the Longhorn Engine image. |
+| image.longhorn.engine.tag | string | `"v1.10.2"` | Tag for the Longhorn Engine image. |
 | image.longhorn.instanceManager.repository | string | `"longhornio/longhorn-instance-manager"` | Repository for the Longhorn Instance Manager image. |
-| image.longhorn.instanceManager.tag | string | `"v1.10.1"` | Tag for the Longhorn Instance Manager image. |
+| image.longhorn.instanceManager.tag | string | `"v1.10.2"` | Tag for the Longhorn Instance Manager image. |
 | image.longhorn.manager.repository | string | `"longhornio/longhorn-manager"` | Repository for the Longhorn Manager image. |
-| image.longhorn.manager.tag | string | `"v1.10.1"` | Tag for the Longhorn Manager image. |
+| image.longhorn.manager.tag | string | `"v1.10.2"` | Tag for the Longhorn Manager image. |
 | image.longhorn.shareManager.repository | string | `"longhornio/longhorn-share-manager"` | Repository for the Longhorn Share Manager image. |
-| image.longhorn.shareManager.tag | string | `"v1.10.1"` | Tag for the Longhorn Share Manager image. |
+| image.longhorn.shareManager.tag | string | `"v1.10.2"` | Tag for the Longhorn Share Manager image. |
 | image.longhorn.supportBundleKit.repository | string | `"longhornio/support-bundle-kit"` | Repository for the Longhorn Support Bundle Manager image. |
-| image.longhorn.supportBundleKit.tag | string | `"v0.0.71"` | Tag for the Longhorn Support Bundle Manager image. |
+| image.longhorn.supportBundleKit.tag | string | `"v0.0.79"` | Tag for the Longhorn Support Bundle Manager image. |
 | image.longhorn.ui.repository | string | `"longhornio/longhorn-ui"` | Repository for the Longhorn UI image. |
-| image.longhorn.ui.tag | string | `"v1.10.1"` | Tag for the Longhorn UI image. |
+| image.longhorn.ui.tag | string | `"v1.10.2"` | Tag for the Longhorn UI image. |
 | image.openshift.oauthProxy.repository | string | `""` | Repository for the OAuth Proxy image. Specify the upstream image (for example, "quay.io/openshift/origin-oauth-proxy"). This setting applies only to OpenShift users. |
 | image.openshift.oauthProxy.tag | float | `""` | Tag for the OAuth Proxy image. Specify OCP/OKD version 4.1 or later (including version 4.15, which is available at quay.io/openshift/origin-oauth-proxy:4.15). This setting applies only to OpenShift users. |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy that applies to all user-deployed Longhorn components, such as Longhorn Manager, Longhorn driver, and Longhorn UI. |
@@ -3585,12 +3585,15 @@ For the full release note, see [here](https://github.com/longhorn/longhorn/relea
       - [Downgrade Procedure (kubectl Installation)](#downgrade-procedure-kubectl-installation)
       - [Downgrade Procedure (Helm Installation)](#downgrade-procedure-helm-installation)
       - [Post-Downgrade](#post-downgrade)
-  - [HotFix](#hotfix)
 - [Important Fixes](#important-fixes)
-  - [Goroutine Leak in Instance Manager (V2 Data Engine)](#goroutine-leak-in-instance-manager-v2-data-engine)
-  - [V2 Volume Attachment Failure in Interrupt Mode](#v2-volume-attachment-failure-in-interrupt-mode)
-  - [UI Deployment Failure on IPv4-Only Nodes](#ui-deployment-failure-on-ipv4-only-nodes)
-  - [Share Manager Excessive Memory Usage](#share-manager-excessive-memory-usage)
+  - [RWX Volume Unavailable After Node Drain](#rwx-volume-unavailable-after-node-drain)
+  - [Encrypted Volume Cannot Be Expanded Online](#encrypted-volume-cannot-be-expanded-online)
+  - [Cloned Volume Cannot Be Attached to Workload](#cloned-volume-cannot-be-attached-to-workload)
+  - [Block Mode Volume Migration Stuck](#block-mode-volume-migration-stuck)
+  - [Replica Auto Balance Disk Pressure Threshold Stalled](#replica-auto-balance-disk-pressure-threshold-stalled)
+  - [Replicas Accumulate During Engine Upgrade](#replicas-accumulate-during-engine-upgrade)
+  - [Potential Client Connection and Context Leak](#potential-client-connection-and-context-leak)
+  - [Replica Node Level Soft Anti-Affinity Ignored](#potential-client-connection-and-context-leak)
 - [Removal](#removal)
   - [`longhorn.io/v1beta1` API](#longhorniov1beta1-api)
   - [`replica.status.evictionRequested` Field](#replicastatusevictionrequested-field)
@@ -3741,63 +3744,57 @@ If Longhorn was installed using Helm, the downgrade is allowed by disabling the 
 
 Once the downgrade is complete and the Longhorn system is stable on the v1.9.x version, you must immediately follow the steps outlined in the [Manual CRD Migration Guide](#migration-requirement-before-longhorn-v110-upgrade). This step is crucial to migrate all remaining `v1beta1` CRs to `v1beta2` before attempting the Longhorn v1.10 upgrade again.
 
-### HotFix
-
-The `longhorn-manager:v1.10.1` image is affected by
-
-- Regression:
-  - [\[BUG\] invalid memory address or nil pointer dereference](https://github.com/longhorn/longhorn/issues/12233) that can trigger a nil-pointer dereference under certain conditions, potentially causing unexpected crashes.
-  - [\[BUG\] Block Mode Volume Migration Stuck](https://github.com/longhorn/longhorn/issues/12311) that can cause block mode volume migration to get stuck indefinitely.
-- Day-one issues:
-  - V2 volume clone:
-    - [\[BUG\] V2 Volume CSI Clone Slowness Caused by VolumeAttachment Webhook](https://github.com/longhorn/longhorn/issues/12328) that can lead to significant delays during V2 volume cloning operations.
-    - [\[BUG\] [Bug] A cloned volume cannot be attached to a workload](https://github.com/longhorn/longhorn/issues/12206) that prevents cloned volumes from being attached to workloads.
-  - Replica auto-balance:
-    - [\[BUG\] Replica auto balance disk pressure threshold stalled with stopped volumes](https://github.com/longhorn/longhorn/issues/10837) that can cause the Replica Auto Balance feature to stall when volumes are stopped under disk pressure conditions.
-
-To mitigate the issues, replace `longhorn-manager:v1.10.1` with the hotfixed image `longhorn-manager:v1.10.1-hotfix-2`.
-
-Follow these steps to apply the update:
-
-1. **Disable the upgrade version check**
-   - Helm users: Set `upgradeVersionCheck` to `false` in the `values.yaml` file.
-   - Manifest users: Remove the `--upgrade-version-check` flag from the deployment manifest.
-
-2. **Update the `longhorn-manager` image**
-   - Change the image tag from `v1.10.1` to `v1.10.1-hotfix-2` in the appropriate file:
-     - For Helm: Update `values.yaml`
-     - For manifests: Update the deployment manifest directly.
-
-3. **Proceed with the upgrade**
-   - Apply the changes using your standard Helm upgrade command or reapply the updated manifest.
-
 ## Important Fixes
 
-This release includes several critical stability and performance improvements:
+This release includes several critical stability fixes.
 
-### Goroutine Leak in Instance Manager (V2 Data Engine)
+### RWX Volume Unavailable After Node Drain
 
-Fixed a goroutine leak in the instance manager when using the V2 data engine. This issue could lead to increased memory usage and potential stability problems over time.
+Fixed a race condition where **ReadWriteMany (RWX) volumes** could remain in the *attaching* state after node drains, causing workloads to become unavailable.
 
-For more details, see [Issue #11962](https://github.com/longhorn/longhorn/issues/11962).
+For more details, see [Issue #12231](https://github.com/longhorn/longhorn/issues/12231).
 
-### V2 Volume Attachment Failure in Interrupt Mode
+### Encrypted Volume Cannot Be Expanded Online
 
-Fixed an issue where V2 volumes using interrupt mode with NVMe disks could fail to complete the attachment process, causing volumes to remain stuck in the attaching state indefinitely.
+Fixed an issue where online expansion of encrypted volumes did not propagate the new size to the dm-crypt device.
 
-For more details, see [Issue #11816](https://github.com/longhorn/longhorn/issues/11816).
+For more details, see [Issue #12368](https://github.com/longhorn/longhorn/issues/12368).
 
-### UI Deployment Failure on IPv4-Only Nodes
+### Cloned Volume Cannot Be Attached to Workload
 
-Fixed a bug introduced in v1.10.0 where the Longhorn UI failed to deploy on nodes with only IPv4 enabled. The UI now correctly supports IPv4-only configurations without requiring IPv6.
+Fixed a bug where cloned volumes could fail to reach a healthy state, preventing attachment to workloads.
 
-For more details, see [Issue #11875](https://github.com/longhorn/longhorn/issues/11875).
+For more details, see [Issue #12208](https://github.com/longhorn/longhorn/issues/12208).
 
-### Share Manager Excessive Memory Usage
+### Block Mode Volume Migration Stuck
 
-Fixed excessive memory consumption in the share manager for RWX (ReadWriteMany) volumes. The component now maintains stable memory usage under normal operation.
+Fixed a regression in block-mode volume migrations where newly created replicas could incorrectly inherit the `lastFailedAt` timestamp from source replicas, causing repeated deletion and blocking migration completion.
 
-For more details, see [Issue #12043](https://github.com/longhorn/longhorn/issues/12043).
+For more details, see [Issue #12312](https://github.com/longhorn/longhorn/issues/12312).
+
+### Replica Auto Balance Disk Pressure Threshold Stalled
+
+Fixed an issue where replica auto-balance under disk pressure could be blocked if stopped volumes were present on the disk.
+
+For more details, see [Issue #12334](https://github.com/longhorn/longhorn/issues/12334).
+
+### Replicas Accumulate During Engine Upgrade
+
+Fixed a bug where temporary replicas could accumulate during engine upgrade. High etcd latency could cause new replicas to fail verification, leading to accumulation over multiple reconciliation cycles.
+
+For more details, see [Issue #12115](https://github.com/longhorn/longhorn/issues/12115).
+
+### Potential Client Connection and Context Leak
+
+Fixed potential context leaks in the instance manager client and backing image manager client, improving stability and preventing resource exhaustion.
+
+For more details, see [Issue #12200](https://github.com/longhorn/longhorn/issues/12200) and [Issue #12195](https://github.com/longhorn/longhorn/issues/12195).
+
+### Replica Node Level Soft Anti-Affinity Ignored
+
+Fixed a bug of replica scheduling loop where replicas could be scheduled onto nodes that already host a replica, even when *Replica Node-Level Soft Anti-Affinity* was disabled.
+
+For more details, see [Issue #12251](https://github.com/longhorn/longhorn/issues/12251).
 
 ## Removal
 
@@ -4986,6 +4983,7 @@ You will need to create an ELB (Elastic Load Balancer) to expose the nginx Ingre
 
 ## References
 https://kubernetes.github.io/ingress-nginx/
+
 
 ---
 
@@ -10793,7 +10791,6 @@ weight: 4
 
 Longhorn supports ReadWriteMany (RWX) volumes by exposing regular Longhorn volumes via NFSv4 servers that reside in share-manager pods.
 
-
 # Introduction
 
 Longhorn creates a dedicated `share-manager-<volume-name>` Pod within the `longhorn-system` namespace for each RWX volume that is currently in active use. The Pod facilitates the export of Longhorn volume via an internally hosted NFSv4 server. Additionally, a corresponding Service is created for each RWX volume, serving as the designated endpoint for actual NFSv4 client connections.
@@ -12268,7 +12265,7 @@ machine:
 > You can use `uio_pci_generic` if `vfio_pci` is incompatible with your system or specific hardware. Future versions of Talos Linux are expected to include native support for `uio_pci_generic`. For more information, see [Issue #9236](https://github.com/siderolabs/talos/issues/9236).
 > Since 1.8.0 `uio_pci_generic` is now supported.
 
-## Talos Linux Upgrades (version <1.8)
+## Talos Linux Upgrades
 
 ### Prior to v1.8.x
 
