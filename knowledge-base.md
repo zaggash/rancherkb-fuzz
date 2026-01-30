@@ -3156,29 +3156,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -3790,26 +3796,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+# How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
-- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
+- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
+- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
 
 ## **Situation**
 
-この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
+This article details how to confirm that a Rancher version upgrade has successfully completed.
 
 ## **Resolution**
 
-Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
+The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
 
-- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
-- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
-- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
+- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
+- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
+- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
 
 
 
@@ -8781,28 +8787,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -8975,59 +8987,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -16305,6 +16325,56 @@ Without the flag --all it will display the default version of the Kubernetes to 
 ```
 kubectl get rkek8ssystemimages.management.cattle.io -n cattle-global-data
 ```
+
+
+
+---
+
+## Article: 000021093.md
+
+# How to change the max-pods limit in an RKE2 or K3s cluster
+
+**Article Number:** [000021093](https://support.scc.suse.com/s/kb/How-to-change-the-maxpod-limit-in-Rke2-cluster)
+
+## **Environment**
+
+- Rancher v2.6+
+- A standalone or Rancher-provisioned RKE2/K3s cluster
+
+## **Situation**
+
+The existing RKE2/K3s cluster's pod limit has been exhausted and needs to be increased.
+
+## **Resolution**
+
+> When looking to change the max-pods for a node, make sure to take into account the number of IP addresses available from each nodes node CIDR, as this will limit the number of pods that can be scheduled on a node. Changing the node CIDR config in an existing cluster is not supported. If you need to increase the `node-cidr-mask-size` (and/or `cluster_cidr`) you will need to provision a fresh cluster, per the article [*How to setup your network CIDR for a large* cluster](https://support.scc.suse.com/s/redirect?id=000020167).
+
+**Standalone RKE2/K3s clusters**
+
+In a standalone cluster, the configuration needs to be applied per node:
+
+1. Configure the kubelet's `max-pods` argument in the [RKE2](https://docs.rke2.io/install/configuration#configuration-file) or [K3s](https://docs.k3s.io/installation/configuration#configuration-file) configuration file (`/etc/rancher/rke2/config.yaml` or `/etc/rancher/k3s/config.yaml`) per the following example:
+   
+   ```
+   kubelet-arg:
+     - "max-pods=200"
+   ```
+2. After updating the configuration file, you will need to restart the RKE2/K3s service to apply the changes:
+   
+   - On RKE2 server nodes: `systemctl restart rke2-server`
+   - On RKE2 worker nodes: `systemctl restart rke2-agent`
+   - On K3s server nodes: `systemctl restart k3s`
+   - On K3s worker nodes: `systemctl restart k3s-agent`
+
+**Rancher-provisioned RKE2/K3s clusters**
+
+In a Rancher-provisioned cluster, the configuration can be managed at the cluster-level within Rancher:
+
+1. Navigate to **Cluster Management** within the Rancher UI and click **Edit Config** for the relevant RKE2/K3s cluster
+2. Under **Cluster Configuration** click **Advanced**
+3. Under **For all machines, use the Kubelet args:** in the section **Additional Kubelet Args** click **Add Argument**
+4. Enter the desired `max-pods` value, for example `max-pods=200`
+5. Click **Save** to apply the change
 
 
 
@@ -28702,72 +28772,71 @@ You can check the current environment variables in a running Rancher Pod with th
 
 To perform a graceful node shutdown in RKE2 for maintenance scenarios, follow these steps to cordon and drain the node:
 
-- Mark the node as unschedulable using the command:
-  
-  ```markup
-  kubectl cordon <node name>
-  ```
-- Drain the node to evict all pods, including those with Pod Disruption Budgets, using the command:
-  
-  ```markup
-  kubectl drain <node name> --ignore-daemonsets --force
-  ```
+1. Mark the node as unschedulable using the command:
+   
+   ```markup
+   kubectl cordon <node name>
+   ```
+2. Drain the node to evict all pods, including those with Pod Disruption Budgets, using the command:
+   
+   ```markup
+   kubectl drain <node name> --ignore-daemonsets --force
+   ```
 
 ### On worker nodes
 
-      1. Stop the rke2-agent service: 
-
-```markup
-sudo systemctl stop rke2-agent
-```
-
-       2. Check for any remaining container processes that should be stopped:
-
-```markup
-sudo ps auxfww
-```
+1. Stop the rke2-agent service:
+   
+   ```markup
+   sudo systemctl stop rke2-agent
+   ```
+2. Check for any remaining container processes that should be stopped:
+   
+   ```markup
+   sudo ps auxfww
+   ```
 
 ### On control pane / etcd nodes
 
-1\. Stop the rke2-server service: 
-
-```markup
-sudo systemctl stop rke2-server 
-```
-
-2\. Check for any remaining container processes that should be stopped: 
-
-```markup
-sudo ps auxfww
-```
+1. Stop the rke2-server service:
+   
+   ```markup
+   sudo systemctl stop rke2-server 
+   ```
+2. Check for any remaining container processes that should be stopped: 
+   
+   ```markup
+   sudo ps auxfww
+   ```
 
 ### Stop remaining processes
 
 If all application workloads have been stopped, this is not needed before shutting down the node, however, in some cases, it may be useful to stop all remaining container processes and components like containerd.
 
-- Verify that no application workloads are running on the node 
-  
-  ```markup
-  kubectl describe node <node name>
-  ```
-- If all application workloads have been scheduled on other nodes, leftover container processes and all the related RKE2 processes can be stopped using the rke2-killall.sh script:
-  
-  ```markup
-  sudo /usr/local/bin/rke2-killall.sh
-  ```
+1. Verify that no application workloads are running on the node
+   
+   ```markup
+   kubectl describe node <node name>
+   ```
+2. If all application workloads have been scheduled on other nodes, leftover container processes and all the related RKE2 processes can be stopped using the rke2-killall.sh script:
+   
+   ```markup
+   sudo /usr/local/bin/rke2-killall.sh
+   ```
 
 > **Note:** The `rke2-killall.sh` script uses SIGKILL to terminate processes, which may negatively impact stateful application workloads that may still be running. For stateful workloads, consider a solution that sends SIGTERM with a timeout before resorting to SIGKILL. For related information, refer to the documentation: [Best practices for RKE2 cluster maintenance.](https://www.suse.com/support/kb/doc/?id=000021301) Always, make sure to capture an [etcd snapshot](https://docs.rke2.io/datastore/backup_restore#creating-snapshots) before performing any node maintenance activity.
 
 ### Start the service again
 
-- After maintenance, start the service:
-- - Worker (agent) nodes: sudo systemctl start rke2-agent
-  - Control plane (server) nodes: sudo systemctl start rke2-server
-- Mark the node as schedulable again:
-  
-  ```markup
-  kubectl uncordon <node name>
-  ```
+1. After maintenance, start the service:
+   
+   - Worker (agent) nodes: sudo systemctl start rke2-agent
+   - Control plane (server) nodes: sudo systemctl start rke2-server
+2. Mark the node as schedulable again:
+   
+   ```markup
+   kubectl uncordon <node name>
+   ```
 
 
 
@@ -30264,6 +30333,139 @@ After the configuration is applied:
 
 ---
 
+## Article: 000022185.md
+
+# How to extend RKE2/K3s self-signed certificate expiration
+
+**Article Number:** [000022185](https://support.scc.suse.com/s/kb/How-to-extend-RKE2-K3s-self-signed-certificate-expiration)
+
+## **Environment**
+
+RKE2 and K3S cluster with self-signed certificates
+
+## **Procedure**
+
+> **Warning:** Changing the [default certificate expiry](https://docs.rke2.io/security/certificates) **is not officially supported** or tested by QA. This process of overriding the default is generally discouraged because Rancher and RKE2 already manage rotations automatically—either through the Rancher UI, the RKE2 `rotate` subcommand, or automatically upon an RKE2 service restart. 
+> 
+> If your specific scenario requires adjusting the expiry period, use the details in this article with caution. Ensure you apply reasonable values to prevent unexpected cluster complications.
+
+### **1. Configure the Environment Variable**
+
+Set the environment variable `CATTLE_NEW_SIGNED_CERT_EXPIRATION_DAYS` on the node.
+
+RKE2:  
+The example below configures a **1000-day** certificate expiration period for an RKE2 server node:
+
+```
+
+```
+
+```markup
+# Add the environment variable (example: 1000 days)
+echo CATTLE_NEW_SIGNED_CERT_EXPIRATION_DAYS=1000 >> /usr/local/lib/systemd/system/rke2-server.env
+
+# Apply changes
+systemctl restart rke2-server
+```
+
+```
+
+```
+
+```
+
+```
+
+> Note: For agent/worker nodes, replace `rke2-server` with `rke2-agent` in the commands above
+
+K3S:  
+The example below configures the same **1000-day** expiry for a K3s server node:
+
+```markup
+# Add the environment variable (example: 1000 days)
+echo CATTLE_NEW_SIGNED_CERT_EXPIRATION_DAYS=1000 >> /etc/systemd/system/k3s.env
+
+# Apply changes
+systemctl restart k3s
+```
+
+> Note: For agent/worker nodes, replace `k3s` with `k3s-agent` in the commands above. Also, by default K3s uses the /etc/systemd/system directory
+
+* * *
+
+### **2. Verify Certificate Validity**
+
+You can confirm the updated certificate durations using one of the following methods:
+
+**Using the RKE2 CLI**
+
+```
+
+```
+
+```markup
+rke2 certificate check --output table
+```
+
+```
+
+```
+
+**Using the K3s CLI**
+
+```markup
+k3s certificate check --output table
+```
+
+**Using OpenSSL**  
+This example checks the kubelet certificate, which listens on port 10250
+
+```markup
+openssl s_client -connect localhost:10250 -showcerts </dev/null 2>/dev/null | openssl x509 -noout -dates
+```
+
+> Note: The OpenSSL command can be adjusted for other components by changing the target port
+
+```
+
+```
+
+```
+
+```
+
+* * *
+
+### **Important Considerations**
+
+**Existing clusters**  
+If the current certificates have **greater than 120 days** until expiry, RKE2 and K3s will **not automatically rotate the certificates** when starting after adding the new environment variable.
+
+**Manual rotation**  
+On an existing cluster, the new certificate expiry period can be applied by manually rotating the certificates on all nodes as needed. This can be done in the [Rancher dashboard](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/rotate-certificates), or directly on nodes in a standalone cluster.
+
+RKE2: 
+
+```markup
+rke2 certificate rotate
+systemctl restart rke2-server
+```
+
+> Note: For agent/worker nodes, replace `rke2-server` with `rke2-agent` in the commands above
+
+K3S:
+
+```markup
+k3s certificate rotate
+systemctl restart k3s
+```
+
+> Note: For agent/worker nodes, use `k3s-agent` as the systemctl service when restarting
+
+
+
+---
+
 ## Article: 000022194.md
 
 # Migrating an RKE2/K3s Downstream Cluster to a new Subnet in an infrastructure provider
@@ -30726,6 +30928,60 @@ save and exit the editor.
 
 ---
 
+## Article: 000022214.md
+
+# How to replace a control plane node in a Rancher local RKE2 cluster
+
+**Article Number:** [000022214](https://support.scc.suse.com/s/kb/How-to-replace-control-plane-node-in-Rancher-Local-RKE2-cluster)
+
+## **Environment**
+
+- Rancher v2.5+ running on an RKE2 cluster
+
+## **Procedure**
+
+01. First, make sure to prepare a node with a supported operating system (OS) as mentioned in the [documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements#operating-systems-and-container-runtime-requirements). Best practice is that the OS is aligned (the same distribution and version) with the other cluster nodes and in compliance with the [SUSE Rancher Support Matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/).
+02. Take an etcd backup of the Rancher local cluster using the steps mentioned [here](https://docs.rke2.io/datastore/backup_restore).
+03. You can additionally take a backup of Rancher state using the [Rancher Backup Operator](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher).
+04. Follow the [steps](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-cluster-setup/rke2-for-rancher#installing-kubernetes) to register the new node as an additional control plane node in the local cluster.
+05. Verify that etcd also shows the new node as a member by running the command below on the new node:
+    
+    ```
+    export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
+    etcdcontainer=$(/var/lib/rancher/rke2/bin/crictl ps --label io.kubernetes.container.name=etcd --quiet)
+    /var/lib/rancher/rke2/bin/crictl exec $etcdcontainer etcdctl --cert /var/lib/rancher/rke2/server/tls/etcd/server-client.crt --key /var/lib/rancher/rke2/server/tls/etcd/server-client.key --cacert /var/lib/rancher/rke2/server/tls/etcd/server-ca.crt endpoint health --cluster --write-out=table
+    ```
+06. Run the command below on any existing node to ensure the node status is `Ready`:
+    
+    ```
+    kubectl get nodes
+    ```
+07. Now, open an SSH session to the node to be removed. Stop and disable the rke2-server service:
+    
+    ```
+    systemctl stop rke2-server
+    systemctl disable rke2-server
+    ```
+08. In the same SSH session, on the node to be removed, run the `rke2-killall.sh` cleanup script, to terminate all Pod and RKE2 related processes:
+    
+    ```
+    rke2-killall.sh
+    ```
+09. Delete the node from the Kubernetes cluster by running the command below on any other control plane node in the cluster:
+    
+    ```
+    kubectl delete node <NODENAME>
+    ```
+10. Verify that the node is deleted:
+    
+    ```
+    kubectl get nodes
+    ```
+
+
+
+---
+
 ## Article: 000022236.md
 
 # Upgrade to Rancher Prime v2.13.1 fails in clusters with ingress-nginx
@@ -31029,4 +31285,40 @@ Example of version-locked code:
 To resolve this visibility issue, ensure that the versions of Rancher and Kubernetes are compatible according to the official [SUSE Rancher Support Matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/).
 
 Given the situation of running an incompatible combination of Rancher and Kubernetes versions, the recommended path to return to a supported configuration, is a restore to a pre-upgraded state where the versions were compatible. You can then proceed to upgrade in accordance with the [Rancher Upgrade Checklist](https://support.scc.suse.com/s/kb/360051866152?language=en_US), checking the [Support Matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions).
+
+
+
+---
+
+## Article: 000022311.md
+
+# Unexpected node draining in node driver clusters when upgrading Rancher from v2.12.2
+
+**Article Number:** [000022311](https://support.scc.suse.com/s/kb/Unexpected-node-draining-in-node-driver-clusters-when-upgrading-Rancher-from-v2-12-2)
+
+## **Environment**
+
+- Rancher v2.12.2
+- RKE2 or K3s [node driver cluster(s)](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider)
+
+## **Situation**
+
+Upgrading Rancher from v2.12.2, to a higher release, triggers a drain and subsequent uncordoning of all nodes in node driver clusters, where **Drain Nodes** is set to **Yes** in the cluster's **Upgrade Strategy**. All workloads running in the cluster are re-scheduled as a result. This is unexpected, as no new configuration change is made to the cluster during the Rancher upgrade.
+
+## **Cause**
+
+Upgrading from version v2.12.2 to any higher version results in a change to the plan for nodes in node driver clusters. The `rancher-system-agent`, on node driver cluster nodes, monitors the plan's hash, to check for upgrades, and so this change results in a reconciliation, with the node drained and then uncordoned, in accordance with the **Drain Nodes** setting in the **Upgrade Strategy.** It is not expected that a Rancher upgrade results in a downstream cluster reconciliation, and this behaviour is not observed in upgrades of other Rancher versions.
+
+## **Resolution**
+
+To avoid node driver clusters from draining - which will cause temporary workload unavailability due to rescheduling - when upgrading Rancher from v2.12.2, set **Drain Nodes** to **No** in the **Upgrade Strategy** of the clusters, before the Rancher upgrade:
+
+1. Navigate to **Cluster Management** in the Rancher UI and click **Edit Config** for the relevant RKE2/K3s node driver cluster.
+2. Under **Cluster Configuration** select **Upgrade Strategy**.
+3. Set the **Drain Nodes** option to **No** for both Control Plane and Worker Nodes.
+4. Click **Save** to apply the changes.
+
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000182or&feoid=00N1i000002LdMN&refid=0EMTr00000JQoXh)
+
+After the Rancher upgrade, you can revert this change, to set **Drain Nodes** back to **Yes.**
 
