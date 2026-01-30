@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -2056,7 +2056,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+    How to confirm a version upgrade of Rancher v2.x is completed successfully
   
 
     
@@ -4464,7 +4464,7 @@
   <span class="md-ellipsis">
     
   
-    How do I edit or upgrade clusters created via RKE Templates?
+    [JP] How do I edit my cluster using RKE Templates?
   
 
     
@@ -4604,7 +4604,7 @@
   <span class="md-ellipsis">
     
   
-    How to test websocket connections to Rancher v2.x
+    [JP] How to test websocket connections to Rancher v2.x
   
 
     
@@ -9029,6 +9029,34 @@
     
   
     Get the list of available Kubernetes versions for RKE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021093/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to change the max-pods limit in an RKE2 or K3s cluster
   
 
     
@@ -15188,6 +15216,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../000022185/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to extend RKE2/K3s self-signed certificate expiration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000022194/" class="md-nav__link">
         
   
@@ -15336,6 +15392,34 @@
     
   
     Cluster stuck in “Paused” State causing node registration failures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022214/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to replace a control plane node in a Rancher local RKE2 cluster
   
 
     
@@ -15573,6 +15657,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022311/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Unexpected node draining in node driver clusters when upgrading Rancher from v2.12.2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -15703,52 +15815,56 @@
 </ul>
 <h2 id="procedure"><strong>Procedure</strong></h2>
 <p>To perform a graceful node shutdown in RKE2 for maintenance scenarios, follow these steps to cordon and drain the node:</p>
-<ul>
+<ol>
 <li>Mark the node as unschedulable using the command:</li>
-</ul>
+</ol>
 <p><div class="highlight"><pre><span></span><code>kubectl cordon &lt;node name&gt;
 </code></pre></div>
-- Drain the node to evict all pods, including those with Pod Disruption Budgets, using the command:</p>
+2. Drain the node to evict all pods, including those with Pod Disruption Budgets, using the command:</p>
 <div class="highlight"><pre><span></span><code>kubectl drain &lt;node name&gt; --ignore-daemonsets --force
 </code></pre></div>
 <h3 id="on-worker-nodes">On worker nodes</h3>
-<p>1. Stop the rke2-agent service: </p>
-<div class="highlight"><pre><span></span><code>sudo systemctl stop rke2-agent
+<ol>
+<li>Stop the rke2-agent service:</li>
+</ol>
+<p><div class="highlight"><pre><span></span><code>sudo systemctl stop rke2-agent
 </code></pre></div>
-<p>2. Check for any remaining container processes that should be stopped:</p>
+2. Check for any remaining container processes that should be stopped:</p>
 <div class="highlight"><pre><span></span><code>sudo ps auxfww
 </code></pre></div>
 <h3 id="on-control-pane-etcd-nodes">On control pane / etcd nodes</h3>
-<p>1. Stop the rke2-server service: </p>
-<div class="highlight"><pre><span></span><code>sudo systemctl stop rke2-server 
+<ol>
+<li>Stop the rke2-server service:</li>
+</ol>
+<p><div class="highlight"><pre><span></span><code>sudo systemctl stop rke2-server 
 </code></pre></div>
-<p>2. Check for any remaining container processes that should be stopped: </p>
+2. Check for any remaining container processes that should be stopped: </p>
 <div class="highlight"><pre><span></span><code>sudo ps auxfww
 </code></pre></div>
 <h3 id="stop-remaining-processes">Stop remaining processes</h3>
 <p>If all application workloads have been stopped, this is not needed before shutting down the node, however, in some cases, it may be useful to stop all remaining container processes and components like containerd.</p>
-<ul>
-<li>Verify that no application workloads are running on the node </li>
-</ul>
+<ol>
+<li>Verify that no application workloads are running on the node</li>
+</ol>
 <p><div class="highlight"><pre><span></span><code>kubectl describe node &lt;node name&gt;
 </code></pre></div>
-- If all application workloads have been scheduled on other nodes, leftover container processes and all the related RKE2 processes can be stopped using the rke2-killall.sh script:</p>
+2. If all application workloads have been scheduled on other nodes, leftover container processes and all the related RKE2 processes can be stopped using the rke2-killall.sh script:</p>
 <div class="highlight"><pre><span></span><code>sudo /usr/local/bin/rke2-killall.sh
 </code></pre></div>
 <blockquote>
 <p><strong>Note:</strong> The <code>rke2-killall.sh</code> script uses SIGKILL to terminate processes, which may negatively impact stateful application workloads that may still be running. For stateful workloads, consider a solution that sends SIGTERM with a timeout before resorting to SIGKILL. For related information, refer to the documentation: <a href="https://www.suse.com/support/kb/doc/?id=000021301">Best practices for RKE2 cluster maintenance.</a> Always, make sure to capture an <a href="https://docs.rke2.io/datastore/backup_restore#creating-snapshots">etcd snapshot</a> before performing any node maintenance activity.</p>
 </blockquote>
 <h3 id="start-the-service-again">Start the service again</h3>
-<ul>
-<li>After maintenance, start the service:</li>
+<ol>
 <li>
-<ul>
-<li>Worker (agent) nodes: sudo systemctl start rke2-agent</li>
-</ul>
+<p>After maintenance, start the service:</p>
 </li>
-<li>Control plane (server) nodes: sudo systemctl start rke2-server</li>
+<li>
+<p>Worker (agent) nodes: sudo systemctl start rke2-agent</p>
+</li>
+<li>Control plane (server) nodes: sudo systemctl start rke2-server</li>
 <li>Mark the node as schedulable again:</li>
-</ul>
+</ol>
 <div class="highlight"><pre><span></span><code>kubectl uncordon &lt;node name&gt;
 </code></pre></div>
 
