@@ -8787,34 +8787,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -29830,6 +29824,79 @@ Add the following configurations to the ArgoCD application, adjusting the namesp
  
 
 Restart the policy server after applying the `ignoreDifferences` configuration to ensure it picks up the new certificate.
+
+
+
+---
+
+## Article: 000022161.md
+
+# Tigera-operator fails due to rancher-webhook denying access while upgrading the RKE2 cluster
+
+**Article Number:** [000022161](https://support.scc.suse.com/s/kb/Tigera-operator-fails-due-to-rancher-webhook-denying-access-while-upgrading-the-RKE2-cluster)
+
+## **Environment**
+
+SUSE Rancher: v2.10.5
+
+RKE2 v1.31.7
+
+PSA is enabled on the downstream cluster
+
+## **Situation**
+
+During an RKE2 cluster upgrade from version 1.30.7 to 1.31.11, one of the four downstream clusters becomes stuck with the message 'Waiting for cluster agent to connect'. The cluster-agent fails to resolve the Rancher URL because the calico-kube-controller deployment fails. pod fails to start due to a hostname resolution issue, which is caused by rke2-coredns failing to start with a Calico error. This leads to the deployment failing with the error message 'cannot find a qualified ippool'.
+
+## **Cause**
+
+- This issue is caused by a known bug mentioned [here](https://github.com/rancher/rancher/issues/41191).
+- This seems to be because of a  deadlock where the rancher-webhook pod fails to start due to its inability to create a Calico sandbox, while Calico cannot be installed without the rancher-webhook. A potential race condition or timeout during the upgrade process, possibly related to the PSA template, may also contribute to the issue. The validating webhook blocks the creation of namespaces, leading to the 'cannot find a qualified ippool' error.
+
+## **Resolution**
+
+- The downstream cluster is RKE2 v1.31.7 with PSA(Pod Security Admission) enabled.
+- The calico-kube-controller pod fails with the following error:
+
+```
+cannot find a qualified ippool
+```
+
+- While investigating further, it was found that tigera-operator was failing because rancher-webhook denied access:
+
+```
+Error creating resource : admission webhook rancher.cattel.io.namespace.create-non-kubesystem denied the request : Unauthorized
+```
+
+- The workaround below can be applied to fix the issue temporarily:
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tigera-operator-psa
+rules:
+- apiGroups:
+  - management.cattle.io
+  resources:
+  - projects
+  verbs:
+  - updatepsa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tigera-operator-psa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tigera-operator-psa
+subjects:
+- kind: ServiceAccount
+  name: tigera-operator
+  namespace: tigera-operator
+```
+
+- Verify that tigera-operator starts immediately and calico-kube-controller deployment rolls out successfully. The cluster-agent also connects, and the cluster becomes active.
 
 
 
