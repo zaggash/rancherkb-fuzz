@@ -8787,28 +8787,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -8981,67 +8987,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -31308,6 +31306,134 @@ To identify and silence the source of these errors, you can investigate the orig
 
 ---
 
+## Article: 000022303.md
+
+# Common issues and best practice while Supportability Review data collection
+
+**Article Number:** [000022303](https://support.scc.suse.com/s/kb/Common-issues-and-best-practice-while-Supportability-Review-data-collection)
+
+## **Environment**
+
+- SUSE Rancher 2.x
+- Supportability Review App
+
+## **Situation**
+
+- Supportability Reviews are remote engagements in which a SUSE Technical Specialist reviews your Rancher deployment for a supportable system configuration and compliance with current recommended practices, and highlights any potential operational or supportability concerns. It mainly involves Data collection and Data analysis.
+- Below are a few common issues and best practices while collecting data with the Supportability Review App.
+
+## **Resolution**
+
+**A) Security policy issues :**
+
+   
+If your clusters use any security tools, review the required configurations:
+
+1. **Pod Security Admission/Policies**
+   
+   - Sonobuoy pods require privileged access
+   - Collection pods need access to node information.
+   - If SR data collections fail due to the PSA error below, then exempt '**sr-operator-system**' and '**sonobouy**' namespace from the cluster. See the document [here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/psa-config-templates#exempting-namespaces) for more information on exempting the namespace. 
+     
+      
+     
+     ```
+     warnings.go:70] would violate PodSecurity "restricted:v1.31": allowPrivilegeEscalation != false (container "kube-sonobuoy" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "kube-sonobuoy" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "kube-sonobuoy" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "kube-sonobuoy" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+     ```
+2. **Network Policies**
+   
+   - Allow egress traffic for collection pods
+   - Allow communication between Sonobuoy aggregator and collection pods
+3. **Kyverno Policies**
+   
+   - Must exclude `sonobuoy` namespace from restrictive policies
+   - If using Kyverno, add this exclusion to your policies:
+     
+     ```
+     exclude:
+       any:
+       - resources:
+           namespaces:
+           - sonobuoy
+     ```
+4. **Image Pull Policies**
+   
+   - Verify allowed registries in your security policies
+   - Configure image pull secrets if required
+
+**B) Permission issues :**
+
+ 
+
+1. **Rancher Access**
+   
+   - Bearer token must be generated by cluster owner (not a member)
+   - Token requires full access to target clusters
+   - Token should not be scoped and have full access
+   - [How to generate a token](https://ranchermanager.docs.rancher.com/reference-guides/user-settings/api-keys#docusaurus_skipToContent_fallback)
+2. **Script Requirements**
+   
+   - Docker installed and running (or nerdctl/podman)
+   - User must be root or in the docker group
+3. **Downstream Clusters must be Active**
+   
+   - Please ensure that your downstream clusters are listed as Active in Rancher
+   - Any cluster in updating or not active will NOT be collected for review
+4. **SELinux**
+   
+   - Please use `export ENABLE_PRIVILEGED="true"`, if SELinux is enabled.
+
+**C) Common Error messages :**
+
+[](https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/supportability-review#troubleshooting-common-issues)
+
+1. **Permission Issues**
+   
+   ```
+   Error: pods is forbidden: User cannot list resource "pods"
+   Solution: Ensure bearer token is generated by cluster owner, not member
+   ```
+2. [](https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/supportability-review#1-permission-issues)**Cluster Access Issues**
+   
+   ```
+   Info: No of clusters detected: X (less than expected)
+   Solution: Check if bearer token has access to all intended clusters
+   ```
+3. **Node Tolerations:** If the collection fails due to node taints, apply the toleration below :
+   
+   ```
+   
+   ```
+   
+   ```
+   
+   ```
+   
+   ```
+        tolerations:
+          - operator: Exists  # This will ignore all taints
+   ```
+   
+   ```
+   
+   ```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+
+
+---
+
 ## Article: 000022307.md
 
 # Maximum RTT (Round Trip Time) for an RKE2 cluster
@@ -31388,4 +31514,40 @@ To avoid node driver clusters from draining - which will cause temporary workloa
 ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000182or&feoid=00N1i000002LdMN&refid=0EMTr00000JQoXh)
 
 After the Rancher upgrade, you can revert this change, to set **Drain Nodes** back to **Yes.**
+
+
+
+---
+
+## Article: 000022315.md
+
+# Windows worker node stuck in 'Waiting for Node Ref' state with no VM found error
+
+**Article Number:** [000022315](https://support.scc.suse.com/s/kb/Windows-worker-node-stuck-in-Waiting-for-Node-Ref-state-with-no-VM-found-error)
+
+## **Environment**
+
+- Rancher 2.x
+- RKE2 VMWare Vsphere cluster
+
+## **Situation**
+
+- Attempting to add a Windows worker node to a cluster. The control plane and Linux worker nodes are already configured. The Windows node appears as added and active in the Cluster Nodes view but remains in a 'Waiting for Node Ref' state in Rancher. The node is otherwise functional in the cluster.
+- Seeing error below in the vsphere-cpi-cloud-controller-manager pod while registering node to cluster :
+
+```
+Unable to find VM by DNS Name. VM DNS Name: mynodename
+Error while looking for vm=mynodename(byName) in vc=vck8s01  and datacenter=vck8sDatacenter: No VM found
+Did not find node mynodename in vc=vck8s01  and datacenter=vck8sDatacenter
+```
+
+## **Cause**
+
+- The Windows worker nodes were not using the FQDN, causing a VM not found error. This prevented the nodes from registering correctly with the cluster.
+
+## **Resolution**
+
+- Confirm whether the node name in Kubernetes matches the FQDN of the VM in vCenter reported by VMware tools, including the domain. If it's not, as a workaround, add the FQDN to the NodeName in the Rancher UI by navigating to Cluster Management -&gt; \[relevant cluster] &gt; Registration -&gt; Step2 (Advanced). This ensures the nodes register with the cluster successfully and become active.
+
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000001833N&feoid=00N1i000002LdMN&refid=0EMTr00000JS8Kf)
 
