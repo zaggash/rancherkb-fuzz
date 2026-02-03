@@ -25,7 +25,7 @@
     
     
       
-        <title>Common issues and best practice while Supportability Review data collection - SUSE KBs</title>
+        <title>Common issues and best practices in the Supportability Review data collection - SUSE KBs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#common-issues-and-best-practice-while-supportability-review-data-collection" class="md-skip">
+        <a href="#common-issues-and-best-practices-in-the-supportability-review-data-collection" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Common issues and best practice while Supportability Review data collection
+              Common issues and best practices in the Supportability Review data collection
             
           </span>
         </div>
@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -1888,7 +1888,7 @@
   <span class="md-ellipsis">
     
   
-    How to enable container log rotation with k3s or containerd
+    How to customise container log rotation in an RKE2 or K3s cluster
   
 
     
@@ -4464,7 +4464,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How do I edit my cluster using RKE Templates?
+    How do I edit or upgrade clusters created via RKE Templates?
   
 
     
@@ -8777,34 +8777,6 @@
     
   
     rancher-logging: how to control fluentd logs flushing frequency
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000021045/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to set container log rotation with RKE2
   
 
     
@@ -14985,34 +14957,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000022161/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tigera-operator fails due to rancher-webhook denying access while upgrading the RKE2 cluster
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000022162/" class="md-nav__link">
         
   
@@ -15049,6 +14993,34 @@
     
   
     How to configure TLS ciphers for Kubernetes components in an RKE2/K3s cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022165/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolving SQLITE_BUSY Errors: database is locked (5)
   
 
     
@@ -15300,7 +15272,7 @@
   <span class="md-ellipsis">
     
   
-    Cluster stuck in “Paused” State causing node registration failures
+    Cluster stuck in “Paused” state causing node registration failures
   
 
     
@@ -15533,7 +15505,7 @@
   <span class="md-ellipsis">
     
   
-    Common issues and best practice while Supportability Review data collection
+    Common issues and best practices in the Supportability Review data collection
   
 
     
@@ -15551,7 +15523,7 @@
   <span class="md-ellipsis">
     
   
-    Common issues and best practice while Supportability Review data collection
+    Common issues and best practices in the Supportability Review data collection
   
 
     
@@ -15813,20 +15785,20 @@
 
 
 
-<h1 id="common-issues-and-best-practice-while-supportability-review-data-collection">Common issues and best practice while Supportability Review data collection</h1>
+<h1 id="common-issues-and-best-practices-in-the-supportability-review-data-collection">Common issues and best practices in the Supportability Review data collection</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Common-issues-and-best-practice-while-Supportability-Review-data-collection">000022303</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
 <ul>
-<li>SUSE Rancher 2.x</li>
+<li>SUSE Rancher v2.11+</li>
 <li>Supportability Review App</li>
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
 <ul>
-<li>Supportability Reviews are remote engagements in which a SUSE Technical Specialist reviews your Rancher deployment for a supportable system configuration and compliance with current recommended practices, and highlights any potential operational or supportability concerns. It mainly involves Data collection and Data analysis.</li>
+<li>Supportability Reviews (SR) are remote engagements in which a SUSE Technical Specialist reviews your Rancher deployment for a supportable system configuration and compliance with current recommended practices, highlighting any potential operational or supportability concerns. It involves two primary steps: data collection and data analysis.</li>
 <li>Below are a few common issues and best practices while collecting data with the Supportability Review App.</li>
 </ul>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p><strong>A) Security policy issues :</strong></p>
+<p><strong>A) Security policy issues:</strong></p>
 <p>If your clusters use any security tools, review the required configurations:</p>
 <ol>
 <li>
@@ -15837,7 +15809,7 @@
 </li>
 <li>Collection pods need access to node information.</li>
 <li>
-<p>If SR data collections fail due to the PSA error below, then exempt '<strong>sr-operator-system</strong>' and '<strong>sonobouy</strong>' namespace from the cluster. See the document <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/psa-config-templates#exempting-namespaces">here</a> for more information on exempting the namespace. </p>
+<p>If SR data collections fail due to the PSA error below, then exempt '<strong>sr-operator-system</strong>' and '<strong>sonobouy</strong>' namespace from the cluster. See the document <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/psa-config-templates#exempting-namespaces">here</a> for more information on exempting the namespace.</p>
 <p><div class="highlight"><pre><span></span><code>warnings.go:70] would violate PodSecurity &quot;restricted:v1.31&quot;: allowPrivilegeEscalation != false (container &quot;kube-sonobuoy&quot; must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container &quot;kube-sonobuoy&quot; must set securityContext.capabilities.drop=[&quot;ALL&quot;]), runAsNonRoot != true (pod or container &quot;kube-sonobuoy&quot; must set securityContext.runAsNonRoot=true), seccompProfile (pod or container &quot;kube-sonobuoy&quot; must set securityContext.seccompProfile.type to &quot;RuntimeDefault&quot; or &quot;Localhost&quot;)
 </code></pre></div>
 2. <strong>Network Policies</strong></p>
@@ -15867,7 +15839,7 @@
 </li>
 <li>Configure image pull secrets if required</li>
 </ol>
-<p><strong>B) Permission issues :</strong></p>
+<p><strong>B) Permission issues:</strong></p>
 <ol>
 <li>
 <p><strong>Rancher Access</strong></p>
@@ -15876,7 +15848,7 @@
 <p>Bearer token must be generated by cluster owner (not a member)</p>
 </li>
 <li>Token requires full access to target clusters</li>
-<li>Token should not be scoped and have full access</li>
+<li>Token should not be cluster-scoped, instead having full access</li>
 <li><a href="https://ranchermanager.docs.rancher.com/reference-guides/user-settings/api-keys#docusaurus_skipToContent_fallback">How to generate a token</a></li>
 <li>
 <p><strong>Script Requirements</strong></p>
@@ -15891,7 +15863,7 @@
 <li>
 <p>Please ensure that your downstream clusters are listed as Active in Rancher</p>
 </li>
-<li>Any cluster in updating or not active will NOT be collected for review</li>
+<li>Any cluster in an Updating state or not active will NOT have data collected for review</li>
 <li>
 <p><strong>SELinux</strong></p>
 </li>
@@ -15899,33 +15871,21 @@
 <p>Please use <code>export ENABLE_PRIVILEGED="true"</code>, if SELinux is enabled.</p>
 </li>
 </ol>
-<p><strong>C) Common Error messages :</strong></p>
-<p><a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/supportability-review#troubleshooting-common-issues"></a></p>
+<p><strong>C) Common Error messages:</strong></p>
 <ol>
-<li><strong>Permission Issues</strong></li>
+<li><strong>Permission Issues</strong> </li>
 </ol>
 <p><div class="highlight"><pre><span></span><code>Error: pods is forbidden: User cannot list resource &quot;pods&quot;
-Solution: Ensure bearer token is generated by cluster owner, not member
+Solution: Ensure bearer token is generated by a cluster owner, not member
 </code></pre></div>
-2. <a href="https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/supportability-review#1-permission-issues"></a><strong>Cluster Access Issues</strong></p>
+2. <strong>Cluster Access Issues</strong> </p>
 <p><div class="highlight"><pre><span></span><code>Info: No of clusters detected: X (less than expected)
 Solution: Check if bearer token has access to all intended clusters
 </code></pre></div>
-3. <strong>Node Tolerations:</strong> If the collection fails due to node taints, apply the toleration below :</p>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
+3. <strong>Node Tolerations</strong><br />
+   If the collection fails due to node taints, apply the toleration below:</p>
 <div class="highlight"><pre><span></span><code>     tolerations:
        - operator: Exists  # This will ignore all taints
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>
 </code></pre></div>
 
 

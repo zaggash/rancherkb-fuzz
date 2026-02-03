@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -1888,7 +1888,7 @@
   <span class="md-ellipsis">
     
   
-    How to enable container log rotation with k3s or containerd
+    How to customise container log rotation in an RKE2 or K3s cluster
   
 
     
@@ -4464,7 +4464,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How do I edit my cluster using RKE Templates?
+    How do I edit or upgrade clusters created via RKE Templates?
   
 
     
@@ -8777,34 +8777,6 @@
     
   
     rancher-logging: how to control fluentd logs flushing frequency
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000021045/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to set container log rotation with RKE2
   
 
     
@@ -14985,34 +14957,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000022161/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tigera-operator fails due to rancher-webhook denying access while upgrading the RKE2 cluster
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000022162/" class="md-nav__link">
         
   
@@ -15049,6 +14993,34 @@
     
   
     How to configure TLS ciphers for Kubernetes components in an RKE2/K3s cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022165/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolving SQLITE_BUSY Errors: database is locked (5)
   
 
     
@@ -15419,7 +15391,7 @@
   <span class="md-ellipsis">
     
   
-    Cluster stuck in “Paused” State causing node registration failures
+    Cluster stuck in “Paused” state causing node registration failures
   
 
     
@@ -15643,7 +15615,7 @@
   <span class="md-ellipsis">
     
   
-    Common issues and best practice while Supportability Review data collection
+    Common issues and best practices in the Supportability Review data collection
   
 
     
@@ -15894,8 +15866,10 @@
 <h1 id="hpa-shown-as-missing-in-rancher-ui-due-to-api-version-mismatch">HPA shown as "Missing" in Rancher UI due to API version mismatch</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/HPA-shown-as-Missing-in-Rancher-UI-due-to-API-version-mismatch">000022208</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Rancher Prime</p>
-<p>Kubernetes 1.23+</p>
+<ul>
+<li>Rancher Prime</li>
+<li>Kubernetes 1.23+</li>
+</ul>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>In the Apps interface in the Rancher UI, Horizontal Pod Autoscalers (HPAs) for some installed apps display a "Missing" state, even though the HPAs are active and functioning correctly.</p>
 <h2 id="cause"><strong>Cause</strong></h2>
@@ -15905,40 +15879,36 @@
 <p>Rancher's cluster cache in newer versions watches for autoscaling/v2 resources, due to the preferred apiVersion. The UI attempts to look up the autoscaling/v1 object defined in the App metadata, but since the cache contains only autoscaling/v2 objects, the lookup fails, resulting in the "Missing" status.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <h3 id="temporary-workaround">Temporary workaround</h3>
-<ul>
+<ol>
 <li>Edit the <code>app.catalog.cattle.io</code> object and set <code>apiVersion</code> for the HPA under <code>spec.resources</code> to <code>autoscaling/v2</code>:</li>
-</ul>
-<div class="highlight"><pre><span></span><code>kubectl edit app.catalog.cattle.io &lt;app-name&gt; -n &lt;namespace&gt;
+</ol>
+<p><div class="highlight"><pre><span></span><code>kubectl edit app.catalog.cattle.io &lt;app-name&gt; -n &lt;namespace&gt;
 </code></pre></div>
-<ul>
-<li>Locate the <code>spec.resources</code> section. Find the entry corresponding to the HorizontalPodAutoscaler</li>
-</ul>
-<div class="highlight"><pre><span></span><code>- apiVersion: autoscaling/v1
+2. Locate the <code>spec.resources</code> section. Find the entry corresponding to the HorizontalPodAutoscaler</p>
+<p><div class="highlight"><pre><span></span><code>- apiVersion: autoscaling/v1
   kind: HorizontalPodAutoscaler
   name: &lt;hpa-name&gt;
   namespace: &lt;namespace&gt;
 </code></pre></div>
-<ul>
-<li>Change the <code>apiVersion</code> to <code>autoscaling/v2</code></li>
-</ul>
-<div class="highlight"><pre><span></span><code>- apiVersion: autoscaling/v2  # Updated from v1
+3. Change the <code>apiVersion</code> to <code>autoscaling/v2</code></p>
+<p><div class="highlight"><pre><span></span><code>- apiVersion: autoscaling/v2  # Updated from v1
   kind: HorizontalPodAutoscaler
   name: &lt;hpa-name&gt;
   namespace: &lt;namespace&gt;
 </code></pre></div>
-<ul>
-<li>Save and exit the editor</li>
-<li>Refresh the Rancher UI</li>
-</ul>
+4. Save and exit the editor
+5. Refresh the Rancher UI</p>
 <p>The HPA should now transition to an "Active" state in the <strong>Apps</strong> view.</p>
 <blockquote>
 <p><strong>Note</strong>: This change will be reverted if the Helm release is upgraded or rolled back</p>
 </blockquote>
 <h3 id="permanent-solution">Permanent Solution</h3>
 <p>The underlying Helm chart must be updated by the chart maintainer.</p>
-<p>Update the Helm chart templates to use <code>autoscaling/v2</code> for HorizontalPodAutoscaler resources.</p>
-<p>Publish the updated chart.</p>
-<p>Upgrade the App in Rancher using the new chart version, this ensures the <code>app.catalog.cattle.io</code> resource is created with the correct <code>v2</code> metadata automatically.</p>
+<ol>
+<li>Update the Helm chart templates to use <code>autoscaling/v2</code> for HorizontalPodAutoscaler resources.</li>
+<li>Publish the updated chart.</li>
+<li>Upgrade the App in Rancher using the new chart version, this ensures the <code>app.catalog.cattle.io</code> resource is created with the correct <code>v2</code> metadata automatically.</li>
+</ol>
 
 
 

@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -1888,7 +1888,7 @@
   <span class="md-ellipsis">
     
   
-    How to enable container log rotation with k3s or containerd
+    How to customise container log rotation in an RKE2 or K3s cluster
   
 
     
@@ -2242,6 +2242,17 @@
   
     <nav class="md-nav" aria-label="Situation">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#important-ingress-nginx-deprecation-per-the-kubernetes-announcement-ingress-nginx-is-retired-in-march-2026-after-this-date-upstream-will-no-longer-provide-security-patches-or-bug-fixes-traefik-is-the-default-supported-ingress-controller-bundled-with-k3s-and-its-use-is-recommended-rather-than-maintaining-a-custom-ingress-nginx-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Important: Ingress NGINX Deprecation Per the Kubernetes announcement, Ingress NGINX is retired in March 2026. After this date, upstream will no longer provide security patches or bug fixes. Traefik is the default supported Ingress Controller bundled with K3s, and its use is recommended, rather than maintaining a custom Ingress NGINX installation.
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#task" class="md-nav__link">
@@ -4572,7 +4583,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How do I edit my cluster using RKE Templates?
+    How do I edit or upgrade clusters created via RKE Templates?
   
 
     
@@ -8885,34 +8896,6 @@
     
   
     rancher-logging: how to control fluentd logs flushing frequency
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000021045/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to set container log rotation with RKE2
   
 
     
@@ -15093,34 +15076,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000022161/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tigera-operator fails due to rancher-webhook denying access while upgrading the RKE2 cluster
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000022162/" class="md-nav__link">
         
   
@@ -15157,6 +15112,34 @@
     
   
     How to configure TLS ciphers for Kubernetes components in an RKE2/K3s cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022165/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolving SQLITE_BUSY Errors: database is locked (5)
   
 
     
@@ -15408,7 +15391,7 @@
   <span class="md-ellipsis">
     
   
-    Cluster stuck in “Paused” State causing node registration failures
+    Cluster stuck in “Paused” state causing node registration failures
   
 
     
@@ -15632,7 +15615,7 @@
   <span class="md-ellipsis">
     
   
-    Common issues and best practice while Supportability Review data collection
+    Common issues and best practices in the Supportability Review data collection
   
 
     
@@ -15815,6 +15798,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#important-ingress-nginx-deprecation-per-the-kubernetes-announcement-ingress-nginx-is-retired-in-march-2026-after-this-date-upstream-will-no-longer-provide-security-patches-or-bug-fixes-traefik-is-the-default-supported-ingress-controller-bundled-with-k3s-and-its-use-is-recommended-rather-than-maintaining-a-custom-ingress-nginx-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Important: Ingress NGINX Deprecation Per the Kubernetes announcement, Ingress NGINX is retired in March 2026. After this date, upstream will no longer provide security patches or bug fixes. Traefik is the default supported Ingress Controller bundled with K3s, and its use is recommended, rather than maintaining a custom Ingress NGINX installation.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#task" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -15874,8 +15868,11 @@
 <h2 id="environment"><strong>Environment</strong></h2>
 <p>K3s 1.27+ (may apply to other versions)</p>
 <h2 id="situation"><strong>Situation</strong></h2>
+<blockquote>
+<h4 id="important-ingress-nginx-deprecation-per-the-kubernetes-announcement-ingress-nginx-is-retired-in-march-2026-after-this-date-upstream-will-no-longer-provide-security-patches-or-bug-fixes-traefik-is-the-default-supported-ingress-controller-bundled-with-k3s-and-its-use-is-recommended-rather-than-maintaining-a-custom-ingress-nginx-installation"><strong>Important: Ingress NGINX Deprecation</strong> Per the <a href="https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/">Kubernetes announcement</a>, Ingress NGINX is retired in March 2026. After this date, upstream will no longer provide security patches or bug fixes. Traefik is the default supported Ingress Controller bundled with K3s, and its use is recommended, rather than maintaining a custom Ingress NGINX installation.</h4>
+</blockquote>
 <h4 id="task">Task</h4>
-<p>This knowledge base article will provide the directions for deploying NGINX instead of Traefik as your Kubernetes ingress controller on K3s. Please note that Traefik is the support ingress controller for K3s and NGINX is not officially supported by SUSE Rancher support.</p>
+<p>This knowledge base article will provide the directions for deploying NGINX instead of Traefik as your Kubernetes ingress controller on K3s. Please note that Traefik is the supported ingress controller for K3s and NGINX is not officially supported by SUSE Rancher support.</p>
 <h4 id="background">Background</h4>
 <p>By default, K3s uses Traefik as the ingress controller for your cluster. The decision to use Traefik over NGINX was based on multi-architecture support across x86 and ARM based platforms. Normally Traefik meets the needs of most Kubernetes clusters. However, there are unique use cases where NGINX may be required or preferred. If you don't think you need NGINX, it's recommended to stick with Traefik.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>

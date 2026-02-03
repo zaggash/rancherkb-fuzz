@@ -1830,7 +1830,7 @@
   <span class="md-ellipsis">
     
   
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -1886,7 +1886,7 @@
   <span class="md-ellipsis">
     
   
-    How to enable container log rotation with k3s or containerd
+    How to customise container log rotation in an RKE2 or K3s cluster
   
 
     
@@ -4462,7 +4462,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How do I edit my cluster using RKE Templates?
+    How do I edit or upgrade clusters created via RKE Templates?
   
 
     
@@ -8775,34 +8775,6 @@
     
   
     rancher-logging: how to control fluentd logs flushing frequency
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000021045/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to set container log rotation with RKE2
   
 
     
@@ -14983,34 +14955,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000022161/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tigera-operator fails due to rancher-webhook denying access while upgrading the RKE2 cluster
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000022162/" class="md-nav__link">
         
   
@@ -15047,6 +14991,34 @@
     
   
     How to configure TLS ciphers for Kubernetes components in an RKE2/K3s cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022165/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolving SQLITE_BUSY Errors: database is locked (5)
   
 
     
@@ -15298,7 +15270,7 @@
   <span class="md-ellipsis">
     
   
-    Cluster stuck in “Paused” State causing node registration failures
+    Cluster stuck in “Paused” state causing node registration failures
   
 
     
@@ -15522,7 +15494,7 @@
   <span class="md-ellipsis">
     
   
-    Common issues and best practice while Supportability Review data collection
+    Common issues and best practices in the Supportability Review data collection
   
 
     
@@ -15837,27 +15809,23 @@
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Windows-worker-node-stuck-in-Waiting-for-Node-Ref-state-with-no-VM-found-error">000022315</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
 <ul>
-<li>Rancher 2.x</li>
-<li>RKE2 VMWare Vsphere cluster</li>
+<li>Rancher v2.6+</li>
+<li>Rancher-provisioned RKE2 cluster, with the vSphere Cloud Provider (vSphere CPI/CSI)</li>
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
 <ul>
-<li>Attempting to add a Windows worker node to a cluster. The control plane and Linux worker nodes are already configured. The Windows node appears as added and active in the Cluster Nodes view but remains in a 'Waiting for Node Ref' state in Rancher. The node is otherwise functional in the cluster.</li>
-<li>Seeing error below in the vsphere-cpi-cloud-controller-manager pod while registering node to cluster :</li>
+<li>Attempting to add a Windows worker node to a cluster, with the Linux control plane and worker nodes already configured. The Windows node appears as added and active in the Cluster Nodes view but remains in a 'Waiting for Node Ref' state within Rancher Cluster Management. The node is otherwise functional in the cluster.</li>
+<li>An error of the format below is seen in the logs of the vsphere-cpi-cloud-controller-manager Pod, in the affected cluster, while registering the new Windows worker node:</li>
 </ul>
 <div class="highlight"><pre><span></span><code>Unable to find VM by DNS Name. VM DNS Name: mynodename
 Error while looking for vm=mynodename(byName) in vc=vck8s01  and datacenter=vck8sDatacenter: No VM found
 Did not find node mynodename in vc=vck8s01  and datacenter=vck8sDatacenter
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
-<ul>
-<li>The Windows worker nodes were not using the FQDN, causing a VM not found error. This prevented the nodes from registering correctly with the cluster.</li>
-</ul>
+<p>The Windows worker nodes were not using the FQDN, causing a VM not found error. This prevented the nodes from registering correctly with the cluster.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<ul>
-<li>Confirm whether the node name in Kubernetes matches the FQDN of the VM in vCenter reported by VMware tools, including the domain. If it's not, as a workaround, add the FQDN to the NodeName in the Rancher UI by navigating to Cluster Management -&gt; [relevant cluster] &gt; Registration -&gt; Step2 (Advanced). This ensures the nodes register with the cluster successfully and become active.</li>
-</ul>
-<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000001833N&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000JS8Kf" /></p>
+<p>Confirm whether the node name in Kubernetes matches the FQDN of the VM in vCenter, as reported by VMware tools, including the domain. If it is not, as a workaround, add the FQDN to the NodeName in the Rancher UI by navigating to Cluster Management -&gt; [relevant cluster] &gt; Registration -&gt; Step2 (Advanced). This ensures the nodes register with the cluster successfully and become active.</p>
+<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000184ST&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000JS8Kf" /></p>
 
 
 

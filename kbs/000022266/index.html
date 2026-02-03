@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -1888,7 +1888,7 @@
   <span class="md-ellipsis">
     
   
-    How to enable container log rotation with k3s or containerd
+    How to customise container log rotation in an RKE2 or K3s cluster
   
 
     
@@ -4464,7 +4464,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How do I edit my cluster using RKE Templates?
+    How do I edit or upgrade clusters created via RKE Templates?
   
 
     
@@ -8777,34 +8777,6 @@
     
   
     rancher-logging: how to control fluentd logs flushing frequency
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000021045/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to set container log rotation with RKE2
   
 
     
@@ -14985,34 +14957,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000022161/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tigera-operator fails due to rancher-webhook denying access while upgrading the RKE2 cluster
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000022162/" class="md-nav__link">
         
   
@@ -15049,6 +14993,34 @@
     
   
     How to configure TLS ciphers for Kubernetes components in an RKE2/K3s cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022165/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolving SQLITE_BUSY Errors: database is locked (5)
   
 
     
@@ -15300,7 +15272,7 @@
   <span class="md-ellipsis">
     
   
-    Cluster stuck in “Paused” State causing node registration failures
+    Cluster stuck in “Paused” state causing node registration failures
   
 
     
@@ -15615,7 +15587,7 @@
   <span class="md-ellipsis">
     
   
-    Common issues and best practice while Supportability Review data collection
+    Common issues and best practices in the Supportability Review data collection
   
 
     
@@ -15842,21 +15814,15 @@
 <li>Rancher Prime v2.13.1 Helm installation</li>
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>Starting with Rancher Prime v2.13.1, the Helm chart name has been updated from <code>rancher</code> to <code>rancher-prime</code>. Due to the internal logic of the Helm chart, this change causes deployed resources (such as the Deployment, Service, and Ingress) to be named <code>rancher-rancher-prime</code> by default, rather than the legacy <code>rancher</code> name.</p>
+<p>In Rancher Prime v2.13.1, the Helm chart name was initially released as <code>rancher-prime</code> instead of <code>rancher</code>. Due to the internal logic of the Helm chart, this change caused deployed resources (such as the Deployment, Service, and Ingress) to be named <code>rancher-rancher-prime</code> by default, rather than the legacy <code>rancher</code> name.</p>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>This behavior is driven by the <code>rancher.fullname</code> logic within the <a href="https://github.com/rancher/rancher/blob/v2.13.1/chart/templates/_helpers.tpl#L36-L47">Rancher Helm chart</a>.</p>
 <ul>
 <li><strong>Previous Versions:</strong> Both the <strong>Release Name</strong> (<code>rancher</code>) and the <strong>Chart Name</strong> (<code>rancher</code>) matched. The <code>rancher.fullname</code> template simplifies the name to just <code>rancher</code> when these two strings are identical.</li>
-<li><strong>v2.13.1:</strong> The <strong>Release Name</strong> (<code>rancher</code>) no longer matches the new <strong>Chart Name</strong> (<code>rancher-prime</code>), the template concatenates them, resulting in <code>rancher-rancher-prime</code>.</li>
+<li><strong>v2.13.1:</strong> In the initial Helm chart, the <strong>Release Name</strong> (<code>rancher</code>) no longer matched the new <strong>Chart Name</strong> (<code>rancher-prime</code>), the template concatenated them, resulting in <code>rancher-rancher-prime</code>.</li>
 </ul>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>To maintain the legacy naming convention (<code>rancher</code>) and avoid resource name changes during an upgrade, you can explicitly set a <code>nameOverride</code> in your Helm command or <code>values.yaml</code> file.</p>
-<p><strong>Option 1: Via Helm CLI</strong> Add the following flag to your <code>helm upgrade</code> command:</p>
-<div class="highlight"><pre><span></span><code>--set nameOverride=rancher
-</code></pre></div>
-<p><strong>Option 2: Via values.yaml</strong> Add the following line to your configuration file:</p>
-<div class="highlight"><pre><span></span><code>nameOverride: rancher
-</code></pre></div>
+<p>To mitigate this behaviour, a Helm chart with the existing naming convention (<code>rancher)</code> was additionally released. This existing naming convention has also been maintained in v2.13.2.</p>
 
 
 

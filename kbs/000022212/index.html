@@ -25,7 +25,7 @@
     
     
       
-        <title>Cluster stuck in “Paused” State causing node registration failures - SUSE KBs</title>
+        <title>Cluster stuck in “Paused” state causing node registration failures - SUSE KBs</title>
       
     
     
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Cluster stuck in “Paused” State causing node registration failures
+              Cluster stuck in “Paused” state causing node registration failures
             
           </span>
         </div>
@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -1888,7 +1888,7 @@
   <span class="md-ellipsis">
     
   
-    How to enable container log rotation with k3s or containerd
+    How to customise container log rotation in an RKE2 or K3s cluster
   
 
     
@@ -4464,7 +4464,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How do I edit my cluster using RKE Templates?
+    How do I edit or upgrade clusters created via RKE Templates?
   
 
     
@@ -8777,34 +8777,6 @@
     
   
     rancher-logging: how to control fluentd logs flushing frequency
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000021045/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to set container log rotation with RKE2
   
 
     
@@ -14985,34 +14957,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000022161/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tigera-operator fails due to rancher-webhook denying access while upgrading the RKE2 cluster
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000022162/" class="md-nav__link">
         
   
@@ -15049,6 +14993,34 @@
     
   
     How to configure TLS ciphers for Kubernetes components in an RKE2/K3s cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022165/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolving SQLITE_BUSY Errors: database is locked (5)
   
 
     
@@ -15309,7 +15281,7 @@
   <span class="md-ellipsis">
     
   
-    Cluster stuck in “Paused” State causing node registration failures
+    Cluster stuck in “Paused” state causing node registration failures
   
 
     
@@ -15327,7 +15299,7 @@
   <span class="md-ellipsis">
     
   
-    Cluster stuck in “Paused” State causing node registration failures
+    Cluster stuck in “Paused” state causing node registration failures
   
 
     
@@ -15615,7 +15587,7 @@
   <span class="md-ellipsis">
     
   
-    Common issues and best practice while Supportability Review data collection
+    Common issues and best practices in the Supportability Review data collection
   
 
     
@@ -15835,10 +15807,13 @@
 
 
 
-<h1 id="cluster-stuck-in-paused-state-causing-node-registration-failures">Cluster stuck in “Paused” State causing node registration failures</h1>
+<h1 id="cluster-stuck-in-paused-state-causing-node-registration-failures">Cluster stuck in “Paused” state causing node registration failures</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Cluster-stuck-in-Paused-State-causing-node-registration-failures">000022212</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Rancher 2.x, RKE2 cluster</p>
+<ul>
+<li>Rancher v2.6+</li>
+<li>A Rancher-provisioned RKE2 or K3s cluster</li>
+</ul>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>In some scenarios, a cluster may enter a <strong>paused state</strong> due to failed or interrupted cluster operations. While the cluster is paused, newly added nodes are unable to complete registration.</p>
 <p>During this time, the node installation script may repeatedly log the following error:</p>
@@ -15850,14 +15825,14 @@
 <p>This behavior occurs because Rancher intentionally pauses the CAPI cluster during snapshot restore, cert rotation and encryption key rotation operations. Pausing the cluster prevents Cluster API (CAPI) from reconciling resources during a potentially unsafe state.</p>
 <p>If these operations <strong>fail or are interrupted</strong>, the cluster may remain paused and <strong>is not automatically unpaused</strong>. This is expected behavior by design, to avoid further reconciliation actions that could impact cluster stability.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>Unpause the CAPI cluster by setting the <code>.spec.paused</code> to <code>false</code> on the <code>clusters.cluster.x-k8s.io</code> object corresponding to the cluster.</p>
+<p>Unpause the Cluster API (CAPI) cluster by setting the <code>.spec.paused</code> to <code>false</code> on the <code>clusters.cluster.x-k8s.io</code> object corresponding to the cluster.</p>
 <p>Identify the CAPI cluster name</p>
 <div class="highlight"><pre><span></span><code>kubectl get clusters.cluster.x-k8s.io -n fleet-default
 </code></pre></div>
 <p>Edit the affected cluster</p>
 <div class="highlight"><pre><span></span><code>kubectl edit clusters.cluster.x-k8s.io &lt;cluster-name&gt; -n fleet-default
 </code></pre></div>
-<p>In the cluster Spec locate the field</p>
+<p>In the cluster spec locate the field</p>
 <div class="highlight"><pre><span></span><code>spec:
   paused: true
 </code></pre></div>
