@@ -3156,35 +3156,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -3260,43 +3254,59 @@ This article details how to enable the `use-forwarded-headers` option in the ing
 
 ## Article: 000020071.md
 
-# How to enable container log rotation with k3s or containerd
+# How to customise container log rotation in an RKE2 or K3s cluster
 
 **Article Number:** [000020071](https://support.scc.suse.com/s/kb/360051441431)
 
+## **Environment**
+
+A Rancher-provisioned or standalone RKE2 or K3s cluster
+
 ## **Situation**
 
-#### Task
+In RKE2 or K3s clusters, which utilize containerd via the Container Runtime Interface (CRI), the kubelet is responsible for managing the rotation of container logs.
 
-In a Kubernetes cluster running an alternative container runtime, such as containerd, instead of Docker, the kubelet manages container logs. The kubelet default values in relation to log rotation can be found in the upstream [kubelet | Kubernetes documentation](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/#:~:text=from%20this%20file.-,%2D%2Dcontainer%2Dlog%2Dmax%2Dfiles%20int32%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0Default%3A%205,Kubelet%27s%20%2D%2Dconfig%20flag.%20See%20kubelet%2Dconfig%2Dfile%20for%20more%20information.%29,-%2D%2Dcontainer%2Druntime%20string). These values can be adjusted by adding flags to the kubelet process.
+This log rotation is configured via [two kubelet options](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/#options):
 
-#### Pre-requisites
+- `--container-log-max-files` : "the maximum number of container log files that can be present for a container" (default: 5).
+- `--container-log-max-size` : "the maximum size (e.g. 10Mi) of container log file before it is rotated" (default: 10Mi).
 
-These steps have been validated for a k3s cluster using the default containerd runtime, in theory these same flags should work for any Kubernetes cluster which does not use Docker as the container runtime.
+In this default configuration, with a maximum of 5 log files of 10MiB each, each container can retain up to 50MiB of logs.
 
-#### Resolution
+## **Resolution**
 
-Two kubelet flags need to be added to configure log rotation, the flags will take effect only at start time.
+> **Note:** The examples below use 4 log files of 50MiB each (totaling ~200MiB per container). Please adjust these values to meet your specific retention and disk space requirements.
 
-In the case of k3s, passing the needed flags can be done a number of ways, the most common perhaps is with the `INSTALL_K3S_EXEC` environment variable when installing k3s as a service. These same flags can be added to a previous install command to update the service configuration of an existing install of k3s.
+**Standalone RKE2/K3s clusters**
 
-> **Note** When updating an existing k3s install, the following command will restart k3s.
+In standalone clusters, you must apply the configuration to the RKE2/K3s config file on every node in the cluster.
 
-```bash
-curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--kubelet-arg "container-log-max-files=4" --kubelet-arg "container-log-max-size=50Mi"" sh -
-```
+1. Configure the kubelet's `container-log-max-files` and `container-log-max-size` arguments in the the [RKE2](https://docs.rke2.io/install/configuration) or [K3s](https://docs.k3s.io/installation/configuration#configuration-file) configuration file (`/etc/rancher/rke2/config.yaml` or `/etc/rancher/k3s/config.yaml`) per the following example:
+   
+   ```markup
+   kubelet-arg:
+     - "container-log-max-files=4"
+     - "container-log-max-size=50Mi"
+   ```
+2. After updating the configuration file, you will need to restart the RKE2/K3s service to apply the changes:
+   
+   - On RKE2 server nodes: `systemctl restart rke2-server`
+   - On RKE2 worker nodes: `systemctl restart rke2-agent`
+   - On K3s server nodes: `systemctl restart k3s`
+   - On K3s worker nodes: `systemctl restart k3s-agent`
 
-However, flags can also be supplied to the k3s binary directly if a service is not being used. A restart of k3s is required, using the updated flags.
+**Rancher-provisioned RKE2/K3s cluster**
 
-```bash
-k3s server --kubelet-arg container-log-max-files=4 --kubelet-arg container-log-max-size=50Mi
-```
+In a Rancher-provisioned cluster, the configuration can be managed at the cluster-level within Rancher:
 
-> **Note** please adjust the values to suit your needs, for demonstration purposes the above commands used 4 log files of 50MB, allowing for 200MB of total space to be retained per container.
+1. Navigate to **Cluster Management** within the Rancher UI and click **Edit Config** for the relevant RKE2/K3s cluster
+2. Under **Cluster Configuration** click the **Advanced** tab
+3. Scroll down to **For all machines, use the Kubelet args:** in the section **Additional Kubelet Args**
+4. Click **Add Argument** and enter `container-log-max-files=4`
+5. Click **Add Argument** again and enter `container-log-max-size=50Mi`
+6. Click **Save** to apply the changes
 
-#### Further reading
-
-Please reference the [k3s](https://rancher.com/docs/k3s/latest/en/installation/install-options/server-config/#customized-flags-for-kubernetes-processes) and [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/) documentation pages to find more information on these flags.
+Rancher will perform a rolling update of the cluster nodes to apply the new kubelet arguments.
 
 
 
@@ -4000,9 +4010,11 @@ K3s 1.27+ (may apply to other versions)
 
 ## **Situation**
 
+> #### **Important: Ingress NGINX Deprecation** Per the [Kubernetes announcement](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/), Ingress NGINX is retired in March 2026. After this date, upstream will no longer provide security patches or bug fixes. Traefik is the default supported Ingress Controller bundled with K3s, and its use is recommended, rather than maintaining a custom Ingress NGINX installation.
+
 #### Task
 
-This knowledge base article will provide the directions for deploying NGINX instead of Traefik as your Kubernetes ingress controller on K3s. Please note that Traefik is the support ingress controller for K3s and NGINX is not officially supported by SUSE Rancher support.
+This knowledge base article will provide the directions for deploying NGINX instead of Traefik as your Kubernetes ingress controller on K3s. Please note that Traefik is the supported ingress controller for K3s and NGINX is not officially supported by SUSE Rancher support.
 
 #### Background
 
@@ -8787,34 +8799,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -9849,21 +9855,19 @@ In the example of a snapshot filename of `snapshot.zip` the correct name paramet
 
 ## **Environment**
 
-Rancher (All version)
+Rancher v2.x
 
 ## **Situation**
 
-#### Issue
+By default the [installation and upgrade documentation](https://ranchermanager.docs.rancher.com/pages-for-subheaders/installation-and-upgrade) references the installation of, or upgrade to, the most recently released latest or stable tagged version of Rancher. This article details how to install a specific version, both in a single node and high availability installation.
 
-By default the [installation and upgrade documentation](https://ranchermanager.docs.rancher.com/pages-for-subheaders/installation-and-upgrade) references the installation of, or upgrade to, the most recently released latest or stable tagged version of Rancher. This article details how to install a specific version, both in a single node and high availability installation.
+Please reference the [Rancher Upgrade Checklist](https://support.scc.suse.com/s/kb/360051866152), when planning upgrades, to ensure that a supported upgrade path is followed.
 
-For details on the difference between the latest and stable releases please see the documentation on ['Choosing a Version'](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/resources/choose-a-rancher-version) .
+> **N.B.** Rancher Prime users should install Rancher from the Prime repository. For other users, we would recommend that you only run product releases tagged “Stable” in your production and any other critical environments. Any product release with the “Latest” tag should only be used for testing the latest releases.
 
-*N.B. We strongly recommend you only run product releases tagged “Stable” in your production and any other business-critical environments. Any product release with the “Latest” tag should only be used for testing the latest releases."*
+## **Resolution**
 
-#### Resolution
-
-##### Single Node Install
+**Single Node Docker Install**
 
 To [install](https://ranchermanager.docs.rancher.com/pages-for-subheaders/rancher-on-a-single-node-with-docker) or [upgrade](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher) to a specific Rancher version in a single node install, you can specify the exact version number of the image to run, `rancher/rancher:vX.X.X`, i.e.:
 
@@ -9871,10 +9875,10 @@ To [install](https://ranchermanager.docs.rancher.com/pages-for-subheaders/ranche
 docker run -d --restart=unless-stopped \
   -p 80:80 -p 443:443 \
   --privileged \
-  rancher/rancher:latest  or rancher/rancher:v2.7.0
+  rancher/rancher:latest  or rancher/rancher:v2.13.2
 ```
 
-##### High Availability (HA) Install
+**High Availability (HA) Install**
 
 To [install](https://ranchermanager.docs.rancher.com/pages-for-subheaders/install-upgrade-on-a-kubernetes-cluster) or [upgrade](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades) to a specific version in a High Availability install, you can specify the `--version X.X.X` parameter when running the `helm install` or `helm upgrade` command, i.e.:
 
@@ -9883,7 +9887,7 @@ helm install rancher rancher-<CHART_REPO>/rancher \
   --namespace cattle-system \
   --set hostname=rancher.my.org \
   --set bootstrapPassword=admin \
-  --version 2.7.0
+  --version 2.13.2
 ```
 
 
@@ -15673,36 +15677,6 @@ The two parameters are to be specified at the output/clusteroutput level to mana
       timekey_wait 1m
     </buffer>
 ```
-
-
-
----
-
-## Article: 000021045.md
-
-# How to set container log rotation with RKE2
-
-**Article Number:** [000021045](https://support.scc.suse.com/s/kb/How-to-set-container-log-rotation-with-RKE2)
-
-## **Environment**
-
-Container Log rotation with RKE2
-
-## **Situation**
-
-In a Kubernetes cluster running an alternative container runtime, such as containerd, instead of Docker, the kubelet manages container logs. The kubelet default values in relation to log rotation can be found in the upstream [kubelet | Kubernetes documentation](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/#:~:text=from%20this%20file.-,%2D%2Dcontainer%2Dlog%2Dmax%2Dfiles%20int32%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0Default%3A%205,Kubelet%27s%20%2D%2Dconfig%20flag.%20See%20kubelet%2Dconfig%2Dfile%20for%20more%20information.%29,-%2D%2Dcontainer%2Druntime%20string). These values can be adjusted by adding options to the kubelet process.
-
-## **Resolution**
-
-Two kubelet options need to be added to RKE2 config file, /etc/rancher/rke2/config.yaml
-
-```
-kubelet-arg:                               
-  - "container-log-max-files=5"            
-  - "container-log-max-size=10Mi" 
-```
-
-**Note** please adjust the values to suit your needs, for demonstration purposes the above commands used 5 log files of 10MB, allowing for 50MB of total space to be retained per container.
 
 
 
@@ -29827,79 +29801,6 @@ Restart the policy server after applying the `ignoreDifferences` configuration 
 
 ---
 
-## Article: 000022161.md
-
-# Tigera-operator fails due to rancher-webhook denying access while upgrading the RKE2 cluster
-
-**Article Number:** [000022161](https://support.scc.suse.com/s/kb/Tigera-operator-fails-due-to-rancher-webhook-denying-access-while-upgrading-the-RKE2-cluster)
-
-## **Environment**
-
-SUSE Rancher: v2.10.5
-
-RKE2 v1.31.7
-
-PSA is enabled on the downstream cluster
-
-## **Situation**
-
-During an RKE2 cluster upgrade from version 1.30.7 to 1.31.11, one of the four downstream clusters becomes stuck with the message 'Waiting for cluster agent to connect'. The cluster-agent fails to resolve the Rancher URL because the calico-kube-controller deployment fails. pod fails to start due to a hostname resolution issue, which is caused by rke2-coredns failing to start with a Calico error. This leads to the deployment failing with the error message 'cannot find a qualified ippool'.
-
-## **Cause**
-
-- This issue is caused by a known bug mentioned [here](https://github.com/rancher/rancher/issues/41191).
-- This seems to be because of a  deadlock where the rancher-webhook pod fails to start due to its inability to create a Calico sandbox, while Calico cannot be installed without the rancher-webhook. A potential race condition or timeout during the upgrade process, possibly related to the PSA template, may also contribute to the issue. The validating webhook blocks the creation of namespaces, leading to the 'cannot find a qualified ippool' error.
-
-## **Resolution**
-
-- The downstream cluster is RKE2 v1.31.7 with PSA(Pod Security Admission) enabled.
-- The calico-kube-controller pod fails with the following error:
-
-```
-cannot find a qualified ippool
-```
-
-- While investigating further, it was found that tigera-operator was failing because rancher-webhook denied access:
-
-```
-Error creating resource : admission webhook rancher.cattel.io.namespace.create-non-kubesystem denied the request : Unauthorized
-```
-
-- The workaround below can be applied to fix the issue temporarily:
-
-```
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: tigera-operator-psa
-rules:
-- apiGroups:
-  - management.cattle.io
-  resources:
-  - projects
-  verbs:
-  - updatepsa
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: tigera-operator-psa
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: tigera-operator-psa
-subjects:
-- kind: ServiceAccount
-  name: tigera-operator
-  namespace: tigera-operator
-```
-
-- Verify that tigera-operator starts immediately and calico-kube-controller deployment rolls out successfully. The cluster-agent also connects, and the cluster becomes active.
-
-
-
----
-
 ## Article: 000022162.md
 
 # How to upgrade longhorn installed with helm controller in air-gapped cluster
@@ -30180,6 +30081,60 @@ It is possible to customise the TLS 1.0 - 1.2 cipher suites that are used by the
    ```
    nmap --script ssl-enum-ciphers -p 
    ```
+
+
+
+---
+
+## Article: 000022165.md
+
+# Resolving SQLITE_BUSY Errors: database is locked (5)
+
+**Article Number:** [000022165](https://support.scc.suse.com/s/kb/Resolving-SQLITE-BUSY-Errors-database-is-locked-5)
+
+## **Environment**
+
+SUSE Rancher v2.12.1-v2.12.5
+
+## **Situation**
+
+For Rancher v2.12.1-v2.12.5, users may experience login failures and a persistent "spinning" state in the Rancher user interface (UI).
+
+Further investigation into the logs of the ***rancher*** or ***cattle-cluster-agent*** pods will reveal recurring SQLite database contention errors similar to the following: 
+
+```markup
+2025/11/04 04:29:39 [ERROR] Error in Store.Add for type _v1_Secret: transaction: begin tx: database is locked (5) (SQLITE_BUSY)
+```
+
+This  **`SQLITE_BUSY` (5) error** indicates that write operations to the internal SQLite database are timing out due to excessive lock contention which causes the UI and API instability.
+
+## **Cause**
+
+This issue was caused by a race condition leading to blocking, as detailed in Rancher [GitHub Issue #52519](https://github.com/rancher/rancher/issues/52519).
+
+## **Resolution**
+
+**Temporary Workaround:**
+
+The issue can be temporarily mitigated by restarting the affected components: 
+
+1. Restart the cattle-cluster-agent Deployment in the affected downstream cluster(s):
+   
+   ```markup
+   kubectl rollout restart deploy cattle-cluster-agent -n cattle-system
+   ```
+2. Restart the Rancher Deployment in the local cluster:
+   
+   ```markup
+   kubectl rollout restart deploy/rancher -n cattle-system
+   ```
+
+**Permanent Fix:**
+
+Teams experiencing this issue should upgrade to one of the following versions, or higher, which include the fix:
+
+- **Rancher v2.13.1**
+- **Rancher v2.12.6**
 
 
 
@@ -30858,9 +30813,8 @@ To disable the SSH Shell feature for RKE2 cluster nodes in Rancher, follow these
 
 ## **Environment**
 
-Rancher Prime
-
-Kubernetes 1.23+
+- Rancher Prime
+- Kubernetes 1.23+
 
 ## **Situation**
 
@@ -30880,32 +30834,29 @@ Rancher's cluster cache in newer versions watches for autoscaling/v2 resources, 
 
 ### Temporary workaround
 
-- Edit the `app.catalog.cattle.io` object and set `apiVersion` for the HPA under `spec.resources` to `autoscaling/v2`:
-
-```
-kubectl edit app.catalog.cattle.io <app-name> -n <namespace>
-```
-
-- Locate the `spec.resources` section. Find the entry corresponding to the HorizontalPodAutoscaler
-
-```
-- apiVersion: autoscaling/v1
-  kind: HorizontalPodAutoscaler
-  name: <hpa-name>
-  namespace: <namespace>
-```
-
-- Change the `apiVersion` to `autoscaling/v2`
-
-```
-- apiVersion: autoscaling/v2  # Updated from v1
-  kind: HorizontalPodAutoscaler
-  name: <hpa-name>
-  namespace: <namespace>
-```
-
-- Save and exit the editor
-- Refresh the Rancher UI
+1. Edit the `app.catalog.cattle.io` object and set `apiVersion` for the HPA under `spec.resources` to `autoscaling/v2`:
+   
+   ```
+   kubectl edit app.catalog.cattle.io <app-name> -n <namespace>
+   ```
+2. Locate the `spec.resources` section. Find the entry corresponding to the HorizontalPodAutoscaler
+   
+   ```
+   - apiVersion: autoscaling/v1
+     kind: HorizontalPodAutoscaler
+     name: <hpa-name>
+     namespace: <namespace>
+   ```
+3. Change the `apiVersion` to `autoscaling/v2`
+   
+   ```
+   - apiVersion: autoscaling/v2  # Updated from v1
+     kind: HorizontalPodAutoscaler
+     name: <hpa-name>
+     namespace: <namespace>
+   ```
+4. Save and exit the editor
+5. Refresh the Rancher UI
 
  The HPA should now transition to an "Active" state in the **Apps** view.
 
@@ -30915,11 +30866,9 @@ kubectl edit app.catalog.cattle.io <app-name> -n <namespace>
 
 The underlying Helm chart must be updated by the chart maintainer.
 
-Update the Helm chart templates to use `autoscaling/v2` for HorizontalPodAutoscaler resources.
-
-Publish the updated chart.
-
-Upgrade the App in Rancher using the new chart version, this ensures the `app.catalog.cattle.io` resource is created with the correct `v2` metadata automatically.
+1. Update the Helm chart templates to use `autoscaling/v2` for HorizontalPodAutoscaler resources.
+2. Publish the updated chart.
+3. Upgrade the App in Rancher using the new chart version, this ensures the `app.catalog.cattle.io` resource is created with the correct `v2` metadata automatically.
 
 
 
@@ -30927,13 +30876,14 @@ Upgrade the App in Rancher using the new chart version, this ensures the `app.ca
 
 ## Article: 000022212.md
 
-# Cluster stuck in “Paused” State causing node registration failures
+# Cluster stuck in “Paused” state causing node registration failures
 
 **Article Number:** [000022212](https://support.scc.suse.com/s/kb/Cluster-stuck-in-Paused-State-causing-node-registration-failures)
 
 ## **Environment**
 
-Rancher 2.x, RKE2 cluster
+- Rancher v2.6+
+- A Rancher-provisioned RKE2 or K3s cluster
 
 ## **Situation**
 
@@ -30941,12 +30891,9 @@ In some scenarios, a cluster may enter a **paused state** due to failed or inter
 
 During this time, the node installation script may repeatedly log the following error:
 
- 
-
 ```
 [ERROR] 000 received while downloading Rancher connection information.
     Sleeping for 5 seconds and trying again
-    
 ```
 
 As a result, nodes remain stuck during provisioning and the cluster does not progress.
@@ -30959,7 +30906,7 @@ If these operations **fail or are interrupted**, the cluster may remain paused a
 
 ## **Resolution**
 
-Unpause the CAPI cluster by setting the `.spec.paused` to `false` on the `clusters.cluster.x-k8s.io` object corresponding to the cluster.
+Unpause the Cluster API (CAPI) cluster by setting the `.spec.paused` to `false` on the `clusters.cluster.x-k8s.io` object corresponding to the cluster.
 
 Identify the CAPI cluster name
 
@@ -30973,7 +30920,7 @@ Edit the affected cluster
 kubectl edit clusters.cluster.x-k8s.io <cluster-name> -n fleet-default
 ```
 
-In the cluster Spec locate the field
+In the cluster spec locate the field
 
 ```markup
 spec:
@@ -31161,30 +31108,18 @@ The node replacement operation completes as expected.
 
 ## **Situation**
 
-Starting with Rancher Prime v2.13.1, the Helm chart name has been updated from `rancher` to `rancher-prime`. Due to the internal logic of the Helm chart, this change causes deployed resources (such as the Deployment, Service, and Ingress) to be named `rancher-rancher-prime` by default, rather than the legacy `rancher` name.
+In Rancher Prime v2.13.1, the Helm chart name was initially released as `rancher-prime` instead of `rancher`. Due to the internal logic of the Helm chart, this change caused deployed resources (such as the Deployment, Service, and Ingress) to be named `rancher-rancher-prime` by default, rather than the legacy `rancher` name.
 
 ## **Cause**
 
 This behavior is driven by the `rancher.fullname` logic within the [Rancher Helm chart](https://github.com/rancher/rancher/blob/v2.13.1/chart/templates/_helpers.tpl#L36-L47).
 
 - **Previous Versions:** Both the **Release Name** (`rancher`) and the **Chart Name** (`rancher`) matched. The `rancher.fullname` template simplifies the name to just `rancher` when these two strings are identical.
-- **v2.13.1:** The **Release Name** (`rancher`) no longer matches the new **Chart Name** (`rancher-prime`), the template concatenates them, resulting in `rancher-rancher-prime`.
+- **v2.13.1:** In the initial Helm chart, the **Release Name** (`rancher`) no longer matched the new **Chart Name** (`rancher-prime`), the template concatenated them, resulting in `rancher-rancher-prime`.
 
 ## **Resolution**
 
-To maintain the legacy naming convention (`rancher`) and avoid resource name changes during an upgrade, you can explicitly set a `nameOverride` in your Helm command or `values.yaml` file.
-
-**Option 1: Via Helm CLI** Add the following flag to your `helm upgrade` command:
-
-```markup
---set nameOverride=rancher
-```
-
-**Option 2: Via values.yaml** Add the following line to your configuration file:
-
-```markup
-nameOverride: rancher
-```
+To mitigate this behaviour, a Helm chart with the existing naming convention (`rancher)` was additionally released. This existing naming convention has also been maintained in v2.13.2.
 
 
 
@@ -31308,34 +31243,31 @@ To identify and silence the source of these errors, you can investigate the orig
 
 ## Article: 000022303.md
 
-# Common issues and best practice while Supportability Review data collection
+# Common issues and best practices in the Supportability Review data collection
 
 **Article Number:** [000022303](https://support.scc.suse.com/s/kb/Common-issues-and-best-practice-while-Supportability-Review-data-collection)
 
 ## **Environment**
 
-- SUSE Rancher 2.x
+- SUSE Rancher v2.11+
 - Supportability Review App
 
 ## **Situation**
 
-- Supportability Reviews are remote engagements in which a SUSE Technical Specialist reviews your Rancher deployment for a supportable system configuration and compliance with current recommended practices, and highlights any potential operational or supportability concerns. It mainly involves Data collection and Data analysis.
+- Supportability Reviews (SR) are remote engagements in which a SUSE Technical Specialist reviews your Rancher deployment for a supportable system configuration and compliance with current recommended practices, highlighting any potential operational or supportability concerns. It involves two primary steps: data collection and data analysis.
 - Below are a few common issues and best practices while collecting data with the Supportability Review App.
 
 ## **Resolution**
 
-**A) Security policy issues :**
+**A) Security policy issues:**
 
-   
 If your clusters use any security tools, review the required configurations:
 
 1. **Pod Security Admission/Policies**
    
    - Sonobuoy pods require privileged access
    - Collection pods need access to node information.
-   - If SR data collections fail due to the PSA error below, then exempt '**sr-operator-system**' and '**sonobouy**' namespace from the cluster. See the document [here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/psa-config-templates#exempting-namespaces) for more information on exempting the namespace. 
-     
-      
+   - If SR data collections fail due to the PSA error below, then exempt '**sr-operator-system**' and '**sonobouy**' namespace from the cluster. See the document [here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/psa-config-templates#exempting-namespaces) for more information on exempting the namespace.
      
      ```
      warnings.go:70] would violate PodSecurity "restricted:v1.31": allowPrivilegeEscalation != false (container "kube-sonobuoy" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "kube-sonobuoy" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "kube-sonobuoy" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "kube-sonobuoy" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
@@ -31361,15 +31293,13 @@ If your clusters use any security tools, review the required configurations:
    - Verify allowed registries in your security policies
    - Configure image pull secrets if required
 
-**B) Permission issues :**
-
- 
+**B) Permission issues:**
 
 1. **Rancher Access**
    
    - Bearer token must be generated by cluster owner (not a member)
    - Token requires full access to target clusters
-   - Token should not be scoped and have full access
+   - Token should not be cluster-scoped, instead having full access
    - [How to generate a token](https://ranchermanager.docs.rancher.com/reference-guides/user-settings/api-keys#docusaurus_skipToContent_fallback)
 2. **Script Requirements**
    
@@ -31378,57 +31308,32 @@ If your clusters use any security tools, review the required configurations:
 3. **Downstream Clusters must be Active**
    
    - Please ensure that your downstream clusters are listed as Active in Rancher
-   - Any cluster in updating or not active will NOT be collected for review
+   - Any cluster in an Updating state or not active will NOT have data collected for review
 4. **SELinux**
    
    - Please use `export ENABLE_PRIVILEGED="true"`, if SELinux is enabled.
 
-**C) Common Error messages :**
+**C) Common Error messages:**
 
-[](https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/supportability-review#troubleshooting-common-issues)
-
-1. **Permission Issues**
+1. **Permission Issues** 
    
-   ```
+   ```markup
    Error: pods is forbidden: User cannot list resource "pods"
-   Solution: Ensure bearer token is generated by cluster owner, not member
+   Solution: Ensure bearer token is generated by a cluster owner, not member
    ```
-2. [](https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/supportability-review#1-permission-issues)**Cluster Access Issues**
+2. **Cluster Access Issues** 
    
-   ```
+   ```markup
    Info: No of clusters detected: X (less than expected)
    Solution: Check if bearer token has access to all intended clusters
    ```
-3. **Node Tolerations:** If the collection fails due to node taints, apply the toleration below :
-   
-   ```
-   
-   ```
-   
-   ```
-   
-   ```
+3. **Node Tolerations**  
+   If the collection fails due to node taints, apply the toleration below:
    
    ```
         tolerations:
           - operator: Exists  # This will ignore all taints
    ```
-   
-   ```
-   
-   ```
-
-```
-
-```
-
-```
-
-```
-
-```
-
-```
 
 
 
@@ -31527,27 +31432,27 @@ After the Rancher upgrade, you can revert this change, to set **Drain Nodes** ba
 
 ## **Environment**
 
-- Rancher 2.x
-- RKE2 VMWare Vsphere cluster
+- Rancher v2.6+
+- Rancher-provisioned RKE2 cluster, with the vSphere Cloud Provider (vSphere CPI/CSI)
 
 ## **Situation**
 
-- Attempting to add a Windows worker node to a cluster. The control plane and Linux worker nodes are already configured. The Windows node appears as added and active in the Cluster Nodes view but remains in a 'Waiting for Node Ref' state in Rancher. The node is otherwise functional in the cluster.
-- Seeing error below in the vsphere-cpi-cloud-controller-manager pod while registering node to cluster :
-
-```
-Unable to find VM by DNS Name. VM DNS Name: mynodename
-Error while looking for vm=mynodename(byName) in vc=vck8s01  and datacenter=vck8sDatacenter: No VM found
-Did not find node mynodename in vc=vck8s01  and datacenter=vck8sDatacenter
-```
+- Attempting to add a Windows worker node to a cluster, with the Linux control plane and worker nodes already configured. The Windows node appears as added and active in the Cluster Nodes view but remains in a 'Waiting for Node Ref' state within Rancher Cluster Management. The node is otherwise functional in the cluster.
+- An error of the format below is seen in the logs of the vsphere-cpi-cloud-controller-manager Pod, in the affected cluster, while registering the new Windows worker node:
+  
+  ```
+  Unable to find VM by DNS Name. VM DNS Name: mynodename
+  Error while looking for vm=mynodename(byName) in vc=vck8s01  and datacenter=vck8sDatacenter: No VM found
+  Did not find node mynodename in vc=vck8s01  and datacenter=vck8sDatacenter
+  ```
 
 ## **Cause**
 
-- The Windows worker nodes were not using the FQDN, causing a VM not found error. This prevented the nodes from registering correctly with the cluster.
+The Windows worker nodes were not using the FQDN, causing a VM not found error. This prevented the nodes from registering correctly with the cluster.
 
 ## **Resolution**
 
-- Confirm whether the node name in Kubernetes matches the FQDN of the VM in vCenter reported by VMware tools, including the domain. If it's not, as a workaround, add the FQDN to the NodeName in the Rancher UI by navigating to Cluster Management -&gt; \[relevant cluster] &gt; Registration -&gt; Step2 (Advanced). This ensures the nodes register with the cluster successfully and become active.
+Confirm whether the node name in Kubernetes matches the FQDN of the VM in vCenter, as reported by VMware tools, including the domain. If it is not, as a workaround, add the FQDN to the NodeName in the Rancher UI by navigating to Cluster Management -&gt; \[relevant cluster] &gt; Registration -&gt; Step2 (Advanced). This ensures the nodes register with the cluster successfully and become active.
 
-![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000001833N&feoid=00N1i000002LdMN&refid=0EMTr00000JS8Kf)
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000184ST&feoid=00N1i000002LdMN&refid=0EMTr00000JS8Kf)
 
