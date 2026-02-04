@@ -7198,13 +7198,11 @@ Documentation on the Rancher cluster monitoring [can be found here](https://ranc
 
 ## **Environment**
 
-Rancher 2.x
+Rancher v2.x
 
 ## **Situation**
 
-#### Issue
-
-When investigating a connectivity issue, you may experience errors like the below in the system logs:
+#### When investigating a connectivity issue, you may experience errors like the below in the system logs:
 
 ```plaintext
 nf_conntrack: table full, dropping packets
@@ -7216,7 +7214,7 @@ The conntrack table keeps state on open connections that the kernel is translati
 
 ## **Resolution**
 
-#### Investigation
+**Checking the current configuration**
 
 By default, the table size is [calculated based on the memory](https://www.kernel.org/doc/Documentation/networking/nf_conntrack-sysctl.txt) allocated to the node. This does not fit all workloads demands, for example in a microservice environment typically a higher number of inter-service connections could be expected without consuming a high amount of memory.
 
@@ -7238,7 +7236,7 @@ If the `nf_conntrack_count` and `nf_conntrack_max` are close, it is indicating t
 
 If the current number of entries are not approaching the table size, this could indicate that a burst of workload was experienced historically, in a containerized environment this can be common. For example, if the high-traffic Pods may now running on different nodes.
 
-#### Resolution
+**Increasing the conntrack table size**
 
 Increasing the conntrack table size is achieved with `sysctl`.
 
@@ -7781,56 +7779,36 @@ For clusters managed by RKE v1.0.0 and above, you can set the `generate_serving_
 
 ## **Environment**
 
-RKE1   
+RKE1  
 RKE2  
-K3S
+K3s
 
 ## **Situation**
 
-At times a node may need to be cleaned of Kubernetes components for troubleshooting purposes or to reuse the node in another cluster. This article covers the process to remove all Kubernetes components from **RKE/RKE2/K3S** nodes
+At times a node may need to be cleaned of Kubernetes components for troubleshooting purposes or to reuse the node in another cluster. This article covers the process to remove all Kubernetes components from **RKE1, RKE2 or K3s** nodes
 
-> Please note, these steps will delete all containers, volumes, CNI network interfaces, and directories that relate to Rancher and Kubernetes. They can also optionally flush all iptables rules and delete container images. It is important to perform pre-checks, and backup the node as needed before proceeding with any steps below.
+> Please note, these steps will delete all containers, volumes, CNI network interfaces, and directories that relate to Rancher and Kubernetes. They can also flush all iptables rules and delete container images. It is important to perform pre-checks, and backup the node as needed before proceeding with any steps below.
 
-#### **Prerequisite**
+#### **Prerequisites**
 
-- A node provisioned with the RKE/RKE2/K3S distribution.
+- A node previously provisioned in an RKE1, RKE2 or K3s cluster.
 - The node should no longer be a member of the Kubernetes cluster.
-- For RKE1,  [the cleanup script](https://github.com/rancherlabs/support-tools/raw/master/extended-rancher-2-cleanup/extended-cleanup-rancher2.sh) is required to be run and it is essential to correctly stop RKE1 services and remove all cluster-related containers, files, and network settings from the node
-- Root/ Sudo access privileges are required to modify system services, directories, and network settings that are part of the cluster's core configuration.
-- Ensure no critical workloads are still running in Kubernetes on the node; these will be forcefully deleted in the following steps.
+- root/sudo privileges are required to run the cleanup scripts, which modify system services, directories, and network settings.
+- Ensure no critical Kubernetes workloads or data are still present on the node; these will be forcefully deleted in the following steps.
 
 ## **Resolution**
 
+**RKE2**
+
+Refer to the [RKE2 clean up](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/clean-cluster-nodes?k8s-distro=RKE2#cleaning-up-nodes "RKE2 clean up") documentation for the required steps.
+
+**K3s**
+
+Refer to the [K3s clean up](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/clean-cluster-nodes?k8s-distro=K3s#cleaning-up-nodes) documentation for the required steps.
+
 **RKE1**
 
-The steps below use a script to automate the cleaning of a node; the commands used can be run manually as needed. Follow the steps below to clean a node that has been used previously in a cluster.
-
-- Log in to the node and download the cleanup script:
-  
-  ```markup
-  curl -sLO https://github.com/rancherlabs/support-tools/raw/master/extended-rancher-2-cleanup/extended-cleanup-rancher2.sh
-  ```
-
-You should now have a copy of the script in the current directory.
-
-- Run the script:
-  
-  ```markup
-  sudo bash extended-cleanup-rancher2.sh
-  ```
-- If desired, the optional -f and -i flags can be used together or individually to flush iptables (-f) and delete container images (-i)
-  
-  ```markup
-  sudo bash extended-cleanup-rancher2.sh -f -i
-  ```
-- Restart the node
-
-The node is now in a clean, consistent state to be reused in a cluster.
-
-Please refer to the following documents for similar processes for **RKE2/K3S.**
-
-- [RKE2 clean up](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/clean-cluster-nodes?k8s-distro=RKE2#cleaning-up-nodes "RKE2 clean up")
-- [K3S Clean up](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/clean-cluster-nodes?k8s-distro=K3s#cleaning-up-nodes)
+Use the [Extended Rancher 2 Cleanup script](https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup) to clean an RKE1 node, and reboot the host.
 
 
 
@@ -8993,59 +8971,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -31419,6 +31405,116 @@ To avoid node driver clusters from draining - which will cause temporary workloa
 ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000182or&feoid=00N1i000002LdMN&refid=0EMTr00000JQoXh)
 
 After the Rancher upgrade, you can revert this change, to set **Drain Nodes** back to **Yes.**
+
+
+
+---
+
+## Article: 000022314.md
+
+# How to configure the rancher-backup operator to perform a Backup and Restore using local storage
+
+**Article Number:** [000022314](https://support.scc.suse.com/s/kb/How-to-configure-the-Rancher-backup-operator-to-perform-a-Backup-and-Restore-using-local-storage)
+
+## **Environment**
+
+Rancher v2.5+
+
+## **Procedure**
+
+The recommended method to [**configure the** r**ancher-backup operator**](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery) is to use **S3 storage**. This article explains how to use **local storage** only when S3 is not available, such as for Rancher migration between clusters or disaster recovery when the new cluster cannot access the original S3 backups.
+
+> **Important:** This setup is **not recommended for production use**. In production, backups should be stored in a persistent external location (such as S3) to ensure they are available externally in the event of a complete cluster failure.
+
+**Backup Steps**
+
+1. Create a hostPath PV in the Rancher local cluster using your desired local path (/backup in this example). The backup will be written only to the node running the **rancher-backup** pod at the time.
+   
+   ```markup
+   apiVersion: v1
+   kind: PersistentVolume
+   metadata:
+     name: pv-rancher-backup
+   spec:
+     accessModes:
+       - ReadWriteOnce
+     capacity:
+       storage: 3Gi
+     hostPath:
+       path: /backup
+     persistentVolumeReclaimPolicy: Retain
+   ```
+2. Install the Rancher-backup operator, per the [Rancher documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher#1-install-the-rancher-backup-operator). During installation, choose "**Use an existing persistent volume**" and select the PV created above in Step 1 as the default storage location.
+3. Create a backup using the Rancher UI, per the [rancher-backup operator documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher#2-perform-a-backup). Set the following options for the backup:
+   
+   - Schedule: One-Time Backup
+   - Resource Set: Full Rancher backup resource set
+   - Storage Location: Use the default storage location configured during installation.
+   - Encryption: Store the contents of the backup unencrypted (or you can optionally configure encryption for the backup file as detailed in [the documentation](https://ranchermanager.docs.rancher.com/reference-guides/backup-restore-configuration/backup-configuration#encryption))
+   
+   > Note: You might face the following error during the backup creation.
+   > 
+   > ```markup
+   > Error creating backup tar gzip file: open /var/lib/backups/test-backup-3a869826-b3f6-4290-a083-78b801198d26-2026-01-22T09-45-33Z.tar.gz: permission denied
+   > ```
+   > 
+   > This error is due to a permission issue on the hostPath volume. The **rancher-backup** pod runs as UID 1000, so ensure the host directory (for example, `/backup`) is owned by UID 1000.
+4. When the backup shows as completed, you can copy the backup file from the host path (e.g. /backup) directory on the node running the rancher-backup Pod.
+
+**Restore Steps**
+
+1. Copy your backup file onto all the nodes in the new cluster. This is to ensure that the backup-operator can find the file no matter where it is scheduled.
+2. Create a hostPath PV that mounts the directory where you copied your backup (/migration-backup in this example):
+   
+   ```
+   apiVersion: v1
+   kind: PersistentVolume
+   metadata:
+     name: migration
+   spec:
+     accessModes:
+     - ReadWriteOnce
+     capacity:
+       storage: 10Gi
+     hostPath:
+       path: /migration-backup
+       type: ""
+     persistentVolumeReclaimPolicy: Retain
+     volumeMode: Filesystem
+   ```
+3. Proceed with installing the Rancher Backup CRDs and charts by following section **1. Install the rancher-backup Helm chart** from the [rancher-backup operator documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/migrate-rancher-to-new-cluster#1-install-the-rancher-backup-helm-chart). Please note that in step **3. Install the charts**, when installing the rancher-backup chart, you should edit the command to set the values persistence.enabled=true and persistence.volumeName=migration (adjusting the volumeName to match the PV created above in step 2.). For example:
+   
+   ```
+   helm install rancher-backup rancher-charts/rancher-backup -n cattle-resources-system --version $CHART_VERSION --set persistence.enabled=true --set persistence.volumeName=migration
+   ```
+4. Confirm that the backup operator successfully mounted the hostPath PV and your backup is present
+   
+   ```
+   kubectl -n cattle-resources-system exec deploy/rancher-backup   -- ls /var/lib/backups 
+   ```
+5. Create a Restore object. Update backupFilename to the name of the backup file copied in step 1. If the backup file is encrypted you will need to [create the encryption secret](https://ranchermanager.docs.rancher.com/reference-guides/backup-restore-configuration/backup-configuration#encryption) in the cluster first and reference this in the encryptionConfigSecretName field of the Restore manifest spec.
+   
+   ```
+   # restore-migration.yaml
+   apiVersion: resources.cattle.io/v1
+   kind: Restore
+   metadata:
+     name: restore-migration
+   spec:
+     backupFilename: migration-adb5ba4a-ace3-4e53-878b-895170c9615c-2023-08-02T19-43-26Z.tar.gz
+     prune: false
+   ```
+6. Apply the Restore object:
+   
+   ```
+   kubectl apply -f restore-migration.yaml
+   ```
+7. Watch the restoration logs:
+   
+   ```
+   kubectl logs -n cattle-resources-system --tail 100 -f -l app.kubernetes.io/instance=rancher-backup
+   ```
+8. Continue with section **3. Install cert-manager** onwards of the the [rancher-backup operator migration documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/migrate-rancher-to-new-cluster#3-install-cert-manager).
 
 
 
