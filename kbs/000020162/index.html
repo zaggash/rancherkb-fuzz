@@ -4204,10 +4204,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prerequisite" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prerequisite
+        Prerequisites
       
     </span>
   </a>
@@ -4701,7 +4701,7 @@
   <span class="md-ellipsis">
     
   
-    How to test websocket connections to Rancher v2.x
+    [JP] How to test websocket connections to Rancher v2.x
   
 
     
@@ -15698,6 +15698,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../000022314/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to configure the rancher-backup operator to perform a Backup and Restore using local storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000022315/" class="md-nav__link">
         
   
@@ -15776,10 +15804,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prerequisite" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prerequisite
+        Prerequisites
       
     </span>
   </a>
@@ -15822,46 +15850,28 @@
 <h1 id="how-to-remove-all-kubernetes-components-from-nodes">How to remove all Kubernetes components from nodes</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360042000771">000020162</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>RKE1 <br />
+<p>RKE1<br />
 RKE2<br />
-K3S</p>
+K3s</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>At times a node may need to be cleaned of Kubernetes components for troubleshooting purposes or to reuse the node in another cluster. This article covers the process to remove all Kubernetes components from <strong>RKE/RKE2/K3S</strong> nodes</p>
+<p>At times a node may need to be cleaned of Kubernetes components for troubleshooting purposes or to reuse the node in another cluster. This article covers the process to remove all Kubernetes components from <strong>RKE1, RKE2 or K3s</strong> nodes</p>
 <blockquote>
-<p>Please note, these steps will delete all containers, volumes, CNI network interfaces, and directories that relate to Rancher and Kubernetes. They can also optionally flush all iptables rules and delete container images. It is important to perform pre-checks, and backup the node as needed before proceeding with any steps below.</p>
+<p>Please note, these steps will delete all containers, volumes, CNI network interfaces, and directories that relate to Rancher and Kubernetes. They can also flush all iptables rules and delete container images. It is important to perform pre-checks, and backup the node as needed before proceeding with any steps below.</p>
 </blockquote>
-<h4 id="prerequisite"><strong>Prerequisite</strong></h4>
+<h4 id="prerequisites"><strong>Prerequisites</strong></h4>
 <ul>
-<li>A node provisioned with the RKE/RKE2/K3S distribution.</li>
+<li>A node previously provisioned in an RKE1, RKE2 or K3s cluster.</li>
 <li>The node should no longer be a member of the Kubernetes cluster.</li>
-<li>For RKE1,  <a href="https://github.com/rancherlabs/support-tools/raw/master/extended-rancher-2-cleanup/extended-cleanup-rancher2.sh">the cleanup script</a> is required to be run and it is essential to correctly stop RKE1 services and remove all cluster-related containers, files, and network settings from the node</li>
-<li>Root/ Sudo access privileges are required to modify system services, directories, and network settings that are part of the cluster's core configuration.</li>
-<li>Ensure no critical workloads are still running in Kubernetes on the node; these will be forcefully deleted in the following steps.</li>
+<li>root/sudo privileges are required to run the cleanup scripts, which modify system services, directories, and network settings.</li>
+<li>Ensure no critical Kubernetes workloads or data are still present on the node; these will be forcefully deleted in the following steps.</li>
 </ul>
 <h2 id="resolution"><strong>Resolution</strong></h2>
+<p><strong>RKE2</strong></p>
+<p>Refer to the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/clean-cluster-nodes?k8s-distro=RKE2#cleaning-up-nodes" title="RKE2 clean up">RKE2 clean up</a> documentation for the required steps.</p>
+<p><strong>K3s</strong></p>
+<p>Refer to the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/clean-cluster-nodes?k8s-distro=K3s#cleaning-up-nodes">K3s clean up</a> documentation for the required steps.</p>
 <p><strong>RKE1</strong></p>
-<p>The steps below use a script to automate the cleaning of a node; the commands used can be run manually as needed. Follow the steps below to clean a node that has been used previously in a cluster.</p>
-<ul>
-<li>Log in to the node and download the cleanup script:</li>
-</ul>
-<div class="highlight"><pre><span></span><code>curl -sLO https://github.com/rancherlabs/support-tools/raw/master/extended-rancher-2-cleanup/extended-cleanup-rancher2.sh
-</code></pre></div>
-<p>You should now have a copy of the script in the current directory.</p>
-<ul>
-<li>Run the script:</li>
-</ul>
-<p><div class="highlight"><pre><span></span><code>sudo bash extended-cleanup-rancher2.sh
-</code></pre></div>
-- If desired, the optional -f and -i flags can be used together or individually to flush iptables (-f) and delete container images (-i)</p>
-<p><div class="highlight"><pre><span></span><code>sudo bash extended-cleanup-rancher2.sh -f -i
-</code></pre></div>
-- Restart the node</p>
-<p>The node is now in a clean, consistent state to be reused in a cluster.</p>
-<p>Please refer to the following documents for similar processes for <strong>RKE2/K3S.</strong></p>
-<ul>
-<li><a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/clean-cluster-nodes?k8s-distro=RKE2#cleaning-up-nodes" title="RKE2 clean up">RKE2 clean up</a></li>
-<li><a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/clean-cluster-nodes?k8s-distro=K3s#cleaning-up-nodes">K3S Clean up</a></li>
-</ul>
+<p>Use the <a href="https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup">Extended Rancher 2 Cleanup script</a> to clean an RKE1 node, and reboot the host.</p>
 
 
 
