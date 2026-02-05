@@ -31135,7 +31135,17 @@ E0114 15:07:32.031893      43 reflector.go:205] "Failed to watch" err="failed to
 
 ## **Resolution**
 
-Upgrading directly from v2.12.1 to v2.13.1 is against the recommended and supported upgrade path for Rancher. Rancher should be upgraded to the latest patch release of the currently running minor version, before upgrading to the latest patch release of the next minor version. At the time of writing, this means upgrading a SUSE Rancher Prime v2.12.1 instance to v2.12.5, before the upgrade to v2.13.1. With this supported upgrade path the issue is not encountered.
+Upgrading directly from v2.12.1 to v2.13.1 is against the recommended and supported upgrade path for Rancher. Rancher should be upgraded to the latest patch release of the currently running minor version, before upgrading to the latest patch release of the next minor version. At the time of writing, this means upgrading a SUSE Rancher Prime v2.12.1 instance to v2.12.6, before the upgrade to v2.13.1. With this supported upgrade path the issue is not encountered.
+
+If it is not possible to rollback the upgrade, you can workaround the issue by scaling down the Rancher Deployment to zero Pods, and then scaling it up again, using the following commands in the Rancher local cluster:
+
+```
+kubectl -n cattle-system scale deployment rancher --replicas=0
+# Wait until all Rancher Pods are terminated
+kubectl -n cattle-system scale deployment rancher --replicas=3
+```
+
+This workaround ensures a set of three v2.13.1 Pods only is running, versus a rolling update of the existing v2.12.1 Pods, and prevents the errors that occur whilst both versions are running.
 
 
 

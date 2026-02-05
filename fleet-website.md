@@ -4655,6 +4655,10 @@ BundleDeploymentList contains a list of BundleDeployment
 | namespaceAnnotations | NamespaceAnnotations are annotations that will be appended to the namespace created by Fleet. | map[string]string | false |
 | deleteCRDResources | DeleteCRDResources deletes CRDs. Warning! this will also delete all your Custom Resources. | bool | false |
 
+:::note
+If you do not want Fleet to apply the `helm.sh/resource-policy: keep`, configure the `deleteCRDResource` option to `true` in `fleet.yaml`.
+:::
+
 [Back to Custom Resources](#)
 
 #### BundleDeploymentResource
@@ -8423,7 +8427,7 @@ spec:
                 number: 80
 ```
 
-Given that Ingress Nginx will soon be [retired](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/), here is an example using Traefik:
+Ingress Nginx will be [retired](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/), here is an example using Traefik:
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -8448,6 +8452,10 @@ spec:
             path: /gitjob(/|$)(.*)
             pathType: ImplementationSpecific
 ```
+
+:::note
+Use the annotation `traefik.ingress.kubernetes.io/router.priority: '100'` only when two Ingress resources can conflict. This annotation assigns a higher priority to the GitJob route. This depends on the `pathType` property. When `pathType` is set to Prefix, the annotation is required. 
+:::
 
 This configuration requires a middleware to strip the additional path from the URL, since `gitjob` responds directly from the root path. This is equivalent to the `nginx.ingress.kubernetes.io/rewrite-target` annotation in Nginx:
 
