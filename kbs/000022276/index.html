@@ -15826,7 +15826,13 @@ E0114 15:07:32.031893      43 reflector.go:205] &quot;Failed to watch&quot; err=
 2026/01/14 15:07:38 [ERROR] Failed to connect to peer wss://10.42.0.93/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
 </code></pre></div>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>Upgrading directly from v2.12.1 to v2.13.1 is against the recommended and supported upgrade path for Rancher. Rancher should be upgraded to the latest patch release of the currently running minor version, before upgrading to the latest patch release of the next minor version. At the time of writing, this means upgrading a SUSE Rancher Prime v2.12.1 instance to v2.12.5, before the upgrade to v2.13.1. With this supported upgrade path the issue is not encountered.</p>
+<p>Upgrading directly from v2.12.1 to v2.13.1 is against the recommended and supported upgrade path for Rancher. Rancher should be upgraded to the latest patch release of the currently running minor version, before upgrading to the latest patch release of the next minor version. At the time of writing, this means upgrading a SUSE Rancher Prime v2.12.1 instance to v2.12.6, before the upgrade to v2.13.1. With this supported upgrade path the issue is not encountered.</p>
+<p>If it is not possible to rollback the upgrade, you can workaround the issue by scaling down the Rancher Deployment to zero Pods, and then scaling it up again, using the following commands in the Rancher local cluster:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system scale deployment rancher --replicas=0
+# Wait until all Rancher Pods are terminated
+kubectl -n cattle-system scale deployment rancher --replicas=3
+</code></pre></div>
+<p>This workaround ensures a set of three v2.13.1 Pods only is running, versus a rolling update of the existing v2.12.1 Pods, and prevents the errors that occur whilst both versions are running.</p>
 
 
 
