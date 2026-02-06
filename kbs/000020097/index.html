@@ -25,7 +25,7 @@
     
     
       
-        <title>What are the "-promoted" Cluster Roles in Rancher? - SUSE KBs</title>
+        <title>What are the "-promoted" ClusterRoles in Rancher-managed clusters? - SUSE KBs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#what-are-the-promoted-cluster-roles-in-rancher" class="md-skip">
+        <a href="#what-are-the-promoted-clusterroles-in-rancher-managed-clusters" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              What are the "-promoted" Cluster Roles in Rancher?
+              What are the "-promoted" ClusterRoles in Rancher-managed clusters?
             
           </span>
         </div>
@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -2056,7 +2056,7 @@
   <span class="md-ellipsis">
     
   
-    How to confirm a version upgrade of Rancher v2.x is completed successfully
+    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
   
 
     
@@ -2597,7 +2597,7 @@
   <span class="md-ellipsis">
     
   
-    What are the "-promoted" Cluster Roles in Rancher?
+    What are the "-promoted" ClusterRoles in Rancher-managed clusters?
   
 
     
@@ -2615,7 +2615,7 @@
   <span class="md-ellipsis">
     
   
-    What are the "-promoted" Cluster Roles in Rancher?
+    What are the "-promoted" ClusterRoles in Rancher-managed clusters?
   
 
     
@@ -2659,23 +2659,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#when-i-query-for-cluster-roles-via-kubectl-i-see-some-entries-with-promoted-appended-to-them-what-are-these-and-why-is-rancher-creating-them" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        When I query for Cluster Roles via kubectl, I see some entries with "-promoted" appended to them. What are these and why is Rancher creating them?
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -15614,34 +15597,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000022307/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Maximum RTT (Round Trip Time) for an RKE2 cluster
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000022309/" class="md-nav__link">
         
   
@@ -15747,6 +15702,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022332/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuring Keycloak with Rancher to Enable Client Signature &amp; Encryption Assertion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -15800,23 +15783,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#when-i-query-for-cluster-roles-via-kubectl-i-see-some-entries-with-promoted-appended-to-them-what-are-these-and-why-is-rancher-creating-them" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        When I query for Cluster Roles via kubectl, I see some entries with "-promoted" appended to them. What are these and why is Rancher creating them?
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -15847,18 +15813,20 @@
 
 
 
-<h1 id="what-are-the-promoted-cluster-roles-in-rancher">What are the "-promoted" Cluster Roles in Rancher?</h1>
+<h1 id="what-are-the-promoted-clusterroles-in-rancher-managed-clusters">What are the "-promoted" ClusterRoles in Rancher-managed clusters?</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360044831152">000020097</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<ul>
-<li>Rancher server with RKE clusters added</li>
-<li>Users added to a Project</li>
-</ul>
+<p>Rancher v2.x</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<h4 id="when-i-query-for-cluster-roles-via-kubectl-i-see-some-entries-with-promoted-appended-to-them-what-are-these-and-why-is-rancher-creating-them">When I query for Cluster Roles via kubectl, I see some entries with "-promoted" appended to them. What are these and why is Rancher creating them?</h4>
+<p>When querying for <code>ClusterRoles</code> using <code>kubectl</code> or viewing role assignments in the Rancher UI, you may notice certain roles with a suffix of <code>-promoted</code> (e.g., <code>project-member-promoted</code>).</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>The ClusterRole with "-promoted" at the end, is created if the Project role given to a Project member contains any of these resources: storageClass, persistentVolumes, and apiServices.</p>
-<p>These resources are not scoped to a namespace. They do not belong to any Project but the entire Cluster. That is why Rancher creates an additional ClusterRole.</p>
+<p>Rancher utilizes "-promoted" <code>ClusterRoles</code> to handle <strong>cluster-scoped resources</strong> that have been included within a <strong>Project-level role</strong>.</p>
+<p>In Kubernetes, RBAC is divided into two scopes:</p>
+<ul>
+<li><strong>Namespaced:</strong> Resources like Pods, Deployments, and Services.</li>
+<li><strong>Cluster-scoped:</strong> Resources like StorageClasses, PersistentVolumes, and APIServices.</li>
+</ul>
+<p>If a Project Role (which usually only applies to specific namespaces) includes permissions for a cluster-scoped resource, Kubernetes cannot enforce that permission using a standard <code>RoleBinding</code> within a namespace. To grant access to these specific cluster-wide objects while maintaining the user's Project context, Rancher "promotes" those specific permissions into a dedicated <code>ClusterRole</code>.</p>
 
 
 

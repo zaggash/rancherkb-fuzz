@@ -11,10 +11,8 @@
       
       
       
-        <link rel="prev" href="../000022303/">
+        <link rel="prev" href="../000022315/">
       
-      
-        <link rel="next" href="../000022309/">
       
       
         
@@ -25,7 +23,7 @@
     
     
       
-        <title>Maximum RTT (Round Trip Time) for an RKE2 cluster - SUSE KBs</title>
+        <title>Configuring Keycloak with Rancher to Enable Client Signature & Encryption Assertion - SUSE KBs</title>
       
     
     
@@ -76,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#maximum-rtt-round-trip-time-for-an-rke2-cluster" class="md-skip">
+        <a href="#configuring-keycloak-with-rancher-to-enable-client-signature-encryption-assertion" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Maximum RTT (Round Trip Time) for an RKE2 cluster
+              Configuring Keycloak with Rancher to Enable Client Signature &amp; Encryption Assertion
             
           </span>
         </div>
@@ -1832,7 +1830,7 @@
   <span class="md-ellipsis">
     
   
-    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -2056,7 +2054,7 @@
   <span class="md-ellipsis">
     
   
-    How to confirm a version upgrade of Rancher v2.x is completed successfully
+    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
   
 
     
@@ -2588,7 +2586,7 @@
   <span class="md-ellipsis">
     
   
-    What are the "-promoted" Cluster Roles in Rancher?
+    What are the "-promoted" ClusterRoles in Rancher-managed clusters?
   
 
     
@@ -15514,92 +15512,6 @@
                 
   
   
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Maximum RTT (Round Trip Time) for an RKE2 cluster
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Maximum RTT (Round Trip Time) for an RKE2 cluster
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Environment
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
   
   
     <li class="md-nav__item">
@@ -15708,6 +15620,125 @@
 
               
             
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuring Keycloak with Rancher to Enable Client Signature &amp; Encryption Assertion
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuring Keycloak with Rancher to Enable Client Signature &amp; Encryption Assertion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Situation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cause
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -15752,6 +15783,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#situation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Situation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cause
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -15769,10 +15833,49 @@
 
 
 
-<h1 id="maximum-rtt-round-trip-time-for-an-rke2-cluster">Maximum RTT (Round Trip Time) for an RKE2 cluster</h1>
-<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Maximum-RTT-Round-Trip-Time-for-an-RKE2-cluster">000022307</a></p>
+<h1 id="configuring-keycloak-with-rancher-to-enable-client-signature-encryption-assertion">Configuring Keycloak with Rancher to Enable Client Signature &amp; Encryption Assertion</h1>
+<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Configuring-Keycloak-with-Rancher-to-Enable-Client-Signature-Encryption-Assertion">000022332</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Any <a href="https://www.suse.com/lifecycle/#rke2">supported</a> RKE2 cluster.</p>
+<p>Rancher v2.x<br />
+Keycloak v25+</p>
+<h2 id="situation"><strong>Situation</strong></h2>
+<p>Attempting to secure a Rancher environment's authentication with <strong>Client Signature and Encryption</strong> in Keycloak v25+ results in users not being able to complete the authentication process. Specifically the connection fails during the <strong>EncryptedAssertion</strong> phase.</p>
+<p>Upon testing the Authentication Provider in the Rancher UI the user is correctly redirected to the Keycloak Clients Login Page. However, during the login the authentication fails and displays "<em>Logging in failed: Your account may not be authorized to log in</em>.", per the screenshot below.</p>
+<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000186m1&amp;feoid=00N1i000002LdMP&amp;refid=0EMTr00000JZQKs" /></p>
+<h2 id="cause"><strong>Cause</strong></h2>
+<p>Keycloak (specifically versions 25 and 26+) defaults to modern encryption algorithms (AES-GCM and SHA-256 for RSA-OAEP digests). The SAML library used by Rancher currently requires older, more compatible algorithms for the decryption handshake to succeed. If these are not manually adjusted, Rancher will fail to process the <code>EncryptedAssertion</code>, resulting in a 401/3 error or a login loop. Rancher GitHub <a href="https://github.com/rancher/rancher/issues/50666">Issue #50666</a> is tracking a change in the Rancher behaviour.</p>
+<h2 id="resolution"><strong>Resolution</strong></h2>
+<p><strong>1. Generate the Certificate Pair</strong></p>
+<p>Rancher requires a matching X.509 certificate and private key. Use OpenSSL to generate a self-signed pair:</p>
+<div class="highlight"><pre><span></span><code>openssl req -x509 -newkey rsa:4096 -keyout rancher_auth.key -out rancher_auth.cert -days 3650 -nodes -subj &quot;/CN=rancher-saml&quot;
+</code></pre></div>
+<p><strong>2. Keycloak Client Configuration</strong></p>
+<p>In the Keycloak Admin Console, navigate to <strong>Clients &gt; [Your Rancher Client]</strong> and apply the following settings:</p>
+<p><strong>Keys Tab:</strong></p>
+<ul>
+<li><strong>Client Signature Required:</strong> ON</li>
+<li><strong>Encrypt Assertions:</strong> ON</li>
+<li><strong>Certificate:</strong> Import <code>rancher_auth.cert</code> into <strong>both</strong> the Signing and Encryption configuration boxes.</li>
+</ul>
+<p><strong>Settings Tab: (Signature and Encryption Section)</strong></p>
+<p>To resolve the "Algorithm not implemented" error, you must match these exact settings to ensure compatibility with Rancher's <code>xmlsec</code> library:</p>
+<ul>
+<li><strong>Encryption Algorithm:</strong> <code>AES_128_CBC</code> <em>(Note: AES-GCM is not supported by Rancher SAML)</em></li>
+<li><strong>Key Transport Algorithm:</strong> <code>RSA-OAEP-MGF1P</code></li>
+<li><strong>Digest method for RSA-OAEP:</strong> <code>SHA-1</code></li>
+<li><strong>Mask generation function:</strong> <code>mgf1sha1</code></li>
+<li><strong>Force Name ID Format:</strong> ON (unspecified)</li>
+</ul>
+<p><strong>3. Rancher Authentication Configuration</strong></p>
+<p>In the Rancher UI (<strong>Authentication &gt; Keycloak SAML</strong>), ensure the following fields are mapped correctly:</p>
+<ul>
+<li><strong>Entity ID Field:</strong> (Must match Keycloak Client ID)</li>
+<li><strong>Private Key:</strong> Paste the contents of <code>rancher_auth.key</code></li>
+<li><strong>Certificate:</strong> Paste the contents of <code>rancher_auth.cert</code></li>
+<li><strong>User Name Field:</strong> <code>username</code></li>
+<li><strong>Groups Field:</strong> <code>groups</code></li>
+<li><strong>Metadata XML:</strong> Use the IdP Metadata exported from Keycloak (Realm Settings &gt; Endpoints).</li>
+</ul>
 
 
 
