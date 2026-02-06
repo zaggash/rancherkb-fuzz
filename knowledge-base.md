@@ -3156,29 +3156,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -3806,26 +3812,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# How to confirm a version upgrade of Rancher v2.x is completed successfully
+# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
-- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
+- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
+- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
 
 ## **Situation**
 
-This article details how to confirm that a Rancher version upgrade has successfully completed.
+この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
 
 ## **Resolution**
 
-The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
+Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
 
-- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
-- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
-- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
+- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
+- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
+- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
 
 
 
@@ -4588,24 +4594,28 @@ No, your Rancher Hosted Prime environment will not display the "local" cluster i
 
 ## Article: 000020097.md
 
-# What are the "-promoted" Cluster Roles in Rancher?
+# What are the "-promoted" ClusterRoles in Rancher-managed clusters?
 
 **Article Number:** [000020097](https://support.scc.suse.com/s/kb/360044831152)
 
 ## **Environment**
 
-- Rancher server with RKE clusters added
-- Users added to a Project
+Rancher v2.x
 
 ## **Situation**
 
-#### When I query for Cluster Roles via kubectl, I see some entries with "-promoted" appended to them. What are these and why is Rancher creating them?
+When querying for `ClusterRoles` using `kubectl` or viewing role assignments in the Rancher UI, you may notice certain roles with a suffix of `-promoted` (e.g., `project-member-promoted`).
 
 ## **Resolution**
 
-The ClusterRole with "-promoted" at the end, is created if the Project role given to a Project member contains any of these resources: storageClass, persistentVolumes, and apiServices.
+Rancher utilizes "-promoted" `ClusterRoles` to handle **cluster-scoped resources** that have been included within a **Project-level role**.
 
-These resources are not scoped to a namespace. They do not belong to any Project but the entire Cluster. That is why Rancher creates an additional ClusterRole.
+In Kubernetes, RBAC is divided into two scopes:
+
+- **Namespaced:** Resources like Pods, Deployments, and Services.
+- **Cluster-scoped:** Resources like StorageClasses, PersistentVolumes, and APIServices.
+
+If a Project Role (which usually only applies to specific namespaces) includes permissions for a cluster-scoped resource, Kubernetes cannot enforce that permission using a standard `RoleBinding` within a namespace. To grant access to these specific cluster-wide objects while maintaining the user's Project context, Rancher "promotes" those specific permissions into a dedicated `ClusterRole`.
 
 
 
@@ -31335,20 +31345,6 @@ If your clusters use any security tools, review the required configurations:
 
 ---
 
-## Article: 000022307.md
-
-# Maximum RTT (Round Trip Time) for an RKE2 cluster
-
-**Article Number:** [000022307](https://support.scc.suse.com/s/kb/Maximum-RTT-Round-Trip-Time-for-an-RKE2-cluster)
-
-## **Environment**
-
-Any [supported](https://www.suse.com/lifecycle/#rke2) RKE2 cluster.
-
-
-
----
-
 ## Article: 000022309.md
 
 # Charts for an Apps Repository missing in the Rancher UI due to version incompatibility
@@ -31561,4 +31557,72 @@ The Windows worker nodes were not using the FQDN, causing a VM not found error. 
 Confirm whether the node name in Kubernetes matches the FQDN of the VM in vCenter, as reported by VMware tools, including the domain. If it is not, as a workaround, add the FQDN to the NodeName in the Rancher UI by navigating to Cluster Management -&gt; \[relevant cluster] &gt; Registration -&gt; Step2 (Advanced). This ensures the nodes register with the cluster successfully and become active.
 
 ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000184ST&feoid=00N1i000002LdMN&refid=0EMTr00000JS8Kf)
+
+
+
+---
+
+## Article: 000022332.md
+
+# Configuring Keycloak with Rancher to Enable Client Signature & Encryption Assertion
+
+**Article Number:** [000022332](https://support.scc.suse.com/s/kb/Configuring-Keycloak-with-Rancher-to-Enable-Client-Signature-Encryption-Assertion)
+
+## **Environment**
+
+Rancher v2.x  
+Keycloak v25+
+
+## **Situation**
+
+Attempting to secure a Rancher environment's authentication with **Client Signature and Encryption** in Keycloak v25+ results in users not being able to complete the authentication process. Specifically the connection fails during the **EncryptedAssertion** phase.
+
+Upon testing the Authentication Provider in the Rancher UI the user is correctly redirected to the Keycloak Clients Login Page. However, during the login the authentication fails and displays "*Logging in failed: Your account may not be authorized to log in*.", per the screenshot below.
+
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000186m1&feoid=00N1i000002LdMP&refid=0EMTr00000JZQKs)
+
+## **Cause**
+
+Keycloak (specifically versions 25 and 26+) defaults to modern encryption algorithms (AES-GCM and SHA-256 for RSA-OAEP digests). The SAML library used by Rancher currently requires older, more compatible algorithms for the decryption handshake to succeed. If these are not manually adjusted, Rancher will fail to process the `EncryptedAssertion`, resulting in a 401/3 error or a login loop. Rancher GitHub [Issue #50666](https://github.com/rancher/rancher/issues/50666) is tracking a change in the Rancher behaviour.
+
+## **Resolution**
+
+**1. Generate the Certificate Pair**
+
+Rancher requires a matching X.509 certificate and private key. Use OpenSSL to generate a self-signed pair:
+
+```markup
+openssl req -x509 -newkey rsa:4096 -keyout rancher_auth.key -out rancher_auth.cert -days 3650 -nodes -subj "/CN=rancher-saml"
+```
+
+**2. Keycloak Client Configuration**
+
+In the Keycloak Admin Console, navigate to **Clients &gt; \[Your Rancher Client]** and apply the following settings:
+
+**Keys Tab:**
+
+- **Client Signature Required:** ON
+- **Encrypt Assertions:** ON
+- **Certificate:** Import `rancher_auth.cert` into **both** the Signing and Encryption configuration boxes.
+
+**Settings Tab: (Signature and Encryption Section)**
+
+To resolve the "Algorithm not implemented" error, you must match these exact settings to ensure compatibility with Rancher's `xmlsec` library:
+
+- **Encryption Algorithm:** `AES_128_CBC` *(Note: AES-GCM is not supported by Rancher SAML)*
+- **Key Transport Algorithm:** `RSA-OAEP-MGF1P`
+- **Digest method for RSA-OAEP:** `SHA-1`
+- **Mask generation function:** `mgf1sha1`
+- **Force Name ID Format:** ON (unspecified)
+
+**3. Rancher Authentication Configuration**
+
+In the Rancher UI (**Authentication &gt; Keycloak SAML**), ensure the following fields are mapped correctly:
+
+- **Entity ID Field:** (Must match Keycloak Client ID)
+- **Private Key:** Paste the contents of `rancher_auth.key`
+- **Certificate:** Paste the contents of `rancher_auth.cert`
+- **User Name Field:** `username`
+- **Groups Field:** `groups`
+- **Metadata XML:** Use the IdP Metadata exported from Keycloak (Realm Settings &gt; Endpoints).
 
