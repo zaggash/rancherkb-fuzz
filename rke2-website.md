@@ -4034,10 +4034,6 @@ The token value can also be set in the RKE2 config file.
 
 ## ETCDSnapshotFile Custom Resources
 
-:::info Version Gate
-ETCDSnapshotFiles are available as of the November 2023 releases: v1.28.4+rke2r1, v1.27.8+rke2r1, v1.26.11+rke2r1, v1.25.16+rke2r1
-:::
-
 Snapshots can be viewed remotely using any Kubernetes client by listing or describing cluster-scoped `ETCDSnapshotFile` resources.
 Unlike the `rke2 etcd-snapshot list` command, which only shows snapshots visible to that node, `ETCDSnapshotFile` resources track all snapshots present on cluster members.
 
@@ -4446,10 +4442,6 @@ Copies of the CA certificates and keys are extracted to disk during RKE2 server 
 Any server may generate leaf certificates for nodes as they join the cluster, and the Kubernetes [Certificates API](https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/) controllers may issue additional certificates at runtime.
 
 ### Rotating CA Certificates
-
-:::info Version Gate
-Available as of the 2023-02 releases (v1.26.2+rke2r1, v1.25.7+rke2r1, v1.24.11+rke2r1, v1.23.17+rke2r1).
-:::
 
 To rotate CA certificates and keys, use the `rke2 certificate rotate-ca` command.
 This command performs integrity checks to confirm that the updated certificates and keys are usable.
@@ -30311,9 +30303,6 @@ kube-apiserver-arg:
 <TabItem value='v1.25 - v1.28'>
 
 ### Generic CIS configuration
-:::info Version Gate
-Available with October 2023 releases (v1.25.15+rke2r1, v1.26.10+rke2r1, v1.27.7+rke2r1, v1.28.3+rke2r1)
-:::
 
 ```yaml
 profile: "cis"
@@ -31360,10 +31349,6 @@ Flag | Description
 
 
 ### Server Token Rotation
-
-:::info Version Gate
-Available as of 2023-11 releases (v1.28.3+rke2r2, v1.27.7+rke2r2, v1.26.10+rke2r2, v1.25.15+rke2r2).
-:::
 
 The `rke2 token rotate` command allows you to rotate and replace the original token used for server bootstrap. After running the command on a single server, all servers and agents that used the original token should be restarted with the new token. The original token will be invalidated and cannot be used to join any new servers or agents to the cluster.
 
@@ -32718,12 +32703,6 @@ If two or more of your machines have the same hostname, you must do one of the f
 * Update the hostname to a unique value
 * Set the `node-name` parameter in the config file to a unique value
 * Set the `with-node-id` parameter in the config file to `true` to append a randomly generated ID number to the hostname.
-
-:::info Version Gate
-
-The `with-node-id` parameter is available starting with the 2023-05 releases (v1.27.2+rke2r1, v1.26.5+rke2r1, v1.25.10+rke2r1, v1.24.14+rke2r1).
-
-:::
 
 ## Architecture
 
