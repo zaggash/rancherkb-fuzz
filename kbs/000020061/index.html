@@ -15986,7 +15986,7 @@
 <blockquote>
 <p><strong>Note</strong></p>
 <p>The versions contained in this document were current at the time of writing and are meant only as an example</p>
-<p>Rancher and Kubernetes use the semantic versioning format, where the version number is referred to major.minor.patch, for example: v2.11.x, <em>x</em> is the patch version</p>
+<p>Rancher and Kubernetes use the semantic versioning format, where the version number is referred to major.minor.patch, for example: v2.13.x, <em>x</em> is the patch version</p>
 </blockquote>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <h3 id="planning">Planning</h3>
@@ -16020,20 +16020,20 @@
 <p>Avoid skipping minor versions when upgrading</p>
 </li>
 <li>
-<p>For example: when upgrading from v2.9.x -&gt; v2.11.x we encourage upgrading v2.9.x -&gt; v2.10.x -&gt; v2.11.x</p>
+<p>For example: when upgrading from v2.11.x -&gt; v2.13.x we encourage upgrading v2.11.x -&gt; v2.12.x -&gt; v2.13.x</p>
 </li>
 <li>
 <p>It is recommended to upgrade from the newest patch version of the current release to the newest patch version of the next minor release, particularly if the current patch version is many releases behind and may be missing important fixes. For example:</p>
 </li>
 <li>
-<p>When upgrading from v2.9.2 -&gt; v2.10.x, we encourage you to first upgrade to v2.9.10 (newest v2.9.x patch version at the time of writing) as an intermediary step</p>
+<p>When upgrading from Rancher Prime v2.12.2 -&gt; v2.13.x, we encourage you to first upgrade to v2.12.6 (newest Prime v2.12.x patch version at the time of writing) as an intermediary step</p>
 </li>
-<li>Then to upgrade from v2.9.10 to v2.10.6 (newest v2.10.x patch version at the time of writing) and not any earlier v2.10.x patch version, for example, v2.10.1</li>
+<li>Then to upgrade from v2.12.6 to v2.13.2 (newest Prime v2.13.x patch version at the time of writing) and not any earlier v2.13.x patch version, for example, v2.13.1</li>
 <li>
 <p>Avoid upgrading to a pre-release or non-stable version as they are not yet fully tested and supported. This is generally recommended for any cluster/environment, however particularly important for production</p>
 </li>
 <li>
-<p>Pre-release versions can be identified by a -rc# or -alpha# following the Rancher version number (eg, v2.12.0-rc2)</p>
+<p>Pre-release versions can be identified by a -rc# or -alpha# following the Rancher version number (eg, v2.13.0-rc2)</p>
 </li>
 </ul>
 </li>
@@ -16050,7 +16050,7 @@
 <p>It is recommended to upgrade incrementally and <strong>avoid skipping minor versions.</strong> This helps minimize potential issues by introducing gradual changes</p>
 </li>
 <li>
-<p>For example: when upgrading from v1.29.x -&gt; v1.32.x we encourage upgrading v1.29.x -&gt; v1.30.x -&gt; v1.31.x -&gt; v1.32.x</p>
+<p>For example: when upgrading from v1.31.x -&gt; v1.34.x we encourage upgrading v1.31.x -&gt; v1.32.x -&gt; v1.33.x -&gt; v1.34.x</p>
 </li>
 <li>Kubernetes plans approximately <a href="https://kubernetes.io/releases/release/#the-release-cycle">three minor version releases a year</a>, so it is a good practice to also plan a minor version upgrade multiple times throughout the year</li>
 </ul>
