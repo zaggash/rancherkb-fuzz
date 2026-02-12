@@ -3142,35 +3142,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -31543,6 +31537,236 @@ The Windows worker nodes were not using the FQDN, causing a VM not found error. 
 Confirm whether the node name in Kubernetes matches the FQDN of the VM in vCenter, as reported by VMware tools, including the domain. If it is not, as a workaround, add the FQDN to the NodeName in the Rancher UI by navigating to Cluster Management -&gt; \[relevant cluster] &gt; Registration -&gt; Step2 (Advanced). This ensures the nodes register with the cluster successfully and become active.
 
 ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000184ST&feoid=00N1i000002LdMN&refid=0EMTr00000JS8Kf)
+
+
+
+---
+
+## Article: 000022323.md
+
+# How to Find the Init Bootstrap Node in Rancher-Managed RKE2 Clusters
+
+**Article Number:** [000022323](https://support.scc.suse.com/s/kb/How-to-Find-the-Init-Bootstrap-Node-in-Rancher-Managed-RKE2-Clusters)
+
+## **Environment**
+
+Rancher v2.5+  
+RKE2 v1.x
+
+## **Procedure**
+
+This article explains how to obtain RKE2 node bootstrap and join details for downstream clusters using information stored in Rancher-managed Secrets. The command is to be run on the Rancher cluster.
+
+**Command:**
+
+```markup
+$ kubectl get secrets -n fleet-default -o custom-columns="NAME:metadata.name,MACHINE_ID:metadata.labels.rke\.cattle\.io/machine-name,INIT_NODE:metadata.labels.rke\.cattle\.io/init-node,JOIN_URL:metadata.annotations.rke\.cattle\.io/join-url,JOINED_TO:metadata.annotations.rke\.cattle\.io/joined-to" | grep -v token
+```
+
+**Example Output:**
+
+```markup
+NAME                                                    MACHINE_ID                     INIT_NODE   JOIN_URL                     JOINED_TO
+test-rke2-kubeconfig                                    <none>                         <none>      <none>                       <none>
+test-rke2-master-rzb57-wj2k6-machine-bootstrap          <none>                         <none>      <none>                       <none>
+test-rke2-master-rzb57-wj2k6-machine-plan               test-rke2-master-rzb57-wj2k6   true        https://172.31.40.26:9345
+test-rke2-master-rzb57-wj2k6-machine-state              <none>                         <none>      <none>                       <none>
+test-rke2-rke-state                                     <none>                         <none>      <none>                       <none>
+test-rke2-worker-482hb-7zgrn-machine-bootstrap          <none>                         <none>      <none>                       <none>
+test-rke2-worker-482hb-7zgrn-machine-plan               test-rke2-worker-482hb-7zgrn   <none>      https://172.31.38.195:9345   https://172.31.40.26:9345
+test-rke2-worker-482hb-7zgrn-machine-state              <none>                         <none>      <none>                       <none>
+test-rke2-worker-482hb-j86wk-machine-bootstrap          <none>                         <none>      <none>                       <none>
+test-rke2-worker-482hb-j86wk-machine-plan               test-rke2-worker-482hb-j86wk   <none>      https://172.31.40.152:9345   https://172.31.40.26:9345
+test-rke2-worker-482hb-j86wk-machine-state              <none>                         <none>      <none>                       <none>
+test-rke2-worker-482hb-pfq9c-machine-bootstrap          <none>                         <none>      <none>                       <none>
+test-rke2-worker-482hb-pfq9c-machine-plan               test-rke2-worker-482hb-pfq9c   <none>      https://172.31.33.8:9345     https://172.31.40.26:9345
+test-rke2-worker-482hb-pfq9c-machine-state              <none>                         <none>      <none>                       <none>
+```
+
+> **Note:** This output shows the RKE2 node bootstrap and join topology. The entry with `INIT_NODE=true` identifies the initial control-plane (bootstrap) node that created the cluster. Each worker node’s `machine-plan` entry shows the join URL it used and the control-plane node it joined (`JOINED_TO`). Entries with `<none>` are internal state or bootstrap Secrets and do not represent active join relationships.
+
+
+
+---
+
+## Article: 000022324.md
+
+# How to List Rancher Management Objects (Clusters, Nodes, Users, Tokens) with kubectl
+
+**Article Number:** [000022324](https://support.scc.suse.com/s/kb/How-to-List-Rancher-Management-Objects-Clusters-Nodes-Users-Tokens-with-kubectl)
+
+## **Environment**
+
+Rancher v2.5+
+
+## **Procedure**
+
+This article provides commonly used `kubectl` commands to list and inspect Rancher management API objects, including clusters, nodes, users, and tokens. These resources are stored as custom resources in the Rancher management cluster and can be queried directly using `kubectl`. The commands shown here present the information in a clear, human-readable format, which is useful for troubleshooting, auditing, and verifying Rancher configuration.
+
+ 
+
+**Clusters information:**   
+Command:
+
+```markup
+kubectl get clusters.management.cattle.io -o custom-columns="ID:.metadata.name,NAME:.spec.displayName,DRIVER:.status.driver,K8S_VERSION:.status.version.gitVersion,CREATED:.metadata.creationTimestamp,DELETED:.metadata.deletionTimestamp,LAST_READY:.status.conditions[?(@.type == 'Ready')].lastUpdateTime,READY:.status.conditions[?(@.type == 'Ready')].status" --sort-by=.metadata.creationTimestamp
+```
+
+Example Output:
+
+```markup
+ID             NAME         DRIVER     K8S_VERSION      CREATED                DELETED   LAST_READY             READY
+local          local        rke2       v1.34.2+rke2r1   2026-01-21T03:39:59Z   <none>    <none>                 True
+c-m-g2zxtbrm   test-rke2    imported   v1.34.3+rke2r1   2026-02-03T02:14:16Z   <none>    2026-02-03T02:24:05Z   True
+```
+
+ 
+
+**Nodes Information**  
+Command:
+
+```markup
+kubectl get nodes.management.cattle.io -A -o custom-columns="NAMESPACE:.metadata.namespace,ID:.metadata.name,NAME:.status.nodeName,K8S:status.internalNodeStatus.nodeInfo.kubeletVersion,CP:spec.controlPlane,ETCD:spec.etcd,WORKER:spec.worker,OS:status.internalNodeStatus.nodeInfo.osImage,KERNEL:.status.internalNodeStatus.nodeInfo.kubeletVersion"
+```
+
+Example Output:
+
+```markup
+NAMESPACE      ID              NAME                           K8S              CP      ETCD    WORKER   OS                   KERNEL
+c-m-g2zxtbrm   machine-9pgfw   test-rke2-worker-482hb-j86wk   v1.34.3+rke2r1   false   false   true     Ubuntu 22.04.4 LTS   v1.34.3+rke2r1
+c-m-g2zxtbrm   machine-l22sl   test-rke2-master-rzb57-wj2k6   v1.34.3+rke2r1   true    true    false    Ubuntu 22.04.4 LTS   v1.34.3+rke2r1
+c-m-g2zxtbrm   machine-mnt7d   test-rke2-worker-482hb-7zgrn   v1.34.3+rke2r1   false   false   true     Ubuntu 22.04.4 LTS   v1.34.3+rke2r1
+c-m-g2zxtbrm   machine-z4c4g   test-rke2-worker-482hb-pfq9c   v1.34.3+rke2r1   false   false   true     Ubuntu 22.04.4 LTS   v1.34.3+rke2r1
+local          machine-fcmmf   ip-172-31-21-69                v1.34.2+rke2r1   true    true    false    Ubuntu 24.04.3 LTS   v1.34.2+rke2r1
+```
+
+ 
+
+**Users Information**  
+Command:
+
+```markup
+kubectl get users.management.cattle.io -A -o custom-columns=ID:'{.metadata.name},Name:'{.username},DisplayName:'{.displayName}'
+```
+
+Example Output:
+
+```markup
+ID             Name     DisplayName
+u-b4qkhsnliz   <none>   System account for Cluster local
+u-lchgeakhwh   <none>   <none>
+u-mo773yttt4   <none>   <none>
+u-yd2xevlc4q   <none>   System account for Cluster c-m-g2zxtbrm
+user-kxdgm     admin    Default Admin
+```
+
+ 
+
+**Tokens Information**  
+Command:
+
+```markup
+kubectl get tokens.management.cattle.io -o custom-columns=Name:'{.metadata.name}',ID:'{.userId}',DisplayName:'{.userPrincipal.displayName}',User:'{.userPrincipal.loginName}',Created:'{.metadata.creationTimestamp}'
+```
+
+Example Output:
+
+```markup
+Name           ID             DisplayName     User     Created
+token-kwcwg    user-kxdgm     Default Admin   admin    2026-02-03T02:12:21Z
+u-lchgeakhwh   u-lchgeakhwh   <none>          <none>   2026-02-03T02:18:43Z
+u-mo773yttt4   u-mo773yttt4   <none>          <none>   2026-01-21T03:41:36Z
+```
+
+For more details on API token, please refer to this KB Article: [How to query Rancher API tokens information via kubectl](https://support.scc.suse.com/s/kb/How-to-query-Rancher-API-tokens-information-via-kubectl?language=en_US)
+
+
+
+---
+
+## Article: 000022328.md
+
+# Increasing the RKE2 etcd snapshot S3 timeout
+
+**Article Number:** [000022328](https://support.scc.suse.com/s/kb/Increasing-the-RKE2-etcd-snapshot-S3-timeout)
+
+## **Environment**
+
+RKE2 with recurring S3 snapshots
+
+## **Situation**
+
+In the rke2-server journalctl logs, errors with "deadline exceeded" are seen when attempting to reconcile and interact with the S3 endpoint for snapshots.
+
+```markup
+Jan 27 15:01:46 xxxx rke2[3120757]: time="2026-01-27T15:01:46+08:00" level=warning msg="Failed to get object metadata: Head \"https://xxx.yy.org/rancher-downstream/prod-cluster/.metadata/etcd-snapshot-xxxx.yy.org-1753833604.zip\": context deadline exceeded"
+Jan 27 15:01:46 xxxx rke2[3120757]: time="2026-01-27T15:01:46+08:00" level=warning msg="Failed to get object metadata: context deadline exceeded"
+Jan 27 15:01:46 xxxx rke2[3120757]: time="2026-01-27T15:01:46+08:00" level=error msg="Error retrieving S3 snapshots for reconciliation: context deadline exceeded"
+```
+
+If the network latency is high or the number of objects in the bucket introduces delays, the S3 snapshot handling fails to complete. For a cluster provisioned by Rancher, the dashboard may not show all of the available snapshots in S3.
+
+## **Cause**
+
+The issue is caused by a network timeout when retrieving S3 snapshots. Increasing the `etcd-s3-timeout` parameter in the RKE2 configuration resolves the problem.
+
+If the "`failed to read metadata`" is seen in the errors, this relates to RKE2 storing a small `.zip` or `.json` metadata file alongside each snapshot.
+
+- **The Timeout:** When RKE2 scans the bucket, it tries to read the metadata for each snapshot file. If the S3 provider (or the network path) doesn't respond fast enough, the whole process exits, leaving you with an empty or outdated list.
+- **The Cause:** This may need additional assistance to understand, for example - the S3 endpoint may intermittently respond slowly or timeout, network congestion or underlying hardware configuration may introduce packet loss. Investigation is needed to resolve persistent performance issues.
+
+### **Verification**
+
+Once the timeout is increased and the rke2-server services have been restarted:
+
+1. Run the manual list command again:
+   
+   ```
+   
+   ```
+   
+   ```markup
+   rke2 etcd-snapshot list
+   ```
+   
+   ```
+   
+   ```
+2. Check the Rancher dashboard, the snapshots should represent the current state of snapshot files in S3 once Rancher successfully synchronizes the list from the RKE2 API.
+
+## **Resolution**
+
+To workaround the latency, the S3 operation timeout can be increased to allow RKE2 enough time to complete the API calls. At the time of writing this timeout is not configurable in the Rancher dashboard, so configuration is added to files on rke2-server nodes, or when using the `rke2` binary to run commands.
+
+The default timeout is 5 minutes, in the below steps a 10 minute timeout has been used.
+
+### RKE2 standalone cluster
+
+Manage this using the node's configuration file, edit `/etc/rancher/rke2/config.yaml` adding the timeout configuration:
+
+```
+
+```
+
+```markup
+etcd-s3-timeout: 10m0s
+```
+
+> **Note**, the configuration must be set on all rke2-server nodes, after saving the changes restart the rke2-server service on each node to put the change into effect: `systemctl restart rke2-server`
+
+### RKE2 cluster provisioned by Rancher
+
+Add the configuration to a second file `51-rancher.yaml` under `/etc/rancher/rke2/config.yaml.d/`
+
+```markup
+cat <<EOF > /etc/rancher/rke2/config.yaml.d/51-rancher.yaml
+etcd-s3-timeout: 10m0s
+EOF
+```
+
+> **Note**, the configuration must be set on all rke2-server nodes, after saving the changes restart the rke2-server service on each node to put the change into effect: `systemctl restart rke2-server`
+
+These same steps can be adapted for k3s server nodes
 
 
 
