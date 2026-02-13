@@ -4464,7 +4464,7 @@
   <span class="md-ellipsis">
     
   
-    How do I edit or upgrade clusters created via RKE Templates?
+    [JP] How do I edit my cluster using RKE Templates?
   
 
     
@@ -9141,6 +9141,34 @@
     
   
     How to create a read-only custom Global Role for Fleet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021179/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to customize rke2-coredns
   
 
     
@@ -15942,8 +15970,10 @@
 <p><strong>Enable API Audit Logging:</strong> Audit logs provide details on the source IP, user agent, and specific identity attempting the connection. Refer to the documentation to enable this:</p>
 </li>
 <li>
-<p><a href="https://docs.rke2.io/security/audit_log" title="null">Enable API audit log in RKE2</a></p>
+<p>For Rancher-provisioned clusters: <a href="https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log-in-downstream-clusters">Enabling the API Audit Log in Downstream Clusters</a></p>
 </li>
+<li>For standalone RKE2 clusters: <a href="https://docs.rke2.io/security/hardening_guide#api-server-audit-configuration">API Server audit configuration</a></li>
+<li>For standalone K3s clusters: <a href="https://docs.k3s.io/security/hardening-guide#api-server-audit-configuration">API Server audit configuration</a></li>
 <li>
 <p><strong>Collect Logs:</strong> Use a logging aggregator to analyze the frequency and source of the 401 Unauthorized responses.</p>
 </li>
