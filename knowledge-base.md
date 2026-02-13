@@ -8767,28 +8767,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -16637,6 +16643,109 @@ In the Rancher UI, under **Users &amp; Authentication** &gt; **Role Templates** 
 After creating this custom Global Role, you can then assign it to [individual users](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/global-permissions#configuring-global-permissions-for-individual-users) or [groups](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/global-permissions#configuring-global-permissions-for-groups). When a non-admin user assigned this role accesses Rancher, the user will not be able to edit any Fleet resources but will be able to view these within the Continuous Delivery UI.
 
 ![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tLL2&feoid=00N1i000002LdMN&refid=0EMTr000000iCyL)
+
+
+
+---
+
+## Article: 000021179.md
+
+# How to customize rke2-coredns
+
+**Article Number:** [000021179](https://support.scc.suse.com/s/kb/How-to-customize-rke2)
+
+## **Environment**
+
+A Rancher-provisioned or standalone RKE2 cluster
+
+## **Situation**
+
+RKE2 allows the use of [HelmChartConfig resources](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig) to customize add-on packages deployed as [Helm Charts](https://docs.rke2.io/helm). This can be used to customize RKE2 packaged compoments, such as Canal, CoreDNS and ingress-nginx.
+
+## **Resolution**
+
+Details on the customization of components via `HelmChartConfig` resources can be found within the [RKE2 documentation](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig). 
+
+In the example below, we will use a `HelmChartConfig` to add a custom zonefile to rke2-coredns for the domain example.com
+
+```
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    zoneFiles:
+      - filename: example.com.conf
+        domain: example.com
+        contents: |
+          example.com:53 {
+              errors
+              cache 30
+              forward . 10.0.254.1
+          }
+    extraConfig:
+      import:
+        parameters: /etc/coredns/example.com.conf
+```
+
+In the next sample, we'll use a `HelmChartConfig` to modify the default root '.'  zonefile for rke2-coredns, adding some host entries using the [hosts plugin](https://coredns.io/plugins/hosts/):
+
+```markup
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    zoneFiles: 
+      - filename: Corefile
+        contents: |
+          .:53 {
+            errors
+            health {
+                lameduck 10s
+            }
+            ready
+            kubernetes  cluster.local  cluster.local in-addr.arpa ip6.arpa {
+                pods insecure
+                fallthrough in-addr.arpa ip6.arpa
+                ttl 30
+            }
+            prometheus  0.0.0.0:9153
+            forward  . /etc/resolv.conf
+            cache  30
+            loop
+            reload
+            loadbalance
+
+            hosts {
+            10.1.1.1      web1.local
+            10.1.1.2      web2.local
+            10.90.3.1     sql.prod.space.net
+            fallthrough
+            }
+```
+
+> **Note**, the full Corefile content is used in the above example to set the hosts plugin values. This is needed as items can't be appended to a list in helm values, care should be taken when combining this with other helm value changes for coredns
+
+## Rancher-provisioned RKE2 cluster
+
+To apply this `HelmChartConfig` customization in a Rancher-provisioned RKE2 cluster, navigate to the **Cluster Management** view and click **Edit Config** for the desired cluster. Click the **Add-On Config** tab and add the `HelmChartConfig` manifest into the **Additional Manifest** section, before clicking **Save**.
+
+## Standalone RKE2 cluster
+
+Create the file `/var/lib/rancher/rke2/server/manifests/rke2-coredns-config.yaml`, containing the `HelmChartConfig` manifest content. The file must be created on every server node within the RKE2 cluster, the rke2-server service will detect changes to the files in this directory and apply these to the cluster.
+
+## Verify the customization
+
+In this case, with a customization to the rke2-coredns configuration, the configmap rke2-coredns-rke2-coredns can be reviewed to determine if the change was successful:
+
+```
+kubectl -n kube-system get configmap rke2-coredns-rke2-coredns -o json
+```
 
 
 
@@ -31217,7 +31326,9 @@ To identify and silence the source of these errors, you can investigate the orig
 
 1. **Enable API Audit Logging:** Audit logs provide details on the source IP, user agent, and specific identity attempting the connection. Refer to the documentation to enable this:
    
-   - [Enable API audit log in RKE2](https://docs.rke2.io/security/audit_log "null")
+   - For Rancher-provisioned clusters: [Enabling the API Audit Log in Downstream Clusters](https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log-in-downstream-clusters)
+   - For standalone RKE2 clusters: [API Server audit configuration](https://docs.rke2.io/security/hardening_guide#api-server-audit-configuration)
+   - For standalone K3s clusters: [API Server audit configuration](https://docs.k3s.io/security/hardening-guide#api-server-audit-configuration)
 2. **Collect Logs:** Use a logging aggregator to analyze the frequency and source of the 401 Unauthorized responses.
    
    - [Collect Audit API logs using Rancher Logging](https://www.suse.com/support/kb/doc/?id=000021022 "null")
