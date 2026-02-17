@@ -25,7 +25,7 @@
     
     
       
-        <title>Increasing the RKE2 etcd snapshot S3 timeout - SUSE KBs</title>
+        <title>Increasing the etcd snapshot S3 timeout in an RKE2 or K3s cluster - SUSE KBs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#increasing-the-rke2-etcd-snapshot-s3-timeout" class="md-skip">
+        <a href="#increasing-the-etcd-snapshot-s3-timeout-in-an-rke2-or-k3s-cluster" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Increasing the RKE2 etcd snapshot S3 timeout
+              Increasing the etcd snapshot S3 timeout in an RKE2 or K3s cluster
             
           </span>
         </div>
@@ -15729,7 +15729,7 @@
   <span class="md-ellipsis">
     
   
-    Increasing the RKE2 etcd snapshot S3 timeout
+    Increasing the etcd snapshot S3 timeout in an RKE2 or K3s cluster
   
 
     
@@ -15747,7 +15747,7 @@
   <span class="md-ellipsis">
     
   
-    Increasing the RKE2 etcd snapshot S3 timeout
+    Increasing the etcd snapshot S3 timeout in an RKE2 or K3s cluster
   
 
     
@@ -15803,23 +15803,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Cause">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#verification" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verification
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -15830,34 +15813,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rke2-standalone-cluster" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        RKE2 standalone cluster
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rke2-cluster-provisioned-by-rancher" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        RKE2 cluster provisioned by Rancher
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -15962,23 +15917,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Cause">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#verification" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verification
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -15989,34 +15927,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rke2-standalone-cluster" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        RKE2 standalone cluster
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rke2-cluster-provisioned-by-rancher" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        RKE2 cluster provisioned by Rancher
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -16037,58 +15947,51 @@
 
 
 
-<h1 id="increasing-the-rke2-etcd-snapshot-s3-timeout">Increasing the RKE2 etcd snapshot S3 timeout</h1>
+<h1 id="increasing-the-etcd-snapshot-s3-timeout-in-an-rke2-or-k3s-cluster">Increasing the etcd snapshot S3 timeout in an RKE2 or K3s cluster</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Increasing-the-RKE2-etcd-snapshot-S3-timeout">000022328</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>RKE2 with recurring S3 snapshots</p>
+<p>A Rancher-provisioned or standalone, RKE2 or K3s cluster</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>In the rke2-server journalctl logs, errors with "deadline exceeded" are seen when attempting to reconcile and interact with the S3 endpoint for snapshots.</p>
+<p>In the rke2-server or k3s service logs, errors with "deadline exceeded" are seen when attempting to reconcile and interact with the S3 endpoint for snapshots.</p>
 <div class="highlight"><pre><span></span><code>Jan 27 15:01:46 xxxx rke2[3120757]: time=&quot;2026-01-27T15:01:46+08:00&quot; level=warning msg=&quot;Failed to get object metadata: Head \&quot;https://xxx.yy.org/rancher-downstream/prod-cluster/.metadata/etcd-snapshot-xxxx.yy.org-1753833604.zip\&quot;: context deadline exceeded&quot;
 Jan 27 15:01:46 xxxx rke2[3120757]: time=&quot;2026-01-27T15:01:46+08:00&quot; level=warning msg=&quot;Failed to get object metadata: context deadline exceeded&quot;
 Jan 27 15:01:46 xxxx rke2[3120757]: time=&quot;2026-01-27T15:01:46+08:00&quot; level=error msg=&quot;Error retrieving S3 snapshots for reconciliation: context deadline exceeded&quot;
 </code></pre></div>
 <p>If the network latency is high or the number of objects in the bucket introduces delays, the S3 snapshot handling fails to complete. For a cluster provisioned by Rancher, the dashboard may not show all of the available snapshots in S3.</p>
 <h2 id="cause"><strong>Cause</strong></h2>
-<p>The issue is caused by a network timeout when retrieving S3 snapshots. Increasing the <code>etcd-s3-timeout</code> parameter in the RKE2 configuration resolves the problem.</p>
-<p>If the "<code>failed to read metadata</code>" is seen in the errors, this relates to RKE2 storing a small <code>.zip</code> or <code>.json</code> metadata file alongside each snapshot.</p>
+<p>The issue is caused by a network timeout when retrieving S3 snapshots. Increasing the <code>etcd-s3-timeout</code> parameter in the RKE2/K3s configuration resolves the problem.</p>
+<p>If the "<code>failed to read metadata</code>" is seen in the errors, this relates to RKE2/K3s storing a small <code>.zip</code> or <code>.json</code> metadata file alongside each snapshot.</p>
 <ul>
-<li><strong>The Timeout:</strong> When RKE2 scans the bucket, it tries to read the metadata for each snapshot file. If the S3 provider (or the network path) doesn't respond fast enough, the whole process exits, leaving you with an empty or outdated list.</li>
+<li><strong>The Timeout:</strong> When RKE2/K3s scans the bucket, it tries to read the metadata for each snapshot file. If the S3 provider (or the network path) doesn't respond fast enough, the whole process exits, leaving you with an empty or outdated list.</li>
 <li><strong>The Cause:</strong> This may need additional assistance to understand, for example - the S3 endpoint may intermittently respond slowly or timeout, network congestion or underlying hardware configuration may introduce packet loss. Investigation is needed to resolve persistent performance issues.</li>
 </ul>
-<h3 id="verification"><strong>Verification</strong></h3>
-<p>Once the timeout is increased and the rke2-server services have been restarted:</p>
-<ol>
-<li>Run the manual list command again:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>rke2 etcd-snapshot list
-</code></pre></div>
-<p><div class="highlight"><pre><span></span><code>
-</code></pre></div>
-2. Check the Rancher dashboard, the snapshots should represent the current state of snapshot files in S3 once Rancher successfully synchronizes the list from the RKE2 API.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>To workaround the latency, the S3 operation timeout can be increased to allow RKE2 enough time to complete the API calls. At the time of writing this timeout is not configurable in the Rancher dashboard, so configuration is added to files on rke2-server nodes, or when using the <code>rke2</code> binary to run commands.</p>
+<p>To workaround the latency, the S3 operation timeout can be increased to allow the RKE2/K3s supervisor process enough time to complete the API calls. At the time of writing, this timeout is not configurable within Rancher, for Rancher-provisioned RKE2 and K3s clusters, so the configuration is also added directly on the etcd nodes in those clusters.</p>
 <p>The default timeout is 5 minutes, in the below steps a 10 minute timeout has been used.</p>
-<h3 id="rke2-standalone-cluster">RKE2 standalone cluster</h3>
-<p>Manage this using the node's configuration file, edit <code>/etc/rancher/rke2/config.yaml</code> adding the timeout configuration:</p>
-<div class="highlight"><pre><span></span><code>
+<p><strong>Configuration</strong></p>
+<p>Apply the configuration to the RKE2/K3s config file on every etcd node in the cluster.</p>
+<ol>
+<li>Configure the <code>etcd-s3-timeout</code> parameter in the the <a href="https://docs.rke2.io/install/configuration">RKE2</a> or <a href="https://docs.k3s.io/installation/configuration#configuration-file">K3s</a> configuration file (<code>/etc/rancher/rke2/config.yaml</code> or <code>/etc/rancher/k3s/config.yaml</code>) per the following example:</li>
+</ol>
+<p><div class="highlight"><pre><span></span><code>etcd-s3-timeout: 10m0s
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>etcd-s3-timeout: 10m0s
-</code></pre></div>
-<blockquote>
-<p><strong>Note</strong>, the configuration must be set on all rke2-server nodes, after saving the changes restart the rke2-server service on each node to put the change into effect: <code>systemctl restart rke2-server</code></p>
-</blockquote>
-<h3 id="rke2-cluster-provisioned-by-rancher">RKE2 cluster provisioned by Rancher</h3>
-<p>Add the configuration to a second file <code>51-rancher.yaml</code> under <code>/etc/rancher/rke2/config.yaml.d/</code></p>
-<div class="highlight"><pre><span></span><code>cat &lt;&lt;EOF &gt; /etc/rancher/rke2/config.yaml.d/51-rancher.yaml
-etcd-s3-timeout: 10m0s
-EOF
-</code></pre></div>
-<blockquote>
-<p><strong>Note</strong>, the configuration must be set on all rke2-server nodes, after saving the changes restart the rke2-server service on each node to put the change into effect: <code>systemctl restart rke2-server</code></p>
-</blockquote>
-<p>These same steps can be adapted for k3s server nodes</p>
+2. After updating the configuration file, you will need to restart the RKE2/K3s service to apply the changes:</p>
+<ul>
+<li>On RKE2 etcd nodes: <code>systemctl restart rke2-server</code></li>
+<li>On K3s etcd nodes: <code>systemctl restart k3</code></li>
+</ul>
+<p><strong>Verification</strong></p>
+<p>Once the timeout is increased and the rke2-server/k3s services have been restarted, you can verify the configuration.</p>
+<ul>
+<li>
+<p>For standalone clusters, run the manual list command, to verify that the list matches the snapshots within S3.</p>
+</li>
+<li>
+<p>For RKE2 clusters: <code>rke2 etcd-snapshost list</code></p>
+</li>
+<li>For K3s clusters:<code>k3s etcd-snapshot list</code></li>
+<li>For Rancher-provisioned clusters, check the Rancher UI. Navigate to <strong>Cluster Management</strong>, select the applicable cluster, and click the <strong>Snapshots</strong> tab. The snapshots should represent the current state of snapshot files in S3, once Rancher successfully synchronizes the list from the RKE2/K3s cluster.</li>
+</ul>
 
 
 
