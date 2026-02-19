@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
     
     
       
@@ -12073,34 +12073,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000021764/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to fix RKE2 Error: etcdserver mvcc database space exceeded?
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000021767/" class="md-nav__link">
         
   
@@ -13425,6 +13397,34 @@
     
   
     Jobs apply-system-agent-upgrader on nodes keep failing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000021977/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting etcd snapshot restore blocked by webhook configurations
   
 
     
@@ -15194,6 +15194,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../000022184/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrating from Ingress NGINX to Traefik in a standalone RKE2 cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000022185/" class="md-nav__link">
         
   
@@ -15831,6 +15859,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022357/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to configure the Fleet Webhook using Rancher's Let's Encrypt Ingress certificate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022372/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to filter Rancher API audit log events with rancher-logging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -15937,6 +16021,59 @@
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>
 </code></pre></div>
+<div class="highlight"><pre><span></span><code>spec:
+  config:
+    cloud-config:
+      stages:
+        initramfs:
+          - files:
+              - content: |
+                  [connection]
+                  id=bond0-slave-eth0
+                  type=ethernet
+                  interface-name=eth0
+                  master=bond0
+                  slave-type=bond
+                  autoconnect=true
+                  [ethernet]
+                  mac-address=00:50:56:bd:c3:f8
+                path: /etc/NetworkManager/system-connections/bond0-slave-eth0.nmconnection
+                permissions: 384
+
+          - files:
+              - content: |
+                  [connection]
+                  id=bond0-slave-eth1
+                  type=ethernet
+                  interface-name=eth1
+                  master=bond0
+                  slave-type=bond
+                  autoconnect=true
+                  [ethernet]
+                  mac-address=00:50:56:bd:01:a2
+                path: /etc/NetworkManager/system-connections/bond0-slave-eth1.nmconnection
+                permissions: 384
+
+          - files:
+              - content: |
+                  [connection]
+                  id=bond-bond0
+                  type=bond
+                  interface-name=bond0
+                  [bond]
+                  miimon=100
+                  mode=802.3ad
+                  xmit_hash_policy=layer3+4
+                  [ipv4]
+                  method=auto
+                  dns=10.144.53.53;10.144.53.54
+                  [ipv6]
+                  method=disabled
+                path: /etc/NetworkManager/system-connections/bond-bond0.nmconnection
+                permissions: 384
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
 <hr />
 <h2 id="vlan-configuration-optional">VLAN Configuration (Optional)</h2>
 <p>To configure the bonding interface to use a specific VLAN, use the following example instead of the standard bond configuration:</p>
@@ -15990,58 +16127,6 @@
 <p><code>root@SUSE-820564:~# echo $((0600)) 384 root@SUSE-820564:~#</code>
 - Refer to the official documentation for additional details:<br />
 <a href="https://elemental.docs.rancher.com/networking-static/#static-network-with-nm-configurator">Static Network with NetworkManager Configurator</a></p>
-<div class="highlight"><pre><span></span><code>spec:
-  config:
-    cloud-config:
-      stages:
-        initramfs:
-          - files:
-              - content: |
-                  [connection]
-                  id=bond0-slave-eth0
-                  type=ethernet
-                  interface-name=eth0
-                  master=bond0
-                  slave-type=bond
-                  autoconnect=true
-                  [ethernet]
-                  mac-address=00:50:56:bd:c3:f8
-                path: /etc/NetworkManager/system-connections/bond0-slave-eth0.nmconnection
-                permissions: 384
-
-          - files:
-              - content: |
-                  [connection]
-                  id=bond0-slave-eth1
-                  type=ethernet
-                  interface-name=eth1
-                  master=bond0
-                  slave-type=bond
-                  autoconnect=true
-                  [ethernet]
-                  mac-address=00:50:56:bd:01:a2
-                path: /etc/NetworkManager/system-connections/bond0-slave-eth1.nmconnection
-                permissions: 384
-
-          - files:
-              - content: |
-                  [connection]
-                  id=bond-bond0
-                  type=bond
-                  interface-name=bond0
-                  [bond]
-                  miimon=100
-                  mode=802.3ad
-                  xmit_hash_policy=layer3+4
-                  [ipv4]
-                  method=auto
-                  dns=10.144.53.53;10.144.53.54
-                  [ipv6]
-                  method=disabled
-                path: /etc/NetworkManager/system-connections/bond-bond0.nmconnection
-                permissions: 384
-</code></pre></div>
-<hr />
 <h2 id="summary">Summary</h2>
 <p>By following this procedure, you can successfully configure NIC teaming in OS Elemental using either the visual method (Rancher UI) or the command-line method. Adjust the sample configuration as needed for your environment, ensuring all permissions and parameters align with your network requirements.</p>
 
