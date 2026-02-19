@@ -16664,9 +16664,9 @@ RKE2 allows the use of [HelmChartConfig resources](https://docs.rke2.io/helm#cus
 
 ## **Resolution**
 
-Details on the customization of components via `HelmChartConfig` resources can be found within the [RKE2 documentation](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig). 
+Details on the customization of components via `HelmChartConfig` resources can be found within the [RKE2 documentation](https://docs.rke2.io/helm#customizing-packaged-components-with-helmchartconfig).
 
-In the example below, we will use a `HelmChartConfig` to add a custom zonefile to rke2-coredns for the domain example.com
+In the example below, we will use a `HelmChartConfig` to add a custom zonefile to rke2-coredns for the domain example.com:
 
 ```
 apiVersion: helm.cattle.io/v1
@@ -16729,17 +16729,17 @@ spec:
             }
 ```
 
-> **Note**, the full Corefile content is used in the above example to set the hosts plugin values. This is needed as items can't be appended to a list in helm values, care should be taken when combining this with other helm value changes for coredns
+> **Note:** the full Corefile content is used in the above example to set the hosts plugin values. This is needed as items can't be appended to a list in helm values, care should be taken when combining this with other helm value changes for coredns.
 
-## Rancher-provisioned RKE2 cluster
+**Rancher-provisioned RKE2 cluster**
 
 To apply this `HelmChartConfig` customization in a Rancher-provisioned RKE2 cluster, navigate to the **Cluster Management** view and click **Edit Config** for the desired cluster. Click the **Add-On Config** tab and add the `HelmChartConfig` manifest into the **Additional Manifest** section, before clicking **Save**.
 
-## Standalone RKE2 cluster
+**Standalone RKE2 cluster**
 
 Create the file `/var/lib/rancher/rke2/server/manifests/rke2-coredns-config.yaml`, containing the `HelmChartConfig` manifest content. The file must be created on every server node within the RKE2 cluster, the rke2-server service will detect changes to the files in this directory and apply these to the cluster.
 
-## Verify the customization
+**Verify the customization**
 
 In this case, with a customization to the rke2-coredns configuration, the configmap rke2-coredns-rke2-coredns can be reviewed to determine if the change was successful:
 
@@ -22725,165 +22725,6 @@ Istio, Kiali, and Jaeger are third party tools which are not supported by Ranche
 
 ---
 
-## Article: 000021764.md
-
-# How to fix RKE2 Error: etcdserver mvcc database space exceeded?
-
-**Article Number:** [000021764](https://support.scc.suse.com/s/kb/etcdserver-mvcc-database-space-exceeded-error)
-
-## **Environment**
-
-SUSE Rancher
-
-RKE2
-
-## **Situation**
-
-**Overview:**  
-In Kubernetes, **etcd** is the authoritative data store for cluster state, configuration, and other critical metadata.
-
-**Problem:**  
-As workloads grow and more objects are created/updated, the etcd database can hit its default size quota. In **RKE2**, server nodes run an **embedded etcd**; when its BoltDB backend reaches the quota, etcd rejects new writes with:
-
-```markup
-etcdserver: mvcc: database space exceeded
-```
-
- 
-
-**Impact:**
-
-- Kubernetes API operations (create/update) begin to fail
-- Controllers stall and reconcile loops pause
-- The API server may log errors or even panic referencing the message above
-
-**Symptoms you'll see:**
-
-- Pod events / apiserver logs: `etcdserver: mvcc: database space exceeded`
-- etcd alarms include **`NOSPACE`**
-- Cluster becomes read-only (creates/updates fail; reads still OK)
-- High etcd DB size on disk; frequent WAL/bolt compaction messages
-
-## **Cause**
-
-**Why this happens (root cause):**
-
-- etcd’s **backend quota** (default ~2 GiB) is reached because:
-  
-  - Lots of historical revisions accumulated (high churn: ConfigMaps/Secrets/CRDs updated frequently).
-  - Regular **compaction/defragmentation** hasn’t reclaimed space.
-  - Very **large objects** (big Secrets/ConfigMaps) are stored.
-- Once quota is hit, etcd sets a **NOSPACE alarm** and rejects writes until you compact + defrag.
-
-The etcd database size is primarily influenced by the number of objects stored, frequent updates, and high write activity. If the database size limit is reached, you may experience issues such as slow API responses, failed leader elections, or cluster instability. Additionally, excessive fragmentation due to outdated entries and stale snapshots can contribute to rapid storage consumption.
-
-## **Resolution**
-
-**Part 1: etcd database compact and defrag**
-
-Start by **compacting and defragmenting the etcd database** to resolve the issue. Follow the steps below:
-
-**Prework (Important)**
-
-```markup
-export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
-PATH="$PATH:/var/lib/rancher/rke2/bin"
-
-etcdcontainer=$(/var/lib/rancher/rke2/bin/crictl ps --label io.kubernetes.container.name=etcd --quiet)
-ETCD_CERT=/var/lib/rancher/rke2/server/tls/etcd/server-client.crt
-ETCD_KEY=/var/lib/rancher/rke2/server/tls/etcd/server-client.key
-ETCD_CACERT=/var/lib/rancher/rke2/server/tls/etcd/server-ca.crt
-ETCDCTL_ENDPOINTS=$(crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} member list | cut -d, -f5 | sed -e 's/ //g' | paste -sd ',')
-```
-
-<!--THE END-->
-
-- etcdctl compact
-
-> **Note:**`"etcdctl compact"` is a **blocking** operation—each member pauses writes during compaction; acceptable in read-only incidents, but be aware that it will block writes for multiple seconds on larger clusters and plan accordingly.
-
-```markup
-Command:
-$ rev=$(crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS endpoint status --write-out fields | grep Revision | cut -d: -f2)
-
-$ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS compact $rev
-
-Example output:
-compacted revision 31014066
-```
-
-- etcdctl defrag
-
-```markup
-Command: 
-$ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS defrag --cluster
-
-Example output:
-Finished defragmenting etcd member[https://10.55.2.123:2379]
-```
-
-- etcdctl alarm list
-
-```markup
-Command:
-$ crictl exec ${etcdcontainer} etcdctl --cert ${ETCD_CERT} --key ${ETCD_KEY} --cacert ${ETCD_CACERT} --endpoints=$ETCDCTL_ENDPOINTS alarm list
-```
-
-You can run the etcd **member list/endpoint status/endpoint health** commands to confirm the database size has decreased and that the cluster has recovered. For more details, refer to the **Additional Information** section below.
-
- 
-
-**Part 2: Increase quota-backend-bytes to extend the etcd keyspace limit in RKE2**
-
-Sometimes the cluster won’t allow `compact` or `defrag`: all attempts fail because etcd has raised a **NOSPACE** alarm with no free headroom. The alarm blocks writes, and `defrag` still requires some writable space. **Temporarily free disk space** (e.g., remove old snapshots/logs or expand the volume) **or increase `quota-backend-bytes`** to create headroom, then run **`compact`** followed by **`defrag`** .
-
-**For a standalone RKE2 cluster**, you can increase the etcd database size by modifying the RKE2 configuration file /etc/rancher/rke2/config.yaml. (This example sets the value to **8,589,934,592** (**8 GiB**); you can choose a different size as needed.)
-
-```
-
-```
-
-```markup
-etcd-arg:
-  - "quota-backend-bytes=8589934592"
-```
-
-and restart rke2-server
-
-```markup
-systemctl restart rke2-server
-```
-
-**For a cluster managed by Rancher**, go to Rancher, Cluster Management -&gt; select the cluster and Edit YAML (which you will get from the 3 dot menu). 
-
-Add quota-backend-bytes as an etcd-arg under spec.rkeConfig.machineSelectorConfig. For example, set the quota to 5GiB:
-
-```markup
-    machineSelectorConfig:
-      - config:
-          etcd-arg:
-            - quota-backend-bytes=5368709120
-        machineLabelSelector:
-          matchLabels:
-            rke.cattle.io/etcd-role: 'true'
-```
-
-Under some conditions, the cluster object may be receiving frequent updates, which can make it difficult to save YAML changes easily in the Rancher dashboard. In this case, a "kubectl patch" command using a kubeconfig for the Rancher management (local) cluster can be used instead.
-
-The following example uses a 5GiB quota size:
-
-```markup
-CLUSTER_NAME=<name of the cluster in Rancher>
-
-kubectl patch -n fleet-default cluster.provisioning.cattle.io $CLUSTER_NAME --type=merge -p '{"spec": {"rkeConfig": {"machineSelectorConfig": [ {"config": {"etcd-arg": ["quota-backend-bytes=5368709120"]}, "machineLabelSelector": {"matchLabels": {"rke.cattle.io/etcd-role": "true"}}} ]}}}'
-```
-
-Increasing the etcd database size can help mitigate etcd storage consumption issues and ensure the cluster remains stable and responsive.
-
-
-
----
-
 ## Article: 000021767.md
 
 # How to Connect to Rancher Provisioned Clusters using CLI When Rancher is Offline
@@ -26080,6 +25921,171 @@ Delete the downstream cluster and recreate it without the symlink on nodes. Alte
 
 ---
 
+## Article: 000021977.md
+
+# Troubleshooting etcd snapshot restore blocked by webhook configurations
+
+**Article Number:** [000021977](https://support.scc.suse.com/s/kb/Troubleshooting-etcd-snapshot-restore-blocked-by-webhook-configurations)
+
+## **Environment**
+
+- Rancher v2.x
+- A Rancher-provisioned or standalone RKE2 or K3s cluster
+- Policy Engines/Webhooks: Kyverno, Kubewarden, OPA Gatekeeper, NeuVector, etc.
+
+## **Situation**
+
+When attempting to restore an etcd snapshot on an RKE2 or K3s cluster, the restoration process fails to complete or enters an infinite loop.
+
+Symptoms may include:
+
+- The Rancher UI showing the cluster in a perpetual "Restoring" or "Updating" state.
+- `kubelet` or `kube-apiserver` logs showing timeouts or connection refused errors when attempting to contact webhooks.
+
+## **Cause**
+
+This issue occurs due to a circular dependency (deadlock) involving `ValidatingWebhookConfiguration` or `MutatingWebhookConfiguration` resources:
+
+1. During a restore, after the etcd state itself is restored, the `kubelet` and `kube-apiserver` are started and begin reconciling Pods and the other cluster resources stored in the snapshot.
+2. If the snapshot includes webhook configurations, the `kubelet`/`kube-apiserver` attempts to send validation/mutation requests to the associated webhook Pods (e.g., Kyverno or Gatekeeper).
+3. However, those pods have not yet been started or reached a "Ready" state because the cluster restoration is still in progress. This is particularly the case, in the event of a Disaster Recovery (DR) restore, in which the cluster is started from scratch.
+4. The `kubelet` or `kube-apiserver` server, unable to reach the webhook, denies the creation of required system resources (based on the webhook's `failurePolicy`), effectively blocking the cluster from ever reaching a healthy state.
+
+## **Resolution**
+
+To resolve this, you must temporarily remove the webhook configurations during the restore process so that the `kubelet` and `kube-apiserver` can successfully initialize the cluster components, without being blocked.
+
+**1. Prepare Environment**
+
+Access the control plane (server) node via SSH where the restore is being performed and configure the environment:
+
+**RKE2:**
+
+```markup
+export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+alias kubectl=/var/lib/rancher/rke2/bin/kubectl
+```
+
+**K3s:**
+
+No action required to configure kubectl.
+
+**2. Backup Existing Webhook Configurations**
+
+Before the restore reaches the blocking stage, or immediately upon starting, capture the current configurations to a local directory:
+
+```markup
+kubectl get validatingwebhookconfiguration -o yaml > all-validating.yaml
+kubectl get mutatingwebhookconfiguration -o yaml > all-mutating.yaml
+```
+
+**3. Clear Webhooks During Restore**
+
+While it is possible to delete all webhooks to ensure the restore completes, a **Targeted Deletion** is safer as it preserves system-critical webhooks while removing the blocking third-party policy engines.
+
+**Identifying the Blocking Webhooks**
+
+Check the `kubelet` and `kube-apiserver` logs on the server nodes for "failed calling webhook" or "connection refused" errors to identify which specific webhook configurations are causing the deadlock.
+
+**Distribution****Component****Log Location / Command**RKE2kube-apiserver`kubectl logs -n kube-system -l component=kube-apiserver -f`RKE2kubelet`/var/lib/rancher/rke2/agent/logs/kubelet.log`K3scombined`journalctl -u k3s -f`
+
+ 
+
+**Option A: Targeted Deletion (Recommended)**
+
+Modify the script below by replacing the placeholder names in the `TARGET_WEBHOOKS` array with the specific webhooks identified from your logs:
+
+```markup
+#!/bin/bash
+# Add specific webhook names here (e.g., "kyverno-resource-validating-webhook-configuration")
+TARGET_WEBHOOKS=("webhook-name-1" "webhook-name-2")
+
+# Identify kubectl and KUBECONFIG path
+if [ -f /etc/rancher/rke2/rke2.yaml ]; then
+    export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+    KUBECTL=/var/lib/rancher/rke2/bin/kubectl
+elif [ -f /etc/rancher/k3s/k3s.yaml ]; then
+    export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+    KUBECTL="/usr/local/bin/k3s kubectl"
+else
+    KUBECTL=$(which kubectl)
+fi
+
+echo "Using kubectl at: $KUBECTL"
+echo "Using KUBECONFIG at: $KUBECONFIG"
+echo "Monitoring and removing specific blocking webhooks..."
+
+while true; do
+  for name in "${TARGET_WEBHOOKS[@]}"; do
+    # Check Validating
+    if kubectl get validatingwebhookconfiguration "$name" &>/dev/null; then
+        echo "Deleting validating webhook: $name"
+        kubectl delete validatingwebhookconfiguration "$name" --timeout=5s
+    fi
+    # Check Mutating
+    if kubectl get mutatingwebhookconfiguration "$name" &>/dev/null; then
+        echo "Deleting mutating webhook: $name"
+        kubectl delete mutatingwebhookconfiguration "$name" --timeout=5s
+    fi
+  done
+  sleep 2
+done
+```
+
+**Option B: Bulk Deletion**
+
+Use this script if the cluster is critically blocked and individual identification is not feasible:
+
+```markup
+#!/bin/bash
+
+# Identify kubectl and KUBECONFIG path
+if [ -f /etc/rancher/rke2/rke2.yaml ]; then
+    export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+    KUBECTL=/var/lib/rancher/rke2/bin/kubectl
+elif [ -f /etc/rancher/k3s/k3s.yaml ]; then
+    export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+    KUBECTL="/usr/local/bin/k3s kubectl"
+else
+    KUBECTL=$(which kubectl)
+fi
+
+echo "Using kubectl at: $KUBECTL"
+echo "Using KUBECONFIG at: $KUBECONFIG"
+echo "Monitoring and removing webhooks to allow restoration..."
+
+while true; do
+  # Delete Mutating Webhooks
+  for hook in $(kubectl get mutatingwebhookconfiguration -o name 2>/dev/null); do
+    echo "Deleting $hook"
+    kubectl delete "$hook" --timeout=5s
+  done
+
+  # Delete Validating Webhooks
+  for hook in $(kubectl get validatingwebhookconfiguration -o name 2>/dev/null); do
+    echo "Deleting $hook"
+    kubectl delete "$hook" --timeout=5s
+  done
+
+  sleep 2
+done
+```
+
+**Note:** Keep the script running until the server logs indicate that the restore has completed and nodes are "Ready". Press Ctrl+C to stop the script.
+
+**4. Restore Webhook Configurations**
+
+Once the cluster is healthy and the policy engine pods are running, re-create the configurations from your backups:
+
+```markup
+kubectl create -f all-validating.yaml
+kubectl create -f all-mutating.yaml
+```
+
+
+
+---
+
 ## Article: 000021989.md
 
 # Add labels for alerts generated by Project Monitors.
@@ -27432,6 +27438,65 @@ This article provides the procedure for configuring **NIC Teaming (bonding)** in
 
 ```
 
+```markup
+spec:
+  config:
+    cloud-config:
+      stages:
+        initramfs:
+          - files:
+              - content: |
+                  [connection]
+                  id=bond0-slave-eth0
+                  type=ethernet
+                  interface-name=eth0
+                  master=bond0
+                  slave-type=bond
+                  autoconnect=true
+                  [ethernet]
+                  mac-address=00:50:56:bd:c3:f8
+                path: /etc/NetworkManager/system-connections/bond0-slave-eth0.nmconnection
+                permissions: 384
+
+          - files:
+              - content: |
+                  [connection]
+                  id=bond0-slave-eth1
+                  type=ethernet
+                  interface-name=eth1
+                  master=bond0
+                  slave-type=bond
+                  autoconnect=true
+                  [ethernet]
+                  mac-address=00:50:56:bd:01:a2
+                path: /etc/NetworkManager/system-connections/bond0-slave-eth1.nmconnection
+                permissions: 384
+
+          - files:
+              - content: |
+                  [connection]
+                  id=bond-bond0
+                  type=bond
+                  interface-name=bond0
+                  [bond]
+                  miimon=100
+                  mode=802.3ad
+                  xmit_hash_policy=layer3+4
+                  [ipv4]
+                  method=auto
+                  dns=10.144.53.53;10.144.53.54
+                  [ipv6]
+                  method=disabled
+                path: /etc/NetworkManager/system-connections/bond-bond0.nmconnection
+                permissions: 384
+
+          
+```
+
+```
+
+```
+
 * * *
 
 ## VLAN Configuration (Optional)
@@ -27495,63 +27560,6 @@ To configure the bonding interface to use a specific VLAN, use the following exa
   `root@SUSE-820564:~# echo $((0600)) 384 root@SUSE-820564:~#`
 - Refer to the official documentation for additional details:  
   [Static Network with NetworkManager Configurator](https://elemental.docs.rancher.com/networking-static/#static-network-with-nm-configurator)
-
-```markup
-spec:
-  config:
-    cloud-config:
-      stages:
-        initramfs:
-          - files:
-              - content: |
-                  [connection]
-                  id=bond0-slave-eth0
-                  type=ethernet
-                  interface-name=eth0
-                  master=bond0
-                  slave-type=bond
-                  autoconnect=true
-                  [ethernet]
-                  mac-address=00:50:56:bd:c3:f8
-                path: /etc/NetworkManager/system-connections/bond0-slave-eth0.nmconnection
-                permissions: 384
-
-          - files:
-              - content: |
-                  [connection]
-                  id=bond0-slave-eth1
-                  type=ethernet
-                  interface-name=eth1
-                  master=bond0
-                  slave-type=bond
-                  autoconnect=true
-                  [ethernet]
-                  mac-address=00:50:56:bd:01:a2
-                path: /etc/NetworkManager/system-connections/bond0-slave-eth1.nmconnection
-                permissions: 384
-
-          - files:
-              - content: |
-                  [connection]
-                  id=bond-bond0
-                  type=bond
-                  interface-name=bond0
-                  [bond]
-                  miimon=100
-                  mode=802.3ad
-                  xmit_hash_policy=layer3+4
-                  [ipv4]
-                  method=auto
-                  dns=10.144.53.53;10.144.53.54
-                  [ipv6]
-                  method=disabled
-                path: /etc/NetworkManager/system-connections/bond-bond0.nmconnection
-                permissions: 384
-
-          
-```
-
-* * *
 
 ## Summary
 
@@ -30438,6 +30446,293 @@ After the configuration is applied:
 
 ---
 
+## Article: 000022184.md
+
+# Migrating from Ingress NGINX to Traefik in a standalone RKE2 cluster
+
+**Article Number:** [000022184](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster)
+
+## **Environment**
+
+- A standalone or imported RKE2 cluster that is using Ingress NGINX as the ingress controller. The local cluster, where Rancher deployed, is included in this category.
+- RKE2 v1.32 &gt;= v1.32.11+rke2r1, v1.33 &gt;= v1.33.7+rke2r1, v1.34 &gt;= v1.34.3+rke2r1, or &gt;= v1.35.0+rke2r1
+
+**N.B.** For Rancher-provisioned RKE2 clusters, a separate KB will be created, once support for Traefik is enabled in the RKE2 cluster provisioning UIs.
+
+## **Procedure**
+
+## **Situation**
+
+You’ve likely seen the [announcement](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/) that Ingress NGINX will be retired after March 2026. For organizations that do not want to migrate ingress controller in the near term, SUSE will help you stabilize what you have. RKE2 v1.35 will give SUSE Rancher Prime LTS customers support through November 2027. That means hardened baselines and continuous CVE monitoring on Ingress NGINX, with documented mitigations.
+
+For organizations ready to move, SUSE offers a path to Traefik. Where your configuration fits common patterns, it is possible to lean on Traefik’s nginx-compatibility approach to reduce changes and risk during the cutover. Where you’ve accumulated bespoke annotations or advanced behaviours - for example, TLS passthrough, mutual TLS, rate limiting, custom authentication - our consulting services team can help you scope the differences, pilot safely and stage a controlled cutover. 
+
+For more information, check our [blog post](https://www.suse.com/c/trade-the-ingress-nginx-retirement-for-up-to-2-years-of-rke2-support-stability/).
+
+This article explains the supported migration plan to Traefik.
+
+## **Important considerations**
+
+Before starting the migration, please review the following technical requirements and limitations:
+
+- **Annotation compatibility**: While Traefik includes a "shim layer" to interpret NGINX annotations, compatibility is not 1/1.
+  
+  - **Action:** Review the official Traefik [annotations list](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#annotations-support) to identify unsupported annotations.
+  - **Tooling:** Use the [Traefik-provided discovery tool](https://github.com/traefik/ingress-nginx-migration?tab=readme-ov-file#installation) to automatically highlight unsupported annotations within your cluster.
+  - **Support:** If your environment relies on unsupported annotations, our consulting services team can assist with scoping, pilot testing, and staging a controlled cutover.
+
+<!--THE END-->
+
+- **General limitations:** The [Traefik documentation depicts some limitations](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#limitations) of the current implementation that you will need to take into account.
+
+## **Requirements**
+
+Before starting the migration from Ingress NGINX to Traefik make sure that you comply with the requirements:
+
+- One of the following RKE2 versions, or above:
+  
+  - v1.35.0+rke2r1
+  - v1.34.3+rke2r1
+  - v1.33.7+rke2r1
+  - v1.32.11+rke2r1
+- Verify the Ingress NGINX annotations are [supported](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#annotations-support).
+- Verify if you are impacted by the above mentioned [limitations](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#limitations).
+- Backup of critical configurations (Ingress resources, ConfigMaps, Secrets).
+
+If an older version of RKE2 is run, an upgrade to any of those minors is needed.
+
+If you are hit by any limitation or using an unsupported annotation, please contact the SUSE team.
+
+## **Migration**
+
+The migration process involves four main phases on your RKE2 cluster:
+
+1. **Phase 1: Dual ingress controller setup** - Enable Traefik alongside Ingress NGINX, using temporary non-conflicting ports for Traefik.
+2. **Phase 2: Parallel migration and validation** - Replicating the ingress objects, they can be exposed by both Ingress NGINX and Traefik. We can use this phase to verify that Traefik can handle the existing ingress objects without disruption.
+3. **Phase 3: Final switchover and port reassignment**  - Once the testing is complete using Traefik, this phase will remove Ingress NGINX.
+4. **Phase 4: Cleanup** - Remove the duplicated ingress resources
+
+### **Pre-requisites**
+
+- **Access to RKE2 Server Node:** You must be able to modify the RKE2 configuration file (`/etc/rancher/rke2/config.yaml`), stage new manifest files on the server node and restart the rke2 control plane nodes.
+- **Existing Ingress NGINX Setup:** Your cluster is currently running Ingress NGINX as the ingress controller.
+
+### **Phase 1: Dual ingress controller setup (Coexistence)**
+
+In this phase, you enable Traefik as a secondary Ingress Controller and configure it to use temporary ports to avoid conflict with the existing Ingress NGINX controller. You also enable the Ingress NGINX provider that allows Traefik to interpret Ingress NGINX annotations.
+
+#### **1. Assign ingressClassName: nginx to existing ingresses**
+
+First, ensure all existing Ingress resources are explicitly bound to the Ingress NGINX controller to prevent any race conditions when Traefik is deployed.
+
+```markup
+# This command finds all Ingress resources across all namespaces and patches them
+# to set the ingressClassName to 'nginx'.
+
+kubectl get ingress --all-namespaces -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name' --no-headers | while read NS NAME; do
+    echo "Patching Ingress: $NS/$NAME"
+    kubectl patch ingress "$NAME" -n "$NS" --type=merge -p '{"spec": {"ingressClassName": "nginx"}}'
+done
+```
+
+#### **1.1. Verification: confirm IngressClass assignment**
+
+Run this command to quickly verify that all your Ingress resources now have their `ingressClassName` explicitly set to nginx.
+
+```markup
+# This command lists all Ingresses and their assigned Ingress Class Name (ICLASS).
+# Check the output: the ICLASS column should show 'nginx' for all your resources.
+kubectl get ingress --all-namespaces -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,ICLASS:.spec.ingressClassName'
+```
+
+If any Ingress resource shows `<none>`or a different class in the ICLASS column, you must investigate and manually patch those resources before proceeding to the next step.
+
+#### **2. Update RKE2 configuration**
+
+Edit the RKE2 server configuration file (`/etc/rancher/rke2/config.yaml`) to enable both controllers:
+
+```markup
+# /etc/rancher/rke2/config.yaml
+ingress-controller:
+- ingress-nginx
+- traefik
+```
+
+#### **⚠️** For airgap installations: If you are using the [Image Tarball](https://docs.rke2.io/install/airgap?airgap-load-images=Manually%20Deploy%20Images#prepare-the-images-directory-and-airgap-image-tarball), note that Traefik is not included in the default *rke2-images.linux-amd64.tar.zst* asset (example assuming amd64), and you will need to download the additional *rke2-images-traefik.linux-amd64.tar.zst* tarball, and place it in the corresponding folder on the airgap node.
+
+#### **3. Configure Traefik ports and compatibility settings**
+
+Create the `HelmChartConfig` manifest on your server node (e.g., `/var/lib/rancher/rke2/server/manifests/rke2-traefik-config.yaml`). This manifest now performs three functions:
+
+1. Sets Traefik to use non-conflicting ports (8000 and 8443).
+2. Enables Ingress NGINX compatibility mode for annotations (`--providers.kubernetesIngressNGINX`).
+3. Disables the published service to avoid race conditions with Ingress NGINX.
+
+```markup
+# rke2-traefik-config.yaml
+
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    ports:
+      web:
+        hostPort: 8000
+      websecure:
+        hostPort: 8443
+    providers:
+      kubernetesIngressNginx:
+        enabled: true
+        ingressClass: "rke2-ingress-nginx-migration"
+        controllerClass: "rke2.​cattle.​io/ingress-nginx-migration"
+```
+
+#### **4. Restart RKE2**
+
+Restart the rke2-server service in all CP nodes to apply the configuration changes:
+
+```markup
+sudo systemctl restart rke2-server
+```
+
+Wait for the cluster to become ready. Verify that both `rke2-ingress-nginx-controller` and `rke2-traefik` DaemonSets must be running:
+
+```markup
+kubectl get daemonset -n kube-system
+```
+
+#### **5. Verify Functionality**
+
+- **Existing Ingress NGINX Ingresses:** Verify that your existing Ingresses are still reachable on the standard ports (80/443).
+- **New Traefik Ingresses (Testing):** You can now deploy new Ingress resources specifying the `traefik` class to test your new controller, using the temporary ports (8000/8443) for access.
+- **Verify Traefik DaemonSet manifest:** The DaemonSet includes hostPort: 8000, and hostPort: 8443.
+- **New IngressClass:** There is a new ingressClass with name “rke2-ingress-nginx-migration”.
+- **IngressNginx provider:** Verify that the Ingressnginx provider is started. In the traefik logs:
+
+```markup
+INF Starting provider *ingressnginx.Provider
+```
+
+### **Phase 2: Parallel migration and validation**
+
+The goal is to validate that Traefik can correctly handle traffic and NGINX annotations by processing duplicated Ingress resources.
+
+**⚠️** When migrating a Rancher local cluster, which includes the Rancher Ingress resource, specific steps are required. In this case, follow the guide: [How to migrate the Rancher Ingress to Traefik in an RKE2 cluster](https://support.scc.suse.com/s/kb/How-to-migrate-the-Rancher-Ingress-to-Traefik-in-an-RKE2-cluster?language=en_US).
+
+#### **1. Duplicate and reclassify Ingresses**
+
+For every critical Ingress resource (currently using `ingressClassName: nginx`), create a copy of the manifest with **only one change**: set the class name to `rke2-ingress-nginx-migration`.
+
+Apply these new, duplicated Ingress manifests. You can click [**here**](https://suse.my.salesforce.com/sfc/p/1i000000gLOd/a/Tr00000L6zpV/AUCrhxTQb6n7Mq4jDl8XWowRuNUp5XktR5uW1kVWg9w) to download **SCRIPT1** for a suggested way to achieve this.
+
+#### **2. Test services via both controllers**
+
+Your services are now accessible via two separate routes (hostPorts):
+
+- **Ingress NGINX access (Original/Stable):** `http://<Node_IP>` (on ports 80/443)
+- **Traefik access (Testing/Duplicated):** `http://<Node_IP>:8000` (on ports 8000/8443)
+
+Note that Traefik provides also a ClusterIP service by default.
+
+Thoroughly test all services accessed via the Traefik port (8000/8443), ensuring all Nginx-specific features (annotations) are handled correctly by Traefik's compatibility layer.
+
+#### **3. (Optional) Configure external load balancer**
+
+If you use an external load balancer (LB) to route traffic to your Kubernetes cluster, add Traefik as a backend using the Traefik node route (`http://<Node_IP>:8000`).
+
+Refer to the [Traefik Migration Guide](https://doc.traefik.io/traefik/migrate/nginx-to-traefik/#step-3-shift-traffic-to-traefik) for either DNS-Based migration or External Load Balancer with Weighted Traffic strategies. Take into account that the guide expects both ingresses to include a service with a LoadBalancer address but this guide is assuming node ports are used
+
+**⚠️** Health Check Warning!
+
+Ingress NGINX and Traefik use different health check endpoints. Ensure your LB configuration is updated accordingly:
+
+- **Ingress NGINX:** /healthz
+- **Traefik:** /ping
+
+### **Phase 3: Final switchover and port reassignment**
+
+Once validation is complete, you will uninstall Ingress NGINX and switch Traefik to the standard ports. Note that uninstalling Ingress NGINX might take a while because of how Kubernetes handles the teardown of resources and webhooks. If downtime is very important for you, you should consider splitting this phase in two: first uninstall Ingress NGINX while keeping Traefik listening on the 8000/8443 ports and then, once Ingress NGINX is removed, change Traefik ports.
+
+#### **1. Uninstall Ingress NGINX**
+
+Edit the RKE2 server configuration file (`/etc/rancher/rke2/config.yaml`) to set **Traefik** as the only Ingress Controller:
+
+```markup
+# /etc/rancher/rke2/config.yaml
+ingress-controller: 
+- traefik
+```
+
+#### If downtime is important and you’d like to split this phase, you should restart RKE2 at this point and don’t move to the next step (configure Traefik for Standard Ports) until Ingress NGINX is completely removed.
+
+#### **2. Configure Traefik for Standard Ports**
+
+Update the `HelmChartConfig` manifest (`/var/lib/rancher/rke2/server/manifests/rke2-traefik-config.yaml`) to remove the custom port configuration.
+
+```markup
+# rke2-traefik-config.yaml
+
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    providers:
+      kubernetesIngressNginx:
+        enabled: true
+        ingressClass: "rke2-ingress-nginx-migration"
+        controllerClass: "rke2.​cattle.​io/ingress-nginx-migration"
+```
+
+#### **3. Restart RKE2**
+
+Restart the `rke2-server` service in all CP nodes:
+
+```markup
+sudo systemctl restart rke2-server
+```
+
+#### After a few seconds, helm-controller will detect the new configurations for both Ingress NGINX controller (remove) and Traefik (redeploy).
+
+#### **4. Final verification (standard ports)**
+
+- Verify that the **Ingress NGINX** DaemonSet is gone.
+- Verify that your services are now accessible via the **duplicated Traefik Ingresses** on the standard ports (80/443).
+
+ 
+
+### **Phase 4: Cleanup**
+
+#### **1. Remove Ingress NGINX Objects**
+
+Delete the legacy Ingress objects that were bound to `ingressClassName: nginx`. For example, you can use the following script which removes all ingress objects which do not include the word traefik in their class
+
+```markup
+# Finds and deletes all original Ingresses explicitly bound to Ingress NGINX
+kubectl get ingress --all-namespaces -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,ICLASS:.spec.ingressClassName' --no-headers | awk '$3 == "nginx" {print; exit}' | while read NS NAME ICLASS; do
+    echo "Deleting legacy Ingress: $NS/$NAME"
+    kubectl delete ingress "$NAME" -n "$NS"
+done
+```
+
+## **Notes**
+
+- By default the Ingress NGINX provider reads ingressClassName = nginx. We decided to change this and use a “bridge” ingressClass (rke2-ingress-nginx-migration) to avoid two problems:
+  
+  - 1 - Potential race conditions as both ingress controllers would read the same ingress resource and could try to update the status at the same time.
+  - 2 - The ingressClass nginx gets removed automatically when Ingress NGINX is uninstalled in phase 3.
+- While preparing this document, we have detected a couple of bugs in some annotations. In general, it seems the Traefik Ingress NGINX provider is not super well tested with each and every annotation. If something weird is found, please contact us. We have a direct channel with Traefik engineers.
+- Ingress NGINX might take a long time to be removed.
+
+
+
+---
+
 ## Article: 000022185.md
 
 # How to extend RKE2/K3s self-signed certificate expiration
@@ -31923,4 +32218,176 @@ In the Rancher UI (**Authentication &gt; Keycloak SAML**), ensure the following 
 - **User Name Field:** `username`
 - **Groups Field:** `groups`
 - **Metadata XML:** Use the IdP Metadata exported from Keycloak (Realm Settings &gt; Endpoints).
+
+
+
+---
+
+## Article: 000022357.md
+
+# How to configure the Fleet Webhook using Rancher's Let's Encrypt Ingress certificate
+
+**Article Number:** [000022357](https://support.scc.suse.com/s/kb/How-to-configure-the-Fleet-Webhook-using-Rancher-s-Let-s-Encrypt-Ingress-certificate)
+
+## **Environment**
+
+- Rancher v2.6+
+- Rancher configured to [use a Let's Encrypt certificate](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster#3-choose-your-ssl-configuration), with `cert-manager` installed.
+
+## **Procedure**
+
+When SUSE Rancher is [configured with a Let's Encrypt certificate](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster#3-choose-your-ssl-configuration) managed by `cert-manager`, the resulting TLS secret (`tls-rancher-ingress`) resides within the `cattle-system` namespace.
+
+If the [Fleet Webhook service](https://fleet.rancher.io/next/how-tos-for-users/webhook) is configured to use the same hostname as the Rancher UI, and you wish to use the same certificate as Rancher, it requires access to this specific TLS certificate to validate connections. However, because Kubernetes Secrets are namespaced resources, the Fleet Webhook (located in `cattle-fleet-system`) cannot natively reference a secret stored in `cattle-system`.
+
+This article describes how to use [`kubernetes-reflector`](https://github.com/emberstack/kubernetes-reflector) to automatically copy (or 'reflect' in `kubernetes-reflector` terminology) the Let's Encrypt certificate Secret from the Rancher namespace to the Fleet namespace.
+
+> **Note on Supportability:** This article is provided for informational purposes. `kubernetes-reflector` is a third-party project and is not directly supported by SUSE. Users should validate this workflow in a staging environment before applying it to production clusters.
+
+**Configuration**
+
+Reflection of secrets between Namespaces is managed by `kubernetes-reflector` through the [use of annotations](https://github.com/emberstack/kubernetes-reflector?tab=readme-ov-file#usage). To automatically copy the `tls-rancher-ingress` Secret from the `cattle-system` to `cattle-fleet-system` Namespace, the following annotations need to be applied:
+
+- `reflector.v1.k8s.emberstack.com/reflection-allowed: "true"` - to permit reflection
+- `reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: cattle-fleet-system` - to permit reflection to the Fleet Namespace
+- `reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"` - to enable automatic reflection
+- `reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: cattle-fleet-system` - to enable automatic reflection to the Fleet Namespace
+
+Since the `tls-rancher-ingress` Secret is automatically generated by `cert-manager` these annotations need to be defined via a [secretTemplate](https://cert-manager.io/docs/devops-tips/syncing-secrets-across-namespaces/#using-reflector) on the `tls-rancher-ingress` Certificate. In the Rancher Helm chart, this can be achieved by [setting the annotation `cert-manager.io/secret-template`](https://cert-manager.io/docs/reference/annotations/#cert-manageriosecret-template), with the required secretTemplate, on the Rancher Ingress, via the [ingress.extraAnnotations value](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#advanced-options).
+
+1. **Install `kubernetes-reflector`**
+   
+   Install `kubernetes-reflector` into the Rancher local cluster, in line with the [reflector documentation](https://github.com/emberstack/kubernetes-reflector?tab=readme-ov-file#deployment), selecting a Namespace of your choosing specifically for `kubernetes-reflector`.
+2. **Update values for the Rancher Helm chart**
+   
+   Follow the [Rancher upgrade process](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades) to add the `cert-manager.io/secret-template` configuration to the `ingress.extraAnnotations` value.
+   
+   Use the `--version` flag to [pin your current version](https://support.scc.suse.com/s/kb/360034528871) and prevent a change in the running version.
+   
+   If you use a Helm values file for the `helm upgrade`command, add the required annotation to this file:
+   
+   ```markup
+   ingress:
+     extraAnnotations:
+       cert-manager.io/secret-template: |
+         {
+           "annotations": {
+             "reflector.v1.k8s.emberstack.com/reflection-allowed": "true",
+             "reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces": "cattle-fleet-system",
+             "reflector.v1.k8s.emberstack.com/reflection-auto-enabled": "true",
+             "reflector.v1.k8s.emberstack.com/reflection-auto-namespaces": "cattle-fleet-system"
+           }
+         }
+   ```
+   
+   If you pass the Helm values to `helm upgrade` directly via the CLI, add the annotation with `--set-json` (requires Helm 3.10+):
+   
+   ```markup
+   --set-json 'ingress.extraAnnotations={"cert-manager.io/secret-template":"{\"annotations\":{\"reflector.v1.k8s.emberstack.com/reflection-allowed\":\"true\",\"reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces\":\"cattle-fleet-system\",\"reflector.v1.k8s.emberstack.com/reflection-auto-enabled\":\"true\",\"reflector.v1.k8s.emberstack.com/reflection-auto-namespaces\":\"cattle-fleet-system\"}}"}'
+   ```
+3. **Delete existing tls-rancher-ingress Certificate**
+   
+   After upgrading Rancher with the required `ingress.extraAnnotations` value, delete the existing `tls-rancher-ingress` Certificate, to trigger re-creation with the secretTemplate:
+   
+   ```markup
+   kubectl -n cattle-system delete certificate tls-rancher-ingress
+   ```
+
+**Verification**
+
+Once configuration is complete, check both namespaces to ensure the secret is present:
+
+- `kubectl get secret tls-rancher-ingress -n cattle-system`
+- `kubectl get secret tls-rancher-ingress -n cattle-fleet-system`
+
+You can now create the Fleet Webhook Ingress in `cattle-fleet-system` referencing the `tls-rancher-ingress` Secret.
+
+
+
+---
+
+## Article: 000022372.md
+
+# How to filter Rancher API audit log events with rancher-logging
+
+**Article Number:** [000022372](https://support.scc.suse.com/s/kb/How-to-filter-Rancher-API-audit-log-events-with-rancher-logging)
+
+## **Environment**
+
+- Rancher v2.5+
+- Rancher API audit log enabled
+- rancher-logging
+
+## **Procedure**
+
+When the [Rancher API audit log](https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log) is enabled, the volume of logs generated can be significant. Many of these entries - such as read-only `GET` requests, health checks (`/healthz`), or internal service account activity - may be considered "noise" depending on your compliance requirements. Filtering these events at the source helps reduce storage costs and improves the signal-to-noise ratio in your log analytics platform.
+
+To filter Rancher API audit logs, utilize the [`Flow`](https://ranchermanager.docs.rancher.com/integrations-in-rancher/logging/custom-resource-configuration/flows-and-clusterflows) resource within the [rancher-logging](https://ranchermanager.docs.rancher.com/integrations-in-rancher/logging) stack. This allows you to match specific containers and apply filters before the data is sent to an [`Output`](https://ranchermanager.docs.rancher.com/integrations-in-rancher/logging/custom-resource-configuration/outputs-and-clusteroutputs).
+
+Follow these steps to configure the filter:
+
+1. **Create or Edit a Flow:**  
+   Define a [`Flow`](https://ranchermanager.docs.rancher.com/integrations-in-rancher/logging/custom-resource-configuration/flows-and-clusterflows) in the `cattle-system` Namespace of the Rancher local cluster.
+2. **Configure Matching:**  
+   The `Flow` must specifically select the `rancher-audit-log` container of the Rancher pods within the `cattle-system` namespace. Use the following matching criteria:
+   
+   - Namespace: `cattle-system`
+   - Labels: `app: rancher`
+   - Container Name: `rancher-audit-log`
+3. **Add Filters:**  
+   To filter based on the content of the audit log, you must first parse the raw log message.
+   
+   - **Parser:** Use the [`parser` filter plugin](https://kube-logging.dev/docs/configuration/plugins/filters/parser/), with type JSON, to transform the log string into structured fields.
+   - **Grep Filter:** Use the [`grep` filter plugin](https://kube-logging.dev/docs/configuration/plugins/filters/grep/#overview) to `exclude` (drop) specific events based on patterns.
+   - **Nested Fields:** To access nested JSON data (e.g., name within the user object), use [`record_accessor` syntax](https://docs.fluentd.org/plugin-helper-overview/api-plugin-helper-record_accessor#syntax%29) such as `$.user.name` .
+
+**Example Configuration**
+
+The following example `Flow` parses the audit logs and excludes:
+
+- All `GET` requests (Read-only operations).
+- Health check requests to the `/healthz` endpoint.
+- Requests from the internal Rancher service account.
+
+```yaml
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Flow
+metadata:
+  name: rancher-audit-filter
+  namespace: cattle-system 
+spec:
+  # 1. MATCH: Target the rancher-audit-log container in the Rancher Pods
+  match:
+    - select:
+        namespaces:
+          - cattle-system
+        labels:
+          app: rancher
+        container_names:
+          - rancher-audit-log
+
+  # 2. FILTERS: Parse and Drop Noise
+  filters:
+    # A. Parse the log message as JSON so we can access specific fields
+    - parser:
+        parse:
+          type: json
+
+    # B. Filter out the specific Audit Events
+    - grep:
+        exclude:
+          # Exclude "GET" requests.
+          - key: method
+            pattern: ^(GET)$
+          # Exclude health checks
+          - key: requestURI
+            pattern: ^(/healthz)$
+          # Exclude requests from one system serviceaccount
+          - key: $.user.name
+            pattern: ^(system:serviceaccount:cattle-system:rancher)$
+
+  # 3. OUTPUT: Send the remaining (Write) logs to your storage
+  localOutputRefs:
+    - audit-output
+```
 
