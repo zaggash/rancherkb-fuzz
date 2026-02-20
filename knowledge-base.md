@@ -11904,20 +11904,6 @@ See also [AWS Site-to-Site VPN User Guide](https://docs.aws.amazon.com/vpn/lates
 
 ---
 
-## Article: 000020563.md
-
-# Can I get a copy of the Rancher API audit logs?
-
-**Article Number:** [000020563](https://support.scc.suse.com/s/kb/Can-I-get-a-copy-of-the-Rancher-API-audit-logs)
-
-## **Resolution**
-
-Yes, if you provide a [log output configuration](https://kube-logging.dev/docs/configuration/output/) to your logging solution, such as AWS CloudWatch, Elasticsearch, Splunk, etc. we can stream Rancher API audit logs to you.
-
-
-
----
-
 ## Article: 000020630.md
 
 # [Rancher] Operational Advisory, 20201105: Related to Docker Hub rate limits
@@ -32306,6 +32292,115 @@ You can now create the Fleet Webhook Ingress in `cattle-fleet-system` referencin
 
 ---
 
+## Article: 000022361.md
+
+# How to configure TLS Cipher Suites for Calico in RKE2
+
+**Article Number:** [000022361](https://support.scc.suse.com/s/kb/How-to-configure-TLS-Cipher-Suites-for-Calico-in-RKE2)
+
+## **Environment**
+
+- A Rancher-provisioned or standalone RKE2 cluster
+- Calico CNI &gt;= v3.31.x (RKE2 v1.32 &gt;= v1.32.11+rke2r1, v1.33 &gt;= v1.33.7+rke2r1, v1.34 &gt;= v1.34.3+rke2r1, &gt;= v1.35.0+rke2r1)
+
+## **Procedure**
+
+The default ciphers used by Calico components are defined in the Calico [TLS code](https://github.com/projectcalico/calico/blob/master/crypto/pkg/tls/tls.go), but are configurable through the `TLS_CIPHER_SUITES` environment variable. This environment variable is applied by `tigera-operator` based on the [`tlsCipherSuites`](https://docs.tigera.io/calico/latest/reference/installation/api#tlsciphersuites) configuration (available in Calico &gt;= v3.31) defined in the `installation` object.
+
+This articles details how to define this configuration in both Rancher-provisioned and standalone RKE2 clusters.
+
+> **Warning:** Altering TLS configurations can inadvertently disable modern security features or enable deprecated, insecure protocols. Ensure that any selected ciphers comply with your organization’s security policies and test cipher changes in a non-production environment to ensure you are not introducing security regressions.
+> 
+> The set of suites included in the configuration below is provided purely for example purposes.
+
+**RKE2 cluster provisioned by Rancher**
+
+In a Rancher-provisioned RKE2 cluster, the configuration is set within Rancher:
+
+1. Navigate to **Cluster Management** within the Rancher UI and click **Edit Config** for the relevant RKE2 cluster.
+2. Under **Cluster Configuration** click the **Add-on: Calico** tab.
+3. Add the desired `tlsCipherSuites` definition within the existing `installation` block, per the following example:
+   
+   ```markup
+   [...]
+   installation:
+     tlsCipherSuites:
+     - name: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+     - name: TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+     - name: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+     - name: TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+     - name: TLS_AES_128_GCM_SHA256
+     - name: TLS_AES_256_GCM_SHA384
+     - name: TLS_CHACHA20_POLY1305_SHA256
+   [...]
+   ```
+4. Click **Save** to apply the changes.
+
+**RKE2 standalone cluster**
+
+In a standalone RKE2 cluster, the configuration is set via a [`HelmChartConfig` resource](https://docs.rke2.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig).
+
+Create (or modify) `/var/lib/rancher/rke2/server/manifests/rke2-calico-config.yaml` on server nodes and include the desired `tlsCipherSuites`, per the following example:
+
+```markup
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-calico
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    installation:
+      tlsCipherSuites:
+      - name: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+      - name: TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+      - name: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+      - name: TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+      - name: TLS_AES_128_GCM_SHA256
+      - name: TLS_AES_256_GCM_SHA384
+      - name: TLS_CHACHA20_POLY1305_SHA256
+```
+
+Creation of this `HelmChartConfig` manifest will trigger an update of the `rke2-calico` chart, with the new values, and consequently the `tigera-operator` will redeploy Calico components with the TLS ciphers defined.
+
+**Verification**
+
+Once the Calico workloads have been re-created, you can confirm the change by using `nmap` or `kubectl`.
+
+```markup
+nmap -p 5473 --script ssl-enum-ciphers x.x.x.x ( calico pod ip)
+Starting Nmap 7.80 ( https://nmap.org ) at 2026-02-09 23:13 UTC
+Nmap scan report for hostname-xyz(x.x.x.x)
+Host is up (0.00011s latency).
+
+PORT     STATE SERVICE
+5473/tcp open  apsolab-tags
+| ssl-enum-ciphers: 
+|   TLSv1.2: 
+|     ciphers: 
+|       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (secp256r1) - A
+|     compressors: 
+|       NULL
+|     cipher preference: server
+|_  least strength: A
+
+Nmap done: 1 IP address (1 host up) scanned in 0.46 seconds
+```
+
+Or check the `TLS_CIPHER_SUITES` environment variable defined in the Calico Pods. For example, for Calico Typha:
+
+```markup
+kubectl get pods -n calico-system -l k8s-app=calico-typha -o jsonpath='{.items[0].spec.containers[0].env}' | jq | grep -i TLS
+
+"name": "TLS_CIPHER_SUITES",
+"value": "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256,TLS_AES_256_GCM_SHA384,TLS_CHACHA20_POLY1305_SHA256"
+```
+
+
+
+---
+
 ## Article: 000022372.md
 
 # How to filter Rancher API audit log events with rancher-logging
@@ -32390,4 +32485,75 @@ spec:
   localOutputRefs:
     - audit-output
 ```
+
+
+
+---
+
+## Article: 000022374.md
+
+# Upstream Ingress-Nginx CVEs - CVE-2025-15566, CVE-2026-1580, CVE-2026-24512, CVE-2026-24513, and CVE-2026-24514 
+
+**Article Number:** [000022374](https://support.scc.suse.com/s/kb/Upstream-Ingress-Nginx-CVEs-CVE-2025-15566-CVE-2026-1580-CVE-2026-24512-CVE-2026-24513-and-CVE-2026-24514)
+
+## **Environment**
+
+- A Rancher-provisioned or standalone RKE2 cluster with the [`ingress-nginx` Ingress controller](https://docs.rke2.io/networking/networking_services#ingress-controller).
+- `ingress-nginx` versions:
+  
+  - &lt; v1.13.7
+  - v1.14.x &lt; v1.14.3
+- RKE2 versions (affected):
+  
+  - &lt;= v1.32.11+rke2r1
+  - v1.33 &lt;= v1.33.7+rke2r1
+  - v1.34 &lt;= v1.34.3+rke2r1
+  - v1.35.0+rke2r1
+
+## **Situation**
+
+The upstream Kubernetes project announced, on February 1st and 5th of 2026, multiple security vulnerabilities affecting the `ingress-nginx` component:
+
+- [CVE-2025-15566](https://github.com/kubernetes/kubernetes/issues/136789)
+- [CVE-2026-1580](https://github.com/kubernetes/kubernetes/issues/136677)
+- [CVE-2026-24512](https://github.com/kubernetes/kubernetes/issues/136678)
+- [CVE-2026-24513](https://github.com/kubernetes/kubernetes/issues/136679)
+- [CVE-2026-24514](https://github.com/kubernetes/kubernetes/issues/136680)
+
+If a cluster is not running `ingress-nginx` - for example, if it is running the Traefik Ingress controller instead - it is unaffected. You can verify the presence of the RKE2 `ingress-nginx` instance using the following command:
+
+```markup
+kubectl get pods --all-namespaces --selector app.kubernetes.io/name=rke2-ingress-nginx
+```
+
+**Note:** K3s clusters utilize the [Traefik Ingress controller](https://docs.k3s.io/networking/networking-services#traefik-ingress-controller) by default and are not affected by these `ingress-nginx` issues unless you have manually deployed a custom instance of `ingress-nginx`.
+
+## **Cause**
+
+Multiple security issues were discovered in the `ingress-nginx` controller that could allow an attacker to bypass security controls or execute arbitrary code. The vulnerabilities are categorized as follows:
+
+1. **Configuration Injection (CVE-2025-15566, CVE-2026-1580, CVE-2026-24512):** Improper validation of the `auth-proxy-set-headers` and `auth-method` annotations, and handling of `ImplementationSpecific` path types, allows an attacker to inject configuration into the generated nginx configuration. This can lead to arbitrary code execution, and disclosure of Kubernetes Secrets accessible to the controller. **Note:** In default installations, the `ingress-nginx` controller has permissions to access all Secrets cluster-wide.
+2. **Authentication Bypass (CVE-2026-24513):** Insufficient validation of the `X-Code` header when using a custom error backend could allow an Ingress with the `auth-url` annotation to be accessed even when authentication fails.
+3. **Denial of Service (CVE-2026-24514):** A vulnerability in the controller's internal processing, could lead to OOM events for `ingress-nginx` controller Pods or Nodes, as a result of large requests sent to the `ingress-nginx` validating admission controller.
+
+## **Resolution**
+
+**Upgrade RKE2**
+
+The primary resolution is to upgrade to an RKE2 patch release containing the `ingress-nginx` fixes. Upgrade to one of the following versions (or later), which package a patched version of `ingress-nginx`:
+
+- [v1.35.0+rke2r3](https://github.com/rancher/rke2/releases/tag/v1.35.0%2Brke2r3)
+- [v1.34.3+rke2r3](https://github.com/rancher/rke2/releases/tag/v1.34.3%2Brke2r3)
+- [v1.33.7+rke2r3](https://github.com/rancher/rke2/releases/tag/v1.33.7%2Brke2r3)
+- [v1.32.11+rke2r3](https://github.com/rancher/rke2/releases/tag/v1.32.11%2Brke2r3)
+
+**Workarounds**
+
+If you are unable to upgrade your RKE2 version immediately, consider the following mitigation steps:
+
+- **CVE-2025-15566:** Use a validating admission controller to reject Ingress resources containing the `nginx.ingress.kubernetes.io/auth-proxy-set-headers` annotation.
+- **CVE-2026-1580:** Use a validating admission controller to reject Ingress resources containing the `nginx.ingress.kubernetes.io/auth-method` annotation.
+- **CVE-2026-24512:** Use a validating admission controller to reject Ingress resources with the `ImplementationSpecific` path type.
+- **CVE-2026-24513:** Verify that any custom errors backend (if configured) correctly respects and validates the `X-Code` HTTP header.
+- **CVE-2026-24514:** No mitigation is available for this specific vulnerability. An upgrade to a patched version is required.
 
