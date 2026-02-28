@@ -32209,6 +32209,87 @@ In the Rancher UI (**Authentication &gt; Keycloak SAML**), ensure the following 
 
 ---
 
+## Article: 000022343.md
+
+# Longhorn Instance Manager Pod Fails with exec /tini: exec format error on RKE2
+
+**Article Number:** [000022343](https://support.scc.suse.com/s/kb/Longhorn-Instance-Manager-Pod-Fails-with-exec-tini-exec-format-error-on-rke2)
+
+## **Environment**
+
+SUSE Longhorn
+
+## **Situation**
+
+In a Longhorn deployment, two nodes are experiencing a crash loop with the instance-manager pod, preventing Longhorn from managing volumes on those nodes.
+
+When checking the logs of the failing instance-manager container, the following error is observed:
+
+```markup
+exec /tini: exec format error
+```
+
+This indicates that the container is unable to execute the /tini binary during startup.
+
+## **Cause**
+
+The correct multi-architecture Longhorn image is being used, and the tini binary is present in the image. However, the error suggests an image layer corruption issue on the node.
+
+Even though the image is valid upstream, the local copy stored in the node’s containerd cache is corrupted or incomplete, causing the `exec format error` when the container attempts to start.
+
+You can verify that the binary exists in the image by running:
+
+```markup
+/var/lib/rancher/rke2/bin/ctr \
+  --address /run/k3s/containerd/containerd.sock \
+  --namespace k8s.io \
+  run --rm <image> \
+  <pod_name> sh
+```
+
+Then inside the container run '/tini' to validate if its present inside the image.
+
+## **Resolution**
+
+On the affected node(s), fully purge the corrupted instance-manager image layers from containerd and allow them to be re-pulled. 
+
+Step 1: List instance-manager content blobs
+
+```markup
+/var/lib/rancher/rke2/bin/ctr \
+  --address /run/k3s/containerd/containerd.sock \
+  --namespace k8s.io \
+  content ls | grep instance-manager | awk '{print $1}'
+```
+
+Step 2: Delete the content blobs we got from previous command
+
+```markup
+/var/lib/rancher/rke2/bin/ctr \
+  --address /run/k3s/containerd/containerd.sock \
+  --namespace k8s.io \
+  content ls | grep instance-manager | awk '{print $1}' | \
+  xargs /var/lib/rancher/rke2/bin/ctr \
+    --address /run/k3s/containerd/containerd.sock \
+    --namespace k8s.io \
+    content del
+```
+
+Step 3: Re-pull the image manually (if not auto-pulled)
+
+```markup
+/var/lib/rancher/rke2/bin/ctr \
+  --address /run/k3s/containerd/containerd.sock \
+  --namespace k8s.io \
+  images pull <image>
+```
+
+Once the image is re-pulled, the instance-manager pod should start normally and stop cycling.
+
+
+
+---
+
 ## Article: 000022357.md
 
 # How to configure the Fleet Webhook using Rancher's Let's Encrypt Ingress certificate
