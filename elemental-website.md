@@ -5373,6 +5373,7 @@ title: ''
 
 import Registration from "!!raw-loader!@site/examples/quickstart/registration.yaml"
 import SeedImage from "!!raw-loader!@site/examples/quickstart/seedimage.yaml"
+import SeedImageVM from "!!raw-loader!@site/examples/quickstart/seedimage-vm-tools.yaml"
 
 # How to use Elemental with Rancher and VMware
 
@@ -5438,6 +5439,14 @@ You can download it with:
 ```shell
 wget --no-check-certificate --content-disposition $(kubectl get seedimages.elemental.cattle.io -n fleet-default fire-img -o jsonpath="{.status.downloadURL}")
 ```
+
+:::tip
+
+When using the baremetal iso/raw image you can enable the vmtoolsd systemd-unit in the seedimage. Consider the following example:
+
+<CodeBlock language="yaml" title="seedimage-vm-tools.yaml" showLineNumbers>{SeedImageVM}</CodeBlock>
+
+:::
 
 ## Step 3: Boot the target device
 
