@@ -18283,6 +18283,53 @@ When configuring rancher-logging on a cluster, it may be necessary to troublesho
 
 ---
 
+## Article: 000021322.md
+
+# Set kubelet parameters via a configuration file for RKE, RKE2 and K3s clusters
+
+**Article Number:** [000021322](https://support.scc.suse.com/s/kb/Add-Kubelet-Configuration-File)
+
+## **Environment**
+
+An RKE, RKE2 or K3s cluster
+
+## **Situation**
+
+This article details how to configure the Kubernetes kubelet parameters by providing a [custom configuration file](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/) in an RKE, RKE2, or K3s cluster. Whilst it is still possible to pass kubelet parameters as arguments, even though this is noted as deprecated in the Kubernetes documentation, the following steps enable deployment via a configuration file.
+
+## **Resolution**
+
+**RKE2/K3s Clusters**
+
+For standalone RKE2 or K3s clusters, refer to the [RKE2](https://docs.rke2.io/install/configuration#kubelet-configuration) or [K3s](https://docs.k3s.io/installation/configuration#kubelet-configuration-files) Kubelet configuration documentation.
+
+For Rancher-provisioned RKE2 or K3s clusters, refer to the SUSE Knowledge Base article [How to add a kubelet configuration file to nodes in a Rancher-provisioned RKE2 or K3s cluster](https://support.scc.suse.com/s/kb/How-to-add-a-kubelet-configuration-file-to-nodes-in-a-Rancher-provisioned-RKE2-or-K3s-cluster).
+
+**RKE Clusters**
+
+Create the desired kubelet configuration file on each node within the cluster (e.g. /etc/kubernetes/kubeconfig.yml).
+
+Add the required `extra_args` and `extra_binds` configuration to the `kubelet` service in the cluster configuration YAML, per the following example:
+
+```markup
+services:
+[...]
+  kubelet:
+    extra_args:
+      config: /etc/kubernetes/kubeletconfig.yml
+    extra_binds:
+      - "/etc/kubernetes/kubeletconfig.yml:/etc/kubernetes/kubeletconfig.yml"
+[...]
+```
+
+For standalone RKE clusters, define these in the [cluster.yml file](https://rke.docs.rancher.com/config-options), and invoke `rke up` to apply the changes.
+
+For Rancher-provisioned RKE clusters, define these within the **Cluster Management** interface of the Rancher UI, as documented in [Editing Clusters with YAML](https://ranchermanager.docs.rancher.com/v2.11/reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration#editing-clusters-with-yaml), and click **Save** to apply the changes.
+
+
+
+---
+
 ## Article: 000021328.md
 
 # Misconfigured Kubewarden mutating policies together with 3rd party Kubernetes Controllers can get stuck in an infinite loop
