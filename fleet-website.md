@@ -178,6 +178,99 @@ With the patch, users can instruct fleet to ignore:
 * object modifications
 * entire objects
 
+## Generating comparePatches with `fleet bundlediff`
+
+The `fleet bundlediff` CLI command reads the diff information already present in `Bundle` and
+`BundleDeployment` status fields and displays it in a human-readable form. It also outputs a
+ready-to-use `diff:` snippet in `fleet.yaml` format so you can accept the observed drift
+without manually constructing the JSON Patch paths.
+
+### Viewing diffs
+
+```bash
+# Show all diffs across all namespaces, grouped by Bundle
+fleet bundlediff
+
+# Show diffs for a specific Bundle
+fleet bundlediff --bundle my-bundle
+
+# Show diffs for a specific BundleDeployment
+fleet bundlediff --bundle-deployment my-bundle-deployment -n cluster-fleet-local-local-abc123
+
+# Output in JSON format
+fleet bundlediff --json
+```
+
+Default text output groups results by `Bundle` and lists each modified or non-ready resource
+together with its JSON Merge Patch:
+
+```
+Bundle: my-bundle
+BundleDeployments with diffs: 1
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  BundleDeployment: cluster-fleet-local-local-abc123/my-bundle-deployment
+  Modified Resources (1):
+    Resource: ConfigMap.v1 default/my-config
+    Status: Modified
+    Patch:
+    {
+      "metadata": {
+        "annotations": {
+          "timestamp": "2024-01-15T10:30:00Z"
+        }
+      }
+    }
+```
+
+### Generating a `fleet.yaml` `comparePatches` snippet
+
+Use `--fleet-yaml` together with `--bundle-deployment` to produce a `diff:` block that
+can be pasted directly into your `fleet.yaml`. The command converts the observed JSON
+Merge Patch into `remove` operations and merges them with any `comparePatches` already
+configured on the `Bundle`, so existing ignores are preserved.
+
+```bash
+fleet bundlediff \
+  --fleet-yaml \
+  --bundle-deployment my-bundle-deployment \
+  -n cluster-fleet-local-local-abc123
+```
+
+Example output:
+
+```yaml
+diff:
+  comparePatches:
+  - apiVersion: v1
+    kind: ConfigMap
+    name: my-config
+    namespace: default
+    operations:
+    - op: remove
+      path: /metadata/annotations/timestamp
+```
+
+You can redirect this output and add it to your `fleet.yaml` in Git:
+
+```bash
+fleet bundlediff \
+  --fleet-yaml \
+  --bundle-deployment my-bundle-deployment \
+  -n cluster-fleet-local-local-abc123 >> fleet.yaml
+```
+
+Once you commit and push the updated `fleet.yaml`, Fleet reconciles the change and the
+bundle transitions from "Modified" to "Ready". The field itself is not reverted — Fleet
+simply stops reporting it as drift.
+
+:::note
+`--fleet-yaml` requires `--bundle-deployment` to be specified, because the output is
+merged with the existing `comparePatches` from the associated `Bundle`.
+:::
+
+See [fleet bundlediff](./cli/fleet-cli/fleet_bundlediff) for the full flag reference.
+
 ## Ignoring object modifications
 
 ### Simple Example
@@ -8580,6 +8673,7 @@ fleet [flags]
 #### Main commands
 
 * [fleet apply](./fleet_apply)	 - Create bundles from directories, and output them or apply them on a cluster
+* [fleet bundlediff](./fleet_bundlediff)	 - Display bundle diffs from resource status
 * [fleet cleanup](./cleanup/fleet_cleanup)	 - Clean up outdated resources
 * [fleet deploy](./fleet_deploy)	 - Deploy a bundledeployment/content resource to a cluster, by creating a Helm release. This will not deploy the bundledeployment/content resources directly to the cluster.
 * [fleet gitcloner](./fleet_gitcloner)	 - Clones a git repository
@@ -8740,6 +8834,80 @@ The number of concurrent bundle creation routines can be configured via the `--b
 ### SEE ALSO
 
 * [fleet](./fleet)
+
+
+---
+
+## Article: cli/fleet-cli/fleet_bundlediff.md
+
+---
+title: ""
+sidebar_label: "fleet bundlediff"
+---
+## fleet bundlediff
+
+Display bundle diffs from resource status.
+
+This command extracts and displays the diff patches from `Bundle` or `BundleDeployment`
+resources that have been modified. The diffs show the differences between the desired
+state (from Git/Helm) and the actual state in the cluster.
+
+For `BundleDeployment`s, the command shows the patch information from the `ModifiedStatus`
+field, which contains JSON patches indicating what has been changed on deployed resources.
+
+For `Bundle`s, the command aggregates diff information from all associated `BundleDeployment`s
+across target clusters.
+
+By default, the command searches for `BundleDeployment`s across all namespaces. Restrict to a
+specific namespace using the `-n` flag, which is required when querying a `BundleDeployment`
+by name.
+
+```
+fleet bundlediff [flags]
+```
+
+### Options
+
+```
+  -b, --bundle string              Name of the Bundle to show diffs for all its BundleDeployments
+      --bundle-deployment string   Name of the BundleDeployment to show diffs for
+      --fleet-yaml                 Output in fleet.yaml format (comparePatches)
+      --json                       Output in JSON format
+  -h, --help                       help for bundlediff
+  -n, --namespace string           Namespace to restrict the search to
+      --zap-devel                         Development Mode defaults(encoder=consoleEncoder,logLevel=Debug,stackTraceLevel=Warn). Production Mode defaults(encoder=jsonEncoder,logLevel=Info,stackTraceLevel=Error) (default true)
+      --zap-encoder encoder               Zap log encoding (one of 'json' or 'console')
+      --zap-log-level level               Zap Level to configure the verbosity of logging. Can be one of 'debug', 'info', 'error', or any integer value > 0 which corresponds to custom debug levels of increasing verbosity
+      --zap-stacktrace-level level        Zap Level at and above which stacktraces are captured (one of 'info', 'error', 'panic').
+      --zap-time-encoding time-encoding   Zap time encoding (one of 'epoch', 'millis', 'nano', 'iso8601', 'rfc3339' or 'rfc3339nano'). Defaults to 'epoch'.
+```
+
+### Examples
+
+```bash
+# Show diffs for all Bundles across all namespaces (grouped by Bundle)
+fleet bundlediff
+
+# Show all BundleDeployments for a specific Bundle
+fleet bundlediff --bundle my-bundle
+
+# Show a specific BundleDeployment in a cluster namespace
+fleet bundlediff --bundle-deployment my-bundle-deployment -n cluster-fleet-local-local-abc123
+
+# Output in JSON format
+fleet bundlediff --json
+
+# Output as a fleet.yaml diff snippet for a specific BundleDeployment
+# This generates a diff: section you can add to your fleet.yaml in Git
+fleet bundlediff --fleet-yaml --bundle-deployment my-bundle-deployment -n cluster-fleet-local-local-abc123
+
+# Show diffs only in a specific namespace
+fleet bundlediff -n cluster-fleet-local-local-abc123
+```
+
+### SEE ALSO
+
+* [fleet](./fleet)	 -
 
 
 ---
