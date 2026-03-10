@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -4464,7 +4464,7 @@
   <span class="md-ellipsis">
     
   
-    How do I edit or upgrade clusters created via RKE Templates?
+    [JP] How do I edit my cluster using RKE Templates?
   
 
     
@@ -15993,6 +15993,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../000022404/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to reinstall the managed-system-upgrade-controller in a Rancher-provisioned RKE2 or K3s cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -16090,15 +16118,18 @@
 <h1 id="managedchart-generation-is-x-but-latest-observed-generation-is-y">ManagedChart generation is X, but latest observed generation is Y</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/ManagedChart-generation-is-X-but-latest-observed-generation-is-Y">000021469</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>- Rancher v2.6+<br />
-- A Rancher-managed RKE2 cluster</p>
+<ul>
+<li>Rancher v2.6 - v2.11</li>
+<li>A Rancher-managed RKE2 or K3s cluster</li>
+</ul>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>After upgrading the Kubernetes version for a downstream RKE2 cluster, there is a message in the Rancher UI:</p>
-<p>"<strong><em>ManagedChart generation is X, but latest observed generation is Y</em></strong> ".</p>
+<p>After upgrading the Kubernetes version of a downstream RKE2 cluster, an error message of the following format is displayed for the managed-system-upgrade-controller ManagedChart:</p>
+<div class="highlight"><pre><span></span><code>ManagedChart generation is X, but latest observed generation is Y
+</code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
-<p>This could happen if a user accidentally deleted the "managed-system-upgrade-controller" bundle within Fleet.</p>
-<p>Deleting the <strong><em>managed-system-upgrade-controller</em></strong> bundle for the cluster within the fleet-default workspace resets the "<strong>observedGeneration</strong>" of the managed-system-upgrade-controller ManagedChart.</p>
-<p>This leads to a mismatch with the generation, and an error of the format "<strong><em>ManagedChart generation is X, but latest observed generation is Y</em></strong>".</p>
+<p>In Rancher v2.6 - v2.11, the Rancher-deployed system-upgrade-controller in Rancher-managed RKE2 and K3s clusters is managed via a ManagedChart resource. This issue occurs if a user deletes the managed-system-upgrade-controller Fleet bundle that is created by this ManagedChart.</p>
+<p>Deleting the managed-system-upgrade-controller bundle for the cluster within the fleet-default workspace resets the observedGeneration of the managed-system-upgrade-controller ManagedChart.</p>
+<p>This leads to a mismatch with the generation, and an error of the format "ManagedChart generation is X, but latest observed generation is Y".</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>To resolve the issue:</p>
 <ol>
