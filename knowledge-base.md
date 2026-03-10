@@ -3142,29 +3142,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -8767,28 +8773,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -19401,22 +19413,24 @@ The /etc/hosts file on the node was empty and did not contain any localhost refe
 
 ## **Environment**
 
-\- Rancher v2.6+  
-\- A Rancher-managed RKE2 cluster
+- Rancher v2.6 - v2.11
+- A Rancher-managed RKE2 or K3s cluster
 
 ## **Situation**
 
-After upgrading the Kubernetes version for a downstream RKE2 cluster, there is a message in the Rancher UI:
+After upgrading the Kubernetes version of a downstream RKE2 cluster, an error message of the following format is displayed for the managed-system-upgrade-controller ManagedChart:
 
-"***ManagedChart generation is X, but latest observed generation is Y*** ".
+```markup
+ManagedChart generation is X, but latest observed generation is Y
+```
 
 ## **Cause**
 
-This could happen if a user accidentally deleted the "managed-system-upgrade-controller" bundle within Fleet.
+In Rancher v2.6 - v2.11, the Rancher-deployed system-upgrade-controller in Rancher-managed RKE2 and K3s clusters is managed via a ManagedChart resource. This issue occurs if a user deletes the managed-system-upgrade-controller Fleet bundle that is created by this ManagedChart.
 
-Deleting the ***managed-system-upgrade-controller*** bundle for the cluster within the fleet-default workspace resets the "**observedGeneration**" of the managed-system-upgrade-controller ManagedChart.
+Deleting the managed-system-upgrade-controller bundle for the cluster within the fleet-default workspace resets the observedGeneration of the managed-system-upgrade-controller ManagedChart.
 
-This leads to a mismatch with the generation, and an error of the format "***ManagedChart generation is X, but latest observed generation is Y***".
+This leads to a mismatch with the generation, and an error of the format "ManagedChart generation is X, but latest observed generation is Y".
 
 ## **Resolution**
 
@@ -32384,4 +32398,49 @@ If you are unable to upgrade your RKE2 version immediately, consider the followi
 - **CVE-2026-24512:** Use a validating admission controller to reject Ingress resources with the `ImplementationSpecific` path type.
 - **CVE-2026-24513:** Verify that any custom errors backend (if configured) correctly respects and validates the `X-Code` HTTP header.
 - **CVE-2026-24514:** No mitigation is available for this specific vulnerability. An upgrade to a patched version is required.
+
+
+
+---
+
+## Article: 000022404.md
+
+# How to reinstall the managed-system-upgrade-controller in a Rancher-provisioned RKE2 or K3s cluster
+
+**Article Number:** [000022404](https://support.scc.suse.com/s/kb/How-to-reinstall-the-managed-system-upgrade-controller-in-a-Rancher-provisioned-RKE2-or-K3s-cluster)
+
+## **Environment**
+
+- Rancher v2.12+
+- A Rancher-provisioned RKE2 or K3s cluster
+
+## **Procedure**
+
+The `managed-system-upgrade-controller` is an instance of the [System Upgrade Controller (SUC)](https://github.com/rancher/system-upgrade-controller). Rancher automatically deploys this as a Helm chart into Rancher-provisioned RKE2 and K3s clusters to manage `rancher-system-agent` upgrades during cluster lifecycle operations and Rancher upgrades.
+
+During troubleshooting, if for example a user has accidentally deleted or altered  `managed-system-upgrade-controller` resources, a clean installation of the controller may be required. This article details the procedure to force a reinstallation of the chart.
+
+**1. Delete the App from the cluster**
+
+1. Explore the affected cluster within the Rancher UI.
+2. In the left navigation menu, go to **Apps** -&gt; **Installed Apps**.
+3. Use the filter box to search for `managed-system-upgrade-controller`.
+   
+   - **Note:** The App name follows the format `mcc-<cluster-name>-managed-system-upgrade-controller`.
+4. Click the **vertical ellipsis (⋮)** at the end of the row and select **Delete**.
+5. Confirm the App name in the modal and click **Delete**.
+
+**2. Restart the cattle-cluster-agent**
+
+Once the App has been successfully deleted, and is no longer present in the **Installed Apps** list, restart the `cattle-cluster-agent` to trigger a reconciliation loop that detects the missing managed chart and initiates a fresh installation:
+
+```java
+kubectl rollout restart deployment cattle-cluster-agent -n cattle-system
+```
+
+**3. Verify reinstallation**
+
+1. Navigate back to **Apps** -&gt; **Installed Apps** in the Rancher UI.
+2. Wait a few moments for the `managed-system-upgrade-controller` to reappear.
+3. Ensure the status transitions to Deployed.
 
