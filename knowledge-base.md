@@ -2839,61 +2839,59 @@ When a new Rancher Hosted Prime environment is created, it will have a default a
 
 This article details the high-level steps required when planning and performing a Rancher and/or Kubernetes upgrade.
 
-> **Note**
+> **Note on versioning**
 > 
-> The versions contained in this document were current at the time of writing and are meant only as an example
+> The versions contained in this document were current at the time of writing and are meant only as an example.
 > 
-> Rancher and Kubernetes use the semantic versioning format, where the version number is referred to major.minor.patch, for example: v2.13.x, *x* is the patch version
+> Rancher and Kubernetes use the semantic versioning format, where the version number is referred to major.minor.patch, for example: v2.13.x, *x* is the patch version.
 
 ## **Resolution**
 
-### Planning
+**Planning**
 
-- The [support matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions) gives a full list of the versions that are certified by Rancher and work best together
-- **The recommended order of upgrades is**: Rancher, Kubernetes, and then OS
+- The [Rancher Support Matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions) gives a full list of the versions that are certified by Rancher and supported together.
+- **The recommended order of upgrades is**: Rancher, Kubernetes, and then OS.
   
-  - It is important to remain within the supported version combinations in the support matrix. For large version jumps, when planning the upgrade steps it may be best to split the upgrade into smaller portions, completing all of the areas in each portion before upgrading further.
+  - It is important to **remain within the supported version combinations listed in the support matrix**. For large version jumps, when planning the upgrade steps it is best to split the upgrade into smaller portions, completing all of the areas in each portion before upgrading further.
   - For example, do not upgrade Rancher to a newer version if the Kubernetes versions of your management (local) and downstream clusters are not supported by the upgraded version of Rancher. Instead, upgrade Kubernetes to a version supported by both the current and upgraded versions of Rancher.
-- All upgrades should be performed in a lab, testing, or non-prod environment first
-- Adding a grace period between upgrades is recommended, to run workloads and confirm that the single upgrade did not cause any issues
+- All upgrades should be performed in a lab, testing, or non-prod environment first.
+- Adding a grace period between upgrades is recommended, to run workloads and confirm that the single upgrade did not cause any issues.
   
-  - For example: add 24 hours between upgrading Rancher, the local cluster, and downstream clusters
-  - This reduces the number of changes occurring in a short timeframe and can aid in troubleshooting if an unexpected issue occurs
-- It is recommended to pause any application deployments that use the Rancher API during an upgrade of Rancher
-
-Please see the following recommendations when planning version upgrades:
-
-- - **Rancher**:
+  - For example: add 24 hours between upgrading Rancher, the local cluster, and downstream clusters.
+  - This reduces the number of changes occurring in a short timeframe and can aid in troubleshooting if an unexpected issue occurs.
+- It is recommended to pause any application deployments that use the Rancher API during an upgrade of Rancher.
+- You **should perform on-demand snapshots before each and every upgrade**. Without a snapshot you will be unable to perform a rollback in the event of an issue resulting from the upgrade. In a worst case scenario this could result in complete loss of a cluster or the environment.
+  
+  - Rancher: **Before each Rancher version upgrade perform a snapshot using the Rancher Backup operator**, [per the Rancher documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher). If the Rancher local cluster is running in an RKE, RKE2 or K3s cluster, we would optionally recommend that you take an on-demand snapshot of the local cluster, per the [RKE](https://rke.docs.rancher.com/etcd-snapshots/one-time-snapshots), [RKE2](https://docs.rke2.io/datastore/backup_restore#creating-snapshots) and [K3s](https://docs.k3s.io/cli/etcd-snapshot#creating-snapshots) documentation.
+  - Kubernetes: **Before each Kubernetes version upgrade perform a snapshot of the cluster.** Optionally also take an additional Rancher backup, per the process described above.
     
-    - Avoid skipping minor versions when upgrading
-      
-      - For example: when upgrading from v2.11.x -&gt; v2.13.x we encourage upgrading v2.11.x -&gt; v2.12.x -&gt; v2.13.x
-    - It is recommended to upgrade from the newest patch version of the current release to the newest patch version of the next minor release, particularly if the current patch version is many releases behind and may be missing important fixes. For example:
-      
-      - When upgrading from Rancher Prime v2.12.2 -&gt; v2.13.x, we encourage you to first upgrade to v2.12.6 (newest Prime v2.12.x patch version at the time of writing) as an intermediary step
-      - Then to upgrade from v2.12.6 to v2.13.2 (newest Prime v2.13.x patch version at the time of writing) and not any earlier v2.13.x patch version, for example, v2.13.1
-    - Avoid upgrading to a pre-release or non-stable version as they are not yet fully tested and supported. This is generally recommended for any cluster/environment, however particularly important for production
-      
-      - Pre-release versions can be identified by a -rc# or -alpha# following the Rancher version number (eg, v2.13.0-rc2)
+    - For the Rancher local and standalone/imported clusters, follow the snapshot steps in the [RKE](https://rke.docs.rancher.com/etcd-snapshots/one-time-snapshots), [RKE2](https://docs.rke2.io/datastore/backup_restore#creating-snapshots) and [K3s](https://docs.k3s.io/cli/etcd-snapshot#creating-snapshots) documentation.
+    - For Rancher-provisioned clusters, follow the snapshot steps in the [Rancher documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher-launched-kubernetes-clusters).
 
-<!--THE END-->
+**Requirements**
 
-- - **Kubernetes**:
-    
-    - It is recommended to upgrade incrementally and **avoid skipping minor versions.** This helps minimize potential issues by introducing gradual changes
-      
-      - For example: when upgrading from v1.31.x -&gt; v1.34.x we encourage upgrading v1.31.x -&gt; v1.32.x -&gt; v1.33.x -&gt; v1.34.x
-    - Kubernetes plans approximately [three minor version releases a year](https://kubernetes.io/releases/release/#the-release-cycle), so it is a good practice to also plan a minor version upgrade multiple times throughout the year
+Rancher:
 
-<!--THE END-->
+- **Do not skip minor versions** when upgrading. For example:
+  
+  - When upgrading from v2.11.x -&gt; v2.13.x you should upgrade v2.11.x -&gt; v2.12.x -&gt; v2.13.x.
+- You **should upgrade from the newest patch version of the current release** to the newest patch version of the next minor release. For example:
+  
+  - When upgrading from Rancher Prime v2.12.2 -&gt; v2.13.x, you should first upgrade to v2.12.7 (newest Prime v2.12.x patch version at the time of writing) as an intermediary step.
+  - Then upgrade from v2.12.7 to v2.13.3 (newest Prime v2.13.x patch version at the time of writing) and not any earlier v2.13.x patch version, for example, v2.13.1.
+- **Do not upgrade to a pre-release or non-stable version**, as they are not yet fully tested and supported.
+  
+  - Pre-release versions can be identified by a -rc# or -alpha# following the Rancher version number (eg, v2.13.0-rc2)
+- Approximately [three Rancher minor version releases are planned per year](https://support.scc.suse.com/s/kb/What-are-the-definitions-in-the-new-Prime-Release-Cycle), so it is good practice to also plan a Rancher minor version upgrade multiple times throughout the year.
 
-- - **RKE1 CLI**:
-    
-    - Perform one minor CLI version jump at a time
-      
-      - For example: when upgrading from v1.5.x -&gt; v1.8.x instead do v1.5.x -&gt; v1.6.x -&gt; v1.7.x -&gt; v1.8.x
+Kubernetes:
 
-### Data collection
+- You should upgrade incrementally and **should not skip minor** **versions**, [per the Kubernetes version skew policy](https://kubernetes.io/releases/version-skew-policy/#supported-version-skew). For example:
+  
+  - When upgrading from v1.31.x -&gt; v1.34.x, you should upgrade v1.31.x -&gt; v1.32.x -&gt; v1.33.x -&gt; v1.34.x
+- Approximately [three Kubernetes minor version releases are planned per year](https://kubernetes.io/releases/release/#the-release-cycle), so it is a good practice to also plan a Kubernetes minor version upgrade multiple times throughout the year.
+
+**Data collection**
 
 Before you start your upgrade, please collect the following pieces of information to best prepare yourself in case you need to open a support ticket.
 
@@ -2903,17 +2901,17 @@ Before you start your upgrade, please collect the following pieces of informatio
 - Installation option (single install/HA):
 - Current Kubernetes version of Rancher local cluster (use `kubectl version`):
 
-### Rancher Pre-Upgrade
+**Rancher pre-upgrade steps**
 
 - Check if the Rancher UI is accessible
 - Check if all clusters in UI are in an Active state
-- Check if all pods in `kube-system` and `cattle-system` namespaces are running (in both Rancher and downstream clusters)
+- Check if all pods in `kube-system` and `cattle-system` namespaces are running (in both Rancher and downstream clusters):
   
   ```
   kubectl get pods -n kube-system
   kubectl get pods -n cattle-system
   ```
-- Verify the datastore has scheduled snapshots configured, and these are working.
+- Verify the datastore has scheduled snapshots configured, and that these are working.
   
   - **RKE**: If Rancher is deployed on a Kubernetes cluster built with RKE, verify etcd snapshots are enabled and working, on etcd nodes you can confirm with the following:
     
@@ -2921,45 +2919,49 @@ Before you start your upgrade, please collect the following pieces of informatio
     ls -l /opt/rke/etcd-snapshots
     docker logs etcd-rolling-snapshots
     ```
-  - **k3s**: If Rancher is deployed on a k3s Kubernetes cluster, ensure scheduled backups are configured and working. Please see the [k3s documentation](https://docs.k3s.io/datastore/backup-restore) pages for further information on this.
-  - **RKE2:** If Rancher is deployed on a RKE2 Kubernetes cluster, ensure scheduled backups are configured and working. Please see the [RKE2 documentation](https://docs.rke2.io/datastore/backup_restore) pages for further information on this.
-- Create a one-time datastore snapshot, please see the following documentation for [RKE](https://rancher.com/docs/rke/latest/en/etcd-snapshots/one-time-snapshots/), [RKE2](https://docs.rke2.io/datastore/backup_restore), and [k3s](https://docs.k3s.io/datastore/backup-restore) , and the [single node Docker](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher) install options for more information
+  - **RKE2:** If Rancher is deployed on a RKE2 Kubernetes cluster, ensure scheduled backups are configured and working. Please see the [RKE2 documentation](https://docs.rke2.io/datastore/backup_restore) pages for further information on this.
+  - **K3s**: If Rancher is deployed on a K3s Kubernetes cluster, ensure scheduled backups are configured and working. Please see the [K3s documentation](https://docs.k3s.io/datastore/backup-restore) pages for further information on this.
+    
+    ```
+    
+    ```
+- Create a snapshot with the Rancher Backup operator, and optionally an on-demand cluster snapshot of the Rancher local cluster, per the backup notes in the Planning section above.
 
-### Rancher Upgrade steps
+**Rancher upgrade steps**
 
-- The Rancher upgrade process is detailed in the upgrade documentation for both [HA](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades), and [single node using Docker](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher)
+The Rancher upgrade process is detailed in the [Rancher documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).[](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher)
 
-### Rancher Review/Verify
+**Rancher post-upgrade verification steps**
 
 After the upgrade is completed, go through the following checklist to verify your environment is in working order.
 
-- Check if the Rancher UI is accessible
+- Check if the Rancher UI is accessible:
   
-  - You should be able to login into Rancher, view clusters, and browse to workloads
-- Verify the Rancher version has changed in UI
+  - You should be able to login into Rancher, view clusters, and browse to workloads.
+- Verify the Rancher version has changed in UI:
   
-  - After logging into Rancher, review the version in the bottom left corner of the page
-- Check if all clusters in UI are in an Active state
-- Check if all pods in `kube-system` and `cattle-system` are running (in both Rancher and downstream clusters)
-- Check the `cattle-cluster-agent` and `cattle-node-agent` pods are running in all downstream clusters and running the latest version
+  - After logging into Rancher, review the version in the bottom left corner of the page.
+- Check if all clusters in UI are in an Active state.
+- Check if all pods in `kube-system` and `cattle-system` are running (in both Rancher and downstream clusters).
+- Check the `cattle-cluster-agent` and `cattle-node-agent` pods are running in all downstream clusters and running the latest version.
   
   - The rollout of the updated agent versions can take some time if there are a lot of downstream clusters or nodes
-- Create a one-time datastore snapshot, please see the following documentation for [RKE](https://rancher.com/docs/rke/latest/en/etcd-snapshots/one-time-snapshots/),  [RKE2](https://docs.rke2.io/datastore/backup_restore), and [k3s](https://docs.k3s.io/datastore/backup-restore), and the [single node Docker](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher) install options for more information
+- Create a fresh snapshot with the Rancher Backup operator, and optionally an on-demand cluster snapshot of the local cluster, per the backup notes in the Planning section above.
 
-### Rancher Rollback steps
+**Rancher rollback steps**
 
-The Rancher rollback process is detailed in the [rollback documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rollbacks), please follow the relevant link for Rancher installed on a Kubernetes cluster, or Docker
+The Rancher rollback process is detailed in the [Rancher documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rollbacks).
 
-### Follow-up tasks (optional)
+**Follow-up tasks (optional)**
 
-- Upgrade the Rancher management cluster, this is often a follow-up to the Rancher upgrade. Please see the [RKE](https://rancher.com/docs/rke/latest/en/upgrades/), [RKE2](https://docs.rke2.io/upgrades/upgrade) , and [k3s](https://rancher.com/docs/k3s/latest/en/upgrades/) upgrade documentation for the upgrade process, as mentioned it is best to avoid skipping minor versions
-- Upgrade the downstream clusters, please see [the documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/upgrade-and-roll-back-kubernetes) for more information. A snapshot of both the local and downstream clusters before the upgrade is recommended to provides the maximum amount of recoverability options in the event of a rollback
-- Docker/OS upgrades, please our article on [performing rolling changes to nodes](https://www.suse.com/support/kb/doc/?id=000020084)
+- Upgrade the Rancher management cluster, this is often a follow-up to the Rancher upgrade. Refer to the [RKE](https://rancher.com/docs/rke/latest/en/upgrades/), [RKE2](https://docs.rke2.io/upgrades/upgrade) , and [K3s](https://docs.k3s.io/upgrades) upgrade documentation for the upgrade process. Please pay attention to the requirements and planning sections above.
+- Upgrade the downstream clusters, refer to [the Rancher documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/upgrade-and-roll-back-kubernetes) for more information. Please pay attention to the requirements and planning sections above.
+- For OS or Docker upgrades, refer to the separate article on [performing rolling changes to nodes](https://www.suse.com/support/kb/doc/?id=000020084).
 
-### Other useful KBs
+**Other useful KBs**
 
-[\[Rancher\] Can Rancher Support validate our planned upgrade?](https://www.suse.com/support/kb/doc/?id=000020437)  
-[\[Rancher\] Can Rancher Support join me as I do my upgrade?](https://www.suse.com/support/kb/doc/?id=000020440)
+- [\[Rancher\] Can Rancher Support validate our planned upgrade?](https://www.suse.com/support/kb/doc/?id=000020437)
+- [\[Rancher\] Can Rancher Support join me as I do my upgrade?](https://www.suse.com/support/kb/doc/?id=000020440)
 
 
 
