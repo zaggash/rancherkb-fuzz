@@ -1131,14 +1131,16 @@ The built-in Rancher local authentication provider does not have 2FA or MFA capa
 
 ## Article: 000020031.md
 
-# How to shutdown a Kubernetes cluster (Rancher Kubernetes Engine (RKE) CLI provisioned or Rancher v2.x Custom clusters)
+# How to shutdown a Kubernetes cluster RKE / RKE2 / K3s  CLI provisioned or Rancher v2.x Custom clusters
 
 **Article Number:** [000020031](https://support.scc.suse.com/s/kb/360054671192)
 
 ## **Environment**
 
 - Rancher 2.x
-- Rancher Kubernetes Engine (RKE) CLI or a Rancher v2.x provisioned Custom Cluster.
+- RKE
+- RKE2
+- K3s
 
 ## **Situation**
 
@@ -1155,11 +1157,11 @@ The built-in Rancher local authentication provider does not have 2FA or MFA capa
 
 #### **Solution :**
 
-> **N.B.** If you have nodes that share worker, control plane, or etcd roles, postpone the `docker stop` and shutdown operations until worker or control plane containers have been stopped.
+> **N.B.** For RKE only if you have nodes that share worker, control plane, or etcd roles, postpone the `docker stop`  and shutdown operations until worker or control plane containers have been stopped.
 
-#### **Draining nodes :**
+#### **Draining worker nodes for all K8s distros :**
 
-- For all nodes, prior to stopping the containers, run:
+- For all worker nodes, prior to stopping the containers or RKE2/K3s, run:
 
 ```
 
@@ -1177,35 +1179,57 @@ kubectl drain <node name>
 
 This will safely evict any pods, and you can proceed with the following steps to a shutdown.
 
-#### **Shutting down the worker nodes :**
+**K3s**  
+**Shutting down the agent (worker) nodes :**  
+For each worker node stop the agent by running `sudo systemctl stop k3s`
 
-- For each worker node:
-  
-  1. ssh into the worker node
-  2. stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
-  3. stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
-  4. shutdown the system `sudo shutdown now`
+**Shutting down the server (control plane) nodes:**  
+For each control / etcd node stop the RKE2 server by running `sudo systemctl stop k3s-agent`
+
+**Upon restart:**  
+RKE2 will restart on its own after the node comes back up. You can verify this by running `sudo systemctl status k3s` on the control nodes, or `sudo systemctl status k3s-agent` for worker nodes.
+
+**RKE2**  
+**Shutting down the agent (worker) nodes :**   
+For each worker node stop the agent by running `sudo systemctl stop rke2-agent`
+
+**Shutting down the server (control plane) nodes:**  
+For each control / etcd node stop the RKE2 server by running `sudo systemctl stop rke2-server`
+
+You can now perform any operations like OS patching before rebooting or shutting the node down safely. 
+
+**Upon restart:**  
+RKE2 will restart on its own after the node comes back up. You can verify this by running `sudo systemctl status rke2-server` on the control nodes, or `sudo systemctl status rke2-agent` for worker nodes.
+
+#### **RKE** **Shutting down the worker nodes :**
+
+For each worker node:
+
+- ssh into the worker node
+- stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
+- stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
+- shutdown the system `sudo shutdown now`
 
 #### **Shutting down the ControlePlane nodes :**
 
-- For each control plane node:
-  
-  1. ssh into the control plane node
-  2. stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
-  3. stop kube-scheduler and kube-controller-manager by running `sudo docker stop kube-scheduler kube-controller-manager`
-  4. stop kube-apiserver by running `sudo docker stop kube-apiserver`
-  5. stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
-  6. shutdown the system `sudo shutdown now`
+For each control plane node:
 
-#### **Shutting down the etcd nodes :**
+- ssh into the control plane node
+- stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
+- stop kube-scheduler and kube-controller-manager by running `sudo docker stop kube-scheduler kube-controller-manager`
+- stop kube-apiserver by running `sudo docker stop kube-apiserver`
+- stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
+- shutdown the system `sudo shutdown now`
 
-- For each etcd node: 
-  
-  1. ssh into the etcd node
-  2. stop kubelet and kube-proxy by running sudo docker stop kubelet kube-proxy
-  3. stop etcd by running sudo docker stop etcd
-  4. stop docker by running sudo service docker stop or sudo systemctl stop docker
-  5. shutdown the system sudo shutdown now
+**Shutting down the etcd nodes :** 
+
+For each etcd node: 
+
+- ssh into the etcd node
+- stop kubelet and kube-proxy by running sudo docker stop kubelet kube-proxy
+- stop etcd by running sudo docker stop etcd
+- stop docker by running sudo service docker stop or sudo systemctl stop docker
+- shutdown the system sudo shutdown now
 
 #### **Shutting down the storage :**
 
