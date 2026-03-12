@@ -25,7 +25,7 @@
     
     
       
-        <title>How to shutdown a Kubernetes cluster (Rancher Kubernetes Engine (RKE) CLI provisioned or Rancher v2.x Custom clusters) - SUSE KBs</title>
+        <title>How to shutdown a Kubernetes cluster RKE / RKE2 / K3s CLI provisioned or Rancher v2.x Custom clusters - SUSE KBs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-shutdown-a-kubernetes-cluster-rancher-kubernetes-engine-rke-cli-provisioned-or-rancher-v2x-custom-clusters" class="md-skip">
+        <a href="#how-to-shutdown-a-kubernetes-cluster-rke-rke2-k3s-cli-provisioned-or-rancher-v2x-custom-clusters" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to shutdown a Kubernetes cluster (Rancher Kubernetes Engine (RKE) CLI provisioned or Rancher v2.x Custom clusters)
+              How to shutdown a Kubernetes cluster RKE / RKE2 / K3s CLI provisioned or Rancher v2.x Custom clusters
             
           </span>
         </div>
@@ -1085,7 +1085,7 @@
   <span class="md-ellipsis">
     
   
-    How to shutdown a Kubernetes cluster (Rancher Kubernetes Engine (RKE) CLI provisioned or Rancher v2.x Custom clusters)
+    How to shutdown a Kubernetes cluster RKE / RKE2 / K3s CLI provisioned or Rancher v2.x Custom clusters
   
 
     
@@ -1103,7 +1103,7 @@
   <span class="md-ellipsis">
     
   
-    How to shutdown a Kubernetes cluster (Rancher Kubernetes Engine (RKE) CLI provisioned or Rancher v2.x Custom clusters)
+    How to shutdown a Kubernetes cluster RKE / RKE2 / K3s CLI provisioned or Rancher v2.x Custom clusters
   
 
     
@@ -1202,10 +1202,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#draining-nodes" class="md-nav__link">
+  <a href="#draining-worker-nodes-for-all-k8s-distros" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Draining nodes :
+        Draining worker nodes for all K8s distros :
       
     </span>
   </a>
@@ -1213,10 +1213,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#shutting-down-the-worker-nodes" class="md-nav__link">
+  <a href="#rke-shutting-down-the-worker-nodes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Shutting down the worker nodes :
+        RKE Shutting down the worker nodes :
       
     </span>
   </a>
@@ -1228,17 +1228,6 @@
     <span class="md-ellipsis">
       
         Shutting down the ControlePlane nodes :
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#shutting-down-the-etcd-nodes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Shutting down the etcd nodes :
       
     </span>
   </a>
@@ -16239,10 +16228,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#draining-nodes" class="md-nav__link">
+  <a href="#draining-worker-nodes-for-all-k8s-distros" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Draining nodes :
+        Draining worker nodes for all K8s distros :
       
     </span>
   </a>
@@ -16250,10 +16239,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#shutting-down-the-worker-nodes" class="md-nav__link">
+  <a href="#rke-shutting-down-the-worker-nodes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Shutting down the worker nodes :
+        RKE Shutting down the worker nodes :
       
     </span>
   </a>
@@ -16265,17 +16254,6 @@
     <span class="md-ellipsis">
       
         Shutting down the ControlePlane nodes :
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#shutting-down-the-etcd-nodes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Shutting down the etcd nodes :
       
     </span>
   </a>
@@ -16337,12 +16315,14 @@
 
 
 
-<h1 id="how-to-shutdown-a-kubernetes-cluster-rancher-kubernetes-engine-rke-cli-provisioned-or-rancher-v2x-custom-clusters">How to shutdown a Kubernetes cluster (Rancher Kubernetes Engine (RKE) CLI provisioned or Rancher v2.x Custom clusters)</h1>
+<h1 id="how-to-shutdown-a-kubernetes-cluster-rke-rke2-k3s-cli-provisioned-or-rancher-v2x-custom-clusters">How to shutdown a Kubernetes cluster RKE / RKE2 / K3s  CLI provisioned or Rancher v2.x Custom clusters</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360054671192">000020031</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
 <ul>
 <li>Rancher 2.x</li>
-<li>Rancher Kubernetes Engine (RKE) CLI or a Rancher v2.x provisioned Custom Cluster.</li>
+<li>RKE</li>
+<li>RKE2</li>
+<li>K3s</li>
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
 <h4 id="task"><strong>Task :</strong></h4>
@@ -16357,11 +16337,11 @@
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <h4 id="solution"><strong>Solution :</strong></h4>
 <blockquote>
-<p><strong>N.B.</strong> If you have nodes that share worker, control plane, or etcd roles, postpone the <code>docker stop</code> and shutdown operations until worker or control plane containers have been stopped.</p>
+<p><strong>N.B.</strong> For RKE only if you have nodes that share worker, control plane, or etcd roles, postpone the <code>docker stop</code>  and shutdown operations until worker or control plane containers have been stopped.</p>
 </blockquote>
-<h4 id="draining-nodes"><strong>Draining nodes :</strong></h4>
+<h4 id="draining-worker-nodes-for-all-k8s-distros"><strong>Draining worker nodes for all K8s distros :</strong></h4>
 <ul>
-<li>For all nodes, prior to stopping the containers, run:</li>
+<li>For all worker nodes, prior to stopping the containers or RKE2/K3s, run:</li>
 </ul>
 <div class="highlight"><pre><span></span><code>
 </code></pre></div>
@@ -16373,40 +16353,43 @@
 <div class="highlight"><pre><span></span><code>kubectl drain &lt;node name&gt;
 </code></pre></div>
 <p>This will safely evict any pods, and you can proceed with the following steps to a shutdown.</p>
-<h4 id="shutting-down-the-worker-nodes"><strong>Shutting down the worker nodes :</strong></h4>
-<ul>
-<li>
+<p><strong>K3s</strong><br />
+<strong>Shutting down the agent (worker) nodes :</strong><br />
+For each worker node stop the agent by running <code>sudo systemctl stop k3s</code></p>
+<p><strong>Shutting down the server (control plane) nodes:</strong><br />
+For each control / etcd node stop the RKE2 server by running <code>sudo systemctl stop k3s-agent</code></p>
+<p><strong>Upon restart:</strong><br />
+RKE2 will restart on its own after the node comes back up. You can verify this by running <code>sudo systemctl status k3s</code> on the control nodes, or <code>sudo systemctl status k3s-agent</code> for worker nodes.</p>
+<p><strong>RKE2</strong><br />
+<strong>Shutting down the agent (worker) nodes :</strong> <br />
+For each worker node stop the agent by running <code>sudo systemctl stop rke2-agent</code></p>
+<p><strong>Shutting down the server (control plane) nodes:</strong><br />
+For each control / etcd node stop the RKE2 server by running <code>sudo systemctl stop rke2-server</code></p>
+<p>You can now perform any operations like OS patching before rebooting or shutting the node down safely. </p>
+<p><strong>Upon restart:</strong><br />
+RKE2 will restart on its own after the node comes back up. You can verify this by running <code>sudo systemctl status rke2-server</code> on the control nodes, or <code>sudo systemctl status rke2-agent</code> for worker nodes.</p>
+<h4 id="rke-shutting-down-the-worker-nodes"><strong>RKE</strong> <strong>Shutting down the worker nodes :</strong></h4>
 <p>For each worker node:</p>
-</li>
-<li>
-<p>ssh into the worker node</p>
-</li>
+<ul>
+<li>ssh into the worker node</li>
 <li>stop kubelet and kube-proxy by running <code>sudo docker stop kubelet kube-proxy</code></li>
 <li>stop docker by running <code>sudo service docker stop</code> or <code>sudo systemctl stop docker</code></li>
 <li>shutdown the system <code>sudo shutdown now</code></li>
 </ul>
 <h4 id="shutting-down-the-controleplane-nodes"><strong>Shutting down the ControlePlane nodes :</strong></h4>
-<ul>
-<li>
 <p>For each control plane node:</p>
-</li>
-<li>
-<p>ssh into the control plane node</p>
-</li>
+<ul>
+<li>ssh into the control plane node</li>
 <li>stop kubelet and kube-proxy by running <code>sudo docker stop kubelet kube-proxy</code></li>
 <li>stop kube-scheduler and kube-controller-manager by running <code>sudo docker stop kube-scheduler kube-controller-manager</code></li>
 <li>stop kube-apiserver by running <code>sudo docker stop kube-apiserver</code></li>
 <li>stop docker by running <code>sudo service docker stop</code> or <code>sudo systemctl stop docker</code></li>
 <li>shutdown the system <code>sudo shutdown now</code></li>
 </ul>
-<h4 id="shutting-down-the-etcd-nodes"><strong>Shutting down the etcd nodes :</strong></h4>
-<ul>
-<li>
+<p><strong>Shutting down the etcd nodes :</strong> </p>
 <p>For each etcd node: </p>
-</li>
-<li>
-<p>ssh into the etcd node</p>
-</li>
+<ul>
+<li>ssh into the etcd node</li>
 <li>stop kubelet and kube-proxy by running sudo docker stop kubelet kube-proxy</li>
 <li>stop etcd by running sudo docker stop etcd</li>
 <li>stop docker by running sudo service docker stop or sudo systemctl stop docker</li>
