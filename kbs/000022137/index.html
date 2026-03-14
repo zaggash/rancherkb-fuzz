@@ -1076,7 +1076,7 @@
   <span class="md-ellipsis">
     
   
-    How to shutdown a Kubernetes cluster RKE / RKE2 / K3s CLI provisioned or Rancher v2.x Custom clusters
+    How to gracefully shutdown an RKE cluster
   
 
     
@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -16129,7 +16129,7 @@
 <p>The <a href="https://docs.tigera.io/calico/latest/operations/calicoctl/">calicoctl CLI</a> can be used to <a href="https://docs.tigera.io/calico/latest/reference/calicoctl/ipam/check#examples">query for leaked addresses and release these</a>, freeing IP space within the cluster.</p>
 <ol>
 <li>First, install calicoctl locally with a version matching the Calico version in the affected RKE2 cluster, per the <a href="https://docs.tigera.io/calico/latest/operations/calicoctl/install">Calico documentation</a>.</li>
-<li>Source a kubeconfig, with cluster admin permissions, for the affected RKE2 cluster: `<code>export KUBECONFIG=&lt;path to kubeconfig&gt;</code>`</li>
+<li>Source a kubeconfig, with cluster admin permissions, for the affected RKE2 cluster: <code>export KUBECONFIG=&lt;path to kubeconfig&gt;</code></li>
 <li>Query and release any leaked addresses:</li>
 </ol>
 <div class="highlight"><pre><span></span><code>calicoctl datastore migrate lock
