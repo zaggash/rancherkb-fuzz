@@ -1131,140 +1131,101 @@ The built-in Rancher local authentication provider does not have 2FA or MFA capa
 
 ## Article: 000020031.md
 
-# How to shutdown a Kubernetes cluster RKE / RKE2 / K3s  CLI provisioned or Rancher v2.x Custom clusters
+# How to gracefully shutdown an RKE cluster
 
 **Article Number:** [000020031](https://support.scc.suse.com/s/kb/360054671192)
 
 ## **Environment**
 
-- Rancher 2.x
-- RKE
-- RKE2
-- K3s
+A Rancher-provisioned or standalone RKE cluster
 
 ## **Situation**
 
-#### **Task :**
-
-- This article provides instructions for safely shutting down a Kubernetes cluster provisioned via the Rancher Kubernetes Engine (RKE) CLI or a Rancher v2.x provisioned Custom Cluster.
-
-#### **Background :**
-
-- If you have a need to shut down the infrastructure running a Kubernetes cluster (datacenter maintenance, migration, etc.) this guide will provide steps in the proper order to ensure a safe cluster shutdown. This guide has command examples for RKE-deployed clusters but the order of operations and the process is similar for most Kubernetes distributions.
-- Please ensure you complete an etcd backup before continuing this process. A guide regarding the backup and restore process can be found [here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/checklist-for-production-ready-clusters#back-up-etcd).
+If you need to shut down the infrastructure running an RKE Kubernetes cluster, such as for a datacenter maintenance, this guide provides steps in the proper order to ensure a safe cluster shutdown.
 
 ## **Resolution**
 
-#### **Solution :**
+**1. Take a cluster snapshot**
 
-> **N.B.** For RKE only if you have nodes that share worker, control plane, or etcd roles, postpone the `docker stop`  and shutdown operations until worker or control plane containers have been stopped.
+As with any cluster maintenance operation, it is strongly advised to take a cluster snapshot before performing this process.
 
-#### **Draining worker nodes for all K8s distros :**
+- For standalone clusters, the snapshot process can be found in the [RKE](https://rke.docs.rancher.com/etcd-snapshots) documentation.
+- For Rancher-provisioned clusters, the process can be found in the [Rancher documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher-launched-kubernetes-clusters).
 
-- For all worker nodes, prior to stopping the containers or RKE2/K3s, run:
+**2. Drain nodes**
 
-```
+> **Note on Longhorn:** If the cluster in question is running SUSE Storage (Longhorn), please also reference the Longhorn ["Node Maintenance and Kubernetes Upgrade Guide"](https://longhorn.io/docs/1.10.1/maintenance/maintenance/) documentation. Ensure that all workloads with volumes have been evicted or scaled-down, and all Longhorn volumes are in a detached state, before proceeding to stop Kubernetes.
 
-```
-
-```markup
-kubectl get nodes
-```
-
-- To identify the desired node, then run:
+Iterate through all nodes in the cluster (starting with worker/agent nodes) to stop pods gracefully:
 
 ```markup
-kubectl drain <node name>
+kubectl drain <NODE_NAME> --ignore-daemonsets --delete-emptydir-data
 ```
 
-This will safely evict any pods, and you can proceed with the following steps to a shutdown.
+#### **3. Stop worker nodes**
 
-**K3s**  
-**Shutting down the agent (worker) nodes :**  
-For each worker node stop the agent by running `sudo systemctl stop k3s`
+> **Note on mixed roles:** If you have nodes that share worker, control plane, or etcd roles, postpone the docker stop and shutdown operations until worker or control plane containers have been stopped.
 
-**Shutting down the server (control plane) nodes:**  
-For each control / etcd node stop the RKE2 server by running `sudo systemctl stop k3s-agent`
+On each worker role node:
 
-**Upon restart:**  
-RKE2 will restart on its own after the node comes back up. You can verify this by running `sudo systemctl status k3s` on the control nodes, or `sudo systemctl status k3s-agent` for worker nodes.
+1. Open an SSH session to the worker node
+2. Stop kubelet and kube-proxy: `sudo docker stop kubelet kube-proxy`
+3. Stop Docker: `sudo systemctl stop docker`
 
-**RKE2**  
-**Shutting down the agent (worker) nodes :**   
-For each worker node stop the agent by running `sudo systemctl stop rke2-agent`
-
-**Shutting down the server (control plane) nodes:**  
-For each control / etcd node stop the RKE2 server by running `sudo systemctl stop rke2-server`
-
-You can now perform any operations like OS patching before rebooting or shutting the node down safely. 
-
-**Upon restart:**  
-RKE2 will restart on its own after the node comes back up. You can verify this by running `sudo systemctl status rke2-server` on the control nodes, or `sudo systemctl status rke2-agent` for worker nodes.
-
-#### **RKE** **Shutting down the worker nodes :**
-
-For each worker node:
-
-- ssh into the worker node
-- stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
-- stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
-- shutdown the system `sudo shutdown now`
-
-#### **Shutting down the ControlePlane nodes :**
+**4. Stop control plane nodes**
 
 For each control plane node:
 
-- ssh into the control plane node
-- stop kubelet and kube-proxy by running `sudo docker stop kubelet kube-proxy`
-- stop kube-scheduler and kube-controller-manager by running `sudo docker stop kube-scheduler kube-controller-manager`
-- stop kube-apiserver by running `sudo docker stop kube-apiserver`
-- stop docker by running `sudo service docker stop` or `sudo systemctl stop docker`
-- shutdown the system `sudo shutdown now`
+1. Open an SSH session to the control plane node
+2. Stop kubelet and kube-proxy: `sudo docker stop kubelet kube-proxy`
+3. Stop kube-scheduler and kube-controller-manager: `sudo docker stop kube-scheduler kube-controller-manager`
+4. Stop kube-apiserver: `sudo docker stop kube-apiserver`
+5. Stop Docker: `sudo systemctl stop docker`
 
-**Shutting down the etcd nodes :** 
+**5. Stop etcd nodes**
 
-For each etcd node: 
+For each etcd node:
 
-- ssh into the etcd node
-- stop kubelet and kube-proxy by running sudo docker stop kubelet kube-proxy
-- stop etcd by running sudo docker stop etcd
-- stop docker by running sudo service docker stop or sudo systemctl stop docker
-- shutdown the system sudo shutdown now
+1. Open an SSH session to the etcd node
+2. Stop kubelet and kube-proxy: `sudo docker stop kubelet kube-proxy`
+3. Stop etcd: `sudo docker stop etcd`
+4. Stop Docker: `sudo systemctl stop docker`
 
-#### **Shutting down the storage :**
+#### **6. Shut down nodes**
 
-#### Shut down any persistent storage devices that you might have in your datacenter (such as NAS storage devices) if applicable. It is important that you do this after shutting everything else down to prevent data loss/corruption for containers requiring persistence.
+Once Docker has stopped on the nodes, you may safely power down the hosts:
 
-> **N.B.** If you are running a cluster that was not deployed through RKE then the order of the process is still the same, however the commands may vary. For instance, some distributions run kubelet and other control plane items as a service on the node rather than in docker. Check documentation for the specific Kubernetes distribution for information as to how to stop these services.
+```markup
+sudo shutdown -h now
+```
 
-#### **Start Kubernetes cluster up after shutdown :**
+> **Note on Network Attached Storage:** If you have network attached storage devices consumed as volumes, wait until the cluster itself is completely shut down before powering down the storage devices.
 
-- Kubernetes is good about recovering from a cluster shutdown and requires little intervention, though there is a specific order in which things should be powered back on to minimize errors.
+#### **7. Start Kubernetes again after the shutdown**
 
-<!--THE END-->
+Kubernetes is resilient and typically requires little intervention during recovery, provided a specific power-on order is followed:
 
-1. Power on any storage devices if applicable.
-   
-   Check with your storage vendor on how to properly power on you storage devices and verify that they are ready.
+1. Ensure any network attached storage devices are first powered on, if applicable.
 2. For each etcd node:
    
-   1. Power on the system/start the instance.
-   2. Log into the system via ssh.
-   3. Ensure docker has started `sudo service docker status` or `sudo systemctl status docker`
-   4. Ensure etcd and kubelet’s status shows Up in Docker `sudo docker ps`
+   1. Power on the system/start the instance
+   2. Open an SSH session to the node
+   3. Ensure docker has started: `sudo systemctl status docker`
+   4. Ensure the etcd and kubelet containers' status is Up in Docker: `sudo docker ps`
 3. For each control plane node:
    
-   1. Power on the system/start the instance.
-   2. Log into the system via ssh.
-   3. Ensure docker has started `sudo service docker status` or `sudo systemctl status docker`
-   4. Ensure kube-apiserver, kube-scheduler, kube-controller-manager, and kubelet’s status shows Up in Docker `sudo docker ps`
+   1. Power on the system/start the instance
+   2. Open an SSH session to the node
+   3. Ensure docker has started: `sudo systemctl status docker`
+   4. Ensure the kube-apiserver, kube-scheduler, kube-controller-manager, and kubelet containers' status is Up in Docker: `sudo docker ps`
 4. For each worker node:
    
-   1. Power on the system/start the instance.
-   2. Log into the system via ssh.
-   3. Ensure docker has started `sudo service docker status` or `sudo systemctl status docker`
-   4. Ensure kubelet’s status shows Up in Docker `sudo docker ps`
-5. Log into the Rancher UI (or use kubectl) and check your various projects to ensure workloads have started as expected. This may take a few minutes, depending on the number of workloads and your server capacity.
+   1. Power on the system/start the instance
+   2. Open an SSH session to the node
+   3. Ensure docker has started: `sudo systemctl status docker`
+   4. Ensure the kubelet container's status is Up in Docker: `sudo docker ps`
+5. Uncordon nodes to allow workloads to schedule: `kubectl uncordon <NODE_NAME>`
+6. Log into the Rancher UI (or use `kubectl`) to ensure workloads have started as expected. This may take several minutes depending on the number of workloads and your server capacity.
 
 
 
@@ -3168,35 +3129,29 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
+Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
 
 ## **Situation**
 
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
+During startup of the Docker daemon, an error message of the following format is present in the system logs:
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
 ## **Resolution**
 
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
+An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
+
+The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
+
+Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
 
 
 
@@ -29578,10 +29533,8 @@ If endpoints are not cleanly removed from Calico, this can result in leaked addr
 
 The [calicoctl CLI](https://docs.tigera.io/calico/latest/operations/calicoctl/) can be used to [query for leaked addresses and release these](https://docs.tigera.io/calico/latest/reference/calicoctl/ipam/check#examples), freeing IP space within the cluster.
 
- 
-
 1. First, install calicoctl locally with a version matching the Calico version in the affected RKE2 cluster, per the [Calico documentation](https://docs.tigera.io/calico/latest/operations/calicoctl/install).
-2. Source a kubeconfig, with cluster admin permissions, for the affected RKE2 cluster: \``export KUBECONFIG=<path to kubeconfig>`\`
+2. Source a kubeconfig, with cluster admin permissions, for the affected RKE2 cluster: `export KUBECONFIG=<path to kubeconfig>`
 3. Query and release any leaked addresses:
    
    ```markup
