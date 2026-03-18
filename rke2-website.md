@@ -30270,7 +30270,7 @@ spec:
       iface: "eth1"
 ```
 
-Starting with RKE2 v1.23 it is possible to use flannel's [wireguard backend](https://github.com/flannel-io/flannel/blob/master/Documentation/backends.md#wireguard) for in-kernel WireGuard encapsulation and encryption ([Users of kernels < 5.6 need to install a module](https://www.wireguard.com/install/)). This can be achieved using the following chart values:
+To use flannel's [wireguard backend](https://github.com/flannel-io/flannel/blob/master/Documentation/backends.md#wireguard) [Users of kernels < 5.6 need to install a module](https://www.wireguard.com/install/) the following chart values must be used:
 
 ```yaml
 # /var/lib/rancher/rke2/server/manifests/rke2-canal-config.yaml
@@ -30320,7 +30320,7 @@ spec:
       type: wireguard
 ```
 
-For more information about values available in the Cilium chart, please refer to the [rke2-charts repository](https://github.com/rancher/rke2-charts/blob/main/charts/rke2-cilium/rke2-cilium/1.17.601/values.yaml)
+For more information about values available in the Cilium chart, please refer to the [rke2-charts repository](https://github.com/rancher/rke2-charts/blob/main/charts/rke2-cilium/rke2-cilium/1.19.101/values.yaml)
 
 
 <details>
@@ -30410,7 +30410,7 @@ spec:
       featureDetectOverride: "ChecksumOffloadBroken=false"
 ```
 
-For more information about values available for the Calico chart, please refer to the [rke2-charts repository](https://github.com/rancher/rke2-charts/blob/main/charts/rke2-calico/rke2-calico/v3.26.300/values.yaml)
+For more information about values available for the Calico chart, please refer to the [rke2-charts repository](https://github.com/rancher/rke2-charts/blob/main/charts/rke2-calico/rke2-calico/v3.31.400/values.yaml)
 
 <details>
 <summary>**eBPF dataplane**</summary>
@@ -30854,7 +30854,7 @@ spec:
       config:
         use-forwarded-headers: "true"
 ```
-For more information, refer to the official [ingress-nginx Helm configuration parameters](https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx#configuration).
+For more information, refer to the official [ingress-nginx Helm configuration parameters](https://github.com/rancher/rke2-charts/tree/main/charts/rke2-ingress-nginx/rke2-ingress-nginx/4.14.400#configuration).
 
 </TabItem>
 <TabItem value="traefik" default>
@@ -30883,7 +30883,7 @@ spec:
       general:
         level: "DEBUG"
 ```
-For more information, refer to the official [traefik Helm configuration parameters](https://github.com/traefik/traefik-helm-chart/blob/master/traefik/VALUES.md).
+To see all configurable options, visit the chart's [values.yaml](https://github.com/rancher/rke2-charts/blob/main/charts/rke2-traefik/rke2-traefik/39.0.502/values.yaml).
 
 </TabItem>
 </Tabs>
