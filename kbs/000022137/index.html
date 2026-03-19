@@ -16124,19 +16124,10 @@
 <div class="highlight"><pre><span></span><code>failed to setup network for sandbox &quot;&lt;hash&gt;&quot;: plugin type=&quot;calico&quot; failed (add): cannot allocate new block due to per host block limit 
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
-<p>If endpoints are not cleanly removed from Calico, this can result in leaked addresses, which consume IP space within the cluster. Following the process documented above will release these addresses, ensuring the IPAM handles are consistent, and all unused IP addresses are available to the cluster.</p>
+<p>This issue occurs when the Calico IP Address Management (IPAM) cannot allocate an IP address for the pod, as there are no available addresses in the block(s) assigned to the node, and the node cannot be assigned a new block, due to the <code>maxBlocksPerHost</code> setting (<a href="https://docs.tigera.io/calico/latest/reference/resources/ipamconfig#spec">default 20</a>). This is indicative of an IPAM resource leak.</p>
+<p>Over time, cluster events such as improper node shutdowns or failed pod deletions can lead to "leaked" IP addresses. These addresses remain marked as "allocated" in the Calico datastore but are not associated with any active workload or node, eventually exhausting the available pool.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>The <a href="https://docs.tigera.io/calico/latest/operations/calicoctl/">calicoctl CLI</a> can be used to <a href="https://docs.tigera.io/calico/latest/reference/calicoctl/ipam/check#examples">query for leaked addresses and release these</a>, freeing IP space within the cluster.</p>
-<ol>
-<li>First, install calicoctl locally with a version matching the Calico version in the affected RKE2 cluster, per the <a href="https://docs.tigera.io/calico/latest/operations/calicoctl/install">Calico documentation</a>.</li>
-<li>Source a kubeconfig, with cluster admin permissions, for the affected RKE2 cluster: <code>export KUBECONFIG=&lt;path to kubeconfig&gt;</code></li>
-<li>Query and release any leaked addresses:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>calicoctl datastore migrate lock
-calicoctl ipam check -o report.json
-calicoctl ipam release --from-report report.json
-calicoctl datastore migrate unlock
-</code></pre></div>
+<p>Check for and release any leaked IP addresses in the cluster by following the procedure in <a href="https://support.scc.suse.com/s/kb/How-to-use-calicoctl-to-query-for-and-release-leaked-addresses-in-an-RKE2-cluster">How to use calicoctl to query for and release leaked addresses in an RKE2 cluster</a>.</p>
 
 
 
