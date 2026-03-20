@@ -3129,29 +3129,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -8954,67 +8960,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -31300,6 +31298,160 @@ Then, perform a rollout restart of the deployment for the changes to take effect
 ```markup
 kubectl rollout restart deployment system-upgrade-controller -n cattle-system
 ```
+
+
+
+---
+
+## Article: 000022285.md
+
+# How to migrate the Rancher Ingress to Traefik in an RKE2 cluster
+
+**Article Number:** [000022285](https://support.scc.suse.com/s/kb/How-to-migrate-the-Rancher-Ingress-to-Traefik-in-an-RKE2-cluster)
+
+## **Environment**
+
+- An RKE2 cluster with Rancher installed.
+- RKE2 v1.32 &gt;= v1.32.11+rke2r1, v1.33 &gt;= v1.33.7+rke2r1, v1.34 &gt;= v1.34.3+rke2r1, or &gt;= v1.35.0+rke2r1
+
+**N.B.** Managed Kubernetes providers are excluded (AKS, EKS, GKS...), please refer to documentation from your managed Kubernetes provider for instructions on how to migrate Ingress resources on those distributions.
+
+## **Procedure**
+
+**Situation**
+
+This article provides specific instructions for migrating the Rancher Ingress resource when transitioning a Rancher local RKE2 cluster from Ingress NGINX to Traefik. It serves as a supplement to the primary guide: [Migrating from Ingress NGINX to Traefik in a standalone RKE2 cluster](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster).
+
+While the parent guide covers the general cluster migration, this article addresses the particularities and potential pitfalls specifically related to the Rancher Ingress.
+
+**Requirements**
+
+Before beginning the migration of the Rancher Ingress, ensure the following requirements are met:
+
+- **Rancher Version:** A supported version of Rancher must be installed. Refer to the [Support Matrix](https://www.suse.com/suse-rancher/support-matrix) and [Product Support Lifecycle](https://www.suse.com/lifecycle/#suse-rancher-prime).
+- **RKE2 Version:** The cluster must be running one of the following versions (or higher):
+  
+  - v1.35.0+rke2r1
+  - v1.34.3+rke2r1
+  - v1.33.7+rke2r1
+  - v1.32.11+rke2r1
+- **Backups:** [Take a snapshot](https://docs.rke2.io/datastore/backup_restore#creating-snapshots) of the RKE2 cluster.
+
+**Important Considerations**
+
+This migration is part of a broader transition of the local cluster from Ingress NGINX to Traefik. Following the migration to Traefik, as documented in the [parent guide](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster), two specific IngressClasses are available:
+
+1. `traefik` : Intended for standard Ingress resources that do not require Ingress NGINX annotations.
+2. `rke2-ingress-nginx-migration` : Intended for Ingress resources that still use NGINX annotations and require migration using Traefik's `kubernetesIngressNginx` provider.
+
+The `traefik` IngressClass is used for the Rancher Ingress migration in the steps below, unless custom, non-default annotations require the use of `rke2-ingress-nginx-migration`.
+
+**Analyzing Rancher Ingress Annotations**
+
+By default, the Rancher Ingress includes three Ingress NGINX annotations. Depending on the specific configuration, others may exist.
+
+1. **Default Rancher Ingress annotations**  
+   The following default annotations are not supported by Traefik’s `kubernetesIngressNginx` provider:
+   
+   - `nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"`
+   - `nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"`
+   - `nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"`
+   
+   **Recommendation:** These are no longer required and will be removed in future Rancher versions. Leave them as-is; they are ignored by the `traefik` IngressClass.
+2. **Custom annotations supported by Traefik's kubernetesIngressNginx provider**  
+   The following are two of the more commonly used custom annotations supported by the `kubernetesIngressNginx` provider:
+   
+   - `nginx.ingress.kubernetes.io/ssl-redirect`
+   - `nginx.ingress.kubernetes.io/backend-protocol`
+   
+   A full list of the Ingress NGINX annotations supported by Traefik's `kubernetesIngressNginx` provider can be found in the [Traefik documentation](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#annotations-support).  
+   **Action:** If these are in use and functionality must be maintained, use the `rke2-ingress-nginx-migration` IngressClass for the Rancher Ingress.
+3. **Custom annotations not supported by Traefik's kubernetesIngressNginx provider**  
+   The `nginx.ingress.kubernetes.io/configuration-snippet` annotation **is not supported** by Traefik. A full list of the Ingress NGINX annotations **not supported** by Traefik's `kubernetesIngressNginx` provider can be found in the [Traefik documentation](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#unsupported-annotations).  
+   **Action:** Identify a Traefik-native equivalent (usually a Middleware CRD) and use the `traefik` IngressClass for the Rancher Ingress, along with the required Middleware annotations. For example, if a snippet is used to set headers: `proxy_set_header X-Forwarded-Host $host/service;`  
+   Replace this by creating a Traefik Middleware:
+   
+   ```markup
+   apiVersion: traefik.io/v1alpha1
+   kind: Middleware
+   metadata:
+     name: fix-forwarded-host
+   spec:
+     headers:
+       customRequestHeaders:
+         X-Forwarded-Host: "host.example.com"
+   ```
+
+> **Note:** For custom annotations or assistance with complex snippets, the **Consulting Services** team may be able to assist, please contact **SUSE Support**.
+
+**Testing**
+
+After completing **Phase 1: Dual ingress controller setup (Coexistence)** of the [parent guide](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster), to enable Traefik, you can proceed to validate the Rancher Ingress configuration with Traefik. To do so create a provisional duplicate of the Rancher Ingress during **Phase 2 (Parallel migration and validation)**.
+
+> **Note on jq:** The one-liners below, to duplicate the Rancher Ingress, require `jq`. Alternatively, manually export, rename, and edit the `ingressClassName` field before applying the new resource.
+
+Based on your analysis of the Rancher annotations, as described above, run the following command to duplicate your Rancher Ingress and set the the IngressClass to  `traefik` :
+
+```markup
+kubectl get ingress rancher -n cattle-system -o json | jq '.metadata.name="rancher-traefik-testing" | .spec.ingressClassName="traefik" | del(.metadata.resourceVersion, .metadata.uid, .metadata.creationTimestamp, .metadata.managedFields)' | kubectl apply -f -
+```
+
+Or the following command to duplicate your Rancher Ingress and set the IngressClass to  `rke2-ingress-nginx-migration`:
+
+```markup
+kubectl get ingress rancher -n cattle-system -o json | jq '.metadata.name="rancher-traefik-testing" | .spec.ingressClassName="rke2-ingress-nginx-migration" | del(.metadata.resourceVersion, .metadata.uid, .metadata.creationTimestamp, .metadata.managedFields)' | kubectl apply -f -
+```
+
+If additional Ingress annotations are required, due to custom configuration, edit the duplicated Ingress to apply these:
+
+```markup
+kubectl -n cattle-system edit ingress rancher-traefik-testing
+```
+
+After testing that Ingress traffic to Rancher is successful via Traefik, remove the duplicated Rancher Ingress object (`rancher-traefik-testing`) before moving on with the migration:
+
+```markup
+kubectl -n cattle-system delete ingress rancher-traefik-testing
+```
+
+**Migration**
+
+> **Note on downtime:** During the migration, Rancher will be unavailable and downstreams clusters temporarily lose connectivity to Rancher, between the disabling of Ingress NGINX in **Phase 3: Final switchover and port reassignment** of the [parent guide](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster), and completing the upgrade of the Rancher Helm chart with the new Ingress values, as documented below.
+
+The required IngressClass, and any additional custom annotations, can be configured via the `ingress.ingressClassName` and `ingress.extraAnnotations` values on the Rancher Helm chart.
+
+After completing **Phase 3: Final switchover and port reassignment** in the [parent guide](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster) to disable Ingress NGINX, follow the [Rancher upgrade process](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades) to add the necessary values, based on the analysis above, to the helm upgrade command.
+
+Use the `--version` flag to [pin your current version](https://support.scc.suse.com/s/kb/360034528871) and prevent a change in the running version.
+
+> **Note on Let's Encrypt:** If Rancher was [installed using Let's Encrypt](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster#3-choose-your-ssl-configuration), the `letsEncrypt.ingress.class=nginx` parameter was likely configured. This setting directs the Rancher Issuer in the `cattle-system` namespace to use the Ingress NGINX IngressClass. In this instance, update the value when running the helm upgrade in the steps below to `--set letsEncrypt.ingress.class=traefik`
+
+1. **Default Rancher Ingress annotations**  
+   If you are not using any custom annotations on the Rancher Ingress, you can simply update the IngressClass to `traefik`, passing the value `--set ingress.ingressClassName=traefik`.
+2. **Custom annotations supported by Traefik's `kubernetesIngressNginx` provider**  
+   If you are using custom annotations supported by Traefik's `kubernetesIngressNginx` provider, you can update the IngressClass to `rke2-ingress-nginx-migration`, passing the value `--set ingress.ingressClassName=rke2-ingress-nginx-migration`, alongside the existing custom annotations set via `ingress.extraAnnotations`.
+3. **Custom annotations not supported by Traefik's kubernetesIngressNginx provider**  
+   If you are using custom annotations not supported by Traefik's `kubernetesIngressNginx` provider, and have determined the equivalent configuration options in Traefik, you can update the IngressClass to `traefik`, passing the value `--set ingress.ingressClassName=traefik`, alongside the required annotations for the custom Traefik configuration set via `ingress.extraAnnotations`.
+
+**Known issue:**
+
+If using external TLS termination, you might see "Too Many Redirects" when accessing the Rancher UI. A workaround for this is to add the following to your HelmChartConfig for Traefik:
+
+```markup
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    ports:
+      web:
+        forwardedHeaders:
+          insecure: true
+```
+
+**NB: Modifying the HelmChartConfig will rollout an updated traefik daemonset, which might result in interruptions to active connections.**
 
 
 
