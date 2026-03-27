@@ -4604,7 +4604,7 @@
   <span class="md-ellipsis">
     
   
-    How to test websocket connections to Rancher v2.x
+    [JP] How to test websocket connections to Rancher v2.x
   
 
     
@@ -14761,34 +14761,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000022137/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    FailedCreatePodSandBox "cannot allocate new block due to per host block limit" events in an RKE2 cluster with the Calico CNI
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000022138/" class="md-nav__link">
         
   
@@ -15978,6 +15950,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../000022384/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Unable to Enable Project Network Isolation on Imported RKE2/K3s Clusters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000022404/" class="md-nav__link">
         
   
@@ -16178,7 +16178,7 @@ spec:
 <li><strong>Custom annotations not supported by Traefik's kubernetesIngressNginx provider</strong><br />
    If you are using custom annotations not supported by Traefik's <code>kubernetesIngressNginx</code> provider, and have determined the equivalent configuration options in Traefik, you can update the IngressClass to <code>traefik</code>, passing the value <code>--set ingress.ingressClassName=traefik</code>, alongside the required annotations for the custom Traefik configuration set via <code>ingress.extraAnnotations</code>.</li>
 </ol>
-<p><strong>Known issue:</strong></p>
+<p><strong>Known issue</strong></p>
 <p>If using external TLS termination, you might see "Too Many Redirects" when accessing the Rancher UI. A workaround for this is to add the following to your HelmChartConfig for Traefik:</p>
 <div class="highlight"><pre><span></span><code>apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
