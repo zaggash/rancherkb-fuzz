@@ -7965,6 +7965,50 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#1-verify-overlay-network-ports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Verify Overlay Network Ports
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-validate-dns-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Validate DNS Resolution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-perform-overlay-connectivity-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Perform Overlay Connectivity Test
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-infrastructure-hypervisor-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Infrastructure &amp; Hypervisor Checks
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -16076,6 +16120,50 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#1-verify-overlay-network-ports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Verify Overlay Network Ports
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-validate-dns-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Validate DNS Resolution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-perform-overlay-connectivity-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Perform Overlay Connectivity Test
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-infrastructure-hypervisor-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Infrastructure &amp; Hypervisor Checks
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -16101,36 +16189,43 @@
 <p>pod-to-pod communication not happening</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>Pod-to-Pod communication should depend on multiple factors. Mainly, network communication should be allowed between the nodes. The following checkpoints help us trace the root cause of the problem.</p>
-<ul>
-<li>Check that the ports for their overlay are open between nodes (if they have multiple subnets/VLANs/DCs); testing from just one node to nodes in the other network should be good enough, e.g., </li>
-</ul>
-<div class="highlight"><pre><span></span><code>`nc -uvz &lt;node IP&gt; 8472` 
+<h2 id="1-verify-overlay-network-ports">1.  Verify Overlay Network Ports</h2>
+<p>Check that the ports for their overlay are open between nodes (if they have multiple subnets/VLANs/DCs); testing from just one node to nodes in the other network should be good enough, e.g., </p>
+<div class="highlight"><pre><span></span><code># Test UDP connectivity from one node to another
+nc -uvz &lt;REMOTE_NODE_IP&gt; 8472
 </code></pre></div>
-<p>(if they use the canal, change the port as needed). Please refer to this article [https://rancher.com/docs/rancher/v2.6/en/installation/requirements/ports/#commonly-used-ports]</p>
-<ul>
-<li>Check the DNS from a test pod with suitable tools (not busybox, it has nslookup issues), The `rancherlabs/swiss-army-knife` image is ideal for this.</li>
-</ul>
-<p># Do this for all coredns pod IPs.<br />
-</p>
+<p>(If they use the canal, change the port as needed. Please refer to this article [<a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/port-requirements#commonly-used-ports">https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/port-requirements#commonly-used-ports</a>]</p>
+<h2 id="2-validate-dns-resolution">2. Validate DNS Resolution</h2>
+<p>Check the DNS from a test pod with suitable tools (not busybox, it has nslookup issues). The `rancherlabs/swiss-army-knife` image is ideal for this. </p>
+<p># Do this for all coredns pod IPs.</p>
 <div class="highlight"><pre><span></span><code>   `dig &lt;hostname&gt; @&lt;coredns pod IP&gt;`
 </code></pre></div>
 <p>#  Use the same test pod to test their upstream nameservers (all 3, over a few retries), </p>
 <div class="highlight"><pre><span></span><code>   `dig &lt;hostname&gt;  @&lt;upstream ns IP&gt;`
 </code></pre></div>
-<p>Refer to this article [<a href="https://docs.ranchermanager.rancher.io/v2.7/troubleshooting/other-troubleshooting-tips/dns">https://docs.ranchermanager.rancher.io/v2.7/troubleshooting/other-troubleshooting-tips/dns</a> ]</p>
-<p>[Note:  In an air-gap environment, Swiss-army-knife is not available. You can try a specific busy box image with network tools like busybox image v1.28.]</p>
+<p>Refer to this article [<a href="https://ranchermanager.docs.rancher.com/troubleshooting/other-troubleshooting-tips/dns">https://ranchermanager.docs.rancher.com/troubleshooting/other-troubleshooting-tips/dns</a> ]</p>
+<p>[<strong>Note:</strong>  In air-gapped environments where external images(like swiss-army-knife) are unavailable. You can try a specific busy box image with network tools like busybox image v1.28.]</p>
+<h2 id="3-perform-overlay-connectivity-test">3. Perform Overlay Connectivity Test</h2>
+<p>Check whether the overlay network test is successful or not. The overlay network procedure tests the pod-to-pod connectivity between the nodes. Refer to this article. [<a href="https://ranchermanager.docs.rancher.com/troubleshooting/other-troubleshooting-tips/networking#check-if-overlay-network-is-functioning-correctly">https://ranchermanager.docs.rancher.com/troubleshooting/other-troubleshooting-tips/networking#check-if-overlay-network-is-functioning-correctly</a>]</p>
+<p>[<strong>Note:</strong> This overlay test performs the pod-to-pod communication using the ICMP protocol, which means you will still see networking issues because TCP communication might be blocked even though the test passes. So you have to test with good network tools like NC and iperf.]</p>
+<h2 id="4-infrastructure-hypervisor-checks">4. Infrastructure &amp; Hypervisor Checks</h2>
+<p>Check the Infra VMS  known issues and ensure that overlay network ports are allowed at the switch level. </p>
+<p>#e.g., In the case of VMware vSphere version 6.7u2.</p>
 <ul>
-<li>Check whether the overlay network test is successful or not.</li>
+<li>Align VXLAN Ports: Change the VXLAN port to <strong>8472</strong> (when NSX is not used) or <strong>4789</strong> (when NSX is used) to avoid conflicts with the hypervisor.</li>
+<li>Disable VXLAN Hardware Offload<strong>:</strong> Disable the VXLAN hardware offload feature on the <strong>VMXNET3 NIC</strong> (enabled by default in recent Linux drivers), which often causes packet drops in encapsulated traffic.</li>
 </ul>
-<p>The overlay network procedure tests the pod-to-pod connectivity between the nodes. Refer to this article.          [https://docs.ranchermanager.rancher.io/v2.5/troubleshooting/other-troubleshooting-tips/networking#check-if-overlay-network-is-functioning-correctly]<br />
-</p>
-<p>[Note: This overlay test performs the pod-to-pod communication using ICMP protocol, which means you will still see networking issues because TCP communication might be blocked even though the test passes. So you have to test with good network tools like NC and iperf.]</p>
+<div class="highlight"><pre><span></span><code>ethtool -K &lt;iface&gt; tx-udp_tnl-segmentation off
+</code></pre></div>
 <ul>
-<li>Check the Infra VMS  known issues and ensure that overlay network ports are allowed at the switch level.</li>
+<li><em>Ref: <a href="https://docs.vmware.com/en/VMware-vSphere/6.7/rn/esxi670-202111001.html">VMware PR 2766401</a>, <a href="https://github.com/projectcalico/calico/issues/4727">Calico Issue #4727</a></em></li>
+<li>Disable Generic IP Checksum Offloading: to prevent the NIC from incorrectly calculating checksums for encapsulated packets, which causes silent drops and severe performance degradation.</li>
 </ul>
-<p>#   , e.g., In the case of Vmware vSphere version 6.7u2.</p>
-<p>1.  Change the VXLAN port to 8472 (when NSX is not used) or 4789 (when NSX is used)</p>
-<p>2.  Disable the VXLAN hardware offload feature on the VMXNET3 NIC (which the recent Linux driver version enabled by default.  [https://docs.vmware.com/en/VMware-vSphere/6.7/rn/esxi670-202111001.html -Refer PR 2766401<strong>,</strong>https://github.com/projectcalico/calico/issues/4727 ]</p>
+<div class="highlight"><pre><span></span><code>ethtool -K &lt;iface&gt; tx-checksum-ip-generic off 
+</code></pre></div>
+<ul>
+<li><em>Ref: <a href="https://github.com/projectcalico/calico/issues/4865">Calico Issue #4865</a></em></li>
+</ul>
 
 
 
