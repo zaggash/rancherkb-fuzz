@@ -8685,6 +8685,28 @@ If both exist — the global secret for the cluster and a secret defined for the
 
 ---
 
+## Article: changelogs/index.md
+
+---
+title: "Next 🚧"
+---
+
+We are still working on the next release.
+
+
+---
+
+## Article: changelogs/changelogs/next.md
+
+---
+title: "Next 🚧"
+---
+
+We are still working on the next release.
+
+
+---
+
 ## Article: cli/fleet-agent/fleet-agent.md
 
 ---
@@ -9823,25 +9845,3 @@ fleet cleanup gitjob [flags]
 
 * [fleet cleanup](./fleet_cleanup)	 - Clean up outdated resources
 
-
-
----
-
-## Article: changelogs/index.md
-
----
-title: "Next 🚧"
----
-
-We are still working on the next release.
-
-
----
-
-## Article: changelogs/changelogs/next.md
-
----
-title: "Next 🚧"
----
-
-We are still working on the next release.
