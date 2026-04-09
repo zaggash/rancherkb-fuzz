@@ -25,7 +25,7 @@
     
     
       
-        <title>How to increase the number for workers for Fleet - SUSE KBs</title>
+        <title>How to increase the number of workers for Fleet - SUSE KBs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-increase-the-number-for-workers-for-fleet" class="md-skip">
+        <a href="#how-to-increase-the-number-of-workers-for-fleet" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to increase the number for workers for Fleet
+              How to increase the number of workers for Fleet
             
           </span>
         </div>
@@ -14273,7 +14273,7 @@
   <span class="md-ellipsis">
     
   
-    How to increase the number for workers for Fleet
+    How to increase the number of workers for Fleet
   
 
     
@@ -14291,7 +14291,7 @@
   <span class="md-ellipsis">
     
   
-    How to increase the number for workers for Fleet
+    How to increase the number of workers for Fleet
   
 
     
@@ -16071,10 +16071,13 @@
 
 
 
-<h1 id="how-to-increase-the-number-for-workers-for-fleet">How to increase the number for workers for Fleet</h1>
+<h1 id="how-to-increase-the-number-of-workers-for-fleet">How to increase the number of workers for Fleet</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/How-to-increase-the-number-for-workers-for-Fleet">000022085</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Rancher 2.10+, Fleet 0.11+</p>
+<ul>
+<li>Rancher 2.10+</li>
+<li>Fleet 0.11+</li>
+</ul>
 <h2 id="procedure"><strong>Procedure</strong></h2>
 <p>In order to tweak Fleet for performance, it is possible to increase the number of workers. This will have trade-offs, mostly on CPU consumption.</p>
 <p>Increasing the number of workers on Rancher should be done through the Apps feature on the Rancher local cluster.</p>
@@ -16084,9 +16087,14 @@
 <li>Select <strong>cattle-fleet-system</strong> from the Namespace filter at the top of the page.</li>
 <li>Click <strong>Edit/Upgrade</strong> for the <strong>fleet</strong> application.</li>
 <li>Click <strong>Next</strong> on the first <strong>metadata</strong> view to progress to the chart <strong>values</strong> view.</li>
-<li>In the chart values, under controller.reconciler.workers you can increase the number of workers for each component. The default is 50. You may wish to start with increments of 50:</li>
+<li>In the chart values, under agent.reconciler.workers you can increase the number of workers on the fleet agents for the Downstream clusters. On controller.reconciler.workers you can increase the number of workers for each component on the fleet controller. The default is 50. You may wish to start with increments of 50:</li>
 </ol>
-<p><div class="highlight"><pre><span></span><code>controller:
+<p><div class="highlight"><pre><span></span><code>agent:
+  reconciler:
+    workers:
+      bundledeployment: &#39;50&#39;
+      drift: &#39;50&#39;
+controller:
   reconciler:
     workers:
       bundle: &#39;50&#39;
