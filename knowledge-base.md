@@ -28362,13 +28362,14 @@ Confirm that the NGINX configuration has been reloaded, sometimes requiring a ma
 
 ## Article: 000022085.md
 
-# How to increase the number for workers for Fleet
+# How to increase the number of workers for Fleet
 
 **Article Number:** [000022085](https://support.scc.suse.com/s/kb/How-to-increase-the-number-for-workers-for-Fleet)
 
 ## **Environment**
 
-Rancher 2.10+, Fleet 0.11+
+- Rancher 2.10+
+- Fleet 0.11+
 
 ## **Procedure**
 
@@ -28376,16 +28377,19 @@ In order to tweak Fleet for performance, it is possible to increase the number o
 
 Increasing the number of workers on Rancher should be done through the Apps feature on the Rancher local cluster.
 
- 
-
 1. Explore the Rancher local cluster, within the Rancher UI.
 2. Navigate to **Apps** -&gt; **Installed Apps**.
 3. Select **cattle-fleet-system** from the Namespace filter at the top of the page.
 4. Click **Edit/Upgrade** for the **fleet** application.
 5. Click **Next** on the first **metadata** view to progress to the chart **values** view.
-6. In the chart values, under controller.reconciler.workers you can increase the number of workers for each component. The default is 50. You may wish to start with increments of 50:
+6. In the chart values, under agent.reconciler.workers you can increase the number of workers on the fleet agents for the Downstream clusters. On controller.reconciler.workers you can increase the number of workers for each component on the fleet controller. The default is 50. You may wish to start with increments of 50:
    
    ```markup
+   agent:
+     reconciler:
+       workers:
+         bundledeployment: '50'
+         drift: '50'
    controller:
      reconciler:
        workers:
