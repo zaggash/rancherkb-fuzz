@@ -8760,34 +8760,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -15958,8 +15952,6 @@ A Namespace stuck in a Terminating state is most frequently caused by one of two
 
 To identify and resolve these issues, follow the instructions below.
 
- 
-
 **Check if an APIService is unavailable**
 
 1. Check if any APIService is unavailable by running `kubectl get apiservice | grep False`, per the following example:
@@ -15972,8 +15964,6 @@ To identify and resolve these issues, follow the instructions below.
    
    1. If the workload serving the API has been removed from the cluster, and the APIService is no longer expected to work, then delete it with `kubectl delete apiservice <name>`, e.g. `kubectl delete apiservice v1beta1.custom.metrics.k8s.io`
    2. If the APIService is expected to work, then investigate why the Kubernetes Service and/or workload backing it are not working, and fix them to resolve the unavailable APIService.
-
- 
 
 **Identify and remove those resources, within the Namespace, which have a finalizer that cannot be satisfied**
 
@@ -19229,46 +19219,37 @@ By design, interaction with the Rancher CLI or Terraform provider does not work 
 
 ## Article: 000021441.md
 
-# The Repositories of Air-gapped Downstream Clusters in Rancher v2.8.3. fail to pull charts.
+# The Rancher Apps repositories of air-gapped clusters in Rancher v2.8.3 - v2.8.5 fail to pull charts
 
-**Article Number:** [000021441](https://support.scc.suse.com/s/kb/The-Repositories-of-Air-gapped-Downstream-Clusters-in-Rancher-v2-8-3-fail-pull-charts)
+**Article Number:** [000021441](https://support.scc.suse.com/s/kb/The-Repositories-of-Air-gapped-Clusters-in-Rancher-v2-8-3-fail-pull-charts)
 
 ## **Environment**
 
-SUSE Rancher v.2.8.3
+Rancher v2.8.3, v2.8.4 and v2.8.5
 
 ## **Situation**
 
-There is a bug affecting Rancher v2.8.3 Downstream clusters in AirGapped environments. The Repositories try to pull from "*git.rancher.io"*, when they should be using the bundledSystemCharts (assuming the system-catalog setting's value is "bundled" in the Upstream cluster). This action fails, as the AirGapped clusters do not have connection to the exterior.
+Air-gapped clusters in a Rancher v2.8.3, v2.8.4 or v2.8.5 environment fail to pull the Rancher and Partners [Apps Repositories](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/helm-charts-in-rancher).
+
+The issue affects air-gapped Rancher local clusters where the [Helm chart value](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#advanced-options) `useBundledSystemChart=true` has not been set, and any air-gapped downstream clusters where the `settings.management.cattle.io/system-catalog` resource has not been manually updated to `bundled`.
+
+In affected clusters the Rancher and Partners App Repositories remain in a Downloading state, with errors similar to the following:
+
+```markup
+Ensure failure: git-C/var/lib/rancher-data/local-catalogs/v2/rancher-partner-charts/817acdce9bffd6e05a58a3798840e408c4ea71783381ecd2e9af30baad65974 fetch origin -- 8a753a4d6549a40ebeb725151cbbcc7e9065fce7 error: exit status 128, detail: fatal: unable to access https://git.rancher.io/partner-charts/': Failed to connect to git.rancher.io port 443 after 260784 ms: Couldn't connect to server:update failure: Repo [https://git.rancher.io/partner-charts] is not accessible: Get "https://git.rancher.io/repos/partner-charts/commits/main": dial tcp 148.113.221.144:443: i/o timeout (Client Timeout exceeded while awaiting headers)
+```
+
+```markup
+Ensure failure: git-C/var/lib/rancher-data/local-catalogs/v2/rancher-charts/4b40cac650031b74776e87c1a726b0484d0877c3ec137da0872547ff9b73a721 fetch origin -- 08898fb85b7aa56e754073a007844b3ecdae703 error: exit status 128, detail: fatal: unable to access https://git.rancherio/charts/': Failed to connect to git.rancher.io port 443 after 260685 ms: Couldn't connect to server:update failure: Repo [https://git.rancher.io/charts] is not accessible: Get "https://git.rancher.io/repos/charts/commits/release-v2.8": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+```
 
 ## **Cause**
 
-The "*useBundledSystemChart=true*" setting is not being properly shared from upstream to downstream clusters in Rancher v2.8.3. This will cause Downstream Clusters not to contain the "bundled" value for their system-catalog setting. As such, they will try to pull the charts from *git.rancher.io*. In the case of AirGapped clusters, this will fail, and the fetch action will throw a "Context Deadline Exceeded" error.
+The issue was tracked in GitHub Issue [#45420](https://github.com/rancher/rancher/issues/45240). Due to a change introduced in Rancher v2.8.3 the built-in Rancher and Partners Apps Repositories did not automatically fallback to using the Helm charts bundled within Rancher, in the instance that git.rancher.io was unreachable. As a result, in air-gapped clusters Rancher attempts and fails to pull the repositories from git.rancher.io.
 
 ## **Resolution**
 
-You can check if you are hitting this issue by running the following command in the Upstream cluster:
-
-```
-kubectl get settings.management.cattle.io system-catalog
-```
-
-If the value is set to "bundled", run the same command on the Downstream Cluster. If the value is empty, that is a confirmation that you hit the issue. 
-
-There is a manual workaround available to update the system-catalog setting for Downstream clusters. 
-
-- On Rancher Manager, navigate to the Downstream clusters with the issue.
-- Go to Workloads -&gt; Pods  (with All Namespaces selected in the upper-right dropdown menu).
-- Find the **cattle-cluster-agent**-######## pod (it is in the cattle-system namespace) -&gt; click on the 3 vertical dots to the right -&gt; Execute Shell
-- Inside this shell, execute:
-
-```
-kubectl edit settings.management.cattle.io system-catalog
-```
-
-- Change the value to "**bundled**".
-
-The Repositories should work normally after the change is done and a few minutes pass or you Refresh the repositories.
+This issue was fixed in Rancher v2.8.6+ and users should upgrade to take advantage of the fix.
 
 
 
