@@ -25,7 +25,7 @@
     
     
       
-        <title>How to collect kube-api audit logs with rancher-logging for an RKE/RKE2/K3S cluster - SUSE KBs</title>
+        <title>How to collect Kubernetes API audit logs with rancher-logging in RKE, RKE2, or K3s clusters - SUSE KBs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-collect-kube-api-audit-logs-with-rancher-logging-for-an-rkerke2k3s-cluster" class="md-skip">
+        <a href="#how-to-collect-kubernetes-api-audit-logs-with-rancher-logging-in-rke-rke2-or-k3s-clusters" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How to collect kube-api audit logs with rancher-logging for an RKE/RKE2/K3S cluster
+              How to collect Kubernetes API audit logs with rancher-logging in RKE, RKE2, or K3s clusters
             
           </span>
         </div>
@@ -8701,7 +8701,7 @@
   <span class="md-ellipsis">
     
   
-    How to collect kube-api audit logs with rancher-logging for an RKE/RKE2/K3S cluster
+    How to collect Kubernetes API audit logs with rancher-logging in RKE, RKE2, or K3s clusters
   
 
     
@@ -8719,7 +8719,7 @@
   <span class="md-ellipsis">
     
   
-    How to collect kube-api audit logs with rancher-logging for an RKE/RKE2/K3S cluster
+    How to collect Kubernetes API audit logs with rancher-logging in RKE, RKE2, or K3s clusters
   
 
     
@@ -8760,17 +8760,6 @@
     <span class="md-ellipsis">
       
         Situation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Cause
       
     </span>
   </a>
@@ -16077,17 +16066,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cause" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Cause
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -16115,22 +16093,31 @@
 
 
 
-<h1 id="how-to-collect-kube-api-audit-logs-with-rancher-logging-for-an-rkerke2k3s-cluster">How to collect kube-api audit logs with rancher-logging for an RKE/RKE2/K3S cluster</h1>
+<h1 id="how-to-collect-kubernetes-api-audit-logs-with-rancher-logging-in-rke-rke2-or-k3s-clusters">How to collect Kubernetes API audit logs with rancher-logging in RKE, RKE2, or K3s clusters</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/How-to-collect-kube-api-audit-logs-for-an-rke-rke2-k3s-cluster">000021022</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>RKE/RKE2/K3S</p>
+<ul>
+<li>Rancher v2.9+</li>
+<li>A Rancher-managed RKE, RKE2 or K3s cluster with rancher-logging installed</li>
+</ul>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>kube-api server audit logs are usually placed in a different directory than the one configured for rancher-logging when collecting</p>
-<h2 id="cause"><strong>Cause</strong></h2>
-<p>The kube-api server audit logs aren't collected by rancher-logging as they are placed outside of the directory parsed by the logging operator by default</p>
+<p>By default, the <code>rancher-logging</code> stack collects the container logs of Pods running in the cluster. However, Kubernetes API audit logs require specific configuration to be ingested.</p>
+<p>This article details how to enable the collection of these audit logs using the <code>rancher-logging</code> chart's <code>additionalLoggingSources</code> and how to route them using a dedicated logging configuration.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>By configuring the following, you can enable the kube-api server audit logs collection from rancher-logging helm charts. The rancher-logging helm chart has it disabled by default:</p>
-<p>RKE:</p>
-<div class="highlight"><pre><span></span><code>kubeAudit:
+<p><strong>Step 1: Enable audit logging at the cluster level</strong></p>
+<p>Before <code>rancher-logging</code> can collect logs, the cluster must be configured to generate them. Follow the Rancher documentation <a href="https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log-in-downstream-clusters">Enabling the API Audit Log in Downstream Clusters</a>.</p>
+<p><strong>Step 2: Configure the rancher-logging chart</strong></p>
+<p>When installing or upgrading the <code>rancher-logging</code> chart, you must configure <code>kubeAudit</code> in <code>additionalLoggingSources</code>, based on the cluster type:</p>
+<p><strong>RKE Clusters</strong></p>
+<div class="highlight"><pre><span></span><code>additionalLoggingSources:
+  [...]
+  kubeAudit:
     auditFilename: &#39;audit-log.json&#39;
     enabled: enabled
-    fluentbit:
-      logTag: kube-audit
+    loggingRef: &quot;kubeauditlogging&quot;
+    fluentbit:
+      loggingRef: &quot;kubeauditlogging&quot;
+      logTag: kube-audit
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/controlplane
@@ -16139,13 +16126,18 @@
           key: node-role.kubernetes.io/etcd
           value: &#39;true&#39;
     pathPrefix: &#39;/var/log/kube-audit&#39;
+[...]
 </code></pre></div>
-<p>RKE2:</p>
-<div class="highlight"><pre><span></span><code>kubeAudit:
+<p><strong>RKE2 Clusters</strong></p>
+<div class="highlight"><pre><span></span><code>additionalLoggingSources:
+  [...]
+  kubeAudit:
     auditFilename: &#39;audit.log&#39;
     enabled: enabled
-    fluentbit:
-      logTag: kube-audit
+    loggingRef: &quot;kubeauditlogging&quot;
+    fluentbit:
+      loggingRef: &quot;kubeauditlogging&quot;
+      logTag: kube-audit
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/controlplane
@@ -16154,13 +16146,18 @@
           key: node-role.kubernetes.io/etcd
           value: &#39;true&#39;
     pathPrefix: &#39;/var/lib/rancher/rke2/server/logs&#39;
+[...]
 </code></pre></div>
-<p>k3s:</p>
-<div class="highlight"><pre><span></span><code>kubeAudit:
+<p><strong>K3s Clusters</strong></p>
+<div class="highlight"><pre><span></span><code>additionalLoggingSources:
+  [...]
+  kubeAudit:
     auditFilename: &#39;audit.log&#39;
     enabled: enabled
-    fluentbit:
-      logTag: kube-audit
+    loggingRef: &quot;kubeauditlogging&quot;
+    fluentbit:
+      loggingRef: &quot;kubeauditlogging&quot;
+      logTag: kube-audit
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/controlplane
@@ -16169,6 +16166,33 @@
           key: node-role.kubernetes.io/etcd
           value: &#39;true&#39;
     pathPrefix: &#39;/var/lib/rancher/k3s/server/logs&#39;
+[...]
+</code></pre></div>
+<p><strong>Step 3: Create routing resources (ClusterFlow/ClusterOuput)</strong></p>
+<p>Create a <code>ClusterFlow</code> and <code>ClusterOutput</code> that reference the <code>loggingRef: kubeauditlogging</code> configured above.</p>
+<p>Apply the following manifest to the cluster, adjusting the <code>ClusterOutput</code> spec to match your actual destination (such as Splunk, Elasticsearch, or S3):</p>
+<div class="highlight"><pre><span></span><code>apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: rke2-kube-audit-clusterflow2
+  namespace: cattle-logging-system
+spec:
+  globalOutputRefs:
+    - file-out
+  loggingRef: kubeauditlogging
+---
+
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: file-out
+  namespace: cattle-logging-system
+spec:
+  # Example: Writing to a local file for testing. 
+  # In production, replace with your logging provider (elasticsearch, splunk, etc.)
+  file:
+    path: /tmp/${tag}
+  loggingRef: kubeauditlogging
 </code></pre></div>
 
 
