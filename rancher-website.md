@@ -376,15 +376,12 @@ Rancher will publish deprecated features as part of the [release notes](https://
 
 | Patch Version |  Release Date |
 |---------------|---------------|
-| [2.13.3](https://github.com/rancher/rancher/releases/tag/v2.13.3) | February 25, 2026 |
-| [2.13.2](https://github.com/rancher/rancher/releases/tag/v2.13.2) | January 29, 2026 |
-| [2.13.1](https://github.com/rancher/rancher/releases/tag/v2.13.1) | December 18, 2025 |
-| [2.13.0](https://github.com/rancher/rancher/releases/tag/v2.13.0) | November 25, 2025 |
+| [2.14.1](https://github.com/rancher/rancher/releases/tag/v2.14.1) | April 30, 2026 |
+| [2.14.0](https://github.com/rancher/rancher/releases/tag/v2.14.0) | March 25, 2026 |
 
 ## What can I expect when a feature is marked for deprecation?
 
 In the release where functionality is marked as "Deprecated", it will still be available and supported allowing upgrades to follow the usual procedure. Once upgraded, users/admins should start planning to move away from the deprecated functionality before upgrading to the release it marked as removed. The recommendation for new deployments is to not use the deprecated feature.
-
 
 ---
 
@@ -1414,7 +1411,13 @@ For details on using Fleet behind a proxy, see the [Using Fleet Behind a Proxy](
 
 In order for Helm charts with dependencies to deploy successfully, you must run a manual command (as listed below), as it is up to the user to fulfill the dependency list. If you do not do this and proceed to clone your repository and run `helm install`, your installation will fail because the dependencies will be missing.
 
-The Helm chart in the git repository must include its dependencies in the charts subdirectory. You must either manually run `helm dependencies update $chart` or run `helm dependencies build $chart` locally, then commit the complete charts directory to your git repository. Note that you will update your commands with the applicable parameters
+The Helm chart in the git repository must include its dependencies in the `charts/` subdirectory. To do this, manually run `helm dependencies update $chart` or run `helm dependencies build $chart` locally, then commit the complete `charts/` directory to your git repository. Ensure you update your commands with the applicable parameters to your environment.
+
+## Fleet resource configuration
+
+Fleet allows you to configuring CPU and memory resource requests and limits for both management cluster controllers and downstream cluster agents. When running Fleet through Rancher, apply these changes using the `rancher-config` ConfigMap rather than via Helm directly.
+
+For detailed configuration options, refer to [Resource Limits in Fleet](https://fleet.rancher.io/how-tos-for-operators/resource-limits).
 
 ## Troubleshooting
 
@@ -1562,7 +1565,7 @@ title: Cluster API (CAPI) with Rancher Turtles
 [Rancher Turtles](https://turtles.docs.rancher.com/) is a [Kubernetes Operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/#operators-in-kubernetes) that manages the lifecycle of provisioned Kubernetes clusters, by providing integration between your Cluster API (CAPI) and Rancher. With Rancher Turtles, you can:
 
 - Import CAPI clusters into Rancher, by installing the Rancher Cluster Agent in CAPI provisioned clusters.
-- Configure the [CAPI Operator](https://turtles.docs.rancher.com/turtles/stable/en/operator/chart.html#_cluster_api_operator_values).
+- Manage the [CAPI Operator](https://cluster-api-operator.sigs.k8s.io/) using the [CAPIProvider](https://turtles.docs.rancher.com/turtles/stable/en/reference/capiprovider.html) resource.
 
 The [Overview](./overview.md) section outlines installation options, Rancher Turtles architecture, and a brief demo. For more details, see the [Rancher Turtles documentation](https://turtles.docs.rancher.com/).
 
@@ -1593,51 +1596,13 @@ Rancher Turtles meets [SLSA Level 3](https://slsa.dev/spec/v1.0/levels#build-l3)
 
 ## Prerequisites
 
-Before installing Rancher Turtles in your Rancher environment, you must disable Rancher's `embedded-cluster-api` functionality. This also includes cleaning up Rancher-specific webhooks that otherwise would conflict with CAPI ones.
+:::important
 
-To simplify setting up Rancher for installing Rancher Turtles, the official Rancher Turtles Helm chart includes a `pre-install` hook that removes the following:
+Starting with Rancher v2.14.0, the built-in `embedded-cluster-api` functionality (also known as the `rancher-provisioning-capi` chart) has been removed. [Rancher Turtles](https://turtles.docs.rancher.com/) is now the only supported method for Cluster API integration with Rancher.
 
-- Disables the `embedded-cluster-api` feature in Rancher.
-- Deletes the `mutating-webhook-configuration` and `validating-webhook-configuration` webhooks, as they are no longer needed.
+If you are upgrading from a previous version of Rancher (v2.13.x or earlier), you no longer need to manually disable the `embedded-cluster-api` feature flag or clean up related webhooks before installing Rancher Turtles.
 
-These webhooks can be removed through the Rancher UI as well:
-
-1. In the upper left corner, click **☰** > **Cluster Management**.
-1. Select your local cluster.
-1. In the left-hand navigation menu, select **More Resources** > **Admission**.
-1. From the dropdown, select the Resource pages for `MutatingWebhookConfiguration` and `ValidatingWebhookConfiguration`.
-1. On the respective Resource pages, click the **⋮** that are attached to the `mutating-webhook-configuration` and `validating-webhook-configuration` webhooks and select the **Delete** option.
-
-The webhooks can also be accessed by entering the names of the webhooks into the **Resource Search** field.
-
-The following `kubectl` commands can manually remove the necessary webhooks:
-
-```console
-kubectl delete mutatingwebhookconfiguration.admissionregistration.k8s.io mutating-webhook-configuration
-```
-
-```console
-kubectl delete validatingwebhookconfigurations.admissionregistration.k8s.io validating-webhook-configuration
-```
-
-Use the following example to disable the `embedded-cluster-api` feature from the console:
-
-1. Create a `feature.yaml` file, with `embedded-cluster-api` set to false:
-
-```yaml title="feature.yaml"
-apiVersion: management.cattle.io/v3
-kind: Feature
-metadata:
-  name: embedded-cluster-api
-spec:
-  value: false
-```
-
-2. Use `kubectl` to apply the `feature.yaml` file to the cluster:
-
-```bash
-kubectl apply -f feature.yaml
-```
+:::
 
 ## Installing the Rancher Turtles Operator
 
@@ -1813,24 +1778,6 @@ Remember that, if you use a different name for the installation or a different n
 
 :::
 
-After Rancher Turtles is uninstalled, Rancher's `embedded-cluster-api` feature must be re-enabled:
-
-1. Create a `feature.yaml` file, with `embedded-cluster-api` set to true:
-
-```yaml title="feature.yaml"
-apiVersion: management.cattle.io/v3
-kind: Feature
-metadata:
-  name: embedded-cluster-api
-spec:
-  value: true
-```
-
-2. Use `kubectl` to apply the `feature.yaml` file to the cluster:
-
-```bash
-kubectl apply -f feature.yaml
-```
 
 
 ---
@@ -3580,13 +3527,13 @@ Certain internal Kubernetes components are scraped via a proxy deployed as part 
 The following Kubernetes components are directly scraped by Prometheus:
 
 - kubelet*
-- ingress-nginx**
+- Traefik**
 - coreDns/kubeDns
 - kube-api-server
 
 \* You can optionally use `hardenedKubelet.enabled` to use a PushProx, but that is not the default.
 
-** For RKE2 clusters, ingress-nginx is deployed by default and treated as an internal Kubernetes component.
+** For RKE2 clusters, Traefik is deployed by default and treated as an internal Kubernetes component.
 
 ### Scraping Metrics Based on Kubernetes Distribution
 
@@ -3601,11 +3548,11 @@ Metrics are scraped differently based on the Kubernetes distribution. For help w
 | etcd	| rke2Etcd.enabled	| kubeAdmEtcd.enabled |	Not available |
 | kube-proxy	| rke2Proxy.enabled	| kubeAdmProxy.enabled |	k3sServer.enabled |
 | kubelet	| Collects metrics directly exposed by kubelet	| Collects metrics directly exposed by kubelet	| Collects metrics directly exposed by kubelet |
-| ingress-nginx*	| Collects metrics directly exposed by kubelet, Exposed by rke2IngressNginx.enabled	| Not available	| Not available |
+| Traefik* | Collects metrics directly exposed by kubelet	| Not available	| Not available |
 | coreDns/kubeDns	| Collects metrics directly exposed by coreDns/kubeDns	| Collects metrics directly exposed by coreDns/kubeDns	| Collects metrics directly exposed by coreDns/kubeDns |
 | kube-api-server	| Collects metrics directly exposed by kube-api-server	| Collects metrics directly exposed by kube-appi-server	| Collects metrics directly exposed by kube-api-server |
 
-\* For RKE2 clusters, ingress-nginx is deployed by default and treated as an internal Kubernetes component.
+\* For RKE2 clusters, Traefik is deployed by default and treated as an internal Kubernetes component.
 
 ### Terminology
 
@@ -3614,7 +3561,7 @@ Metrics are scraped differently based on the Kubernetes distribution. For help w
 - **etcd:** The internal Kubernetes component that is the distributed key/value store which Kubernetes uses for persistent storage of all cluster information.
 - **kube-proxy:** The internal Kubernetes component that watches the API server for pods/services changes in order to maintain the network up to date.
 - **kubelet:** The internal Kubernetes component that watches the API server for pods on a node and makes sure they are running.
-- **ingress-nginx:** An Ingress controller for Kubernetes using NGINX as a reverse proxy and load balancer.
+- **Traefik:** An Ingress controller for Kubernetes that can be used as a reverse proxy and load balancer.
 - **coreDns/kubeDns:** The internal Kubernetes component responsible for DNS.
 - **kube-api-server:** The main internal Kubernetes component that is responsible for exposing APIs for the other master components.
 
@@ -5428,10 +5375,8 @@ In order to deploy and run the adapter successfully, you need to ensure its vers
 
 | Rancher Version | Adapter Version  |
 |-----------------|------------------|
-| v2.13.3         |  108.0.0+up8.0.0 |
-| v2.13.2         |  108.0.0+up8.0.0 |
-| v2.13.1         |  108.0.0+up8.0.0 |
-| v2.13.0         |  108.0.0+up8.0.0 |
+| v2.14.1         |  109.0.0+up9.0.0 |
+| v2.14.0         |  109.0.0+up9.0.0 |
 
 ### 1. Gain Access to the Local Cluster
 
@@ -6180,16 +6125,30 @@ To enable this feature, follow these steps:
 ## Article: how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/notification-center.md
 
 ---
-title: Notification Center
+title: Notifications
 ---
 
 <head>
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/notification-center"/>
 </head>
 
+The Rancher dashboard delivers dynamic notifications and system alerts to ensure that you stay informed about the latest updates, lifecycle events, and statuses relevant to your deployment.
+
+## Dynamic Content
+
+Rancher fetches dynamic content, including notifications about new releases, End of Maintenance (EOM) or End of Life (EOL) statuses, and other important announcements.
+
+Dynamic content is delivered to users through three areas in the Rancher dashboard. 
+
+* **Home page notification banner**: A dynamic banner displayed at the top of the home page for high-priority announcements.
+* **Home page section below the Links**: A dedicated area on the home page, located beneath the **Links** section, that displays relevant updates and resources.
+* **[Notification center](#what-is-the-notification-center)**: A centralized hub for all notifications, including system alerts, resources and announcements.
+
+To interact with these notifications, click **Learn More** on the listed resource. You can also dismiss the notification.
+
 ## What is the Notification Center?
 
-The Notification Center, located in the upper-right corner of your Rancher dashboard and marked by a bell icon, is your central hub for staying informed about various events within Rancher.
+The notification center acts as a central repository for both system-generated alerts and dynamic announcements. You can access it by clicking the bell icon in the top right corner of the Rancher dashboard.
 
 Notifications are categorized by severity and type:
 
@@ -6255,7 +6214,7 @@ The policies shipped by default in Rancher aim to provide a trade-off between se
 
 ## Assign a Pod Security Admissions (PSA) Configuration Template
 
-You can assign a PSA template at the same time that you create a downstream cluster. You can also add a template by configuring an existing cluster.
+You can assign a PSA template at the same time that you create a downstream cluster. You can also add a template by configuring an existing downstream cluster.
 
 ### Assign a Template During Cluster Creation
 <Tabs>
@@ -6329,6 +6288,7 @@ When you run Rancher on a Kubernetes cluster that enforces a restrictive securit
 - `calico-apiserver`
 - `calico-system`
 - `cattle-alerting`
+- `cattle-capi-system`
 - `cattle-csp-adapter-system`
 - `cattle-elemental-system`
 - `cattle-epinio-system`
@@ -6350,22 +6310,25 @@ When you run Rancher on a Kubernetes cluster that enforces a restrictive securit
 - `cattle-resources-system`
 - `cattle-sriov-system`
 - `cattle-system`
+- `cattle-turtles-system`
 - `cattle-ui-plugin-system`
 - `cattle-windows-gmsa-system`
 - `cert-manager`
 - `cis-operator-system`
+- `compliance-operator-system`
 - `fleet-default`
 - `fleet-local`
-- `ingress-nginx`
 - `istio-system`
 - `kube-node-lease`
 - `kube-public`
 - `kube-system`
 - `longhorn-system`
 - `rancher-alerting-drivers`
+- `rancher-compliance-system`
 - `security-scan`
 - `sr-operator-system`
 - `tigera-operator`
+- `traefik`
 
 Rancher, some Rancher owned charts, and RKE2 and K3s distributions all use these namespaces. A subset of the listed namespaces are already exempt in the built-in Rancher `rancher-restricted` policy, for use in downstream clusters. For a complete template which has all the exemptions you need to run Rancher, please refer to this [sample Admission Configuration](../../../reference-guides/rancher-security/psa-restricted-exemptions.md).
 
@@ -7997,15 +7960,20 @@ if the user has not yet logged in to Rancher. However, if the user has previousl
 | Client Secret             | The generated Secret of your Amazon Cognito App Client.                                                                                                                                                                                             |
 | Issuer                    | The Issuer URL of your Amazon Cognito App Client. It follows the format `https://cognito-idp.{region}.amazonaws.com/{userPoolId}`, and can be found in the App Client settings page. Rancher uses the Issuer URL to fetch all of the required URLs. |
 
+## OIDC Support for PKCE Extension
+
+<OIDCPKCESupport />
+
+## Configuring OIDC Single Logout (SLO)
+
+<ConfigureSLOOidc />
+
 ## Troubleshooting
 
 ### You are not redirected to your authentication provider
 
 If you fill out the **Configure an Amazon Cognito account** form and click on **Enable**, and you are not redirected to Amazon Cognito, verify your Amazon Cognito configuration.
 
-## Configuring OIDC Single Logout (SLO)
-
-<ConfigureSLOOidc />
 
 ---
 
@@ -8612,6 +8580,14 @@ For example, if your IdP sends `groups` in a claim called `custom_roles`, enter 
 | Custom Email Claim | `email` | The name of the claim in the OIDC token that contains the user's email address. |
 | Custom Groups Claim | `groups` | The name of the claim in the OIDC token that contains the user's group memberships (used for RBAC). |
 
+## OIDC Support for PKCE Extension
+
+<OIDCPKCESupport />
+
+## Configuring OIDC Single Logout (SLO)
+
+<ConfigureSLOOidc />
+
 ## Troubleshooting
 
 If you are experiencing issues while testing the connection to the OIDC server, first double-check the configuration options of your OIDC client. You can also inspect the Rancher logs to help pinpoint what's causing issues. Debug logs may contain more detailed information about the error. Please refer to [How can I enable debug logging](../../../../faq/technical-items.md#how-can-i-enable-debug-logging) in this documentation.
@@ -8629,10 +8605,6 @@ If the `Issuer` and `Auth Endpoint` are generated incorrectly, open the **Config
 ### Error: "Invalid grant_type"
 
 In some cases, the "Invalid grant_type" error message may be misleading and is actually caused by setting the `Valid Redirect URI` incorrectly.
-
-## Configuring OIDC Single Logout (SLO)
-
-<ConfigureSLOOidc />
 
 
 ---
@@ -9086,6 +9058,14 @@ After configuration is completed, Rancher user permissions need to be reapplied 
 
 :::
 
+## OIDC Support for PKCE Extension
+
+<OIDCPKCESupport />
+
+## Configuring OIDC Single Logout (SLO)
+
+<ConfigureSLOOidc />
+
 ## Annex: Troubleshooting
 
 If you are experiencing issues while testing the connection to the Keycloak server, first double-check the configuration options of your OIDC client. You may also inspect the Rancher logs to help pinpoint what's causing issues. Debug logs may contain more detailed information about the error. Please refer to [How can I enable debug logging](../../../../faq/technical-items.md#how-can-i-enable-debug-logging) in this documentation.
@@ -9122,9 +9102,6 @@ To resolve this, you can either:
  
 2. Reconfigure your Keycloak OIDC setup using a user that is assigned to at least one group in Keycloak.
 
-## Configuring OIDC Single Logout (SLO)
-
-<ConfigureSLOOidc />
 
 ---
 
@@ -9329,6 +9306,10 @@ Try configuring and saving keycloak as your SAML provider and then accessing the
 
 <ConfigureSLO />
 
+## SAML and OpenLDAP Group Permissions
+
+<SamlOpenLDAPGroupPermissions />
+
 
 ---
 
@@ -9449,6 +9430,9 @@ If you experience issues when you test the connection to the OpenLDAP server, en
 
 <ConfigureSLO />
 
+## SAML and OpenLDAP Group Permissions
+
+<SamlOpenLDAPGroupPermissions />
 
 ---
 
@@ -9524,6 +9508,10 @@ Note that these URLs will not return valid data until the authentication configu
 ## Configuring SAML Single Logout (SLO)
 
 <ConfigureSLO />
+
+## SAML and OpenLDAP Group Permissions
+
+<SamlOpenLDAPGroupPermissions />
 
 
 ---
@@ -10143,7 +10131,7 @@ If you want to standardize the hardware in your clusters, use RKE templates conj
 
 ### Node Templates
 
-[Node templates](../../../../reference-guides/user-settings/manage-node-templates.md) are responsible for node configuration and node provisioning in Rancher. From your user profile, you can set up node templates to define which templates are used in each of your node pools. With node pools enabled, you can make sure you have the required number of nodes in each node pool, and ensure that all nodes in the pool are the same.
+Node templates are responsible for node configuration and node provisioning in Rancher. From your user profile, you can set up node templates to define which templates are used in each of your node pools. With node pools enabled, you can make sure you have the required number of nodes in each node pool, and ensure that all nodes in the pool are the same.
 
 ### Terraform
 
@@ -10593,6 +10581,9 @@ openssl req -x509 -newkey rsa:2048 -keyout myservice.key -out myservice.cert -da
 
 <ConfigureSLO />
 
+## SAML and OpenLDAP Group Permissions
+
+<SamlOpenLDAPGroupPermissions />
 
 ---
 
@@ -10610,14 +10601,14 @@ Because Shibboleth is a SAML provider, it doesn't support searching for groups. 
 
 One solution to this problem is to configure an OpenLDAP identity provider. With an OpenLDAP back end for Shibboleth, you will be able to search for groups in Rancher and assign them to resources such as clusters, projects, or namespaces from the Rancher UI.
 
-### Terminology
+## Terminology
 
 - **Shibboleth** is a single sign-on log-in system for computer networks and the Internet. It allows people to sign in using just one identity to various systems. It validates user credentials, but does not, on its own, handle group memberships.
 - **SAML:** Security Assertion Markup Language, an open standard for exchanging authentication and authorization data between an identity provider and a service provider.
 - **OpenLDAP:** a free, open-source implementation of the Lightweight Directory Access Protocol (LDAP). It is used to manage an organization’s computers and users. OpenLDAP is useful for Rancher users because it supports groups. In Rancher, it is possible to assign permissions to groups so that they can access resources such as clusters, projects, or namespaces, as long as the groups already exist in the identity provider.
 - **IdP or IDP:** An identity provider. OpenLDAP is an example of an identity provider.
 
-### Adding OpenLDAP Group Permissions to Rancher Resources
+## Adding OpenLDAP Group Permissions to Rancher Resources
 
 The diagram below illustrates how members of an OpenLDAP group can access resources in Rancher that the group has permissions for.
 
@@ -10630,6 +10621,10 @@ When a member of the OpenLDAP group logs in to Rancher, she is redirected to Shi
 Shibboleth validates her credentials, and retrieves user attributes from OpenLDAP, including groups. Then Shibboleth sends a SAML assertion to Rancher including the user attributes. Rancher uses the group data so that she can access all of the resources and permissions that her groups have permissions for.
 
 ![Adding OpenLDAP Group Permissions to Rancher Resources](/img/shibboleth-with-openldap-groups.svg)
+
+## SAML and OpenLDAP Group Permissions
+
+<SamlOpenLDAPGroupPermissions />
 
 
 ---
@@ -10763,13 +10758,11 @@ title: Setting up Amazon ELB Network Load Balancer
 
 This how-to guide describes how to set up a Network Load Balancer (NLB) in Amazon's EC2 service that will direct traffic to multiple instances on EC2.
 
-These examples show the load balancer being configured to direct traffic to three Rancher server nodes. If Rancher is installed on an RKE Kubernetes cluster, three nodes are required. If Rancher is installed on a K3s Kubernetes cluster, only two nodes are required.
+These examples show the load balancer being configured to direct traffic to three Rancher server nodes. If Rancher is installed on a K3s Kubernetes cluster, only two nodes are required.
 
 This tutorial is about one possible way to set up your load balancer, not the only way. Other types of load balancers, such as a Classic Load Balancer or Application Load Balancer, could also direct traffic to the Rancher server nodes.
 
 Rancher only supports using the Amazon NLB when terminating traffic in `tcp` mode for port 443 rather than `tls` mode. This is due to the fact that the NLB does not inject the correct headers into requests when terminated at the NLB. This means that if you want to use certificates managed by the Amazon Certificate Manager (ACM), you should use an ALB.
-
-
 
 ## Requirements
 
@@ -10781,7 +10774,7 @@ Begin by creating two target groups for the **TCP** protocol, one with TCP port 
 
 Your first NLB configuration step is to create two target groups. Technically, only port 443 is needed to access Rancher, but it's convenient to add a listener for port 80, because traffic to port 80 will be automatically redirected to port 443.
 
-Regardless of whether an NGINX Ingress or Traefik Ingress controller is used, the Ingress should redirect traffic from port 80 to port 443.
+The Traefik Ingress should redirect traffic from port 80 to port 443.
 
 1. Log into the [Amazon AWS Console](https://console.aws.amazon.com/ec2/) to get started. Make sure to select the **Region** where your EC2 instances (Linux nodes) are created.
 1. Select **Services** and choose **EC2**, find the section **Load Balancing** and open **Target Groups**.
@@ -10789,7 +10782,7 @@ Regardless of whether an NGINX Ingress or Traefik Ingress controller is used, th
 
 :::note
 
-Health checks are handled differently based on the Ingress. For details, refer to [this section.](#health-check-paths-for-nginx-ingress-and-traefik-ingresses)
+For details on Traefik Ingress health checks, refer to [this section.](#health-check-paths-for-traefik-ingresses)
 
 :::
 
@@ -10922,16 +10915,13 @@ After AWS creates the NLB, click **Close**.
 
 6. Click **Save** in the top right of the screen.
 
-## Health Check Paths for NGINX Ingress and Traefik Ingresses
+## Health Check Paths for Traefik Ingresses
 
-K3s and RKE Kubernetes clusters handle health checks differently because they use different Ingresses by default.
+K3s Kubernetes clusters use Traefik as the default Ingress.
 
-For RKE Kubernetes clusters, NGINX Ingress is used by default, whereas for K3s Kubernetes clusters, Traefik is the default Ingress.
+The health check path is `/ping`. By default `/ping` is always matched (regardless of Host), and a response from [Traefik itself](https://docs.traefik.io/operations/ping/) is always served.
 
-- **Traefik:** The health check path is `/ping`. By default `/ping` is always matched (regardless of Host), and a response from [Traefik itself](https://docs.traefik.io/operations/ping/) is always served.
-- **NGINX Ingress:** The default backend of the NGINX Ingress controller has a `/healthz` endpoint. By default `/healthz` is always matched (regardless of Host), and a response from [`ingress-nginx` itself](https://github.com/kubernetes/ingress-nginx/blob/0cbe783f43a9313c9c26136e888324b1ee91a72f/charts/ingress-nginx/values.yaml#L212) is always served.
-
-To simulate an accurate health check, it is a best practice to use the Host header (Rancher hostname) combined with `/ping` or `/healthz` (for K3s or for RKE clusters, respectively) wherever possible, to get a response from the Rancher Pods, not the Ingress.
+To simulate an accurate health check, it is a best practice to use the Host header (Rancher hostname) combined with `/ping` or `/healthz` wherever possible, to get a response from the Rancher Pods, not the Ingress.
 
 
 ---
@@ -11492,6 +11482,7 @@ Before you create your own custom catalog, you should have a basic understanding
 
 
 ### Chart.yaml
+
 #### Annotations
 
 Rancher supports additional annotations that you can add to the `Chart.yaml` file. These annotations allow you to define application dependencies or configure additional UI defaults:
@@ -11506,7 +11497,7 @@ Rancher supports additional annotations that you can add to the `Chart.yaml` fil
 | catalog.cattle.io/requests-memory | Total amount of memory that should be unreserved in the cluster. If less memory is available, a warning will be shown | 2Gi |
 | catalog.cattle.io/os              | Restricts the OS where this chart can be installed. Possible values: `linux`, `windows`. Default: no restriction | linux |
 
-### Keywords
+#### Keywords
 
 With the `keywords` option in the `Chart.yaml` file it is possible to provide a list of categories for sorting your application in the Rancher UI, like `infrastructure`, `monitoring` and more.
 
@@ -13370,7 +13361,7 @@ Install [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
 
 :::
 
-1. Open a web browser, navigate to [GitHub](https://github.com/rancher/rancher/blob/master/cleanup/user-cluster.sh), and download `user-cluster.sh`.
+1. Open a web browser, navigate to [GitHub](https://github.com/rancher/rancher/blob/main/cleanup/user-cluster.sh), and download `user-cluster.sh`.
 
 1. Make the script executable by running the following command from the same directory as `user-cluster.sh`:
 
@@ -13836,17 +13827,17 @@ Tools can be installed through **Apps.**
 
 ---
 
-## Article: how-to-guides/new-user-guides/manage-clusters/nodes-and-node-pools.md
+## Article: how-to-guides/new-user-guides/manage-clusters/nodes-and-machine-pools.md
 
 ---
-title: Nodes and Node Pools
+title: Nodes and Machine Pools
 ---
 
 <head>
-  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/nodes-and-node-pools"/>
+  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/nodes-and-machine-pools"/>
 </head>
 
-After you launch a Kubernetes cluster in Rancher, you can manage individual nodes from the cluster's **Node** tab. 
+After you launch a Kubernetes cluster in Rancher, you can manage individual nodes from the cluster's **Node** tab.
 
 1. Click **☰** in the top left corner.
 1. Select **Cluster Management**.
@@ -13887,13 +13878,7 @@ The following table lists which node options are available for each type of clus
 
 ### Nodes Hosted by an Infrastructure Provider
 
-Node pools are available when you provision Rancher-launched Kubernetes clusters on nodes that are [hosted in an infrastructure provider.](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md)
-
-Clusters provisioned using [one of the node pool options](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#node-pools) can be scaled up or down if the node pool is edited.
-
-A node pool can also automatically maintain the node scale that's set during the initial cluster provisioning if [node auto-replace is enabled.](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#about-node-auto-replace) This scale determines the number of active nodes that Rancher maintains for the cluster.
-
-Rancher uses [node templates](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#node-templates) to replace nodes in the node pool. Each node template uses cloud provider credentials to allow Rancher to set up the node in the infrastructure provider.
+Machine pools are available when you provision Rancher-launched Kubernetes clusters on nodes that are [hosted in an infrastructure provider.](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md)
 
 ### Nodes Provisioned by Hosted Kubernetes Providers
 
@@ -13922,7 +13907,7 @@ Select this option to view the node's [API endpoints](../../../api/quickstart.md
 
 Use **Delete** to remove defective nodes from the cloud provider.
 
-When you the delete a defective node, Rancher can automatically replace it with an identically provisioned node if the node is in a node pool and [node auto-replace is enabled.](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#about-node-auto-replace)
+When you delete a defective node, Rancher can automatically replace it with an identically provisioned node if the node is in a machine pool and [auto-replace is enabled](../../../reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration.md#auto-replace).
 
 :::tip
 
@@ -13932,7 +13917,7 @@ If your cluster is hosted by an infrastructure provider, and you want to scale y
 
 ## Scaling Nodes
 
-For nodes hosted by an infrastructure provider, you can scale the number of nodes in each [node pool](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#node-pools) by using the scale controls. This option isn't available for other cluster types.
+For nodes hosted by an infrastructure provider, you can scale the number of nodes in each machine pool by using the scale controls. This option isn't available for other cluster types.
 
 ## SSH into a Node Hosted by an Infrastructure Provider
 
@@ -14483,7 +14468,7 @@ In order to dynamically provision storage in vSphere, the vSphere provider must 
 
 ### Prerequisites
 
-In order to provision vSphere volumes in a cluster created with the [Rancher Kubernetes Engine (RKE)](../../launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md), the [vSphere cloud provider](https://rancher.com/docs/rke/latest/en/config-options/cloud-providers/vsphere) must be explicitly enabled in the [cluster options](../../../../reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration.md).
+In order to provision vSphere volumes in a cluster created with [RKE2](../../launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md), the [vSphere cloud provider](https://rancher.com/docs/rke/latest/en/config-options/cloud-providers/vsphere) must be explicitly enabled in the [cluster options](../../../../reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration.md#cloud-provider).
 
 ### Creating a StorageClass
 
@@ -14732,21 +14717,6 @@ After you download the kubeconfig file, you are able to use the kubeconfig file 
 
 If admins have [kubeconfig token generation turned off](../../../../api/api-tokens.md#disable-tokens-in-generated-kubeconfigs), the kubeconfig file requires that the [Rancher CLI](../../../../reference-guides/cli-with-rancher/rancher-cli.md) to be present in your PATH.
 
-### Two Authentication Methods for RKE Clusters
-
-If the cluster is not an [RKE cluster,](../../launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md) the kubeconfig file allows you to access the cluster in only one way: it lets you be authenticated with the Rancher server, then Rancher allows you to run kubectl commands on the cluster.
-
-For RKE clusters, the kubeconfig file allows you to be authenticated in two ways:
-
-- **Through the Rancher server authentication proxy:** Rancher's authentication proxy validates your identity, then connects you to the downstream cluster that you want to access.
-- **Directly with the downstream cluster's API server:** RKE clusters have an authorized cluster endpoint enabled by default. This endpoint allows you to access your downstream Kubernetes cluster with the kubectl CLI and a kubeconfig file, and it is enabled by default for RKE clusters. In this scenario, the downstream cluster's Kubernetes API server authenticates you by calling a webhook (the `kube-api-auth` microservice) that Rancher set up.
-
-This second method, the capability to connect directly to the cluster's Kubernetes API server, is important because it lets you access your downstream cluster if you can't connect to Rancher.
-
-To use the authorized cluster endpoint, you need to configure kubectl to use the extra kubectl context in the kubeconfig file that Rancher generates for you when the RKE cluster is created. This file can be downloaded from the cluster view in the Rancher UI, and the instructions for configuring kubectl are on [this page.](use-kubectl-and-kubeconfig.md#authenticating-directly-with-a-downstream-cluster)
-
-These methods of communicating with downstream Kubernetes clusters are also explained in the [architecture page](../../../../reference-guides/rancher-manager-architecture/communicating-with-downstream-user-clusters.md) in the larger context of explaining how Rancher works and how Rancher communicates with downstream clusters.
-
 ### About the kube-api-auth Authentication Webhook
 
 The `kube-api-auth` microservice is deployed to provide the user authentication functionality for the [authorized cluster endpoint](../../../../reference-guides/rancher-manager-architecture/communicating-with-downstream-user-clusters.md#4-authorized-cluster-endpoint). When you access the user cluster using `kubectl`, the cluster's Kubernetes API server authenticates you by using the `kube-api-auth` service as a webhook.
@@ -14946,7 +14916,8 @@ In clusters that store data on GlusterFS volumes, you may experience an issue wh
 In [Rancher Launched Kubernetes clusters](../../launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md) that store data on iSCSI volumes, you may experience an issue where kubelets fail to automatically connect with iSCSI volumes. For details on resolving this issue, refer to [this page.](manage-persistent-storage/install-iscsi-volumes.md)
 
 ### hostPath Volumes
-Before you create a hostPath volume, you need to set up an [extra_bind](https://rancher.com/docs/rke/latest/en/config-options/services/services-extras/#extra-binds/) in your cluster configuration. This will mount the path as a volume in your kubelets, which can then be used for hostPath volumes in your workloads.
+
+Both K3s and RKE2 support mounting hostPath volumes using the [Rancher Local Path Provisioner](https://github.com/rancher/local-path-provisioner). For configuration information, depending on your distribution refer to [K3s - Volumes and Storage](https://docs.k3s.io/add-ons/storage#setting-up-the-local-storage-provider) or [RKE2 - Advanced Options and Configuration](https://docs.rke2.io/advanced#extra-control-plane-component-volume-mounts).
 
 ### Migrating VMware vSphere Cloud Provider from In-tree to Out-of-tree
 
@@ -15797,7 +15768,7 @@ title: Rancher Agents
 There are two different agent resources deployed on Rancher managed clusters:
 
 - [cattle-cluster-agent](#cattle-cluster-agent)
-- [cattle-node-agent](#cattle-node-agent)
+- [rancher-system-agent](#rancher-system-agent)
 
 For a conceptual overview of how the Rancher server provisions clusters and communicates with them, refer to the [architecture](../../../reference-guides/rancher-manager-architecture/rancher-manager-architecture.md).
 
@@ -15805,9 +15776,9 @@ For a conceptual overview of how the Rancher server provisions clusters and comm
 
 The `cattle-cluster-agent` is used to connect to the Kubernetes API of [Rancher Launched Kubernetes](launch-kubernetes-with-rancher.md) clusters. The `cattle-cluster-agent` is deployed using a Deployment resource.
 
-### cattle-node-agent
+### rancher-system-agent
 
-The `cattle-node-agent` is used to interact with nodes in a [Rancher Launched Kubernetes](launch-kubernetes-with-rancher.md) cluster when performing cluster operations. Examples of cluster operations are upgrading Kubernetes version and creating/restoring etcd snapshots. The `cattle-node-agent` is deployed using a DaemonSet resource to make sure it runs on every node. The `cattle-node-agent` is used as fallback option to connect to the Kubernetes API of [Rancher Launched Kubernetes](launch-kubernetes-with-rancher.md) clusters when `cattle-cluster-agent` is unavailable.
+The `rancher-system-agent` is a daemon used to manage nodes in a Rancher provisioned RKE2/K3s Kubernetes cluster when performing cluster lifecycle operations. Examples of cluster operations include upgrading the Kubernetes version and creating/restoring etcd snapshots. The `rancher-system-agent` is designed to apply plans to the Rancher system and can support both local and remote plans.
 
 ### Requests
 
@@ -15815,38 +15786,11 @@ The `cattle-cluster-agent` pod does not define the default CPU and memory reques
 
 To configure request values through the UI:
 
-<Tabs groupId="k8s-distro">
-<TabItem value="RKE">
-
-1. When you [create](./launch-kubernetes-with-rancher.md) or edit an existing cluster, go to the **Cluster Options** section.
-1. Expand the **Cluster Configuration** subsection.
-1. Configure your request values using the **CPU Requests** and **Memory Requests** fields as needed.
-
-</TabItem>
-<TabItem value="RKE2/K3s">
-
 1. When you [create](./launch-kubernetes-with-rancher.md) or edit an existing cluster, go to the **Cluster Configuration**.
 1. Select the **Cluster Agent** subsection.
 1. Configure your request values using the **CPU Reservation** and **Memory Reservation** fields as needed.
 
-</TabItem>
-</Tabs>
-
 If you prefer to configure via YAML, add the following snippet to your configuration file:
-
-<Tabs groupId="k8s-distro">
-<TabItem value="RKE">
-
-```yaml
-cluster_agent_deployment_customization:
-  override_resource_requirements:
-    requests:
-      cpu: 50m
-      memory: 100Mi
-```
-
-</TabItem>
-<TabItem value="RKE2/K3s">
 
 ```yaml
 spec:
@@ -15857,9 +15801,6 @@ spec:
         memory: 100Mi 
 ```
 
-</TabItem>
-</Tabs>
-
 ### Scheduling rules
 
 The `cattle-cluster-agent` uses either a fixed set of tolerations, or dynamically-added tolerations based on taints applied to the control plane nodes. This structure allows [Taint based Evictions](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-based-evictions) to work properly for `cattle-cluster-agent`.
@@ -15869,7 +15810,6 @@ If control plane nodes are present in the cluster, the default tolerations will 
 | Component              | nodeAffinity nodeSelectorTerms             | nodeSelector | Tolerations                                                                    |
 | ---------------------- | ------------------------------------------ | ------------ | ------------------------------------------------------------------------------ |
 | `cattle-cluster-agent` | `beta.kubernetes.io/os:NotIn:windows`      | none         | **Note:** These are the default tolerations, and will be replaced by tolerations matching taints applied to controlplane nodes.<br/><br/>`effect:NoSchedule`<br/>`key:node-role.kubernetes.io/controlplane`<br/>`value:true`<br/><br/>`effect:NoSchedule`<br/>`key:node-role.kubernetes.io/control-plane`<br/>`operator:Exists`<br/><br/>`effect:NoSchedule`<br/>`key:node-role.kubernetes.io/master`<br/>`operator:Exists` |
-| `cattle-node-agent`    | `beta.kubernetes.io/os:NotIn:windows`      | none         | `operator:Exists`                                                              |
 
 The `cattle-cluster-agent` Deployment has preferred scheduling rules using `preferredDuringSchedulingIgnoredDuringExecution`, favoring to be scheduled on nodes with the `controlplane` node. When there are no controlplane nodes visible in the cluster (this is usually the case when using [Clusters from Hosted Kubernetes Providers](../kubernetes-clusters-in-rancher-setup/set-up-clusters-from-hosted-kubernetes-providers/set-up-clusters-from-hosted-kubernetes-providers.md)), you can add the label `cattle.io/cluster-agent=true` on a node to prefer scheduling the `cattle-cluster-agent` pod to that node.
 
@@ -16006,7 +15946,7 @@ You can access your cluster after its state is updated to **Active**.
 **Active** clusters are assigned two Projects:
 
 - `Default`, containing the `default` namespace
-- `System`, containing the `cattle-system`, `ingress-nginx`, `kube-public`, and `kube-system` namespaces
+- `System`, containing the `cattle-system`, `traefik`, `kube-public`, and `kube-system` namespaces
 
 ## Optional Next Steps
 
@@ -16100,7 +16040,7 @@ You can access your cluster after its state is updated to **Active**.
 **Active** clusters are assigned two Projects:
 
 - `Default`, containing the `default` namespace
-- `System`, containing the `cattle-system`, `ingress-nginx`, `kube-public`, and `kube-system` namespaces
+- `System`, containing the `cattle-system`, `traefik`, `kube-public`, and `kube-system` namespaces
 
 ### GCE Best Practices
 
@@ -16200,7 +16140,7 @@ You can access your cluster after its state is updated to **Active**.
 **Active** clusters are assigned two Projects:
 
 - `Default`, containing the `default` namespace
-- `System`, containing the `cattle-system`, `ingress-nginx`, `kube-public`, and `kube-system` namespaces
+- `System`, containing the `cattle-system`, `traefik`, `kube-public`, and `kube-system` namespaces
 
 ### Optional Next Steps
 
@@ -16455,7 +16395,7 @@ You can access your cluster after its state is updated to **Active**.
 **Active** clusters are assigned two Projects:
 
 - `Default`, containing the `default` namespace
-- `System`, containing the `cattle-system`, `ingress-nginx`, `kube-public`, and `kube-system` namespaces
+- `System`, containing the `cattle-system`, `traefik`, `kube-public`, and `kube-system` namespaces
 
 
 ### Optional Next Steps
@@ -16478,130 +16418,10 @@ title: Launching Kubernetes on New Nodes in an Infrastructure Provider
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider"/>
 </head>
 
-When you create an RKE or RKE2 cluster using a node template in Rancher, each resulting node pool is shown in a new **Machine Pools** tab. You can see the machine pools by doing the following:
-
-1. Click  **☰ > Cluster Management**.
-1. Click the name of the RKE or RKE2 cluster.
-
-## RKE Clusters
-
-Using Rancher, you can create pools of nodes based on a [node template](#node-templates). This node template defines the parameters you want to use to launch nodes in your infrastructure providers or cloud providers.
-
-One benefit of installing Kubernetes on node pools hosted by an infrastructure provider is that if a node loses connectivity with the cluster, Rancher can automatically create another node to join the cluster to ensure that the count of the node pool is as expected.
-
-The available cloud providers to create a node template are decided based on active [node drivers](#node-drivers).
-
-### Node Templates
-
-A node template is the saved configuration for the parameters to use when provisioning nodes in a specific cloud provider. These nodes can be launched from the UI. Rancher uses [Docker Machine](https://github.com/docker/docs/blob/vnext-engine/machine/overview.md) to provision these nodes. The available cloud providers to create node templates are based on the active node drivers in Rancher.
-
-After you create a node template in Rancher, it's saved so that you can use this template again to create node pools. Node templates are bound to your login. After you add a template, you can remove them from your user profile.
-
-#### Node Labels
-
-You can add [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) on each node template, so that any nodes created from the node template will automatically have these labels on them.
-
-Invalid labels can prevent upgrades or can prevent Rancher from starting. For details on label syntax requirements, see the [Kubernetes documentation.](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set)
-
-#### Node Taints
-
-You can add [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) on each node template, so that any nodes created from the node template will automatically have these taints on them.
-
-Since taints can be added at a node template and node pool, if there is no conflict with the same key and effect of the taints, all taints will be added to the nodes. If there are taints with the same key and different effect, the taints from the node pool will override the taints from the node template.
-
-#### Administrator Control of Node Templates
-
-Administrators can control all node templates. Admins can now maintain all the node templates within Rancher. When a node template owner is no longer using Rancher, the node templates created by them can be managed by administrators so the cluster can continue to be updated and maintained.
-
-To access all node templates, an administrator will need to do the following:
+When you [create an RKE2 cluster](../../../../reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration.md#cluster-config-file-reference) using a machine config in Rancher, each resulting node pool is shown in a new **Machine Pools** tab. You can see the machine pools by doing the following:
 
 1. Click **☰ > Cluster Management**.
-1. Click **RKE1 Configuration > Node Templates**.
-
-**Result:** All node templates are listed. The templates can be edited or cloned by clicking the **⋮**.
-
-### Node Pools
-
-Using Rancher, you can create pools of nodes based on a [node template](#node-templates).
-
-A node template defines the configuration of a node, like what operating system to use, number of CPUs, and amount of memory.
-
-The benefit of using a node pool is that if a node is destroyed or deleted, you can increase the number of live nodes to compensate for the node that was lost. The node pool helps you ensure that the count of the node pool is as expected.
-
-Each node pool must have one or more nodes roles assigned.
-
-Each node role (i.e. etcd, controlplane, and worker) should be assigned to a distinct node pool. Although it is possible to assign multiple node roles to a node pool, this should not be done for production clusters.
-
-The recommended setup is to have:
-
-- a node pool with the etcd node role and a count of three
-- a node pool with the controlplane node role and a count of at least two
-- a node pool with the worker node role and a count of at least two
-
-**RKE1 downstream cluster nodes in an air-gapped environment:**
-
-By default, Rancher tries to run the Docker Install script when provisioning RKE1 downstream cluster nodes, such as in vSphere. However, the Rancher Docker installation script would fail in air-gapped environments. To work around this issue, you may choose to skip installing Docker when creating a Node Template where Docker is pre-installed onto a VM image. You can accomplish this by selecting **None** in the dropdown list for `Docker Install URL` under **Engine Options** in the Rancher UI.
-
-<figcaption>**Engine Options Dropdown:**</figcaption>
-
-![Engine Options Dropdown](/img/node-template-engine-options-rke1.png)
-
-#### Node Pool Taints
-
-If you haven't defined [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) on your node template, you can add taints for each node pool. The benefit of adding taints to a node pool is that you can change the node template without having to first ensure that the taint exists in the new template.
-
-For each taint, they will automatically be added to any created node in the node pool. Therefore, if you add taints to a node pool that have existing nodes, the taints won't apply to existing nodes in the node pool, but any new node added into the node pool will get the taint.
-
-When there are taints on the node pool and node template, if there is no conflict with the same key and effect of the taints, all taints will be added to the nodes. If there are taints with the same key and different effect, the taints from the node pool will override the taints from the node template.
-
-#### About Node Auto-replace
-
-If a node is in a node pool, Rancher can automatically replace unreachable nodes. Rancher will use the existing node template for the given node pool to recreate the node if it becomes inactive for a specified number of minutes.
-
-:::caution
-
-Self-healing node pools are designed to help you replace worker nodes for <b>stateless</b> applications. It is not recommended to enable node auto-replace on a node pool of master nodes or nodes with persistent volumes attached, because VMs are treated ephemerally. When a node in a node pool loses connectivity with the cluster, its persistent volumes are destroyed, resulting in data loss for stateful applications.
-
-:::
-
-Node auto-replace works on top of the Kubernetes node controller. The node controller periodically checks the status of all the nodes (configurable via the `--node-monitor-period` flag of the `kube-controller`). When a node is unreachable, the node controller will taint that node. When this occurs, Rancher will begin its deletion countdown. You can configure the amount of time Rancher waits to delete the node. If the taint is not removed before the deletion countdown ends, Rancher will proceed to delete the node object. Rancher will then provision a node in accordance with the set quantity of the node pool.
-
-#### Enabling Node Auto-replace
-
-When you create the node pool, you can specify the amount of time in minutes that Rancher will wait to replace an unresponsive node.
-
-1. In the form for creating or editing a cluster, go to the **Node Pools** section.
-1. Go to the node pool where you want to enable node auto-replace. In the **Recreate Unreachable After** field, enter the number of minutes that Rancher should wait for a node to respond before replacing the node.
-1. Fill out the rest of the form for creating or editing the cluster.
-
-**Result:** Node auto-replace is enabled for the node pool.
-
-#### Disabling Node Auto-replace
-
-You can disable node auto-replace from the Rancher UI with the following steps:
-
-1. Click **☰ > Cluster Management**.
-1. On the **Clusters** page, go to the cluster where you want to disable node auto-replace and click **⋮ > Edit Config**.
-1. In the **Node Pools** section, go to the node pool where you want to enable node auto-replace. In the **Recreate Unreachable After** field, enter 0.
-1. Click **Save**.
-
-**Result:** Node auto-replace is disabled for the node pool.
-
-### Cloud Credentials
-
-Node templates can use cloud credentials to store credentials for launching nodes in your cloud provider, which has some benefits:
-
-- Credentials are stored as a Kubernetes secret, which is not only more secure, but it also allows you to edit a node template without having to enter your credentials every time.
-
-- After the cloud credential is created, it can be re-used to create additional node templates.
-
-- Multiple node templates can share the same cloud credential to create node pools. If your key is compromised or expired, the cloud credential can be updated in a single place, which allows all node templates that are using it to be updated at once.
-
-After cloud credentials are created, the user can start [managing the cloud credentials that they created](../../../../reference-guides/user-settings/manage-cloud-credentials.md).
-
-### Node Drivers
-
-If you don't find the node driver that you want to use, you can see if it is available in Rancher's built-in [node drivers and activate it](../../authentication-permissions-and-global-configuration/about-provisioning-drivers/manage-node-drivers.md#activatingdeactivating-node-drivers), or you can [add your own custom node driver](../../authentication-permissions-and-global-configuration/about-provisioning-drivers/manage-node-drivers.md#adding-custom-node-drivers).
+1. Click the name of the RKE2 cluster.
 
 ## RKE2 Clusters
 
@@ -16618,8 +16438,6 @@ For RKE2 cluster templates, please refer to [this page](../../manage-clusters/ma
 The RKE2 CLI exposes two roles, `server` and `agent`, which represent the Kubernetes node-roles `etcd` + `controlplane` and `worker` respectively. With RKE2 integration in Rancher v2.6, RKE2 node pools can represent more fine-grained role assignments such that `etcd` and `controlplane` roles can be represented.
 
 The same functionality of using `etcd`, `controlplane` and `worker` nodes is possible in the RKE2 CLI by using flags and node tainting to control where workloads and the Kubernetes master were scheduled. The reason those roles were not implemented as first-class roles in the RKE2 CLI is that RKE2 is conceptualized as a set of raw building blocks that are best leveraged through an orchestration system such as Rancher.
-
-The implementation of the three node roles in Rancher means that Rancher managed RKE2 clusters are able to easily leverage all of the same architectural best practices that are recommended for RKE clusters.
 
 In our [recommended cluster architecture](../../kubernetes-clusters-in-rancher-setup/checklist-for-production-ready-clusters/recommended-cluster-architecture.md), we outline how many nodes of each role clusters should have:
 
@@ -16647,12 +16465,9 @@ Rancher can provision nodes in AOS (AHV) and install Kubernetes on them. When cr
 
 A Nutanix cluster may consist of multiple groups of VMs with distinct properties, such as the amount of memory or the number of vCPUs. This grouping allows for fine-grained control over the sizing of nodes for each Kubernetes role.
 
-- [Creating a Nutanix Cluster](provision-kubernetes-clusters-in-aos.md#creating-a-nutanix-aos-cluster)
-- [Provisioning Storage](provision-kubernetes-clusters-in-aos.md)
-
 ## Creating a Nutanix Cluster
 
-In [this section,](provision-kubernetes-clusters-in-aos.md) you'll learn how to use Rancher to install an [RKE2](https://docs.rke2.io/)/[K3s](https://docs.k3s.io/) Kubernetes cluster in Nutanix AOS.
+Refer to the [Provisioning Kubernetes Clusters in Nutanix AOS](provision-kubernetes-clusters-in-aos.md) to learn how to use Rancher to install an [RKE2](https://docs.rke2.io/)/[K3s](https://docs.k3s.io/) Kubernetes cluster in Nutanix AOS.
 
 ---
 
@@ -16666,94 +16481,8 @@ title: Provisioning Kubernetes Clusters in Nutanix AOS
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/nutanix/provision-kubernetes-clusters-in-aos"/>
 </head>
 
-To use Rancher to install an [RKE](https://rancher.com/docs/rke/latest/en/) Kubernetes cluster in Nutanix AOS (AHV):
+To use Rancher to install an RKE2/K3s Kubernetes cluster in Nutanix AOS (AHV) refer to the [Nutanix documentation](https://portal.nutanix.com/page/documents/solutions/details?targetId=BP-2103-Rancher-SUSE-Nutanix:new-rke2-or-k3s-clusters-deployment.html).
 
-1. Locate Rancher's built-in Nutanix [node driver and activate it](../../../authentication-permissions-and-global-configuration/about-provisioning-drivers/manage-node-drivers.md#activatingdeactivating-node-drivers).
-
-1. Create a node template, which Rancher will use to provision nodes in Nutanix AOS.
-
-1. Create a Nutanix AOS cluster in Rancher. When configuring the new cluster, you will define node pools for it. Each node pool will have a Kubernetes role of etcd, controlplane, or worker. Rancher will install RKE Kubernetes on the new nodes, and it will set up each node with the Kubernetes role defined by the node pool.
-
-For details on configuring the Nutanix AOS node template, refer to the [Nutanix AOS node template configuration reference.](../../../../../reference-guides/cluster-configuration/downstream-cluster-configuration/node-template-configuration/nutanix.md)
-
-For details on configuring RKE Kubernetes clusters in Rancher, refer to the [cluster configuration reference.](../../../../../reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration.md)
-
-- [Preparation in Nutanix AOS](#preparation-in-nutanix-aos)
-- [Creating a Nutanix AOS Cluster](#creating-a-nutanix-aos-cluster)
-
-## Preparation in Nutanix AOS
-
-The following sections describe the requirements for setting up Nutanix AOS so that Rancher can provision VMs and clusters.
-
-:::note
-
-The node templates are documented and tested with Nutanix AOS version 5.20.2 and 6.0.1.
-
-:::
-
-### Create Credentials in Nutanix AOS
-
-Before proceeding to create a cluster, you must ensure that you have a [Nutanix Prism Central user account](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v6_0:wc-user-create-wc-t.html) with admin permissions. When you set up a node template, the template will need to use these credentials.
-
-### Network Permissions
-
-You must ensure that the hosts running the Rancher server are able to establish the following network connections:
-
-- To the Nutanix Prism Central API (usually port 9440/TCP).
-- To port 22/TCP and 2376/TCP on the created VMs
-
-See [Node Networking Requirements](../../../kubernetes-clusters-in-rancher-setup/node-requirements-for-rancher-managed-clusters.md#networking-requirements) for a detailed list of port requirements applicable for creating nodes on an infrastructure provider.
-
-### VM-VM Anti-Affinity Policies
-
-Setting up [VM-VM Anti-Affinity Policies](https://portal.nutanix.com/page/documents/details?targetId=AHV-Admin-Guide-v6_1:ahv-vm-anti-affinity-t.html) is recommended. These rules allow VMs assigned the etcd and control-plane roles to operate on separate AHV hosts when they are assigned to different node pools. This practice ensures that the failure of a single physical machine does not affect the availability of those planes.
-
-## Creating a Nutanix AOS Cluster
-
-1. [Create a node template ](#1-create-a-node-template)
-2. [Create a cluster with node pools using the node template](#2-create-a-cluster-with-node-pools-using-the-node-template)
-
-### 1. Create a node template
-
-Creating a [node template](../use-new-nodes-in-an-infra-provider.md#node-templates) for Nutanix AOS will allow Rancher to provision new nodes in Nutanix AOS. Node templates can be reused for other clusters.
-
-1. Click **☰ > Cluster Management**.
-1. Click **RKE1 Configuration > Node Templates**.
-1. Click **Create**.
-1. Click **Add Template**.
-1. Click **Nutanix**.
-1. Fill out a node template for Nutanix AOS. For help filling out the form, refer to the Nutanix AOS node template [configuration reference.](../../../../../reference-guides/cluster-configuration/downstream-cluster-configuration/node-template-configuration/nutanix.md).
-1. Click **Create**.
-
-### 2. Create a cluster with node pools using the node template
-
-Use Rancher to create a Kubernetes cluster in Nutanix AOS.
-
-1. Click **☰ > Cluster Management**.
-1. On the **Clusters** page, click **Create**.
-1. Click **Nutanix**.
-1. Enter a **Cluster Name**, then click **Continue**.
-1. Use **Member Roles** to configure user authorization for the cluster. Click **Add Member** to add users who can access the cluster. Use the **Role** drop-down to set permissions for each user.
-1. Use **Cluster Options** to choose the version of Kubernetes that will be installed, what network provider will be used, and whether you want to enable project network isolation. To see more cluster options, click on **Show advanced options**. For help configuring the cluster, refer to the [RKE cluster configuration reference.](../../../../../reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration.md)
-1. Add one or more node pools to your cluster. Each node pool uses a node template to provision new nodes. For more information about node pools, including best practices for assigning Kubernetes roles to the nodes, see [this section.](../use-new-nodes-in-an-infra-provider.md#node-pools)
-1. Review your options to confirm they're correct. Then click **Create**.
-
-**Result:** Your cluster is created and assigned a state of **Provisioning**. Rancher is standing up your cluster.
-
-You can access your cluster after its state is updated to **Active**.
-
-**Active** clusters are assigned two Projects:
-
-- `Default`, containing the `default` namespace
-- `System`, containing the `cattle-system`, `ingress-nginx`, `kube-public`, and `kube-system` namespaces
-
-## Optional Next Steps
-
-After creating your cluster, you can access it through the Rancher UI. As a best practice, we recommend setting up these alternate ways of accessing your cluster:
-
-- **Access your cluster with the kubectl CLI:** Follow [these steps](../../../../new-user-guides/manage-clusters/access-clusters/use-kubectl-and-kubeconfig.md#accessing-clusters-with-kubectl-from-your-workstation) to access clusters with kubectl on your workstation. In this case, you will be authenticated through the Rancher server’s authentication proxy, then Rancher will connect you to the downstream cluster. This method lets you manage the cluster without the Rancher UI.
-
-- **Access your cluster with the kubectl CLI, using the authorized cluster endpoint:** Follow [these steps](../../../../new-user-guides/manage-clusters/access-clusters/use-kubectl-and-kubeconfig.md#authenticating-directly-with-a-downstream-cluster) to access your cluster with kubectl directly, without authenticating through Rancher. We recommend setting up this alternative method to access your cluster so that in case you can’t connect to Rancher, you can still access the cluster.
 
 ---
 
@@ -17064,7 +16793,7 @@ You can access your cluster after its state is updated to **Active**.
 **Active** clusters are assigned two Projects:
 
 - `Default`, containing the `default` namespace
-- `System`, containing the `cattle-system`, `ingress-nginx`, `kube-public`, and `kube-system` namespaces
+- `System`, containing the `cattle-system`, `traefik`, `kube-public`, and `kube-system` namespaces
 
 
 ## Optional Next Steps
@@ -17698,6 +17427,74 @@ Ingresses can be added for workloads to provide load balancing, SSL termination 
 
 ---
 
+## Article: how-to-guides/new-user-guides/kubernetes-resources-setup/load-balancer-and-ingress-controller/guide-to-ingress-nginx-retirement.md
+
+---
+title: Guide to Ingress NGINX Retirement
+---
+
+<head>
+  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/load-balancer-and-ingress-controller/guide-to-ingress-nginx-retirement"/>
+</head>
+
+The Kubernetes SIG Network and the Security Response Committee announced the [retirement of the Ingress NGINX project](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/). Upstream best-effort maintenance, and all associated upstream releases, bug fixes, or security updates, ended March 2026.
+
+To support users during this transition, Rancher provides clear migration paths to Traefik. This guide centralizes the information on how to proceed based on your specific deployment scenario.
+
+## Support and timelines
+
+Rancher and RKE2 life cycles align with the upstream retirement schedule.
+
+:::warning
+After March 2026, upstream Ingress NGINX images no longer receive updates. Any images built with patches after this date are restricted to commercial customers. Users must migrate to Traefik or another supported Ingress controller before this deadline to ensure continued security and compatibility.
+:::
+
+## Migration paths by environment
+
+For organizations ready to move, there is a supported path to Traefik. Traefik includes a compatibility layer that can interpret many existing Ingress NGINX annotations. Identify your cluster environment below to find the correct migration approach.
+
+### Standalone RKE2 clusters
+
+For standalone or imported RKE2 clusters currently using Ingress NGINX, follow the official migration [guide for standalone RKE2 clusters](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster?language=en_US).
+
+The migration process involves a four-phase strategy:
+
+1. **Dual ingress controller setup:** Enable Traefik alongside Ingress NGINX using temporary, non-conflicting ports.
+1. **Parallel migration and validation:** Duplicate Ingress resources and test Traefik's handling of the existing annotations.
+1. **Final switchover:** Remove Ingress NGINX and configure Traefik to use the standard ports.
+1. **Cleanup:** Delete the legacy Ingress objects.
+
+### Rancher server on RKE2 (local clusters)
+
+When migrating a Rancher local cluster, the Rancher Ingress resource requires specific handling to prevent lockouts. Follow the specific [guide for migrating the Rancher Ingress to Traefik in an RKE2 cluster](https://support.scc.suse.com/s/kb/How-to-migrate-the-Rancher-Ingress-to-Traefik-in-an-RKE2-cluster?language=en_US). This guide builds upon the standalone migration phases but includes steps tailored to the Rancher management server.
+
+### Downstream RKE2 clusters (provisioned by Rancher)
+
+For RKE2 clusters provisioned and managed by Rancher, migration options are integrated directly into the user interface.
+
+:::note
+This migration option is only possible in Rancher v2.14.0+.
+:::
+
+The cluster configuration interface provides a Dual Mode migration option. This allows you to safely test and migrate traffic from Ingress NGINX to Traefik directly from the cluster management page. For more information, refer to the documentation.
+
+### Rancher on managed Kubernetes (Amazon EKS, Azure AKS, Google GKE)
+
+If you run Rancher on a managed Kubernetes service such as [Amazon Elastic Kubernetes Service (EKS)](../../../../getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rancher-on-amazon-eks.md#5-install-an-ingress), [Azure Kubernetes Service (AKS)](../../../../getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rancher-on-aks.md#5-install-an-ingress), or [Google Kubernetes Engine (GKE)](../../../../getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rancher-on-gke.md#7-install-an-ingress), the recommendation is to migrate to Traefik.
+
+Users should deploy and migrate to the upstream Traefik proxy distribution.
+
+## Impact on other open source projects
+
+The retirement of Ingress NGINX impacts other related projects in the following ways:
+
+- Longhorn: There is no impact on the Longhorn backend. However, administrators must reconfigure their Ingress to upgrade the Longhorn UI. For more information, refer to [Create an Ingress with Basic Authentication (Traefik)](https://longhorn.io/docs/1.11.1/deploy/accessing-the-ui/longhorn-ingress-traefik/).
+- Fleet: Configuring a webhook service is affected. Refer to the [Fleet documentation](https://fleet.rancher.io/0.15/how-tos-for-users/webhook#_1_configure_the_webhook_service) for more information.
+- Ingress NGINX references in documentation for other projects have been removed.
+
+
+---
+
 ## Article: how-to-guides/new-user-guides/kubernetes-resources-setup/load-balancer-and-ingress-controller/ingress-configuration.md
 
 ---
@@ -17708,14 +17505,6 @@ description: Configuring an Ingress
 <head>
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/load-balancer-and-ingress-controller/ingress-configuration"/>
 </head>
-
-:::note
-
-For Kubernetes v1.21 and up, the NGINX Ingress controller no longer runs in hostNetwork by default. It instead uses hostPorts for port 80 and port 443, so you can configure the admission webhook to be accessible only through the ClusterIP. This ensures that the webhook is only accessible from within the cluster.
-
-Because of this change to the controller, the default RKE1 behavior no longer sets `hostNetwork` to `true`. However, you must set `hostNetwork` to `true` for TCP- and UDP-based Services to work. To do so, [edit](../../../../reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration.md#editing-clusters-with-yaml) the cluster's YAML and follow the steps in the [official RKE1 documentation](https://rke.docs.rancher.com/config-options/add-ons/ingress-controllers#configuring-network-options).
-
-:::
 
 ## Specify a hostname to use
 
@@ -17742,9 +17531,7 @@ You must have an SSL certificate that Ingress can use to encrypt and decrypt com
 
 ## Labels and Annotations
 
-Add [Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) and/or [Annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) to provide metadata for your Ingress controller.
-
-For a list of annotations available for use, see the [Nginx Ingress Controller Documentation](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/).
+Please refer to the Traefik documentation for the full list of Ingress NGINX annotations that are [supported](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#annotations-support) and [unsupported](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#unsupported-annotations) by Traefik's kubernetesIngressNginx provider.
 
 
 ---
@@ -17764,13 +17551,11 @@ Kubernetes supports load balancing in two ways: Layer-4 Load Balancing and Layer
 
 ## Layer-4 Load Balancer
 
-Layer-4 load balancer (or the external load balancer) forwards traffic to Nodeports. Layer-4 load balancer allows you to forward both HTTP and TCP traffic.
-
-Often, the Layer-4 load balancer is supported by the underlying cloud provider, so when you deploy RKE clusters on bare-metal servers and vSphere clusters, Layer-4 load balancer is not supported. However, a single [globally managed config-map](https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/) can be used to expose services on NGINX or third-party ingress.
+Layer-4 load balancer (or the external load balancer) forwards traffic to NodePorts. Layer-4 load balancer allows you to forward both HTTP and TCP traffic.
 
 :::note
 
-It is possible to deploy a cluster with a non-cloud load balancer, such as [MetalLB.](https://metallb.universe.tf/) However, that use case is more advanced than the Layer-4 load balancer supported by a cloud provider, and it is not configurable in Rancher or RKE.
+It is possible to deploy a cluster with a non-cloud load balancer, such as [MetalLB.](https://metallb.universe.tf/) However, that use case is more advanced than the Layer-4 load balancer supported by a cloud provider, and it is not configurable in Rancher.
 
 :::
 
@@ -17783,17 +17568,11 @@ Cluster Deployment                            | Layer-4 Load Balancer Support
 Amazon EKS                | Supported by AWS cloud provider
 Google GKE                   | Supported by GCE cloud provider
 Azure AKS                       | Supported by Azure cloud provider
-RKE on EC2                 | Supported by AWS cloud provider
-RKE on DigitalOcean         | Limited NGINX or third-party Ingress*
-RKE on vSphere           | Limited NGINX or third party-Ingress*
-RKE on Custom Hosts<br/>(e.g. bare-metal servers) | Limited NGINX or third-party Ingress*
-Third-party MetalLB | Limited NGINX or third-party Ingress*
-
-\* Services can be exposed through a single [globally managed config-map.](https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/)
+Third-party MetalLB | third-party Ingress*
 
 ## Layer-7 Load Balancer
 
-Layer-7 load balancer (or the ingress controller) supports host and path-based load balancing and SSL termination. Layer-7 load balancer only forwards HTTP and HTTPS traffic and therefore they listen on ports 80 and 443 only. Cloud providers such as Amazon and Google support layer-7 load balancer. In addition, RKE clusters deploys the Nginx Ingress Controller.
+Layer-7 load balancer (or the ingress controller) supports host and path-based load balancing and SSL termination. Layer-7 load balancer only forwards HTTP and HTTPS traffic and therefore they listen on ports 80 and 443 only. Cloud providers such as Amazon and Google support layer-7 load balancer.
 
 ### Support for Layer-7 Load Balancing
 
@@ -17804,16 +17583,12 @@ Cluster Deployment                            | Layer-7 Load Balancer Support
 Amazon EKS                                    | Supported by AWS cloud provider
 Google GKE                                    | Supported by GKE cloud provider
 Azure AKS                                     | Not Supported
-RKE on EC2                                    | Nginx Ingress Controller
-RKE on DigitalOcean                           | Nginx Ingress Controller
-RKE on vSphere                                | Nginx Ingress Controller
-RKE on Custom Hosts<br/>(e.g. bare-metal servers) | Nginx Ingress Controller
 
 ### Host Names in Layer-7 Load Balancer
 
 Some cloud-managed layer-7 load balancers (such as the ALB ingress controller on AWS) expose DNS addresses for ingress rules. You need to map (via CNAME) your domain name to the DNS address generated by the layer-7 load balancer.
 
-Other layer-7 load balancers, such as the Google Load Balancer or Nginx Ingress Controller, directly expose one or more IP addresses. Google Load Balancer provides a single routable IP address. Nginx Ingress Controller exposes the external IP of all nodes that run the Nginx Ingress Controller. You can do either of the following:
+Other layer-7 load balancers, such as the Google Load Balancer, directly expose one or more IP addresses. Google Load Balancer provides a single routable IP address. You can do either of the following:
 
 1.	Configure your own DNS to map (via A records) your domain name to the IP addresses exposes by the Layer-7 load balancer.
 2.	Ask Rancher to generate an xip.io host name for your ingress rule. Rancher will take one of your exposed IPs, say `a.b.c.d`, and generate a host name `<ingressname>.<namespace>.a.b.c.d.xip.io`.
@@ -17873,23 +17648,15 @@ As mentioned in the limitations above, the disadvantages of using a load balance
 - If you run multiple services in your cluster, you must have a load balancer for each service.
 - It can be expensive to have a load balancer for every service.
 
-In contrast, when an ingress is used as the entrypoint into a cluster, the ingress can route traffic to multiple services with greater flexibility. It can map multiple HTTP requests to services without individual IP addresses for each service.
+In contrast, when an ingress is used as the entry point into a cluster, the ingress can route traffic to multiple services with greater flexibility. It can map multiple HTTP requests to services without individual IP addresses for each service.
 
 Therefore, it is useful to have an ingress if you want multiple services to be exposed with the same IP address, the same Layer 7 protocol, or the same privileged node-ports: 80 and 443.
 
 Ingress works in conjunction with one or more ingress controllers to dynamically route service requests. When the ingress receives a request, the ingress controller(s) in your cluster direct the request to the correct service based on service subdomains or path rules that you've configured.
 
-Each Kubernetes Ingress resource corresponds roughly to a file in `/etc/nginx/sites-available/` containing a `server{}` configuration block, where requests for specific files and folders are configured.
-
-Your ingress, which creates a port of entry to your cluster similar to a load balancer, can reside within your cluster or externally. Ingress and ingress controllers residing in RKE-launched clusters are powered by [Nginx](https://www.nginx.com/).
+Your ingress, which creates a port of entry to your cluster similar to a load balancer, can reside within your cluster or externally.
 
 Ingress can provide other functionality as well, such as SSL termination, name-based virtual hosting, and more.
-
-:::note Using Rancher in a High Availability Configuration?
-
-Refrain from adding an Ingress to the `local` cluster. The Nginx Ingress Controller that Rancher uses acts as a global entry point for _all_ clusters managed by Rancher, including the `local` cluster.  Therefore, when users try to access an application, your Rancher connection may drop due to the Nginx configuration being reloaded. We recommend working around this issue by deploying applications only in clusters that you launch using Rancher.
-
-:::
 
 - For more information on how to set up ingress in Rancher, see [Ingress](add-ingresses.md).
 - For complete information about ingress and ingress controllers, see the [Kubernetes Ingress Documentation](https://kubernetes.io/docs/concepts/services-networking/ingress/)
@@ -19089,27 +18856,21 @@ For more information, refer to the section on [hosted Kubernetes clusters.](set-
 
 ## Launching Kubernetes with Rancher
 
-Rancher uses the [Rancher Kubernetes Engine (RKE)](https://rancher.com/docs/rke/latest/en/) as a library when provisioning Kubernetes on your own nodes. RKE is Rancher’s own lightweight Kubernetes installer.
+Rancher uses [RKE2](https://docs.rke2.io/) or [K3s](https://docs.k3s.io/) as a library when provisioning Kubernetes on your own nodes. RKE2 is Rancher’s own lightweight Kubernetes installer.
 
-In RKE clusters, Rancher manages the deployment of Kubernetes. These clusters can be deployed on any bare metal server, cloud provider, or virtualization platform.
+In RKE2 clusters, Rancher manages the deployment of Kubernetes. These clusters can be deployed on any bare metal server, cloud provider, or virtualization platform.
 
-These nodes can be dynamically provisioned through Rancher's UI, which calls [Docker Machine](https://github.com/docker/docs/blob/vnext-engine/machine/overview.md) to launch nodes on various cloud providers.
+If you already have a node that you want to add to an RKE2 cluster, you can add it to the cluster by running a Rancher RKE2 agent container on it.
 
-If you already have a node that you want to add to an RKE cluster, you can add it to the cluster by running a Rancher agent container on it.
-
-For more information, refer to the section on [RKE clusters.](../launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md)
+For more information, refer to [Launching Kubernetes with Rancher](../launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md).
 
 ### Launching Kubernetes and Provisioning Nodes in an Infrastructure Provider
 
 Rancher can dynamically provision nodes in infrastructure providers such as Amazon EC2, DigitalOcean, Azure, or vSphere, then install Kubernetes on them.
 
-Using Rancher, you can create pools of nodes based on a [node template](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#node-templates). This template defines the parameters used to launch nodes in your cloud providers.
-
 One benefit of using nodes hosted by an infrastructure provider is that if a node loses connectivity with the cluster, Rancher can automatically replace it, thus maintaining the expected cluster configuration.
 
-The cloud providers available for creating a node template are decided based on the [node drivers](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#node-drivers) active in the Rancher UI.
-
-For more information, refer to the section on [nodes hosted by an infrastructure provider](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md)
+For more information, refer to [Launching Kubernetes on New Nodes in an Infrastructure Provider](../launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md)
 
 ### Launching Kubernetes on Existing Custom Nodes
 
@@ -19127,13 +18888,13 @@ Registering EKS clusters now provides additional benefits. For the most part, re
 
 When you delete an EKS cluster that was created in Rancher, the cluster is destroyed. When you delete an EKS cluster that was registered in Rancher, it is disconnected from the Rancher server, but it still exists and you can still access it in the same way you did before it was registered in Rancher.
 
-For more information, see [this page.](register-existing-clusters.md)
+For more information, refer to [Registering Existing Clusters](register-existing-clusters.md).
 
 ## Programmatically Creating Clusters
 
-The most common way to programmatically deploy Kubernetes clusters through Rancher is by using the Rancher2 Terraform provider. The documentation for creating clusters with Terraform is [here.](https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster)
+The most common way to programmatically deploy Kubernetes clusters through Rancher is by using the Rancher2 Terraform provider. Refer to the documentation for [creating clusters with Terraform](https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster).
 
-EKS, GKE, AKS clusters and RKE clusters can be created or imported with Terraform.
+EKS, GKE, and AKS clusters can be created or imported with Terraform.
 
 
 ---
@@ -19189,7 +18950,7 @@ SUSE Linux may have a firewall that blocks all ports by default. In that situati
 
 ### Flatcar Container Linux Nodes
 
-When [Launching Kubernetes with Rancher](../launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md) using Flatcar Container Linux nodes, it is required to use the following configuration in the [Cluster Config File](../../../reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration.md#rke-cluster-config-file-reference)
+When [Launching Kubernetes with Rancher](../launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md) using Flatcar Container Linux nodes, it is required to use the following configuration in the Cluster Config File.
 
 <Tabs>
 <TabItem value="Canal">
@@ -19362,7 +19123,7 @@ Specifically, the value should be a comma-delimited string which only contains I
 
 - Your cluster is registered and assigned a state of **Pending**. Rancher is deploying resources to manage your cluster.
 - You can access your cluster after its state is updated to **Active**.
-- **Active** clusters are assigned two Projects: `Default` (containing the namespace `default`) and `System` (containing the namespaces `cattle-system`, `ingress-nginx`, `kube-public` and `kube-system`, if present).
+- **Active** clusters are assigned two Projects: `Default` (containing the namespace `default`) and `System` (containing the namespaces `cattle-system`, `traefik`, `kube-public` and `kube-system`, if present).
 
 
 :::note
@@ -19962,7 +19723,7 @@ You can access your cluster after its state is updated to **Active**.
 **Active** clusters are assigned two Projects:
 
 - `Default`, containing the `default` namespace
-- `System`, containing the `cattle-system`, `ingress-nginx`, `kube-public`, and `kube-system` namespaces
+- `System`, containing the `cattle-system`, `traefik`, `kube-public`, and `kube-system` namespaces
 
 ## EKS Cluster Configuration Reference
 
@@ -20206,6 +19967,41 @@ The following are the required permissions for installing the Amazon EBS CSI Dri
 }
 ```
 
+### IPv6 Dual-Stack Networking Permissions
+
+The following are the additional permissions required for provisioning an **IPv6** EKS cluster from Rancher.
+
+> **Note:** These permissions are only necessary when Rancher is **creating** a new IPv6 cluster. During new cluster creation, Rancher needs these permissions to generate the dual-stack VPC, create the IAM OIDC provider, and assign an inline policy (`RancherManaged_AllowIPv6ForCNI`) to the Node Instance Role. 
+> 
+> If you are registering (importing) an existing EKS cluster that already has IPv6 configured, these additional permissions are **not required**.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AssignIpv6Addresses",
+        "ec2:UnassignIpv6Addresses",
+        "ec2:AssignPrivateIpAddresses",
+        "ec2:UnassignPrivateIpAddresses",
+        "ec2:AssociateVpcCidrBlock",
+        "ec2:DisassociateVpcCidrBlock",
+        "iam:PutRolePolicy",
+        "iam:CreateOpenIDConnectProvider",
+        "iam:ListOpenIDConnectProviders",
+        "eks:AssociateIdentityProviderConfig",
+        "eks:DescribeIdentityProviderConfig",
+        "eks:ListIdentityProviderConfigs",
+        "sts:AssumeRoleWithWebIdentity"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
 ## Syncing
 
 The EKS provisioner can synchronize the state of an EKS cluster between Rancher and the provider. For an in-depth technical explanation of how this works, see [Syncing.](../../../../reference-guides/cluster-configuration/rancher-server-configuration/sync-clusters.md)
@@ -20306,7 +20102,7 @@ You can access your cluster after its state is updated to **Active**.
 **Active** clusters are assigned two Projects:
 
 - `Default`, containing the `default` namespace
-- `System`, containing the `cattle-system`, `ingress-nginx`, `kube-public`, and `kube-system` namespaces
+- `System`, containing the `cattle-system`, `traefik`, `kube-public`, and `kube-system` namespaces
 
 ## Private Clusters
 
@@ -23659,7 +23455,7 @@ To use this `kubeconfig` file,
 
 1. Install [kubectl,](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl) a Kubernetes command-line tool.
 2. Copy the file at `/etc/rancher/rke2/rke2.yaml` and save it to the directory `~/.kube/config` on your local machine.
-3. In the kubeconfig file, the `server` directive is defined as localhost. Configure the server as the DNS of your control-plane load balancer, on port 6443. (The RKE2 Kubernetes API Server uses port 6443, while the Rancher server will be served via the NGINX Ingress on ports 80 and 443.) Here is an example `rke2.yaml`:
+3. In the kubeconfig file, the `server` directive is defined as localhost. Configure the server as the DNS of your control-plane load balancer, on port 6443. (The RKE2 Kubernetes API Server uses port 6443, while the Rancher server will be served via the Traefik Ingress on ports 80 and 443.) Here is an example `rke2.yaml`:
 
 ```yml
 apiVersion: v1
@@ -23708,7 +23504,8 @@ kube-system   etcd-rke2-server-2                                      1/1     Ru
 kube-system   etcd-rke2-server-3                                      1/1     Running     0          56s
 kube-system   helm-install-rke2-canal-hs6sx                           0/1     Completed   0          2m17s
 kube-system   helm-install-rke2-coredns-xmzm8                         0/1     Completed   0          2m17s
-kube-system   helm-install-rke2-ingress-nginx-flwnl                   0/1     Completed   0          2m17s
+kube-system   helm-install-traefik-crd-z8vsz                          0/1     Completed   0          2m17s
+kube-system   helm-install-traefik-flwnl                              0/1     Completed   0          2m17s
 kube-system   helm-install-rke2-metrics-server-7sggn                  0/1     Completed   0          2m17s
 kube-system   kube-apiserver-rke2-server-1                            1/1     Running     0          116s
 kube-system   kube-apiserver-rke2-server-2                            1/1     Running     0          66s
@@ -23728,9 +23525,8 @@ kube-system   rke2-canal-swfmq                                        2/2     Ru
 kube-system   rke2-coredns-rke2-coredns-547d5499cb-6tvwb              1/1     Running     0          92s
 kube-system   rke2-coredns-rke2-coredns-547d5499cb-rdttj              1/1     Running     0          2m8s
 kube-system   rke2-coredns-rke2-coredns-autoscaler-65c9bb465d-85sq5   1/1     Running     0          2m8s
-kube-system   rke2-ingress-nginx-controller-69qxc                     1/1     Running     0          52s
-kube-system   rke2-ingress-nginx-controller-7hprp                     1/1     Running     0          52s
-kube-system   rke2-ingress-nginx-controller-x658h                     1/1     Running     0          52s
+kube-system   traefik-7c844b766f-m9p2w                                1/1     Running     0          52s
+kube-system   traefik-7c844b766f-s4l9k                                1/1     Running     0          52s
 kube-system   rke2-metrics-server-6564db4569-vdfkn                    1/1     Running     0          66s
 ```
 
@@ -23752,6 +23548,471 @@ title: Advanced User Guides
 Advanced user guides are "problem-oriented" docs in which users learn how to answer questions or solve problems. The major difference between these and the new user guides is that these guides are geared toward more experienced or advanced users who have more technical needs from their documentation. These users already have an understanding of Rancher and its functions. They know what they need to accomplish; they just need additional guidance to complete some more complex task they they have encountered while working.
 
 It should be noted that neither new user guides nor advanced user guides provide detailed explanations or discussions (these kinds of docs belong elsewhere). How-to guides focus on the action of guiding users through repeatable, effective steps to learn new skills, master some task, or overcome some problem.
+
+---
+
+## Article: how-to-guides/advanced-user-guides/capi-infrastructure-providers.md
+
+---
+title: Configuring Native CAPI Infrastructure Providers to Provision RKE2 Clusters
+---
+
+:::caution
+
+**This is a technology preview and using native CAPI infrastructure providers is an experimental feature introduced in Rancher 2.14.0.** The purpose of this guide is for evaluation and **should not** be used for production clusters, and note some configuration fields are subject to change. Future versions of this feature may be incompatible with this version.
+
+:::
+
+## Overview
+
+Rancher 2.14.0 can provision RKE2 clusters using native CAPI infrastructure providers, such as [CAPA](https://cluster-api-aws.sigs.k8s.io/) (Cluster API Provider AWS) and [CAPV](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere) (Cluster API Provider vSphere).
+
+Standard RKE2 provisioning relies on Rancher’s internal bootstrap and control plane providers alongside Rancher Node Drivers (via `rancher/machine`) as the infrastructure provider. This new mode allows you to substitute Rancher Node Drivers with native CAPI infrastructure providers while retaining Rancher’s bootstrap and control plane logic.
+
+This guide provides simple examples for evaluating this provisioning mode using CAPA and CAPV. Refer to the documentation of each provider for more details on available options and adapt these examples to your needs.
+
+:::note
+Provisioning with a native CAPI infrastructure provider and Rancher as a bootstrap and control plane provider is distinct from using [Rancher Turtles](https://turtles.docs.rancher.com/turtles/stable/en/index.html) and the [CAPRKE2](https://caprke2.docs.rancher.com/) provider to provision a RKE2 cluster and subsequently import it into Rancher.
+:::
+
+### Limitations and requirements
+
+- Unsupported configurations: Windows worker nodes and IPv6 are currently not supported.
+- UI constraints: Detailed cluster management via the UI is disabled; clusters must be created and modified by applying Kubernetes objects to the local cluster. However, the Cluster Explorer remains accessible.
+- Kubernetes cloud provider requirements: A cloud-specific Kubernetes provider for the infrastructure where the downstream cluster runs is required (e.g., the [Kubernetes AWS Cloud Provider](https://cloud-provider-aws.sigs.k8s.io/) for CAPA or the `rancher-vsphere-cpi` chart for CAPV).
+
+## General steps
+
+For both CAPA and CAPV, the general steps are as follows:
+
+1. Install Rancher.
+1. Install a CAPI infrastructure provider, either CAPA or CAPV.
+1. Set-up an identity resource for the provider.
+1. Create a CAPI infrastructure cluster resource.
+1. Create one or more CAPI infrastructure machine template resources.
+1. Create a Rancher `clusters.provisioning.cattle.io` resource that references the identity, infrastructure cluster and infrastructure machine template resources.
+
+After applying the `clusters.provisioning.cattle.io` resource, the cluster appears in the Rancher Cluster Management list (click on **☰ > Cluster Management**), however the detailed view for this type of cluster is currently unavailable.
+
+To view the progress of the provisioning process and troubleshoot, refer to the status of the various CAPI and Rancher provisioning resources in the local cluster:
+
+1. Click **☰**, then click on the icon for your local cluster.
+1. Use the dropdown menu at the top to filter for **All Namespaces**.
+1. From the sidebar, select **More Resources > Cluster Provisioning**.
+
+The logs for the infrastructure provider deployment (e.g. `capa-controller-manager`) also show useful information.
+
+## Installing the infrastructure provider
+
+Rancher allows installing the infrastructure provider declaratively by creating the Rancher Turtles [`CAPIProvider`](https://turtles.docs.rancher.com/turtles/stable/en/reference/capiprovider.html) resource.
+
+### Examples
+
+CAPA:
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: capa-system
+---
+apiVersion: turtles-capi.cattle.io/v1alpha1
+kind: CAPIProvider
+metadata:
+  name: aws
+  namespace: capa-system
+spec:
+  type: infrastructure
+  variables:
+    # Global credentials for the provider are not needed
+    # as these examples define credentials for the AWSCluster.
+    AWS_B64ENCODED_CREDENTIALS: ""
+```
+
+CAPV:
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: capv-system
+---
+apiVersion: turtles-capi.cattle.io/v1alpha1
+kind: CAPIProvider
+metadata:
+  name: vsphere
+  namespace: capv-system
+spec:
+  type: infrastructure
+  variables:
+    # Global credentials for the provider are not needed
+    # as these examples define credentials for the VsphereCluster.
+    VSPHERE_USERNAME: ""
+    VSPHERE_PASSWORD: ""
+```
+
+## Provisioning a cluster
+
+For these examples, a single machine pool with all roles (control plane, etcd and worker) are used, but the examples can be adapted by specifying more machine pools and separate roles.
+
+Create the resources in your upstream cluster, and replace values within `<>` brackets.
+
+:::caution
+
+Each machine pool defined in the `clusters.provisioning.cattle.io` resource should reference a different machine template.
+
+:::
+
+### CAPA
+
+First, configure IAM as required by CAPA. These roles are assumed by downstream nodes using instance profiles to enable the Kubernetes AWS cloud provider.
+
+To do this, CAPA provides the `clusterawsadm` tool to generate and apply the required objects. Refer to the CAPA manual for more [details](https://cluster-api-aws.sigs.k8s.io/topics/using-clusterawsadm-to-fulfill-prerequisites).
+
+Then, configure the provider identity in the upstream cluster so that the CAPA provider can create resources on AWS. Refer to the manual for all [options](https://cluster-api-aws.sigs.k8s.io/topics/multitenancy).
+
+In this example, we'll use `AWSClusterStaticIdentity`.
+
+Create a secret with your credentials:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: capa-lab-credentials
+  namespace: capa-system
+type: Opaque
+stringData:
+  AccessKeyID: <access key id>
+  SecretAccessKey: <secret access key>
+  # You might have a session token depending on your credential type.
+  # SessionToken: <session token>
+```
+
+Then, create the identity object that references the secret:
+
+```yaml
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: AWSClusterStaticIdentity
+metadata:
+  name: capa-lab-identity
+spec:
+  secretRef: capa-lab-credentials
+  allowedNamespaces:
+    # The namespace of the AWSCluster resource that points
+    # to this identity for provisioning.
+    list:
+      - fleet-default
+```
+
+Now, create the `AWSCluster` [resource](https://cluster-api-aws.sigs.k8s.io/crd/#infrastructure.cluster.x-k8s.io%2fv1beta2). This object defines the infrastructure configuration common to all machine pools.
+
+CAPA creates VPCs, subnets, security groups and a load balancer in its default configuration, but additional rules must be configured to allow ports needed by Rancher and RKE2. For simplicity, this example defines additional security group rules that allow all traffic between the nodes, but more restrictive rules can be configured instead.
+
+```yaml
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: AWSCluster
+metadata:
+  name: capa-lab
+  namespace: fleet-default
+spec:
+  identityRef:
+    kind: AWSClusterStaticIdentity
+    name: capa-lab-identity
+
+  controlPlaneLoadBalancer:
+    healthCheckProtocol: TCP
+    loadBalancerType: nlb
+
+  region: <e.g. us-east-1>
+
+  # These two additional rules allow all incoming traffic
+  # from other nodes.
+  network:
+    additionalControlPlaneIngressRules:
+      - protocol: "-1"
+        sourceSecurityGroupRoles:
+          - controlplane
+          - node   
+    additionalNodeIngressRules:
+      - protocol: "-1"
+        sourceSecurityGroupRoles:
+          - controlplane
+          - node
+```
+
+Next, create a machine template for the control plane machine pool. Create additional templates for every machine pool defined in the `clusters.provisioning.cattle.io` resource.
+
+```yaml
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: AWSMachineTemplate
+metadata:
+  name: capa-lab-control-plane
+  namespace: fleet-default
+spec:
+  template:
+    spec:
+      ami:
+        # The ami requires cloud-init.
+        id: <your ami>
+      # This should correspond to the profile created through clusterawsadm.
+      # Worker or etcd-only nodes should use nodes.cluster-api-provider-aws.sigs.k8s.io.
+      iamInstanceProfile: control-plane.cluster-api-provider-aws.sigs.k8s.io
+      instanceType: t3.medium
+      # This refers to the name of an EC2 key pair.
+      sshKeyName: <your ssh key>
+      rootVolume:
+        size: 16
+      cloudInit:
+        insecureSkipSecretsManager: true
+```
+
+:::caution
+The `insecureSkipSecretsManager` option is set to true to bypass the AWS secrets manager as a source of userdata for the provisioned instances. This source restricts the visibility of the userdata but requires a custom cloud-init datasource which is not currently compatible with the userdata generated by Rancher. For more information, see the [CAPA documentation](https://cluster-api-aws.sigs.k8s.io/topics/userdata-privacy).
+:::
+
+Finally, create the Rancher `clusters.provisioning.cattle.io` resource and point to the CAPA cluster and machine template that were just created.
+
+```yaml
+apiVersion: provisioning.cattle.io/v1
+kind: Cluster
+metadata:
+  name: capa-lab
+  namespace: fleet-default
+spec:
+  kubernetesVersion: v1.35.1+rke2r1
+  rkeConfig:
+    # This is the ref to the infra cluster defined above.
+    infrastructureRef:
+      kind: AWSCluster
+      name: capa-lab
+      namespace: fleet-default
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+    machinePools:
+      - name: ctrl
+        controlPlaneRole: true
+        etcdRole: true
+        workerRole: true
+        quantity: 3
+        machineConfigRef:
+          kind: AWSMachineTemplate
+          name: capa-lab-control-plane
+          namespace: fleet-default
+          apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+    machineGlobalConfig:
+      cni: calico
+      disable-kube-proxy: false
+      etcd-expose-metrics: false
+      ingress-controller: traefik
+      protect-kernel-defaults: false
+      cloud-provider-name: external
+      node-name-from-cloud-provider-metadata: true
+    # The AWS cloud controller definition. The controller uses the IAM instance profile for its AWS credentials.
+    additionalManifest: |-
+      apiVersion: helm.cattle.io/v1
+      kind: HelmChart
+      metadata:
+        name: aws-cloud-controller-manager
+        namespace: kube-system
+      spec:
+        chart: aws-cloud-controller-manager
+        repo: https://kubernetes.github.io/cloud-provider-aws
+        targetNamespace: kube-system
+        bootstrap: true
+        valuesContent: |-
+          hostNetworking: true
+          nodeSelector:
+            node-role.kubernetes.io/control-plane: "true"
+          args:
+            - --configure-cloud-routes=false
+            - --v=5
+            - --cloud-provider=aws
+```
+
+### CAPV
+
+First, configure the provider identity in the upstream cluster so that the CAPV provider can create resources on your vSphere server. Refer to the manual for all identity [options](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere/blob/v1.15.2/docs/identity_management.md), and for general vSphere [requirements](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere/blob/v1.15.2/docs/getting_started.md).
+
+In this example, we'll use `VSphereClusterIdentity`.
+
+Create a secret with your credentials:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: capv-lab-credentials
+  namespace: capv-system
+type: Opaque
+stringData:
+  username: <your vSphere username>
+  password: <your vSphere password>
+```
+
+Then, create the identity object that references the secret:
+
+```yaml
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: VSphereClusterIdentity
+metadata:
+  name: capv-lab-identity
+spec:
+  secretName: capv-lab-credentials
+  allowedNamespaces:
+    selector:
+      # The namespace of the VSphereCluster for which this identity
+      # is used when provisioning.
+      matchLabels:
+        kubernetes.io/metadata.name: fleet-default
+```
+
+Like for CAPA, it is also necessary to install the [cloud provider for vSphere](https://github.com/kubernetes/cloud-provider-vsphere) in the downstream cluster.
+
+To securely transfer the credentials for the CPI chart, you can enable the prebootstrap feature in Rancher. This can be done by [enabling](../../how-to-guides/advanced-user-guides/enable-experimental-features/enable-experimental-features.md) the `provisioningprebootstrap` feature flag and causes Rancher to restart.
+
+Now, create the secret that is sent to the downstream cluster. If you use a different name to create the `clusters.provisioning.cattle.io` resource, make sure you update the `rke.cattle.io/object-authorized-for-clusters` annotation below.
+
+```yaml
+# Credential secret synced to the downstream cluster for the vsphere CPI chart.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vsphere-cpi-creds
+  namespace: fleet-default
+  annotations:
+    # Can be a comma-separated list for multiple clusters, with no spaces.
+    rke.cattle.io/object-authorized-for-clusters: capv-lab
+    provisioning.cattle.io/sync-bootstrap: "true"
+    provisioning.cattle.io/sync-target-namespace: kube-system
+type: Opaque
+stringData:
+  # Change the prefix of the key to match your vCenter host.
+  <vsphere host>.username: <your vSphere username>
+  <vsphere host>.password: <your vSphere password>
+```
+
+Now, create the `VSphereCluster` resource. This resource defines the infrastructure configuration common to all machine pools. Refer to the CAPV documentation for more configuration options.
+
+```yaml
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: VSphereCluster
+metadata:
+  name: capv-lab
+  namespace: fleet-default
+spec:
+  identityRef:
+    kind: VSphereClusterIdentity
+    name: capv-lab-identity
+  server: <vsphere fqdn>
+```
+
+Next, create a machine template for the control plane machine pool. Create additional templates for every machine pool defined in the `clusters.provisioning.cattle.io` resource.
+
+```yaml
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: VSphereMachineTemplate
+metadata:
+  name: capv-lab-control-plane
+  namespace: fleet-default
+spec:
+  template:
+    spec:
+      datacenter: <datacenter>
+      datastore: <datastore>
+      diskGiB: 20
+      folder: <your folder>
+      memoryMiB: 4096
+      network:
+        devices:
+        - dhcp4: true
+          networkName: <your network>
+      numCPUs: 2
+      os: Linux
+      resourcePool: <your resource pool>
+      template: <your VM template>
+```
+
+Finally, create the Rancher `clusters.provisioning.cattle.io` resource and point to the CAPV cluster and machine template that were just created. Note that this example disables the CSI chart for simplicity. The CPI chart is required.
+
+```yaml
+apiVersion: provisioning.cattle.io/v1
+kind: Cluster
+metadata:
+  name: capv-lab
+  namespace: fleet-default
+spec:
+  kubernetesVersion: v1.35.1+rke2r1
+  rkeConfig:
+    infrastructureRef:
+      kind: VSphereCluster
+      name: capv-lab
+      namespace: fleet-default
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+    machinePools:
+      - name: ctrl
+        controlPlaneRole: true
+        etcdRole: true
+        workerRole: true
+        quantity: 3
+        machineConfigRef:
+          kind: VSphereMachineTemplate
+          name: capv-lab-control-plane
+          namespace: fleet-default
+          apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+    machineGlobalConfig:
+      cni: calico
+      disable-kube-proxy: false
+      etcd-expose-metrics: false
+      ingress-controller: traefik
+      protect-kernel-defaults: false
+      disable:
+        - rancher-vsphere-csi
+      cloud-provider-name: rancher-vsphere
+    chartValues:
+      rancher-vsphere-cpi:
+        vCenter:
+          datacenters: <your datacenter>
+          host: <vsphere fqdn>
+          # The credential secret is transferred by the prebootstrap mechanism,
+          # and the cpi chart expects the default name (vsphere-cpi-creds).
+          credentialsSecret:
+            generate: false
+```
+
+### Changing machine templates
+
+Machine templates for CAPI infrastructure providers, such as `AWSMachineTemplate` and `VSphereMachineTemplate` are usually immutable. To modify the configuration of the instances in a machine pool, create a new template with a different name, then edit the machine pool in `clusters.provisioning.cattle.io` to point to this new template. This causes all of the machines in that pool to be recreated with the new configuration.
+
+### Customizing userdata
+
+Custom user data can be defined for each machine pool in the `clusters.provisioning.cattle.io` resource. To do this, use the `.spec.rkeConfig.machinePools.userdata.inlineUserdata` as an inline yaml string in the plain cloud-config format. The contents of this field are merged with the userdata generated by Rancher to bootstrap the cluster nodes.
+
+:::caution
+Do not include sensitive data in this field, as it is part of a resource other than a Secret.
+
+This field is experimental and subject to change. It is only valid for native CAPI providers described in this document, and has no effect on clusters provisioned by Rancher through the standard method with node drivers.
+:::
+
+Modifying the userdata field causes all of the machines in the pool to be recreated.
+
+```yaml
+# Only some fields of the provisioning cluster resource are shown here.
+apiVersion: provisioning.cattle.io/v1
+kind: Cluster
+metadata:
+  name: capv-lab
+  namespace: fleet-default
+spec:
+  kubernetesVersion: v1.35.1+rke2r1
+  rkeConfig:
+    machinePools:
+      - name: ctrl
+        userdata:
+          inlineUserdata: |
+            runcmd:
+              - ["echo", "Hello!"]
+```
+
 
 ---
 
@@ -24036,8 +24297,13 @@ title: Configure Rancher as an OIDC provider
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/configure-oidc-provider"/>
 </head>
 
-Rancher can function as a standard OpenID Connect (OIDC) provider, allowing external applications to use Rancher for authentication.
-This can be used for enabling single sign-on (SSO) across Rancher Prime components. For example, see the [documentation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/security/authentication/oidc.html) for configuring the OIDC provider for SUSE Observability.
+Rancher can act as an OpenID Connect (OIDC) Identity Provider (IdP) for other applications. This allows you to use Rancher's centralized authentication and role-based access control (RBAC) to manage access to external, third-party applications. This can be used for enabling single sign-on (SSO) across Rancher components. For example, see the [documentation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/security/authentication/oidc.html) for configuring the OIDC provider for SUSE Observability.
+
+:::note
+Because OIDC is a superset of OAuth2, you can use Rancher as an OAuth2 server without requiring full OIDC. This ensures that clients utilizing the OAuth2 aspect, such as the `rancher-ai-mcp` server, are fully supported.
+:::
+
+The Rancher OIDC Provider issues access tokens for OAuth2 and OIDC that can be used as standard Bearer tokens (per RFC6750) to authenticate with Rancher. Previously, only an ID token could be used to impersonate and authenticate a user.
 
 The OIDC provider can be enabled with the `oidc-provider` feature flag. When this flag is on the following endpoints are available:
 
@@ -24051,27 +24317,51 @@ The OIDC provider can be enabled with the `oidc-provider` feature flag. When thi
 
 The OIDC provider supports the OIDC Authentication Code Flow with PKCE.
 
-## Configure OIDCClient
+## Configuring an OIDC Client
 
-An `OIDCClient` represents an external application that will be authenticating against Rancher.
+An `OIDCClient` represents an external application that will be authenticating against Rancher. To register a client application, you must create an `OIDCClient` custom resource.
 
-### Programmatically
+### Configuration Fields
 
-Create an `OIDCClient`:
+When defining your `OIDCClient` manifest, you must include specific fields to pass CRD validation:
+
+- `spec.tokenExpirationSeconds`: This field is strictly required and will cause a validation error if omitted. It defines the lifespan of the access token.
+- `spec.refreshTokenExpirationSeconds`: This field is also strictly required and will cause a validation error if omitted. It defines the lifespan of the refresh token.
+- `scopes` (Optional): This field allows you to restrict the scopes that a client can request. If not explicitly configured, the allowed scopes will default to `openid`, `profile`, and `offline_access`.
+
+### Example OIDC Client Manifest
+
+Below is an example of an `OIDCClient` configuration:
+
+:::note
+You must include the expiration fields to successfully apply the resource.
+:::
 
 ```yaml
 apiVersion: management.cattle.io/v3
 kind: OIDCClient
 metadata:
-  name: oidc-client-test
+  name: example-client
 spec:
-  tokenExpirationSeconds: 600 # expiration of the id_token and access_token
-  refreshTokenExpirationSeconds: 3600 # expiration of the refresh_token
-  redirectURIs:
-    - "https://myredirecturl.com" # replace with your redirect url
+  description: "Example OIDC Client"
+  redirectUris:
+    - "https://example-app.com/callback"
+  tokenExpirationSeconds: 3600
+  refreshTokenExpirationSeconds: 86400
+  # scopes:
+  #   - openid
+  #   - profile
+  #   - offline_access
+
 ```
-Rancher automatically generates a client ID and client secret for each `OIDCClient`.
-Once the resource is created, Rancher populates the status field with the client id:
+
+Save this configuration to a file (e.g., `oidcclient.yaml`) and apply it to your Rancher local cluster:
+
+```
+kubectl apply -f oidcclient.yaml
+```
+
+Rancher automatically generates a client ID and client secret for each `OIDCClient`. Once the resource is created, Rancher populates the status field with the client id:
 
 ```yaml
 apiVersion: management.cattle.io/v3
@@ -24083,6 +24373,10 @@ spec:
   refreshTokenExpirationSeconds: 3600 # expiration of the refresh_token
   redirectURIs:
     - "https://myredirecturl.com" # replace with your redirect url
+  scopes: # Optional: Restricts the scopes the client can request. Defaults to openid, profile, and offline_access if omitted.
+    - openid
+    - profile
+    - offline_access
 status:
   clientID: client-xxx
   clientSecrets:
@@ -24091,8 +24385,7 @@ status:
       lastFiveCharacters: xxx
 ```
 
-Rancher automatically generates a Kubernetes `Secret` in the `cattle-oidc-client-secrets` namespace for each `OIDCClient` resource. The Secret's name matches the `OIDCClient` client ID.
-Initially, the `Secret` contains a single client secret.
+Rancher automatically generates a Kubernetes `Secret` in the `cattle-oidc-client-secrets` namespace for each `OIDCClient` resource. The Secret's name matches the `OIDCClient` client ID. Initially, the `Secret` contains a single client secret.
 
 To retrieve the client secret:
 
@@ -25478,6 +25771,294 @@ Additionally, the following limitations are present when the feature is enabled.
 
 ---
 
+## Article: how-to-guides/advanced-user-guides/rancher-deployment-guides/configure-with-existing-gateway.md
+
+---
+title: Using an External Gateway with Rancher
+---
+
+<head>
+  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/rancher-deployment-guides/configure-with-existing-gateway/"/>
+</head>
+
+When using the Gateway API network exposure type, Rancher can create and manage its own Gateway resource. However, if you have an existing Gateway that you manage independently (for example, a shared Gateway used by multiple applications), you will need to create your own HTTPRoute resources to route traffic to Rancher.
+
+This section covers how to create the required HTTPRoute resources manually when using an externally managed Gateway.
+
+## Prerequisites
+
+- An existing Gateway resource configured and operational in your cluster
+- Knowledge of your Gateway's:
+  - Name and namespace
+  - Listener names (sectionName) for HTTP and/or HTTPS traffic
+- Rancher installed with `networkExposure.type` set to something other than `gateway` (e.g., `none` or `ingress`)
+
+## Cross-Namespace Gateway Requirements
+
+If your Gateway is in a different namespace than Rancher (e.g., Gateway in `gateway-system`, Rancher in `cattle-system`), the Gateway must be configured to accept HTTPRoutes from the Rancher namespace. By default, Gateway API only allows routes from the same namespace as the Gateway.
+
+The Gateway owner must configure `allowedRoutes` on the relevant listeners. There are two options:
+
+**Option 1: Allow routes from all namespaces**
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: shared-gateway
+  namespace: gateway-system
+spec:
+  gatewayClassName: example
+  listeners:
+    - name: https
+      port: 443
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+```
+
+**Option 2: Allow routes from specific namespaces (more restrictive)**
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: shared-gateway
+  namespace: gateway-system
+spec:
+  gatewayClassName: example
+  listeners:
+    - name: https
+      port: 443
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              shared-gateway-access: "true"
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              shared-gateway-access: "true"
+```
+
+When using the selector approach, ensure the Rancher namespace has the required label:
+
+```bash
+kubectl label namespace cattle-system shared-gateway-access=true
+```
+
+> **Note:** If the Gateway and Rancher are in the same namespace, no additional configuration is needed—the default `allowedRoutes` setting (`from: Same`) will permit the HTTPRoute attachment.
+
+## Determining Your Rancher Service Values
+
+Before creating HTTPRoute resources, identify the following values from your Rancher installation:
+
+| Value | How to Determine | Example |
+|-------|------------------|---------|
+| **Release Name** | The name used in `helm install <release-name>` | `rancher` |
+| **Namespace** | The namespace where Rancher is installed | `cattle-system` |
+| **Hostname** | The `hostname` value from your Helm values | `rancher.example.com` |
+| **TLS Mode** | The `tls` value from your Helm values | `ingress`, `external`, or `secret` |
+| **Service HTTP Disabled** | The `service.disableHTTP` value | `true` or `false` |
+
+The Rancher service name follows the pattern: `<release-name>-rancher` (or just `<release-name>` if the release name already contains "rancher").
+
+## HTTPRoute Configuration
+
+### Primary HTTPRoute
+
+Create an HTTPRoute to direct traffic from your Gateway to the Rancher service. The configuration depends on your TLS setup:
+
+**When TLS terminates at the Gateway or within Kubernetes (`tls: ingress`, `tls: secret`, or `tls: letsEncrypt`):**
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: rancher
+  namespace: cattle-system  # Must match Rancher's namespace
+spec:
+  parentRefs:
+    - name: <your-gateway-name>
+      namespace: <your-gateway-namespace>
+      sectionName: <your-https-listener-name>  # Your Gateway's HTTPS listener
+  hostnames:
+    - <your-rancher-hostname>  # e.g., rancher.example.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: rancher  # Your Rancher service name
+          port: 80       # Use 443 if service.disableHTTP=true
+```
+
+**When TLS terminates externally (`tls: external`):**
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: rancher
+  namespace: cattle-system
+spec:
+  parentRefs:
+    - name: <your-gateway-name>
+      namespace: <your-gateway-namespace>
+      sectionName: <your-http-listener-name>  # Your Gateway's HTTP listener
+  hostnames:
+    - <your-rancher-hostname>
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: rancher
+          port: 80
+```
+
+### HTTP to HTTPS Redirect Route (Optional)
+
+If TLS terminates at or within Kubernetes (not externally), you may want to redirect HTTP traffic to HTTPS. Create an additional HTTPRoute:
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: rancher-http-redirect
+  namespace: cattle-system
+spec:
+  parentRefs:
+    - name: <your-gateway-name>
+      namespace: <your-gateway-namespace>
+      sectionName: <your-http-listener-name>  # Your Gateway's HTTP listener
+  hostnames:
+    - <your-rancher-hostname>
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+```
+
+## Using extraObjects
+
+You can include these HTTPRoute resources directly in your Rancher Helm installation using the `extraObjects` value. This keeps all resources managed together:
+
+```yaml
+# values.yaml
+hostname: rancher.example.com
+tls: ingress
+
+extraObjects:
+  - apiVersion: gateway.networking.k8s.io/v1
+    kind: HTTPRoute
+    metadata:
+      name: rancher
+    spec:
+      parentRefs:
+        - name: my-shared-gateway
+          namespace: gateway-system
+          sectionName: https
+      hostnames:
+        - rancher.example.com
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          backendRefs:
+            - name: rancher
+              port: 80
+
+  - apiVersion: gateway.networking.k8s.io/v1
+    kind: HTTPRoute
+    metadata:
+      name: rancher-http-redirect
+    spec:
+      parentRefs:
+        - name: my-shared-gateway
+          namespace: gateway-system
+          sectionName: http
+      hostnames:
+        - rancher.example.com
+      rules:
+        - filters:
+            - type: RequestRedirect
+              requestRedirect:
+                scheme: https
+                statusCode: 301
+```
+
+## Backend Port Selection
+
+The port in `backendRefs` depends on your `service.disableHTTP` setting:
+
+| `service.disableHTTP` | Backend Port |
+|-----------------------|--------------|
+| `false` (default)     | `80`         |
+| `true`                | `443`        |
+
+## Listener Selection Summary
+
+| TLS Configuration | Primary Route Listener | Redirect Route |
+|-------------------|------------------------|----------------|
+| `tls: external`   | HTTP listener          | Not needed     |
+| `tls: ingress`    | HTTPS listener         | HTTP listener (optional) |
+| `tls: secret`     | HTTPS listener         | HTTP listener (optional) |
+| `tls: letsEncrypt`| HTTPS listener         | HTTP listener (optional) |
+
+## Troubleshooting
+
+**HTTPRoute not being accepted:**
+- Verify the Gateway name and namespace are correct
+- Ensure the `sectionName` matches an existing listener on your Gateway
+- Check that the listener allows routes from the Rancher namespace (see Gateway's `allowedRoutes` configuration)
+
+**Connection refused or timeouts:**
+- Confirm the Rancher service exists and has endpoints: `kubectl get endpoints rancher -n cattle-system`
+- Verify the backend port matches your `service.disableHTTP` setting
+
+**Certificate errors:**
+- If using `tls: ingress` or `tls: secret`, ensure your Gateway's HTTPS listener has the appropriate certificate configured
+- Verify the certificate covers your Rancher hostname
+
+
+---
+
+## Article: how-to-guides/advanced-user-guides/rancher-deployment-guides/rancher-deployment-guides.md
+
+---
+title: Rancher Deployment Guides
+---
+
+<head>
+  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/rancher-deployment-guides"/>
+</head>
+
+- [Using an External Gateway with Rancher](configure-with-existing-gateway.md)
+
+
+
+---
+
 ## Article: how-to-guides/advanced-user-guides/manage-projects/manage-projects.md
 
 ---
@@ -25589,16 +26170,14 @@ metadata:
 ```
 In this example, if the project's quota does not include configMaps in its list of resources, then Rancher will ignore `configMaps` in this override.
 
-Users are advised to create dedicated `ResourceQuota` objects in namespaces to configure additional custom limits for resources not defined on the project.
-Resource quotas are native Kubernetes objects, and Rancher will ignore user-defined quotas in namespaces belonging to a project with a quota,
-thus giving users more control.
+Users are advised to either use the `extended` map to configure additional custom limits for resources not built into the project, for all namespaces in the project, or to create dedicated `ResourceQuota` objects in specific namespaces for the same, just for these namespaces. Resource quotas are native Kubernetes objects, and Rancher will ignore user-defined quotas in namespaces belonging to a project with a quota, thus giving users more control.
 
 The following table explains the key differences between the two quota types.
 
 | Rancher Resource Quotas                                    | Kubernetes Resource Quotas                               |
 | ---------------------------------------------------------- | -------------------------------------------------------- |
-| Applies to projects and namespace.                         | Applies to namespaces only.                              |
-| Creates resource pool for all namespaces in project.       | Applies static resource limits to individual namespaces. |
+| Applies to projects and namespaces.                        | Applies to namespaces only.                              |
+| Creates resource pool for all namespaces in a project.     | Applies static resource limits to individual namespaces. |
 | Applies resource quotas to namespaces through propagation. | Applies only to the assigned namespace.
 
 
@@ -25657,6 +26236,20 @@ Edit resource quotas when:
 
 **Result:** The resource quota is applied to your project and namespaces. When you add more namespaces in the future, Rancher validates that the project can accommodate the namespace. If the project can't allocate the resources, you may still create namespaces, but they will be given a resource quota of 0. Subsequently, Rancher will not allow you to create any resources restricted by this quota.
 
+### Advanced: Beyond the basic Resource Quotas
+
+The set of resource quotas listed in the **Resource Type** dropdown of **Edit Config** is limited. For quotas outside of that set use **Edit Config** and **Add Resource** as already described, and select **Custom** as the resource type. This enables the edit field **Resource Identifier** for the entry of the necessary identifier. Some examples of identifiers are:
+
+- `requests.nvidia.com/gpu`
+- `gold.storageclass.storage.k8s.io/requests.storage`
+- `count/podtemplates`
+
+:::warning
+
+While it is possible to specify `Custom` which refer to quotas in the basic builtin set it is currently **strongly** recommended to use the builtin fields for them instead. Also, in case of conflicts, i.e. specifying a quota for a resource in both its builtin field and via `Custom`, the data found in the builtin field has priority and the data in `Custom` is ignored.
+
+:::
+
 
 ---
 
@@ -25672,7 +26265,7 @@ title: Overriding the Default Limit for a Namespace
 
 Although the **Namespace Default Limit** propagates from the project to each namespace when created, in some cases, you may need to increase (or decrease) the quotas for a specific namespace. In this situation, you can override the default limits by editing the namespace.
 
-In the diagram below, the Rancher administrator has a resource quota in effect for their project. However, the administrator wants to override the namespace limits for `Namespace 3` so that it has more resources available. Therefore, the administrator [raises the namespace limits](../../../new-user-guides/manage-clusters/projects-and-namespaces.md) for `Namespace 3` so that the namespace can access more resources.
+In the diagram below, the Rancher administrator has a resource quota in effect for their project. However, the administrator wants to override the cpu limits for `Namespace 3` so that it has more resources available. Therefore, the administrator [raises the cpu limits](../../../new-user-guides/manage-clusters/projects-and-namespaces.md) for `Namespace 3` so that the namespace can access more resources.
 
 <sup>Namespace Default Limit Override</sup>
 
@@ -25714,14 +26307,20 @@ title: Resource Quota Type Reference
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/manage-projects/manage-project-resource-quotas/resource-quota-types"/>
 </head>
 
-When you create a resource quota, you are configuring the pool of resources available to the project. You can set the following resource limits for the following resource types.
+When you create a resource quota, you are configuring the pool of resources available to the project. Rancher supports the use of arbitrary resource references and their quotas. This allows you to utilize all upstream [Kubernetes `ResourceQuota`](https://kubernetes.io/docs/concepts/policy/resource-quotas/#types-of-resource-quota) types when managing project resource quotas.
+
+You can set resource limits for the following predefined resource types, where the `Custom` type enables specification of arbitrary resources and their quotas.
+
+:::note
+Support for arbitrary resource references using the `Custom` type does not cover resources in the `ext.cattle.io` API group.
+:::
 
 | Resource Type            | Description                                                                                                                                                                                       |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| CPU Limit*                | The maximum amount of CPU (in [millicores](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-cpu)) allocated to the project/namespace.<sup>1</sup> |
+| CPU Limit*               | The maximum amount of CPU (in [millicores](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-cpu)) allocated to the project/namespace.<sup>1</sup> |
 | CPU Reservation*         | The minimum amount of CPU (in millicores) guaranteed to the project/namespace.<sup>1</sup>                                                                                                        |
-| Memory Limit*           | The maximum amount of memory (in bytes) allocated to the project/namespace.<sup>1</sup>                                                                                                           |
-| Memory Reservation*       | The minimum amount of memory (in bytes) guaranteed to the project/namespace.<sup>1</sup>                                                                                                          |
+| Memory Limit*            | The maximum amount of memory (in [bytes](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-memory)) allocated to the project/namespace.<sup>1</sup>       |
+| Memory Reservation*      | The minimum amount of memory (in bytes) guaranteed to the project/namespace.<sup>1</sup>                                                                                                          |
 | Storage Reservation      | The minimum amount of storage (in gigabytes) guaranteed to the project/namespace.                                                                                                                 |
 | Services Load Balancers  | The maximum number of load balancers services that can exist in the project/namespace.                                                                                                            |
 | Services Node Ports      | The maximum number of node port services that can exist in the project/namespace.                                                                                                                 |
@@ -25730,13 +26329,27 @@ When you create a resource quota, you are configuring the pool of resources avai
 | ConfigMaps               | The maximum number of ConfigMaps that can exist in the project/namespace.                                                                                                                         |
 | Persistent Volume Claims | The maximum number of persistent volume claims that can exist in the project/namespace.                                                                                                           |
 | Replications Controllers | The maximum number of replication controllers that can exist in the project/namespace.                                                                                                            |
-| Secrets                  | The maximum number of secrets that can exist in the project/namespace.                                                                                                                            |
+| Secrets                  | The maximum number of secrets that can exist in the project/namespace. |                                                                                   |
+| Custom\*\*               | The specification of arbitrary resources and their quotas, beyond the resource types built into projects, as listed above.                                                      		       |
 
 :::note **<sup>*</sup>**
 
-When setting resource quotas, if you set anything related to CPU or Memory (i.e. limits or reservations) on a project / namespace, all containers will require a respective CPU or Memory field set during creation. A container default resource limit can be set at the same time to avoid the need to explicitly set these limits for every workload. See the [Kubernetes documentation](https://kubernetes.io/docs/concepts/policy/resource-quotas/#requests-vs-limits) for more details on why this is required.
+When setting resource quotas, if you set anything related to CPU or Memory (i.e. limits or reservations) on a project or namespace, all containers will require a respective CPU or Memory field set during creation. A container default resource limit can be set at the same time to avoid the need to explicitly set these limits for every workload. See the [Kubernetes documentation](https://kubernetes.io/docs/concepts/policy/resource-quotas/#requests-vs-limits) for more details on why this is required.
 
 :::
+
+:::note **<sup>\*\*</sup>**
+
+For example:
+
+  - `requests.nvidia.com/gpu: 4`
+  - `gold.storageclass.storage.k8s.io/requests.storage: 500Gi`
+  - `count/podtemplates: 10`
+
+See the [Kubernetes documentation](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-for-extended-resources) for many more examples.
+
+:::
+
 
 ---
 
@@ -26978,7 +27591,7 @@ When you install the Helm chart, you should pass in feature flag names in a comm
 helm install rancher ./rancher-<VERSION>.tgz \
   --namespace cattle-system \
   --set hostname=<RANCHER.YOURDOMAIN.COM> \
-  --set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+  --set image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
   --set ingress.tls.source=secret \
   --set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
   --set useBundledSystemChart=true # Use the packaged Rancher system charts
@@ -28438,10 +29051,8 @@ Each Rancher version is designed to be compatible with a single version of the w
 
 | Rancher Version | Webhook Version | Availability in Prime | Availability in Community |
 |-----------------|-----------------|-----------------------|---------------------------|
-| v2.13.3         |     v0.9.3      | &check;               | &check;                   |
-| v2.13.2         |     v0.9.2      | &check;               | &check;                   |
-| v2.13.1         |     v0.9.1      | &check;               | &check;                   |
-| v2.13.0         |     v0.9.0      | &cross;               | &check;                   |
+| v2.14.1         |    v0.10.1      | &check;               | &check;                   |
+| v2.14.0         |    v0.10.0      | &cross;               | &check;                   |
 
 ## Why Do We Need It?
 
@@ -28813,7 +29424,7 @@ title: Communicating with Downstream User Clusters
 
 This section describes how Rancher provisions and manages the downstream user clusters that run your apps and services.
 
-The below diagram shows how the cluster controllers, cluster agents, and node agents allow Rancher to control downstream clusters.
+The below diagram shows how the cluster controllers, cluster agents, and Rancher system agent allow Rancher to control downstream clusters.
 
 <figcaption>Communicating with Downstream Clusters</figcaption>
 
@@ -28823,7 +29434,7 @@ The following descriptions correspond to the numbers in the diagram above:
 
 1. [The Authentication Proxy](#1-the-authentication-proxy)
 2. [Cluster Controllers and Cluster Agents](#2-cluster-controllers-and-cluster-agents)
-3. [Node Agents](#3-node-agents)
+3. [Rancher System Agent](#3-rancher-system-agent)
 4. [Authorized Cluster Endpoint](#4-authorized-cluster-endpoint)
 
 ## 1. The Authentication Proxy
@@ -28848,7 +29459,7 @@ There is one cluster controller and one cluster agent for each downstream cluste
 -  Configures access control policies to clusters and projects
 -  Provisions clusters by calling the required Docker machine drivers and Kubernetes engines, such as GKE
 
-By default, to enable Rancher to communicate with a downstream cluster, the cluster controller connects to the cluster agent. If the cluster agent is not available, the cluster controller can connect to a [node agent](#3-node-agents) instead.
+By default, to enable Rancher to communicate with a downstream cluster, the cluster controller connects to the cluster agent. If the cluster agent is not available, the cluster controller can connect to a [Rancher system agent](#3-rancher-system-agent) instead.
 
 The cluster agent, also called `cattle-cluster-agent`, is a component that runs in a downstream user cluster. It performs the following tasks:
 
@@ -28857,11 +29468,11 @@ The cluster agent, also called `cattle-cluster-agent`, is a component that runs 
 -  Applies the roles and bindings defined in each cluster's global policies
 - Communicates between the cluster and Rancher server (through a tunnel to the cluster controller) about events, stats, node info, and health
 
-## 3. Node Agents
+## 3. Rancher System Agent
 
-If the cluster agent (also called `cattle-cluster-agent`) is not available, one of the node agents creates a tunnel to the cluster controller to communicate with Rancher.
+If the cluster agent (also called `cattle-cluster-agent`) is not available, the Rancher system agent creates a tunnel to the cluster controller to communicate with Rancher.
 
-The `cattle-node-agent` is deployed using a [DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) resource to make sure it runs on every node in a Rancher-launched Kubernetes cluster. It is used to interact with the nodes when performing cluster operations. Examples of cluster operations include upgrading the Kubernetes version and creating or restoring etcd snapshots.
+The `rancher-system-agent` runs on every node in RKE2 and K3s Kubernetes clusters. It is used to interact with the nodes when performing cluster operations. Examples of cluster operations include upgrading the Kubernetes version and creating or restoring etcd snapshots.
 
 ## 4. Authorized Cluster Endpoint
 
@@ -29232,7 +29843,7 @@ The following commands are available for use in Rancher CLI.
 | `login, [l]`  | Logs into a Rancher Server. For an example, see [CLI Authentication](#cli-authentication).  |
 | `machines, [machine]`  | Performs operations on machines.  |
 | `namespaces, [namespace]`  | Performs operations on [namespaces](../../how-to-guides/new-user-guides/manage-namespaces.md).  |
-| `nodes, [node]`  | Performs operations on [nodes](../../how-to-guides/new-user-guides/manage-clusters/nodes-and-node-pools.md).  |
+| `nodes, [node]`  | Performs operations on [nodes](../../how-to-guides/new-user-guides/manage-clusters/nodes-and-machine-pools.md).  |
 | `projects, [project]`  | Performs operations on [projects](../../how-to-guides/new-user-guides/manage-clusters/projects-and-namespaces.md).  |
 | `ps`  | Displays [workloads](../../how-to-guides/new-user-guides/kubernetes-resources-setup/workloads-and-pods/workloads-and-pods.md) in a project.  |
 | `server`  | Performs operations for the server.  |
@@ -30979,48 +31590,53 @@ plugins:
         warn: "restricted"
         warn-version: "latest"
       exemptions:
-        usernames: []
+        namespaces:
+        - calico-apiserver
+        - calico-system
+        - cattle-alerting
+        - cattle-capi-system
+        - cattle-csp-adapter-system
+        - cattle-elemental-system
+        - cattle-epinio-system
+        - cattle-externalip-system
+        - cattle-fleet-local-system
+        - cattle-fleet-system
+        - cattle-gatekeeper-system
+        - cattle-global-data
+        - cattle-global-nt
+        - cattle-impersonation-system
+        - cattle-istio
+        - cattle-istio-system
+        - cattle-logging
+        - cattle-logging-system
+        - cattle-monitoring-system
+        - cattle-neuvector-system
+        - cattle-prometheus
+        - cattle-provisioning-capi-system
+        - cattle-resources-system
+        - cattle-sriov-system
+        - cattle-system
+        - cattle-turtles-system
+        - cattle-ui-plugin-system
+        - cattle-windows-gmsa-system
+        - cert-manager
+        - cis-operator-system
+        - compliance-operator-system
+        - fleet-default
+        - fleet-local
+        - istio-system
+        - kube-node-lease
+        - kube-public
+        - kube-system
+        - longhorn-system
+        - rancher-alerting-drivers
+        - rancher-compliance-system
+        - security-scan
+        - sr-operator-system
+        - tigera-operator
+        - traefik
         runtimeClasses: []
-        namespaces: [calico-apiserver,
-                     calico-system,
-                     cattle-alerting,
-                     cattle-csp-adapter-system,
-                     cattle-elemental-system,
-                     cattle-epinio-system,
-                     cattle-externalip-system,
-                     cattle-fleet-local-system,
-                     cattle-fleet-system,
-                     cattle-gatekeeper-system,
-                     cattle-global-data,
-                     cattle-global-nt,
-                     cattle-impersonation-system,
-                     cattle-istio,
-                     cattle-istio-system,
-                     cattle-logging,
-                     cattle-logging-system,
-                     cattle-monitoring-system,
-                     cattle-neuvector-system,
-                     cattle-prometheus,
-                     cattle-provisioning-capi-system,
-                     cattle-resources-system,
-                     cattle-sriov-system,
-                     cattle-system,
-                     cattle-ui-plugin-system,
-                     cattle-windows-gmsa-system,
-                     cert-manager,
-                     cis-operator-system,
-                     fleet-default,
-                     fleet-local,
-                     ingress-nginx,
-                     istio-system,
-                     kube-node-lease,
-                     kube-public,
-                     kube-system,
-                     longhorn-system,
-                     rancher-alerting-drivers,
-                     security-scan,
-                     sr-operator-system,
-                     tigera-operator]
+        usernames: []
 ```
 
 
@@ -31404,6 +32020,7 @@ Rancher is committed to informing the community of security issues in our produc
 
 | ID | Description | Date | Resolution |
 |----|-------------|------|------------|
+| [CVE-2026-25705](https://github.com/rancher/rancher/security/advisories/GHSA-5v3h-x4wf-5c35) | Rancher now protects against arbitrary file access via path traversal in Rancher Extensions. Note by default only users with administrative permissions can deploy UI extensions unless explicit permission is granted to other users. | 30 Apr 2026 | Rancher [v2.14.1](https://github.com/rancher/rancher/releases/tag/v2.14.1), [v2.13.5](https://github.com/rancher/rancher/releases/tag/v2.13.5), [v2.12.9](https://github.com/rancher/rancher/releases/tag/v2.12.9), and [v2.11.13](https://github.com/rancher/rancher/releases/tag/v2.11.13) |
 | [CVE-2025-62879](https://github.com/rancher/backup-restore-operator/security/advisories/GHSA-wj3p-5h3x-c74q) | Rancher now provides new versions of the Rancher Backup chart which prevent the leak of secret S3 credentials via the Rancher Backup pod log. | 29 Jan 2026 | Rancher [v2.13.2](https://github.com/rancher/rancher/releases/tag/v2.13.2), [v2.12.6](https://github.com/rancher/rancher/releases/tag/v2.12.6), [v2.11.10](https://github.com/rancher/rancher/releases/tag/v2.11.10), and [v2.10.11](https://github.com/rancher/rancher/releases/tag/v2.10.11) |
 | [CVE-2025-67601](https://github.com/rancher/rancher/security/advisories/GHSA-mc24-7m59-4q5p) | Rancher now removes the ability to fetch CA certificates stored in Rancher’s setting `cacerts` when using the `login` command. | 29 Jan 2026 | Rancher [v2.13.2](https://github.com/rancher/rancher/releases/tag/v2.13.2), [v2.12.6](https://github.com/rancher/rancher/releases/tag/v2.12.6), [v2.11.10](https://github.com/rancher/rancher/releases/tag/v2.11.10), and [v2.10.11](https://github.com/rancher/rancher/releases/tag/v2.10.11) |
 | [CVE-2023-32199](https://github.com/rancher/rancher/security/advisories/GHSA-j4vr-pcmw-hx59) | Rancher now removes the corresponding ClusterRoleBindings whenever the admin GlobalRole or its GlobalRoleBindings are deleted. Previously orphaned ClusterRoleBindings were marked with the annotation `authz.cluster.cattle.io/admin-globalrole-missing=true`. | 23 Oct 2025 | Rancher [v2.12.3](https://github.com/rancher/rancher/releases/tag/v2.12.3) and [v2.11.7](https://github.com/rancher/rancher/releases/tag/v2.11.7) |
@@ -31569,6 +32186,8 @@ title: API Keys
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/reference-guides/user-settings/api-keys"/>
 </head>
 
+<v3APITokensDeprecationWarning />
+
 ## API Keys and User Authentication
 
 If you want to access your Rancher clusters, projects, or other objects using external applications, you can do so using the Rancher API. However, before your application can access the API, you must provide the app with a key used to authenticate with Rancher. You can obtain a key using the Rancher UI.
@@ -31638,20 +32257,11 @@ title: Managing Cloud Credentials
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/reference-guides/user-settings/manage-cloud-credentials"/>
 </head>
 
-When you create a cluster [hosted by an infrastructure provider](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md), [node templates](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#node-templates) are used to provision the cluster nodes. These templates use Docker Machine configuration options to define an operating system image and settings/parameters for the node.
-
-Node templates can use cloud credentials to access the credential information required to provision nodes in the infrastructure providers. The same cloud credential can be used by multiple node templates. By using a cloud credential, you do not have to re-enter access keys for the same cloud provider. Cloud credentials are stored as Kubernetes secrets.
-
-Cloud credentials are only used by node templates if there are fields marked as `password`. The default `active` node drivers have their account access fields marked as `password`, but there may be some `inactive` node drivers, which are not using them yet. These node drivers will not use cloud credentials.
-
-You can create cloud credentials in two contexts:
-
-- [During creation of a node template](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#node-templates) for a cluster.
-- In the **User Settings**
+The creation or association of cloud credentials are part of the cluster creation process, the information below provides guidance on managing credentials in Rancher.
 
 Cloud credentials are bound to their creator's user profile. They **cannot** be shared between non-admin users. However, admins can view and manage the cloud credentials of other users.
 
-## Creating a Cloud Credential from User Settings
+## Creating a Cloud Credential
 
 1. Click **☰ > Cluster Management**.
 1. Click **Cloud Credentials**.
@@ -31661,22 +32271,18 @@ Cloud credentials are bound to their creator's user profile. They **cannot** be 
 1. Based on the selected cloud credential type, enter the required values to authenticate with the infrastructure provider.
 1. Click **Create**.
 
-**Result:** The cloud credential is created and can immediately be used to [create node templates](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#node-templates).
+**Result:** The cloud credential is created.
 
 ## Updating a Cloud Credential
-
-When access credentials are changed or compromised, updating a cloud credential allows you to rotate those credentials while keeping the same node template.
 
 1. Click **☰ > Cluster Management**.
 1. Click **Cloud Credentials**.
 1. Choose the cloud credential you want to edit and click the **⋮ > Edit Config**.
 1. Update the credential information and click **Save**.
 
-**Result:** The cloud credential is updated with the new access credentials. All existing node templates using this cloud credential will automatically use the updated information whenever [new nodes are added](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md).
+**Result:** The cloud credential is updated with the new access credentials.
 
 ## Deleting a Cloud Credential
-
-In order to delete cloud credentials, there must not be any node template associated with it. If you are unable to delete the cloud credential, [delete any node templates](manage-node-templates.md#deleting-a-node-template) that are still associated to that cloud credential.
 
 1. Click **☰ > Cluster Management**.
 1. Click **Cloud Credentials**.
@@ -31685,70 +32291,6 @@ In order to delete cloud credentials, there must not be any node template associ
     - To individually delete one, choose the cloud credential you want to edit and click the **⋮ > Delete**.
     - To bulk delete cloud credentials, select one or more cloud credentials from the list. Click **Delete**.
 1. Confirm that you want to delete these cloud credentials.
-
-
----
-
-## Article: reference-guides/user-settings/manage-node-templates.md
-
----
-title: Managing Node Templates
----
-
-<head>
-  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/reference-guides/user-settings/manage-node-templates"/>
-</head>
-
-When you provision a cluster [hosted by an infrastructure provider](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md), [node templates](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#node-templates) are used to provision the cluster nodes. These templates use Docker Machine configuration options to define an operating system image and settings/parameters for the node. You can create node templates in two contexts:
-
-- While [provisioning a node pool cluster](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md).
-- At any time, from your [user settings](user-settings.md).
-
-When you create a node template, it is bound to your user profile. Node templates cannot be shared among users. You can delete stale node templates that you no longer user from your user settings.
-
-## Creating a Node Template
-
-1. Click **☰ > Cluster Management**.
-1. Click **RKE1 Configuration > Node Templates**.
-1. Click **Add Template**.
-1. Select one of the cloud providers available. Then follow the instructions on screen to configure the template.
-
-**Result:** The template is configured. You can use the template later when you [provision a node pool cluster](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md).
-
-## Updating a Node Template
-
-1. Click **☰ > Cluster Management**.
-1. Click **RKE1 Configuration > Node Templates**.
-1. Choose the node template that you want to edit and click the **⋮ > Edit**.
-
-    :::note
-
-    The default `active` [node drivers](../../how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/about-provisioning-drivers/manage-node-drivers.md) and any node driver, that has fields marked as `password`, are required to use [cloud credentials](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#cloud-credentials).
-
-    :::
-
-1. Edit the required information and click **Save**.
-
-**Result:** The node template is updated. All node pools using this node template will automatically use the updated information when new nodes are added.
-
-## Cloning Node Templates
-
-When creating new node templates from your user settings, you can clone an existing template and quickly update its settings rather than creating a new one from scratch. Cloning templates saves you the hassle of re-entering access keys for the cloud provider.
-
-1. Click **☰ > Cluster Management**.
-1. Click **RKE1 Configuration > Node Templates**.
-1. Find the template you want to clone. Then select **⋮ > Clone**.
-1. Complete the rest of the form.
-
-**Result:** The template is cloned and configured. You can use the template later when you [provision a node pool cluster](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md).
-
-## Deleting a Node Template
-
-When you no longer use a node template, you can delete it from your user settings.
-
-1. Click **☰ > Cluster Management**.
-1. Click **RKE1 Configuration > Node Templates**.
-1. Select one or more template from the list. Then click **Delete**. Confirm the delete when prompted.
 
 
 ---
@@ -31840,8 +32382,7 @@ Within Rancher, each user has a number of settings associated with their login: 
 The available user settings are:
 
 - [API & Keys](api-keys.md): If you want to interact with Rancher programmatically, you need an API key. Follow the directions in this section to obtain a key.
-- [Cloud Credentials](manage-cloud-credentials.md): Manage cloud credentials [used by node templates](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md#node-templates) to [provision nodes for clusters](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md).
-- [Node Templates](manage-node-templates.md): Manage templates [used by Rancher to provision nodes for clusters](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md).
+- [Cloud Credentials](manage-cloud-credentials.md): Manage cloud credentials used by machine pools to [provision nodes for clusters](../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md).
 - [Preferences](user-preferences.md): Sets superficial preferences for the Rancher UI.
 - Log Out: Ends your user session.
 
@@ -32800,6 +33341,69 @@ One of the following is required to enable private access:
 
 For more information about public and private access to the cluster endpoint, refer to the [Amazon EKS documentation.](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html)
 
+### IPv6 / Dual-stack Networking
+
+Rancher supports provisioning and managing Amazon EKS clusters with IPv6 network routing. When IPv6 is enabled, Kubernetes pods and services are assigned IPv6 addresses. However, the underlying EC2 worker nodes operate in a **dual-stack mode** (receiving both IPv4 and IPv6 addresses). This dual-stack architecture ensures that the nodes can still communicate with the AWS API and the Kubernetes control plane over IPv4, while your application workloads communicate over IPv6.
+
+To provision a dual-stack cluster from the Rancher UI:
+1. During cluster creation, expand the **Networking** section.
+2. Under **IP Family**, select the **IPv6** radio button. 
+   > **Note:** Changing the IP Family will clear any current subnet selections you have made in the form.
+3. Under **VPCs and Subnets**, choose either to **Create a new vpc and subnet automatically** or **Select from existing subnets**.
+   > **Warning for Custom VPCs:** If you choose to select existing subnets, you **must** select Dual-Stack subnets. The selected subnets must have both an IPv4 CIDR block and an IPv6 CIDR block. IPv6-only subnets are not supported.
+4. Complete the remainder of the cluster configuration (Node Groups, etc.).
+5. Click **Create**.
+
+> **Important:** The IP Family setting is **immutable**. Once an EKS cluster is created, you cannot convert an IPv4 cluster to IPv6, nor can you convert an IPv6 cluster to IPv4.
+
+### Importing Existing IPv6 Clusters
+
+Rancher fully supports registering (importing) existing Amazon EKS clusters that were configured with IPv6 networking outside of Rancher (e.g., via Terraform or the AWS Console).
+
+When you register an existing EKS cluster:
+1. Follow the standard cluster registration process (**Cluster Management > Add Cluster > Generic**).
+2. Rancher will query the AWS EKS API to read the cluster's upstream state.
+3. Rancher automatically detects if the cluster was provisioned with IPv6.
+
+When configuring an IPv6 cluster, several automated behaviors and strict requirements apply:
+* **Service CIDR:** AWS automatically assigns the Service CIDR from a fixed IPv6 range (`fd00::/108`). You cannot customize the Service CIDR for an IPv6 cluster.
+* **OIDC Provider (IRSA) Requirement:** In an IPv6 cluster, the Amazon VPC CNI plugin strictly requires IAM permissions to assign IPv6 prefixes to Elastic Network Interfaces (ENIs). This authentication is handled via IAM Roles for Service Accounts (IRSA). Therefore, **an IAM OIDC provider is mandatory and is automatically enabled by Rancher** when provisioning an IPv6 cluster. Without it, pods will fail to acquire IP addresses.
+
+
+### EKSClusterConfig Reference Example (IPv6)
+
+If you are programmatically deploying EKS clusters using the `eksclusterconfigs.eks.cattle.io` Custom Resource, you can enable IPv6 by setting the `ipFamily` field to `ipv6`. 
+
+Below is an example of a minimal `EKSClusterConfig` configured for IPv6. Notice that the `ipFamily` is set, and standard IPv4 fields like `serviceCidr` are omitted because AWS manages them automatically in IPv6 mode.
+
+```yaml
+apiVersion: eks.cattle.io/v1
+kind: EKSClusterConfig
+metadata:
+  name: my-ipv6-cluster
+  namespace: cluster-fleet-default
+spec:
+  amazonCredentialSecret: cattle-global-data/my-aws-credentials
+  displayName: my-ipv6-cluster
+  region: us-west-2
+  imported: false
+  kubernetesVersion: "1.33"
+  ipFamily: "ipv6" # Enables Dual-Stack IPv6 networking. Triggers automatic OIDC creation.
+  nodeGroups:
+    - nodegroupName: initial-nodegroup
+      desiredSize: 2
+      maxSize: 3
+      minSize: 1
+      instanceType: t3.medium
+      diskSize: 20
+      requestSpotInstances: false
+      version: "1.33"
+  privateAccess: false
+  publicAccess: true
+  secretsEncryption: false
+  ```
+
+
 ### Subnet
 
 | Option | Description |
@@ -32808,6 +33412,8 @@ For more information about public and private access to the cluster endpoint, re
 | Custom: Choose from your existing VPC and Subnets | While provisioning your cluster, Rancher configures your Control Plane and nodes to use a VPC and Subnet that you've already [created in AWS](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html).  |
 
  For more information, refer to the AWS documentation for [Cluster VPC Considerations](https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html). Follow one of the sets of instructions below based on your selection from the previous step.
+
+> **Warning for Custom IPv6 VPCs:** If you have selected `IPv6` as your IP Family and are bringing a custom VPC, you **must** select Dual-Stack subnets. The selected subnets must have **both an IPv4 CIDR block and an IPv6 CIDR block**. "IPv6-only" subnets are not supported by EKS; EC2 worker nodes still require an IPv4 address to join the cluster and communicate with AWS services.
 
 - [What Is Amazon VPC?](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
 - [VPCs and Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
@@ -33504,376 +34110,6 @@ title: Rancher Server Configuration
 - [GKE Cluster Configuration](gke-cluster-configuration/gke-cluster-configuration.md)
 - [Use Existing Nodes](use-existing-nodes/use-existing-nodes.md)
 - [Sync Clusters](sync-clusters.md)
-
----
-
-## Article: reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration.md
-
----
-title: RKE Cluster Configuration Reference
----
-
-<head>
-  <link rel="canonical" href="https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration"/>
-</head>
-
-<EOLRKE1Warning />
-
-When Rancher installs Kubernetes, it uses [RKE](../../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md) or [RKE2](https://docs.rke2.io/) as the Kubernetes distribution.
-
-This section covers the configuration options that are available in Rancher for a new or existing RKE Kubernetes cluster.
-
-
-## Overview
-
-You can configure the Kubernetes options one of two ways:
-
-- [Rancher UI](#configuration-options-in-the-rancher-ui): Use the Rancher UI to select options that are commonly customized when setting up a Kubernetes cluster.
-- [Cluster Config File](#rke-cluster-config-file-reference): Instead of using the Rancher UI to choose Kubernetes options for the cluster, advanced users can create an RKE config file. Using a config file allows you to set any of the options available in an RKE installation, except for system_images configuration, by specifying them in YAML.
-
-The RKE cluster config options are nested under the `rancher_kubernetes_engine_config` directive. For more information, see the section about the [cluster config file.](#rke-cluster-config-file-reference)
-
-In [clusters launched by RKE](../../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/launch-kubernetes-with-rancher.md), you can edit any of the remaining options that follow.
-
-For an example of RKE config file syntax, see the [RKE documentation](https://rancher.com/docs/rke/latest/en/example-yamls/).
-
-The forms in the Rancher UI don't include all advanced options for configuring RKE. For the complete reference of configurable options for RKE Kubernetes clusters in YAML, see the [RKE documentation.](https://rancher.com/docs/rke/latest/en/config-options/)
-
-## Editing Clusters with a Form in the Rancher UI
-
-To edit your cluster,
-
-1. In the upper left corner, click **☰ > Cluster Management**.
-1. Go to the cluster you want to configure and click **⋮ > Edit Config**.
-
-
-## Editing Clusters with YAML
-
-Instead of using the Rancher UI to choose Kubernetes options for the cluster, advanced users can create an RKE config file. Using a config file allows you to set any of the options available in an RKE installation, except for system_images configuration, by specifying them in YAML.
-
-RKE clusters (also called RKE1 clusters) are edited differently than RKE2 and K3s clusters.
-
-To edit an RKE config file directly from the Rancher UI,
-
-1. Click **☰ > Cluster Management**.
-1. Go to the RKE cluster you want to configure. Click and click **⋮ > Edit Config**. This take you to the RKE configuration form. Note: Because cluster provisioning changed in Rancher 2.6, the **⋮ > Edit as YAML** can be used for configuring RKE2 clusters, but it can't be used for editing RKE1 configuration.
-1. In the configuration form, scroll down and click **Edit as YAML**.
-1. Edit the RKE options under the `rancher_kubernetes_engine_config` directive.
-
-## Configuration Options in the Rancher UI
-
-:::tip
-
-Some advanced configuration options are not exposed in the Rancher UI forms, but they can be enabled by editing the RKE cluster configuration file in YAML. For the complete reference of configurable options for RKE Kubernetes clusters in YAML, see the [RKE documentation.](https://rancher.com/docs/rke/latest/en/config-options/)
-
-:::
-
-### Kubernetes Version
-
-The version of Kubernetes installed on your cluster nodes. Rancher packages its own version of Kubernetes based on [hyperkube](https://github.com/rancher/hyperkube).
-
-For more detail, see [Upgrading Kubernetes](../../../getting-started/installation-and-upgrade/upgrade-and-roll-back-kubernetes.md).
-
-### Network Provider
-
-The [Network Provider](https://kubernetes.io/docs/concepts/cluster-administration/networking/) that the cluster uses. For more details on the different networking providers, please view our [Networking FAQ](../../../faq/container-network-interface-providers.md).
-
-:::caution
-
-After you launch the cluster, you cannot change your network provider. Therefore, choose which network provider you want to use carefully, as Kubernetes doesn't allow switching between network providers. Once a cluster is created with a network provider, changing network providers would require you  tear down the entire cluster and all its applications.
-
-:::
-
-Out of the box, Rancher is compatible with the following network providers:
-
-- [Canal](https://github.com/projectcalico/canal)
-- [Flannel](https://github.com/coreos/flannel#flannel)
-- [Calico](https://docs.projectcalico.org/v3.11/introduction/)
-- [Weave](https://github.com/weaveworks/weave)
-
-<DeprecationWeave />
-
-:::note Notes on Weave:
-
-When Weave is selected as network provider, Rancher will automatically enable encryption by generating a random password. If you want to specify the password manually, please see how to configure your cluster using a [Config File](#rke-cluster-config-file-reference) and the [Weave Network Plug-in Options](https://rancher.com/docs/rke/latest/en/config-options/add-ons/network-plugins/#weave-network-plug-in-options).
-
-:::
-
-### Project Network Isolation
-
-If your network provider allows project network isolation, you can choose whether to enable or disable inter-project communication.
-
-Project network isolation is available if you are using any RKE network plugin that supports the enforcement of Kubernetes network policies, such as Canal or the Cisco ACI plugin.
-
-### Kubernetes Cloud Providers
-
-You can configure a [Kubernetes cloud provider](../../../how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-cloud-providers/set-up-cloud-providers.md). If you want to use dynamically provisioned [volumes and storage](../../../how-to-guides/new-user-guides/manage-clusters/create-kubernetes-persistent-storage/create-kubernetes-persistent-storage.md) in Kubernetes, typically you must select the specific cloud provider in order to use it. For example, if you want to use Amazon EBS, you would need to select the `aws` cloud provider.
-
-:::note
-
-If the cloud provider you want to use is not listed as an option, you will need to use the [config file option](#rke-cluster-config-file-reference) to configure the cloud provider. Please reference the [RKE cloud provider documentation](https://rancher.com/docs/rke/latest/en/config-options/cloud-providers/) on how to configure the cloud provider.
-
-:::
-
-### Private Registries
-
-The cluster-level private registry configuration is only used for provisioning clusters.
-
-There are two main ways to set up private registries in Rancher: by setting up the [global default registry](../../../how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/global-default-private-registry.md) through the **Settings** tab in the global view, and by setting up a private registry in the advanced options in the cluster-level settings. The global default registry is intended to be used for air-gapped setups, for registries that do not require credentials. The cluster-level private registry is intended to be used in all setups in which the private registry requires credentials.
-
-If your private registry requires credentials, you need to pass the credentials to Rancher by editing the cluster options for each cluster that needs to pull images from the registry.
-
-The private registry configuration option tells Rancher where to pull the [system images](https://rancher.com/docs/rke/latest/en/config-options/system-images/) or [addon images](https://rancher.com/docs/rke/latest/en/config-options/add-ons/) that will be used in your cluster.
-
-- **System images** are components needed to maintain the Kubernetes cluster.
-- **Add-ons** are used to deploy several cluster components, including network plug-ins, the ingress controller, the DNS provider, or the metrics server.
-
-For more information on setting up a private registry for components applied during the provisioning of the cluster, see the [RKE documentation on private registries](https://rancher.com/docs/rke/latest/en/config-options/private-registries/).
-
-Rancher v2.6 introduced the ability to configure [ECR registries for RKE clusters](https://rancher.com/docs/rke/latest/en/config-options/private-registries/#amazon-elastic-container-registry-ecr-private-registry-setup).
-
-### Authorized Cluster Endpoint
-
-Authorized Cluster Endpoint (ACE) can be used to directly access the Kubernetes API server, without requiring communication through Rancher.
-
-:::note
-
-ACE is available on RKE, RKE2, and K3s clusters that are provisioned or registered with Rancher. It's not available on  clusters in a hosted Kubernetes provider, such as Amazon's EKS.
-
-:::
-
-ACE must be set up [manually](../../../how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/register-existing-clusters.md#authorized-cluster-endpoint-support-for-rke2-and-k3s-clusters) on RKE2 and K3s clusters. In RKE, ACE is enabled by default in Rancher-launched Kubernetes clusters, using the IP of the node with the `controlplane` role and the default Kubernetes self-signed certificates.
-
-For more detail on how an authorized cluster endpoint works and why it is used, refer to the [architecture section.](../../../reference-guides/rancher-manager-architecture/communicating-with-downstream-user-clusters.md#4-authorized-cluster-endpoint)
-
-We recommend using a load balancer with the authorized cluster endpoint. For details, refer to the [recommended architecture section.](../../rancher-manager-architecture/architecture-recommendations.md#architecture-for-an-authorized-cluster-endpoint-ace)
-
-### Node Pools
-
-For information on using the Rancher UI to set up node pools in an RKE cluster, refer to [this page.](../../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md)
-
-### NGINX Ingress
-
-If you want to publish your applications in a high-availability configuration, and you're hosting your nodes with a cloud-provider that doesn't have a native load-balancing feature, enable this option to use NGINX Ingress within the cluster.
-
-### Metrics Server Monitoring
-
-Option to enable or disable [Metrics Server](https://rancher.com/docs/rke/latest/en/config-options/add-ons/metrics-server/).
-
-Each cloud provider capable of launching a cluster using RKE can collect metrics and monitor for your cluster nodes. Enable this option to view your node metrics from your cloud provider's portal.
-
-You must have an existing Pod Security Policy configured before you can use this option.
-
-### Docker Version on Nodes
-
-Configures whether nodes are allowed to run versions of Docker that Rancher doesn't officially support.
-
-If you choose to require a supported Docker version, Rancher will stop pods from running on nodes that don't have a supported Docker version installed.
-
-For details on which Docker versions were tested with each Rancher version, refer to the [support maintenance terms.](https://rancher.com/support-maintenance-terms/)
-
-### Docker Root Directory
-
-If the nodes you are adding to the cluster have Docker configured with a non-default Docker Root Directory (default is `/var/lib/docker`),  specify the correct Docker Root Directory in this option.
-
-### Default Pod Security Policy
-
-If you enable **Pod Security Policy Support**, use this drop-down to choose the pod security policy that's applied to the cluster.
-
-### Node Port Range
-
-Option to change the range of ports that can be used for [NodePort services](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport). Default is `30000-32767`.
-
-### Recurring etcd Snapshots
-
-Option to enable or disable [recurring etcd snapshots](https://rancher.com/docs/rke/latest/en/etcd-snapshots/#etcd-recurring-snapshots).
-
-### Agent Environment Variables
-
-Option to set environment variables for [rancher agents](../../../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/about-rancher-agents.md). The environment variables can be set using key value pairs. If rancher agent requires use of proxy to communicate with Rancher server, `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables can be set using agent environment variables.
-
-### Updating ingress-nginx
-
-Clusters that were created before Kubernetes 1.16 will have an `ingress-nginx` `updateStrategy` of `OnDelete`. Clusters that were created with Kubernetes 1.16 or newer will have `RollingUpdate`.
-
-If the `updateStrategy` of `ingress-nginx` is `OnDelete`, you will need to delete these pods to get the correct version for your deployment.
-
-### Cluster Agent Configuration and Fleet Agent Configuration
-
-You can configure the scheduling fields and resource limits for the Cluster Agent and the cluster's Fleet Agent. You can use these fields to customize tolerations, affinity rules, and resource requirements. Additional tolerations are appended to a list of default tolerations and control plane node taints. If you define custom affinity rules, they override the global default affinity setting. Defining resource requirements sets requests or limits where there previously were none.
-
-:::note
-
-With this option, it's possible to override or remove rules that are required for the functioning of the cluster. We strongly recommend against removing or overriding these and any other affinity rules, as this may cause unwanted side effects:
-
-- `affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution` for `cattle-cluster-agent`
-- `cluster-agent-default-affinity` for `cattle-cluster-agent`
-- `fleet-agent-default-affinity` for `fleet-agent`
-
-:::
-
-If you downgrade Rancher to v2.7.4 or below, your changes will be lost and the agents will re-deploy without your customizations. The Fleet agent will fallback to using its built-in default values when it re-deploys. If the Fleet version doesn't change during the downgrade, the re-deploy won't be immediate.
-
-
-## RKE Cluster Config File Reference
-
-Instead of using the Rancher UI to choose Kubernetes options for the cluster, advanced users can create an RKE config file. Using a config file allows you to set any of the [options available](https://rancher.com/docs/rke/latest/en/config-options/) in an RKE installation, except for `system_images` configuration. The `system_images` option is not supported when creating a cluster with the Rancher UI or API.
-
-For the complete reference for configurable options for RKE Kubernetes clusters in YAML, see the [RKE documentation.](https://rancher.com/docs/rke/latest/en/config-options/)
-
-### Config File Structure in Rancher
-
-RKE (Rancher Kubernetes Engine) is the tool that Rancher uses to provision Kubernetes clusters. Rancher's cluster config files used to have the same structure as [RKE config files,](https://rancher.com/docs/rke/latest/en/example-yamls/) but the structure changed so that in Rancher, RKE cluster config items are separated from non-RKE config items. Therefore, configuration for your cluster needs to be nested under the `rancher_kubernetes_engine_config` directive in the cluster config file. Cluster config files created with earlier versions of Rancher will need to be updated for this format. An example cluster config file is included below.
-
-<details id="v2.3.0-cluster-config-file">
-  <summary>Example Cluster Config File</summary>
-
-```yaml
-#
-# Cluster Config
-#
-docker_root_dir: /var/lib/docker
-enable_cluster_alerting: false
-enable_cluster_monitoring: false
-enable_network_policy: false
-local_cluster_auth_endpoint:
-  enabled: true
-#
-# Rancher Config
-#
-rancher_kubernetes_engine_config: # Your RKE template config goes here.
-  addon_job_timeout: 30
-  authentication:
-    strategy: x509
-  ignore_docker_version: true
-#
-# # Currently only nginx ingress provider is supported.
-# # To disable ingress controller, set `provider: none`
-# # To enable ingress on specific nodes, use the node_selector, eg:
-#    provider: nginx
-#    node_selector:
-#      app: ingress
-#
-  ingress:
-    provider: nginx
-  kubernetes_version: v1.15.3-rancher3-1
-  monitoring:
-    provider: metrics-server
-#
-#   If you are using calico on AWS
-#
-#    network:
-#      plugin: calico
-#      calico_network_provider:
-#        cloud_provider: aws
-#
-# # To specify flannel interface
-#
-#    network:
-#      plugin: flannel
-#      flannel_network_provider:
-#      iface: eth1
-#
-# # To specify flannel interface for canal plugin
-#
-#    network:
-#      plugin: canal
-#      canal_network_provider:
-#        iface: eth1
-#
-  network:
-    options:
-      flannel_backend_type: vxlan
-    plugin: canal
-#
-#    services:
-#      kube-api:
-#        service_cluster_ip_range: 10.43.0.0/16
-#      kube-controller:
-#        cluster_cidr: 10.42.0.0/16
-#        service_cluster_ip_range: 10.43.0.0/16
-#      kubelet:
-#        cluster_domain: cluster.local
-#        cluster_dns_server: 10.43.0.10
-#
-  services:
-    etcd:
-      backup_config:
-        enabled: true
-        interval_hours: 12
-        retention: 6
-        safe_timestamp: false
-      creation: 12h
-      extra_args:
-        election-timeout: 5000
-        heartbeat-interval: 500
-      gid: 0
-      retention: 72h
-      snapshot: false
-      uid: 0
-    kube_api:
-      always_pull_images: false
-      pod_security_policy: false
-      service_node_port_range: 30000-32767
-  ssh_agent_auth: false
-windows_prefered_cluster: false
-```
-</details>
-
-### Default DNS provider
-
-The table below indicates what DNS provider is deployed by default. See [RKE documentation on DNS provider](https://rancher.com/docs/rke/latest/en/config-options/add-ons/dns/) for more information how to configure a different DNS provider. CoreDNS can only be used on Kubernetes v1.12.0 and higher.
-
-| Rancher version | Kubernetes version | Default DNS provider |
-|-------------|--------------------|----------------------|
-| v2.2.5 and higher | v1.14.0 and higher | CoreDNS |
-| v2.2.5 and higher | v1.13.x and lower | kube-dns |
-| v2.2.4 and lower | any | kube-dns |
-
-## Rancher Specific Parameters in YAML
-
-Besides the RKE config file options, there are also Rancher specific settings that can be configured in the Config File (YAML):
-
-### docker_root_dir
-
-See [Docker Root Directory](#docker-root-directory).
-
-### enable_cluster_monitoring
-
-Option to enable or disable [Cluster Monitoring](../../../integrations-in-rancher/monitoring-and-alerting/monitoring-and-alerting.md).
-
-### enable_network_policy
-
-Option to enable or disable Project Network Isolation.
-
-Project network isolation is available if you are using any RKE network plugin that supports the enforcement of Kubernetes network policies, such as Canal or the Cisco ACI plugin.
-
-### local_cluster_auth_endpoint
-
-See [Authorized Cluster Endpoint](#authorized-cluster-endpoint).
-
-Example:
-
-```yaml
-local_cluster_auth_endpoint:
-  enabled: true
-  fqdn: "FQDN"
-  ca_certs: |-
-    -----BEGIN CERTIFICATE-----
-    ...
-    -----END CERTIFICATE-----
-```
-
-### Custom Network Plug-in
-
-You can add a custom network plug-in by using the [user-defined add-on functionality](https://rancher.com/docs/rke/latest/en/config-options/add-ons/user-defined-add-ons/) of RKE. You define any add-on that you want deployed after the Kubernetes cluster is deployed.
-
-There are two ways that you can specify an add-on:
-
-- [In-line Add-ons](https://rancher.com/docs/rke/latest/en/config-options/add-ons/user-defined-add-ons/#in-line-add-ons)
-- [Referencing YAML Files for Add-ons](https://rancher.com/docs/rke/latest/en/config-options/add-ons/user-defined-add-ons/#referencing-yaml-files-for-add-ons)
-
-For an example of how to configure a custom network plug-in by editing the `cluster.yml`, refer to the [RKE documentation.](https://rancher.com/docs/rke/latest/en/config-options/add-ons/network-plugins/custom-network-plugin-example)
 
 ---
 
@@ -35017,7 +35253,7 @@ You can access your cluster after its state is updated to **Active**.
 **Active** clusters are assigned two Projects:
 
 - `Default`, containing the `default` namespace
-- `System`, containing the `cattle-system`, `ingress-nginx`, `kube-public`, and `kube-system` namespaces
+- `System`, containing the `cattle-system`, `traefik`, `kube-public`, and `kube-system` namespaces
 
 
 ### 3. Amazon Only: Tag Resources
@@ -35954,7 +36190,7 @@ By default, `rancher-project-monitoring`, the underlying chart deployed by Prome
 | [Using kubectl and a kubeconfig file to Access a Cluster](../how-to-guides/new-user-guides/manage-clusters/access-clusters/use-kubectl-and-kubeconfig.md) | ✓ | ✓ | ✓ | ✓ |
 | [Managing Cluster Members](../how-to-guides/new-user-guides/manage-clusters/access-clusters/add-users-to-clusters.md) | ✓ | ✓ | ✓ | ✓ |
 | [Editing and Upgrading Clusters](../reference-guides/cluster-configuration/cluster-configuration.md) | ✓ | ✓ | ✓ | ✓<sup>2</sup> |
-| [Managing Nodes](../how-to-guides/new-user-guides/manage-clusters/nodes-and-node-pools.md) | ✓ | ✓ | ✓ | ✓<sup>3</sup> |
+| [Managing Nodes](../how-to-guides/new-user-guides/manage-clusters/nodes-and-machine-pools.md) | ✓ | ✓ | ✓ | ✓<sup>3</sup> |
 | [Managing Persistent Volumes and Storage Classes](../how-to-guides/new-user-guides/manage-clusters/create-kubernetes-persistent-storage/create-kubernetes-persistent-storage.md) | ✓ | ✓ | ✓ | ✓ |
 | [Managing Projects, Namespaces and Workloads](../how-to-guides/new-user-guides/manage-clusters/projects-and-namespaces.md) | ✓ | ✓ | ✓ | ✓ |
 | [Using App Catalogs](../how-to-guides/new-user-guides/helm-charts-in-rancher/helm-charts-in-rancher.md) | ✓ | ✓ | ✓ | ✓ |
@@ -36008,6 +36244,8 @@ title: Using API Tokens
 <head>
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/api/api-tokens"/>
 </head>
+
+<v3APITokensDeprecationWarning />
 
 Rancher v2.8.0 introduced the [Rancher Kubernetes API](./api-reference.mdx) which can be used to manage Rancher resources through `kubectl`. This page covers information on API tokens used with the [Rancher CLI](../reference-guides/cli-with-rancher/cli-with-rancher.md), [kubeconfig files](../how-to-guides/new-user-guides/manage-clusters/access-clusters/authorized-cluster-endpoint.md#about-the-kubeconfig-file), Terraform and the [v3 API browser](./v3-rancher-api-guide.md#enable-view-in-api).
 
@@ -36817,6 +37055,8 @@ title: Tokens
     <link rel="canonical" href="https://ranchermanager.docs.rancher.com/api/workflows/tokens"/>
 </head>
 
+<v3APITokensDeprecationWarning />
+
 ## Token Resource
 
 Rancher has an imperative API resource `tokens.ext.cattle.io` that allows you to generate tokens for authenticating with Rancher.
@@ -37183,7 +37423,7 @@ The Rancher API server is built on top of an embedded Kubernetes API server and 
 
 ### Working with Cloud Infrastructure
 
-- **Tracking nodes:** The Rancher API server tracks identities of all the [nodes](../how-to-guides/new-user-guides/manage-clusters/nodes-and-node-pools.md) in all clusters.
+- **Tracking nodes:** The Rancher API server tracks identities of all the [nodes](../how-to-guides/new-user-guides/manage-clusters/nodes-and-machine-pools.md) in all clusters.
 - **Setting up infrastructure:**  When configured to use a cloud provider, Rancher can dynamically provision [new nodes](../how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider/use-new-nodes-in-an-infra-provider.md) and [persistent storage](../how-to-guides/new-user-guides/manage-clusters/create-kubernetes-persistent-storage/create-kubernetes-persistent-storage.md) in the cloud.
 
 ### Cluster Visibility
@@ -37630,7 +37870,7 @@ Log in to Rancher to begin using the application. After you log in, you'll make 
 
     Replace `<SERVER_IP>` with your host IP address.
 
-2.  When prompted, create a password for the default `admin` account there cowpoke!
+2.  When prompted, create a password for the default `admin` account.
 
 3.  Set the **Rancher Server URL**. The URL can either be an IP address or a host name. However, each node added to your cluster must be able to connect to this URL.<br/><br/>If you use a hostname in the URL, this hostname must be resolvable by DNS on the nodes you want to add to you cluster.
 
@@ -37662,7 +37902,7 @@ You can access your cluster after its state is updated to **Active**.
 **Active** clusters are assigned two Projects:
 
 - `Default`, containing the `default` namespace
-- `System`, containing the `cattle-system`, `ingress-nginx`, `kube-public`, and `kube-system` namespaces
+- `System`, containing the `cattle-system`, `traefik`, `kube-public`, and `kube-system` namespaces
 
 #### Finished
 
@@ -38627,19 +38867,9 @@ title: Upgrading and Rolling Back Kubernetes
 
 Following an upgrade to the latest version of Rancher, downstream Kubernetes clusters can be upgraded to use the latest supported version of Kubernetes.
 
-Rancher calls RKE (Rancher Kubernetes Engine) as a library when provisioning and editing RKE clusters. For more information on configuring the upgrade strategy for RKE clusters, refer to the [RKE documentation](https://rancher.com/docs/rke/latest/en/).
-
-
 ## Tested Kubernetes Versions
 
 Before a new version of Rancher is released, it's tested with the latest minor versions of Kubernetes to ensure compatibility. For details on which versions of Kubernetes were tested on each Rancher version, refer to the [support maintenance terms.](https://rancher.com/support-maintenance-terms/all-supported-versions/rancher-v2.6.0/)
-
-## How Upgrades Work
-
-RKE v1.1.0 changed the way that clusters are upgraded.
-
-In this section of the [RKE documentation,](https://rancher.com/docs/rke/latest/en/upgrades/how-upgrades-work) you'll learn what happens when you edit or upgrade your RKE Kubernetes cluster.
-
 
 ## Recommended Best Practice for Upgrades
 
@@ -38677,8 +38907,6 @@ A cluster can be restored to a backup in which the previous Kubernetes version w
 
 ## Configuring the Upgrade Strategy
 
-As of RKE v1.1.0, additional upgrade options became available to give you more granular control over the upgrade process. These options can be used to maintain availability of your applications during a cluster upgrade if certain [conditions and requirements](https://rancher.com/docs/rke/latest/en/upgrades/maintaining-availability) are met.
-
 The upgrade strategy can be configured in the Rancher UI, or by editing the `cluster.yml`. More advanced options are available by editing the `cluster.yml`.
 
 ### Configuring the Maximum Unavailable Worker Nodes in the Rancher UI
@@ -38698,15 +38926,13 @@ To change the default number or percentage of worker nodes,
 
 ### Enabling Draining Nodes During Upgrades from the Rancher UI
 
-By default, RKE [cordons](https://kubernetes.io/docs/concepts/architecture/nodes/#manual-node-administration) each node before upgrading it. [Draining](https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/) is disabled during upgrades by default. If draining is enabled in the cluster configuration, RKE will both cordon and drain the node before it is upgraded.
-
 To enable draining each node during a cluster upgrade,
 
 1. In the upper left corner, click **☰ > Cluster Management**.
 1. On the **Clusters** page, go to the cluster you want to enable node draining and click **⋮ > Edit Config**.
 1. Click **⋮ > Edit**.
 1. In the **Upgrade Strategy** tab, go to the **Drain nodes** field and click **Yes**. Node draining is configured separately for control plane and worker nodes.
-1. Configure the options for how pods are deleted. For more information about each option, refer to [this section.](../../how-to-guides/new-user-guides/manage-clusters/nodes-and-node-pools.md#aggressive-and-safe-draining-options)
+1. Configure the options for how pods are deleted. For more information about each option, refer to [this section.](../../how-to-guides/new-user-guides/manage-clusters/nodes-and-machine-pools.md#aggressive-and-safe-draining-options)
 1. Optionally, configure a grace period. The grace period is the timeout given to each pod for cleaning things up, so they will have chance to exit gracefully. Pods might need to finish any outstanding requests, roll back transactions or save state to some external storage. If this value is negative, the default value specified in the pod will be used.
 1. Optionally, configure a timeout, which is the amount of time the drain should continue to wait before giving up.
 1. Click **Save**.
@@ -38720,25 +38946,17 @@ To enable draining each node during a cluster upgrade,
 
 :::
 
-### Maintaining Availability for Applications During Upgrades
-
-In [this section of the RKE documentation,](https://rancher.com/docs/rke/latest/en/upgrades/maintaining-availability/) you'll learn the requirements to prevent downtime for your applications when upgrading the cluster.
-
 ### Configuring the Upgrade Strategy in the cluster.yml
 
 More advanced upgrade strategy configuration options are available by editing the `cluster.yml`.
 
-For details, refer to [Configuring the Upgrade Strategy](https://rancher.com/docs/rke/latest/en/upgrades/configuring-strategy) in the RKE documentation. The section also includes an example `cluster.yml` for configuring the upgrade strategy.
-
 ## Troubleshooting
-
-If a node doesn't come up after an upgrade, the `rke up` command errors out.
 
 No upgrade will proceed if the number of unavailable nodes exceeds the configured maximum.
 
 If an upgrade stops, you may need to fix an unavailable node or remove it from the cluster before the upgrade can continue.
 
-A failed node could be in many different states:
+A failed node could be in various states:
 
 - Powered off
 - Unavailable
@@ -39171,10 +39389,6 @@ title: Helm Version Requirements
 
 This section contains the requirements for Helm, which is the tool used to install Rancher on a high-availability Kubernetes cluster.
 
-> The installation instructions have been updated for Helm 3. For migration of installs started with Helm 2, refer to the official [Helm 2 to 3 Migration Docs.](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/) [This section](https://github.com/rancher/rancher-docs/tree/main/archived_docs/en/version-2.0-2.4/getting-started/installation-and-upgrade/advanced-options/advanced-use-cases/helm2/helm2.md) provides a copy of the older high-availability Rancher installation instructions that used Helm 2, and it is intended to be used if upgrading to Helm 3 is not feasible.
-
-<DeprecationHelm2 />
-
 ## Identifying the Proper Helm v3 Version
 
 Select any Helm v3 version that is officially compatible with the Kubernetes version range you are using from our [Rancher Support Matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions).
@@ -39194,7 +39408,6 @@ To apply this rule, you may need to reference two external resources:
 ## Additional Notes
 
 - Helm v3.2.x or higher is required to install or upgrade Rancher v2.5.
-- Helm v2 support was removed in Rancher v2.9.x.
 - When using tools that run Helm commands for you (like Terraform), you must make sure they are configured to use the correct Helm version.
 
 
@@ -39680,18 +39893,6 @@ Before you can perform the upgrade, you must prepare your air gapped environment
     --set cainjector.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/quay.io/jetstack/cert-manager-cainjector
     ```
 
-    <DeprecationHelm2 />
-    
-    The Helm 2 command is as follows:
-
-    ```plain
-    helm template ./cert-manager-v0.12.0.tgz --output-dir . \
-    --name cert-manager --namespace cert-manager \
-    --set image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/quay.io/jetstack/cert-manager-controller
-    --set webhook.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/quay.io/jetstack/cert-manager-webhook
-    --set cainjector.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/quay.io/jetstack/cert-manager-cainjector
-    ```
-
 1. Download the required CRD file for cert-manager (old and new)
 
     ```plain
@@ -39944,37 +40145,38 @@ For information on enabling experimental features, refer to [this page.](../../.
 | ------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `additionalTrustedCAs`         | false                                                 | `bool` - See [Additional Trusted CAs](#additional-trusted-cas)                                                                                    |
 | `addLocal`                     | "true"                                                | `string` - Have Rancher detect and import the "local" (upstream) Rancher server cluster.  _Note: This option is no longer available in v2.5.0. Consider using the `restrictedAdmin` option to prevent users from modifying the local cluster._              |
-| `agentTLSMode`                 | ""                                                    | `string` - either `system-store` or `strict`. See [Agent TLS Enforcement](./tls-settings.md#agent-tls-enforcement) |
+| `agentTLSMode`                 | ""                                                    | `string` - either `system-store` or `strict`. See [Agent TLS Enforcement](./tls-settings.md#agent-tls-enforcement)                                |
 | `antiAffinity`                 | "preferred"                                           | `string` - AntiAffinity rule for Rancher pods - "preferred, required"                                                                             |
 | `auditLog.destination`         | "sidecar"                                             | `string` - Stream to sidecar container console or hostPath volume - "sidecar, hostPath"                                                           |
 | `auditLog.hostPath`            | "/var/log/rancher/audit"                              | `string` - log file destination on host (only applies when `auditLog.destination` is set to `hostPath`)                                           |
-| `auditLog.enabled`            |  false                            | `bool` - Enables / disables audit logging.                                           |
-| `auditLog.level`               | 0                                                     | `int` - Sets the [API Audit Log](../../../how-to-guides/advanced-user-guides/enable-api-audit-log.md) level [0-3].                                  |
+| `auditLog.enabled`             |  false                                                | `bool` - Enables / disables audit logging.                                                                                                        |
+| `auditLog.level`               | 0                                                     | `int` - Sets the [API Audit Log](../../../how-to-guides/advanced-user-guides/enable-api-audit-log.md) level [0-3].                                |
 | `auditLog.maxAge`              | 1                                                     | `int` - maximum number of days to retain old audit log files (only applies when `auditLog.destination` is set to `hostPath`)                      |
 | `auditLog.maxBackup`           | 1                                                     | `int` - maximum number of audit log files to retain (only applies when `auditLog.destination` is set to `hostPath`)                               |
 | `auditLog.maxSize`             | 100                                                   | `int` - maximum size in megabytes of the audit log file before it gets rotated (only applies when `auditLog.destination` is set to `hostPath`)    |
 | `auditLog.image.repository`    | "registry.suse.com/bci/bci-micro"                     | `string` - Location for the image used to collect audit logs.                                                                                     |
 | `auditLog.image.tag`           | "15.4.14.3"                                           | `string` - Tag for the image used to collect audit logs.                                                                                          |
-| `auditLog.image.pullPolicy`    | "IfNotPresent"                                        | `string` - Override imagePullPolicy for auditLog images - "Always", "Never", "IfNotPresent".                                                   |
-| `busyboxImage`                 | ""                                             | `string` - Image location for busybox image used to collect audit logs. _Note: This option is deprecated use `auditLog.image.repository` to control auditing sidecar image._        |
+| `auditLog.image.pullPolicy`    | "IfNotPresent"                                        | `string` - Override imagePullPolicy for auditLog images - "Always", "Never", "IfNotPresent".                                                      |
+| `busyboxImage`                 | ""                                                    | `string` - Image location for busybox image used to collect audit logs. _Note: This option is deprecated use `auditLog.image.repository` to control auditing sidecar image._        |
 | `certmanager.version`          | ""                                                    | `string` - set cert-manager compatibility                                                                                                         |
 | `debug`                        | false                                                 | `bool` - set debug flag on rancher server                                                                                                         |
-| `extraEnv`                     | []                                                    | `list` - set additional environment variables for Rancher                                                          |
+| `extraEnv`                     | []                                                    | `list` - set additional environment variables for Rancher                                                                                         |
 | `imagePullSecrets`             | []                                                    | `list` - list of names of Secret resource containing private registry credentials                                                                 |
-| `ingress.configurationSnippet` | ""                                                    | `string` - additional Nginx configuration. Can be used for proxy configuration.   |
+| `ingress.configurationSnippet` | ""                                                    | `string` - additional Nginx configuration. Can be used for proxy configuration.                                                                   |
 | `ingress.extraAnnotations`     | {}                                                    | `map` - additional annotations to customize the ingress                                                                                           |
-|  `ingress.enabled` |  true   |    When set to false, Helm will not install a Rancher ingress. Set the option to false to deploy your own ingress.   |
+|  `ingress.enabled`             |  true                                                 | `string` - When set to false, Helm will not install a Rancher ingress. Set the option to false to deploy your own ingress.                        |
 | `letsEncrypt.ingress.class`    | ""                                                    | `string` - optional ingress class for the cert-manager acmesolver ingress that responds to the Let's Encrypt ACME challenges. Options: traefik, nginx.       |                      |
-| `noProxy`                      | "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.cluster.local,cattle-system.svc" | `string` - comma separated list of hostnames or ip address not to use the proxy                              |                                     |
+| `noProxy`                      | "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.cluster.local,cattle-system.svc" | `string` - comma separated list of hostnames or ip address not to use the proxy |                           |
 | `proxy`                        | ""                                                    | `string` - HTTP[S] proxy server for Rancher                                                                                                       |
-| `rancherImage`                 | "rancher/rancher"                                     | `string` - rancher image source                                                                                                                   |
-| `rancherImagePullPolicy`       | "IfNotPresent"                                        | `string` - Override imagePullPolicy for rancher server images - "Always", "Never", "IfNotPresent"                                                 |
-| `rancherImageTag`              | same as chart version                                 | `string` - rancher/rancher image tag                                                                                                              |
-| `replicas`                     | 3                                                     | `int` - Number of Rancher server replicas. Setting to -1 will dynamically choose 1, 2, or 3 based on the number of available nodes in the cluster.                                                                                                        |
+| `image.registry`               | ""                                                    | `string` - Override rancher image-specific registry, e.g, http://registry.example.com/                                                            |
+| `image.repository`             | "rancher/rancher"                                     | `string` - Rancher image source                                                                                                                   |
+| `image.pullPolicy`             | "IfNotPresent"                                        | `string` - Override imagePullPolicy for rancher server images - "Always", "Never", "IfNotPresent"                                                 |
+| `image.tag`                    | ""                                                    | `string` - Defaults to .Chart.appVersion for rancher/rancher image tag                                                                            |
+| `replicas`                     | 3                                                     | `int` - Number of Rancher server replicas. Setting to -1 will dynamically choose 1, 2, or 3 based on the number of available nodes in the cluster.|
 | `resources`                    | {}                                                    | `map` - rancher pod resource requests & limits                                                                                                    |
-| `systemDefaultRegistry`        | ""                                                    | `string` - private registry to be used for all system container images, e.g., http://registry.example.com/                   |
+| `systemDefaultRegistry`        | ""                                                    | `string` - private registry to be used for all system container images, e.g., http://registry.example.com/                                        |
 | `tls`                          | "ingress"                                             | `string` - See [External TLS Termination](#external-tls-termination) for details. - "ingress, external"                                           |
-| `useBundledSystemChart`        | `false`                                               | `bool` - select to use the system-charts packaged with Rancher server. This option is used for air gapped installations.  |
+| `useBundledSystemChart`        | `false`                                               | `bool` - select to use the system-charts packaged with Rancher server. This option is used for air gapped installations.                          |
 
 
 When using Rancher v2.12.0 and above, Rancher will use an audit logging controller that watches `AuditPolicy` CRs for configuring additional redactions, for more info see [API Audit Log](../../../how-to-guides/advanced-user-guides/enable-api-audit-log.md).
@@ -40043,16 +40245,12 @@ This option is only effective on the initial Rancher install. See [Issue 16522](
 
 To customize or use a different ingress with Rancher server you can set your own Ingress annotations.
 
+Please refer to the Traefik documentation for the full list of Ingress NGINX annotations that are [supported](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#annotations-support) and [unsupported](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#unsupported-annotations) by Traefik's kubernetesIngressNginx provider.
+
 Example on setting a custom certificate issuer:
 
 ```plain
 --set ingress.extraAnnotations.'cert-manager\.io/cluster-issuer'=issuer-name
-```
-
-Example on setting a static proxy header with `ingress.configurationSnippet`. This value is parsed like a template so variables can be used.
-
-```plain
---set ingress.configurationSnippet='more_set_input_headers X-Forwarded-Host {{ .Values.hostname }};'
 ```
 
 ### HTTP Proxy
@@ -40127,26 +40325,6 @@ If you are using a Private CA signed certificate (or if `agent-tls-mode` is set 
 
 Your load balancer must support long lived websocket connections and will need to insert proxy headers so Rancher can route links correctly.
 
-### Configuring Ingress for External TLS when Using NGINX v0.22
-
-In NGINX v0.22, the behavior of NGINX has [changed](https://github.com/kubernetes/ingress-nginx/blob/06efac9f0b6f8f84b553f58ccecf79dc42c75cc6/Changelog.md) regarding forwarding headers and external TLS termination. Therefore, in the scenario that you are using external TLS termination configuration with NGINX v0.22, you must enable the `use-forwarded-headers` option for ingress:
-
-For RKE2 installations, you can create a custom `rke2-ingress-nginx-config.yaml` file at `/var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml` containing this required setting to enable using forwarded headers with external TLS termination. Without this required setting applied, the external LB will continuously respond with redirect loops it receives from the ingress controller. (This can be created before or after rancher is installed, rke2 server agent will notice this addition and automatically apply it.)
-
-```yaml
----
-apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
-metadata:
-  name: rke2-ingress-nginx
-  namespace: kube-system
-spec:
-  valuesContent: |-
-    controller:
-      config:
-        use-forwarded-headers: "true"
-```
-
 ### Required Headers
 
 - `Host`
@@ -40163,69 +40341,6 @@ spec:
 ### Health Checks
 
 Rancher will respond `200` to health checks on the `/healthz` endpoint.
-
-### Example NGINX config
-
-This NGINX configuration is tested on NGINX 1.14.
-
-:::caution
-
-This NGINX configuration is only an example and may not suit your environment. For complete documentation, see [NGINX Load Balancing - HTTP Load Balancing](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/).
-
-:::
-
-- Replace `IP_NODE1`, `IP_NODE2` and `IP_NODE3` with the IP addresses of the nodes in your cluster.
-- Replace both occurrences of `FQDN` to the DNS name for Rancher.
-- Replace `/certs/fullchain.pem` and `/certs/privkey.pem` to the location of the server certificate and the server certificate key respectively.
-
-```
-worker_processes 4;
-worker_rlimit_nofile 40000;
-
-events {
-    worker_connections 8192;
-}
-
-http {
-    upstream rancher {
-        server IP_NODE_1:80;
-        server IP_NODE_2:80;
-        server IP_NODE_3:80;
-    }
-
-    map $http_upgrade $connection_upgrade {
-        default Upgrade;
-        ''      close;
-    }
-
-    server {
-        listen 443 ssl http2;
-        server_name FQDN;
-        ssl_certificate /certs/fullchain.pem;
-        ssl_certificate_key /certs/privkey.pem;
-
-        location / {
-            proxy_set_header Host $host;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header X-Forwarded-Port $server_port;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_pass http://rancher;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection $connection_upgrade;
-            # This allows the ability for the execute shell window to remain open for up to 15 minutes. Without this parameter, the default is 1 minute and will automatically close.
-            proxy_read_timeout 900s;
-            proxy_buffering off;
-        }
-    }
-
-    server {
-        listen 80;
-        server_name FQDN;
-        return 301 https://$server_name$request_uri;
-    }
-}
-```
 
 
 ---
@@ -40259,10 +40374,7 @@ Changing the default TLS settings depends on the chosen installation method.
 
 ## Running Rancher in a highly available Kubernetes cluster
 
-When you install Rancher inside of a Kubernetes cluster, TLS is offloaded at the cluster's ingress controller. The possible TLS settings depend on the used ingress controller:
-
-* nginx-ingress-controller (default for RKE2): [Default TLS Version and Ciphers](https://kubernetes.github.io/ingress-nginx/user-guide/tls/#default-tls-version-and-ciphers).
-* traefik (default for K3s): [TLS Options](https://doc.traefik.io/traefik/https/tls/#tls-options).
+When you install a Rancher managed Kubernetes cluster, TLS is offloaded at the cluster's ingress controller. Traefik is the default ingress for K3s and can be used with RKE2, refer to [TLS Options](https://doc.traefik.io/traefik/https/tls/#tls-options) for further information.
 
 ## Running Rancher in a single Docker container
 
@@ -40806,15 +40918,18 @@ When using the [AWS EC2 node driver](../../../how-to-guides/new-user-guides/laun
 | SSH             |   TCP    |     22      | 0.0.0.0/0 and ::/0     |  Inbound  |
 | HTTP            |   TCP    |     80      | 0.0.0.0/0 and ::/0     |  Inbound  |
 | Custom TCP Rule |   TCP    |     443     | 0.0.0.0/0 and ::/0     |  Inbound  |
+| Custom TCP Rule |   TCP    |    8443     | 0.0.0.0/0 and ::/0     |  Inbound  |
 | Custom TCP Rule |   TCP    |    2376     | 0.0.0.0/0 and ::/0     |  Inbound  |
 | Custom TCP Rule |   TCP    |    6443     | 0.0.0.0/0 and ::/0     |  Inbound  |
 | Custom TCP Rule |   TCP    |     179     | sg-xxx (rancher-nodes) |  Inbound  |
+| Custom TCP Rule |   TCP    |    5473     | sg-xxx (rancher-nodes) |  Inbound  |
 | Custom TCP Rule |   TCP    |    9345     | sg-xxx (rancher-nodes) |  Inbound  |
 | Custom TCP Rule |   TCP    |  2379-2380  | sg-xxx (rancher-nodes) |  Inbound  |
 | Custom TCP Rule |   TCP    | 10250-10252 | sg-xxx (rancher-nodes) |  Inbound  |
 | Custom TCP Rule |   TCP    |    10256    | sg-xxx (rancher-nodes) |  Inbound  |
 | Custom UDP Rule |   UDP    |    4789     | sg-xxx (rancher-nodes) |  Inbound  |
 | Custom UDP Rule |   UDP    |    8472     | sg-xxx (rancher-nodes) |  Inbound  |
+| Custom TCP Rule |   TCP    |    9796     | sg-xxx (rancher-nodes) |  Inbound  |
 | Custom TCP Rule |   TCP    | 30000-32767 | 0.0.0.0/0 and ::/0     |  Inbound  |
 | Custom UDP Rule |   UDP    | 30000-32767 | 0.0.0.0/0 and ::/0     |  Inbound  |
 | All traffic     |   All    |     All     | 0.0.0.0/0 and ::/0     | Outbound  |
@@ -41028,8 +41143,6 @@ title: 3. Install Rancher
 Now that you have a running RKE2/K3s cluster, you can install Rancher in it. For security reasons all traffic to Rancher must be encrypted with TLS. For this tutorial you are going to automatically issue a self-signed certificate through [cert-manager](https://cert-manager.io/). In a real-world use-case you will likely use Let's Encrypt or provide your own certificate.
 
 ### Install the Helm CLI
-
-<DeprecationHelm2 />
 
 Install the [Helm](https://helm.sh/docs/intro/install/) CLI on a host where you have a kubeconfig to access your Kubernetes cluster:
 
@@ -42972,12 +43085,12 @@ Placeholder | Description
     --namespace cattle-system \
     --set hostname=<RANCHER.YOURDOMAIN.COM> \
     --set certmanager.version=<CERTMANAGER_VERSION> \
-    --set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+    --set image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
     --set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
     --set useBundledSystemChart=true # Use the packaged Rancher system charts
 ```
 
-**Optional**: To install a specific Rancher version, set the `rancherImageTag` value, example: `--set rancherImageTag=v2.5.8`
+**Optional**: To install a specific Rancher version, set the `image.tag` value, example: `--set image.tag=v2.10.3`
 
 #### Option B: Certificates From Files Using Kubernetes Secrets
 
@@ -43000,7 +43113,7 @@ Install Rancher, declaring your chosen options. Use the reference table below to
    helm install rancher ./rancher-<VERSION>.tgz \
     --namespace cattle-system \
     --set hostname=<RANCHER.YOURDOMAIN.COM> \
-    --set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+    --set image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
     --set ingress.tls.source=secret \
     --set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
     --set useBundledSystemChart=true # Use the packaged Rancher system charts
@@ -43012,7 +43125,7 @@ If you are using a Private CA signed cert, add `--set privateCA=true` following 
    helm install rancher ./rancher-<VERSION>.tgz \
     --namespace cattle-system \
     --set hostname=<RANCHER.YOURDOMAIN.COM> \
-    --set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+    --set image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
     --set ingress.tls.source=secret \
     --set privateCA=true \
     --set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
@@ -43079,7 +43192,7 @@ If you will use ARM64 hosts, the registry must support manifests. As of April 20
 
 1. Go to our [releases page,](https://github.com/rancher/rancher/releases) find the Rancher v2.x.x release that you want to install, and click **Assets**. Note: Don't use releases marked `rc` or `Pre-release`, as they are not stable for production environments.
 
-2. From the release's **Assets** section, download the following files, which are required to install Rancher in an air gap environment:
+2. From the release's **Assets** section, download the following files, which are required to install Rancher in an air-gap environment:
 
 | Release File   | Description  |
 | ---------------- | -------------- |
@@ -43120,16 +43233,39 @@ In a Kubernetes Install, if you elect to use the Rancher default self-signed TLS
 
 ### 3. Save the images to your workstation
 
-1. Make `rancher-save-images.sh` an executable:
-   ```
+(Optional) Verify the image list before pulling:
+
+```bash
+wc -l rancher-images.txt
+head rancher-images.txt
+```
+
+1. Make `rancher-save-images.sh` executable:
+   ```bash
    chmod +x rancher-save-images.sh
    ```
 
 1. Run `rancher-save-images.sh` with the `rancher-images.txt` image list to create a tarball of all the required images:
-   ```plain
+   ```bash
    ./rancher-save-images.sh --image-list ./rancher-images.txt
    ```
-   **Result:** Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes. When the process completes, your current directory will output a tarball named `rancher-images.tar.gz`. Check that the output is in the directory.
+
+(Optional) Specify a custom output file:
+
+```bash
+./rancher-save-images.sh \
+  --image-list ./rancher-images.txt \
+  --images rancher-images-custom.tar.gz
+```
+
+**Result:** Docker begins pulling the images required for an air-gap installation. The process may take several minutes.
+
+1. Verify that the tarball was created:
+   ```bash
+   ls -lh rancher-images.tar.gz
+   ```
+
+If some images fail to pull, review the output and retry after resolving any issues.
 
 ### 4. Populate the private registry
 
@@ -43200,7 +43336,7 @@ Your registry must support manifests. As of April 2020, Amazon Elastic Container
    ./rancher-save-images.ps1
    ```
 
-   **Result:** Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes. When the process completes, your current directory will output a tarball named `rancher-windows-images.tar.gz`. Check that the output is in the directory.
+   **Result:** Docker begins pulling the images used for an air-gap install. Be patient. This process takes a few minutes. When the process completes, your current directory will output a tarball named `rancher-windows-images.tar.gz`. Check that the output is in the directory.
 
 <a name="windows-3"></a>
 
@@ -43310,7 +43446,7 @@ The workstation must have Docker 18.02+ in order to support manifests, which are
    ./rancher-save-images.sh --image-list ./rancher-images.txt
    ```
 
-**Result:** Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes. When the process completes, your current directory will output a tarball named `rancher-images.tar.gz`. Check that the output is in the directory.
+**Result:** Docker begins pulling the images used for an air-gap install. Be patient. This process takes a few minutes. When the process completes, your current directory will output a tarball named `rancher-images.tar.gz`. Check that the output is in the directory.
 
 <a name="linux-4"></a>
 
@@ -43385,7 +43521,7 @@ helm upgrade rancher ./rancher-<VERSION>.tgz \
 	--namespace cattle-system \
 	--set hostname=<RANCHER.YOURDOMAIN.COM> \
 	--set certmanager.version=<CERTMANAGER_VERSION> \
-	--set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+	--set image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
 	--set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
 	--set useBundledSystemChart=true # Use the packaged Rancher system charts
 ```
@@ -43400,7 +43536,7 @@ helm template rancher ./rancher-<VERSION>.tgz --output-dir . \
 	--namespace cattle-system \
 	--set hostname=<RANCHER.YOURDOMAIN.COM> \
 	--set certmanager.version=<CERTMANAGER_VERSION> \
-	--set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+	--set image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
 	--set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
 	--set useBundledSystemChart=true # Use the packaged Rancher system charts
 ```
@@ -43417,7 +43553,7 @@ kubectl -n cattle-system apply -R -f ./rancher
 helm upgrade rancher ./rancher-<VERSION>.tgz \
 	--namespace cattle-system \
 	--set hostname=<RANCHER.YOURDOMAIN.COM> \
-	--set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+	--set image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
 	--set ingress.tls.source=secret \
 	--set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
 	--set useBundledSystemChart=true # Use the packaged Rancher system charts
@@ -43429,7 +43565,7 @@ If you are using a Private CA signed cert, add `--set privateCA=true` following 
 helm upgrade rancher ./rancher-<VERSION>.tgz \
 	--namespace cattle-system \
 	--set hostname=<RANCHER.YOURDOMAIN.COM> \
-	--set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+	--set image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
 	--set ingress.tls.source=secret \
 	--set privateCA=true \
 	--set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
@@ -43907,12 +44043,6 @@ az group create --name rancher-rg --location eastus
 
 To create an AKS cluster, run the following command. Use a VM size that applies to your use case. Refer to [this article](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes) for available sizes and options. When choosing a Kubernetes version, be sure to first consult the [support matrix](https://rancher.com/support-matrix/) to find the highest version of Kubernetes that has been validated for your Rancher version.
 
-:::note
-
-If you're updating from an older version of Kubernetes, to Kubernetes v1.22 or above, you also need to [update](https://kubernetes.github.io/ingress-nginx/user-guide/k8s-122-migration/) ingress-nginx.
-
-:::
-
 ```
 az aks create \
   --resource-group rancher-rg \
@@ -43936,48 +44066,46 @@ This command merges your cluster's credentials into the existing kubeconfig and 
 
 ## 5. Install an Ingress
 
-The cluster needs an Ingress so that Rancher can be accessed from outside the cluster. Installing an Ingress requires allocating a public IP address. Ensure you have sufficient quota, otherwise it will fail to assign the IP address. Limits for public IP addresses are applicable at a regional level per subscription.
+The cluster needs an Ingress so that Rancher can be accessed from outside the cluster. Installing an Ingress requires allocating a public IP address. Ensure you have sufficient quota, otherwise it will fail to assign the IP address. Limits for public IP addresses are applicable at a regional level per subscription. You can use a managed ingress controller provided by Azure or a third-party ingress controller like Traefik.
 
-To make sure that you choose the correct Ingress-NGINX Helm chart, first find an `Ingress-NGINX version` that's compatible with your Kubernetes version in the [Kubernetes/ingress-nginx support table](https://github.com/kubernetes/ingress-nginx#supported-versions-table).
+:::warning
+It is not recommended to install a third-party ingress controller, like Traefik, if a managed ingress controller is already being used.
+:::
 
-Then, list the Helm charts available to you by running the following command:
+:::warning
+**Ingress-NGINX EOL:** The community `ingress-nginx` controller reaches End-of-Life (EOL) in March 2026. This page uses Traefik, which is the recommended migration path for Rancher environments. 
+:::
 
-```
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+Traefik includes a native Ingress NGINX provider. This allows you to migrate from NGINX without rewriting your existing Ingress objects, as Traefik will automatically interpret `nginx.ingress.kubernetes.io` annotations. If you are upgrading a cluster that is already using `ingress-nginx`, follow this [guide](https://doc.traefik.io/traefik/migrate/nginx-to-traefik/) for more information.
+
+To install Traefik (chart version 39.0.0) on a fresh cluster, run the following `helm` commands:
+```bash
+helm repo add traefik https://traefik.github.io/charts
 helm repo update
-helm search repo ingress-nginx -l
-```
-
-The `helm search` command's output contains an `APP VERSION` column. The versions under this column are equivalent to the `Ingress-NGINX version` you chose earlier. Using the app version, select a chart version that bundles an app compatible with your Kubernetes install. For example, if you have Kubernetes v1.24, you can select the v4.6.0 Helm chart, since Ingress-NGINX v1.7.0 comes bundled with that chart, and v1.7.0 is compatible with Kubernetes v1.24. When in doubt, select the most recent compatible version.
-
-Now that you know which Helm chart `version` you need, run the following command. It installs an `nginx-ingress-controller` with a Kubernetes load balancer service:
-
-```
-helm search repo ingress-nginx -l
 helm upgrade --install \
-  ingress-nginx ingress-nginx/ingress-nginx \
-  --namespace ingress-nginx \
-  --set controller.service.type=LoadBalancer \
-  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz \
-  --set controller.service.externalTrafficPolicy=Local \
-  --version 4.6.0 \
-  --create-namespace
+  traefik traefik/traefik \
+  --namespace traefik \
+  --version 39.0.0 \
+  --create-namespace \
+  --set service.type=LoadBalancer \
+  --set ping.enabled=true \
+  --set service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/ping
 ```
 
 ## 6. Get Load Balancer IP
 
 To get the address of the load balancer, run:
 
-```
-kubectl get service ingress-nginx-controller --namespace=ingress-nginx
+```bash
+kubectl get service traefik --namespace=traefik
 ```
 
 The result should look similar to the following:
 
-```
+```bash
 NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)
  AGE
-ingress-nginx-controller   LoadBalancer   10.0.116.18    40.31.180.83   80:31229/TCP,443:31050/TCP
+traefik  LoadBalancer   10.0.116.18    40.31.180.83   80:31229/TCP,443:31050/TCP
  67s
 ```
 
@@ -44000,7 +44128,7 @@ Use that DNS name from the previous step as the Rancher server URL when you inst
 When installing Rancher on top of this setup, you will also need to pass the value below into the Rancher Helm install command in order to set the name of the ingress controller to be used with Rancher's ingress resource:
 
 ```
---set ingress.ingressClassName=nginx
+--set ingress.ingressClassName=traefik
 ```
 
 Refer [here for the Helm install command](install-upgrade-on-a-kubernetes-cluster.md#5-install-rancher-with-helm-and-your-chosen-certificate-option) for your chosen certificate option.
@@ -44064,8 +44192,6 @@ Then enter the following values:
 
 To create an EKS cluster, run the following command. Use the AWS region that applies to your use case. When choosing a Kubernetes version, be sure to first consult the [support matrix](https://rancher.com/support-matrix/) to find the highest version of Kubernetes that has been validated for your Rancher version.
 
-**Note:** If you're updating from an older version of Kubernetes, to Kubernetes v1.22 or above, you also need to [update](https://kubernetes.github.io/ingress-nginx/user-guide/k8s-122-migration/) ingress-nginx.
-
 ```
 eksctl create cluster \
   --name rancher-server \
@@ -44100,46 +44226,48 @@ rancher-server-cluster		us-west-2	True
 
 ### 5. Install an Ingress
 
-The cluster needs an Ingress so that Rancher can be accessed from outside the cluster.
+The cluster needs an Ingress so that Rancher can be accessed from outside the cluster. Installing an Ingress requires allocating a public IP address. Ensure you have sufficient quota, otherwise it will fail to assign the IP address. Limits for public IP addresses are applicable at a regional level per subscription. You can use a managed ingress controller provided by AWS (ALB) or a third-party ingress controller like Traefik.
 
-To make sure that you choose the correct Ingress-NGINX Helm chart, first find an `Ingress-NGINX version` that's compatible with your Kubernetes version in the [Kubernetes/ingress-nginx support table](https://github.com/kubernetes/ingress-nginx#supported-versions-table).
+:::warning
+It is not recommended to install a third-party ingress controller, like Traefik, if a managed ingress controller (ALB) is already being used.
+:::
 
-Then, list the Helm charts available to you by running the following command:
 
-```
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+:::warning
+**Ingress-NGINX EOL:** The community `ingress-nginx` controller reaches End-of-Life (EOL) in March 2026. This page uses Traefik, which is the recommended migration path for Rancher environments. 
+:::
+
+Traefik includes a native Ingress NGINX provider. This allows you to migrate from NGINX without rewriting your existing Ingress objects, as Traefik will automatically interpret `nginx.ingress.kubernetes.io` annotations. If you are upgrading a cluster that is already using `ingress-nginx`, follow this [guide](https://doc.traefik.io/traefik/migrate/nginx-to-traefik/) for more information.
+
+To install Traefik (chart version 39.0.0) on a fresh cluster, run the following `helm` commands:
+```bash
+helm repo add traefik https://traefik.github.io/charts
 helm repo update
-helm search repo ingress-nginx -l
-```
-
-The `helm search` command's output contains an `APP VERSION` column. The versions under this column are equivalent to the `Ingress-NGINX version` you chose earlier. Using the app version, select a chart version that bundles an app compatible with your Kubernetes install. For example, if you have Kubernetes v1.23, you can select the v4.6.0 Helm chart, since Ingress-NGINX v1.7.0 comes bundled with that chart, and v1.7.0 is compatible with Kubernetes v1.23. When in doubt, select the most recent compatible version.
-
-Now that you know which Helm chart `version` you need, run the following command. It installs an `nginx-ingress-controller` with a Kubernetes load balancer service:
-
-```
 helm upgrade --install \
-  ingress-nginx ingress-nginx/ingress-nginx \
-  --namespace ingress-nginx \
-  --set controller.service.type=LoadBalancer \
-  --version 4.6.0 \
-  --create-namespace
+  traefik traefik/traefik \
+  --namespace traefik \
+  --version 39.0.0 \
+  --create-namespace \
+  --set service.type=LoadBalancer \
+  --set ping.enabled=true \
 ```
+
 
 ### 6. Get Load Balancer IP
 
 To get the address of the load balancer, run:
 
-```
-kubectl get service ingress-nginx-controller --namespace=ingress-nginx
+```bash
+kubectl get service traefik --namespace=traefik
 ```
 
 The result should look similar to the following:
 
-```
-NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP                                                              PORT(S)
+```bash
+NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)
  AGE
-ingress-nginx-controller   LoadBalancer   10.100.90.18   a904a952c73bf4f668a17c46ac7c56ab-962521486.us-west-2.elb.amazonaws.com   80:31229/TCP,443:31050/TCP
- 27m
+traefik  LoadBalancer   10.100.90.18   a904a952c73bf4f668a17c46ac7c56ab-962521486.us-west-2.elb.amazonaws.com   80:31229/TCP,443:31050/TCP
+ 67s
 ```
 
 Save the `EXTERNAL-IP`.
@@ -44161,7 +44289,7 @@ Use that DNS name from the previous step as the Rancher server URL when you inst
 When installing Rancher on top of this setup, you will also need to pass the value below into the Rancher Helm install command in order to set the name of the ingress controller to be used with Rancher's ingress resource:
 
 ```
---set ingress.ingressClassName=nginx
+--set ingress.ingressClassName=traefik
 ```
 
 Refer [here for the Helm install command](install-upgrade-on-a-kubernetes-cluster.md#5-install-rancher-with-helm-and-your-chosen-certificate-option) for your chosen certificate option.
@@ -44297,7 +44425,6 @@ When choosing a Kubernetes version, be sure to first consult the [support matrix
 
 To successfully create a GKE cluster with Rancher, your GKE must be in Standard mode. GKE has two modes of operation when creating a Kubernetes cluster, Autopilot and Standard mode. The cluster configuration for Autopilot mode has restrictions on editing the kube-system namespace. However, Rancher needs to create resources in the kube-system namespace during installation. As a result, you will not be able to install Rancher on a GKE cluster created in Autopilot mode. For more information about the difference between GKE Autopilot mode and Standard mode, visit [Compare GKE Autopilot and Standard.](https://cloud.google.com/kubernetes-engine/docs/resources/autopilot-standard-feature-comparison)
 
-**Note:** If you're updating from an older version of Kubernetes, to Kubernetes v1.22 or above, you also need to [update](https://kubernetes.github.io/ingress-nginx/user-guide/k8s-122-migration/) ingress-nginx.
 
 ```
 gcloud container clusters create cluster-name --num-nodes=3 --cluster-version=<VERSION>
@@ -44313,36 +44440,48 @@ gcloud container clusters get-credentials cluster-name
 
 This command configures `kubectl` to use the cluster you created.
 
+
 ## 7. Install an Ingress
 
-The cluster needs an Ingress so that Rancher can be accessed from outside the cluster.
+The cluster needs an Ingress so that Rancher can be accessed from outside the cluster. Installing an Ingress requires allocating a public IP address. Ensure you have sufficient quota, otherwise it will fail to assign the IP address. Limits for public IP addresses are applicable at a regional level per subscription. You can use a managed ingress controller provided by GCP or a third-party ingress controller like Traefik.
 
-The following command installs an `nginx-ingress-controller` with a LoadBalancer service:
+:::warning
+It is not recommended to install a third-party ingress controller, like Traefik, if a managed ingress controller is already being used.
+:::
 
-```
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+:::warning
+**Ingress-NGINX EOL:** The community `ingress-nginx` controller reaches End-of-Life (EOL) in March 2026. This page uses Traefik, which is the recommended migration path for Rancher environments. 
+:::
+
+Traefik includes a native Ingress NGINX provider. This allows you to migrate from NGINX without rewriting your existing Ingress objects, as Traefik will automatically interpret `nginx.ingress.kubernetes.io` annotations. If you are upgrading a cluster that is already using `ingress-nginx`, follow this [guide](https://doc.traefik.io/traefik/migrate/nginx-to-traefik/) for more information.
+
+To install Traefik (chart version 39.0.0) on a fresh cluster, run the following `helm` commands:
+```bash
+helm repo add traefik https://traefik.github.io/charts
 helm repo update
 helm upgrade --install \
-  ingress-nginx ingress-nginx/ingress-nginx \
-  --namespace ingress-nginx \
-  --set controller.service.type=LoadBalancer \
-  --version 4.0.18 \
-  --create-namespace
+  traefik traefik/traefik \
+  --namespace traefik \
+  --version 39.0.0 \
+  --create-namespace \
+  --set service.type=LoadBalancer \
+  --set ping.enabled=true \
 ```
 
-## 8. Get the Load Balancer IP
+
+## 8. Get Load Balancer IP
 
 To get the address of the load balancer, run:
 
-```
-kubectl get service ingress-nginx-controller --namespace=ingress-nginx
+```bash
+kubectl get service traefik --namespace=traefik
 ```
 
 The result should look similar to the following:
 
 ```
 NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
-ingress-nginx-controller   LoadBalancer   10.3.244.156   35.233.206.34   80:31876/TCP,443:32497/TCP   81s
+traefik   LoadBalancer   10.3.244.156   35.233.206.34   80:31876/TCP,443:32497/TCP    81s
 ```
 
 Save the `EXTERNAL-IP`.
@@ -44364,7 +44503,7 @@ Use the DNS name from the previous step as the Rancher server URL when you insta
 When installing Rancher on top of this setup, you will also need to set the name of the ingress controller to be used with Rancher's ingress resource:
 
 ```
---set ingress.ingressClassName=nginx
+--set ingress.ingressClassName=traefik
 ```
 
 Refer [here for the Helm install command](install-upgrade-on-a-kubernetes-cluster.md#5-install-rancher-with-helm-and-your-chosen-certificate-option) for your chosen certificate option.
@@ -44408,10 +44547,15 @@ Follow the instructions from this page when:
 Alternative steps need to be performed for rollbacks in the following scenarios:
 - Rolling back from v2.6.4 and later to an earlier version of v2.6.x.
 - Rolling back from v2.7.7 and later to an earlier version of v2.7.x.
+- Rolling back from v2.14.0 and later to an earlier version of v2.13.x.
 
 In Rancher v2.6.4, the cluster-api module is upgraded from v0.4.4 to v1.0.2. The cluster-api v1.0.2, in turn, upgrades the apiVersions of its Custom Resource Definitions (CRDs) from `cluster.x-k8s.io/v1alpha4` to `cluster.x-k8s.io/v1beta1`. Custom Resources (CRs) that use the older apiVersion (v1alpha4) are incompatible with v1beta1, which  causes rollbacks to fail when you attempt to move from Rancher v2.6.4 to any previous version of Rancher v2.6.x.
 
-In Rancher v2.7.7, the app `rancher-provisioning-capi` is installed on the upstream (local) cluster automatically as a replacement for the embedded cluster-api controllers. Conflicts and unexpected errors will occur if the upstream cluster contains both the app, and Rancher v2.7.6 and earlier. Therefore, alternative steps are needed if you attempt to move from Rancher v2.7.7 to any previous version of Rancher v2.7.x.
+In Rancher v2.7.7 through v2.13.x, the app `rancher-provisioning-capi` was installed on the upstream (local) cluster automatically as a replacement for the embedded cluster-api controllers. Conflicts and unexpected errors would occur if the upstream cluster contained both the app, and Rancher v2.7.6 and earlier. Therefore, alternative steps are needed if you attempt to move from Rancher v2.7.7-v2.13.x to any previous version of Rancher v2.7.x.
+
+In Rancher v2.13.0, Rancher Turtles became the default manager for CAPI resources, replacing the previously embedded cluster-api controllers, and in Rancher v2.14.0 the embedded cluster-api was removed entirely. As a result, if you roll back from Rancher v2.14.0 and later to an earlier version of Rancher v2.13.x and do not intend to continue using Rancher Turtles to manage CAPI resources, additional manual steps may be required to use the embedded cluster-api controllers. From Rancher v2.14.0 onward, Rancher Turtles is the only supported manager for CAPI resources.
+
+In Rancher v2.14.0, the cluster-api module is upgraded from v1.10.6 to v1.12.2. The cluster-api v1.12.2, in turn, upgrades the apiVersions of its Custom Resource Definitions (CRDs) from `cluster.x-k8s.io/v1beta1` to `cluster.x-k8s.io/v1beta2`. Rancher backup files include Cluster API CRDs. When restoring backup data from Rancher v2.13.x to a local cluster after upgrading to v2.14.0, the Rancher Backup application first restores the v1beta1 CRDs. This fails because the v1beta2 version cannot be removed from the CRDs while v1beta2 custom resources are present in the cluster.
 
 ### Step 1: Clean Up the Upstream (Local) Cluster
 
@@ -44560,7 +44704,7 @@ This section describes how to troubleshoot an installation of Rancher on a Kuber
 Most of the troubleshooting will be done on objects in these 3 namespaces.
 
 - `cattle-system` - `rancher` deployment and pods.
-- `ingress-nginx` - Ingress controller pods and services.
+- `traefik` - Ingress controller pods and services.
 - `cert-manager` - `cert-manager` pods.
 
 ### "default backend - 404"
@@ -44670,10 +44814,10 @@ kubectl -n cattle-system describe ingress
 
 If its ready and the SSL is still not working you may have a malformed cert or secret.
 
-Check the nginx-ingress-controller logs. Because the nginx-ingress-controller has multiple containers in its pod you will need to specify the name of the container.
+Check the `traefik` logs.
 
 ```
-kubectl -n ingress-nginx logs -f nginx-ingress-controller-rfjrq nginx-ingress-controller
+kubectl logs -n traefik traefik-6b94b8b688-bngw2
 ...
 W0705 23:04:58.240571       7 backend_ssl.go:49] error obtaining PEM from secret cattle-system/tls-rancher-ingress: error retrieving secret cattle-system/tls-rancher-ingress: secret cattle-system/tls-rancher-ingress was not found
 ```
@@ -44694,11 +44838,6 @@ Install cert-manager and try installing Rancher again.
 The most common cause of this issue is port 8472/UDP is not open between the nodes. Check your local firewall, network routing or security groups.
 
 Once the network issue is resolved, the `canal` pods should timeout and restart to establish their connections.
-
-### nginx-ingress-controller Pods show RESTARTS
-
-The most common cause of this issue is the `canal` pods have failed to establish the overlay network. See [canal Pods show READY `2/3`](#canal-pods-show-ready-23) for troubleshooting.
-
 
 ### Failed to dial to /var/run/docker.sock: ssh: rejected: administratively prohibited (open failed)
 
@@ -44815,10 +44954,6 @@ The `CATTLE_AGENT_IMAGE` override is intended only as a temporary workaround for
 
 The upgrade instructions assume you are using Helm 3.
 
-<DeprecationHelm2 />
-
-For migration of installs started with Helm 2, refer to the official [Helm 2 to 3 migration docs.](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/) The [Helm 2 upgrade page here](https://github.com/rancher/rancher-docs/tree/main/archived_docs/en/version-2.0-2.4/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades/helm2.md) provides a copy of the older upgrade instructions that used Helm 2, and it is intended to be used if upgrading to Helm 3 is not feasible.
-
 ### For air-gapped installs: Populate private registry
 
 For [air-gapped installs only,](../other-installation-methods/air-gapped-helm-cli-install/air-gapped-helm-cli-install.md) collect and populate images for the new Rancher server version. Follow the guide to [populate your private registry](../other-installation-methods/air-gapped-helm-cli-install/publish-images.md) with the images for the Rancher version that you want to upgrade to.
@@ -44889,8 +45024,21 @@ You'll use the backup as a restore point if something goes wrong during upgrade.
     ```plain
     helm fetch rancher-<CHART_REPO>/rancher --version=2.6.8
     ```
+### 3. Review Rancher Feature Chart Versions Before Upgrade
 
-### 3. Upgrade Rancher
+Rancher feature charts follow specific release lines that align with Rancher versions. Major versions of feature charts correspond to Rancher minor versions and follow a defined versioning scheme.
+
+Before upgrading Rancher, review any installed Rancher feature charts and upgrade them to the latest available version within their current chart release line. This helps ensure compatibility and avoids potential issues during or after the Rancher upgrade.
+
+To review installed feature charts:
+
+1. In the Rancher UI, go to **Apps & Marketplace**.
+2. Select **Installed Apps**.
+3. Review the chart versions and upgrade to the latest patch release within the same chart major version if needed.
+
+For more information, see the [Helm Charts in Rancher – Versioning Scheme](../../../how-to-guides/new-user-guides/helm-charts-in-rancher/helm-charts-in-rancher.md#versioning-scheme).
+
+### 4. Upgrade Rancher
 
 This section describes how to upgrade normal (Internet-connected) or air-gapped installations of Rancher with Helm.
 
@@ -44975,17 +45123,9 @@ Alternatively, it's possible to export the current values to a file and referenc
       --version=2.6.8
     ```
 
-### 4. Verify the Upgrade
+### 5. Verify the Upgrade
 
 Log into Rancher to confirm that the upgrade succeeded.
-
-:::tip
-
-Having network issues following upgrade?
-
-See [Restoring Cluster Networking](https://github.com/rancher/rancher-docs/tree/main/archived_docs/en/version-2.0-2.4/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades/namespace-migration.md).
-
-:::
 
 ## Known Upgrade Issues
 
@@ -45062,7 +45202,7 @@ The commands/steps listed on this page can be used to check name resolution issu
 
 Make sure you configured the correct kubeconfig (for example, `export KUBECONFIG=$PWD/kube_config_cluster.yml` for Rancher HA) or are using the embedded kubectl via the UI.
 
-Before running the DNS checks, check the [default DNS provider](../../reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration.md#default-dns-provider) for your cluster and make sure that [the overlay network is functioning correctly](networking.md#check-if-overlay-network-is-functioning-correctly) as this can also be the reason why DNS resolution (partly) fails.
+Before running the DNS checks, make sure that [the overlay network is functioning correctly](networking.md#check-if-overlay-network-is-functioning-correctly) for your DNS provider as this can also be the reason why DNS resolution (partly) fails.
 
 ## Check if DNS pods are running
 
@@ -45255,7 +45395,7 @@ As the `kubelet` is running inside a container, the path for files located in `/
 
 :::
 
-See [Editing Cluster as YAML](../../reference-guides/cluster-configuration/rancher-server-configuration/rke1-cluster-configuration.md#editing-clusters-with-yaml) how to apply this change. When the provisioning of the cluster has finished, you have to remove the kube-dns pod to activate the new setting in the pod:
+See Editing Cluster as YAML how to apply this change. When the provisioning of the cluster has finished, you have to remove the kube-dns pod to activate the new setting in the pod:
 
 ```
 kubectl delete pods -n kube-system -l k8s-app=kube-dns
@@ -45398,22 +45538,22 @@ kubectl -n kube-system get endpoints kube-scheduler -o jsonpath='{.metadata.anno
 
 ## Ingress Controller
 
-The default Ingress Controller is NGINX and is deployed as a DaemonSet in the `ingress-nginx` namespace. The pods are only scheduled to nodes with the `worker` role.
+The default Ingress Controller is Traefik and is deployed as a DaemonSet in the `traefik` namespace. The pods are only scheduled to nodes with the `worker` role.
 
 Check if the pods are running on all nodes:
 
 ```
-kubectl -n ingress-nginx get pods -o wide
+kubectl -n traefik get pods -o wide
 ```
 
 Example output:
 
 ```
-kubectl -n ingress-nginx get pods -o wide
+kubectl -n traefik get pods -o wide
 NAME                                    READY     STATUS    RESTARTS   AGE       IP               NODE
 default-http-backend-797c5bc547-kwwlq   1/1       Running   0          17m       x.x.x.x          worker-1
-nginx-ingress-controller-4qd64          1/1       Running   0          14m       x.x.x.x          worker-1
-nginx-ingress-controller-8wxhm          1/1       Running   0          13m       x.x.x.x          worker-0
+traefik-4qd64                           1/1       Running   0          14m       x.x.x.x          worker-1
+traefik-8wxhm                           1/1       Running   0          13m       x.x.x.x          worker-0
 ```
 
 If a pod is unable to run (Status is not **Running**, Ready status is not showing `1/1` or you see a high count of Restarts), check the pod details, logs and namespace events.
@@ -45421,27 +45561,27 @@ If a pod is unable to run (Status is not **Running**, Ready status is not showin
 ### Pod details
 
 ```
-kubectl -n ingress-nginx describe pods -l app=ingress-nginx
+kubectl -n traefik describe pods -l app=traefik
 ```
 
 ### Pod container logs
 
-The below command can show the logs of all the pods labeled "app=ingress-nginx", but it will display only 10 lines of log because of the restrictions of the `kubectl logs` command. Refer to `--tail` of `kubectl logs -h` for more information.
+The below command can show the logs of all the pods labeled "app=traefik", but it will display only 10 lines of log because of the restrictions of the `kubectl logs` command. Refer to `--tail` of `kubectl logs -h` for more information.
 
 ```
-kubectl -n ingress-nginx logs -l app=ingress-nginx
+kubectl -n traefik logs -l app=traefik
 ```
 
 If the full log is needed, specify the pod name in the trailing command:
 
 ```
-kubectl -n ingress-nginx logs <pod name>
+kubectl -n traefik logs <pod name>
 ```
 
 ### Namespace events
 
 ```
-kubectl -n ingress-nginx get events
+kubectl -n traefik get events
 ```
 
 ### Debug logging
@@ -45449,7 +45589,7 @@ kubectl -n ingress-nginx get events
 To enable debug logging:
 
 ```
-kubectl -n ingress-nginx patch ds nginx-ingress-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--v=5"}]'
+kubectl -n traefik patch ds traefik --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--v=5"}]'
 ```
 
 ### Check configuration
@@ -45457,7 +45597,7 @@ kubectl -n ingress-nginx patch ds nginx-ingress-controller --type='json' -p='[{"
 Retrieve generated configuration in each pod:
 
 ```
-kubectl -n ingress-nginx get pods -l app=ingress-nginx --no-headers -o custom-columns=.NAME:.metadata.name | while read pod; do kubectl -n ingress-nginx exec $pod -- cat /etc/nginx/nginx.conf; done
+kubectl -n traefik get pods -l app=traefik --no-headers -o custom-columns=.NAME:.metadata.name | while read pod; do kubectl -n traefik exec $pod -- cat /etc/nginx/nginx.conf; done
 ```
 
 ## Rancher agents
@@ -45871,7 +46011,7 @@ rancher   rancher.yourdomain.com   x.x.x.x,x.x.x.x,x.x.x.x   80, 443   2m
 When accessing your configured Rancher FQDN does not show you the UI, check the ingress controller logging to see what happens when you try to access Rancher:
 
 ```
-kubectl -n ingress-nginx logs -l app=ingress-nginx
+kubectl -n traefik logs -l app=traefik
 ```
 
 ## Leader Election
@@ -46061,31 +46201,55 @@ title: Troubleshooting Controlplane Nodes
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/troubleshooting/kubernetes-components/troubleshooting-controlplane-nodes"/>
 </head>
 
-This section applies to nodes with the `controlplane` role.
+This section applies to nodes with the `controlplane` role in RKE2 and K3s clusters.
 
-## Check if the Controlplane Containers are Running
+## Prerequisites
 
-There are three specific containers launched on nodes with the `controlplane` role:
+As RKE2 and K3s rely on `containerd` as the container runtime, `crictl` replaces Docker for container management. Before proceeding with the troubleshooting commands, configure your environment by exporting the following variables:
+
+### RKE2
+
+```bash
+export PATH=$PATH:/var/lib/rancher/rke2/bin/
+export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
+```
+
+### K3s
+
+```bash
+export PATH=$PATH:/usr/local/bin
+export CRI_CONFIG_FILE=/var/lib/rancher/k3s/agent/etc/crictl.yaml
+```
+
+## Check if the Controlplane Components are Running
+
+**RKE2**: There are three specific containers launched on nodes with the `controlplane` role:
 
 * `kube-apiserver`
 * `kube-controller-manager`
 * `kube-scheduler`
 
-The containers should have status **Up**. The duration shown after **Up** is the time the container has been running.
+The containers should have state **Running**. You can check this using `crictl`:
 
-```
-docker ps -a -f=name='kube-apiserver|kube-controller-manager|kube-scheduler'
+```bash
+crictl ps | grep -E 'kube-apiserver|kube-controller-manager|kube-scheduler'
 ```
 
 Example output:
 ```
-CONTAINER ID        IMAGE                                COMMAND                  CREATED             STATUS              PORTS               NAMES
-26c7159abbcc        rancher/hyperkube:v1.11.5-rancher1   "/opt/rke-tools/en..."   3 hours ago         Up 3 hours                              kube-apiserver
-f3d287ca4549        rancher/hyperkube:v1.11.5-rancher1   "/opt/rke-tools/en..."   3 hours ago         Up 3 hours                              kube-scheduler
-bdf3898b8063        rancher/hyperkube:v1.11.5-rancher1   "/opt/rke-tools/en..."   3 hours ago         Up 3 hours                              kube-controller-manager
+CONTAINER           IMAGE               CREATED             STATE               NAME                            ATTEMPT             POD ID              POD                                     NAMESPACE
+deb8a96948594       138b1e685e151       11 days ago         Running             kube-controller-manager         0                   0996426295dc5       kube-controller-manager                 kube-system
+f5abb4c7846e4       138b1e685e151       11 days ago         Running             kube-scheduler                  0                   80cd9f30af0be       kube-scheduler                          kube-system
+ecd8a6991c22a       138b1e685e151       11 days ago         Running             kube-apiserver                  0                   58e042fabe78c       kube-apiserver                          kube-system
 ```
 
-## Controlplane Container Logging
+**K3s**: These components run as embedded processes within the K3s service. They do not run as separate containers, so their status is tied to the `k3s` systemd service:
+
+```bash
+systemctl status k3s
+```
+
+## Controlplane Logging
 
 :::note
 
@@ -46093,20 +46257,34 @@ If you added multiple nodes with the `controlplane` role, both `kube-controller-
 
 :::
 
-The logging of the containers can contain information on what the problem could be.
+The logs can contain information on what the problem could be.
 
+**RKE2**:
+```bash
+crictl logs $(crictl ps --name kube-apiserver -q)
+crictl logs $(crictl ps --name kube-controller-manager -q)
+crictl logs $(crictl ps --name kube-scheduler -q)
 ```
-docker logs kube-apiserver
-docker logs kube-controller-manager
-docker logs kube-scheduler
+
+**K3s**:
+```bash
+journalctl -u k3s | grep -i "kube-apiserver"
+journalctl -u k3s | grep -i "kube-controller-manager"
+journalctl -u k3s | grep -i "kube-scheduler"
 ```
 
-## RKE2 Server Logging
+## RKE2/K3s Server Logging
 
-If Rancher provisions an RKE2 cluster that can't communicate with Rancher, you can run this command on a server node in the downstream cluster to get the RKE2 server logs:
+If Rancher provisions an RKE2 or K3s cluster that can't communicate with Rancher, you can run this command on a server node in the downstream cluster to get the server logs:
 
-```
+**RKE2**:
+```bash
 journalctl -u rke2-server -f
+```
+
+**K3s**:
+```bash
+journalctl -u k3s -f
 ```
 
 ---
@@ -46409,6 +46587,14 @@ title: Troubleshooting nginx-proxy
 <head>
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/troubleshooting/kubernetes-components/troubleshooting-nginx-proxy"/>
 </head>
+
+:::caution
+
+The `nginx-proxy` container is an RKE1-specific component. If you are using RKE2 or K3s, this container is not deployed, as load balancing to the API servers is handled internally by a client-side load balancer within the agent process itself.
+
+Additionally, please note that RKE1 has reached its [End of Life (EOL)](https://support.scc.suse.com/s/kb/RKE-EOL-what-when-why?language=en_US). Therefore, the information on this page is considered deprecated.
+
+:::
 
 The `nginx-proxy` container is deployed on every node that does not have the `controlplane` role. It provides access to all the nodes with the `controlplane` role by dynamically generating the NGINX configuration based on available nodes with the `controlplane` role.
 
