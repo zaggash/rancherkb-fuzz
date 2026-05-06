@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -2056,7 +2056,7 @@
   <span class="md-ellipsis">
     
   
-    How to confirm a version upgrade of Rancher v2.x is completed successfully
+    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
   
 
     
@@ -4464,7 +4464,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How do I edit my cluster using RKE Templates?
+    How do I edit or upgrade clusters created via RKE Templates?
   
 
     
@@ -15177,6 +15177,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../000022186/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rolling back from Rancher v2.13.0 to v2.12.3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000022194/" class="md-nav__link">
         
   
@@ -16068,7 +16096,10 @@
 <h1 id="rke2-certificate-rotation-failing-on-windows-worker-nodes">RKE2 certificate rotation failing on Windows worker nodes</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/RKE2-certificate-rotation-failing-on-Windows-worker-nodes">000021805</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>Rancher &lt; v2.9.8 and Rancher v2.10 &lt; v2.10.4</p>
+<ul>
+<li>Rancher &lt; v2.9.8</li>
+<li>Rancher v2.10 &lt; v2.10.4</li>
+</ul>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>The cluster is stuck in an Updating state, with a status message of the format "waiting for [rke2-win-pnm94-pqhb5] certificate rotation", after the execution of <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/rotate-certificates#certificate-rotation">Certification Rotation,</a> waiting for the certificates to be rotated in Windows nodes.</p>
 <p>The rancher-wins service (rancher-system-agent) on the affected Windows node(s) fails with the error: " <strong>{error executing instruction 0: exec:/bin/sh":  executable file not found in %PATH%}</strong></p>

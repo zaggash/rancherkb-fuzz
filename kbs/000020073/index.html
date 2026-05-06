@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    "ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+    [JP]"ERROR: XFS filesystem at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
   
 
     
@@ -2005,23 +2005,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Environment">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pre-requisites
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2033,23 +2016,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Task
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2060,34 +2026,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#resolution_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Resolution
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Further reading
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2198,7 +2136,7 @@
   <span class="md-ellipsis">
     
   
-    How to confirm a version upgrade of Rancher v2.x is completed successfully
+    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
   
 
     
@@ -4606,7 +4544,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How do I edit my cluster using RKE Templates?
+    How do I edit or upgrade clusters created via RKE Templates?
   
 
     
@@ -15239,6 +15177,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../000022186/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rolling back from Rancher v2.13.0 to v2.12.3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../000022194/" class="md-nav__link">
         
   
@@ -16086,23 +16052,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Environment">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pre-requisites
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -16114,23 +16063,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Task
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -16141,34 +16073,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Resolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#resolution_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Resolution
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Further reading
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -16192,32 +16096,22 @@
 <h1 id="how-to-create-a-custom-project-rbac-role-to-grant-log-access-and-exec-permission-on-pods-in-a-rancher-v2x-managed-cluster">How to create a custom Project RBAC role to grant log access and exec permission on Pods, in a Rancher v2.x managed cluster</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360050943432">000020073</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
-<li>A Rancher v2.x managed Kubernetes cluster</li>
+<li>A Rancher v2.6+ managed Kubernetes cluster</li>
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
-<h4 id="task">Task</h4>
 <p>This article details how to create a custom Project RBAC role to grant log access and exec permission on Pods, in a Rancher v2.x managed Kubernetes cluster.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<h4 id="resolution_1">Resolution</h4>
-<p>In Rancher v2.x you can create a custom Project Role that provides the permissions to enable a user to view Pods, Pod logs and to exec into Pods. You can then grant this role to users on Projects to provide them this access where necessary.<br />
-</p>
-<p>Pod Reader Permissions in Rancher UI<br />
-</p>
+<p>In Rancher v2.x you can create a <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/custom-roles#creating-a-custom-role">custom Project Role</a> that provides the permissions to enable a user to view Pods, Pod logs and to exec into Pods. You can then grant this role to users on Projects to provide them this access where necessary.</p>
 <ol>
-<li>Navigate to Users &amp; Authentication &gt; Roles.</li>
-<li>From the Projects tab, select Add Project Role.</li>
-<li>Provide a name for the role.</li>
-<li>Under Grant Resources, select Add Resource and fill in the information for each of the following:</li>
+<li>Navigate to <strong>Users &amp; Authentication</strong> &gt; <strong>Role Templates</strong>.</li>
+<li>Click on the <strong>Project/Namespaces</strong> tab.</li>
+<li>Click <strong>Create Project/Namespaces Role</strong>.</li>
+<li>Provide a <strong>Name</strong> for the role.</li>
+<li>Under <strong>Grant Resources</strong>, select <strong>Add Resource</strong> and fill in the information for each of the following:</li>
 </ol>
-<p>Permission(s)ResourceGet, Createpods/execGet, ListpodsGet, Listpods/log
-5. Select Create at the bottom.</p>
-<h4 id="further-reading">Further reading</h4>
-<ul>
-<li><a href="https://rancher.com/docs/rancher/v2.x/en/project-admin">Rancher Docs: Project Administration</a></li>
-<li><a href="https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/cluster-project-roles/#defining-custom-roles">Rancher Docs: Cluster and Project Roles - Defining Custom Roles</a></li>
-</ul>
+<p>VerbsResourceGet, Createpods/execGet, ListpodsGet, Listpods/log
+6. Click <strong>Create</strong> at the bottom.</p>
 
 
 
