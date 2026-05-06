@@ -2290,27 +2290,27 @@ weight: 1
 
 You may manually install these components by executing the following steps.
 
-
 > **Prerequisite**
 >
-> Please install the same release version of snapshot CRDs and snapshot controller to ensure that the CRD version is compatible with the snapshot controller.
+> Please install the snapshot CRDs and snapshot controller from the same release version to ensure that the CRD version is compatible with the controller. You can refer to the external snapshotter version `image.csi.snapshotter.tag` listed in [Helm Values](../../../references/helm-values/) to determine which version of the snapshot CRDs and snapshot controller to install. Then replace `<version>` in the following steps with the appropriate version. For example, if the external snapshotter version is v8.5.0-xxx, use v8.5.0 for both the snapshot CRDs and snapshot controller.
 >
 > For general use, update the snapshot controller YAMLs with an appropriate **namespace** prior to installing.
 >
 > For example, on a vanilla Kubernetes cluster, update the namespace from `default` to `kube-system` prior to issuing the `kubectl create` command.
 
 Install the Snapshot CRDs:
-1. Download the files from https://github.com/kubernetes-csi/external-snapshotter/tree/v8.5.0/client/config/crd
-because Longhorn v{{< current-version >}} uses [CSI external-snapshotter](https://kubernetes-csi.github.io/docs/external-snapshotter.html) v8.5.0
-1. Run `kubectl create -k client/config/crd`.
-2. Do this once per cluster.
+
+1. Download the files from `https://github.com/kubernetes-csi/external-snapshotter/tree/<version>/client/config/crd`
+2. Run `kubectl create -k client/config/crd`.
+3. Do this once per cluster.
 
 Install the Common Snapshot Controller:
-1. Download the files from https://github.com/kubernetes-csi/external-snapshotter/tree/v8.5.0/deploy/kubernetes/snapshot-controller
-because Longhorn v{{< current-version >}} uses [CSI external-snapshotter](https://kubernetes-csi.github.io/docs/external-snapshotter.html) v8.5.0
+
+1. Download the files from `https://github.com/kubernetes-csi/external-snapshotter/tree/<version>/deploy/kubernetes/snapshot-controller`
 2. Update the namespace to an appropriate value for your environment (e.g. `kube-system`)
 3. Run `kubectl create -k deploy/kubernetes/snapshot-controller`.
-3. Do this once per cluster.
+4. Do this once per cluster.
+
 > **Note:** previously, the snapshot controller YAML files were deployed into the `default` namespace by default.
 > The updated YAML files are being deployed into `kube-system` namespace by default.
 > Therefore, we suggest deleting the previous snapshot controller in the `default` namespace to avoid having multiple snapshot controllers.
@@ -2319,7 +2319,9 @@ See the [Usage](https://github.com/kubernetes-csi/external-snapshotter#usage) se
 external-snapshotter git repo for additional information.
 
 #### Add a Default `VolumeSnapshotClass`
+
 Ensure the availability of the Snapshot CRDs. Afterwards create a default `VolumeSnapshotClass`.
+
 ```yaml
 # Use v1 as an example
 kind: VolumeSnapshotClass
@@ -2878,7 +2880,7 @@ A backup target is an endpoint used to access a backupstore. Backup targets can 
 
 {{< figure alt="the backup target UI page" src="/img/screenshots/backup-target/v1.10.0/page.png" >}}
 
-> **Note:**  
+> **Note:**
 > Starting with v1.8.0, Longhorn supports usage of multiple backupstores. Setting the default backup target before creating a new one is recommended.
 
 Saving to an object store such as S3 is preferable because it generally offers better reliability.  Another advantage is that you do not need to mount and unmount the target, which can complicate failover and upgrades.
@@ -3291,19 +3293,35 @@ Example:
 nfs://longhorn-test-nfs-svc.default:/opt/backupstore
 ```
 
-The default mount options are `actimeo=1,soft,timeo=300,retry=2`.  To use other options, append the keyword "nfsOptions" and the options string to the target URL.  
+**Result:** Longhorn can store backups in NFS. To create a backup, see [this section.](../create-a-backup)
+
+If `nfsOptions` is not set, Longhorn uses the default mount options `actimeo=1,soft,timeo=300,retry=2`.
+
+To use custom mount options, append the `nfsOptions` query parameter to the target URL.
 
 Example:
 
 ```text
-nfs://longhorn-test-nfs-svc.default:/opt/backupstore?nfsOptions=soft,timeo=330,retrans=3  
+nfs://longhorn-test-nfs-svc.default:/opt/backupstore?nfsOptions=rw,nolock
 ```
 
-Any mount options that you specify will replace, not add to, the default options.
+When `nfsOptions` is specified, Longhorn adjusts the options to ensure NFS operations fail instead of hanging indefinitely when the NFS service is unstable:
 
-You can find an example NFS backupstore for testing purpose [here](https://github.com/longhorn/longhorn/blob/v{{< current-version >}}/deploy/backupstores/nfs-backupstore.yaml).
+- `hard` is removed if present.
+- `soft` is added if absent.
+- `timeo` and `retry` are added with their default values (`timeo=300`, `retry=2`) only if you have not specified them. Custom values are preserved.
 
-**Result:** Longhorn can store backups in NFS. To create a backup, see [this section.](../create-a-backup)
+- `hard` is removed if present.
+- `soft` is added if absent.
+- `timeo` and `retry` are added with their default values (`timeo=300`, `retry=2`) only if you have not specified them. Custom values are preserved.
+
+For example, `nfsOptions=rw,nolock` becomes `rw,nolock,soft,timeo=300,retry=2` after Longhorn applies its defaults. To extend the timeout, you can override `timeo` explicitly:
+
+```text
+nfs://longhorn-test-nfs-svc.default:/opt/backupstore?nfsOptions=timeo=600
+```
+
+This results in `timeo=600,soft,retry=2`. The customized timeout is kept and the other defaults are filled in.
 
 ### Set up SMB/CIFS Backupstore
 
@@ -3435,7 +3453,7 @@ You can find an example CIFS backupstore for testing purpose [here](https://gith
      AZBLOB_ACCOUNT_NAME: "<Storage account name>"
      AZBLOB_ACCOUNT_KEY:  "<Key>"
      ...
-     # Parameters below are used for the compatible azure server for instance `Azurite` or 
+     # Parameters below are used for the compatible azure server for instance `Azurite` or
      # you have a proxy to redirect the requests.
      #AZBLOB_ENDPOINT: ""
      #AZBLOB_CERT: ""
@@ -12198,7 +12216,9 @@ For the full release note, see [here](https://github.com/longhorn/longhorn/relea
   - [Cloned Volume Health After Efficient Cloning](#cloned-volume-health-after-efficient-cloning)
 - [Important Fixes](#important-fixes)
   - [Longhorn Workload Pods Memory Leak](#longhorn-workload-pods-memory-leak)
-  - [PV nodeaffinity Regression](#pv-nodeaffinity-regression)
+  - [PV nodeAffinity Regression](#pv-nodeaffinity-regression)
+  - [Replica Rebuild Progress Fix](#replica-rebuild-progress-fix)
+  - [CSIStorageCapacity Scheduling Enhancement](#csistoragecapacity-scheduling-enhancement)
 - [General](#general)
   - [Kubernetes Version Requirement](#kubernetes-version-requirement)
   - [Upgrade Check Events](#upgrade-check-events)
@@ -12248,6 +12268,18 @@ For more details, see [#12575](https://github.com/longhorn/longhorn/issues/12575
 Fixed a regression where PV nodeAffinity was overly configured after introducing `AccessibleTopology` in the CSI server and `allowedTopologies` in Longhorn StorageClasses since v1.11.0.
 
 For more details, see [#12689](https://github.com/longhorn/longhorn/issues/12689) and [12656](https://github.com/longhorn/longhorn/issues/12656)
+
+### Replica Rebuild Progress Fix
+
+Resolved an issue where replica rebuild progress could exceed 100% under unstable network conditions. Progress reporting is now capped at 100%.
+
+For more details, see [#12949](https://github.com/longhorn/longhorn/issues/12949).
+
+### CSIStorageCapacity Scheduling Enhancement
+
+Introduced a new setting to control CSIStorageCapacity reporting. Previously, compute nodes without Longhorn disks incorrectly reported 0 capacity, breaking WaitForFirstConsumer scheduling. With this enhancement, capacity tracking can be configured to avoid rejecting compute nodes in separated compute/storage architectures.
+
+For more details, see [#12807](https://github.com/longhorn/longhorn/issues/12807).
 
 ## General
 
@@ -14147,43 +14179,43 @@ The `values.yaml` contains items used to tweak a deployment of this chart.
 |-----|------|---------|-------------|
 | image.csi.attacher.registry | string | `""` | Registry for the CSI attacher image. When unspecified, Longhorn uses the default value. |
 | image.csi.attacher.repository | string | `"longhornio/csi-attacher"` | Repository for the CSI attacher image. When unspecified, Longhorn uses the default value. |
-| image.csi.attacher.tag | string | `"v4.11.0"` | Tag for the CSI attacher image. When unspecified, Longhorn uses the default value. |
+| image.csi.attacher.tag | string | `"v4.11.0-20260428"` | Tag for the CSI attacher image. When unspecified, Longhorn uses the default value. |
 | image.csi.livenessProbe.registry | string | `""` | Registry for the CSI liveness probe image. When unspecified, Longhorn uses the default value. |
 | image.csi.livenessProbe.repository | string | `"longhornio/livenessprobe"` | Repository for the CSI liveness probe image. When unspecified, Longhorn uses the default value. |
-| image.csi.livenessProbe.tag | string | `"v2.18.0"` | Tag for the CSI liveness probe image. When unspecified, Longhorn uses the default value. |
+| image.csi.livenessProbe.tag | string | `"v2.18.0-20260428"` | Tag for the CSI liveness probe image. When unspecified, Longhorn uses the default value. |
 | image.csi.nodeDriverRegistrar.registry | string | `""` | Registry for the CSI Node Driver Registrar image. When unspecified, Longhorn uses the default value. |
 | image.csi.nodeDriverRegistrar.repository | string | `"longhornio/csi-node-driver-registrar"` | Repository for the CSI Node Driver Registrar image. When unspecified, Longhorn uses the default value. |
-| image.csi.nodeDriverRegistrar.tag | string | `"v2.16.0"` | Tag for the CSI Node Driver Registrar image. When unspecified, Longhorn uses the default value. |
+| image.csi.nodeDriverRegistrar.tag | string | `"v2.16.0-20260428"` | Tag for the CSI Node Driver Registrar image. When unspecified, Longhorn uses the default value. |
 | image.csi.provisioner.registry | string | `""` | Registry for the CSI Provisioner image. When unspecified, Longhorn uses the default value. |
 | image.csi.provisioner.repository | string | `"longhornio/csi-provisioner"` | Repository for the CSI Provisioner image. When unspecified, Longhorn uses the default value. |
-| image.csi.provisioner.tag | string | `"v5.3.0-20260225"` | Tag for the CSI Provisioner image. When unspecified, Longhorn uses the default value. |
+| image.csi.provisioner.tag | string | `"v5.3.0-20260428"` | Tag for the CSI Provisioner image. When unspecified, Longhorn uses the default value. |
 | image.csi.resizer.registry | string | `""` | Registry for the CSI Resizer image. When unspecified, Longhorn uses the default value. |
 | image.csi.resizer.repository | string | `"longhornio/csi-resizer"` | Repository for the CSI Resizer image. When unspecified, Longhorn uses the default value. |
-| image.csi.resizer.tag | string | `"v2.1.0"` | Tag for the CSI Resizer image. When unspecified, Longhorn uses the default value. |
+| image.csi.resizer.tag | string | `"v2.1.0-20260428"` | Tag for the CSI Resizer image. When unspecified, Longhorn uses the default value. |
 | image.csi.snapshotter.registry | string | `""` | Registry for the CSI Snapshotter image. When unspecified, Longhorn uses the default value. |
 | image.csi.snapshotter.repository | string | `"longhornio/csi-snapshotter"` | Repository for the CSI Snapshotter image. When unspecified, Longhorn uses the default value. |
-| image.csi.snapshotter.tag | string | `"v8.5.0"` | Tag for the CSI Snapshotter image. When unspecified, Longhorn uses the default value. |
+| image.csi.snapshotter.tag | string | `"v8.5.0-20260428"` | Tag for the CSI Snapshotter image. When unspecified, Longhorn uses the default value. |
 | image.longhorn.backingImageManager.registry | string | `""` | Registry for the Backing Image Manager image. When unspecified, Longhorn uses the default value. |
 | image.longhorn.backingImageManager.repository | string | `"longhornio/backing-image-manager"` | Repository for the Backing Image Manager image. When unspecified, Longhorn uses the default value. |
-| image.longhorn.backingImageManager.tag | string | `"v1.11.1"` | Tag for the Backing Image Manager image. When unspecified, Longhorn uses the default value. |
+| image.longhorn.backingImageManager.tag | string | `"v1.11.2"` | Tag for the Backing Image Manager image. When unspecified, Longhorn uses the default value. |
 | image.longhorn.engine.registry | string | `""` | Registry for the Longhorn Engine image. |
 | image.longhorn.engine.repository | string | `"longhornio/longhorn-engine"` | Repository for the Longhorn Engine image. |
-| image.longhorn.engine.tag | string | `"v1.11.1"` | Tag for the Longhorn Engine image. |
+| image.longhorn.engine.tag | string | `"v1.11.2"` | Tag for the Longhorn Engine image. |
 | image.longhorn.instanceManager.registry | string | `""` | Registry for the Longhorn Instance Manager image. |
 | image.longhorn.instanceManager.repository | string | `"longhornio/longhorn-instance-manager"` | Repository for the Longhorn Instance Manager image. |
-| image.longhorn.instanceManager.tag | string | `"v1.11.1"` | Tag for the Longhorn Instance Manager image. |
+| image.longhorn.instanceManager.tag | string | `"v1.11.2"` | Tag for the Longhorn Instance Manager image. |
 | image.longhorn.manager.registry | string | `""` | Registry for the Longhorn Manager image. |
 | image.longhorn.manager.repository | string | `"longhornio/longhorn-manager"` | Repository for the Longhorn Manager image. |
-| image.longhorn.manager.tag | string | `"v1.11.1"` | Tag for the Longhorn Manager image. |
+| image.longhorn.manager.tag | string | `"v1.11.2"` | Tag for the Longhorn Manager image. |
 | image.longhorn.shareManager.registry | string | `""` | Registry for the Longhorn Share Manager image. |
 | image.longhorn.shareManager.repository | string | `"longhornio/longhorn-share-manager"` | Repository for the Longhorn Share Manager image. |
-| image.longhorn.shareManager.tag | string | `"v1.11.1"` | Tag for the Longhorn Share Manager image. |
+| image.longhorn.shareManager.tag | string | `"v1.11.2"` | Tag for the Longhorn Share Manager image. |
 | image.longhorn.supportBundleKit.registry | string | `""` | Registry for the Longhorn Support Bundle Manager image. |
 | image.longhorn.supportBundleKit.repository | string | `"longhornio/support-bundle-kit"` | Repository for the Longhorn Support Bundle Manager image. |
-| image.longhorn.supportBundleKit.tag | string | `"v0.0.81"` | Tag for the Longhorn Support Bundle Manager image. |
+| image.longhorn.supportBundleKit.tag | string | `"v0.0.84"` | Tag for the Longhorn Support Bundle Manager image. |
 | image.longhorn.ui.registry | string | `""` | Registry for the Longhorn UI image. |
 | image.longhorn.ui.repository | string | `"longhornio/longhorn-ui"` | Repository for the Longhorn UI image. |
-| image.longhorn.ui.tag | string | `"v1.11.1"` | Tag for the Longhorn UI image. |
+| image.longhorn.ui.tag | string | `"v1.11.2"` | Tag for the Longhorn UI image. |
 | image.openshift.oauthProxy.registry | string | `""` | Registry for the OAuth Proxy image. Specify the upstream image (for example, "quay.io/openshift/origin-oauth-proxy"). This setting applies only to OpenShift users. |
 | image.openshift.oauthProxy.repository | string | `""` | Repository for the OAuth Proxy image. Specify the upstream image (for example, "quay.io/openshift/origin-oauth-proxy"). This setting applies only to OpenShift users. |
 | image.openshift.oauthProxy.tag | string | `""` | Tag for the OAuth Proxy image. Specify OCP/OKD version 4.1 or later (including version 4.18, which is available at quay.io/openshift/origin-oauth-proxy:4.18). This setting applies only to OpenShift users. |
@@ -14387,6 +14419,7 @@ During installation, you can either allow Longhorn to use the default system set
 | defaultSettings.concurrentVolumeBackupRestorePerNodeLimit | Maximum number of volumes that can be concurrently restored on each node using a backup. When the value is "0", restoration of volumes using a backup is disabled. |
 | defaultSettings.createDefaultDiskLabeledNodes | Setting that allows Longhorn to automatically create a default disk only on nodes with the label "node.longhorn.io/create-default-disk=true" (if no other disks exist). When this setting is disabled, Longhorn creates a default disk on each node that is added to the cluster. |
 | defaultSettings.csiAllowedTopologyKeys | Comma-separated list of topology keys that the Longhorn CSI driver is allowed to pass through. When empty (default), no topology keys are passed through, and PVs will have no nodeAffinity. When configured (e.g., "topology.kubernetes.io/zone,topology.kubernetes.io/region"), only the specified keys are kept in topology segments. All other keys are filtered out from both CreateVolumeResponse.AccessibleTopology and NodeGetInfo topology. |
+| defaultSettings.csiStorageCapacityTracking | Setting that controls CSI storage capacity tracking, which allows the kube-scheduler to filter nodes that cannot fit the requested volume. |
 | defaultSettings.dataEngineCPUMask | Applies only to the V2 Data Engine. Specifies the CPU cores on which the Storage Performance Development Kit (SPDK) target daemon runs. The daemon is deployed in each Instance Manager pod. Ensure that the number of assigned cores does not exceed the guaranteed Instance Manager CPUs for the V2 Data Engine. The default value is "{"v2":"0x1"}". |
 | defaultSettings.dataEngineHugepageEnabled | Applies only to the V2 Data Engine. Enables hugepages for the Storage Performance Development Kit (SPDK) target daemon. If disabled, legacy memory is used. Allocation size is set via the Data Engine Memory Size setting. |
 | defaultSettings.dataEngineLogFlags | Applies only to the V2 Data Engine. Specifies the log flags for the Storage Performance Development Kit (SPDK) target daemon. |
@@ -14786,6 +14819,7 @@ weight: 1
   - [Default Ublk Queue Depth](#default-ublk-queue-depth)
   - [Default Ublk Number Of Queue](#default-ublk-number-of-queue)
   - [Node Disk Health Monitoring](#node-disk-health-monitoring)
+  - [CSI Storage Capacity Tracking](#csi-storage-capacity-tracking)
 - [Snapshot](#snapshot)
   - [Snapshot Data Integrity](#snapshot-data-integrity)
   - [Immediate Snapshot Data Integrity Check After Creating a Snapshot](#immediate-snapshot-data-integrity-check-after-creating-a-snapshot)
@@ -15387,6 +15421,12 @@ The default the number of queues for ublk frontend. This setting applies to volu
 > Default: `true`
 
 Controls whether Longhorn monitors and records health information for node disks. When disabled, disk health checks and status updates are skipped.
+
+#### CSI Storage Capacity Tracking
+
+> Default: `false`
+
+Controls CSI storage capacity tracking, which allows the kube-scheduler to filter nodes that cannot fit the requested volume.
 
 ### Snapshot
 

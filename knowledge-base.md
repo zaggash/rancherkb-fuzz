@@ -3129,29 +3129,35 @@ In the event that json-file is not the configured logging driver, the output of 
 
 ## Article: 000020068.md
 
-# "ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
+# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
 
 **Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
 
 ## **Environment**
 
-Cluster running with Docker daemon with the [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
 
 ## **Situation**
 
-During startup of the Docker daemon, an error message of the following format is present in the system logs:
+Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
 
 ```
 Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
 ```
 
+```
+ 
+```
+
+## **Cause**
+
+[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
+"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+
 ## **Resolution**
 
-An `xfs` formatted filesystem is only supported as backing for the `overlay` or `overlay2` Docker storage drivers if formatted with `d_type` set to `true`.
-
-The `d_type` value of an `xfs` filesystem can be verified with the `xfs_info` utility. Example output for this command can be found in the [`xfs_info` man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES). If `ftype=1` the filesystem was formatted with `d_type` `true` and the filesystem is suitable for use as backing for the `overlay` or `overlay2` storage drivers. If the value is set to `0` the filesystem is not suitable for use with the `overlay` or `overlay2` storage drivers, and would need to be reformated with the flag `-n ftype=1`.
-
-Per the [Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites): "Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2` driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
+xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
+xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
 
 
 
@@ -3429,38 +3435,24 @@ Run `terraform apply` and observe this second `V2` revision created for the RKE 
 
 ## **Environment**
 
-#### Pre-requisites
-
-- A Rancher v2.x managed Kubernetes cluster
+- A Rancher v2.6+ managed Kubernetes cluster
 
 ## **Situation**
-
-#### Task
 
 This article details how to create a custom Project RBAC role to grant log access and exec permission on Pods, in a Rancher v2.x managed Kubernetes cluster.
 
 ## **Resolution**
 
-#### Resolution
+In Rancher v2.x you can create a [custom Project Role](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/custom-roles#creating-a-custom-role) that provides the permissions to enable a user to view Pods, Pod logs and to exec into Pods. You can then grant this role to users on Projects to provide them this access where necessary.
 
-In Rancher v2.x you can create a custom Project Role that provides the permissions to enable a user to view Pods, Pod logs and to exec into Pods. You can then grant this role to users on Projects to provide them this access where necessary.  
- 
-
-Pod Reader Permissions in Rancher UI  
- 
-
-1. Navigate to Users &amp; Authentication &gt; Roles.
-2. From the Projects tab, select Add Project Role.
-3. Provide a name for the role.
-4. Under Grant Resources, select Add Resource and fill in the information for each of the following:
+1. Navigate to **Users &amp; Authentication** &gt; **Role Templates**.
+2. Click on the **Project/Namespaces** tab.
+3. Click **Create Project/Namespaces Role**.
+4. Provide a **Name** for the role.
+5. Under **Grant Resources**, select **Add Resource** and fill in the information for each of the following:
    
-   Permission(s)ResourceGet, Createpods/execGet, ListpodsGet, Listpods/log
-5. Select Create at the bottom.
-
-#### Further reading
-
-- [Rancher Docs: Project Administration](https://rancher.com/docs/rancher/v2.x/en/project-admin)
-- [Rancher Docs: Cluster and Project Roles - Defining Custom Roles](https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/cluster-project-roles/#defining-custom-roles)
+   VerbsResourceGet, Createpods/execGet, ListpodsGet, Listpods/log
+6. Click **Create** at the bottom.
 
 
 
@@ -3779,26 +3771,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# How to confirm a version upgrade of Rancher v2.x is completed successfully
+# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
-- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
+- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
+- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
 
 ## **Situation**
 
-This article details how to confirm that a Rancher version upgrade has successfully completed.
+この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
 
 ## **Resolution**
 
-The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
+Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
 
-- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
-- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
-- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
+- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
+- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
+- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
 
 
 
@@ -8754,34 +8746,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -23034,7 +23020,8 @@ kubectl get nodes -o wide
 
 ## **Environment**
 
-Rancher &lt; v2.9.8 and Rancher v2.10 &lt; v2.10.4
+- Rancher &lt; v2.9.8
+- Rancher v2.10 &lt; v2.10.4
 
 ## **Situation**
 
@@ -30555,6 +30542,54 @@ After the configuration is applied:
 
 ---
 
+## Article: 000022186.md
+
+# Rolling back from Rancher v2.13.0 to v2.12.3
+
+**Article Number:** [000022186](https://support.scc.suse.com/s/kb/Rolling-back-from-Rancher-v2-13-0-to-v2-12-3)
+
+## **Environment**
+
+- Rancher v2.13.0
+- Using the Rancher Backup &amp; Restore Operator
+
+## **Situation**
+
+There is a known bug faced when performing a rollback from Rancher v2.13.0 to Rancher v2.12.3 using BRO (the Backup &amp; Restore Operator), which prevents the Restore from completing successfully.
+
+The Backup &amp; Restore Operator logs look similar to this:
+
+```markup
+ERRO[2025/11/17 16:26:58] Error restoring cluster-scoped resources [error restoring cattle-globalrole-user-base of type rbac.authorization.k8s.io/v1, Resource=clusterroles: restoreResource: err updating resource admission webhook "rancher.cattle.io.clusterroles.rbac.authorization.k8s.io" denied the request: cannot modify or remove label authz.management.cattle.io/gr-owner error restoring cattle-globalrole-users-manage of type rbac.authorization.k8s.io/v1, Resource=clusterroles: restoreResource: err updating resource admission webhook "rancher.cattle.io.clusterroles.rbac.authorization.k8s.io" denied the request: cannot modify or remove label authz.management.cattle.io/gr-owner error restoring cattle-globalrole-user of type rbac.authorization.k8s.io/v1, Resource=clusterroles: restoreResource: err updating resource admission webhook "rancher.cattle.io.clusterroles.rbac.authorization.k8s.io" denied the request: cannot modify or remove label authz.management.cattle.io/gr-owner error restoring cattle-globalrole-clusters-create of type rbac.authorization.k8s.io/v1, Resource=clusterroles: restoreResource: err updating resource admission webhook "rancher.cattle.io.clusterroles.rbac.authorization.k8s.io" denied the request: cannot modify or remove label authz.management.cattle.io/gr-owner]
+ERRO[2025/11/17 16:26:58] error syncing 'restore-migration': handler restore: error restoring cluster-scoped resources, check logs for exact error, requeuing
+```
+
+## **Resolution**
+
+The bug will be officially fixed in the v2.14.0 version of Rancher as part of improvements tracked by this [Github issue](https://github.com/rancher/backup-restore-operator/issues/833). There is, however, a workaround solution to prevent this bug from happening.
+
+### Disabling the Rancher Webhook during a Restore
+
+The official documentation on how to perform a rollback can be found [here](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rollbacks#rolling-back-to-rancher-v250). Essentially, the usual steps will look like this (summarized from the documentation):
+
+1. In a cluster running Rancher v2.13.0, make sure you have access to a Backup taken for Rancher v2.12.3
+2. Create a BRO Restore CR referencing the desired Backup, wait for it to be completed
+3. Perform the Helm Rollback as referenced in the docs, usually helm rollback rancher -n cattle-system
+
+### To prevent the bug from happening
+
+Two extra steps are needed (added as points 2 and 3 below):
+
+1. In a cluster running Rancher v2.13.0, make sure you have access to a Backup taken for Rancher v2.12.3
+2. Scale down Rancher to 0 replicas kubectl scale deploy/rancher -n cattle-system --replicas=0
+3. Uninstall the Rancher webhook with helm uninstall helm uninstall rancher-webhook -n cattle-system. Make sure it was uninstalled correctly with helm list -n cattle-system
+4. Create a BRO Restore CR (via kubectl, as Rancher is down) referencing the desired Backup, wait for it to be completed
+5. Perform the Helm Rollback as referenced in the docs, usually helm rollback rancher -n cattle-system
+
+
+
+---
+
 ## Article: 000022194.md
 
 # Migrating an RKE2/K3s Downstream Cluster to a new Subnet in an infrastructure provider
@@ -30813,11 +30848,11 @@ Interface **34** corresponds to the new pod and correctly reflects the MTU value
 
 <!--THE END-->
 
-![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK5)
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000019JCX&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK5)
 
 - If the requirement is to get the ***namespace-aggregated dashboard***, Rancher monitoring does not provide one by default. However, you can import the Grafana community [dashboard](https://grafana.com/grafana/dashboards/16734-kubernetes-cluster-ram-and-cpu-utilization/) to get a customized version. 
   
-  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK6)
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000019JCX&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK6)
 
  
 
@@ -30825,13 +30860,13 @@ Interface **34** corresponds to the new pod and correctly reflects the MTU value
   
   \- Get Dashboard ID or JSON from \[1] : 
   
-  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdELh)
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000019JCX&feoid=00NTr00000R90Sn&refid=0EMTr00000IdELh)
   
   \- Import Dashboard into Grafana : 
   
-  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK7)  
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000019JCX&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK7)  
   
-  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000013o69&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK8)
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr0000019JCX&feoid=00NTr00000R90Sn&refid=0EMTr00000IdEK8)
 
 
 
