@@ -2876,6 +2876,8 @@ Kubernetes:
   - When upgrading from v1.31.x -&gt; v1.34.x, you should upgrade v1.31.x -&gt; v1.32.x -&gt; v1.33.x -&gt; v1.34.x
 - Approximately [three Kubernetes minor version releases are planned per year](https://kubernetes.io/releases/release/#the-release-cycle), so it is a good practice to also plan a Kubernetes minor version upgrade multiple times throughout the year.
 
+> **Note on Kubernetes v1.33 upgrades and etcd v3.6 migration:** For RKE2 and K3s v1.33 upgrades please refer to the article [How to safely upgrade RKE2 and K3s v1.33 to v1.33.11+ (etcd v3.6 migration)](https://support.scc.suse.com/s/kb/How-to-safely-upgrade-RKE2-and-K3s-v1-33-to-v1-33-11-etcd-v3-6-migration).
+
 **Data collection**
 
 Before you start your upgrade, please collect the following pieces of information to best prepare yourself in case you need to open a support ticket.
@@ -8746,28 +8748,34 @@ measurements:
 
 ## Article: 000020180.md
 
-# How do I edit or upgrade clusters created via RKE Templates?
+# [JP] How do I edit my cluster using RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
-
-## **Environment**
-
-- RKE1 cluster managed via RKE templates on Rancher 2.x.
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
 
 ## **Situation**
 
-- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
+### 質問
 
-## **Resolution**
+RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
 
-#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
+### 前提条件
 
-- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
-- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
-- Add the revision name, make the required changes, and save it.
-- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
-- Select your new version and Save.
-- Once saved, your cluster will be updated with the changes you have made.
+RKEテンプレート機能によって管理されるKubernetesクラスター  
+ 
+
+### 回答
+
+KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
+
+1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
+2. 3ドットメニューをクリックして、新しいリビジョンを作成します
+3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
+
+リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
+
+### 参考
+
+https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
 
 
 
@@ -31242,160 +31250,6 @@ Then, perform a rollout restart of the deployment for the changes to take effect
 ```markup
 kubectl rollout restart deployment system-upgrade-controller -n cattle-system
 ```
-
-
-
----
-
-## Article: 000022285.md
-
-# How to migrate the Rancher Ingress to Traefik in an RKE2 cluster
-
-**Article Number:** [000022285](https://support.scc.suse.com/s/kb/How-to-migrate-the-Rancher-Ingress-to-Traefik-in-an-RKE2-cluster)
-
-## **Environment**
-
-- An RKE2 cluster with Rancher installed.
-- RKE2 v1.32 &gt;= v1.32.11+rke2r1, v1.33 &gt;= v1.33.7+rke2r1, v1.34 &gt;= v1.34.3+rke2r1, or &gt;= v1.35.0+rke2r1
-
-**N.B.** Managed Kubernetes providers are excluded (AKS, EKS, GKS...), please refer to documentation from your managed Kubernetes provider for instructions on how to migrate Ingress resources on those distributions.
-
-## **Procedure**
-
-**Situation**
-
-This article provides specific instructions for migrating the Rancher Ingress resource when transitioning a Rancher local RKE2 cluster from Ingress NGINX to Traefik. It serves as a supplement to the primary guide: [Migrating from Ingress NGINX to Traefik in a standalone RKE2 cluster](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster).
-
-While the parent guide covers the general cluster migration, this article addresses the particularities and potential pitfalls specifically related to the Rancher Ingress.
-
-**Requirements**
-
-Before beginning the migration of the Rancher Ingress, ensure the following requirements are met:
-
-- **Rancher Version:** A supported version of Rancher must be installed. Refer to the [Support Matrix](https://www.suse.com/suse-rancher/support-matrix) and [Product Support Lifecycle](https://www.suse.com/lifecycle/#suse-rancher-prime).
-- **RKE2 Version:** The cluster must be running one of the following versions (or higher):
-  
-  - v1.35.0+rke2r1
-  - v1.34.3+rke2r1
-  - v1.33.7+rke2r1
-  - v1.32.11+rke2r1
-- **Backups:** [Take a snapshot](https://docs.rke2.io/datastore/backup_restore#creating-snapshots) of the RKE2 cluster.
-
-**Important Considerations**
-
-This migration is part of a broader transition of the local cluster from Ingress NGINX to Traefik. Following the migration to Traefik, as documented in the [parent guide](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster), two specific IngressClasses are available:
-
-1. `traefik` : Intended for standard Ingress resources that do not require Ingress NGINX annotations.
-2. `rke2-ingress-nginx-migration` : Intended for Ingress resources that still use NGINX annotations and require migration using Traefik's `kubernetesIngressNginx` provider.
-
-The `traefik` IngressClass is used for the Rancher Ingress migration in the steps below, unless custom, non-default annotations require the use of `rke2-ingress-nginx-migration`.
-
-**Analyzing Rancher Ingress Annotations**
-
-By default, the Rancher Ingress includes three Ingress NGINX annotations. Depending on the specific configuration, others may exist.
-
-1. **Default Rancher Ingress annotations**  
-   The following default annotations are not supported by Traefik’s `kubernetesIngressNginx` provider:
-   
-   - `nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"`
-   - `nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"`
-   - `nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"`
-   
-   **Recommendation:** These are no longer required and will be removed in future Rancher versions. Leave them as-is; they are ignored by the `traefik` IngressClass.
-2. **Custom annotations supported by Traefik's kubernetesIngressNginx provider**  
-   The following are two of the more commonly used custom annotations supported by the `kubernetesIngressNginx` provider:
-   
-   - `nginx.ingress.kubernetes.io/ssl-redirect`
-   - `nginx.ingress.kubernetes.io/backend-protocol`
-   
-   A full list of the Ingress NGINX annotations supported by Traefik's `kubernetesIngressNginx` provider can be found in the [Traefik documentation](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#annotations-support).  
-   **Action:** If these are in use and functionality must be maintained, use the `rke2-ingress-nginx-migration` IngressClass for the Rancher Ingress.
-3. **Custom annotations not supported by Traefik's kubernetesIngressNginx provider**  
-   The `nginx.ingress.kubernetes.io/configuration-snippet` annotation **is not supported** by Traefik. A full list of the Ingress NGINX annotations **not supported** by Traefik's `kubernetesIngressNginx` provider can be found in the [Traefik documentation](https://doc.traefik.io/traefik/reference/routing-configuration/kubernetes/ingress-nginx/#unsupported-annotations).  
-   **Action:** Identify a Traefik-native equivalent (usually a Middleware CRD) and use the `traefik` IngressClass for the Rancher Ingress, along with the required Middleware annotations. For example, if a snippet is used to set headers: `proxy_set_header X-Forwarded-Host $host/service;`  
-   Replace this by creating a Traefik Middleware:
-   
-   ```markup
-   apiVersion: traefik.io/v1alpha1
-   kind: Middleware
-   metadata:
-     name: fix-forwarded-host
-   spec:
-     headers:
-       customRequestHeaders:
-         X-Forwarded-Host: "host.example.com"
-   ```
-
-> **Note:** For custom annotations or assistance with complex snippets, the **Consulting Services** team may be able to assist, please contact **SUSE Support**.
-
-**Testing**
-
-After completing **Phase 1: Dual ingress controller setup (Coexistence)** of the [parent guide](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster), to enable Traefik, you can proceed to validate the Rancher Ingress configuration with Traefik. To do so create a provisional duplicate of the Rancher Ingress during **Phase 2 (Parallel migration and validation)**.
-
-> **Note on jq:** The one-liners below, to duplicate the Rancher Ingress, require `jq`. Alternatively, manually export, rename, and edit the `ingressClassName` field before applying the new resource.
-
-Based on your analysis of the Rancher annotations, as described above, run the following command to duplicate your Rancher Ingress and set the the IngressClass to  `traefik` :
-
-```markup
-kubectl get ingress rancher -n cattle-system -o json | jq '.metadata.name="rancher-traefik-testing" | .spec.ingressClassName="traefik" | del(.metadata.resourceVersion, .metadata.uid, .metadata.creationTimestamp, .metadata.managedFields)' | kubectl apply -f -
-```
-
-Or the following command to duplicate your Rancher Ingress and set the IngressClass to  `rke2-ingress-nginx-migration`:
-
-```markup
-kubectl get ingress rancher -n cattle-system -o json | jq '.metadata.name="rancher-traefik-testing" | .spec.ingressClassName="rke2-ingress-nginx-migration" | del(.metadata.resourceVersion, .metadata.uid, .metadata.creationTimestamp, .metadata.managedFields)' | kubectl apply -f -
-```
-
-If additional Ingress annotations are required, due to custom configuration, edit the duplicated Ingress to apply these:
-
-```markup
-kubectl -n cattle-system edit ingress rancher-traefik-testing
-```
-
-After testing that Ingress traffic to Rancher is successful via Traefik, remove the duplicated Rancher Ingress object (`rancher-traefik-testing`) before moving on with the migration:
-
-```markup
-kubectl -n cattle-system delete ingress rancher-traefik-testing
-```
-
-**Migration**
-
-> **Note on downtime:** During the migration, Rancher will be unavailable and downstreams clusters temporarily lose connectivity to Rancher, between the disabling of Ingress NGINX in **Phase 3: Final switchover and port reassignment** of the [parent guide](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster), and completing the upgrade of the Rancher Helm chart with the new Ingress values, as documented below.
-
-The required IngressClass, and any additional custom annotations, can be configured via the `ingress.ingressClassName` and `ingress.extraAnnotations` values on the Rancher Helm chart.
-
-After completing **Phase 3: Final switchover and port reassignment** in the [parent guide](https://support.scc.suse.com/s/kb/Migrating-from-Ingress-NGINX-to-Traefik-in-a-standalone-RKE2-cluster) to disable Ingress NGINX, follow the [Rancher upgrade process](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades) to add the necessary values, based on the analysis above, to the helm upgrade command.
-
-Use the `--version` flag to [pin your current version](https://support.scc.suse.com/s/kb/360034528871) and prevent a change in the running version.
-
-> **Note on Let's Encrypt:** If Rancher was [installed using Let's Encrypt](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster#3-choose-your-ssl-configuration), the `letsEncrypt.ingress.class=nginx` parameter was likely configured. This setting directs the Rancher Issuer in the `cattle-system` namespace to use the Ingress NGINX IngressClass. In this instance, update the value when running the helm upgrade in the steps below to `--set letsEncrypt.ingress.class=traefik`
-
-1. **Default Rancher Ingress annotations**  
-   If you are not using any custom annotations on the Rancher Ingress, you can simply update the IngressClass to `traefik`, passing the value `--set ingress.ingressClassName=traefik`.
-2. **Custom annotations supported by Traefik's `kubernetesIngressNginx` provider**  
-   If you are using custom annotations supported by Traefik's `kubernetesIngressNginx` provider, you can update the IngressClass to `rke2-ingress-nginx-migration`, passing the value `--set ingress.ingressClassName=rke2-ingress-nginx-migration`, alongside the existing custom annotations set via `ingress.extraAnnotations`.
-3. **Custom annotations not supported by Traefik's kubernetesIngressNginx provider**  
-   If you are using custom annotations not supported by Traefik's `kubernetesIngressNginx` provider, and have determined the equivalent configuration options in Traefik, you can update the IngressClass to `traefik`, passing the value `--set ingress.ingressClassName=traefik`, alongside the required annotations for the custom Traefik configuration set via `ingress.extraAnnotations`.
-
-**Known issue**
-
-If using external TLS termination, you might see "Too Many Redirects" when accessing the Rancher UI. A workaround for this is to add the following to your HelmChartConfig for Traefik:
-
-```markup
-apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
-metadata:
-  name: rke2-traefik
-  namespace: kube-system
-spec:
-  valuesContent: |-
-    ports:
-      web:
-        forwardedHeaders:
-          insecure: true
-```
-
-**NB: Modifying the HelmChartConfig will rollout an updated traefik daemonset, which might result in interruptions to active connections.**
 
 
 
