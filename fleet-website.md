@@ -8685,284 +8685,6 @@ If both exist — the global secret for the cluster and a secret defined for the
 
 ---
 
-## Article: changelogs/index.md
-
----
-title: "Next 🚧"
----
-
-We are still working on the next release.
-
-
----
-
-## Article: changelogs/changelogs/next.md
-
----
-title: "Next 🚧"
----
-
-We are still working on the next release.
-
-
----
-
-## Article: cli/fleet-agent/fleet-agent.md
-
----
-title: ""
-sidebar_label: "fleet-agent"
----
-## fleet-agent
-
-
-
-```
-fleet-agent [flags]
-```
-
-### Options
-
-```
-      --agent-scope string                An identifier used to scope the agent bundleID names, typically the same as namespace
-      --debug                             Turn on debug logging
-      --debug-level int                   If debugging is enabled, set klog -v=X
-  -h, --help                              help for fleet-agent
-      --kubeconfig string                 Paths to a kubeconfig. Only required if out-of-cluster.
-      --namespace string                  system namespace is the namespace, the agent runs in, e.g. cattle-fleet-system
-      --zap-devel                         Development Mode defaults(encoder=consoleEncoder,logLevel=Debug,stackTraceLevel=Warn). Production Mode defaults(encoder=jsonEncoder,logLevel=Info,stackTraceLevel=Error) (default true)
-      --zap-encoder encoder               Zap log encoding (one of 'json' or 'console')
-      --zap-log-level level               Zap Level to configure the verbosity of logging. Can be one of 'debug', 'info', 'error', or any integer value > 0 which corresponds to custom debug levels of increasing verbosity
-      --zap-stacktrace-level level        Zap Level at and above which stacktraces are captured (one of 'info', 'error', 'panic').
-      --zap-time-encoding time-encoding   Zap time encoding (one of 'epoch', 'millis', 'nano', 'iso8601', 'rfc3339' or 'rfc3339nano'). Defaults to 'epoch'.
-```
-
-### SEE ALSO
-
-* [fleet-agent clusterstatus](fleet-agent/fleet-agent_clusterstatus)	 - Continuously report resource status to the upstream cluster
-* [fleet-agent register](fleet-agent/fleet-agent_register)	 - Register agent with an upstream cluster
-
-
-
----
-
-## Article: cli/fleet-agent/fleet-agent_clusterstatus.md
-
----
-title: ""
-sidebar_label: "fleet-agent clusterstatus"
----
-## fleet-agent clusterstatus
-
-Continuously report resource status to the upstream cluster
-
-```
-fleet-agent clusterstatus [flags]
-```
-
-### Options
-
-```
-      --checkin-interval string   How often to post cluster status
-      --debug                     Turn on debug logging
-      --debug-level int           If debugging is enabled, set klog -v=X
-  -h, --help                      help for clusterstatus
-      --kubeconfig string         kubeconfig file for agent's cluster
-      --namespace string          system namespace is the namespace, the agent runs in, e.g. cattle-fleet-system
-```
-
-### SEE ALSO
-
-* [fleet-agent](./)
-
-
----
-
-## Article: cli/fleet-agent/fleet-agent_register.md
-
----
-title: ""
-sidebar_label: "fleet-agent register"
----
-## fleet-agent register
-
-Register agent with an upstream cluster
-
-```
-fleet-agent register [flags]
-```
-
-### Options
-
-```
-      --debug               Turn on debug logging
-      --debug-level int     If debugging is enabled, set klog -v=X
-  -h, --help                help for register
-      --kubeconfig string   kubeconfig file for agent's cluster
-      --namespace string    system namespace is the namespace, the agent runs in, e.g. cattle-fleet-system
-```
-
-### SEE ALSO
-
-* [fleet-agent](./)
-
-
----
-
-## Article: cli/fleet-controller/fleet-controller.md
-
----
-title: ""
-sidebar_label: "fleet-controller"
----
-## fleet-controller
-
-
-
-```
-fleet-controller [flags]
-```
-
-### Options
-
-```
-      --debug                             Turn on debug logging
-      --debug-level int                   If debugging is enabled, set klog -v=X
-      --disable-metrics                   disable metrics
-  -h, --help                              help for fleet-controller
-      --kubeconfig string                 Paths to a kubeconfig. Only required if out-of-cluster.
-      --namespace string                  namespace to watch (default "cattle-fleet-system")
-      --shard-id string                   only manage resources labeled with a specific shard ID
-      --zap-devel                         Development Mode defaults(encoder=consoleEncoder,logLevel=Debug,stackTraceLevel=Warn). Production Mode defaults(encoder=jsonEncoder,logLevel=Info,stackTraceLevel=Error) (default true)
-      --zap-encoder encoder               Zap log encoding (one of 'json' or 'console')
-      --zap-log-level level               Zap Level to configure the verbosity of logging. Can be one of 'debug', 'info', 'error', or any integer value > 0 which corresponds to custom debug levels of increasing verbosity
-      --zap-stacktrace-level level        Zap Level at and above which stacktraces are captured (one of 'info', 'error', 'panic').
-      --zap-time-encoding time-encoding   Zap time encoding (one of 'epoch', 'millis', 'nano', 'iso8601', 'rfc3339' or 'rfc3339nano'). Defaults to 'epoch'.
-```
-
-### SEE ALSO
-
-* [fleet-controller agentmanagement](fleet-controller_agentmanagement.md)	 -
-* [fleet-controller cleanup](fleet-controller_cleanup.md)	 -
-* [fleet-controller gitjob](fleet-controller_gitjob.md)	 -
-
-
----
-
-## Article: cli/fleet-controller/fleet-controller_agentmanagement.md
-
----
-title: ""
-sidebar_label: "fleet-controller agentmanagement"
----
-## fleet-controller agentmanagement
-
-
-
-```
-fleet-controller agentmanagement [flags]
-```
-
-### Options
-
-```
-      --debug               Turn on debug logging
-      --debug-level int     If debugging is enabled, set klog -v=X
-      --disable-bootstrap   disable local cluster components
-  -h, --help                help for agentmanagement
-      --kubeconfig string   kubeconfig file
-      --namespace string    namespace to watch
-```
-
-### Options inherited from parent commands
-
-```
-      --disable-metrics   disable metrics
-      --shard-id string   only manage resources labeled with a specific shard ID
-```
-
-### SEE ALSO
-
-* [fleet-controller](./)	 -
-
-
-
----
-
-## Article: cli/fleet-controller/fleet-controller_cleanup.md
-
----
-title: ""
-sidebar_label: "fleet-controller cleanup"
----
-## fleet-controller cleanup
-
-
-
-```
-fleet-controller cleanup [flags]
-```
-
-### Options
-
-```
-  -h, --help                help for cleanup
-      --kubeconfig string   kubeconfig file
-      --namespace string    namespace to watch
-```
-
-### Options inherited from parent commands
-
-```
-      --debug             Turn on debug logging
-      --debug-level int   If debugging is enabled, set klog -v=X
-```
-
-### SEE ALSO
-
-* [fleet-controller](./)
-
-
----
-
-## Article: cli/fleet-controller/fleet-controller_gitjob.md
-
----
-title: ""
-sidebar_label: "fleet-controller gitjob"
----
-## fleet-controller gitjob
-
-
-
-```
-fleet-controller gitjob [flags]
-```
-
-### Options
-
-```
-      --debug                         Turn on debug logging
-      --debug-level int               If debugging is enabled, set klog -v=X
-      --disable-metrics               Disable the metrics server.
-      --gitjob-image string           The gitjob image that will be used in the generated job. (default "rancher/fleet:dev")
-  -h, --help                          help for gitjob
-      --kubeconfig string             Kubeconfig file
-      --leader-elect                  Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager. (default true)
-      --listen string                 The port the webhook listens. (default ":8080")
-      --metrics-bind-address string   The address the metric endpoint binds to. (default ":8081")
-      --namespace string              namespace to watch (default "cattle-fleet-system")
-      --shard-id string               only manage resources labeled with a specific shard ID
-      --shard-node-selector string    node selector to apply to jobs based on the shard ID, if any
-```
-
-### SEE ALSO
-
-* [fleet-controller](./)
-
-
----
-
 ## Article: cli/fleet-cli/fleet.md
 
 ---
@@ -9845,3 +9567,281 @@ fleet cleanup gitjob [flags]
 
 * [fleet cleanup](./fleet_cleanup)	 - Clean up outdated resources
 
+
+
+---
+
+## Article: cli/fleet-agent/fleet-agent.md
+
+---
+title: ""
+sidebar_label: "fleet-agent"
+---
+## fleet-agent
+
+
+
+```
+fleet-agent [flags]
+```
+
+### Options
+
+```
+      --agent-scope string                An identifier used to scope the agent bundleID names, typically the same as namespace
+      --debug                             Turn on debug logging
+      --debug-level int                   If debugging is enabled, set klog -v=X
+  -h, --help                              help for fleet-agent
+      --kubeconfig string                 Paths to a kubeconfig. Only required if out-of-cluster.
+      --namespace string                  system namespace is the namespace, the agent runs in, e.g. cattle-fleet-system
+      --zap-devel                         Development Mode defaults(encoder=consoleEncoder,logLevel=Debug,stackTraceLevel=Warn). Production Mode defaults(encoder=jsonEncoder,logLevel=Info,stackTraceLevel=Error) (default true)
+      --zap-encoder encoder               Zap log encoding (one of 'json' or 'console')
+      --zap-log-level level               Zap Level to configure the verbosity of logging. Can be one of 'debug', 'info', 'error', or any integer value > 0 which corresponds to custom debug levels of increasing verbosity
+      --zap-stacktrace-level level        Zap Level at and above which stacktraces are captured (one of 'info', 'error', 'panic').
+      --zap-time-encoding time-encoding   Zap time encoding (one of 'epoch', 'millis', 'nano', 'iso8601', 'rfc3339' or 'rfc3339nano'). Defaults to 'epoch'.
+```
+
+### SEE ALSO
+
+* [fleet-agent clusterstatus](fleet-agent/fleet-agent_clusterstatus)	 - Continuously report resource status to the upstream cluster
+* [fleet-agent register](fleet-agent/fleet-agent_register)	 - Register agent with an upstream cluster
+
+
+
+---
+
+## Article: cli/fleet-agent/fleet-agent_clusterstatus.md
+
+---
+title: ""
+sidebar_label: "fleet-agent clusterstatus"
+---
+## fleet-agent clusterstatus
+
+Continuously report resource status to the upstream cluster
+
+```
+fleet-agent clusterstatus [flags]
+```
+
+### Options
+
+```
+      --checkin-interval string   How often to post cluster status
+      --debug                     Turn on debug logging
+      --debug-level int           If debugging is enabled, set klog -v=X
+  -h, --help                      help for clusterstatus
+      --kubeconfig string         kubeconfig file for agent's cluster
+      --namespace string          system namespace is the namespace, the agent runs in, e.g. cattle-fleet-system
+```
+
+### SEE ALSO
+
+* [fleet-agent](./)
+
+
+---
+
+## Article: cli/fleet-agent/fleet-agent_register.md
+
+---
+title: ""
+sidebar_label: "fleet-agent register"
+---
+## fleet-agent register
+
+Register agent with an upstream cluster
+
+```
+fleet-agent register [flags]
+```
+
+### Options
+
+```
+      --debug               Turn on debug logging
+      --debug-level int     If debugging is enabled, set klog -v=X
+  -h, --help                help for register
+      --kubeconfig string   kubeconfig file for agent's cluster
+      --namespace string    system namespace is the namespace, the agent runs in, e.g. cattle-fleet-system
+```
+
+### SEE ALSO
+
+* [fleet-agent](./)
+
+
+---
+
+## Article: cli/fleet-controller/fleet-controller.md
+
+---
+title: ""
+sidebar_label: "fleet-controller"
+---
+## fleet-controller
+
+
+
+```
+fleet-controller [flags]
+```
+
+### Options
+
+```
+      --debug                             Turn on debug logging
+      --debug-level int                   If debugging is enabled, set klog -v=X
+      --disable-metrics                   disable metrics
+  -h, --help                              help for fleet-controller
+      --kubeconfig string                 Paths to a kubeconfig. Only required if out-of-cluster.
+      --namespace string                  namespace to watch (default "cattle-fleet-system")
+      --shard-id string                   only manage resources labeled with a specific shard ID
+      --zap-devel                         Development Mode defaults(encoder=consoleEncoder,logLevel=Debug,stackTraceLevel=Warn). Production Mode defaults(encoder=jsonEncoder,logLevel=Info,stackTraceLevel=Error) (default true)
+      --zap-encoder encoder               Zap log encoding (one of 'json' or 'console')
+      --zap-log-level level               Zap Level to configure the verbosity of logging. Can be one of 'debug', 'info', 'error', or any integer value > 0 which corresponds to custom debug levels of increasing verbosity
+      --zap-stacktrace-level level        Zap Level at and above which stacktraces are captured (one of 'info', 'error', 'panic').
+      --zap-time-encoding time-encoding   Zap time encoding (one of 'epoch', 'millis', 'nano', 'iso8601', 'rfc3339' or 'rfc3339nano'). Defaults to 'epoch'.
+```
+
+### SEE ALSO
+
+* [fleet-controller agentmanagement](fleet-controller_agentmanagement.md)	 -
+* [fleet-controller cleanup](fleet-controller_cleanup.md)	 -
+* [fleet-controller gitjob](fleet-controller_gitjob.md)	 -
+
+
+---
+
+## Article: cli/fleet-controller/fleet-controller_agentmanagement.md
+
+---
+title: ""
+sidebar_label: "fleet-controller agentmanagement"
+---
+## fleet-controller agentmanagement
+
+
+
+```
+fleet-controller agentmanagement [flags]
+```
+
+### Options
+
+```
+      --debug               Turn on debug logging
+      --debug-level int     If debugging is enabled, set klog -v=X
+      --disable-bootstrap   disable local cluster components
+  -h, --help                help for agentmanagement
+      --kubeconfig string   kubeconfig file
+      --namespace string    namespace to watch
+```
+
+### Options inherited from parent commands
+
+```
+      --disable-metrics   disable metrics
+      --shard-id string   only manage resources labeled with a specific shard ID
+```
+
+### SEE ALSO
+
+* [fleet-controller](./)	 -
+
+
+
+---
+
+## Article: cli/fleet-controller/fleet-controller_cleanup.md
+
+---
+title: ""
+sidebar_label: "fleet-controller cleanup"
+---
+## fleet-controller cleanup
+
+
+
+```
+fleet-controller cleanup [flags]
+```
+
+### Options
+
+```
+  -h, --help                help for cleanup
+      --kubeconfig string   kubeconfig file
+      --namespace string    namespace to watch
+```
+
+### Options inherited from parent commands
+
+```
+      --debug             Turn on debug logging
+      --debug-level int   If debugging is enabled, set klog -v=X
+```
+
+### SEE ALSO
+
+* [fleet-controller](./)
+
+
+---
+
+## Article: cli/fleet-controller/fleet-controller_gitjob.md
+
+---
+title: ""
+sidebar_label: "fleet-controller gitjob"
+---
+## fleet-controller gitjob
+
+
+
+```
+fleet-controller gitjob [flags]
+```
+
+### Options
+
+```
+      --debug                         Turn on debug logging
+      --debug-level int               If debugging is enabled, set klog -v=X
+      --disable-metrics               Disable the metrics server.
+      --gitjob-image string           The gitjob image that will be used in the generated job. (default "rancher/fleet:dev")
+  -h, --help                          help for gitjob
+      --kubeconfig string             Kubeconfig file
+      --leader-elect                  Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager. (default true)
+      --listen string                 The port the webhook listens. (default ":8080")
+      --metrics-bind-address string   The address the metric endpoint binds to. (default ":8081")
+      --namespace string              namespace to watch (default "cattle-fleet-system")
+      --shard-id string               only manage resources labeled with a specific shard ID
+      --shard-node-selector string    node selector to apply to jobs based on the shard ID, if any
+```
+
+### SEE ALSO
+
+* [fleet-controller](./)
+
+
+---
+
+## Article: changelogs/index.md
+
+---
+title: "Next 🚧"
+---
+
+We are still working on the next release.
+
+
+---
+
+## Article: changelogs/changelogs/next.md
+
+---
+title: "Next 🚧"
+---
+
+We are still working on the next release.
