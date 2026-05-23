@@ -2489,6 +2489,11 @@ If your nodes do not have an interface with a default route, a default route mus
   ip route add default via 203.0.113.255 dev dummy0 metric 1000
   ```
 
+The example uses `203.0.113.0/24`, which is TEST-NET-3 (reserved for documentation by RFC 5737). Any range will work as long as it does not overlap with the cluster CIDR, the service CIDR or any other network reachable from the node.
+ 
+Note that the commands above apply only to the running system and will be lost on reboot. To make the configuration persistent, configure the dummy interface and default route through your distribution's network management system (such as `systemd-networkd`, `NetworkManager`, or `netplan`), or via a `systemd` oneshot unit ordered `Before=rke2-server.service` and `Before=rke2-agent.service`. The default route must be in place before RKE2 starts.
+ 
+Once configured, confirm the default route is present with `ip route show default`. After RKE2 starts, confirm the node's primary IP was detected correctly with `kubectl get nodes -o wide`.
 </details>
 
 <details>
@@ -31810,8 +31815,12 @@ RKE2 supports the following [encryption providers](https://kubernetes.io/docs/ta
 #### Migrating Providers
 You can migrate from the `aescbc` provider to the `secretbox` provider by following these steps:
 1. Ensure that the `secretbox` provider is supported by your RKE2 version.
-2. Update/Add the `secrets-encryption-provider` flag in your RKE2 configuration file to `secretbox`.
-3. Rotate the encryption keys, following the [Encryption Key Rotation](#encryption-key-rotation) section below.
+2. Update/Add the `secrets-encryption-provider` flag in the RKE2 configuration file on your server nodes to `secretbox`.
+3. Sequentially restart RKE2 on the server nodes, to load the new configuration:
+    ```
+    systemctl restart rke2-server.service
+    ```
+4. Rotate the encryption keys, following the [Encryption Key Rotation](#encryption-key-rotation) section below.
 
 ### Generated encryption config file
 
