@@ -7505,7 +7505,7 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 
 | Version | Release date | Kubernetes | Etcd | Containerd | Runc | Metrics-server | CoreDNS | Ingress-Nginx | Helm-controller | Traefik | Canal (Default) | Calico | Cilium | Multus |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| [v1.32.13+rke2r2](v1.32.X.md#release-v13213rke2r2) | May 27 2026| [v1.32.13](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.32.md#v13213) | [v3.5.26-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.26-k3s1) | [v2.2.2-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.2-k3s1) | [v1.4.1](https://github.com/opencontainers/runc/releases/tag/v1.4.1) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.2](https://github.com/coredns/coredns/releases/tag/v1.14.2) | [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2) | [v0.16.17](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.17) | [v3.6.12](https://github.com/traefik/traefik/releases/tag/v3.6.12) | [Flannel v0.28.2](https://github.com/flannel-io/flannel/releases/tag/v0.28.2)<br/>[Calico v3.31.4](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.4](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.19.1](https://github.com/cilium/cilium/releases/tag/v1.19.1) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
+| [v1.32.13+rke2r2\*](v1.32.X.md#release-v13213rke2r2) | May 27 2026|  [v1.32.13](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.32.md#v13213)  |  [v3.5.26-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.26-k3s1)  |  [v2.2.2-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.2-k3s1)  |  [v1.4.1](https://github.com/opencontainers/runc/releases/tag/v1.4.1)  |  [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1)  |  [v1.14.2](https://github.com/coredns/coredns/releases/tag/v1.14.2)  |  [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2)  |  [v0.16.17](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.17)  |  [v3.6.12](https://github.com/traefik/traefik/releases/tag/v3.6.12)  | [Flannel v0.28.2](https://github.com/flannel-io/flannel/releases/tag/v0.28.2)<br/>[Calico v3.31.4](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.4](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.19.1](https://github.com/cilium/cilium/releases/tag/v1.19.1) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |  
 | [v1.32.13+rke2r1](v1.32.X.md#release-v13213rke2r1) | Mar 05 2026| [v1.32.13](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.32.md#v13213) | [v3.5.26-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.26-k3s1) | [v2.1.5-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.1.5-k3s1) | [v1.4.0](https://github.com/opencontainers/runc/releases/tag/v1.4.0) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.1](https://github.com/coredns/coredns/releases/tag/v1.14.1) | [v1.14.3-hardened3](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.3-hardened3) | [v0.16.17](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.17) | [v3.6.9](https://github.com/traefik/traefik/releases/tag/v3.6.9) | [Flannel v0.28.1](https://github.com/flannel-io/flannel/releases/tag/v0.28.1)<br/>[Calico v3.31.3](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.3](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.19.1](https://github.com/cilium/cilium/releases/tag/v1.19.1) | [v4.2.3](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.3) |
 | [v1.32.12+rke2r1](v1.32.X.md#release-v13212rke2r1) | Feb 13 2026| [v1.32.12](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.32.md#v13212) | [v3.5.26-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.26-k3s1) | [v2.1.5-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.1.5-k3s1) | [v1.4.0](https://github.com/opencontainers/runc/releases/tag/v1.4.0) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.1](https://github.com/coredns/coredns/releases/tag/v1.14.1) | [v1.14.3-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.3-hardened2) | [v0.16.17](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.17) | [v3.6.7](https://github.com/traefik/traefik/releases/tag/v3.6.7) | [Flannel v0.28.1](https://github.com/flannel-io/flannel/releases/tag/v0.28.1)<br/>[Calico v3.31.3](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.3](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.19.0](https://github.com/cilium/cilium/releases/tag/v1.19.0) | [v4.2.3](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.3) |
 | [v1.32.11+rke2r3](v1.32.X.md#release-v13211rke2r3) | Feb 04 2026| [v1.32.11](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.32.md#v13211) | [v3.5.26-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.26-k3s1) | [v2.1.5-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.1.5-k3s1) | [v1.4.0](https://github.com/opencontainers/runc/releases/tag/v1.4.0) | [v0.8.0](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.0) | [v1.14.1](https://github.com/coredns/coredns/releases/tag/v1.14.1) | [v1.14.3-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.3-hardened1) | [v0.16.17](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.17) | [v3.6.7](https://github.com/traefik/traefik/releases/tag/v3.6.7) | [Flannel v0.28.0](https://github.com/flannel-io/flannel/releases/tag/v0.28.0)<br/>[Calico v3.31.3](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.3](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.18.6](https://github.com/cilium/cilium/releases/tag/v1.18.6) | [v4.2.3](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.3) |
@@ -7523,6 +7523,7 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 | [v1.32.0+rke2r1](v1.32.X.md#release-v1320rke2r1) | Jan 03 2025| [v1.32.0](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.32.md#v1320) | [v3.5.16-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.16-k3s1) | [v1.7.23-k3s2](https://github.com/k3s-io/containerd/releases/tag/v1.7.23-k3s2) | [v1.1.14](https://github.com/opencontainers/runc/releases/tag/v1.1.14) | [v0.7.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1) | [v1.12.0](https://github.com/coredns/coredns/releases/tag/v1.12.0) | [v1.10.5-hardened6](https://github.com/rancher/ingress-nginx/releases/tag/v1.10.5-hardened6) | [v0.16.5](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.5) | Version | [Flannel v0.26.1](https://github.com/flannel-io/flannel/releases/tag/v0.26.1)<br/>[Calico v3.29.1](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v3.29.1](https://docs.tigera.io/calico/latest/release-notes/#v3.29) | [v1.16.4](https://github.com/cilium/cilium/releases/tag/v1.16.4) | [v4.1.3](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.1.3) |
 
 </div>
+\* PRIME Only Release
 
 <br />
 
@@ -7589,6 +7590,7 @@ cat /var/lib/rancher/rke2/server/token
 
 
 -----
+
 ## Release [v1.32.13+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.32.13+rke2r1)
 <!-- v1.32.13+rke2r1 -->
 
@@ -9403,6 +9405,7 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 
 | Version | Release date | Kubernetes | Etcd | Containerd | Runc | Metrics-server | CoreDNS | Ingress-Nginx | Helm-controller | Traefik | Canal (Default) | Calico | Cilium | Multus |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| [v1.33.12+rke2r2](v1.33.X.md#release-v13312rke2r2) | May 28 2026|  [v1.33.12](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.33.md#v13312)  |  [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1)  |  [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1)  |  [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2)  |  [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1)  |  [v1.14.3](https://github.com/coredns/coredns/releases/tag/v1.14.3)  |  [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2)  |  [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1)  |  [v3.6.16](https://github.com/traefik/traefik/releases/tag/v3.6.16)  | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |  
 | [v1.33.12+rke2r1](v1.33.X.md#release-v13312rke2r1) | May 18 2026| [v1.33.12](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.33.md#v13312) | [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1) | [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1) | [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.3](https://github.com/coredns/coredns/releases/tag/v1.14.3) | [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2) | [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1) | [v3.6.16](https://github.com/traefik/traefik/releases/tag/v3.6.16) | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
 | [v1.33.11+rke2r1](v1.33.X.md#release-v13311rke2r1) | Apr 24 2026| [v1.33.11](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.33.md#v13311) | [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1) | [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1) | [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.2](https://github.com/coredns/coredns/releases/tag/v1.14.2) | [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2) | [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1) | [v3.6.13](https://github.com/traefik/traefik/releases/tag/v3.6.13) | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.31.5](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.5](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
 | [v1.33.10+rke2r3](v1.33.X.md#release-v13310rke2r3) | Apr 08 2026| [v1.33.10](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.33.md#v13310) | [v3.5.26-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.5.26-k3s1) | [v2.2.2-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.2-k3s1) | [v1.4.1](https://github.com/opencontainers/runc/releases/tag/v1.4.1) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.2](https://github.com/coredns/coredns/releases/tag/v1.14.2) | [v1.14.5-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened1) | [v0.16.17](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.17) | [v3.6.10](https://github.com/traefik/traefik/releases/tag/v3.6.10) | [Flannel v0.28.2](https://github.com/flannel-io/flannel/releases/tag/v0.28.2)<br/>[Calico v3.31.4](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.4](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.19.1](https://github.com/cilium/cilium/releases/tag/v1.19.1) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
@@ -9423,6 +9426,50 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 
 <br />
 
+## Release [v1.33.12+rke2r2](https://github.com/rancher/rke2/releases/tag/v1.33.12+rke2r2)
+<!-- v1.33.12+rke2r2 -->
+
+This release updates Kubernetes to v1.33.12.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.33.12+rke2r1:
+
+* Set klipper-helm registry correctly when prime [(#10434)](https://github.com/rancher/rke2/pull/10434)
+* Update to v1.33.12+rke2r2 [(#10443)](https://github.com/rancher/rke2/pull/10443)
+* Fix calico toleration values [(#10458)](https://github.com/rancher/rke2/pull/10458)
+* Bump ingress-nginx to address CVE-2026-9256 [(#10465)](https://github.com/rancher/rke2/pull/10465)
+* Bump rke2-calico chart for network-unavailable toleration [(#10493)](https://github.com/rancher/rke2/pull/10493)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.19.303](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.19.303.tgz) |
+| rke2-canal | [v3.32.0-build2026051100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.32.0-build2026051100.tgz) |
+| rke2-calico | [v3.32.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.32.003.tgz) |
+| rke2-calico-crd | [v3.32.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.32.003.tgz) |
+| rke2-coredns | [1.45.212](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.45.212.tgz) |
+| rke2-ingress-nginx | [4.14.509](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.14.509.tgz) |
+| rke2-metrics-server | [3.13.011](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.13.011.tgz) |
+| rancher-vsphere-csi | [3.5.0-rancher200](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.5.0-rancher200.tgz) |
+| rancher-vsphere-cpi | [1.12.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.12.100.tgz) |
+| harvester-cloud-provider | [0.2.1100](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1100.tgz) |
+| harvester-csi-driver | [0.1.2800](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2800.tgz) |
+| rke2-snapshot-controller | [4.2.005](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.2.005.tgz) |
+| rke2-snapshot-controller-crd | [4.2.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.2.003.tgz) |
+| rke2-traefik | [39.0.703](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-traefik/rke2-traefik-39.0.703.tgz) |
+| rke2-traefik-crd | [39.0.702](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-traefik/rke2-traefik-crd-39.0.702.tgz) |
+
+
+-----
 ## Release [v1.33.12+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.33.12+rke2r1)
 <!-- v1.33.12+rke2r1 -->
 
@@ -10257,6 +10304,7 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 
 | Version | Release date | Kubernetes | Etcd | Containerd | Runc | Metrics-server | CoreDNS | Ingress-Nginx | Helm-controller | Traefik | Canal (Default) | Calico | Cilium | Multus |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| [v1.34.8+rke2r2](v1.34.X.md#release-v1348rke2r2) | May 28 2026|  [v1.34.8](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.34.md#v1348)  |  [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1)  |  [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1)  |  [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2)  |  [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1)  |  [v1.14.3](https://github.com/coredns/coredns/releases/tag/v1.14.3)  |  [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2)  |  [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1)  |  [v3.6.16](https://github.com/traefik/traefik/releases/tag/v3.6.16)  | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |  
 | [v1.34.8+rke2r1](v1.34.X.md#release-v1348rke2r1) | May 18 2026| [v1.34.8](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.34.md#v1348) | [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1) | [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1) | [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.3](https://github.com/coredns/coredns/releases/tag/v1.14.3) | [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2) | [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1) | [v3.6.16](https://github.com/traefik/traefik/releases/tag/v3.6.16) | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
 | [v1.34.7+rke2r1](v1.34.X.md#release-v1347rke2r1) | Apr 24 2026| [v1.34.7](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.34.md#v1347) | [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1) | [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1) | [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.2](https://github.com/coredns/coredns/releases/tag/v1.14.2) | [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2) | [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1) | [v3.6.13](https://github.com/traefik/traefik/releases/tag/v3.6.13) | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.31.5](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.5](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
 | [v1.34.6+rke2r3](v1.34.X.md#release-v1346rke2r3) | Apr 08 2026| [v1.34.6](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.34.md#v1346) | [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1) | [v2.2.2-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.2-k3s1) | [v1.4.1](https://github.com/opencontainers/runc/releases/tag/v1.4.1) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.2](https://github.com/coredns/coredns/releases/tag/v1.14.2) | [v1.14.5-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened1) | [v0.16.17](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.17) | [v3.6.10](https://github.com/traefik/traefik/releases/tag/v3.6.10) | [Flannel v0.28.2](https://github.com/flannel-io/flannel/releases/tag/v0.28.2)<br/>[Calico v3.31.4](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.4](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.19.1](https://github.com/cilium/cilium/releases/tag/v1.19.1) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
@@ -10272,6 +10320,50 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 
 <br />
 
+## Release [v1.34.8+rke2r2](https://github.com/rancher/rke2/releases/tag/v1.34.8+rke2r2)
+<!-- v1.34.8+rke2r2 -->
+
+This release updates Kubernetes to v1.34.8.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.34.8+rke2r1:
+
+* Set klipper-helm registry correctly when prime [(#10435)](https://github.com/rancher/rke2/pull/10435)
+* Update to v1.34.8+rke2r2 [(#10444)](https://github.com/rancher/rke2/pull/10444)
+* Fix calico toleration values [(#10457)](https://github.com/rancher/rke2/pull/10457)
+* Bump ingress-nginx to address CVE-2026-9256 [(#10463)](https://github.com/rancher/rke2/pull/10463)
+* Bump rke2-calico chart for network-unavailable toleration [(#10492)](https://github.com/rancher/rke2/pull/10492)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.19.303](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.19.303.tgz) |
+| rke2-canal | [v3.32.0-build2026051100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.32.0-build2026051100.tgz) |
+| rke2-calico | [v3.32.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.32.003.tgz) |
+| rke2-calico-crd | [v3.32.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.32.003.tgz) |
+| rke2-coredns | [1.45.212](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.45.212.tgz) |
+| rke2-ingress-nginx | [4.14.509](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.14.509.tgz) |
+| rke2-metrics-server | [3.13.011](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.13.011.tgz) |
+| rancher-vsphere-csi | [3.5.0-rancher200](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.5.0-rancher200.tgz) |
+| rancher-vsphere-cpi | [1.12.100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.12.100.tgz) |
+| harvester-cloud-provider | [0.2.1100](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1100.tgz) |
+| harvester-csi-driver | [0.1.2800](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2800.tgz) |
+| rke2-snapshot-controller | [4.2.005](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.2.005.tgz) |
+| rke2-snapshot-controller-crd | [4.2.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.2.003.tgz) |
+| rke2-traefik | [39.0.703](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-traefik/rke2-traefik-39.0.703.tgz) |
+| rke2-traefik-crd | [39.0.702](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-traefik/rke2-traefik-crd-39.0.702.tgz) |
+
+
+-----
 ## Release [v1.34.8+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.34.8+rke2r1)
 <!-- v1.34.8+rke2r1 -->
 
@@ -10841,6 +10933,7 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 
 | Version | Release date | Kubernetes | Etcd | Containerd | Runc | Metrics-server | CoreDNS | Ingress-Nginx | Helm-controller | Traefik | Canal (Default) | Calico | Cilium | Multus |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| [v1.35.5+rke2r2](v1.35.X.md#release-v1355rke2r2) | May 29 2026|  [v1.35.5](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.35.md#v1355)  |  [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1)  |  [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1)  |  [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2)  |  [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1)  |  [v1.14.3](https://github.com/coredns/coredns/releases/tag/v1.14.3)  |  [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2)  |  [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1)  |  [v3.6.16](https://github.com/traefik/traefik/releases/tag/v3.6.16)  | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |  
 | [v1.35.5+rke2r1](v1.35.X.md#release-v1355rke2r1) | May 18 2026| [v1.35.5](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.35.md#v1355) | [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1) | [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1) | [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.3](https://github.com/coredns/coredns/releases/tag/v1.14.3) | [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2) | [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1) | [v3.6.16](https://github.com/traefik/traefik/releases/tag/v3.6.16) | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
 | [v1.35.4+rke2r1](v1.35.X.md#release-v1354rke2r1) | Apr 24 2026| [v1.35.4](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.35.md#v1354) | [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1) | [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1) | [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.2](https://github.com/coredns/coredns/releases/tag/v1.14.2) | [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2) | [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1) | [v3.6.13](https://github.com/traefik/traefik/releases/tag/v3.6.13) | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.31.5](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.5](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
 | [v1.35.3+rke2r3](v1.35.X.md#release-v1353rke2r3) | Apr 08 2026| [v1.35.3](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.35.md#v1353) | [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1) | [v2.2.2-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.2-k3s1) | [v1.4.1](https://github.com/opencontainers/runc/releases/tag/v1.4.1) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.2](https://github.com/coredns/coredns/releases/tag/v1.14.2) | [v1.14.5-hardened1](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened1) | [v0.16.17](https://github.com/k3s-io/helm-controller/releases/tag/v0.16.17) | [v3.6.10](https://github.com/traefik/traefik/releases/tag/v3.6.10) | [Flannel v0.28.2](https://github.com/flannel-io/flannel/releases/tag/v0.28.2)<br/>[Calico v3.31.4](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v3.31.4](https://docs.tigera.io/calico/latest/release-notes/#v3.31) | [v1.19.1](https://github.com/cilium/cilium/releases/tag/v1.19.1) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
@@ -10854,6 +10947,50 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 
 <br />
 
+## Release [v1.35.5+rke2r2](https://github.com/rancher/rke2/releases/tag/v1.35.5+rke2r2)
+<!-- v1.35.5+rke2r2 -->
+
+This release updates Kubernetes to v1.35.5.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.35.5+rke2r1:
+
+* Set klipper-helm registry correctly when prime [(#10436)](https://github.com/rancher/rke2/pull/10436)
+* Update to v1.35.5+rke2r2 [(#10445)](https://github.com/rancher/rke2/pull/10445)
+* Fix calico toleration values [(#10456)](https://github.com/rancher/rke2/pull/10456)
+* Bump ingress-nginx to address CVE-2026-9256 [(#10464)](https://github.com/rancher/rke2/pull/10464)
+* Bump rke2-calico chart for network-unavailable toleration [(#10491)](https://github.com/rancher/rke2/pull/10491)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.19.303](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.19.303.tgz) |
+| rke2-canal | [v3.32.0-build2026051100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.32.0-build2026051100.tgz) |
+| rke2-calico | [v3.32.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.32.003.tgz) |
+| rke2-calico-crd | [v3.32.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.32.003.tgz) |
+| rke2-coredns | [1.45.212](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.45.212.tgz) |
+| rke2-ingress-nginx | [4.14.509](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.14.509.tgz) |
+| rke2-metrics-server | [3.13.011](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.13.011.tgz) |
+| rancher-vsphere-csi | [3.6.0-rancher100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.6.0-rancher100.tgz) |
+| rancher-vsphere-cpi | [1.13.000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.13.000.tgz) |
+| harvester-cloud-provider | [0.2.1100](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1100.tgz) |
+| harvester-csi-driver | [0.1.2800](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2800.tgz) |
+| rke2-snapshot-controller | [4.2.005](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.2.005.tgz) |
+| rke2-snapshot-controller-crd | [4.2.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.2.003.tgz) |
+| rke2-traefik | [39.0.703](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-traefik/rke2-traefik-39.0.703.tgz) |
+| rke2-traefik-crd | [39.0.702](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-traefik/rke2-traefik-crd-39.0.702.tgz) |
+
+
+-----
 ## Release [v1.35.5+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.35.5+rke2r1)
 <!-- v1.35.5+rke2r1 -->
 
@@ -11323,22 +11460,75 @@ Before upgrading from earlier releases, be sure to read the Kubernetes [Urgent U
 
 | Version | Release date | Kubernetes | Etcd | Containerd | Runc | Metrics-server | CoreDNS | Ingress-Nginx | Helm-controller | Traefik | Canal (Default) | Calico | Cilium | Multus |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| [v1.36.1+rke2r1](v1.36.X.md#release-v1361rke2r1) | May 18 2026| [v1.36.1](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.36.md#v1361) | [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1) | [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1) | [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.3](https://github.com/coredns/coredns/releases/tag/v1.14.3) | [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2) | [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1) | [v3.6.16](https://github.com/traefik/traefik/releases/tag/v3.6.16) | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
+| [v1.36.1+rke2r2](v1.36.X.md#release-v1361rke2r2) | May 28 2026|  [v1.36.1](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.36.md#v1361)  |  [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1)  |  [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1)  |  [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2)  |  [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1)  |  [v1.14.3](https://github.com/coredns/coredns/releases/tag/v1.14.3)  |  [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2)  |  [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1)  |  [v3.6.16](https://github.com/traefik/traefik/releases/tag/v3.6.16)  | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |  
+| [v1.36.1+rke2r1](v1.36.X.md#release-v1361rke2r1) | May 18 2026|  [v1.36.1](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.36.md#v1361)  |  [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1)  |  [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1)  |  [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2)  |  [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1)  |  [v1.14.3](https://github.com/coredns/coredns/releases/tag/v1.14.3)  |  [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2)  |  [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1)  |  [v3.6.16](https://github.com/traefik/traefik/releases/tag/v3.6.16)  | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |  
 | [v1.36.0+rke2r1](v1.36.X.md#release-v1360rke2r1) | May 12 2026| [v1.36.0](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.36.md#v1360) | [v3.6.7-k3s1](https://github.com/k3s-io/etcd/releases/tag/v3.6.7-k3s1) | [v2.2.3-k3s1](https://github.com/k3s-io/containerd/releases/tag/v2.2.3-k3s1) | [v1.4.2](https://github.com/opencontainers/runc/releases/tag/v1.4.2) | [v0.8.1](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.8.1) | [v1.14.3](https://github.com/coredns/coredns/releases/tag/v1.14.3) | [v1.14.5-hardened2](https://github.com/rancher/ingress-nginx/releases/tag/v1.14.5-hardened2) | [v0.17.1](https://github.com/k3s-io/helm-controller/releases/tag/v0.17.1) | [v3.6.16](https://github.com/traefik/traefik/releases/tag/v3.6.16) | [Flannel v0.28.4](https://github.com/flannel-io/flannel/releases/tag/v0.28.4)<br/>[Calico v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v3.32.0](https://docs.tigera.io/calico/latest/release-notes/#v3.32) | [v1.19.3](https://github.com/cilium/cilium/releases/tag/v1.19.3) | [v4.2.4](https://github.com/k8snetworkplumbingwg/multus-cni/releases/tag/v4.2.4) |
 
 </div>
 
 <br />
 
+## Release [v1.36.1+rke2r2](https://github.com/rancher/rke2/releases/tag/v1.36.1+rke2r2)
+<!-- v1.36.1+rke2r2 -->
+:::warning Upstream `ingress-nginx` Retirement & Transition to Traefik
+Because `ingress-nginx` was retired upstream as of March 2026, **Traefik is now the default for new clusters starting in v1.36** (existing clusters will keep their current ingress upon upgrade to avoid breakage). This transition brings the following structural changes:
+
+* **Airgapped Environments:** The `rke2-images-core` tarball now contains Traefik images instead of `ingress-nginx`. The standalone `rke2-images-traefik` tarball has been removed. Users who must continue using `ingress-nginx` will now need to manually provide the `rke2-images-ingress-nginx` tarball.
+* **Future Removal:** The `ingress-nginx` chart will not receive any additional updates and will be completely removed in v1.37 for community users.
+* **Prime Customers:** Please refer to the official product documentation for specific Prime considerations.
+:::
+
+This release updates Kubernetes to v1.36.1.
+
+**Important Note**
+
+If your server (control-plane) nodes were not started with the `--token` CLI flag or config file key, a randomized token was generated during initial cluster startup. This key is used both for joining new nodes to the cluster, and for encrypting cluster bootstrap data within the datastore. Ensure that you retain a copy of this token, as is required when restoring from backup.
+
+You may retrieve the token value from any server already joined to the cluster:
+```bash
+cat /var/lib/rancher/rke2/server/token
+```
+
+### Changes since v1.36.1+rke2r1:
+
+* Set klipper-helm registry correctly when prime [(#10437)](https://github.com/rancher/rke2/pull/10437)
+* Update to v1.36.1+rke2r2 [(#10446)](https://github.com/rancher/rke2/pull/10446)
+* Bump rke2 CCM tag [(#10459)](https://github.com/rancher/rke2/pull/10459)
+* Fix calico toleration values [(#10455)](https://github.com/rancher/rke2/pull/10455)
+* Bump ingress-nginx to address CVE-2026-9256 [(#10462)](https://github.com/rancher/rke2/pull/10462)
+* Bump rke2-calico chart for network-unavailable toleration [(#10490)](https://github.com/rancher/rke2/pull/10490)
+
+
+## Charts Versions
+| Component | Version |
+| --- | --- |
+| rke2-cilium | [1.19.303](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-cilium/rke2-cilium-1.19.303.tgz) |
+| rke2-canal | [v3.32.0-build2026051100](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-canal/rke2-canal-v3.32.0-build2026051100.tgz) |
+| rke2-calico | [v3.32.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-v3.32.003.tgz) |
+| rke2-calico-crd | [v3.32.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-calico/rke2-calico-crd-v3.32.003.tgz) |
+| rke2-coredns | [1.45.212](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-coredns/rke2-coredns-1.45.212.tgz) |
+| rke2-ingress-nginx | [4.14.509](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-ingress-nginx/rke2-ingress-nginx-4.14.509.tgz) |
+| rke2-metrics-server | [3.13.011](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-metrics-server/rke2-metrics-server-3.13.011.tgz) |
+| rancher-vsphere-csi | [3.7.0-rancher100](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-csi/rancher-vsphere-csi-3.7.0-rancher100.tgz) |
+| rancher-vsphere-cpi | [1.14.000](https://github.com/rancher/rke2-charts/raw/main/assets/rancher-vsphere-cpi/rancher-vsphere-cpi-1.14.000.tgz) |
+| harvester-cloud-provider | [0.2.1100](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-cloud-provider-0.2.1100.tgz) |
+| harvester-csi-driver | [0.1.2800](https://github.com/rancher/rke2-charts/raw/main/assets/harvester-cloud-provider/harvester-csi-driver-0.1.2800.tgz) |
+| rke2-snapshot-controller | [4.2.005](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-4.2.005.tgz) |
+| rke2-snapshot-controller-crd | [4.2.003](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-snapshot-controller/rke2-snapshot-controller-crd-4.2.003.tgz) |
+| rke2-traefik | [39.0.703](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-traefik/rke2-traefik-39.0.703.tgz) |
+| rke2-traefik-crd | [39.0.702](https://github.com/rancher/rke2-charts/raw/main/assets/rke2-traefik/rke2-traefik-crd-39.0.702.tgz) |
+
+
+-----
 ## Release [v1.36.1+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.36.1+rke2r1)
 <!-- v1.36.1+rke2r1 -->
-> [!WARNING]
-> **Upstream `ingress-nginx` Retirement & Transition to Traefik**
-> Because `ingress-nginx` was retired upstream as of March 2026, **Traefik is now the default for new clusters starting in v1.36** (existing clusters will keep their current ingress upon upgrade to avoid breakage). This transition brings the following structural changes:
-> 
-> * **Airgapped Environments:** The `rke2-images-core` tarball now contains Traefik images instead of `ingress-nginx`. The standalone `rke2-images-traefik` tarball has been removed. Users who must continue using `ingress-nginx` will now need to manually provide the `rke2-images-ingress-nginx` tarball.
-> * **Future Removal:** The `ingress-nginx` chart will not receive any additional updates and will be completely removed in v1.37 for community users.
-> * **Prime Customers:** Please refer to the official product documentation for specific Prime considerations.
+:::warning Upstream `ingress-nginx` Retirement & Transition to Traefik
+Because `ingress-nginx` was retired upstream as of March 2026, **Traefik is now the default for new clusters starting in v1.36** (existing clusters will keep their current ingress upon upgrade to avoid breakage). This transition brings the following structural changes:
+
+* **Airgapped Environments:** The `rke2-images-core` tarball now contains Traefik images instead of `ingress-nginx`. The standalone `rke2-images-traefik` tarball has been removed. Users who must continue using `ingress-nginx` will now need to manually provide the `rke2-images-ingress-nginx` tarball.
+* **Future Removal:** The `ingress-nginx` chart will not receive any additional updates and will be completely removed in v1.37 for community users.
+* **Prime Customers:** Please refer to the official product documentation for specific Prime considerations.
+:::
 
 This release updates Kubernetes to v1.36.1.
 
@@ -11384,13 +11574,13 @@ cat /var/lib/rancher/rke2/server/token
 -----
 ## Release [v1.36.0+rke2r1](https://github.com/rancher/rke2/releases/tag/v1.36.0+rke2r1)
 <!-- v1.36.0+rke2r1 -->
-> [!WARNING]
-> **Upstream `ingress-nginx` Retirement & Transition to Traefik**
-> Because `ingress-nginx` was retired upstream as of March 2026, **Traefik is now the default for new clusters starting in v1.36** (existing clusters will keep their current ingress upon upgrade to avoid breakage). This transition brings the following structural changes:
-> 
-> * **Airgapped Environments:** The `rke2-images-core` tarball now contains Traefik images instead of `ingress-nginx`. The standalone `rke2-images-traefik` tarball has been removed. Users who must continue using `ingress-nginx` will now need to manually provide the `rke2-images-ingress-nginx` tarball.
-> * **Future Removal:** The `ingress-nginx` chart will not receive any additional updates and will be completely removed in v1.37 for community users.
-> * **Prime Customers:** Please refer to the official product documentation for specific Prime considerations.
+:::warning **Upstream `ingress-nginx` Retirement & Transition to Traefik**
+Because `ingress-nginx` was retired upstream as of March 2026, **Traefik is now the default for new clusters starting in v1.36** (existing clusters will keep their current ingress upon upgrade to avoid breakage). This transition brings the following structural changes:
+
+* **Airgapped Environments:** The `rke2-images-core` tarball now contains Traefik images instead of `ingress-nginx`. The standalone `rke2-images-traefik` tarball has been removed. Users who must continue using `ingress-nginx` will now need to manually provide the `rke2-images-ingress-nginx` tarball.
+* **Future Removal:** The `ingress-nginx` chart will not receive any additional updates and will be completely removed in v1.37 for community users.
+* **Prime Customers:** Please refer to the official product documentation for specific Prime considerations.
+:::
 
 This release updates Kubernetes to v1.36.0.
 
