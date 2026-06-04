@@ -3089,82 +3089,6 @@ Upon successful completion, the log bundle will be written to the root of the C:
 
 ---
 
-## Article: 000020067.md
-
-# Logs not forwarded by Rancher Logging in Rancher v2.x when Docker daemon logging driver is not set to json-file
-
-**Article Number:** [000020067](https://support.scc.suse.com/s/kb/360050943532)
-
-## **Environment**
-
-Rancher v2.x managed cluster with Rancher logging enabled
-
-## **Situation**
-
-#### The [Rancher v2.x Logging feature](https://rancher.com/docs/rancher/v2.x/en/logging/) enables you to configure log forwarding for Pods, as well as system component containers, in a cluster to a logging endpoint such as Elasticsearch or Splunk.
-
-This feature works by deploying a workload to each node in the cluster that mounts the container log directory from the host to parse the Docker container json log files. This is dependent upon use of the [json-file Docker logging driver](https://docs.docker.com/config/containers/logging/json-file/). In the event that the Docker daemon is configured with an alternative logging driver, the logging feature will be unable to parse the logs and will not forward these.
-
-However, under certain configurations (e.g., in CentOS and RHEL packaged Docker 1.13.1, the default log driver configured is journald), it could prevent log forwarding functioning. Meanwhile, whilst json-file is the default log driver in the upstream Docker packages, if an alternative has been configured on nodes this will also prevent the correct functioning of the log forwarding.
-
-You can verify the currently configured Docker logging driver on a node by running `docker info | grep Logging`, which will show output of the following format: `Logging Driver: journald`.
-
-In the event that json-file is not the configured logging driver, the output of `ls -la /var/log/containers/` on the node should also be empty. With json-file configured this would display symoblic links to paths under `/var/log/pods`, containing symbolic links which in turn point to the Docker container json log files.
-
-## **Resolution**
-
-#### CentOS or RHEL packaged Docker
-
-1. Update `/etc/sysconfig/docker`, to set `--log-driver=json-file` instead of `journald`.
-2. Restart the Docker daemon: `systemctl restart docker`
-3. You should now see symlinked logs created under `/var/log/containers`
-
-#### Upstream Docker
-
-1. Configure the json-file Docker logging driver in `/etc/docker/daemon.json` [per the Docker documentation](https://docs.docker.com/config/containers/logging/json-file/)
-2. Restart the Docker daemon: `systemctl restart docker`
-3. You should now see symlinked logs created under `/var/log/containers`
-
-
-
----
-
-## Article: 000020068.md
-
-# [JP]"ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend" error messages logged by the Docker daemon upon daemon startup
-
-**Article Number:** [000020068](https://support.scc.suse.com/s/kb/360050943512)
-
-## **Environment**
-
-- [`overlay` or `overlay2` storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)を利用するDocker デーモン
-
-## **Situation**
-
-Dockerデーモンの起動時に、以下のようなエラーメッセージがシステムログに出力される：
-
-```
-Jun  13 13:55:47 hostname container-storage-setup: ERROR: XFS filesystem  at /var has ftype=0, cannot use overlay backend; consider different  driver or separate volume or OS reprovision
-```
-
-```
- 
-```
-
-## **Cause**
-
-[Docker documentation](https://docs.docker.com/storage/storagedriver/overlayfs-driver/#prerequisites)より  
-"Running on XFS without d\_type support now causes Docker to skip the attempt to use the `overlay` or `overlay2`driver. Existing installs will continue to run, but produce an error. This is to allow users to migrate their data. In a future version, this will be a fatal error, which will prevent Docker from starting."
-
-## **Resolution**
-
-xfsのファイルシステムは、d\_typeがtrueに設定した状態でフォーマットされている場合に限り、overlayまたはoverlay2 のDockerストレージドライバーのBackendとして利用することができます。  
-xfsファイルシステムのd\_type設定値はxfs\_infoコマンドで確認することができます。出力の例は[`xfs_info`man pages](https://www.man7.org/linux/man-pages/man8/xfs_info.8.html#EXAMPLES)から参考できます。ftype=1の場合、ファイルシステムはd\_type trueでフォーマットされており、ファイルシステムはoverlayまたはoverlay2storageドライバーのバックエンドとして使用するのに適しています。この値が0に設定されている場合、ファイルシステムはoverlayまたはoverlay2ストレージドライバーでの使用には適しておらず、-n ftype=1のフラグで再構築する必要があります。
-
-
-
----
-
 ## Article: 000020070.md
 
 # How to enable support for use-forwarded-headers in ingress-nginx
@@ -3853,44 +3777,6 @@ worker_processes 2;
 worker_rlimit_nofile 523264;
 bash-5.0$
 ```
-
-
-
----
-
-## Article: 000020080.md
-
-# How can I tell whether my app is installed with Helm v2 or Helm v3?
-
-**Article Number:** [000020080](https://support.scc.suse.com/s/kb/360050604471)
-
-## **Environment**
-
-Rancher 2.7.x and 2.8.x
-
-## **Situation**
-
-#### Question
-
-How can I tell whether my app was installed with Helm v2 or Helm v3?
-
-#### Pre-requisites
-
-- kubectl access to the cluster the app is deployed in
-
-#### Answer
-
-The easiest way is to check what version of Helm was used to deploy resources is to look at the `heritage` label. For example, to check whether Rancher was installed via Helm v2 or v3, run:
-
-```
-kubectl get deployment -n cattle-system rancher -o yaml | grep heritage
-```
-
-The heritage version defines what version of helm was used to install this chart.
-
-`heritage: Tiller` - This is a Helm v2 resource
-
-`heritage: Helm` - This is a Helm v3 resource
 
 
 
@@ -4725,54 +4611,6 @@ If the testing above indicates that the storage I/O performance is not sufficien
 
 ---
 
-## Article: 000020101.md
-
-# How to create docker goroutine, and memory heap, dumps
-
-**Article Number:** [000020101](https://support.scc.suse.com/s/kb/360045276391)
-
-## **Environment**
-
-Rancher 2.x
-
-## **Situation**
-
-#### Task
-
-It's important to observe Docker as it operates to help drive troubleshooting an issue. Here are some commands to generate memory heap and goroutine dumps without killing the Docker process.
-
-#### Pre-requisites
-
-- Docker with an exposed socket (typically found at `/var/run/docker.sock`)
-
-## **Resolution**
-
-#### Collecting dumps
-
-##### Heap dump
-
-Heap dumps report a sampling of memory allocations of live objects.
-
-```
-curl --unix-socket /var/run/docker.sock http://./debug/pprof/heap?debug=2
-```
-
-##### Goroutine dump
-
-The goroutine dump reports stack traces of all current goroutines for the docker process.
-
-```
-curl --unix-socket /var/run/docker.sock http://./debug/pprof/goroutine?debug=2
-```
-
-The output normally is output to `stdout`, where it can be redirected to a file.
-
-Depending on how Docker is configured, and where its configured to log to, the traces could end up in the `docker.log` file or with the system logs (syslog, journalctl, kern.log, messages, etc...).
-
-
-
----
-
 ## Article: 000020102.md
 
 # Are API audit logs enabled in Rancher Hosted Prime?
@@ -5307,37 +5145,6 @@ High amounts of the `insert_failed` counter can be indicative of a conntrack rac
 
 ---
 
-## Article: 000020106.md
-
-# What permissions are required to grant access to manage Cluster Logging in Rancher v2.x
-
-**Article Number:** [000020106](https://support.scc.suse.com/s/kb/360043882292)
-
-## **Situation**
-
-#### Question
-
-By default, only Global Admins or Cluster Owners have access to configure and manage [Cluster Logging](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/logging/) in a Rancher v2.x managed cluster. This article details the permissions required to grant this access to other users.
-
-#### Pre-requisites
-
-- A Kubernetes cluster managed by Rancher v2.x
-
-#### Answer
-
-Cluster Logging configuration is managed by the ClusterLoggings [Custom Resource](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) in the management.cattle.io API Group. In order to create a role that grants permission to manage the logging configuration for a cluster, you should therefore grant all verbs on the CluserLoggings Resource in the management.cattle.io API group.
-
-You can define a custom Cluster Role via the Rancher UI, by navigating to the Global view, and selecting Security -&gt; Roles -&gt; Cluster, creating a custom role with these permissions. Granting this custom role on a cluster to a user or group will then provide access to manage the Cluster Logging configuration for that cluster.
-
-#### Further Reading
-
-- [Rancher v2.x Cluster Logging Documentation](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/logging/)
-- [Rancher v2.x Role-Based Access Control (RBAC) Documentation](https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/)
-
-
-
----
-
 ## Article: 000020107.md
 
 # How to pull the logs from the rancher-wins service on a Windows node in a Rancher v2.x provisioned Kubernetes cluster
@@ -5361,55 +5168,6 @@ Get-EventLog -LogName Application -Source 'rancher-wins' | format-table  -Proper
 ```
 
 This will write the logs to the file `wins.log` in the working directory, which you can then provide in your Rancher Support Ticket, for analysis.
-
-
-
----
-
-## Article: 000020108.md
-
-# How to enable CoreDNS query logging in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned RKE cluster
-
-**Article Number:** [000020108](https://support.scc.suse.com/s/kb/360044336591)
-
-## **Environment**
-
-An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x, using the CoreDNS dns add-on.
-
-## **Situation**
-
-By default, DNS query logging is disabled in CoreDNS, this article details the steps to enable query logging for CoreDNS in an RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x.
-
-## **Resolution**
-
-To enable DNS query logging the [log plugin](https://coredns.io/plugins/log/) needs to be configured, by the addition of `log` to the Corefile in the coredns ConfigMap of the kube-system Namespace.
-
-For example, to use the default log plugin configuration and log all queries, the Corefile definition would be updated as follows:
-
-```
-.:53 {
-    log
-    errors
-    health
-    ready
-    kubernetes cluster.local in-addr.arpa ip6.arpa {
-      pods insecure
-      fallthrough in-addr.arpa ip6.arpa
-    }
-    prometheus :9153
-    forward . "/etc/resolv.conf" {
-      policy random
-    }
-    cache 30
-    loop
-    reload
-    loadbalance
-}
-```
-
-Steps to update the CoreDNS ConfigMap and persist these changes can be found in the article [How to update the CoreDNS ConfigMap in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster](https://www.suse.com/support/kb/doc/?id=000020115).
-
-For the full list of available options when configuring the log plugin refer to the [plugin documentation](https://coredns.io/plugins/log/).
 
 
 
@@ -5534,131 +5292,6 @@ Ubuntu - [https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1403152](https://
 RedHat - [https://access.redhat.com/solutions/3105941](https://access.redhat.com/solutions/3105941) - [https://access.redhat.com/solutions/3659011](https://access.redhat.com/solutions/3659011)
 
 Centos - [https://bugs.centos.org/view.php?id=12711](https://bugs.centos.org/view.php?id=12711)
-
-
-
----
-
-## Article: 000020113.md
-
-# Logging integration doesn't work if Docker Root is not default /var/lib/docker
-
-**Article Number:** [000020113](https://support.scc.suse.com/s/kb/360043881412)
-
-## **Situation**
-
-#### Issue
-
-As of the time of this writing, Rancher Logging is broken when the Docker root is configured to something other than `/var/lib/docker`.
-
-This issue is tracked in [GitHub issue #21112](https://github.com/rancher/rancher/issues/21112).
-
-#### Pre-requisites
-
-- Rancher 2.x managed/imported cluster with logging enabled.
-- Docker root configured to something other than `/var/lib/docker` on the nodes (confirmed with `docker info | grep Root`).
-
-#### Workaround
-
-These steps will assume you have the Docker data root set to `/other-docker-root`. Change `/other-docker-root` to whatever your custom path is:
-
-1. Rancher UI -&gt; Cluster -&gt; System Project -&gt; Workloads -&gt; cattle-logging Namespace
-2. Find workload rancher-logging-fluentd-linux
-3. Edit YAML
-4. Edit volume dockerroot
-5. Change "Path on the Node" from `/var/lib/docker` to `/other-docker-root`
-6. Add volume (with the following details):
-
-```
-Volume Name: dockerrootcustom
-Type: bind-mount
-Path on the Node: /other-docker-root
-Mount Point: /other-docker-root
-```
-
-1. Click Save
-
-At this point logging should be working with your non-default Docker root directory. You should be able to verify this on your logging target. Keep in mind it may take a few minutes for logs to show up there as fluentd is configured to clear its buffer every 60 seconds by default.
-
-
-
----
-
-## Article: 000020115.md
-
-# How to update the CoreDNS ConfigMap in a Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster
-
-**Article Number:** [000020115](https://support.scc.suse.com/s/kb/360043881372)
-
-## **Environment**
-
-- A Rancher Kubernetes Engine (RKE) Kubernetes cluster provisioned by the RKE CLI or Rancher v2.x, using the CoreDNS add-on.
-- kubectl access to the cluster with a kubeconfig sourced for a global admin or cluster owner user.
-
-## **Situation**
-
-You might wish to update the Corefile configuration of CoreDNS, defined via the coredns ConfigMap in the kube-system Namespace, for example, in order to enable [query logging](https://coredns.io/plugins/log/) or [update the resolver policy](). This article details how to update this ConfigMap and persist changes in a Rancher Kubernetes Engine (RKE) cluster.
-
-## **Resolution**
-
-1. Capture the current CoreDNS ConfigMap definition, with the following `kubectl` command:
-   
-   ```
-   kubectl -n kube-system get configmap coredns -o go-template={{.data.Corefile}}
-   ```
-   
-   The output should look like the following:
-   
-   ```
-   .:53 {
-       errors
-       health
-       ready
-       kubernetes cluster.local in-addr.arpa ip6.arpa {
-         pods insecure
-         fallthrough in-addr.arpa ip6.arpa
-       }
-       prometheus :9153
-       forward . "/etc/resolv.conf" {
-         policy random
-       }
-       cache 30
-       loop
-       reload
-       loadbalance
-   }
-   ```
-2. Edit the cluster configuration YAML, to define a custom add-on containing the CoreDNS ConfigMap, with your desired changes. For RKE provisioned clusters, add this into the cluster.yml file. For a Rancher provisioned cluster, navigate to the cluster view in the Rancher UI, open the edit cluster view and click [`Edit as YAML`](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/options/#cluster-config-file).
-   
-   Create the add-on with the content below, replacing the Corefile definition with the existing configuration retrieved in step 1. Then make the desired changes, in this example the resolver policy is updated from random, in the existing configuration, to sequential.
-   
-   ```
-   apiVersion: v1
-   kind: ConfigMap
-   metadata:
-     name: coredns
-     namespace: kube-system
-   data:
-     Corefile: |
-       .:53 {
-           errors
-           health
-           ready
-           kubernetes cluster.local in-addr.arpa ip6.arpa {
-             pods insecure
-             fallthrough in-addr.arpa ip6.arpa
-           }
-           prometheus :9153
-           forward . "/etc/resolv.conf" {
-             policy sequential
-           }
-           cache 30
-           loop
-           reload
-           loadbalance
-       }
-   ```
-3. Update the cluster with the new configuration. For RKE provisioned clusters, invoke `rke up --cluster.yml` (**ensure the cluster.rkestate file is present in the working directory when invoking `rke up`** ). For Rancher provisioned clusters, click `Save` in the Rancher UI `Edit as YAML` view.
 
 
 
@@ -6250,49 +5883,6 @@ spec:
 Apply the YAML file created and test connectivity from a Pod running within the cluster on the CNI network.
 
 > Note: Pods running with `hostnetwork: true` will not be included in the `GlobalNetworkPolicy` as these Pods do not use the CNI network.
-
-
-
----
-
-## Article: 000020125.md
-
-# How to Enable Pod Presets
-
-**Article Number:** [000020125](https://support.scc.suse.com/s/kb/360043881252)
-
-## **Environment**
-
-RKE
-
-## **Situation**
-
-#### Task
-
-This how-to article outlines how to enable pod presets on your cluster. This is done by enabling the `PodPreset` admission plugin and the `settings.k8s.io/v1alpha1` API for the kube-apiserver.
-
-#### Pre-requisites
-
-- Kubernetes version 1.10 and above
-- Access to edit the cluster in yaml or the cluster.yaml file you used with RKE.
-
-#### Resolution
-
-Get to the cluster yaml in Rancher by editing the cluster and selecting "edit as yaml" or opening the RKE cluster.yml file. Modify the kube-api section to resemble the following and hit save or run`up`:
-
-```yaml
-services:
-  kube-api:
-    extra_args:
-      runtime-config: authorization.k8s.io/v1beta1=true,settings.k8s.io/v1alpha1=true
-      enable-admission-plugins: PodPreset,NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota,NodeRestriction,Priority,TaintNodesByCondition,PersistentVolumeClaimResize
-```
-
-Notice that `settings.k8s.io/v1alpha1/podpreset` and `PodPreset` are added to the runtime-config and admission plugins.
-
-#### Further reading
-
-More details can be found in the [kubernetes docs on](https://kubernetes-docsy-staging.netlify.app/docs/concepts/workloads/pods/podpreset/) pod presets.
 
 
 
@@ -6950,37 +6540,6 @@ The ingress-nginx [server-tokens option](https://kubernetes.github.io/ingress-ng
 
 ---
 
-## Article: 000020144.md
-
-# How to enable debug level logging for the Rancher Cluster/Project Alerting Alertmanager instance, in a Rancher v2.x managed cluster?
-
-**Article Number:** [000020144](https://support.scc.suse.com/s/kb/360042522732)
-
-## **Situation**
-
-#### Task
-
-This article details how to enable debug level logging on the Alertmanager instance in a Rancher v2.x managed Kubernetes cluster, which may assist when troubleshooting [cluster](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/alerts/) or [project alerting](https://rancher.com/docs/rancher/v2.x/en/project-admin/tools/alerts/).
-
-#### Pre-requisites
-
-- A Rancher v2.x managed Kubernetes cluster
-- [Cluster](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/alerts/) or [project alerting](https://rancher.com/docs/rancher/v2.x/en/project-admin/tools/alerts/) configured
-
-#### Resolution
-
-1. Within the Rancher UI navigate to the System Project of the relevant cluster and click on the Apps view.
-2. Click 'Upgrade' on the cluster-alerting app.
-3. In the Answers section click 'Add Answer' and add the variable `alertmanager.logLevel` with a value of `debug`.
-4. Click upgrade to save the change and update the Alertmanager instance with the debug log level.
-5. Navigate to the cattle-prometheus namespace within the System Project for the cluster, and view the logs of the alertmanager-cluster-alerting-0 Pod running for the alertmanager-cluster-alerting StatefulSet. You should see `level=debug` log messages, such as in the following example, confirming debug level logging has been successfully configured:
-   
-   `plaintext level=debug ts=2019-07-09T15:03:37.511451301Z caller=dispatch.go:104 component=dispatcher msg="Received alert" alert=[433a194][active] level=debug ts=2019-07-09T15:03:38.511774835Z caller=dispatch.go:430 component=dispatcher aggrGroup="{}/{group_id=\"c-5h85q:event-alert\"}/{rule_id=\"c-5h85q:event-alert_deployment-event-alert\"}:{event_message=\"Scaled up replica set mynginx2-7994cd84ff to 1\", resource_kind=\"Deployment\", rule_id=\"c-5h85q:event-alert_deployment-event-alert\", target_name=\"mynginx2\", target_namespace=\"default\"}" msg=flushing alerts=[[433a194][active]]`
-
-
-
----
-
 ## Article: 000020145.md
 
 # How to generate a Longhorn Support Bundle
@@ -7012,58 +6571,6 @@ Generate the Support Bundle:
 **Upload the Support Bundle**
 
 Generally Longhorn Support Bundles files are small in size; however, if the pack is too large to upload directly to the ticket, please request a temporary upload location.
-
-
-
----
-
-## Article: 000020146.md
-
-# How to add additional scrape configs to a Rancher cluster or project monitoring prometheus
-
-**Article Number:** [000020146](https://support.scc.suse.com/s/kb/360042958611)
-
-## **Situation**
-
-#### Task
-
-[The Rancher cluster and project monitoring tools](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/monitoring/#monitoring-scope), allow you to monitor cluster components and nodes, as well as workloads and [custom metrics from any HTTP or TCP/UDP metrics endpoint](https://rancher.com/docs/rancher/v2.x/en/project-admin/tools/monitoring/#project-metrics) that these workloads expose.
-
-This article will detail how to manually define additional scrape configs for either the cluster or project monitoring prometheus instance, where you want to scrape other metrics.
-
-Whether to define the additional scrape config at the cluster or project level would depend on the desired scope for the metrics and possible alerts. If you wish to scope the metrics scraped, and thus possible alerts configured for these metrics, to a project, you could configure the additional scrape config at the project monitoring level. If you wish to scope the metrics at the cluster level, so only those with cluster admin access could see the metrics or configure alerts, you could configure the additional scrape config at the cluster monitoring level.
-
-#### Pre-requisites
-
-- A Rancher v2.2.x, v2.3.x or v2.4.x managed cluster, with [cluster monitoring](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/monitoring/#enabling-cluster-monitoring) enabled (and optionally project monitoring enabled, if you wish to configure the additonal scrape config at the project scope).
-
-#### Resolution
-
-For both cluster and project monitoring the additional scrape config(s) are defined in the Answers section of the Monitoring configuration. This can be found as follows:
-
-- Cluster Monitoring: As a user with permissions to edit cluster monitoring (global admins and cluster owners by default), navigate to the cluster view and click Tools -&gt; Monitoring from the menu bar. Click 'Show advanced options' at the bottom right.
-- Project Monitoring: As a user with permissions to edit project monitoring (global admins, cluster owners and project owners by default), navigate to the project and click Tools -&gt; Monitoring from the menu bar. Click 'Show advanced options' at the bottom right.
-
-You can add an array of prometheus.additionalScrapeConfigs in the Answers section here.
-
-For example to define a scrape job of the following:
-
-```
- - job_name: "prometheus"
-   static_configs:
-   - targets:
-     - "localhost:9090"
-```
-
-You would add the following two definitions to the Answers section:
-
-prometheus.additionalScrapeConfigs\[0].job\_name = prometheus prometheus.additionalScrapeConfigs\[0].static\_configs\[0].targets\[0] = localhost:9090
-
-After adding the answers, click 'Save' and you should now be able to view the target and its status within the Prometheus UI under Status -&gt; Targets.
-
-#### Further reading
-
-Documentation on the Rancher cluster monitoring [can be found here](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/monitoring/) and for Rancher project monitoring [here](https://rancher.com/docs/rancher/v2.x/en/project-admin/tools/monitoring/).
 
 
 
@@ -7546,115 +7053,6 @@ spec:
 
  
 ```
-
-
-
----
-
-## Article: 000020160.md
-
-# How to run multiple ingress controllers
-
-**Article Number:** [000020160](https://support.scc.suse.com/s/kb/360041677652)
-
-## **Environment**
-
-Rancher, Kubernetes
-
-## **Situation**
-
-#### Why use multiple ingress controllers?
-
-At large numbers of ingresses and related workloads, a single ingress-controller can be a bottleneck in both throughput and reliability. It is recommended to shard ingresses across multiple ingress controllers in these scenarios.
-
-#### Requirements
-
-- A Kubernetes cluster created by Rancher v2.x or RKE
-- A Linux cluster, Windows is currently not supported
-- Helm installed and configured
-
-#### Overview
-
-At a high level, the process for sharding ingresses is to build out one or more extra ingress controllers and logically separate your ingresses to split the load between your ingress controllers evenly. This separation is handled through annotations on the ingresses. When an nginx-ingress-controller pod starts up with an ingressClass set, it will only try to satisfy ingresses that are annotated with the same ingressClass. This allows you to run as many ingress-controllers as needed to satisfy your ingress needs.
-
-##### **Creating extra nginx-ingress-controller charts**
-
-It is recommended to use the community [nginx-ingress helm chart](https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx) to install the extra ingress-controllers with [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) services.
-
-This deployment method allows you to run multiple ingress controllers on a single node, as there are no conflicting ports. You are required to route traffic to the correct ingress controller ports through an external load balancer.
-
-Deploy a second default backend and ingress-controller from the nginx-ingress helm chart with the following values: `controller.ingressClass` - unique name of the ingress class, such as `ingress-nginx-2` `controller.service.type=NodePort`  
-`controller.service.nodePorts.http` - define the NodePort between 30000-32767 you want to expose for http traffic. Optional, if not defined, one will be randomly assigned  
-`controller.service.nodePorts.https` - define the NodePort between 30000-32767 you want to expose for http traffic. Optional, if not defined one will be randomly assigned  
-`controller.kind=DaemonSet`
-
-For more configuration options, see the [chart readme](https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/README.md) .
-
-An example daemon set install would be:
-
-```bash
-helm repo add stable https://kubernetes-charts.storage.googleapis.com
-helm install nginx-ingress-second -n ingress-nginx stable/nginx-ingress --set controller.ingressClass="ingress-class-2" --set controller.service.type=NodePort --set controller.kind=DaemonSet
-```
-
-This will create an ingress-nginx daemon set and service. This ingress controller will handle any ingress routed to it tagged with the annotation `kubernetes.io/ingress.class: ingress-class-2`
-
-##### **Sharding Ingresses**
-
-It is recommended to shard (split) your ingresses in a way that evenly splits load and configuration size between ingress controllers.
-
-Sharding in this way means changing DNS and ingress hosts so that traffic for ingresses is sent to the correct ingress controllers, typically through an external load balancer.
-
-The process for sharding ingresses is to tag each ingress with the ingressClass for the ingress controller you want to route them through. For example:
-
-```yaml
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: app_1_ingress
-  annotations:
-    kubernetes.io/ingress.class: "ingress-class-2"
-spec:
-```
-
-Once annotated with an ingressClass, these ingresses are now only handled by the ingress-controller that has that ingressClass.
-
-> In the default configuration, the Rancher-provided nginx-ingress-controller will only handle ingresses that either have the default ingress.class annotation of `nginx` or do not have an ingress.class annotation at all.
-
-##### **Next steps**
-
-From here it is just a matter of ensuring that the traffic for each ingress is routed to the correct nodePort on the nodes that the daemonset is targeted against.
-
-If you did not specify a nodePort when deploying the chart, you can determine the nodePort that was assigned by checking the service created:
-
-```shell
-$ kubectl describe svc -n ingress-nginx nginx-ingress-second
-Name:                     nginx-ingress-second-controller
-Namespace:                ingress-nginx
-Labels:                   app=nginx-ingress
-                          chart=nginx-ingress-1.35.0
-                          component=controller
-                          heritage=Helm
-                          release=nginx-ingress-second
-Annotations:              field.cattle.io/publicEndpoints:
-                            [{"addresses":["13.210.157.241"],"port":30155,"protocol":"TCP","serviceName":"ingress-nginx:nginx-ingress-second-controller","allNodes":tr...
-Selector:                 app.kubernetes.io/component=controller,app=nginx-ingress,release=nginx-ingress-second
-Type:                     NodePort
-IP:                       10.43.139.23
-Port:                     http  80/TCP
-TargetPort:               http/TCP
-NodePort:                 http  30155/TCP
-Endpoints:                <none>
-Port:                     https  443/TCP
-TargetPort:               https/TCP
-NodePort:                 https  30636/TCP
-Endpoints:                <none>
-Session Affinity:         None
-External Traffic Policy:  Cluster
-Events:                   <none>
-```
-
-In this example, the service is exposed on every node on ports 30155 for http and 30636 for https
 
 
 
@@ -8948,67 +8346,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -9125,90 +8515,6 @@ kubectl logs pod/rancher-systems-summary-pod -n cattle-system
 # Clean up the pod
 kubectl delete pod/rancher-systems-summary-pod -n cattle-system
 ```
-
-
-
----
-
-## Article: 000020193.md
-
-# What is the process performed by Rancher v2.x when upgrading a Rancher managed Kubernetes cluster?
-
-**Article Number:** [000020193](https://support.scc.suse.com/s/kb/360038629772)
-
-## **Situation**
-
-#### Question
-
-What is the process performed by Rancher v2.x when upgrading a Rancher managed Kubernetes cluster?
-
-#### Pre-requisites
-
-- Running Rancher v2.0.x - v2.3.x. Note, Kubernetes upgrades will be changing in v2.4.x, see Further Reading below.
-
-OR
-
-- RKE CLI v0.2.x+
-
-#### Answer
-
-Rancher, either through the UI or API, can be used to upgrade a Kubernetes cluster that was provisioned using the "Custom" option or on cloud infrastructure such as AWS EC2 or Azure. This can be accomplished by editing the cluster and selecting the desired Kubernetes version. Clusters provisioned with the RKE CLI can also be upgraded by editing the kubernetes\_version key in the cluster YAML file. This will trigger an update of all the Kubernetes components in the order listed below:
-
-##### Etcd plane
-
-Each etcd container is updated, one node at a time. If the etcd version has not changed between versions of Kubernetes, no action is taken. The process consists of:
-
-1. Downloading etcd image
-2. Stopping and renaming old etcd container (backend datastore is preserved on host)
-3. Creating and starting new etcd container
-4. Running etcd health check
-5. Removing old etcd container
-
-For RKE CLI provisioned clusters, the etcd-rolling-snapshot container is also upgraded if a new version is available.
-
-##### Control plane
-
-Every Kubernetes update will require the control plane components to be updated. All control plane nodes are updated in parallel. The process consists of:
-
-01. Downloading hyperkube image, which is used by all control plane components.
-02. Stopping and renaming old kube-apiserver container
-03. Creating and starting new kube-apiserver container
-04. Running kube-apiserver health check
-05. Removing old kube-apiserver container
-06. Stopping and renaming old kube-controller-manager container
-07. Creating and starting new kube-controller-manager container
-08. Running kube-controller-manager health check
-09. Removing old kube-controller-manager container
-10. Stopping and renaming old kube-scheduler container
-11. Creating and starting new kube-scheduler container
-12. Running kube-scheduler health check
-13. Removing old kube-scheduler container
-
-##### Worker plane
-
-Every Kubernetes update will require the worker components to be updated. These components run on all nodes, including the control plane and etcd. Nodes are updating in parallel. The process consists of:
-
-1. Downloading hyperkube image (if not already present)
-2. Stopping and renaming old kubelet container
-3. Creating and starting new kubelet container
-4. Running kubelet health check
-5. Removing old kubelet container
-6. Stopping and renaming old kube-proxy container
-7. Creating and starting new kube-proxy container
-8. Running kube-proxy health check
-9. Removing old kube-proxy container
-
-##### Addons &amp; user workloads
-
-Once Kubernetes etcd, control plane, and worker components have been updated, the latest manifests for addons are applied. This includes, but is not limited to KubeDNS/CoreDNS, Nginx Ingress, Metrics Server, and CNI plugin (Calico, Weave, Flannel, Canal). Depending on the manifest deltas and the upgrade strategy defined in the manifest, pods and their corresponding containers may or may not be removed and recreated. Please be aware that some of these addons are critical for your cluster to operator correctly and you may experience brief outages if these workloads are restarted. For example, when KubeDNS/CoreDNS is restarted, you could have issues resolving hostname to IP addresses. When the Nginx Ingress is restarted, layer 7 http/https traffic from outside your cluster to your workloads may get interrupted. When your CNI plugin is restarted on each node, the workloads running on the node may temporarily not be able to reach workloads running on other nodes. The best way to minimize outages or disruptions is to make sure you have proper fault tolerance in your cluster.
-
-The kubelet automatically destroys and recreates all user workload pods when the spec hash value is changed. This value will change for a pod if the Kubernetes upgrade involves any field changes in the pod manifest, such as a new field or the removal of a deprecated field. As a best practice, it's best to assume all your pods and containers will be destroyed and recreated during a Kubernetes upgrade. This is more likely to happen for major/minor releases and less likely for patch releases.
-
-#### Further Reading
-
-Upgrade refactor in v2.4: [https://github.com/rancher/rancher/issues/23038](https://github.com/rancher/rancher/issues/23038)
-
-Kubeadm upgrades: [https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/)
 
 
 
@@ -9348,11 +8654,6 @@ When attempting to perform operations against the Rancher v2.x API, with a clust
 }
 ```
 
-```
-
- 
-```
-
 ## **Cause**
 
 The primary purpose of cluster-scoped API tokens is to permit access to the Kubernetes API for a specific cluster via Rancher, i.e. via the endpoint `https://<rancher_url>/k8s/clusters/<cluster_id>` for the matching cluster. Cluster-scoped tokens can be used to interact directly with the Kubernetes API of clusters configured with an [Authorized Cluster Endpoint](https://ranchermanager.docs.rancher.com/reference-guides/rancher-manager-architecture/communicating-with-downstream-user-clusters#4-authorized-cluster-endpoint).
@@ -9364,40 +8665,6 @@ The token is not valid for the other available API endpoints or other clusters. 
 ## **Resolution**
 
 Only use a cluster-scoped API token where you wish to restrict usage of the token to the Kubernetes API for that cluster, or the Rancher v3 cluster endpoint. To permit access to other API endpoints, or to use a token for API access to multiple clusters, create a Rancher API token that is not cluster-scoped.
-
-
-
----
-
-## Article: 000020198.md
-
-# Launching kubectl for cluster within Rancher UI fails in a cluster after following the CIS Benchmark Hardening Guide for Kubernetes
-
-**Article Number:** [000020198](https://support.scc.suse.com/s/kb/360038392411)
-
-## **Situation**
-
-#### Issue
-
-Attempting to launch kubectl in the Rancher v2.x UI, for a cluster upon which the Rancher CIS Hardening Guide has been applied, results in a `Closed Code: 1006` message. Further, using the browser developer tools to inspect requests when opening this page reveals the API request to initiate the connection (https:///v3/clusters/?shell=true) receiving a HTTP 403 response.
-
-#### Pre-requisites
-
-- An RKE CLI or Rancher v2.x launched Kubernetes cluster, with the [Rancher v2.1.x, v2.2.x or v2.3.x CIS Hardening Guide](https://rancher.com/docs/rancher/v2.x/en/security/) applied.
-
-#### Root cause
-
-This behaviour is caused by CIS Control 1.1.12, which specifies that the DenyEscalatingExec Admission Controller should be enabled on the Kubernetes API Server.
-
-The terminal for the Rancher UI is provided by exec'ing into a cattle-node-agent Pod, whilst Pods within this DaemonSet run in Privileged mode. As a result the exec to open the terminal session is denied by the DenyEscalatingExec Admission Controller.
-
-#### Workaround
-
-You can workaround the issue by removing `DenyEscalatingExec` from the list of `enable-admission-plugins` in `extra_args` for the `kube-api` service.
-
-#### Resolution
-
-This issue is tracked in the Rancher GitHub issue [#19439](https://github.com/rancher/rancher/issues/19439).
 
 
 
@@ -9491,173 +8758,6 @@ Having set the debug flag, click `Save` at the bottom of the page, to update the
 
 ---
 
-## Article: 000020201.md
-
-# "log unreadable. It is excluded and would be examined next time." warning messages, for kubelet and kube-proxy, in rancher-logging-fluentd Pod logs of worker nodes
-
-**Article Number:** [000020201](https://support.scc.suse.com/s/kb/360038025232)
-
-## **Situation**
-
-#### Issue
-
-In a Rancher v2.x provisioned Kubernetes cluster, with Rancher Cluster Logging configured, the `rancher-logging-fluentd` Pod logs on Linux worker role only nodes show warning messages of the following format:
-
-```plaintext
-2019-12-05 10:58:27 +0000 [warn]: #0 /var/lib/rancher/rke/log/kubelet_5c47838dd4af749a7a0d1c457b04a6d7b905e680157718063c8e5d9eb61268fa.log unreadable. It is excluded and would be examined next time.
-2019-12-05 10:58:27 +0000 [warn]: #0 /var/lib/rancher/rke/log/kube-proxy_d2beb2e667eefbd6d95355082af4bc61c367fc4c220d9f1d165d15a8c8be2ab1.log unreadable. It is excluded and would be examined next time.
-```
-
-The output of `ls /var/lib/rancher/rke/log/` on affected workers shows that these files referenced in the warning log messages are broken symlinks. In addition, `docker ps` output shows the container ID for the currently running `kubelet` and `kube-proxy` containers does not match the IDs in these filenames.
-
-#### Pre-requisites
-
-- A Rancher v2.x provisioned Kubernetes cluster, using either [custom nodes](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/custom-nodes/) or nodes hosted in an [infrastructure provider](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/node-pools/).
-- [Rancher Cluster Logging](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/tools/logging/) configured on the cluster, with the 'Include System Log' option set.
-- Worker role only nodes in the cluster.
-
-#### Root cause
-
-These warning level messages in the `rancher-logging-fluentd` Pod are the result of the issue tracked in Rancher GitHub issue [#22549](https://github.com/rancher/rancher/issues/22549).
-
-The container log symlinks in `/var/lib/rancher/rke/log/` for cluster component containers (`kubelet`, `kube-proxy`, `nginx-proxy`) on worker nodes in Rancher launched clusters are not cleaned up when these components are re-created, i.e. due to a Kubernetes version upgrade, or other configuration update for these components.
-
-As a result these broken symlinks persist and cause the `log unreadable` warning messages when the `rancher-logging-fluentd` Pod attempts to parse files in the `/var/lib/rancher/rke/log/` directory.
-
-This warning message itself is harmless and can be ignored.
-
-#### Resolution
-
-The request to handle automatic clean-up of these log symlinks on worker nodes, in Rancher provisioned clusters, is tracked in Rancher GitHub issue [#22549](https://github.com/rancher/rancher/issues/22549).
-
-
-
----
-
-## Article: 000020202.md
-
-# Many rancher-agent containers running on Rancher v2.x provisioned RKE cluster, where stopped containers are regularly deleted on hosts
-
-**Article Number:** [000020202](https://support.scc.suse.com/s/kb/360038025212)
-
-## **Environment**
-
-- A Rancher v2.x provisioned Rancher Kubernetes Engine (RKE) cluster.
-- Repeated deletion of stopped containers on hosts in the cluster, e.g. use of `docker system prune`, either manually or as part of an automated process such as a cronjob.
-
-## **Situation**
-
-#### Issue
-
-On a Rancher v2.x provisioned cluster, a host shows a large number of containers running the `rancher-agent` image, per the following output of `docker ps | grep rancher-agent`:
-
-```shell
-$ docker ps | grep rancher-agent
-...
-aeffe9725521        rancher/rancher-agent:v2.3.3         "run.sh --server htt…"   About a minute ago   Up About a minute                       sleepy_hopper
-130120f49b71        rancher/rancher-agent:v2.3.3         "run.sh --server htt…"   6 minutes ago        Up 6 minutes                            stoic_hypatia
-498b923d9b6e        rancher/rancher-agent:v2.3.3         "run.sh --server htt…"   11 minutes ago        Up 11 minutes                            laughing_elbakyan
-3453865e5f70        rancher/rancher-agent:v2.3.3         "run.sh --server htt…"   16 minutes ago        Up 16 minutes                            wonderful_gagarin
-f925209cd16a        rancher/rancher-agent:v2.3.3         "run.sh --server htt…"   21 minutes ago       Up 21 minutes                           silly_shannon
-7d7fb5d4bf04        rancher/rancher-agent:v2.3.3         "run.sh --server htt…"   26 minutes ago       Up 26 minutes                           gifted_elgamal
-...
-```
-
-A `docker inspect <container_id>` for these containers, shows the Path and Args are of the following format:
-
-```json
-"Path": "run.sh",
-"Args": [
-    "--server",
-    "https://167.172.96.240",
-    "--token",
-    "gwrp7zlnwvsnzh2nhbvwcgdw45ccv6cq9pztzdd92j6xlv69xxhvnp",
-    "--ca-checksum",
-    "bbc8c7ca05c87a7140154554fa1a516178852f2710538c57718f4c874c29533c",
-    "--no-register",
-    "--only-write-certs"
-],
-```
-
-## **Cause**
-
-This behaviour is a result of the issue reported in Rancher GitHub issue [#15364](https://github.com/rancher/rancher/issues/15364).
-
-The `share-mnt` container is created on a Rancher provisioned Kubernetes cluster, and exits upon completion, but is not removed such that it can be invoked again.
-
-Meanwhile, the Rancher `node-agent` Pod on a host will spawn a new `share-mnt` container, if the `share-mnt` is removed. Upon starting, the `share-mnt` process spawns a `rancher-agent` container to write certificates. This agent container will run indefinitely until the `node-agent` is triggered to reconnect to the Rancher server or the `node-agent` process is restarted.
-
-As a result, where the `share-mnt` container on a host is removed repeatedly, either manually or by an automated process, this will result in multiple running `rancher-agent` containers.
-
-## **Resolution**
-
-To trigger automatic removal of the `rancher-agent` containers, the `node-agent` container on the host can be restarted. Identifying the running agent container with `docker ps | grep k8s_agent_cattle-node` restart the container with `docker restart <container_id>`.
-
-In addition, you can prevent further creation of multiple `rancher-agent` container instances by removing whichever process is triggering the deletion of stopped containers.
-
-
-
----
-
-## Article: 000020203.md
-
-# Is it safe to update the Docker bridge IP range on hosts in an RKE or Rancher v2.x launched Kubernetes cluster?
-
-**Article Number:** [000020203](https://support.scc.suse.com/s/kb/360035839992)
-
-## **Situation**
-
-#### Question
-
-The `docker0` bridge network has a default IP range of `172.17.0.0/16`. These ranges will be routed to these interfaces, per the below example of the `route` output. If the range(s) overlap with the internal IP space usage in your own network, the host will not be able to route packets to other hosts in your network that lie within these ranges. As a result you may wish to change the bridge range(s) to enable successful routing to hosts within these.
-
-```shell
-$ route
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-...
-172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
-...
-```
-
-#### Pre-requisites
-
-- This article is only applicable to Kubernetes cluster launched by RKE v1.x, or Rancher v2.x
-
-#### Answer
-
-Updating the `docker0` bridge IP range is possible in an RKE or Rancher v2.x provisioned Kubernetes cluster, where no cluster containers are in fact running attached to the Docker bridge network. The only impact of the change should be some downtime, as you will be required to restart the Docker daemon for the change to take effect.
-
-For other operating systems, where Docker is installed from the upstream Docker repositories, you should update the `bip` configuration in `/etc/docker/daemon.json` per the [dockerd documentation](https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file).
-
-On CentOS, RHEL and SLES you should also check the configuration in /etc/sysconfig/docker to ensure `--bip` has not been configured there.
-
-
-
----
-
-## Article: 000020204.md
-
-# Is it safe to disable inter-container connectivity (icc) on the Docker daemon in an RKE or Rancher v2.x launched Kubernetes cluster?
-
-**Article Number:** [000020204](https://support.scc.suse.com/s/kb/360035839972)
-
-## **Environment**
-
-A Rancher Kubernetes Engine (RKE) cluster, provisioned by the RKE CLI or Rancher v2.x
-
-## **Situation**
-
-The Docker daemon provides a [configuration option `icc`](https://docs.docker.com/engine/reference/commandline/dockerd/) which permits a user to disable inter-container connectivity (icc) on the Docker bridge network. Is is safe to disable this Docker daemon option in an RKE or Rancher v2.x launched Kubernetes cluster?
-
-## **Resolution**
-
-Setting `icc` to false in the docker daemon.json configuration, or as an argument to to dockerd, is possible but is unnecessary in an RKE or Rancher v2.x provisioned Kubernetes cluster, as containers are not run attached to the Docker bridge network. Therefore, whilst this step is often included in standard 'hardening Docker daemon' guides, it is not relevant to operating an RKE or Rancher launched Kubernetes cluster.
-
-
-
----
-
 ## Article: 000020205.md
 
 # Users assigned the Project Owner or Member role on a project are able to create namespaces on any project, in the same cluster, to which they have access
@@ -9680,131 +8780,6 @@ For example, if a user has been granted the Project Member role on a Project nam
 Per the caveat explanation in the [Rancher v2.x documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles#project-roles):
 
 > Users assigned the Owner or Member role for a project automatically inherit the namespace creation role. However, this role is a [Kubernetes ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole), meaning its scope extends to all projects in the cluster. Therefore, users explicitly assigned the owner or member role for a project can create namespaces in other projects they’re assigned to, even with only the Read Only role assigned.
-
-
-
----
-
-## Article: 000020207.md
-
-# Node labels and taints reset on reboot with AWS cloudprovider in Kubernetes lower than v1.12.0
-
-**Article Number:** [000020207](https://support.scc.suse.com/s/kb/360035793872)
-
-## **Situation**
-
-#### Issue
-
-In a Kubernetes cluster, running on AWS EC2 instances, with the AWS cloudprovider configured, labels and taints for a node are reset when the EC2 instance is rebooted.
-
-#### Pre-requisites
-
-- Kubernetes version lower than v1.12.0
-- Cluster running on AWS EC2 instances, with the AWS cloudprovider configured
-
-#### Root Cause
-
-This behaviour is caused by the AWS cloudprovider in Kubernetes versions prior to v1.12.0, in which a stopped EC2 instance is deleted from the Kubernetes cluster, and then re-created when started again. As a result of this deletion and re-creation labels and taints on the node are lost during the reboot. Details of the issue and fix can be found in [Kubernetes Pull Request #66835](https://github.com/kubernetes/kubernetes/pull/66835).
-
-#### Resolution
-
-In order to resolve this issue, the cluster should be upgraded to Kubernetes version v1.12.0 or above.
-
-For clusters provisioned via the [RKE](https://rancher.com/docs/rke/latest/en/) CLI, users can [upgrade the cluster](https://rancher.com/docs/rke/latest/en/upgrades/) to a Kubernetes version of v1.12.0 or higher with RKE [v0.1.10](https://github.com/rancher/rke/releases/v0.1.10) or above.
-
-For clusters provisioned via [Rancher](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/), users can [upgrade the cluster](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/editing-clusters/) to a Kubernetes version of v1.12.6 or higher with Rancher [v2.1.7](https://rancher.com/support-maintenance-terms/all-supported-versions/rancher-v2.1.7/) or above.
-
-
-
----
-
-## Article: 000020211.md
-
-# Editing Rancher launched Kubernetes cluster in infrastructure provider restricted to creating user
-
-**Article Number:** [000020211](https://support.scc.suse.com/s/kb/360034158132)
-
-## **Situation**
-
-#### Issue
-
-When attempting to [edit a Rancher launched Kubernetes cluster, hosted on nodes in an infrastructure provider](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/editing-clusters/) neither the `Cluster Options` nor `Node Pools` sections are available and configurable in the edit cluster view, if logged in as a different user to the cluster creator.
-
-#### Pre-requisites
-
-- A Rancher v2.x launched Kubernetes cluster, provisioned on nodes hosted in an infrastructure provider
-- Access to the Rancher UI as a user different to the cluster creator
-
-#### Root cause
-
-[Node templates](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/node-pools/#node-templates) contain the configuration parameters for provisioning nodes in a specific cloud provider.
-
-Node templates are user-scoped and, as a result, where `userA` creates a node template in Rancher it is not accessible by `userB`. This prevents Rancher launched Kubernetes clusters, provisioned on nodes in an infrastructure provider by `userA` from being edited by other users, as only `userA` has access to the node template configuration.
-
-#### Resolution
-
-An enhancement request to enable users, other than the cluster creator, to edit Rancher launched Kubernetes clusters is tracked in [Rancher GitHub Issue #12038](https://github.com/rancher/rancher/issues/12038).
-
-Where it is necessary for another user to edit the cluster, i.e. the original user who created the cluster has left the business, it is possible to re-associate the node template with a different user. If you encounter this situation, please open a ticket with Rancher Support for assistance.
-
-
-
----
-
-## Article: 000020212.md
-
-# Blank provider listed for cluster when logged in as user who did not create cluster in Rancher v2.x
-
-**Article Number:** [000020212](https://support.scc.suse.com/s/kb/360034158112)
-
-## **Environment**
-
-- A Rancher v2.x launched Rancher Kubernetes Enginer (RKE) cluster, provisioned on nodes hosted in an infrastructure provider
-- Access to the Rancher UI as a user different to the cluster creator
-
-## **Situation**
-
-When viewing a Rancher launched Kubernetes cluster, provisioned on [nodes hosted in an infrastructure provider](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider#rke-clusters), as a user other than the cluster creator, the infrastructure provider name is blank or shows as Imported.
-
-## **Cause**
-
-[Node templates](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/node-pools/#node-templates) contain the configuration parameters for provisioning nodes in a specific cloud provider.
-
-Node templates are user-scoped and, as a result, where `userA` creates a node template in Rancher it is not accessible by `userB`.
-
-Meanwhile, the Rancher v2.x UI determines the provider for a Rancher launched Kubernetes cluster by mapping `nodes` to `node templates` to `node drivers`.
-
-The user-scoping of node templates therefore prevents users, other than the creator, from viewing the provider of the cluster.
-
-
-
----
-
-## Article: 000020214.md
-
-# 'Error: snapshot missing hash but --skip-hash-check=false' when performing `rke etcd snapshort-restore` with .zip extension included in snapshot name
-
-**Article Number:** [000020214](https://support.scc.suse.com/s/kb/360034528891)
-
-## **Environment**
-
-- A Kubernetes cluster provisioned with the Rancher Kubernetes Engine (RKE) CLI
-
-## **Situation**
-
-#### When performing an etcd snapshot restore via RKE, including the `.zip` file extension in the snapshot name parameter, i.e. `rke etcd snapshot-restore --name snapshot.zip` and a snapshot filename of `snapshot.zip`, the restoration fails with an error of the following format:
-
-```plaintext
-FATA[0020] [etcd] Failed to restore etcd snapshot: Failed to run etcd restore container, exit status is: 128, container logs: Error: snapshot missing hash but --skip-hash-check=false
-```
-
-## **Resolution**
-
-This issue is caused by the incorrect inclusion of the `.zip` file extension to the snapshot name parameter.
-
-The snapshot name parameter (`--name`) should contain the snapshot name, excluding the file extension.
-
-In the example of a snapshot filename of `snapshot.zip` the correct name parameter is therefore just `snapshot`, i.e. `rke etcd snapshot-restore --name snapshot`.
 
 
 
@@ -9933,68 +8908,6 @@ Updating either the Cluster (Pod) CIDR or Service CIDR after the cluster has bee
 
 ---
 
-## Article: 000020225.md
-
-# How to migrate from CentOS/RHEL-packaged to upstream Docker
-
-**Article Number:** [000020225](https://support.scc.suse.com/s/kb/360034323911)
-
-## **Environment**
-
-- A Kubernetes cluster launched with the [Rancher Kubernetes Engine (RKE) CLI](https://rancher.com/docs/rke/latest/en/), or a [Rancher v2.x](https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/use-existing-nodes) launched Kubernetes cluster on custom nodes
-- Nodes running CentOS 7.x or RHEL 7.x, with Docker installed from the CentOS/RHEL extras repository.
-
-## **Situation**
-
-***Deprecation notice***  
-*Docker is not packaged in the RHEL 8 or 9 repositories, and starting with Rancher v2.7 the RHEL-packaged version of Docker (1.13) for RHEL 7 has been removed from the [Rancher Support Matrix](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/rancher-v2-7-0/). Therefore, customers must migrate from RHEL-packaged Docker 1.13 to the upstream Docker version in their RKE clusters.*
-
-This article will describe the process by which you can migrate a CentOS or RHEL node in an RKE cluster from running the CentOS/RHEL-packaged Docker package to the upstream package from Docker.
-
-To perform this migration you will be required to first uninstall the CentOS/RHEL packaged Docker, before installing the upstream version. This process is destructive and will remove all container state from the host. As a result, the process outlined below will guide you through first removing the node from the Rancher cluster, before conducting the package migration, then finally re-adding the node to the cluster.
-
-## **Resolution**
-
-## Cluster launched by the RKE CLI
-
-### Create a Backup
-
-As with any cluster maintenance, it is recommended that you first take an etcd snapshot of the cluster, to recover from in the event of an issue. A snapshot can be created for the cluster, per the [RKE documentation here](https://rke.docs.rancher.com/etcd-snapshots/one-time-snapshots) and you should copy the snapshot off an etcd node to a safe location outside the cluster.
-
-### Perform migration on each cluster node in turn
-
-1. Check if you should first add an additional node to the cluster, to replace the node during its migration:
-   
-   **Controlplane or etcd nodes** In the case that the node is a controlplane or etcd node, it is recommend that you first add an additional node to replace this, or add the role(s) to an existing node, to ensure that quorum is maintained in the event of failure of another node during the process. If the node is the single etcd or controlplane node in the cluster, then adding an additional node to replace it is not an optional step. Add the new etcd and/or controlplane role node to the [cluster configuration YAML](https://rke.docs.rancher.com/config-options/nodes) and run `rke up` to provision this.
-   
-   **Worker nodes** If the worker nodes within the cluster are heavily loaded, or if the node is the sole worker role node, you should provision an additional worker node, to replace the node during the migration. Add the new worker role node to the [cluster configuration YAML](https://rke.docs.rancher.com/config-options/nodes) and run `rke up` to provision this.
-2. Remove the node which you are migrating from the cluster, to do so remove the node from the [cluster configuration YAML](https://rke.docs.rancher.com/config-options/nodes) and then run `rke up` to reconcile the cluster.
-3. Once the `rke up` invocation in step 2. completes successfully, run the [Extended Rancher 2 cleanup script](https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup)on the node that you are migrating, to clean up Rancher state.
-4. Switch to the upstream Docker package on the node, by following the [Docker Engine installation documentation for CentOS](https://docs.docker.com/engine/install/centos/#uninstall-old-versions) or using the [Rancher installation script for Docker](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/install-docker).
-5. Add the node back to the [cluster configuration YAML](https://rke.docs.rancher.com/config-options/nodes) and run `rke up` to provision it.
-
-## Custom cluster launched by Rancher
-
-### Create a Backup
-
-As with any cluster maintenance, it is recommended that you first take an etcd snapshot of the cluster, to recover from in the event of an issue. A snapshot can be created for the cluster, per the [Rancher documentation here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher-launched-kubernetes-clusters) and you should copy the snapshot off an etcd node to a safe location outside the cluster, if S3 backups are not configured for the cluster.
-
-## Perform migration on each cluster node in turn
-
-1. Check if you should first add an additional node to the cluster, to replace the node during its migration:
-   
-   **Controlplane or etcd nodes** In the case that the node is a controlplane or etcd node, it is recommended that you first add an additional node to replace this, to ensure that quorum is maintained in the event of failure of another node during the process. If the node is the single etcd or controlplane node in the cluster, then adding an additional node to replace it is not an optional step. Add the new etcd and/or controlplane role node by running the Rancher agent command from the 'Edit Cluster' view, with the appropriate roles, on the replacement node.
-   
-   **Worker nodes** If the worker nodes within the cluster are heavily loaded, or if the node is the sole worker role node, you should provision an additional worker node, to replace the node during the migration. Add the new worker role node by running the Rancher agent command from the 'Edit Cluster' view, with the worker role, on the replacement node.
-2. Remove the node that you are migrating from the cluster, to do so delete it from the node list for the cluster within Rancher.
-3. Once the cluster reconciliation triggered by step 2. is complete, and the cluster no longer shows as updating within Rancher, run the [Extended Rancher 2 cleanup script](https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup) on the node that you are migrating to clean up Rancher state.
-4. Switch to the upstream Docker package on the node, by following the [Docker Engine installation documentation for CentOS](https://docs.docker.com/engine/install/centos/#uninstall-old-versions) or using the [Rancher installation script for Docker](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/install-docker).
-5. Add the node back by running the Rancher agent command from the 'Edit Cluster' view, with the appropriate roles, on the node.
-
-
-
----
-
 ## Article: 000020231.md
 
 # Network ingress traffic from 192.168.0.0/16 always SNAT'd in Kubernetes clusters with canal network provider
@@ -10007,7 +8920,7 @@ An RKE or RKE2 cluster, using the canal network provider
 
 ## **Situation**
 
-#### Network ingress traffic to a Kubernetes cluster with the canal network provider, from IP addresses in the range `192.168.0.0/16`, is always SNAT'd, even in instances where this is not desired.
+Network ingress traffic to a Kubernetes cluster with the canal network provider, from IP addresses in the range `192.168.0.0/16`, is always SNAT'd, even in instances where this is not desired.
 
 For example on NodePort services configured with `externalTrafficPolicy: Local` the source IP should be preserved without SNAT, per the [Kubernetes documentation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-nodeport). With this issue the source IP is SNAT'd even in instances of NodePort services configured with `externalTrafficPolicy: Local`.
 
@@ -10022,57 +8935,6 @@ The `calico-node` container in the canal pod is still configured with an (un-use
 A permanent solution to prevent programming of the problematic `cali-nat-outgoing` iptables rules and is tracked in [Rancher Issue #20500](https://github.com/rancher/rancher/issues/20500).
 
 In order to workaround the issue in existing clusters, the Calico ippool configuration can be edited to disable outgoing nat, which removes programming of the `cali-nat-outgoing` iptables rules. To implement this workaround run kubectl against the affected to edit the `default-ipv4-ippool` object: `kubectl edit ippools default-ipv4-ippool`. Edit the line `natOutgoing: true` to set `natOutgoing: false` and save the change. Calico will detect the configuration update and remove the `cali-nat-outgoing` iptables rules.
-
-
-
----
-
-## Article: 000020232.md
-
-# Is it possible to perform RKE etcd snapshots to an s3 endpoint with a certificate signed by a custom CA?
-
-**Article Number:** [000020232](https://support.scc.suse.com/s/kb/360033950632)
-
-## **Environment**
-
-Rancher Kubernetes Engine (RKE) clusters provisioned via the RKE CLI or Rancher v2.x
-
-## **Situation**
-
-Is it possible to perform [etcd snapshots](https://rke.docs.rancher.com/etcd-snapshots) to an S3 endpoint with a certificate signed by a custom certificate authority (CA)?
-
-```
-
-```
-
-## **Resolution**
-
-```
-
-```
-
-## Rancher-provisioned clusters
-
-In Rancher v2.2.5 and above it is possible to specify a custom CA for the S3 endpoint within [the S3 backup options](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher-launched-kubernetes-clusters#s3-backup-target). Expanding 'Show advanced options' under the 'Edit Cluster' view, a 'Custom CA Certificate' field is shown when the s3 backup target is selected, enabling you to enter the certificate or upload this from file.
-
-## RKE CLI-provisioned clusters
-
-With the RKE CLI v0.2.5 and above it also possible to specify a custom CA for the S3 endpoint within the [S3 backup options](https://rke.docs.rancher.com/etcd-snapshots). To do you specify the certificate via the `custom_ca` field in the `s3backupconfig` block of the [cluster configuration YAML](https://rke.docs.rancher.com/etcd-snapshots/recurring-snapshots#configuring-the-snapshot-service-in-yaml). The cert should be provided as string, with newlines replaced with \\n, per the example below:
-
-```yaml
-services:
-  etcd:
-    backup_config:
-      interval_hours: 12
-      retention: 6
-      s3backupconfig:
-        access_key: S3_ACCESS_KEY
-        secret_key: S3_SECRET_KEY
-        bucket_name: s3-bucket-name
-        region: ""
-        endpoint: s3.amazonaws.com
-        custom_ca: "-----BEGIN CERTIFICATE-----\nMIIDazCCAlOgAwIBAgIUMoCmUpa4u2UJWqNIkizFbpeJkwowDQYJKoZIhvcNAQEL\nBQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM\nGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0xOTA5MTgwOTI4NDBaFw0yMjA3\nMDgwOTI4NDBaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw\nHwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDIW8aN2vszkiNAqykYvqivZgWPRqEukPSAZz39Qtyx\nkv2wl3B29chBzw5+vjG6veaUnWufOpGeiwglL2PEBOMI0a62zmmm3ttyJDy1lY+A\ncuxZ1+hveWjWrA2B2bN69/wdkQTQu6ZLoguk+8mRFBZ7ghu6YTZQfczBsHlDxUpA\n77qQunE4RmcQzOBHoWmMkSSxSGMBsVIj2rRihtVqpgbrMr3/LtCqzqsF+UcroJPC\nIIBd8bSFlcgkWLnJdqlSa8s1PUodcKD3q6mbMZPDudraszuRgLyC5pIylGQOk+XF\nMjf2I8zkkAV4QtfSpgBpNXbZEZ3a6CPhveDZqoZN4rxTAgMBAAGjUzBRMB0GA1Ud\nDgQWBBTD/EagPfxclAlfViV5kKLq0YwBYzAfBgNVHSMEGDAWgBTD/EagPfxclAlf\nViV5kKLq0YwBYzAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQB0\nyJ6vjtmuvBEKuNgWwIJLh2CqZubUL+lUQGi1NhdFzkXj7+fLeLjqsmbi2Xj/qQ5n\nooI/p4MeHfYrUqqS7nqTBIsRZQZDZcKUYTZWzDRBdQZtxvEsB1WUq5+nsCQqVuZO\n+ICsXQFL45xDKaWOoRMH8z9JksYf2CSKeRWViAFElC/IDwf8d5mtufe17h5vlyPR\nLaIMJ37vyAosN6h8icztVHRzfcIjp1KLqwaGfaOrNSCv8zja9YsD6kbYL64lKND4\nHiOJy3oSjjjTNdnXjIO44Ngo7L4TWF1CshFlsRF3a5/Jw+NmsEV46Vq41YcuRX9E\n5JYZWzGRsPDeG4vrzWrV\n-----END CERTIFICATE-----"
-```
 
 
 
