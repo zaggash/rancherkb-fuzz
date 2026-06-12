@@ -8486,35 +8486,45 @@ For details on what information is collected, please refer to the [Rancher v2.x 
 
 ## **Environment**
 
-A Rancher v2.x instance
+Rancher v2.x local cluster (Kubernetes cluster hosting the Rancher management server)
 
 ## **Situation**
 
-Understanding your cluster/node distribution on an on-going basis assists Rancher in sending you any prescriptive advisories related to scale and performance.
+Understanding your cluster and node distribution on an ongoing basis helps Rancher Support send prescriptive advisories on scale, performance, and stability. System information needs to be extracted from the Rancher server environment for this analysis.
 
-System information can be collected from a Rancher v2.x server node using the [Rancher v2.x systems summary script v2](https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/systems-information-v2).
+## **Cause**
+
+Rancher Support utilises this lightweight script to safely aggregate non-sensitive high-level metrics regarding cluster topology, counts, and resource distributions. This data helps proactively identify potential bottleneck risks or configurations that deviate from scale best practices.
 
 ## **Resolution**
 
-The pod can be deployed from a host with a valid kubeconfig pointing to the local cluster (Kubernetes cluster hosting Rancher). You can deploy the pod and get the output by running the following commands:  
- 
+System information can be collected from a Rancher v2.x server node using the [Rancher v2.x systems summary script v2](https://github.com/rancherlabs/support-tools/tree/master/collection/rancher/v2.x/systems-information-v2).
 
-```
-# Deploy the pod in the cluster
-kubectl apply -f https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/systems-information-v2/deploy.yaml
+Deploy the summary collection pod from a host configured with a valid kubeconfig pointing to the Rancher local cluster. Run the following commands to deploy the pod, retrieve the data, and clean up the environment:
 
-# Wait for the pod to reach Succeeded status
-while [[ $(kubectl get pod rancher-systems-summary-pod -n cattle-system -o 'jsonpath={..status.phase}') != "Succeeded" ]]; do
-  echo "Waiting for rancher-systems-summary-pod to complete..."
-  sleep 5
-done
-
-# Grab the logs from the pod 
-kubectl logs pod/rancher-systems-summary-pod -n cattle-system
-
-# Clean up the pod
-kubectl delete pod/rancher-systems-summary-pod -n cattle-system
-```
+1. Deploy the data collection pod in the cluster:
+   
+   ```
+   kubectl apply -f https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/systems-information-v2/deploy.yaml
+   ```
+2. Wait for the pod to execute and reach a Succeeded status:
+   
+   ```markup
+   while [[ $(kubectl get pod rancher-systems-summary-pod -n cattle-system -o 'jsonpath={..status.phase}') != "Succeeded" ]]; do
+     echo "Waiting for rancher-systems-summary-pod to complete..."
+     sleep 5
+   done
+   ```
+3. Retrieve the collected system summary logs:
+   
+   ```markup
+   kubectl logs pod/rancher-systems-summary-pod -n cattle-system
+   ```
+4. Clean up the pod deployment from the cluster:
+   
+   ```markup
+   kubectl delete pod/rancher-systems-summary-pod -n cattle-system
+   ```
 
 
 
