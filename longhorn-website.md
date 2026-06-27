@@ -9809,7 +9809,8 @@ Install Longhorn with the following settings:
 | Setting | Value | Example |
 | --- | --- | --- |
 | `openshift.enabled` | `true` | N/A |
-| `image.openshift.oauthProxy.repository` | Upstream image | `quay.io/openshift/origin-oauth-proxy` |
+| `image.openshift.oauthProxy.registry` | Container registry | `quay.io` |
+| `image.openshift.oauthProxy.repository` | Upstream image | `openshift/origin-oauth-proxy` |
 | `image.openshift.oauthProxy.tag` | Version 4.1 or later | `4.18` |
 
 ```bash
@@ -9817,7 +9818,8 @@ Install Longhorn with the following settings:
     --namespace longhorn-system \
     --create-namespace \
     --set openshift.enabled=true \
-    --set image.openshift.oauthProxy.repository=quay.io/openshift/origin-oauth-proxy \
+    --set image.openshift.oauthProxy.registry=quay.io \
+    --set image.openshift.oauthProxy.repository=openshift/origin-oauth-proxy \
     --set image.openshift.oauthProxy.tag=4.18
 ```
 
