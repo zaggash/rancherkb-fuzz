@@ -492,7 +492,8 @@ Each Rancher version is designed to be compatible with a single version of the w
 
 | Rancher Version | Webhook Version | Availability in Prime | Availability in Community |
 |-----------------|-----------------|-----------------------|---------------------------|
-| v2.14.2         |    v0.10.5      | &check;               | &check;                   |
+| v2.14.3         |    v0.10.7      | &check;               | &check;                   |
+| v2.14.2         |    v0.10.6      | &check;               | &check;                   |
 | v2.14.1         |    v0.10.4      | &check;               | &check;                   |
 | v2.14.0         |    v0.10.0      | &cross;               | &check;                   |
 
@@ -4088,7 +4089,8 @@ Each self-assessment guide is accompanied by a hardening guide. These guides wer
 | Standalone RKE2 | Kubernetes v1.26 | CIS v1.8 | [Link](https://docs.rke2.io/security/cis_self_assessment18) | [Link](https://docs.rke2.io/security/hardening_guide) |
 | Standalone RKE2 | Kubernetes v1.27 | CIS v1.9 | [Link](https://docs.rke2.io/security/cis_self_assessment19) | [Link](https://docs.rke2.io/security/hardening_guide) |
 | Standalone RKE2 | Kubernetes v1.28 | CIS v1.10 | [Link](https://docs.rke2.io/security/cis_self_assessment110) | [Link](https://docs.rke2.io/security/hardening_guide) |
-| Standalone RKE2 | Kubernetes v1.29 and above | CIS v1.11 | [Link](https://docs.rke2.io/security/cis_self_assessment111) | [Link](https://docs.rke2.io/security/hardening_guide) |
+| Standalone RKE2 | Kubernetes v1.29 to v1.31 | CIS v1.11 | [Link](https://docs.rke2.io/security/cis_self_assessment111) | [Link](https://docs.rke2.io/security/hardening_guide) |
+| Standalone RKE2 | Kubernetes v1.32 and above | CIS v1.12 | [Link](https://docs.rke2.io/security/cis_self_assessment112) | [Link](https://docs.rke2.io/security/hardening_guide) |
 
 ### K3s Guides
 
@@ -4097,7 +4099,9 @@ Each self-assessment guide is accompanied by a hardening guide. These guides wer
 | Standalone K3s | Kubernetes v1.26 | CIS v1.8 | [Link](https://docs.k3s.io/security/self-assessment-1.8) | [Link](https://docs.k3s.io/security/hardening-guide) |
 | Standalone K3s | Kubernetes v1.27 | CIS v1.9 | [Link](https://docs.k3s.io/security/self-assessment-1.9) | [Link](https://docs.k3s.io/security/hardening-guide) |
 | Standalone K3s | Kubernetes v1.28 | CIS v1.10 | [Link](https://docs.k3s.io/security/self-assessment-1.10) | [Link](https://docs.k3s.io/security/hardening-guide) |
-| Standalone K3s | Kubernetes v1.29 and above | CIS v1.11 | [Link](https://docs.k3s.io/security/self-assessment-1.11) | [Link](https://docs.k3s.io/security/hardening-guide) |
+| Standalone K3s | Kubernetes v1.29 to v1.31 | CIS v1.11 | [Link](https://docs.k3s.io/security/self-assessment-1.11) | [Link](https://docs.k3s.io/security/hardening-guide) |
+| Standalone K3s | Kubernetes v1.32 and above | CIS v1.12 | [Link](https://docs.k3s.io/security/self-assessment-1.12) | [Link](https://docs.k3s.io/security/hardening-guide) |
+
 
 
 ---
@@ -4259,6 +4263,12 @@ Rancher is committed to informing the community of security issues in our produc
 
 | ID | Description | Date | Resolution |
 |----|-------------|------|------------|
+| [CVE-2026-44949](https://github.com/rancher/webhook/security/advisories/GHSA-h83p-cq95-vph4) | Fixed a security vulnerability in rancher-webhook where the FleetWorkspace mutating admission webhook performed side effects without authenticating requests, allowing a pod inside the cluster to create arbitrary namespaces and inject RBAC bindings. | 29 June 2026 | Rancher [v2.14.3](https://github.com/rancher/rancher/releases/tag/v2.14.3), Rancher [v2.13.7](https://github.com/rancher/rancher/releases/tag/v2.13.7), Rancher [v2.12.11](https://github.com/rancher/rancher/releases/tag/v2.12.11) and Rancher [v2.11.15](https://github.com/rancher/rancher/releases/tag/v2.11.15) |
+| [CVE-2026-44947](https://github.com/rancher/rancher/security/advisories/GHSA-c4rp-wgqc-mfhc) | Fixed a security vulnerability in Rancher's legacy PRTB reconciler where removing the `updatepsa` permission from a RoleTemplate did not clean up stale PSA ClusterRole and ClusterRoleBinding resources, allowing affected users to retain unauthorized Pod Security Admission access indefinitely. | 29 June 2026 | Rancher [v2.14.3](https://github.com/rancher/rancher/releases/tag/v2.14.3) and Rancher [v2.13.7](https://github.com/rancher/rancher/releases/tag/v2.13.7) |
+| [CVE-2026-44946](https://github.com/rancher/rancher/security/advisories/GHSA-c5jm-xcmq-9j95) | Fixed a security vulnerability in Rancher's SAML authentication handler where a valid signed SAML response could be replayed by an attacker who had also captured the victim's pre-authentication SAML state cookie, allowing the attacker to create a separate authenticated session with the victim's permissions. All SAML providers (Okta, Ping, ADFS, Keycloak, Shibboleth) were affected. | 29 June 2026 | Rancher [v2.14.3](https://github.com/rancher/rancher/releases/tag/v2.14.3), Rancher [v2.13.7](https://github.com/rancher/rancher/releases/tag/v2.13.7), Rancher [v2.12.11](https://github.com/rancher/rancher/releases/tag/v2.12.11) and Rancher [v2.11.15](https://github.com/rancher/rancher/releases/tag/v2.11.15) |
+| [CVE-2026-41053](https://github.com/rancher/rancher/security/advisories/GHSA-4j6x-2764-m8gh) | Fixed a security vulnerability in the GitHub App authentication provider where users incorrectly inherited permissions from all teams within their GitHub organization, rather than only the specific teams to which they belonged. Upon upgrading, Rancher automatically triggers a mandatory refresh of all affected user `principals` to remove these incorrectly assigned team memberships and restore proper access. | 27 May 2026 | Rancher [v2.14.2](https://github.com/rancher/rancher/releases/tag/v2.14.2), Rancher [v2.13.6](https://github.com/rancher/rancher/releases/tag/v2.13.6) |
+| [CVE-2026-41052](https://github.com/rancher/rancher/security/advisories/GHSA-vx8h-4prv-g744) | Updated the permissions of the built-in `project-owner` role to no longer include the `updatepsa` verb. This prevents users with this role from bypassing restricted PSA policies or deploying privileged workloads within their projects. If your organization requires users to retain this capability, administrators must create a custom project role that explicitly grants the `updatepsa` verb for the project resource. | 27 May 2026 | Rancher [v2.14.2](https://github.com/rancher/rancher/releases/tag/v2.14.2), Rancher [v2.13.6](https://github.com/rancher/rancher/releases/tag/v2.13.6), [v2.12.10](https://github.com/rancher/rancher/releases/tag/v2.12.10) |
+| [CVE-2026-44939](https://github.com/rancher/rancher/security/advisories/GHSA-mhc6-2gfq-xx62) | Rancher now validates the `authImage` parameter in cluster import manifests to prevent YAML injection attacks. | 27 May 2026 | Rancher [v2.14.2](https://github.com/rancher/rancher/releases/tag/v2.14.2), Rancher [v2.13.6](https://github.com/rancher/rancher/releases/tag/v2.13.6), [v2.12.10](https://github.com/rancher/rancher/releases/tag/v2.12.10), [v2.11.14](https://github.com/rancher/rancher/releases/tag/v2.11.14), and [v2.10.12](https://github.com/rancher/rancher/releases/tag/v2.10.12) |
 | [CVE-2026-25705](https://github.com/rancher/rancher/security/advisories/GHSA-5v3h-x4wf-5c35) | Rancher now protects against arbitrary file access via path traversal in Rancher Extensions. Note by default only users with administrative permissions can deploy UI extensions unless explicit permission is granted to other users. | 30 Apr 2026 | Rancher [v2.14.1](https://github.com/rancher/rancher/releases/tag/v2.14.1), [v2.13.5](https://github.com/rancher/rancher/releases/tag/v2.13.5), [v2.12.9](https://github.com/rancher/rancher/releases/tag/v2.12.9), and [v2.11.13](https://github.com/rancher/rancher/releases/tag/v2.11.13) |
 | [CVE-2025-62879](https://github.com/rancher/backup-restore-operator/security/advisories/GHSA-wj3p-5h3x-c74q) | Rancher now provides new versions of the Rancher Backup chart which prevent the leak of secret S3 credentials via the Rancher Backup pod log. | 29 Jan 2026 | Rancher [v2.13.2](https://github.com/rancher/rancher/releases/tag/v2.13.2), [v2.12.6](https://github.com/rancher/rancher/releases/tag/v2.12.6), [v2.11.10](https://github.com/rancher/rancher/releases/tag/v2.11.10), and [v2.10.11](https://github.com/rancher/rancher/releases/tag/v2.10.11) |
 | [CVE-2025-67601](https://github.com/rancher/rancher/security/advisories/GHSA-mc24-7m59-4q5p) | Rancher now removes the ability to fetch CA certificates stored in Rancher’s setting `cacerts` when using the `login` command. | 29 Jan 2026 | Rancher [v2.13.2](https://github.com/rancher/rancher/releases/tag/v2.13.2), [v2.12.6](https://github.com/rancher/rancher/releases/tag/v2.12.6), [v2.11.10](https://github.com/rancher/rancher/releases/tag/v2.11.10), and [v2.10.11](https://github.com/rancher/rancher/releases/tag/v2.10.11) |
@@ -4303,6 +4313,12 @@ title: About rancher-selinux
 
 To allow Rancher to work with SELinux, some functionality has to be manually enabled for the SELinux nodes. To help with that, Rancher provides an SELinux RPM.
 
+:::tip Why SELinux?
+
+By assigning a dedicated SELinux type to each container, we ensure that containers are limited to their minimal needs and cannot pivot to other resources if compromised.
+
+:::
+
 The `rancher-selinux` RPM contains a set of SELinux policies designed to grant the necessary privileges to various Rancher components running on Linux systems with SELinux enabled.
 
 The `rancher-selinux` GitHub repository is [here.](https://github.com/rancher/rancher-selinux)
@@ -4311,7 +4327,7 @@ The `rancher-selinux` GitHub repository is [here.](https://github.com/rancher/ra
 
 :::note Requirement:
 
-The `rancher-selinux` RPM was tested on openSUSE Tumbleweed and RHEL-based distributions including Centos/RockyLinux 8 and 9. 
+The `rancher-selinux` RPM was tested on openSUSE MicroOS, Fedora 42, and RHEL-based distributions including CentOS/RockyLinux 8, 9, and 10.
 
 :::
 
@@ -4345,6 +4361,19 @@ gpgkey=https://rpm.rancher.io/public.key
 EOF
 ```
 
+In order to use the RPM repository, on a CentOS 10 or RHEL 10 system, run the following bash snippet:
+
+```
+# cat << EOF > /etc/yum.repos.d/rancher.repo 
+[rancher] 
+name=Rancher 
+baseurl=https://rpm.rancher.io/rancher/production/centos/10/noarch
+enabled=1 
+gpgcheck=1 
+gpgkey=https://rpm.rancher.io/public.key 
+EOF
+```
+
 ### 2. Installing the RPM
 
 Install the RPM:
@@ -4353,17 +4382,19 @@ Install the RPM:
 yum -y install rancher-selinux
 ```
 
-## Configuring the Logging and Monitoring Applications to Work with SELinux
+## Configuring Applications to Work with SELinux
 
 :::note Requirement:
 
-Logging v2 and Monitoring v2 were tested with SELinux on RHEL/CentOS 8, 9, and Tumbleweed.
+Logging v2, Monitoring v2, and Rancher AI were tested with SELinux on RHEL/CentOS 8, 9, 10, and Tumbleweed.
 
 :::
 
-Applications do not automatically work once the `rancher-selinux` RPM is installed on the host. They need to be configured to run in an allowed SELinux container domain provided by the RPM. 
+The `rancher-selinux` RPM currently covers the following charts: **Logging**, **Monitoring**, and **Rancher AI**.
 
-To configure the `rancher-logging` or the `rancher-monitoring` chart to be SELinux aware, change `global.seLinux.enabled` to true in the `values.yaml` when installing the charts.
+Applications do not automatically work once the `rancher-selinux` RPM is installed on the host. They need to be configured to run in an allowed SELinux container domain provided by the RPM.
+
+To configure these charts to be SELinux aware, change `global.seLinux.enabled` to true in the `values.yaml` when installing the charts.
 
 
 ---
@@ -8963,6 +8994,7 @@ Rancher will publish deprecated features as part of the [release notes](https://
 
 | Patch Version |  Release Date |
 |---------------|---------------|
+| [2.14.3](https://github.com/rancher/rancher/releases/tag/v2.14.3) | June 29, 2026  |
 | [2.14.2](https://github.com/rancher/rancher/releases/tag/v2.14.2) | May 28, 2026   |
 | [2.14.1](https://github.com/rancher/rancher/releases/tag/v2.14.1) | April 30, 2026 |
 | [2.14.0](https://github.com/rancher/rancher/releases/tag/v2.14.0) | March 25, 2026 |
@@ -39053,6 +39085,7 @@ In order to deploy and run the adapter successfully, you need to ensure its vers
 
 | Rancher Version | Adapter Version  |
 |-----------------|------------------|
+| v2.14.3         |  109.0.0+up9.0.0 |
 | v2.14.2         |  109.0.0+up9.0.0 |
 | v2.14.1         |  109.0.0+up9.0.0 |
 | v2.14.0         |  109.0.0+up9.0.0 |
@@ -39576,16 +39609,23 @@ When you're done using your sandbox, destroy the Rancher Server and your cluster
 ## Article: getting-started/quick-start-guides/deploy-rancher-manager/aws-marketplace.md
 
 ---
-title: Rancher Prime AWS Marketplace Quick Start
-description: Deploy SUSE Rancher from the AWS Marketplace listing.
+title: Rancher for AWS
+description: Learn about Rancher for AWS from the AWS Marketplace listing.
 ---
 
 <head>
   <link rel="canonical" href="https://ranchermanager.docs.rancher.com/getting-started/quick-start-guides/deploy-rancher-manager/aws-marketplace"/>
 </head>
 
-You can quickly deploy Rancher Prime on Amazon Elastic Kubernetes Service (EKS.) To learn more, see the [instructions](https://suse-enceladus.github.io/marketplace-docs/rancher-prime/aws/?repository=rancher-payg-billing-adapter-llc-prd) under Usage Information in the [AWS Marketplace listing](https://aws.amazon.com/marketplace/pp/prodview-f2bvszurj2p2c). 
+SUSE Rancher for AWS (SRA/SRFA) is a fully managed Software-as-a-Service (SaaS) offering available through the [AWS Marketplace](https://aws.amazon.com/marketplace/pp/prodview-yrzugbpzuukww). It provides a centralized control plane to manage, monitor, and scale Kubernetes clusters within an AWS environment.
 
+For deployment prerequisites, architecture requirements, and subscription details, refer to the [AWS Marketplace listing](https://aws.amazon.com/marketplace/pp/prodview-yrzugbpzuukww). For more information, refer to the [product documentation](https://documentation.suse.com/cloudnative/rancher-srfa/).
+
+:::note
+
+SUSE Rancher for AWS is an offering distinct from deploying and managing the Rancher server manually on Amazon EKS. If you intend to install and manage your own Rancher deployment on an EKS cluster, refer to [Installing Rancher on Amazon EKS](../../installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/rancher-on-amazon-eks.md).
+
+:::
 
 
 ---

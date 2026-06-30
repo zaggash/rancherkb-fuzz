@@ -29267,8 +29267,6 @@ In the example below, the kubelet configuration ConfigMap created above is writt
 
 To define this [machineSelectorFiles](https://ranchermanager.docs.rancher.com/reference-guides/cluster-configuration/rancher-server-configuration/rke2-cluster-configuration#machineselectorfiles) block in a Rancher-provisioned RKE2 or K3s cluster, navigate to **Cluster Management** in the Rancher UI and click **Edit Config** for the relevant cluster. Then click **Edit as YAML** to enter the machineSelectorFiles block, before clicking **Save** to apply the change.
 
- 
-
 ```markup
 [...]
 spec:
