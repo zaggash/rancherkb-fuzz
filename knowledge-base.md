@@ -18381,6 +18381,8 @@ RKE 1.6.0
 
 ## **Situation**
 
+## IMPORTANT NOTICE: RKE Extended Support Period ends on July 31st 2026
+
 **What is changing?**
 
 As part of our ongoing efforts to ensure our technology solutions remain at the forefront of industry standards, we need to inform our customers about an important update regarding the Rancher Kubernetes Engine (RKE).
@@ -18389,7 +18391,7 @@ RKE was first released on 25th January 2018. Now, 6 Years and 625 releases later
 
 RKE has been a trusted solution, but the evolving landscape of [container orchestration](https://www.suse.com/c/rancher_blog/demystifying-container-orchestration-a-beginners-guide/) requires enhanced security, scalability and simplicity
 
-With the release of [Rancher Kubernetes Engine (RKE)](https://github.com/rancher/rke) 1.6.0, we are informing customers that RKE will be maintained for two more versions after 1.6.0, targeting the release window of July 2025. Therefore, please note that **RKE will reach End of life 31st, July 2025 meaning RKE customers must re-platform to RKE2 or K3S. RKE Extended Life Support was offered to customers until their migration to RKE2 is completed. However, it is no more in the sales portfolio and we invite customers to talk to their sales representatives for more information.**
+With the release of [Rancher Kubernetes Engine (RKE)](https://github.com/rancher/rke) 1.6.0, we are informing customers that RKE will be maintained for two more versions after 1.6.0, targeting the release window of July 2025. Therefore, please note that **RKE has reached End of life on July 31st 2025 meaning RKE customers must re-platform to RKE2 or K3S. RKE Extended Life Support was offered to customers until their migration to RKE2 is completed. However, it is no more in the sales portfolio and we invite customers to talk to their sales representatives for more information.**
 
 ## **Resolution**
 
