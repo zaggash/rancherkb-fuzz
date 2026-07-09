@@ -18377,7 +18377,7 @@ The namespace cattle-system and the cluster agent will be recreated:
 
 ## **Environment**
 
-RKE 1.6.0
+RKE
 
 ## **Situation**
 
