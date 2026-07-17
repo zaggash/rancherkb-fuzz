@@ -25,7 +25,7 @@
     
     
       
-        <title>Unexpected node draining in node driver clusters when upgrading Rancher from v2.12.2 - SUSE KBs</title>
+        <title>Node draining in Rancher-provisioned RKE2 and K3s clusters upon Rancher version upgrade - SUSE KBs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#unexpected-node-draining-in-node-driver-clusters-when-upgrading-rancher-from-v2122" class="md-skip">
+        <a href="#node-draining-in-rancher-provisioned-rke2-and-k3s-clusters-upon-rancher-version-upgrade" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Unexpected node draining in node driver clusters when upgrading Rancher from v2.12.2
+              Node draining in Rancher-provisioned RKE2 and K3s clusters upon Rancher version upgrade
             
           </span>
         </div>
@@ -14861,7 +14861,7 @@
   <span class="md-ellipsis">
     
   
-    Unexpected node draining in node driver clusters when upgrading Rancher from v2.12.2
+    Node draining in Rancher-provisioned RKE2 and K3s clusters upon Rancher version upgrade
   
 
     
@@ -14879,7 +14879,7 @@
   <span class="md-ellipsis">
     
   
-    Unexpected node draining in node driver clusters when upgrading Rancher from v2.12.2
+    Node draining in Rancher-provisioned RKE2 and K3s clusters upon Rancher version upgrade
   
 
     
@@ -15415,26 +15415,29 @@
 
 
 
-<h1 id="unexpected-node-draining-in-node-driver-clusters-when-upgrading-rancher-from-v2122">Unexpected node draining in node driver clusters when upgrading Rancher from v2.12.2</h1>
-<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Unexpected-node-draining-in-node-driver-clusters-when-upgrading-Rancher-from-v2-12-2">000022311</a></p>
+<h1 id="node-draining-in-rancher-provisioned-rke2-and-k3s-clusters-upon-rancher-version-upgrade">Node draining in Rancher-provisioned RKE2 and K3s clusters upon Rancher version upgrade</h1>
+<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Node-draining-in-Rancher-provisioned-RKE2-and-K3s-clusters-upon-Rancher-version-upgrade">000022311</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
 <ul>
-<li>Rancher v2.12.2</li>
-<li>RKE2 or K3s <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider">node driver cluster(s)</a></li>
+<li>A Rancher-provisioned RKE2 or K3s cluster, with Drain Nodes enabled in the Upgrade Strategy.</li>
+<li>A Rancher version upgrade.</li>
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>Upgrading Rancher from v2.12.2, to a higher release, triggers a drain and subsequent uncordoning of all nodes in node driver clusters, where <strong>Drain Nodes</strong> is set to <strong>Yes</strong> in the cluster's <strong>Upgrade Strategy</strong>. All workloads running in the cluster are re-scheduled as a result. This is unexpected, as no new configuration change is made to the cluster during the Rancher upgrade.</p>
+<p>When performing a Rancher version upgrade, users may observe that Rancher-provisioned RKE2 or K3s clusters, with Drain Nodes enabled in the Upgrade Strategy, are updated after the Rancher upgrade and node drains are performed as a result.</p>
 <h2 id="cause"><strong>Cause</strong></h2>
-<p>Upgrading from version v2.12.2 to any higher version results in a change to the plan for nodes in node driver clusters. The <code>rancher-system-agent</code>, on node driver cluster nodes, monitors the plan's hash, to check for upgrades, and so this change results in a reconciliation, with the node drained and then uncordoned, in accordance with the <strong>Drain Nodes</strong> setting in the <strong>Upgrade Strategy.</strong> It is not expected that a Rancher upgrade results in a downstream cluster reconciliation, and this behaviour is not observed in upgrades of other Rancher versions.</p>
+<p>As noted in the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/upgrade-and-roll-back-kubernetes#enabling-draining-nodes-during-upgrades-from-the-rancher-ui">Rancher documentation on enabling node drains</a>:</p>
+<blockquote>
+<p>During an upgrade, nodes may be drained even when no user-visible YAML changes are present. This can occur if non-dynamic configuration files are updated or if a new system-agent-installer image is introduced. In such cases, Rancher generates a new upgrade plan, resulting in a new plan hash. When Upgrade Strategy is set to Drain nodes, this plan change can trigger node draining.</p>
+</blockquote>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>To avoid node driver clusters from draining - which will cause temporary workload unavailability due to rescheduling - when upgrading Rancher from v2.12.2, set <strong>Drain Nodes</strong> to <strong>No</strong> in the <strong>Upgrade Strategy</strong> of the clusters, before the Rancher upgrade:</p>
+<p>If users wish to avoid the possibility of nodes drains - which will cause temporary workload unavailability due to rescheduling - when upgrading Rancher, set Drain Nodes to No in the Upgrade Strategy of the clusters, before the Rancher upgrade:</p>
 <ol>
-<li>Navigate to <strong>Cluster Management</strong> in the Rancher UI and click <strong>Edit Config</strong> for the relevant RKE2/K3s node driver cluster.</li>
+<li>Navigate to <strong>Cluster Management</strong> in the Rancher UI and click <strong>Edit Config</strong> for the relevant RKE2/K3s cluster.</li>
 <li>Under <strong>Cluster Configuration</strong> select <strong>Upgrade Strategy</strong>.</li>
 <li>Set the <strong>Drain Nodes</strong> option to <strong>No</strong> for both Control Plane and Worker Nodes.</li>
 <li>Click <strong>Save</strong> to apply the changes.</li>
 </ol>
-<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000182or&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000JQoXh" /></p>
+<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0bG0000049QNZ&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000JQoXh" /></p>
 <p>After the Rancher upgrade, you can revert this change, to set <strong>Drain Nodes</strong> back to <strong>Yes.</strong></p>
 
 
