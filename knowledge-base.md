@@ -3357,7 +3357,7 @@ Run `terraform apply` and observe this second `V2` revision created for the RKE 
 
 # How to create a custom Project RBAC role to grant log access and exec permission on Pods, in a Rancher v2.x managed cluster
 
-**Article Number:** [000020073](https://support.scc.suse.com/s/kb/360050943432)
+**Article Number:** [000020073](https://support.scc.suse.com/s/kb/How-to-create-a-custom-Project-RBAC-role-to-grant-log-access-and-exec-permission-on-Pods-in-a-Rancher-v2-x-managed-cluster)
 
 ## **Environment**
 
@@ -8737,29 +8737,29 @@ Having set the verbosity flag, click `Save` at the bottom of the page, to update
 
 ##### etcd
 
-The etcd component is configured to log at an INFO level by default, in an RKE CLI or Rancher launched Kubernetes cluster, but this can be set to DEBUG level by setting the `--debug=true` flag.
+The etcd component is configured to log at an INFO level by default, in an RKE CLI or Rancher launched Kubernetes cluster, but this can be set to DEBUG level by setting the --l`og-level=debug`
 
 ##### Update etcd verbosity in an RKE CLI launched cluster
 
-1. First set the `--debug=true` flag, within the `cluster.yml` cluster configuration file, under `extra_args` for the etcd service, per the following example:
+1. First set the --l`og-level=debuge` flag, within the `cluster.yml` cluster configuration file, under `extra_args` for the etcd service, per the following example:
    
    ```yaml
      services:
        etcd:
          extra_args:
-           debug: 'true'
+          log-level: debug
    ```
 2. Having set the flag in the cluster.yml, run `rke up --config cluster.yml` to update the cluster with the new configuration.
 
 ##### Update etcd verbosity in a Rancher launched cluster
 
-Navigate to the cluster within the Rancher UI and click `Edit Cluster`, then `Edit as YAML`. Set the `--debug=true` flag under `extra_args`, for the etcd service, per the following example:
+Navigate to the cluster within the Rancher UI and click `Edit Cluster`, then `Edit as YAML`. Set the `log-level=debug` flag under `extra_args`, for the etcd service, per the following example:
 
 ```yaml
   services:
     etcd:
       extra_args:
-        debug: 'true'
+        log-level: debug
 ```
 
 Having set the debug flag, click `Save` at the bottom of the page, to update the cluster.
@@ -8954,7 +8954,7 @@ In order to workaround the issue in existing clusters, the Calico ippool configu
 
 # How to change the log level for Rancher v2.x
 
-**Article Number:** [000020239](https://support.scc.suse.com/s/kb/360015420511)
+**Article Number:** [000020239](https://support.scc.suse.com/s/kb/How-to-change-the-log-level-for-Rancher-v2-x)
 
 ## **Environment**
 
@@ -30307,33 +30307,35 @@ Given the situation of running an incompatible combination of Rancher and Kubern
 
 ## Article: 000022311.md
 
-# Unexpected node draining in node driver clusters when upgrading Rancher from v2.12.2
+# Node draining in Rancher-provisioned RKE2 and K3s clusters upon Rancher version upgrade
 
-**Article Number:** [000022311](https://support.scc.suse.com/s/kb/Unexpected-node-draining-in-node-driver-clusters-when-upgrading-Rancher-from-v2-12-2)
+**Article Number:** [000022311](https://support.scc.suse.com/s/kb/Node-draining-in-Rancher-provisioned-RKE2-and-K3s-clusters-upon-Rancher-version-upgrade)
 
 ## **Environment**
 
-- Rancher v2.12.2
-- RKE2 or K3s [node driver cluster(s)](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/launch-kubernetes-with-rancher/use-new-nodes-in-an-infra-provider)
+- A Rancher-provisioned RKE2 or K3s cluster, with Drain Nodes enabled in the Upgrade Strategy.
+- A Rancher version upgrade.
 
 ## **Situation**
 
-Upgrading Rancher from v2.12.2, to a higher release, triggers a drain and subsequent uncordoning of all nodes in node driver clusters, where **Drain Nodes** is set to **Yes** in the cluster's **Upgrade Strategy**. All workloads running in the cluster are re-scheduled as a result. This is unexpected, as no new configuration change is made to the cluster during the Rancher upgrade.
+When performing a Rancher version upgrade, users may observe that Rancher-provisioned RKE2 or K3s clusters, with Drain Nodes enabled in the Upgrade Strategy, are updated after the Rancher upgrade and node drains are performed as a result.
 
 ## **Cause**
 
-Upgrading from version v2.12.2 to any higher version results in a change to the plan for nodes in node driver clusters. The `rancher-system-agent`, on node driver cluster nodes, monitors the plan's hash, to check for upgrades, and so this change results in a reconciliation, with the node drained and then uncordoned, in accordance with the **Drain Nodes** setting in the **Upgrade Strategy.** It is not expected that a Rancher upgrade results in a downstream cluster reconciliation, and this behaviour is not observed in upgrades of other Rancher versions.
+As noted in the [Rancher documentation on enabling node drains](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/upgrade-and-roll-back-kubernetes#enabling-draining-nodes-during-upgrades-from-the-rancher-ui):
+
+> During an upgrade, nodes may be drained even when no user-visible YAML changes are present. This can occur if non-dynamic configuration files are updated or if a new system-agent-installer image is introduced. In such cases, Rancher generates a new upgrade plan, resulting in a new plan hash. When Upgrade Strategy is set to Drain nodes, this plan change can trigger node draining.
 
 ## **Resolution**
 
-To avoid node driver clusters from draining - which will cause temporary workload unavailability due to rescheduling - when upgrading Rancher from v2.12.2, set **Drain Nodes** to **No** in the **Upgrade Strategy** of the clusters, before the Rancher upgrade:
+If users wish to avoid the possibility of nodes drains - which will cause temporary workload unavailability due to rescheduling - when upgrading Rancher, set Drain Nodes to No in the Upgrade Strategy of the clusters, before the Rancher upgrade:
 
-1. Navigate to **Cluster Management** in the Rancher UI and click **Edit Config** for the relevant RKE2/K3s node driver cluster.
+1. Navigate to **Cluster Management** in the Rancher UI and click **Edit Config** for the relevant RKE2/K3s cluster.
 2. Under **Cluster Configuration** select **Upgrade Strategy**.
 3. Set the **Drain Nodes** option to **No** for both Control Plane and Worker Nodes.
 4. Click **Save** to apply the changes.
 
-![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr00000182or&feoid=00N1i000002LdMN&refid=0EMTr00000JQoXh)
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG0000049QNZ&feoid=00N1i000002LdMN&refid=0EMTr00000JQoXh)
 
 After the Rancher upgrade, you can revert this change, to set **Drain Nodes** back to **Yes.**
 
