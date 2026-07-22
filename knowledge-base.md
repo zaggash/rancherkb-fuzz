@@ -10344,10 +10344,22 @@ Rancher Support can help troubleshoot issues related to Rancher itself, but thei
 
 **Article Number:** [000020495](https://support.scc.suse.com/s/kb/Rancher-Does-my-support-subscription-to-Rancher-include-support-for-Longhorn)
 
+## **Environment**
+
+- Rancher Prime
+- Longhorn
+
+## **Situation**
+
+A customer with an active Rancher Prime subscription needs to know if Longhorn is covered under their existing support Service Level Agreement (SLA).
+
 ## **Resolution**
 
-No, a subscription to Rancher Prime does not include support for Longhorn. With the general availability of Longhorn in June 2020, a separate commercial subscription to an add-on plan is needed to receive SLA-based support for Longhorn.   
-Customers are invited to contact their account executives to learn about opportunities for Longhorn support.
+No, a standard subscription to Rancher Prime does not automatically include support for Longhorn.
+
+Because Longhorn is a standalone, enterprise-grade storage solution, a separate commercial subscription (Longhorn Add-on) is required to receive SLA-based technical support.
+
+To add Longhorn support to your account, please reach out to your dedicated Customer Success Manager or Account Executive.
 
 
 
