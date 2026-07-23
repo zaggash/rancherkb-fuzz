@@ -262,10 +262,6 @@ In order to mount a volume as read only, append `:ro` to the end of the volume m
 
 Multiple volume mounts can be specified for the same component by passing the flag values as an array in the config file.
 
-:::info Version Gate
-Prior to April 2024 releases (v1.27.13+rke2r1, v1.28.9+rke2r1, v1.29.4+rke2r1), only directories can be mounted.
-:::
-
 ```yaml
 # /etc/rancher/rke2/config.yaml
 kube-apiserver-extra-mount: 
@@ -1764,10 +1760,6 @@ For more information, refer to the official [ingress-nginx Helm configuration pa
 </TabItem>
 <TabItem value="traefik" default>
 
-:::info Version Gate
-Traefik support is available as of August 2024 releases: v1.28.12+rke2r1, v1.29.7+rke2r1, v1.30.3+rke2r1
-:::
-
 [traefik](https://doc.traefik.io/traefik/) is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. It simplifies networking complexity while designing, deploying, and running applications.
 
 To use traefik, start each server with the `ingress-controller: traefik` option in your configuration file.
@@ -2046,10 +2038,6 @@ Starting in versions v1.34.0+rke2r1, v1.33.4+rke2r1, v1.32.8+rke2r1, v1.31.12+rk
 
 
 ### S3 Configuration Secret Support
-
-:::info Version Gate
-S3 Configuration Secret support is available as of the August 2024 releases: v1.30.4+rke2r1, v1.29.8+rke2r1, v1.28.13+rke2r1
-:::
 
 RKE2 supports reading etcd S3 snapshot configuration from a Kubernetes Secret.
 This may be preferred to hardcoding credentials in RKE2 CLI flags or config files for security reasons, or if credentials need to be rotated without restarting RKE2.
@@ -36566,10 +36554,6 @@ title: Default Pod Security Standards
 
 This document describes how RKE2 configures `PodSecurityStandards` and `NetworkPolicies` in order to be secure-by-default while also providing operators with maximum configuration flexibility.
 
-:::info Version Gate
-This document applies to RKE2 v1.25 and newer, please refer to the [Pod Security Policies Documentation](./pod_security_policies.md) for the default policy information for RKE2 v1.24 and older.
-:::
-
 ## Pod Security Standards
 
 Starting from Kubernetes version v1.25.0, Pod Security Policies (PSP) are totally removed from Kubernetes, and replaced by [Pod Security Admission (PSA)](https://kubernetes.io/docs/concepts/security/pod-security-admission/). A default Pod Security Admission config file will be added to the cluster upon startup as follows:
@@ -36788,12 +36772,6 @@ Failure to follow proper procedure when rotating secrets encryption keys can cau
 :::
 
 ### Encryption Key Rotation
-
-:::info Version Gate
-Available as of the September 2024 releases: v1.29.9+rke2r1, v1.30.5+rke2r1, v1.31.1+rke2r1
-
-For older releases, see [Encryption Key Rotation Classic](#encryption-key-rotation-classic)
-:::
 
 <Tabs groupId="se">
 <TabItem value="Single-Server" default>
@@ -44853,7 +44831,7 @@ The NVIDIA operator restarts containerd with a hangup call which restarts RKE2
 
 <TabItem value="v26.3.x" default>
 
-There are two installation options available. 
+There are two installation options available.
 
 If drivers and libraries are pre-installed or you are using a [supported operating system by nvidia](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html#supported-operating-systems-and-kubernetes-platforms), please use the following manifest 
 
@@ -44866,12 +44844,14 @@ metadata:
 spec:
   repo: https://helm.ngc.nvidia.com/nvidia
   chart: gpu-operator
-  version: v26.3.1
+  version: v26.3.2
   targetNamespace: gpu-operator
   createNamespace: true
   valuesContent: |-
-    cdi:
-      nriPluginEnabled: true
+    toolkit:
+      env:
+      - name: CONTAINERD_SOCKET
+        value: /run/k3s/containerd/containerd.sock
 ```
 
 If your operating system vendor supplies a compatible driver image, you can use the `driver` value field to point to it. For example, in SLES 16.0, you can use the following manifest:
@@ -44889,20 +44869,45 @@ spec:
   targetNamespace: gpu-operator
   createNamespace: true
   valuesContent: |-
-    cdi:
-      nriPluginEnabled: true
+    toolkit:
+      env:
+      - name: CONTAINERD_SOCKET
+        value: /run/k3s/containerd/containerd.sock
     driver:
       repository: registry.suse.com/third-party/nvidia
       usePrecompiled: true
       version: 595 # This depends on the nvidia driver that works with your GPU architecture
 ```
+</TabItem>
 
-:::info
-NVIDIA GPU Operator v26.3.x recommends using [Node Resource Interface (NRI) specification](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/cdi.html#about-the-node-resource-interface-nri-plugin) and that simplifies operations: we don't need to pass any extra envvar and it does not require changing containerd configuration. It requires containerd 2.1
+<TabItem value="v26.3.x with NRI">
+
+[Node Resource Interface (NRI) specification](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/cdi.html#about-the-node-resource-interface-nri-plugin) is a pluggable extension mechanism built into container runtimes like containerd and CRI-O that allows custom plugins to intercept container lifecycle events on a node. It is considered the future integration mechanism for GPUs.
+
+:::warning
+NVIDIA considers NRI as experimental
 :::
 
+If you want to try it out, please use the following manifest:
+```yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: gpu-operator
+  namespace: kube-system
+spec:
+  repo: https://helm.ngc.nvidia.com/nvidia
+  chart: gpu-operator
+  version: v26.3.1
+  targetNamespace: gpu-operator
+  createNamespace: true
+  valuesContent: |-
+    cdi:
+      nriPluginEnabled: true
+```
+
 :::info Version Gate
-Containerd 2.1 is available as of September 2025 releases: v1.31.13+rke2r1, v1.32.9+rke2r1, v1.33.5+rke2r1, v1.34.1+rke2r1
+NRI requires containerd 2.1. Containerd 2.1 is available as of September 2025 releases: v1.31.13+rke2r1, v1.32.9+rke2r1, v1.33.5+rke2r1, v1.34.1+rke2r1
 :::
 
 </TabItem>
@@ -45593,10 +45598,6 @@ node-taint:
 ```
 
 ## Kubelet configuration
-:::info Version Gate
-The drop-in directory for kubelet configuration files or the config file (options 1 and 2 below) are only available in v1.32 and above. For lower minors, you should use the kubelet args directly (option number 3 below)
-:::
-
 Following on from upstream behavior, kubelet configuration can be changed in different ways with a specific [order of precedence](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/#kubelet-configuration-merging-order). 
 
 RKE2 uses a default kubelet configuration which is stored under `/var/lib/rancher/rke2/agent/etc/kubelet.conf.d/00-rke2-defaults.conf`. If you would like to change the default configuration parameters, there are three ways to do so:
@@ -46037,10 +46038,6 @@ For example, when pulling `registry.example.com:5000/rancher/mirrored-pause:3.6`
 In order to be recognized as a registry, the first component of the image name must contain at least one period or colon.
 For historical reasons, images without a registry specified in their name are implicitly identified as being from `docker.io`.
 
-:::info Version Gate
-The `disable-default-registry-endpoint` option is available as of February 2024 releases: v1.26.13+rke2r1, v1.27.10+rke2r1, v1.28.6+rke2r1, v1.29.1+rke2r1
-:::
-
 Nodes may be configured with the `disable-default-registry-endpoint: true` option.
 When this is set, containerd will not fall back to the default registry endpoint, and will only pull from configured mirror endpoints,
 along with the distributed registry if it is enabled.
@@ -46121,11 +46118,6 @@ mirrors:
       "^rancher/(.*)": "mirrorproject/rancher-images/$1"
 ```
 
-:::info Version Gate
-Rewrites are no longer applied to the Default Endpoint as of the February 2024 releases: v1.26.13+rke2r1, v1.27.10+rke2r1, v1.28.6+rke2r1, v1.29.1+rke2r1
-Prior to these releases, rewrites were also applied to the default endpoint, which would prevent RKE2 from pulling from the upstream registry if the image could not be pulled from a mirror endpoint, and the image was not available under the modified name in the upstream.
-:::
-
 If you want to apply rewrites when pulling directly from a registry - when it is not being used as a mirror for a different upstream registry - you must provide a mirror endpoint that does not match the default endpoint.
 Mirror endpoints in `registries.yaml` that match the default endpoint are ignored; the default endpoint is always tried last with no rewrites, if fallback has not been disabled.
 
@@ -46169,10 +46161,6 @@ The `auth` part consists of either username/password or authentication token:
 Below are basic examples of using private registries in different modes:
 
 ### Wildcard Support
-
-:::info Version Gate
-Wildcard support is available as of the March 2024 releases: v1.26.15+rke2r1, v1.27.12+rke2r1, v1.28.8+rke2r1, v1.29.3+rke2r1
-:::
 
 The `"*"` wildcard entry can be used in the `mirrors` and `configs` sections to provide default configuration for all registries.
 The default configuration will only be used if there is no specific entry for that registry. Note that the asterisk MUST be quoted.
@@ -46473,10 +46461,6 @@ rke2.exe agent --token <> --server <>
 title: Embedded Registry Mirror
 ---
 
-:::info Version Gate
-The Embedded Registry Mirror is available as an experimental feature as of January 2024 releases: v1.26.13+rke2r1, v1.27.10+rke2r1, v1.28.6+rke2r1, v1.29.1+rke2r1 and GA as of December 2024 releases: v1.29.12+rke2r1,v1.30.8+rke2r1, v1.31.4+rke2r1
-:::
-
 RKE2 embeds [Spegel](https://github.com/spegel-org/spegel), a stateless distributed OCI registry mirror that allows peer-to-peer sharing of container images between nodes in a Kubernetes cluster. The distributed registry mirror is disabled by default. For RKE2 to leverage it, you must enable both the [Distributed OCI Registry Mirror](#enabling-the-distributed-oci-registry-mirror) and the [Registry mirroring](#enabling-registry-mirroring) as explained in the following subsections.
 
 ## Enabling The Distributed OCI Registry Mirror
@@ -46535,10 +46519,6 @@ registries are enabled - by listing it in the mirrors section:
 mirrors:
   mirror.example.com:
 ```
-
-:::info Version Gate
-Wildcard support is available as of the March 2024 releases: v1.26.15+rke2r1, v1.27.12+rke2r1, v1.28.8+rke2r1, v1.29.3+rke2r1
-:::
 
 The `"*"` wildcard mirror entry can be used to enable distributed mirroring of all registries. Note that the asterisk MUST be quoted:
 ```yaml
