@@ -1300,6 +1300,5439 @@ Specify the frequency of these operations (hourly, daily, weekly, monthly, and y
 
 ---
 
+## Article: troubleshoot/_index.md
+
+---
+title: Troubleshoot
+weight: 10
+---
+
+---
+
+## Article: troubleshoot/support-bundle.md
+
+---
+title: Support Bundle
+weight: 2
+---
+
+Since v1.4.0, Longhorn replaced the in-house support bundle generation with a general-purpose [support bundle kit](https://github.com/rancher/support-bundle-kit). 
+
+You can click the `Generate Support Bundle` at the bottom of Longhorn UI to download a zip file containing cluster manifests and logs.
+
+During support bundle generation, Longhorn will create a Deployment for the support bundle manager.
+
+> **Note:** The support bundle manager will use a dedicated `longhorn-support-bundle` service account and `longhorn-support-bundle` cluster role binding with `cluster-admin` access for bundle collection.
+
+With the support bundle, you can simulate a mocked Kubernetes cluster that is interactable with the `kubectl` command. See [simulator command](https://github.com/rancher/support-bundle-kit#simulator-command) for more details.
+
+
+## Limitations
+
+Longhorn currently does not support concurrent generation of multiple support bundles. We recommend waiting until the completion of the ongoing support bundle before initiating a new one. If a new support bundle is created while another one is still in progress, Longhorn will overwrite the older support bundle.
+
+
+## History
+[Original Feature Request](https://github.com/longhorn/longhorn/issues/2759)
+
+Available since v1.4.0
+
+
+---
+
+## Article: troubleshoot/troubleshooting.md
+
+---
+title: Troubleshooting Problems
+weight: 1
+---
+
+- [Troubleshooting Guide](#troubleshooting-guide)
+  - [UI](#ui)
+  - [Manager and Engines](#manager-and-engines)
+  - [CSI driver](#csi-driver)
+  - [FlexVolume Driver](#flexvolume-driver)
+- [Common Issues](#common-issues)
+  - [A volume can be attached/detached from the UI, but Kubernetes Pods/StatefulSets cannot use it](#a-volume-can-be-attacheddetached-from-the-ui-but-kubernetes-podsstatefulsets-cannot-use-it)
+    - [Using with FlexVolume Plug-in](#using-with-flexvolume-plug-in)
+  - ["Package 'linux-modules-extra-x.x.x-x-generic' Has No Installation Candidate" Error During Installation on Debian Machines](#package-linux-modules-extra-xxx-x-generic-has-no-installation-candidate-error-during-installation-on-debian-machines)
+  - ["Invalid argument" Error in Disk Status After Adding a Block-Type Disk](#invalid-argument-error-in-disk-status-after-adding-a-block-type-disk)
+
+## Troubleshooting Guide
+
+> For a more in-depth troubleshooting flow please see [Longhorn Troubleshooting](https://github.com/longhorn/longhorn/wiki/Troubleshooting).
+
+There are a few components in Longhorn: Manager, Engine, Driver and UI. By default, all those components run as pods in the `longhorn-system` namespace in the Kubernetes cluster.
+
+Most of the logs are included in the Support Bundle. You can click the **Generate Support Bundle** link at the bottom of the UI to download a zip file that contains Longhorn-related configuration and logs.
+
+See [Support Bundle](../support-bundle) for detail.
+
+One exception is the `dmesg`, which needs to be retrieved from each node by the user.
+
+### UI
+
+Make use of the Longhorn UI is a good start for the troubleshooting. For example, if Kubernetes cannot mount one volume correctly, after stop the workload, try to attach and mount that volume manually on one node and access the content to check if volume is intact.
+
+Also, the event logs in the UI dashboard provides information of probable issues. Check for the event logs in `Warning` level.
+
+### Manager and Engines
+
+You can get the logs from the Longhorn Manager and Engines to help with troubleshooting. The most useful logs are the ones from `longhorn-manager-xxx`, and the logs inside Longhorn instance managers, for example, `instance-manager-xxxx`, `instance-manager-e-xxxx` and `instance-manager-r-xxxx`.
+
+Since normally there are multiple Longhorn Managers running at the same time, we recommend using [kubetail](https://github.com/johanhaleby/kubetail), which is a great tool to keep track of the logs of multiple pods. To track the manager logs in real time, you can use:
+
+```bash
+kubetail longhorn-manager -n longhorn-system
+```
+
+### CSI driver
+
+For the CSI driver, check the logs for `csi-attacher-0` and `csi-provisioner-0`, as well as containers in `longhorn-csi-plugin-xxx`.
+
+### FlexVolume Driver
+
+The FlexVolume driver is deprecated as of Longhorn v0.8.0 and should no longer be used.
+
+First check where the driver has been installed on the node. Check the log of `longhorn-driver-deployer-xxxx` for that information.
+
+Then check the kubelet logs. The FlexVolume driver itself does not run inside the container. It would run along with the kubelet process.
+
+If kubelet is running natively on the node, you can use the following command to get the logs:
+
+```bash
+journalctl -u kubelet
+```
+
+Or if kubelet is running as a container (for example, in RKE), use the following command instead:
+
+```bash
+docker logs kubelet
+```
+
+For even more detailed logs of Longhorn FlexVolume, run the following command on the node or inside the container (if kubelet is running as a container, for example, in RKE):
+
+```bash
+touch /var/log/longhorn_driver.log
+```
+
+## Common Issues
+
+### A volume can be attached/detached from the UI, but Kubernetes Pods/StatefulSets cannot use it
+
+#### Using with FlexVolume Plug-in
+
+Check if the volume plug-in directory has been set correctly. This is automatically detected unless the user explicitly sets it.
+
+By default, Kubernetes uses `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/`, as stated in the [official document](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-storage/flexvolume.md/#prerequisites).
+
+Some vendors choose to change the directory for several reasons. For example, GKE uses `/home/kubernetes/flexvolume` instead.
+
+The correct directory can be found by running `ps aux|grep kubelet` on the host and check the `--volume-plugin-dir` parameter. If there is none, the default `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/` will be used.
+
+### "Package 'linux-modules-extra-x.x.x-x-generic' Has No Installation Candidate" Error During Installation on Debian Machines
+
+For Debian machines, if you encounter errors similar to the below when installing Linux kernel extra modules, you need to find an available version in the pkg collection websites like [this](https://pkgs.org/search/?q=linux-modules-extra) rather than directly relying on `uname -r` instead:
+
+```log
+apt install -y linux-modules-extra-`uname -r`
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Package linux-modules-extra-5.15.0-67-generic is not available, but is referred to by another package.
+This may mean that the package is missing, has been obsoleted, or
+is only available from another source
+
+E: Package 'linux-modules-extra-5.15.0-67-generic' has no installation candidate
+```
+
+For example, for Ubuntu 22.04, one valid version is `linux-modules-extra-5.15.0-76-generic`:
+
+```bash
+apt update -y
+apt install -y linux-modules-extra-5.15.0-76-generic
+```
+
+### "Invalid argument" Error in Disk Status After Adding a Block-Type Disk
+
+After adding a block-type disk, the disk status displays error messages:
+
+```plaintext
+Disk disk-1(/dev/nvme1n1) on node dereksu-ubuntu-pool1-bf77ed93-2d2p9 is not ready: 
+failed to generate disk config: error: rpc error: code = Internal desc = rpc error: code = Internal 
+desc = failed to add block device: failed to create AIO bdev: error sending message, id 10441, 
+method bdev_aio_create, params {disk-1 /host/dev/nvme1n1 4096}: {"code": -22,"message": "Invalid argument"}
+```
+
+Next, inspect the log message of the instance-manager pod on the same node. If the log reveals the following:
+
+```log
+[2023-06-29 08:51:53.762597] bdev_aio.c: 762:create_aio_bdev: *WARNING*: Specified block size 4096 does not match auto-detected block size 512
+[2023-06-29 08:51:53.762640] bdev_aio.c: 788:create_aio_bdev: *ERROR*: Disk size 100000000000 is not a multiple of block size 4096
+```
+
+These messages indicate that the size of your disk is not a multiple of the block size 4096 and is not supported by Longhorn system.
+
+To resolve this issue, you can follow the steps:
+
+1. Remove the newly added block-type disk from the node.
+2. Partition the block-type disk using the `fdisk` utility and ensure that the partition size is a multiple of the block size 4096.
+3. Add the partitioned disk to the Longhorn node.
+
+## Profiling
+
+### Engine, replica, and sync agent runtime
+
+You can enable the `pprof` server dynamically to perform runtime profiling.
+To enable profiling, you can:
+
+1. Shell into the instance manager pod.
+2. Identify the runtime process and its port using `ps`:
+    ```bash
+    $ ps aux | more
+
+    USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+    ...
+    root        1996  0.0  0.6 1990080 20996 ?       Sl   Jul25   0:05 /host/var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --volume-name     vol replica /host/var/lib/longhorn/replicas/vol-3004fc59 --size 1073741824 --disableRevCounter --replica-instance-name vol-r-ec7e35e4 --snapshot-max-count 250     --snapshot-max-size 0 --sync-agent-port-count 7 --listen 0.0.0.0:10000
+    root        2004  0.0  0.6 1695152 22708 ?       Sl   Jul25   0:09 /host/var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --volume-name     vol sync-agent --listen 0.0.0.0:10002 --replica 0.0.0.0:10000 --listen-port-range 10003-10009 --replica-instance-name vol-r-ec7e35e4
+    root        2031  0.0  0.6 1916348 23760 ?       Sl   Jul25   0:46 /engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --engine-instance-name vol-e-0     controller vol --frontend tgt-blockdev --disableRevCounter --size 1073741824 --current-size 0 --engine-replica-timeout 8 --file-sync-http-client-timeout 30     --snapshot-max-count 250 --snapshot-max-size 0 --replica tcp://10.42.2.7:10000 --replica tcp://10.42.0.15:10000 --replica tcp://10.42.1.7:10000 --listen 0.0.0.0:10010
+    ```
+3. Enable the `pprof` server for the desired runtime (for example, sync-agent):
+    > In this example, the sync-agent process listens on port `10002`.
+
+    ```bash
+    $ /host/var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --url http://localhost:10002 profiler enable --port 36060
+    $ /host/var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --url http://localhost:10002 profiler show
+
+    Profiler enabled at Addr: *:36060
+    ```
+
+    > The `pprof` server is now accessible at `http://localhost:36060` *inside the instance manager pod*.
+4. Use the `pprof` interface for runtime inspection. For more details, refer to the [official pprof documentation](https://pkg.go.dev/net/http/pprof#hdr-Usage_examples).
+5. Disable the profiler after completing your analysis:
+    ```bash
+    $ /host/var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --url http://localhost:10002 profiler disable
+
+    Profiler is disabled!
+    ```
+
+### SPDK - Failed to bind NVMe disk (Error -22)
+
+If `instance-manager` logs show `failed to bind NVMe disk` or `vfio-pci: probe ... failed with error -22`, your NVMe likely shares an IOMMU group with a PCIe bridge.
+
+**Validation**: Run `lspci -t` or check `/sys/kernel/iommu_groups/`. If the NVMe and Bridge are in the same group, you must switch the disk to **AIO mode** in the Longhorn UI.
+
+
+---
+
+## Article: advanced-resources/_index.md
+
+---
+title: Advanced Resources
+weight: 8
+---
+
+---
+
+## Article: advanced-resources/volumeattachment.md
+
+---
+title: Longhorn VolumeAttachment
+weight: 1
+---
+
+**Table of Contents**
+- [Kubernetes and Longhorn `VolumeAttachment`](#kubernetes-and-longhorn-volumeattachment)
+- [Longhorn VolumeAttachment](#longhorn-volumeattachment)
+  - [VolumeAttachment CR](#volumeattachment-cr)
+  - [Understanding Attachment Tickets](#understanding-attachment-tickets)
+- [The CSI Attachment and Detachment Workflow](#the-csi-attachment-and-detachment-workflow)
+  - [Core Components in the Workflow](#core-components-in-the-workflow)
+  - [The CSI Volume Attachment Flow](#the-csi-volume-attachment-flow)
+  - [The CSI Volume Detachment Flow](#the-csi-volume-detachment-flow)
+  - [Summary of the Workflow](#summary-of-the-workflow)
+- [Troubleshooting Volume Attachment Issues](#troubleshooting-volume-attachment-issues)
+  - [Volume is Stuck in `Attaching` or `Detaching` State](#volume-is-stuck-in-attaching-or-detaching-state)
+    - [Possible Causes](#possible-causes)
+    - [Resolution Steps](#resolution-steps)
+  - [Case Study](#case-study)
+    - [Case 1: Failure to Attach Volume Due to Unexpected `longhorn-ui` Attachment Ticket](#case-1-failure-to-attach-volume-due-to-unexpected-longhorn-ui-attachment-ticket)
+    - [Case 2: Volume Fails to Attach to New Node Due to Backup Job Stuck in Pending State](#case-2-volume-fails-to-attach-to-new-node-due-to-backup-job-stuck-in-pending-state)
+
+---
+
+This document provides a detailed overview of Longhorn's `VolumeAttachment` custom resource, how it integrates with Kubernetes' native `VolumeAttachment`, its operational flow, and common troubleshooting scenarios.
+
+## Kubernetes and Longhorn `VolumeAttachment`
+
+To understand how volume attachments work in Longhorn, it is important to distinguish between the Kubernetes `VolumeAttachment` and Longhorn's custom `VolumeAttachment`:
+
+- **Kubernetes `VolumeAttachment`**: It is a native Kubernetes API resource that is part of the Container Storage Interface (CSI) specification. Its primary role is to signal to a CSI driver that a volume should be attached to a specific node.
+
+- **Longhorn `VolumeAttachment`**: It is a Custom Resource (CR) defined by Longhorn, with the full name `volumeattachment.longhorn.io`. This internal Longhorn resource is used by the Longhorn Manager to track and manage all attachment requests for a volume.
+
+## Longhorn VolumeAttachment
+
+### VolumeAttachment CR
+
+To retrieve a Longhorn `VolumeAttachment`, use the following command:
+
+```bash
+kubectl -n longhorn-system get volumeattachment.longhorn.io <volume-name> -o yaml
+```
+
+Example output:
+
+```bash
+apiVersion: v1
+...
+  spec:
+    attachmentTickets:
+      csi-f0471a334f0b249f964cd1dec461a5eb94c8d268cbbc904c1a8e9a37e2045208:
+        generation: 0
+        id: csi-f0471a334f0b249f964cd1dec461a5eb94c8d268cbbc904c1a8e9a37e2045208
+        nodeID: rancher60-master
+        parameters:
+          disableFrontend: "false"
+          lastAttachedBy: ""
+        type: csi-attacher
+    volume: pvc-b26e9514-aafd-46e0-b70c-4e3f187c7977
+  status:
+    attachmentTicketStatuses:
+      csi-f0471a334f0b249f964cd1dec461a5eb94c8d268cbbc904c1a8e9a37e2045208:
+        conditions:
+        - lastProbeTime: ""
+          lastTransitionTime: "2025-07-05T09:17:27Z"
+          message: ""
+          reason: ""
+          status: "True"
+          type: Satisfied
+        generation: 0
+        id: csi-f0471a334f0b249f964cd1dec461a5eb94c8d268cbbc904c1a8e9a37e2045208
+        satisfied: true
+...
+```
+
+- `spec.attachmentTickets`: A map containing all active attachment requests (also known as **tickets**). Each ticket includes:
+  - `id`: A unique identifier for each attachment ticket.
+  - `nodeID`: The ID of the node where the volume should be attached.
+  - `parameters`: Optional parameters for the attachment, such as `disableFrontend` and `lastAttachedBy`.
+  - `type`: The attacher type, indicating the source of the attachment request.
+
+- `status.attachmentTicketStatuses`: A map containing the current status of each active attachment ticket or request. Each entry includes:
+  - `conditions`: The current condition(s) of the ticket, including whether the request is satisfied or not.
+  - `satisfied`: A boolean value indicating whether the attachment request has been fulfilled or not.
+  - `generation`: The generation number of the ticket, used to track updates.
+
+### Understanding Attachment Tickets
+
+The Longhorn `VolumeAttachment` custom resource (CR) is designed to manage attachment requests from various internal Longhorn system controllers. Each request is represented as an **attachment ticket** within the CR.
+
+All active tickets are stored in the `spec.attachmentTickets` map. The `type` field in each ticket (referred to as the **AttacherType**) identifies the source of the request. The common `AttacherType` values include:
+
+- `csi-attacher`: The most common type which handles standard attachment requests from the Kubernetes CSI plugin, typically when mounting a volume to a pod.
+- `longhorn-api`: Represents a manual attachment request initiated by a user, either through the Longhorn UI or the Longhorn API.
+- `snapshot-controller`: Used when attaching a volume to create or restore a snapshot.
+- `backup-controller`: Used when attaching a volume to perform a backup.
+- `volume-restore-controller`: Used when attaching a volume during a restore operation.
+- `volume-clone-controller`: Used when attaching a volume for cloning from an existing volume.
+- `share-manager-controller`: Manages backend volume attachments for ReadWriteMany (RWX) volumes by attaching them to the share-manager pod.
+- `volume-expansion-controller`: Handles attachments needed for online volume expansion.
+- `volume-rebuilding-controller`: Used when attaching a volume to rebuild a degraded or missing replica.
+- `salvage-controller`: Used during the salvage process when Longhorn attempts to recover and reattach a problematic volume.
+- `volume-eviction-controller`: Handles attachments involved in evicting a replica from a node.
+- `bim-ds-controller`: Used by the Backing Image Data Source controller when creating a volume from a backing image.
+
+## The CSI Attachment and Detachment Workflow
+
+To understand how Longhorn integrates with Kubernetes, it is important to examine how the native Kubernetes `VolumeAttachment` resource and Longhorn’s custom `VolumeAttachment` CR interact through the CSI interface.
+
+### Core Components in the Workflow
+
+In addition to the Kubernetes and Longhorn `VolumeAttachment` objects, several key components work together to manage volume attachment and detachment:
+
+- `external-attacher`: A CSI sidecar container that monitors Kubernetes `VolumeAttachment` objects and triggers `ControllerPublishVolume` or `ControllerUnpublishVolume` gRPC calls to the Longhorn CSI driver.
+- `longhorn-csi-plugin`: The Longhorn CSI driver that implements the required CSI gRPC services.
+- `longhorn-manager`: The central controller in Longhorn that manages the full lifecycle of Longhorn volumes. It includes various sub-controllers, including the volume attachment logic.
+- `longhorn-volume-attachment-controller`: A sub-controller within `longhorn-manager` that monitors the Longhorn `VolumeAttachment` CR and performs attach or detach operations based on its spec.
+
+### The CSI Volume Attachment Flow
+
+When a pod that uses a Longhorn PersistentVolumeClaim (PVC) is scheduled onto a node, the CSI volume attachment workflow is triggered.
+
+1. **kubelet Request**: The kubelet on the target node detects that a Longhorn volume needs to be mounted and notifies the Kubernetes `attach-detach-controller`.
+
+2. **Kubernetes `VolumeAttachment` Creation**: The `attach-detach-controller` creates a Kubernetes `VolumeAttachment` object, specifying the Longhorn CSI driver (`driver.longhorn.io`), the target node name, and the persistent volume name.
+
+3. **`external-attacher` Triggers CSI Call**: The `external-attacher` sidecar container observes the new Kubernetes `VolumeAttachment` object and issues a `ControllerPublishVolume` gRPC call to the `longhorn-csi-plugin`.
+
+4. **Longhorn `VolumeAttachment` CR Creation**: Rather than attaching the volume directly, the `longhorn-csi-plugin` creates a Longhorn `VolumeAttachment` custom resource (CR). It adds an **attachment ticket** to the CR’s spec to represent the attachment request.
+
+5. **Longhorn Controller Reconciliation**: The `longhorn-volume-attachment-controller`, a sub-controller within `longhorn-manager`, detects the new ticket and begins reconciliation. It verifies that the volume is available and updates the corresponding Volume CR’s `spec.nodeID` with the target node name.
+
+6. **`longhorn-manager` Executes Attachment**: After detecting that `spec.nodeID` is set, `longhorn-manager` starts the Longhorn Engine on the specified node to complete the attachment.
+
+7. **Volume Attachment Completion**:
+   - `longhorn-manager` updates the Volume CR’s status to reflect that the volume is attached.
+   - The `longhorn-volume-attachment-controller` updates the Longhorn `VolumeAttachment` CR’s status to indicate success.
+   - The `longhorn-csi-plugin` receives the successful status and responds to the `external-attacher`.
+   - Finally, the `external-attacher` marks the Kubernetes `VolumeAttachment` object’s `status.attached` field as `true`.
+
+8. **kubelet Mounts the Volume**: Once the volume is marked as attached, the kubelet proceeds with the `NodeStageVolume` and `NodePublishVolume` CSI calls to mount the volume into the pod’s container.
+
+### The CSI Volume Detachment Flow
+
+When a pod using a Longhorn volume is deleted or rescheduled, the CSI detachment workflow is triggered.
+
+1. **kubelet Request**: The kubelet signals to the Kubernetes `attach-detach-controller` that the volume is no longer needed on the node.
+
+2. **Kubernetes `VolumeAttachment` Deletion**: The `attach-detach-controller` deletes the corresponding Kubernetes `VolumeAttachment` object.
+
+3. **`external-attacher` Triggers CSI Call**: The `external-attacher` observes the deletion and initiates a `ControllerUnpublishVolume` gRPC call to the `longhorn-csi-plugin`.
+
+4. **Attachment Ticket Removal**: The `longhorn-csi-plugin` processes the request by updating the Longhorn `VolumeAttachment` CR to remove the relevant attachment ticket.
+
+5. **Longhorn Controller Reconciliation**: The `longhorn-volume-attachment-controller` detects that the ticket has been removed. If no other tickets exist for the volume, it clears the `spec.nodeID` field in the Longhorn Volume CR.
+
+6. **`longhorn-manager` Executes Detachment**: With the `spec.nodeID` cleared, `longhorn-manager` initiates the detachment process by stopping the Longhorn Engine on the node.
+
+7. **Volume Detachment Completion**:
+   - `longhorn-manager` updates the Volume CR’s status to indicate that the volume is detached.
+   - The `longhorn-csi-plugin` receives confirmation and responds with success to the `external-attacher`.
+   - The `external-attacher` removes the finalizer from the Kubernetes `VolumeAttachment` object, allowing the API server to fully delete it.
+
+### Summary of the Workflow
+
+Longhorn extends the native volume attachment mechanism of Kubernetes by introducing a custom `VolumeAttachment` CR. This design provides several advantages:
+
+- **Decoupling and Abstraction**: The custom resource encapsulates complex attach or detach logic within Longhorn, reducing the responsibilities of the `longhorn-csi-plugin`.
+- **Fine-Grained Control**: The attachment ticket system enables Longhorn to handle requests from multiple sources (for example, pods, snapshots, backups) while ensuring only one valid attachment per volume at any time.
+- **Observability and Troubleshooting**: The CR gives clear visibility into attachment state and history of the volume, simplifying monitoring and troubleshooting.
+
+In summary, the Kubernetes `VolumeAttachment` object initiates the attachment or detachment process, while Longhorn’s custom `VolumeAttachment` CR orchestrates and manages the actual operations internally.
+
+## Troubleshooting Volume Attachment Issues
+
+This section outlines common issues related to volume attachment and provides recommended resolution steps. Before making any changes, carefully inspect system logs and the relevant custom resources to avoid disrupting active workloads.
+
+### Volume is Stuck in `Attaching` or `Detaching` State
+
+When a volume remains in the `Attaching` or `Detaching` state for an extended period, the cause is often related to stale or conflicting attachment tickets in the Longhorn `VolumeAttachment` CR.
+
+#### Possible Causes
+
+- **Stale or Orphaned Tickets**: A ticket from a previous workload (for example, a deleted pod or completed backup job) was not properly removed and still exists under `spec.attachmentTickets`.
+
+- **Conflicting Tickets**: An existing ticket (for example, from the CSI attacher) blocks a new request (for example, a manual detach or move to a different node).
+
+#### Resolution Steps
+
+1. **Inspect the Longhorn `VolumeAttachment` CR**: Use the following command to view the attachment tickets:
+
+    ```bash
+    kubectl -n longhorn-system get volumeattachment.longhorn.io <volume-name> -o yaml
+    ```
+
+2. **Analyze Ticket Sources**: Look under `spec.attachmentTickets` and check the `type` field for each ticket to identify its source (for example, `csi-attacher`, `backup-controller`, etc.).
+
+3. **Remove Invalid Tickets with Caution**: If you confirm a ticket is no longer needed (for example, its corresponding pod has been deleted), you may remove it by editing the CR.
+
+  > **Warning:**
+  >
+  > Deleting an active ticket can cause serious disruptions. If you remove a ticket still required by a running workload, Longhorn interprets this as a detach request:
+  >
+  > - The volume engine will stop on the node, causing the pod to lose storage access and encounter I/O errors, likely crashing the pod.
+  > - Kubernetes CSI will eventually detect the issue and re-attach the volume, recreating the ticket, but this causes downtime and may require manual pod restart.
+  >
+  > Always verify that the workload related to the ticket is inactive before removing it.
+
+4. **Verify the State**: After removing invalid tickets, Longhorn should be able to complete the attach or detach operation successfully.
+
+### Case Study
+
+#### Case 1: Failure to Attach Volume Due to Unexpected `longhorn-ui` Attachment Ticket
+
+- **Issue**: Longhorn [#8339](https://github.com/longhorn/longhorn/issues/8339)  
+- **Symptom**:  
+  - Workloads using the affected volume remain stuck in `Pending` state.  
+  - The Longhorn `VolumeAttachment` CR contains an unexpected ticket from `longhorn-ui`.  
+- **Workaround**:  
+  - Inspect the `VolumeAttachment` CR:  
+    ```bash
+    kubectl -n longhorn-system get volumeattachment.longhorn.io <volume-name> -o yaml
+    ```  
+  - If you find a `longhorn-ui` attachment ticket, remove the entire ticket block from the CR.
+
+#### Case 2: Volume Fails to Attach to New Node Due to Backup Job Stuck in Pending State
+
+- **Issue**: Longhorn [#10090](https://github.com/longhorn/longhorn/issues/10090)  
+- **Symptom**:  
+  - When a workload is rescheduled to a different node, the volume fails to follow.  
+  - Backup jobs referencing non-existent snapshots remain stuck in `Pending` state, with `status.message` containing `failed to get the snapshot ... not found`.  
+  - These stuck backup jobs hold onto the volume, blocking detach/reattach.  
+- **Workaround**:  
+  1. Check the Longhorn `VolumeAttachment` CR for any tickets locking the volume:  
+      ```bash
+      kubectl -n longhorn-system get volumeattachment.longhorn.io <volume-name> -o yaml
+      ```  
+  2. If you see a ticket from the backup controller, a backup job is locking the volume.  
+  3. **Do not delete the `backup-*` attachment ticket directly**, as Longhorn will recreate it.  
+  4. Instead, resolve the stuck backup job by removing any `Backup` CRs with:  
+       - `status.state = pending`  
+       - `status.message` containing `Failed to get the Snapshot...`
+
+      This releases the volume and allows it to be reattached.
+
+
+---
+
+## Article: advanced-resources/cluster-restore/_index.md
+
+---
+title: Cluster Restore
+weight: 11
+---
+
+---
+
+## Article: advanced-resources/cluster-restore/rancher-cluster-restore.md
+
+---
+title: Restore cluster with a Rancher snapshot
+weight: 4
+---
+
+This doc describes what users need to do after restoring the cluster with a Rancher snapshot.
+
+## Assumptions:
+- Most of the data and the underlying disks still exist in the cluster before the restore and can be directly reused then.
+- There is a backupstore holding all volume data.
+- The setting [`Disable Revision Counter`](../../../references/settings/#disable-revision-counter) is false. (It's false by default.) Otherwise, users need to manually check if the data among volume replicas are consistent, or directly restore volumes from backup.
+
+## Expectation:
+- All settings and node & disk configs will be restored.
+- As long as the valid data still exists, the volumes can be recovered without using a backup. In other words, we will try to avoid restoring backups, which may help reduce Recovery Time Objective (RTO) as well as save bandwidth.
+- Detect the invalid or out-of-sync replicas as long as the related volume still contains a valid replica after the restore.
+
+## Behaviors & Requirement of Rancher restore
+According to [the Rancher restore article](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup), you have to restart the Kubernetes components on all nodes. Otherwise, there will be tons of resource update conflicts in Longhorn.
+
+## Actions after the restore
+- Restart all Kubernetes components for all nodes. See the above link for more details.
+
+- Kill all longhorn manager pods then Kubernetes will automatically restart them. Wait for conflicts in longhorn manager pods to disappear.
+
+- All volumes may be reattached. If a Longhorn volume is used by a single pod, users need to shut down then recreate it. For Deployments or Statefulsets, Longhorn will automatically kill then restart the related pods.
+
+- If the following happens after the snapshot and before the cluster restore:
+    - A volume is unchanged: Users don't need to do anything.
+    - The data is updated: Users don't need to do anything typically. Longhorn will automatically fail the replicas that don't contain the latest data.
+    - A new volume is created: This volume will disappear after the restore. Users need to recreate a new volume, launch [a single replica volume](../../data-recovery/export-from-replica) based on the replica of the disappeared volume, then transfer the data to the new volume.
+    - A volume is deleted: Since the data is cleaned up when the volume is removed, the restored volume contains no data. Users may need to re-delete it.
+    - For DR volumes: Users don't need to do anything. Longhorn will redo a full restore.
+    - Some operations are applied for a volume:
+        - Backup: The backup info of the volume should be resynced automatically.
+        - Snapshot: The snapshot info of the volume should be resynced once the volume is attached.
+        - Replica rebuilding & replica removal:
+            - If there are new replicas rebuilt, those replicas will disappear from the Longhorn system after the restoring. Users need to clean up the replica data manually, or use the data directories of these replicas to export a single replica volume then do data recovery if necessary.
+            - If there are some failed/removed replicas and there is at least one replica keeping healthy, those failed/removed replicas will be back after the restoration. Then Longhorn can detect these restored replicas do not contain any data, and copy the latest data from the healthy replica to these replicas.
+          - If all replicas are replaced by new replicas after the snapshot, the volume will contain invalid replicas only after the restore. Then users need to export [a single replica volume](../../data-recovery/export-from-replica) for the data recovery.
+        -  Engine image upgrade: Users need to redo the upgrade.
+        - Expansion: The spec size of the volume will be smaller than the current size. This is like someone requesting volume shrinking but actually Longhorn will refuse to handle it internally. To recover the volume, users need to scale down the workloads and re-do the expansion.
+
+    - **Notice**: If users don't know how to recover a problematic volume, the simplest way is always restoring a new volume from backup.
+
+- If the Longhorn system is upgraded after the snapshot, the new settings and the modifications on the node config will disappear. Users need to re-do the upgrade, then re-modify the settings and node configurations.
+
+- If a node is deleted from Longhorn system after the snapshot, the node won't be back, but the pods on the removed node will be restored. Users need to manually clean up them since these pod may get stuck in state `Terminating`.
+- If a node to added to Longhorn system after the snapshot, Longhorn should automatically relaunch all necessary workloads on the node after the cluster restore. But users should be aware that all new replicas or engines on this node will be gone after the restore.
+
+
+## References
+- The related GitHub issue is https://github.com/longhorn/longhorn/issues/2228.
+  In this GitHub post, one user is providing a way that restores the Longhorn to a new cluster that doesn't contain any data.
+
+
+---
+
+## Article: advanced-resources/data-integrity/_index.md
+
+---
+title: Data Integrity
+weight: 5
+---
+
+---
+
+## Article: advanced-resources/data-integrity/on-demand-snapshot-data-integrity.md
+
+---
+title: On-Demand Snapshot Checksum Calculation
+weight: 2
+---
+
+Longhorn supports **on-demand snapshot checksum** calculation via CR operation and CLI.
+
+## Introduction
+
+In addition to periodic snapshot data integrity checks, Longhorn provides an **on-demand snapshot checksum** mechanism. This feature allows users to manually trigger checksum calculation for all user-created snapshots of a volume without waiting for the scheduled cron job.
+
+On-demand checksum is useful when users need immediate calculation of snapshots for speeding up replica rebuilding.
+
+## Related Custom Resource Information
+
+### Volume
+
+Longhorn uses the following fields to trigger an on-demand snapshot checksum calculation request:
+
+- **Spec.SnapshotHashingRequestedAt**  
+
+	`SnapshotHashingRequestedAt` is the RFC3339 timestamp (e.g., "2026-03-16T10:30:00Z") when an on-demand snapshot checksum calculation is requested. When this value is set and is later than `LastOnDemandSnapshotHashingCompleteAt`, the system will calculate checksums for all user snapshots.
+
+	If `SnapshotHashingRequestedAt` differs from `LastOnDemandSnapshotHashingCompleteAt`, it indicates that a hashing request is still in progress, and a new request will be rejected.
+
+- **Status.LastOnDemandSnapshotHashingCompleteAt**  
+
+	LastOnDemandSnapshotHashingCompleteAt is the RFC3339 timestamp (e.g., "2026-03-16T10:30:00Z") when the most recent on-demand snapshot checksum calculation completed. When this value matches `SnapshotHashingRequestedAt`, the requested on-demand checksum calculation is considered complete.
+
+### Snapshot
+
+Each snapshot records the timestamp of its latest checksum calculation:
+
+- **Status.ChecksumCalculatedAt**  
+
+	ChecksumCalculatedAt is the RFC3339 timestamp indicating when the checksum for this snapshot was last calculated or updated.
+
+## How It Works
+
+When a user triggers an on-demand checksum request, Longhorn performs the following actions:
+
+### 1. User issues an on-demand request
+
+The request is initiated through the Longhorn CLI:
+
+```bash
+./longhornctl checksum volume --name=<volume-name> --namespace=longhorn-system
+```
+
+```bash
+./longhornctl checksum volume --node-id=v<node-name> --namespace=longhorn-system
+```
+
+```bash
+./longhornctl checksum volume --all=true --namespace=longhorn-system
+```
+
+
+### 2. Detects a new request
+
+The **Volume Controller** compares `Spec.SnapshotHashingRequestedAt` with `Status.LastOnDemandSnapshotHashingCompleteAt`. If the requested timestamp is newer, Longhorn triggers the SnapshotMonitor to calculate checksums for all existing **user-created** snapshots that are missing checksum data.
+
+### 3. Calculates snapshot checksums
+
+Performs the checksum calculation using the standard snapshot data integrity logic.
+
+### 4. VolumeController evaluates completion
+
+Longhorn considers the on-demand request completed when all relevant **user-created** snapshots have a checksum
+
+### 5. Completion is recorded
+
+When all snapshots satisfy the criteria above, Longhorn updates `Volume.Status.LastOnDemandChecksumCompletedAt` This indicates that the on-demand checksum request has been processed.
+
+## CLI Usage
+
+Longhorn provides a CLI interface to trigger on-demand snapshot checksum operations through the [longhornctl command-line tool](https://github.com/longhorn/cli).
+
+**Usage**
+
+```bash
+longhornctl checksum volume [flags] [options]
+```
+
+**Options**
+
+`--all`: Apply to all volumes (default: false)
+
+`--name`: Name of the Longhorn volume
+
+`--node-id`: Compute snapshots for all volumes on the specified node
+
+
+> **Note**: This is an asynchronous operation. When the request is marked as complete in the output log, it indicates the trigger was successful. Since there is no dedicated Request CRD, the CLI output confirms the controller has acknowledged the Spec update. Actual computation occurs in the background and duration scales with volume size. You can monitor the progress and check snapshot checksums using `kubectl`
+
+### Example
+
+**Command**:
+
+```bash
+./longhornctl-linux-amd64 checksum volume --all=true
+```
+
+**Output**
+```bash
+INFO[2026-03-18T17:04:27+08:00] Triggering on-demand snapshot checksum calculation 
+INFO[2026-03-18T17:04:27+08:00] Requested on-demand checksum calculation for volume tmp1  volume=tmp1
+INFO[2026-03-18T17:04:27+08:00] Requested on-demand checksum calculation for volume tmp2  volume=tmp2
+INFO[2026-03-18T17:04:27+08:00] Snapshot checksum calculation may take some time. You can check the snapshot checksum via kubectl. 
+INFO[2026-03-18T17:04:27+08:00] Checksum request submitted                   
+INFO[2026-03-18T17:04:27+08:00] Cleaning volume on-demand checksum requester 
+INFO[2026-03-18T17:04:27+08:00] Completed volume on-demand checksum requester 
+```
+
+## Limitations
+
+- On-demand snapshot checksum only applies to volumes with at least `two` replicas, consistent with the behavior of periodic snapshot data integrity checks.
+- The global or per-volume setting **snapshot-data-integrity** must be set to either **enabled** or **fast-check**. The feature is not available when data integrity is **disabled**.
+
+
+---
+
+## Article: advanced-resources/data-integrity/snapshot-data-integrity-check.md
+
+---
+title: Snapshot Data Integrity Check
+weight: 2
+---
+
+Longhorn is capable of hashing snapshot disk files and periodically checking their integrity.
+
+## Introduction
+
+Longhorn system supports volume snapshotting and stores the snapshot disk files on the local disk. However, it is impossible to check the data integrity of snapshots due to the lack of the checksums of the snapshots previously. As a result, when the data is corrupted due to, for example, the bit rot in the underlying storage, there is no way to detect the corruption and repair the replicas. After applying the feature, Longhorn is capable of hashing snapshot disk files and periodically checking their integrity. When a snapshot disk file in one replica is corrupted, Longhorn will automatically start the rebuilding process to fix it.
+
+## Settings
+
+### Global Settings
+
+- **snapshot-data-integrity** <br>
+
+    This setting allows users to enable or disable snapshot hashing and data integrity checking. Available options are:
+
+    - **disabled**: Disable snapshot disk file hashing and data integrity checking.
+    - **enabled**: Enables periodic snapshot disk file hashing and data integrity checking. To detect the filesystem-unaware corruption caused by bit rot or other issues in snapshot disk files, Longhorn system periodically hashes files and finds corrupted ones. Hence, the system performance will be impacted during the periodical checking.
+    - **fast-check**: Enable snapshot disk file hashing and fast data integrity checking. Longhorn system only hashes snapshot disk files if their are not hashed or the modification time are changed. In this mode, filesystem-unaware corruption cannot be detected, but the impact on system performance can be minimized.
+
+- **snapshot-data-integrity-immediate-check-after-snapshot-creation** <br>
+
+    Hashing snapshot disk files impacts the performance of the system. The immediate snapshot hashing and checking can be disabled to minimize the impact after creating a snapshot.
+
+- **snapshot-data-integrity-cronjob** <br>
+
+    A schedule defined using the unix-cron string format specifies when Longhorn checks the data integrity of snapshot disk files.
+
+    > **Warning**
+    > Hashing snapshot disk files impacts the performance of the system. It is recommended to run data integrity checks during off-peak times and to reduce the frequency of checks.
+
+### Per-Volume Settings
+
+Longhorn also supports the per-volume setting by configuring `Volume.Spec.SnapshotDataIntegrity`. The value is `ignored` by default, so data integrity check is determined by the global setting `snapshot-data-integrity`. `Volume.Spec.SnapshotDataIntegrity` supports `ignored`, `disabled`, `enabled` and `fast-check`. Each volume can have its data integrity check setting customized.
+
+## Performance Impact
+
+For detecting data corruption, checksums of snapshot disk files need to be calculated. The calculations consume storage and computation resources. Therefore, the storage performance will be negatively impacted. In order to provide a clear understanding of the impact, we benchmarked storage performance when checksumming disk files. The read IOPS, bandwidth and latency are negatively impacted.
+
+- Environment
+    - Host: AWS EC2 c5d.2xlarge
+    - CPU: Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz
+    - Memory: 16 GB
+    - Network: Up to 10Gbps
+    - Kubernetes: v1.24.4+rke2r1
+- Result
+    - Disk: 200 GiB NVMe SSD as the instance store
+      - 100 GiB snapshot with full random data
+        {{< figure src="/img/diagrams/snapshot/snapshot_hash_ssd_perf.png" >}}
+
+    - Disk: 200 GiB throughput optimized HDD (st1)
+      - 30 GiB snapshot with full random data
+        {{< figure src="/img/diagrams/snapshot/snapshot_hash_hdd_perf.png" >}}
+
+## Recommendation
+
+The feature helps detect the data corruption in snapshot disk files of volumes. However, the checksum calculation negatively impacts the storage performance. To lower down the impact, the recommendations are
+- Checksumming and checking snapshot disk files can be scheduled to off-peak hours by the global setting `snapshot-data-integrity-cronjob`.
+- Disable the global setting `snapshot-data-integrity-immediate-check-after-snapshot-creation`.
+
+---
+
+## Article: advanced-resources/data-recovery/_index.md
+
+---
+title: Data Recovery
+weight: 12
+---
+
+
+---
+
+## Article: advanced-resources/data-recovery/corrupted-replica.md
+
+---
+title: Identifying Corrupted Replicas
+weight: 3
+---
+
+In the case that one of the disks used by Longhorn went bad, you might experience intermittent input/output errors when using a Longhorn volume. 
+
+For example, one file sometimes cannot be read, but later it can. In this scenario, it's likely one of the disks went bad, resulting in one of the replicas returning incorrect data to the user.
+
+To recover the volume, we can identify the corrupted replica and remove it from the volume:
+
+1. Scale down the workload to detach the volume.
+2. Find all the replicas' locations by checking the Longhorn UI. The directories used by the replicas will be shown as a tooltip for each replica in the UI.
+3. Log in to each node that contains a replica of the volume and get to the directory that contains the replica data.
+
+    For example, the replica might be stored at:
+   
+        /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2
+4. Run a checksum for every file under that directory.
+
+    For example:
+    
+    ```
+    # sha512sum /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/*
+    fcd1b3bb677f63f58a61adcff8df82d0d69b669b36105fc4f39b0baf9aa46ba17bd47a7595336295ef807769a12583d06a8efb6562c093574be7d14ea4d6e5f4  /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/revision.counter
+    c53649bf4ad843dd339d9667b912f51e0a0bb14953ccdc9431f41d46c85301dff4a021a50a0bf431a931a43b16ede5b71057ccadad6cf37a54b2537e696f4780  /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/volume-head-000.img
+    f6cd5e486c88cb66c143913149d55f23e6179701f1b896a1526717402b976ed2ea68fc969caeb120845f016275e0a9a5b319950ae5449837e578665e2ffa82d0  /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/volume-head-000.img.meta
+    e6f6e97a14214aca809a842d42e4319f4623adb8f164f7836e07dc8a3f4816a0389b67c45f7b0d9f833d50a731ae6c4670ba1956833f1feb974d2d12421b03f7  /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/volume.meta
+    ```
+
+5. Compare the output of each replica. One of them should fail or have different results compared to the others. This will be the one replica we need to remove from the volume.
+6. Use the Longhorn UI to remove the identified replica from the volume.
+7. Scale up the workload to make sure the error is gone.
+
+
+---
+
+## Article: advanced-resources/data-recovery/data-error.md
+
+---
+title: Identifying and Recovering from Data Errors
+weight: 1
+---
+
+If you've encountered an error message like the following:
+
+    'fsck' found errors on device /dev/longhorn/pvc-6288f5ea-5eea-4524-a84f-afa14b85780d but could not correct them.
+
+Then you have a data corruption situation. This section describes how to address the issue.
+
+## Bad Underlying Disk
+
+To determine if the error is caused because one of the underlying disks went bad, follow [these steps](../corrupted-replica) to identify corrupted replicas.
+
+If most of the replicas on the disk went bad, that means the disk is unreliable now and should be replaced.
+
+If only one replica on the disk went bad, it can be a situation known as `bit rot`. In this case, removing the replica is good enough.
+
+## Recover from a Snapshot
+
+If all the replicas are identical, then the volume needs to be recovered using snapshots.
+
+The reason for this is probably that the bad bit was written from the workload the volume attached to.
+
+To revert to a previous snapshot:
+
+1. In maintenance mode, attach the volume to any node.
+2. Revert to a snapshot. You should start with the latest one.
+3. Detach the volume from maintenance mode to any node.
+4. Re-attach the volume to a node you have access to.
+5. Mount the volume from `/dev/longhorn/<volume_name>` and check the volume content.
+6. If the volume content is still incorrect, repeat from step 1.
+7. Once you find a usable snapshot, make a new snapshot from there and start using the volume as normal.
+
+## Recover from Backup
+
+If all of the methods above failed, use a backup to [recover the volume.](../../../snapshots-and-backups/backup-and-restore/restore-from-a-backup)
+
+---
+
+## Article: advanced-resources/data-recovery/export-from-replica.md
+
+---
+title: Exporting a Volume from a Single Replica
+weight: 2
+---
+
+Each replica of a Longhorn volume contains the full data for the volume.
+
+If the whole Kubernetes cluster or Longhorn system goes offline, the following steps can be used to retrieve the data of the volume.
+
+1. Identify the volume.
+
+    Longhorn uses the disks on the node to store the replica data.
+
+    By default, the data is stored at the directory specified by the setting [`Default Data Path`](https://longhorn.io/docs/0.8.1/references/settings/#default-data-path).
+
+    More disks can be added to a node by either using the Longhorn UI or by using [a node label and annotation](../../../nodes-and-volumes/nodes/default-disk-and-node-config/).
+
+    You can either keep a copy of the path of those disks, or use the following command to find the disks that have been used by Longhorn. For example:
+
+    ```
+    # find / -name longhorn-disk.cfg
+    /var/lib/longhorn/longhorn-disk.cfg
+    ```
+
+    The result above shows that the path `/var/lib/longhorn` has been used by Longhorn to store data.
+
+2. Check the path found in step 1 to see if it contains the data.
+
+    The data will be stored in the `/replicas` directory, for example:
+
+    ```
+    # ls /var/lib/longhorn/replicas/
+    pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2
+    pvc-71a266e0-5db5-44e5-a2a3-e5471b007cc9-fe160a2c
+    ```
+
+    The directory naming pattern is:
+
+    ```
+    <volume_name>-<8 bytes UUID>
+    ```
+
+    So in the example above, there are two volumes stored here, which are `pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc` and `pvc-71a266e0-5db5-44e5-a2a3-e5471b007cc9`.
+
+    The volume name matches the Kubernetes PV name.
+
+3. Use the `lsof` command to make sure no one is currently using the volume, e.g.
+   ```
+   # lsof pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/
+   COMMAND    PID USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME
+   longhorn 14464 root  cwd    DIR    8,0     4096 541456 pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2
+   ```
+   The above result shows that the data directory is still being used, so don't proceed to the next step. If it's not being used, `lsof` command should return empty result.
+4. Check the volume size of the volume you want to restore using the following command inside the directory:
+   ```
+   # cat pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/volume.meta
+    {"Size":1073741824,"Head":"volume-head-000.img","Dirty":true,"Rebuilding":false,"Parent":"","SectorSize":512,"BackingFileName":""}
+   ```
+   From the result above, you can see the volume size is `1073741824` (1 GiB). Note the size.
+5. To export the content of the volume, follow the instructions below based on your environment:
+
+   Docker (RKE1)
+
+   To export the content of the volume in Docker, use the following command to create a single replica Longhorn volume container:
+
+   ```
+   docker run -v /dev:/host/dev -v /proc:/host/proc -v <data_path>:/volume --privileged longhornio/longhorn-engine:v{{< current-version >}} launch-simple-longhorn <volume_name> <volume_size>
+   ```
+
+   For example, based on the information above, the command should be:
+
+   ```
+   docker run -v /dev:/host/dev -v /proc:/host/proc -v /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2:/volume --privileged longhornio/longhorn-engine:v{{< current-version >}} launch-simple-longhorn pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc 1073741824
+   ```
+
+   Containerd (RKE2/k3s)
+
+   To export the content of the volume in RKE2/k3s, you need to create a static pod manifest. This manifest will launch the Longhorn engine and expose the volume.
+
+   Create a file named `longhorn-recovery.yaml` under `/var/lib/rancher/rke2/agent/pod-manifests/` with the following content:
+
+   ```
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: longhorn-recovery
+     namespace: longhorn-system
+   spec:
+     nodeName: <node-where-the-replica-is-located>
+     hostPID: true
+     containers:
+     - name: engine
+       image: longhornio/longhorn-engine:v<current-version>
+       securityContext:
+         privileged: true
+       command: ["launch-simple-longhorn"]
+       args: ["<volume-name>", "<volume-size-in-bytes>"]
+       volumeMounts:
+       - name: dev
+         mountPath: /host/dev
+       - name: proc
+         mountPath: /host/proc
+       - name: data
+         mountPath: /volume
+     volumes:
+     - name: dev
+       hostPath:
+         path: /dev
+     - name: proc
+       hostPath:
+         path: /proc
+     - name: data
+       hostPath:
+         path: <host-path-to-replica>
+     restartPolicy: Never
+   ```
+   Replace the placeholders with the following:
+   - `<current-version>`: The version of Longhorn you are using.
+   - `<volume-name>`: The name of the volume you want to recover.
+   - `<host-path-to-replica>`: The path to the replica directory you found in Step 1.
+
+**Result:** Now you should have a block device created on `/dev/longhorn/<volume_name>` for this device, such as `/dev/longhorn/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc` for the example above. Now you can mount the block device to get the access to the data.
+
+> To avoid accidental change of the volume content, it's recommended to use `mount -o ro` to mount the directory as `readonly`.
+
+After you are done accessing the volume content, use `docker stop` to stop the container. For RKE2, clean up the resources by removing the static pod manifest file `sudo rm /var/lib/rancher/rke2/agent/pod-manifests/longhorn-recovery.yaml`
+
+
+---
+
+## Article: advanced-resources/data-recovery/full-disk.md
+
+---
+title: Recovering from a Full Disk
+weight: 4
+---
+
+If one disk used by one of the Longhorn replicas is full, that replica will go to the error state, and Longhorn will rebuild another replica on another node/disk.
+
+To recover from a full disk,
+
+1. Disable the scheduling for the full disk.
+    
+    Longhorn should have already marked the disk as `unschedulable`.
+    
+    This step is to make sure the disk will not be scheduled to by accident after more space is freed up.
+
+2. Identify the replicas in the error state on the disk using the Longhorn UI's disk page.
+3. Remove the replicas in the error state.
+
+## Recommended after Recovery
+
+We recommend adding more disks or more space to the node that had this situation.
+
+---
+
+## Article: advanced-resources/data-recovery/recover-without-system.md
+
+---
+title: Recovering from a Longhorn Backup without System Installed
+weight: 5
+---
+
+This command gives users the ability to restore a backup to a `raw` image or a `qcow2` image. If the backup is based on a backing file, users should provide the backing file as a `qcow2` image with `--backing file` parameter.
+
+1. Copy the [yaml template](https://github.com/longhorn/longhorn/blob/v{{< current-version >}}/examples/restore_to_file.yaml.template): Make a copy of `examples/restore_to_file.yaml.template` as e.g. `restore.yaml`.
+    
+2. Set the node which the output file should be placed on by replacing `<NODE_NAME>`, e.g. `node1`.
+
+3. Specify the host path of output file by modifying field `hostpath` of volume `disk-directory`. By default the directory is `/tmp/restore/`.
+
+4. Set the first argument (backup url) by replacing `<BACKUP_URL>`, e.g. `s3://<your-bucket-name>@<your-aws-region>/backupstore?backup=<backup-name>&volume=<volume-name>`.
+
+    - `<backup-name>` and `<volume-name>` can be retrieved from backup.cfg stored in the backup destination folder, e.g. `backup_backup-72bcbdad913546cf.cfg`. The content will be like below: 
+
+        ```json
+        {"Name":"backup-72bcbdad913546cf","VolumeName":"volume_1","SnapshotName":"79758033-a670-4724-906f-41921f53c475"}
+        ```
+
+5. Set argument `output-file` by replacing `<OUTPUT_FILE>`, e.g. `volume.raw` or `volume.qcow2`.
+
+6. Set argument `output-format` by replacing `<OUTPUT_FORMAT>`. The supported options are `raw` or `qcow2`.
+
+7. Set argument `longhorn-version` by replacing `<LONGHORN_VERSION>`, e.g. `v{{< current-version >}}`
+
+8. Set the S3 Credential Secret by replacing `<S3_SECRET_NAME>`, e.g. `minio-secret`.  
+
+    - The credential secret can be referenced [here](https://longhorn.io/docs/{{< current-version >}}/snapshots-and-backups/backup-and-restore/set-backup-target/#set-up-aws-s3-backupstore) and must be created in the `longhorn-system' namespace.
+
+9. Execute the yaml using e.g.:
+
+        kubectl create -f restore.yaml
+
+10. Watch the result using:
+
+        kubectl -n longhorn-system get pod restore-to-file -w
+
+After the pod status changed to `Completed`, you should able to find `<OUTPUT_FILE>` at e.g. `/tmp/restore` on the `<NODE_NAME>`.
+
+We also provide a script, [restore-backup-to-file.sh](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/scripts/restore-backup-to-file.sh), to restore a backup. The following parameters should be specified:
+  - `--backup-url`: Specifies the backups S3/NFS URL. e.g., `s3://backupbucket@us-east-1/backupstore?backup=backup-bd326da2c4414b02&volume=volumeexamplename"`
+  
+  - `--output-file`: Set the output file name. e.g, `volume.raw`
+  
+  - `--output-format`: Set the output file format. e.g. `raw` or `qcow2`
+  
+  - `--version`: Specifies the version of Longhorn to use. e.g., `v{{< current-version >}}`
+
+Optional parameters can be specified:
+
+  - `--aws-access-key`: Specifies AWS credentials access key if backups is s3.
+  
+  - `--aws-secret-access-key`: Specifies AWS credentials access secret key if backups is s3.
+  
+  - `--backing-file`: backing image. e.g., `/tmp/backingfile.qcow2`
+
+The output image files can be found in the `/tmp/restore` folder after the script has finished running.
+
+---
+
+## Article: advanced-resources/deploy/_index.md
+
+---
+title: Deploy
+weight: 1
+---
+
+---
+
+## Article: advanced-resources/deploy/csi-pod-antiaffinity-preset.md
+
+---
+title: CSI Component Pod Anti-Affinity
+weight: 5
+---
+
+This document describes how to configure pod anti-affinity for Longhorn's CSI components. This feature enhances the resilience of the storage system, particularly in smaller clusters, by preventing multiple replicas of a CSI component from running on the same node and thereby avoiding a single point of failure.
+
+For more information on pod anti-affinity, refer to the official Kubernetes documentation on [Inter-pod affinity and anti-affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity).
+
+## Configuring Pod Anti-Affinity for Longhorn CSI Components
+
+You can configure the pod anti-affinity for the following Longhorn CSI components:
+
+- `csi-attacher`
+- `csi-provisioner`
+- `csi-resizer`
+- `csi-snapshotter`
+
+The `podAntiAffinityPreset` setting has two available values:
+
+- **`soft` (default)**: This is a "best-effort" rule using `preferredDuringSchedulingIgnoredDuringExecution`. The scheduler will try to prevent multiple CSI component replicas from running on the same node, but it is not guaranteed.
+- **`hard`**: This is a "strict" rule using `requiredDuringSchedulingIgnoredDuringExecution`. The scheduler will not schedule a pod on a node if it violates the anti-affinity rule. This may result in pods remaining in a `Pending` state if no suitable nodes are available.
+
+### During Longhorn Installation
+
+You can set the pod anti-affinity for the CSI components during the initial installation of Longhorn using one of the following methods.
+
+#### Using Rancher
+
+When installing Longhorn through Rancher, add the following parameters to the YAML on the Rancher UI (click Edit as YAML during the installation).
+
+```yaml
+csi:
+    podAntiAffinityPreset: "hard"
+```
+
+#### Using Helm
+
+If installing with Helm, set the `csi.podAntiAffinityPreset` value in your `values.yaml` file, and then install the chart as usual.
+
+#### Using Kubectl
+
+If installing Longhorn with `kubectl` and the deployment YAML, you must manually edit the `longhorn-driver-deployer` deployment. Add the following environment variable to the container specification:
+
+```yaml
+- name: CSI_POD_ANTIAFFINITY_PRESET
+  value: hard
+```
+
+### After Longhorn has been installed
+
+> **Warning**:
+> * `longhorn-driver-deployer` and the CSI pods will be redeployed.
+
+Manually edit the `longhorn-driver-deployer` deployment using `kubectl`. Add the following environment variable to the container specification:
+
+```yaml
+- name: CSI_POD_ANTIAFFINITY_PRESET
+  value: hard
+```
+
+## History
+
+-  [Original feature request](https://github.com/longhorn/longhorn/issues/11617)
+
+
+---
+
+## Article: advanced-resources/deploy/customizing-default-settings.md
+
+---
+title: Customizing Default Settings
+weight: 1
+---
+
+You may customize Longhorn's default settings while installing or upgrading. You may specify, for example, `Create Default Disk With Node Labeled` and `Default Data Path` before starting Longhorn.
+
+The default settings can be customized in the following ways:
+
+- [Installation](#installation)
+  - [Using the Rancher UI](#using-the-rancher-ui)
+  - [Using the Longhorn Deployment YAML File](#using-the-longhorn-deployment-yaml-file)
+  - [Using Helm](#using-helm)
+  - [Using Helm Controller](#using-helm-controller)
+- [Update Settings](#update-settings)
+  - [Using the Longhorn UI](#using-the-longhorn-ui)
+  - [Using the Rancher UI](#using-the-rancher-ui-1)
+  - [Using Kubectl](#using-kubectl)
+  - [Using Helm](#using-helm-1)
+- [Upgrade](#upgrade)
+  - [Using the Rancher UI](#using-the-rancher-ui-2)
+  - [Using the Longhorn Deployment YAML File](#using-the-longhorn-deployment-yaml-file-1)
+  - [Using Helm](#using-helm-2)
+- [History](#history)
+
+
+> **NOTE:** When using Longhorn Deployment YAML file or Helm for installation, updating or upgrading, if the value of a default setting is an empty string and valid, the default setting will be cleaned up in Longhorn. If not, Longhorn will ignore the invalid values and will not update the default values.
+
+## Installation
+### Using the Rancher UI
+
+From the project view in Rancher, go to **Apps && Marketplace > Longhorn > Install > Next > Edit Options > Longhorn Default Settings > Customize Default Settings** and edit the settings before installing the app.
+
+### Using the Longhorn Deployment YAML File
+
+1. Download the longhorn repo:
+
+    ```shell
+    git clone https://github.com/longhorn/longhorn.git
+    ```
+
+1. Modify the config map named `longhorn-default-setting` in the yaml file `longhorn/deploy/longhorn.yaml`.
+
+    In the below example, users customize the default settings, backup-target, backup-target-credential-secret, and default-data-path.
+    When the setting is absent or has a leading `#` symbol, the default setting will use the default value in Longhorn or the customized values previously configured.
+
+    ```yaml
+    ---
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: longhorn-default-setting
+      namespace: longhorn-system
+    data:
+      default-setting.yaml: |-
+        backup-target: s3://backupbucket@us-east-1/backupstore
+        backup-target-credential-secret: minio-secret
+        #allow-recurring-job-while-volume-detached:
+        #create-default-disk-labeled-nodes:
+        default-data-path: /var/lib/longhorn-example/
+        #replica-soft-anti-affinity:
+        #replica-auto-balance:
+        #storage-over-provisioning-percentage:
+        #storage-minimal-available-percentage:
+        #upgrade-checker:
+        #upgrade-responder-url:
+        #default-replica-count:
+        #default-data-locality:
+        #default-longhorn-static-storage-class:
+        #backupstore-poll-interval:
+        #taint-toleration:
+        #system-managed-components-node-selector:
+        #priority-class:
+        #auto-salvage:
+        #auto-delete-pod-when-volume-detached-unexpectedly:
+        #disable-scheduling-on-cordoned-node:
+        #replica-zone-soft-anti-affinity:
+        #replica-disk-soft-anti-affinity:
+        #node-down-pod-deletion-policy:
+        #node-drain-policy:
+        #replica-replenishment-wait-interval:
+        #concurrent-replica-rebuild-per-node-limit:
+        #disable-revision-counter:
+        #system-managed-pods-image-pull-policy:
+        #allow-volume-creation-with-degraded-availability:
+        #auto-cleanup-system-generated-snapshot:
+        #concurrent-automatic-engine-upgrade-per-node-limit:
+        #backing-image-cleanup-wait-interval:
+        #backing-image-recovery-wait-interval:
+        #guaranteed-instance-manager-cpu:
+        #kubernetes-cluster-autoscaler-enabled:
+        #orphan-resource-auto-deletion:
+        #storage-network:
+        #recurring-successful-jobs-history-limit:
+        #recurring-failed-jobs-history-limit:
+    ---
+    ```
+
+### Using Helm
+
+> **NOTE:**
+> Use Helm 3 when installing and upgrading Longhorn. Helm 2 is [no longer supported](https://helm.sh/blog/helm-2-becomes-unsupported/).
+
+Use the Helm command with the `--set` flag to modify the default settings. For example:
+
+```shell
+helm install longhorn longhorn/longhorn \
+  --namespace longhorn-system \
+  --create-namespace \
+  --set defaultSettings.taintToleration="key1=value1:NoSchedule; key2:NoExecute"
+```
+
+You can also provide a copy of the `values.yaml` file with the default settings modified to the `--values` flag when running the Helm command:
+
+1. Obtain a copy of the `values.yaml` file from GitHub:
+
+    ```shell
+    curl -Lo values.yaml https://raw.githubusercontent.com/longhorn/charts/master/charts/longhorn/values.yaml
+    ```
+
+2. Modify the default settings in the YAML file. The following is an example snippet of `values.yaml`:
+
+   When the setting is absent or has a leading `#` symbol, the default setting will use the default value in Longhorn or the customized values previously configured.
+
+    ```yaml
+    defaultSettings:
+      backupTarget: s3://backupbucket@us-east-1/backupstore
+      backupTargetCredentialSecret: minio-secret
+      createDefaultDiskLabeledNodes: true
+      defaultDataPath: /var/lib/longhorn-example/
+      replicaSoftAntiAffinity: false
+      storageOverProvisioningPercentage: 600
+      storageMinimalAvailablePercentage: 15
+      upgradeChecker: false
+      defaultReplicaCount: 2
+      defaultDataLocality: disabled
+      defaultLonghornStaticStorageClass: longhorn-static-example
+      backupstorePollInterval: 500
+      taintToleration: key1=value1:NoSchedule; key2:NoExecute
+      systemManagedComponentsNodeSelector: "label-key1:label-value1"
+      priorityClass: high-priority
+      autoSalvage: false
+      disableSchedulingOnCordonedNode: false
+      replicaZoneSoftAntiAffinity: false
+      replicaDiskSoftAntiAffinity: false
+      volumeAttachmentRecoveryPolicy: never
+      nodeDownPodDeletionPolicy: do-nothing
+      guaranteedInstanceManagerCpu: 15
+      orphanResourceAutoDeletion: ""
+      orphanResourceAutoDeletionGracePeriod: 300
+    ```
+
+3. Run Helm with `values.yaml`:
+
+   ```shell
+   helm install longhorn longhorn/longhorn \
+     --namespace longhorn-system \
+     --create-namespace \
+     --values values.yaml
+   ```
+
+For more info about using helm, see the section about
+[installing Longhorn with Helm](../../../deploy/install/install-with-helm)
+
+### Using Helm Controller
+
+In the HelmChart YAML file, add lines to spec.set with the desired settings:
+```yaml
+spec:
+  ...
+  set:
+    defaultSettings.priorityClass: system-node-critical
+    defaultSettings.replicaAutoBalance: least-effort
+    defaultSettings.storageOverProvisioningPercentage: "200"
+    persistence.defaultClassReplicaCount: "2"
+
+```
+
+## Update Settings
+
+### Using the Longhorn UI
+
+We recommend using the Longhorn UI to change Longhorn setting on the existing cluster. It would make the setting persistent.
+
+### Using the Rancher UI
+
+From the project view in Rancher, go to **Apps && Marketplace > Longhorn > Upgrade > Next > Edit Options > Longhorn Default Settings > Customize Default Settings** and edit the settings before upgrading the app to the current Longhorn version.
+
+### Using Kubectl
+
+If you prefer to update the setting from the command line, use `kubectl`.
+To avoid collisions with other CRDs, do not use the simple `settings`. Instead, use `settings.longhorn.io` or `lhs`.
+```shell
+kubectl edit settings.longhorn.io <SETTING-NAME> -n longhorn-system
+```
+
+### Using Helm
+
+Modify the default settings in the YAML file as described in [Fresh Installation > Using Helm](#using-helm) and then update the settings using
+```
+helm upgrade longhorn longhorn/longhorn --namespace longhorn-system --values ./values.yaml --version `helm list -n longhorn-system -o json | jq -r .'[0].app_version'`
+```
+
+## Upgrade
+
+### Using the Rancher UI
+
+From the project view in Rancher, go to **Apps && Marketplace > Longhorn > Upgrade > Next > Edit Options > Longhorn Default Settings > Customize Default Settings** and edit the settings before upgrading the app.
+### Using the Longhorn Deployment YAML File
+
+Modify the config map named `longhorn-default-setting` in the yaml file `longhorn/deploy/longhorn.yaml` as described in [Fresh Installation > Using the Longhorn Deployment YAML File](#using-the-longhorn-deployment-yaml-file) and then upgrade the Longhorn system using `kubectl`.
+
+### Using Helm
+
+Modify the default settings in the YAML file as described in [Fresh Installation > Using Helm](#using-helm) and then upgrade the Longhorn system using `helm upgrade`.
+
+## History
+Available since v1.3.0 ([Reference](https://github.com/longhorn/longhorn/issues/2570))
+
+
+---
+
+## Article: advanced-resources/deploy/node-selector.md
+
+---
+title: Node Selector
+weight: 4
+---
+
+If you want to restrict Longhorn components to only run on a particular set of nodes, you can set node selector for all Longhorn components.
+For example, you want to install Longhorn in a cluster that has both Linux nodes and Windows nodes but Longhorn cannot run on Windows nodes.
+In this case, you can set the node selector to restrict Longhorn to only run on Linux nodes.
+
+For more information about how node selector work, refer to the [official Kubernetes documentation.](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
+
+# Setting up Node Selector for Longhorn
+Longhorn consists of user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI) and system-managed components (for example, Instance Manager, Backing Image Manager, Share Manager, CSI Driver, and Engine Image).
+You need to set node selector for both types of components. See more details below.
+
+### Setting up Node Selector During installing Longhorn
+1. Set the node selector for user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI).
+   * If you install Longhorn through Rancher, you must copy and paste the following parameters into the YAML on the Rancher UI (click **Edit as YAML** during the installation) to apply the value to all user-deployed components.
+      ```yaml
+        global:
+          nodeSelector:
+            label-key1: "label-value1"
+      ```
+   * You can also specify the node selector for each user-deployed component and it will orverride the global setting.
+      ```yaml
+        longhornManager:
+          nodeSelector:
+            label-key1: "label-value1"
+        longhornDriver:
+          nodeSelector:
+            label-key1: "label-value1"
+        longhornUI:
+          nodeSelector:
+            label-key1: "label-value1"
+      ```
+   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the node selector section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
+    Then apply the YAMl files.
+   * If you install Longhorn using Helm, you can change the Helm values for `global.nodeSelector`, `longhornManager.nodeSelector`, `longhornUI.nodeSelector`, `longhornDriver.nodeSelector` in the `values.yaml` file before installing the chart.
+
+2. Set the node selector for system-managed components (for example, Instance Manager, Backing Image Manager, Share Manager, CSI Driver, and Engine Image).
+
+   Follow the [Customize default settings](../customizing-default-settings/) to set node selector by changing the value for the `system-managed-components-node-selector` default setting
+   > Note: Because of the limitation of Rancher 2.5.x, if you are using Rancher UI to install Longhorn, you need to click `Edit As Yaml` and add setting `systemManagedComponentsNodeSelector` to `defaultSettings`.
+   >
+   > For example:
+   > ```yaml
+   > defaultSettings:
+   >   systemManagedComponentsNodeSelector: "label-key1:label-value1"
+   >  ```
+
+### Setting up Node Selector After Longhorn has been installed
+
+> **Warning**:
+> * Since all Longhorn components will be restarted, the Longhorn system is unavailable temporarily.
+> * When all Longhorn volumes are detached, the customized settings are immediately applied to the system-managed components (for example, Instance manager, CSI driver and Engine images).
+> * When one or more Longhorn volumes are still attached, the customized setting is applied to the Instance Manager only when no engines and replica instances are running. You are required to reconfigure the setting after detaching the remaining volumes. Alternatively, you can wait for the next setting synchronization, which will occur in an hour.
+> * Don't operate the Longhorn system while node selector settings are updated and Longhorn components are being restarted.
+
+1. Prepare
+   * To ensure that your preferred settings are immediately applied, stop all workloads and detach all Longhorn volumes before applying it.
+
+2. Set the node selector for user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI).
+   * If you install Longhorn through Rancher, you must copy and paste the following parameters into the YAML on the Rancher UI (click **Edit as YAML** during the upgrade) to apply the value to all user-deployed components.
+        ```yaml
+        global:
+          nodeSelector:
+            label-key1: "label-value1"
+        ```
+    * You can also specify the node selector for each user-deployed component and it will override the global setting.
+        ```yaml
+        longhornManager:
+          nodeSelector:
+            label-key1: "label-value1"
+        longhornDriver:
+          nodeSelector:
+            label-key1: "label-value1"
+        longhornUI:
+          nodeSelector:
+            label-key1: "label-value1"
+        ```
+    * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the node selector section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
+      Then reapply the YAMl files.
+    * If you install Longhorn using Helm, you can change the Helm values for `global.nodeSelector`, `longhornManager.nodeSelector`, `longhornUI.nodeSelector`, `longhornDriverDeployer.nodeSelector` in the `values.yaml` file, and then run `helm upgrade` to upgrade to the new version of the chart.
+
+3. Set the node selector for system-managed components (for example, Instance Manager, Backing Image Manager, Share Manager, CSI Driver, and Engine Image).
+
+   The node selector setting can be found at Longhorn UI under **Settings > System Managed Components Node Selector.**
+
+4. Clean up
+
+   If you are changing node selector in a way so that Longhorn cannot run on some nodes that Longhorn is currently running on,
+   those nodes will become `down` state after this process. Verify that there is no replica left on those nodes.
+   Disable scheduling for those nodes, and delete them in Longhorn UI
+
+## History
+Available since v1.1.1
+* [Original feature request](https://github.com/longhorn/longhorn/issues/2199)
+
+
+---
+
+## Article: advanced-resources/deploy/priority-class.md
+
+---
+title: Priority Class
+weight: 6
+---
+The Priority Class setting can be used to set a higher priority on Longhorn workloads in the cluster, preventing them from being the first to be evicted during node pressure situations.
+
+For more information on how pod priority works, refer to the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/).
+
+# Setting Priority Class
+
+Longhorn consists of user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI) and system-managed components (for example, Instance Manager, CSI Driver, and Engine images).
+You need to set Priority Class for both types of components. See more details below.
+
+### Setting Priority Class During Longhorn Installation
+
+Longhorn creates a Priority Class `longhorn-critical` and sets it as default for its user deployed or system managed components if the following actions are not taken.
+
+1. Set taint Priority Class for system managed components: follow the [Customize default settings](../customizing-default-settings/) to set Priority Class by changing the value for the `priority-class` default setting
+1. Set taint Priority Class for user deployed components: modify the Helm chart or deployment YAML file depending on how you deploy Longhorn.
+
+> **Warning:** Longhorn will not start if the Priority Class setting is invalid (such as the Priority Class not existing).
+> You can see if this is the case by checking the status of the longhorn-manager DaemonSet with `kubectl -n longhorn-system describe daemonset.apps/longhorn-manager`.
+> You will need to uninstall Longhorn and restart the installation if this is the case.
+
+### Setting Priority Class After Longhorn Installation
+
+1. Set taint Priority Class for system managed components: The Priority Class setting can be found in the Longhorn UI by clicking **Settings > Priority Class.**
+1. Set taint Priority Class for user deployed components: modify the Helm chart or deployment YAML file depending on how you deploy Longhorn.
+
+Users can update or remove the Priority Class here, but note that this will result in recreation of all the Longhorn system components.
+The Priority Class setting will reject values that appear to be invalid Priority Classes.
+
+# Usage
+
+To ensure that your preferred Priority Class settings are immediately applied, stop all workloads and detach all Longhorn volumes before configuring the settings.
+
+Longhorn temporarily becomes unavailable when all components are restarted.
+Don't operate the Longhorn system after modifying the Priority Class setting, as the Longhorn components will be restarting.
+
+When all Longhorn volumes are detached, the customized setting is immediately applied to the system-managed components.
+When one or more Longhorn volumes are still attached, the customized setting is applied to the Instance Manager only when no engines and replica instances are running. You are required to reconfigure the setting after detaching the remaining volumes. Alternatively, you can wait for the next setting synchronization, which will occur in an hour.
+
+Do not delete the Priority Class in use by Longhorn, as this can cause new Longhorn workloads to fail to come online.
+
+## History
+
+[Original Feature Request](https://github.com/longhorn/longhorn/issues/1487)
+
+Available since v1.0.1
+
+
+---
+
+## Article: advanced-resources/deploy/rancher_windows_cluster.md
+
+---
+title: Rancher Windows Cluster
+weight: 5
+---
+
+Rancher can provision a Windows cluster with combination of Linux worker nodes and Windows worker nodes.
+For more information on the Rancher Windows cluster, see the official [Rancher documentation](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/windows-clusters/).
+
+In a Rancher Windows cluster, all Linux worker nodes are:
+- Tainted with the taint `cattle.io/os=linux:NoSchedule`
+- Labeled with `kubernetes.io/os:linux`
+
+Follow the below [Deploy Longhorn With Supported Helm Chart](#deploy-longhorn-with-supported-helm-chart) or [Setup Longhorn Components For Existing Longhorn](#setup-longhorn-components-for-existing-longhorn) to know how to deploy or setup Longhorn on a Rancher Windows cluster.
+
+> **Note**: After Longhorn is deployed, you can launch workloads that use Longhorn volumes only on Linux nodes.
+
+## Deploy Longhorn With Supported Helm Chart
+You can update the Helm value `global.cattle.windowsCluster.enabled` to allow Longhorn installation on the Rancher Windows cluster.
+
+When this value is set to `true`, Longhorn will recognize the Rancher Windows cluster then deploy Longhorn components with the correct node selector and tolerations so that all Longhorn workloads can be launched on Linux nodes only.
+
+On the Rancher marketplace, the setting can be customized in `customize Helm options` before installation: \
+`Edit Options` > `Other Settings` > `Rancher Windows Cluster`
+
+Also in: \
+`Edit YAML`
+```
+global:
+  cattle:
+    systemDefaultRegistry: ""
+    windowsCluster:
+      # Enable this to allow Longhorn to run on the Rancher deployed Windows cluster
+      enabled: true
+```
+
+## Setup Longhorn Components For Existing Longhorn
+You can setup the existing Longhorn when its not deployed with the supported Helm chart.
+
+1. Since Longhorn components can only run on Linux nodes,
+   you need to set node selector `kubernetes.io/os:linux` for Longhorn to select the Linux nodes.
+   Please follow the instruction at [Node Selector](../node-selector) to set node selector for Longhorn.
+
+1. Since all Linux worker nodes in Rancher Windows cluster are tainted with the taint `cattle.io/os=linux:NoSchedule`,
+   You need to set the toleration `cattle.io/os=linux:NoSchedule` for Longhorn to be able to run on those nodes.
+   Please follow the instruction at [Taint Toleration](../taint-toleration) to set toleration for Longhorn.
+
+
+---
+
+## Article: advanced-resources/deploy/revision_counter.md
+
+---
+title: Revision Counter
+weight: 7
+---
+
+The revision counter is a mechanism that Longhorn uses to track each replica's updates.
+
+During replica creation, Longhorn will create a 'revision.counter' file with its initial counter set to 0. And for every write to the replica, the counter in 'revision.counter' file will be increased by 1.
+
+The Longhorn engine uses these counters as a heuristic for achieving best-effort consistency among replicas during startup. Note that because the write IOs in Longhorn are parallel, enabling the revision counter does not guarantee data consistency. Longhorn also uses these counters during auto-salvage to identify the replica with the latest update.
+
+Disable Revision Counter is an option in which every write on replicas is not tracked. When this setting is used, performance is improved. This option can be helpful if you prefer higher performance and have a stable network infrastructure (e.g. an internal network) with enough CPU resources. When the revision counter is disabled, the Longhorn Engine skips checking the revision counter for all replicas at startup. However, auto-salvage still functions because Longhorn can use the replica's head file stat to identify the replica to be used for recovery. For more information about how auto-salvage functions without the revision counter, see [Auto-Salvage Support with Revision Counter Disabled](#auto-salvage-support-with-revision-counter-disabled).
+
+By default, the revision counter is disabled.
+
+> **Note:** 'Salvage' is Longhorn trying to recover a volume in a faulted state. A volume is in a faulted state when the Longhorn Engine loses the connection to all the replicas, and all replicas are marked as being in an error state.
+
+# Disable Revision Counter
+
+## Using Longhorn UI
+
+To disable or enable the revision counter from the Longhorn UI, click **Settings > Disable Revision Counter**.
+
+To create individual volumes with settings that are customized against the general settings, go to the **Volumes** page and click **Create Volume**.
+
+## Using a Manifest File
+
+A `StorageClass` can be customized to add a `disableRevisionCounter` parameter.
+
+By default, the `disableRevisionCounter` is false, so the revision counter is enabled.
+
+Set `disableRevisionCounter` to true to disable the revision counter:
+
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: best-effort-longhorn
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "1"
+  disableRevisionCounter: "true"
+  staleReplicaTimeout: "2880" # 48 hours in minutes
+  fromBackup: ""
+```
+
+## Auto-Salvage Support with Revision Counter Disabled
+
+The logic for auto-salvage is different when the revision counter is disabled.
+
+When revision counter is enabled and all the replicas in the volume are in the 'ERR' state, the engine controller will be in a faulted state, and for engine to recover the volume, it will get the replica with the largest revision counter as 'Source of Truth' to rebuild the rest replicas.
+
+When the revision counter is disabled in this case, the engine controller will get the `volume-head-xxx.img` last modified time and head file size of all replicas. It will also do the following steps:
+1. Identify the replica with the most recent last modified timestamp based on when `volume-head-xxx.img` was last modified
+1. Select all replicas with last modified timestamp within 5s of the above replica's last modified timestamp
+2. From the replica candidates from the above step, compare the head file size of the candidates, and pick the ones with the largest file size
+1. From the replica candidates from the above step, pick the best replica with most recent modified timestamp
+3. Change the best replica to 'RW' mode, and the other replicas are marked as 'ERR' mode. The errored replicas are rebuilt based on the best replica
+
+
+---
+
+## Article: advanced-resources/deploy/storage-network.md
+
+---
+title: Storage Network
+weight: 8
+---
+
+By Default, Longhorn uses the default Kubernetes cluster CNI network that is limited to a single interface and shared with other workloads cluster-wide. In case you have a situation where network segregation is needed, Longhorn supports isolating Longhorn in-cluster data traffic with the Storage Network setting.
+
+The Storage Network setting takes Multus NetworkAttachmentDefinition in `<NAMESPACE>/<NAME>` format.
+
+You can refer to [Comprehensive Document](https://github.com/k8snetworkplumbingwg/multus-cni#comprehensive-documentation) for how to install and set up Multus NetworkAttachmentDefinition.
+
+Applying the setting will add `k8s.v1.cni.cncf.io/networks` annotation and recreate all existing instance-manager, and backing-image-manager pods.
+Longhorn will apply the same annotation to any new instance-manager, backing-image-manager, and backing-image-data-source pods.
+
+> **Important**: To ensure that your preferred settings are immediately applied, stop all workloads and detach all Longhorn volumes before configuring the settings.
+>
+> When all volumes are detached, Longhorn attempts to restart all Instance Manager and Backing Image Manager pods to apply the setting.
+> When one or more Longhorn volumes are still attached, the customized setting is applied to the Instance Manager only when no engines and replica instances are running. You are required to reconfigure the setting after detaching the remaining volumes. Alternatively, you can wait for the next setting synchronization, which will occur in an hour.
+
+# Setting Storage Network
+
+## Prerequisite
+
+The Multus NetworkAttachmentDefinition network for the storage network setting must be reachable in pods across different cluster nodes.
+
+You can verify by creating a simple DaemonSet and try ping between pods.
+
+### Setting Storage Network During Longhorn Installation
+Follow the [Customize default settings](../customizing-default-settings/) to set Storage Network by changing the value for the `storage-network` default setting
+
+> **Warning:** Longhorn instance-manager will not start if the Storage Network setting is invalid.
+>
+> You can check the events of the instance-manager Pod to see if it is related to an invalid NetworkAttachmentDefinition with `kubectl -n longhorn-system describe pods -l longhorn.io/component=instance-manager`.
+>
+> If this is the case, provide a valid `NetworkAttachmentDefinition` and re-run Longhorn install.
+
+### Setting Storage Network After Longhorn Installation
+
+Set the setting [Storage Network](../../../references/settings#storage-network).
+
+> **Warning:** Do not modify the NetworkAttachmentDefinition custom resource after applying it to the setting.
+>
+> Longhorn is not aware of the updates. Hence this will cause malfunctioning and error. Instead, you can create a new NetworkAttachmentDefinition custom resource and update it to the setting.
+
+### Setting Endpoint Network For RWX Volumes
+
+Configure the setting [Endpoint Network For RWX Volume](../../../references/settings#endpoint-network-for-rwx-volume).
+
+# Limitation
+
+When an RWX volume is attached with the endpoint network, the NFS mount point connection must be re-established when the CSI plugin pod restarts. Longhorn provides the [Automatically Delete Workload Pod when The Volume Is Detached Unexpectedly](../../../references/settings#automatically-delete-workload-pod-when-the-volume-is-detached-unexpectedly) setting, which automatically deletes RWX volume workload pods when the CSI plugin pod restarts. However, the workload pod's NFS mount point could become unresponsive when the setting is disabled or the pod is not managed by a controller. In such cases, you must manually restart the CSI plugin pod.
+
+For more information, see [Storage Network Support for Read-Write-Many (RWX) Volume](../../../../archives/1.7.0/important-notes/#storage-network-support-for-read-write-many-rwx-volumes) in Important Notes.
+
+# History
+- [Original Feature Request (since v1.3.0)](https://github.com/longhorn/longhorn/issues/2285)
+- [[FEATURE] Support storage network for RWX volumes (since v1.7.0)](https://github.com/longhorn/longhorn/issues/8184)
+- [[FEATURE] Storage network with V2 data engine (since v1.9.0)](https://github.com/longhorn/longhorn/issues/6450)
+- [[FEATURE] Support extra network interface (not only storage network) on the share manager pod (since v1.11.0)](https://github.com/longhorn/longhorn/issues/10269)
+
+
+---
+
+## Article: advanced-resources/deploy/taint-toleration.md
+
+---
+title: Taints and Tolerations
+weight: 3
+---
+
+If users want to create nodes with large storage spaces and/or CPU resources for Longhorn only (to store replica data) and reject other general workloads, they can taint those nodes and add tolerations for Longhorn components. Then Longhorn can be deployed on those nodes.
+
+Notice that the taint tolerations setting for one workload will not prevent it from being scheduled to the nodes that don't contain the corresponding taints.
+
+For more information about how taints and tolerations work, refer to the [official Kubernetes documentation.](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)
+
+# Setting up Taints and Tolerations
+Longhorn consists of user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI) and system-managed components (for example, Instance Manager, Backing Image Manager, Share Manager, CSI Driver, and Engine Image).
+You need to set tolerations for both types of components. See more details below.
+
+### Setting up Taints and Tolerations During installing Longhorn
+1. Set taint tolerations for user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI).
+   * If you install Longhorn through Rancher, you must copy and paste the following parameters into the YAML on the Rancher UI (click **Edit as YAML** during the installation) to apply the value to all user-deployed components.
+     ```yaml
+       global:
+         tolerations:
+         - key: "key"
+           operator: "Equal"
+           value: "value"
+           effect: "NoSchedule"
+    ```
+   * You can also specify the tolerations for each user-deployed component and it will override the global setting.
+     ```yaml
+       longhornManager:
+         tolerations:
+         - key: "key"
+           operator: "Equal"
+           value: "value"
+           effect: "NoSchedule"
+       longhornDriver:
+         tolerations:
+         - key: "key"
+           operator: "Equal"
+           value: "value"
+           effect: "NoSchedule"
+       longhornUI:
+         tolerations:
+         - key: "key"
+           operator: "Equal"
+           value: "value"
+           effect: "NoSchedule"
+     ```
+   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the taint tolerations section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
+    Then apply the YAMl files.
+   * If you install Longhorn using Helm, you can change the Helm values for `global.tolerations`, `longhornManager.tolerations`, `longhornUI.tolerations`, `longhornDriver.tolerations` in the `values.yaml` file before installing the chart.
+
+2. Set taint tolerations for system-managed components (for example, Instance Manager, CSI Driver, and Engine images)
+
+   Follow the [Customize default settings](../customizing-default-settings/) to set taint tolerations by changing the value for the `taint-toleratio` default setting
+   > Note: Because of the limitation of Rancher 2.5.x, if you are using Rancher UI to install Longhorn, you need to click `Edit As Yaml` and add setting `taintToleration` to `defaultSettings`.
+   >
+   > For example:
+   > ```yaml
+   > defaultSettings:
+   >   taintToleration: "key=value:NoSchedule"
+   >  ```
+
+### Setting up Taints and Tolerations After Longhorn has been installed
+
+> **Warning**:
+>
+> To ensure that your preferred toleration settings are immediately applied, stop all workloads and detach all Longhorn volumes before configuring the settings.
+>
+> Since all Longhorn components will be restarted, the Longhorn system is unavailable temporarily.
+>
+> When all Longhorn volumes are detached, the customized setting is immediately applied to the system-managed components.
+> When one or more Longhorn volumes are still attached, the customized setting is applied to the Instance Manager only when no engines and replica instances are running. You are required to reconfigure the setting after detaching the remaining volumes. Alternatively, you can wait for the next setting synchronization, which will occur in an hour.
+>
+> Don't operate the Longhorn system while toleration settings are updated and Longhorn components are being restarted.
+
+1. Prepare
+
+   To ensure that your preferred settings are immediately applied, stop all workloads and detach all Longhorn volumes before configuring the settings.
+
+2. Set taint tolerations for user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI).
+   * If you install Longhorn through Rancher, you must copy and paste the following parameters into the YAML on the Rancher UI (click **Edit as YAML** during the upgrade) to apply the value to all user-deployed components.
+     ```yaml
+       global:
+         tolerations:
+         - key: "key"
+           operator: "Equal"
+           value: "value"
+           effect: "NoSchedule"
+    ```
+   * You can also specify the tolerations for each user-deployed component and it will override the global setting.
+     ```yaml
+       longhornManager:
+         tolerations:
+         - key: "key"
+           operator: "Equal"
+           value: "value"
+           effect: "NoSchedule"
+       longhornDriver:
+         tolerations:
+         - key: "key"
+           operator: "Equal"
+           value: "value"
+           effect: "NoSchedule"
+       longhornUI:
+         tolerations:
+         - key: "key"
+           operator: "Equal"
+           value: "value"
+           effect: "NoSchedule"
+     ```
+   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the taint tolerations section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
+  Then reapply the YAMl files.
+   * If you install Longhorn using Helm, you can change the Helm values for `global.tolerations`, `longhornManager.tolerations`, `longhornUI.tolerations`, `longhornDriver.tolerations` in the `values.yaml` file, and then run `helm upgrade` to upgrade to the new version of the chart.
+
+3. Set taint tolerations for system-managed components (for example, Instance Manager, Backing Image Manager, Share Manager, CSI Driver, and Engine Image).
+
+   The taint toleration setting can be found at Longhorn UI under **Settings > Kubernetes Taint Toleration.**
+
+
+## History
+Available since v0.6.0
+* [Original feature request](https://github.com/longhorn/longhorn/issues/584)
+* [Resolve the problem with GitOps](https://github.com/longhorn/longhorn/issues/2120)
+
+
+---
+
+## Article: advanced-resources/security/_index.md
+
+---
+title: Security
+weight: 7
+---
+
+
+---
+
+## Article: advanced-resources/security/mtls-support.md
+
+---
+title: MTLS Support
+weight: 6
+---
+
+Longhorn supports MTLS to secure and encrypt the grpc communication between the control plane (longhorn-manager) and the data plane (instance-managers).
+For Certificate setup we use the Kubernetes secret mechanism in combination with an optional secret mount for the longhorn-manager/instance-manager.
+
+
+# Requirements
+In a default installation mtls is disabled to enable mtls support one needs to create a `longhorn-grpc-tls` secret in the `longhorn-system` namespace before deployment.
+The secret is specified as an optional secret mount for the longhorn-manager/instance-managers so if it does not exist when these
+components are started, mtls will not be used and a restart of the components will be required to enable tls support.
+
+The longhorn-manager has a non tls client fallback for mixed mode setups where there are old instance-managers that were started without tls support.
+
+# Self Signed Certificate Setup
+
+You should create a `ca.crt` with the CA flag set which is then used to sign the `tls.crt` this will allow you to rotate the `tls.crt` in the future without service interruptions.
+You can use [openssl](https://mariadb.com/docs/server/security/securing-mariadb/securing-mariadb-encryption/data-in-transit-encryption/certificate-creation-with-openssl/)
+or [cfssl](https://github.com/cloudflare/cfssl) for the `ca.crt` as well as `tls.crt` certificate generation.
+
+The `tls.crt` certificate should use `longhorn-backend` for the common name and the below list of entries for the Subject Alternative Name.
+```text
+Common Name: longhorn-backend
+Subject Alternative Names: longhorn-backend, longhorn-backend.longhorn-system, longhorn-backend.longhorn-system.svc, longhorn-frontend, longhorn-frontend.longhorn-system, longhorn-frontend.longhorn-system.svc, longhorn-engine-manager, longhorn-engine-manager.longhorn-system, longhorn-engine-manager.longhorn-system.svc, longhorn-replica-manager, longhorn-replica-manager.longhorn-system, longhorn-replica-manager.longhorn-system.svc, longhorn-csi, longhorn-csi.longhorn-system, longhorn-csi.longhorn-system.svc, longhorn-backend, IP Address:127.0.0.1
+```
+
+# Setting up Kubernetes Secrets
+
+The `ca.crt` is the certificate of the certificate authority that was used to sign
+the `tls.crt` which will be used both by the client (longhorn-manager) and the server (instance-manager) for grpc mtls authentication.
+The `tls.key` is associated private key for the created `tls.crt`.
+
+The `longhorn-grpc-tls` yaml looks like the below example,
+If you are having trouble getting your own certificates to work you can base decode the below certificate
+and compare it against your own generated certificates via `openssl x509 -in tls.crt -text -noout`.
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: longhorn-grpc-tls
+  namespace: longhorn-system
+type: kubernetes.io/tls
+data:
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUREakNDQWZhZ0F3SUJBZ0lVU2tNdUVEOC9XYXphNmpkb1NiTE1qalFqb3JFd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0h6RWRNQnNHQTFVRUF4TVViRzl1WjJodmNtNHRaM0p3WXkxMGJITXRZMkV3SGhjTk1qSXdNVEV4TWpFeApPVEF3V2hjTk1qY3dNVEV3TWpFeE9UQXdXakFmTVIwd0d3WURWUVFERXhSc2IyNW5hRzl5YmkxbmNuQmpMWFJzCmN5MWpZVENDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFNY2grbTJhUndnNEtBa0EKT0xzdzdScWlWb1VqL2VPbVhuSE9HVE5nWE4rcFh5bDlCdzVDM1J4UDYzU29qaTVvNEhkU1htVmpwZmhmNjh1YwpvNVJJeUtXM1p6cndteDhXZldEc0dNNEtnYXBvMy84N3pVQ00vdGltOHllTzFUbTZlWVhXcWdlZ2JpM1Q1WnlvCmkzRjdteFg3QlU3Z25uWGthVmJ5UU1xRkEyMDJrK25jaVhaUE9iU0tlc1NvZ20wdWsrYXFvY3N1SjJ6dk9tZG0KMXd0a3ZTUklhL3l6T25JRGlmbFRteXNhZ3oxQy9VM1JxbzJ6TjIwbWJNYUJhMmx5anVZWkdWSnNyNGh4dGhqUApIR2x1UUh2QTlKTE9kc2J0T2xmbjRZNlZpUktCSzZWMVpOeVROMVJpN3ArTXZlaWQ3cE9rNHYweC9qVTc1a0N6Clo1cGJHbGtDQXdFQUFhTkNNRUF3RGdZRFZSMFBBUUgvQkFRREFnRUdNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHcKSFFZRFZSME9CQllFRlBGc0xRbmQxOHFUTVd5djh1STk3Z2hnR2djR01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQgpBUUNMcnk5a2xlSElMdDRwbzd4N0hvSldsMEswYjdwV2Y0Y3ZVeHh1bUdTYUpoQmFHNTVlZFNFSVAzajhsRGg1Cm94ZXJlbjNrRUtzeGZiQVQ0RzU3KzBaeExQSkZQcjFMM3JvcmxUVE1DS1QyY2Z1UDJ3SEIzZndWNDJpSHZSUDgKSUVqU041bFNkWjZnN1NjWFZ2RnpZNzlrbVZDQ2RNYlpGcEFuOElyTkh3L0tTUGZUajNob2VyV3ZGL3huaEo3bQpmSzUrcE5TeWR6QTA1K1Y0ODJhWGlvV2NWcWY2UHpSVndmT0tIalUrbUVDQXZMbitNSzRvN1l2VW1iN2tSUGs5CnBjU1A4N2lpN0hwRVhqZUtRaVJhZElXKzMySXp1UTFiOXRYc3BNTGF0UFA5TXNvWmY0M1EyZWw4bWd1RjRxOUcKVmVUZFZaU2hBNWNucmNRZTEySUs1MzAvCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVqekNDQTNlZ0F3SUJBZ0lVUjZWcGR5U1Z0MGp6bDcwQnIxMmdZOTB0QVNBd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0h6RWRNQnNHQTFVRUF4TVViRzl1WjJodmNtNHRaM0p3WXkxMGJITXRZMkV3SGhjTk1qSXdNVEV4TWpFeApPVEF3V2hjTk1qTXdNVEV4TWpFeE9UQXdXakFiTVJrd0Z3WURWUVFERXhCc2IyNW5hRzl5YmkxaVlXTnJaVzVrCk1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRUxOQVVJZUsvdnppaGc3a1Q5d3E4anU4VU51c24Kc2FzdmlpS1VHQnpkblZndlNSdzNhYzd4RTRSQjlmZytjRnVUenpGaFNHRlVLVUpYaVh5d0FXZ0o4YU9DQXBBdwpnZ0tNTUE0R0ExVWREd0VCL3dRRUF3SUZvREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVICkF3SXdEQVlEVlIwVEFRSC9CQUl3QURBZEJnTlZIUTRFRmdRVXgvaDVCOUFMSExuYWJaNjBzT2dvbnA3YlN0VXcKSHdZRFZSMGpCQmd3Rm9BVThXd3RDZDNYeXBNeGJLL3k0ajN1Q0dBYUJ3WXdnZ0lMQmdOVkhSRUVnZ0lDTUlJQgovb0lRYkc5dVoyaHZjbTR0WW1GamEyVnVaSUlnYkc5dVoyaHZjbTR0WW1GamEyVnVaQzVzYjI1bmFHOXliaTF6CmVYTjBaVzJDSkd4dmJtZG9iM0p1TFdKaFkydGxibVF1Ykc5dVoyaHZjbTR0YzNsemRHVnRMbk4yWTRJUmJHOXUKWjJodmNtNHRabkp2Ym5SbGJtU0NJV3h2Ym1kb2IzSnVMV1p5YjI1MFpXNWtMbXh2Ym1kb2IzSnVMWE41YzNSbApiWUlsYkc5dVoyaHZjbTR0Wm5KdmJuUmxibVF1Ykc5dVoyaHZjbTR0YzNsemRHVnRMbk4yWTRJWGJHOXVaMmh2CmNtNHRaVzVuYVc1bExXMWhibUZuWlhLQ0oyeHZibWRvYjNKdUxXVnVaMmx1WlMxdFlXNWhaMlZ5TG14dmJtZG8KYjNKdUxYTjVjM1JsYllJcmJHOXVaMmh2Y200dFpXNW5hVzVsTFcxaGJtRm5aWEl1Ykc5dVoyaHZjbTR0YzNsegpkR1Z0TG5OMlk0SVliRzl1WjJodmNtNHRjbVZ3YkdsallTMXRZVzVoWjJWeWdpaHNiMjVuYUc5eWJpMXlaWEJzCmFXTmhMVzFoYm1GblpYSXViRzl1WjJodmNtNHRjM2x6ZEdWdGdpeHNiMjVuYUc5eWJpMXlaWEJzYVdOaExXMWgKYm1GblpYSXViRzl1WjJodmNtNHRjM2x6ZEdWdExuTjJZNElNYkc5dVoyaHZjbTR0WTNOcGdoeHNiMjVuYUc5eQpiaTFqYzJrdWJHOXVaMmh2Y200dGMzbHpkR1Z0Z2lCc2IyNW5hRzl5YmkxamMya3ViRzl1WjJodmNtNHRjM2x6CmRHVnRMbk4yWTRJUWJHOXVaMmh2Y200dFltRmphMlZ1WkljRWZ3QUFBVEFOQmdrcWhraUc5dzBCQVFzRkFBT0MKQVFFQWV5UlhCWnI5Z1RmTGlsNGMvZElaSlVYeFh4ckFBQmtJTG55QkdNdkFqaFJoRndLZ09VU0MvMGUyeDYvTQpoTi9SWElYVzdBYUF0a25ZSHFLa3piMDZsbWhxczRHNWVjNkZRZDViSGdGbnFPOHNWNEF6WVFSRWhDZjlrWWhUClVlRnJLdDdOQllHNFNXSnNYK2M0ZzU5RlZGZkIzbTZscStoR3JaY085T2NIQ1NvVDM2SVRPeERDT3lrV002WHcKVW5zYWtaaHRwQ3lxdHlwQXZqaURNM3ZTY2txVTFNSWxLSnA1Z3lGT3k2VHVwQ01tYnRiWlRpSEtaN0ZlcmlmcwoyYng4Z0JmaldFQnEwMEhVWTdyY3RFNzFpVk11WURTczAwYTB2c1ZGQ240akppeWFnM0lHWkdud0FHQk1zR2h3ClFJcndjRHgwdy91NGR1VWRNMzBpaU1WZ0pnPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  tls.key: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUwzbjZVZzlhZU1Day9XbkZ2L1pmSTlxMkIyakxnbjFRWGQwcjhIL3k2QkhvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFTE5BVUllSy92emloZzdrVDl3cThqdThVTnVzbnNhc3ZpaUtVR0J6ZG5WZ3ZTUnczYWM3eApFNFJCOWZnK2NGdVR6ekZoU0dGVUtVSlhpWHl3QVdnSjhRPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
+```
+
+For more information on creating a secret, see [the Kubernetes documentation.](https://kubernetes.io/docs/concepts/configuration/secret/#creating-a-secret-manually) The secret must be created in the `longhorn-system` namespace for Longhorn to access it.
+
+> Note: Make sure to use `echo -n` when generating the base64 encoding,
+> otherwise a new line will be added at the end of the string
+> which will cause an error during loading of the certificates.
+
+
+# History
+Available since v1.3.0 [#3839](https://github.com/longhorn/longhorn/issues/3839)
+
+
+---
+
+## Article: advanced-resources/security/volume-encryption.md
+
+---
+title: Volume Encryption
+weight: 2
+---
+
+Longhorn supports volume encryption in both `Filesystem` and `Block` modes, providing protection against unauthorized access, data breaches, and compliance violations. Backups created from encrypted volumes are also encrypted.
+
+Volume encryption is made possible by the Linux kernel module `dm_crypt`, the command-line utility `cryptsetup`, and Kubernetes Secrets. `dm_crypt` and `cryptsetup` handle the creation and management of encrypted devices, while Secrets (and related permissions) facilitate secure storage of encryption keys.
+
+# Requirements
+
+To use encrypted volumes, ensure that the `dm_crypt` kernel module is loaded and that `cryptsetup` is installed on your worker nodes.
+
+# Setting up Kubernetes Secrets and StorageClasses
+
+Longhorn uses Kubernetes Secrets for secure storage of encryption keys. Kubernetes allows usage of template parameters that are resolved during volume creation. To use a Secret with an encrypted volume, you must configure the Secret as a StorageClass parameter.
+
+Template parameters allow you to use Secrets with individual volumes or with a collection of volumes. For more information about template parameters, see [StorageClass Secrets](https://kubernetes-csi.github.io/docs/secrets-and-credentials-storage-class.html) in the Kubernetes CSI Developer Documentation.
+
+In the following example, the encryption key is specified as string data in the `CRYPTO_KEY_VALUE` parameter of the Secret. Using string data eliminates the need for Base64 encoding before the Secret is submitted via kubectl create.
+
+Besides `CRYPTO_KEY_VALUE`, parameters `CRYPTO_KEY_CIPHER`, `CRYPTO_KEY_HASH`, `CRYPTO_KEY_SIZE`, `CRYPTO_PBKDF`, `CRYPTO_PBKDF_FORCE_ITERATIONS`, and `CRYPTO_PBKDF_MEMORY` provide the customization for volume encryption.
+- `CRYPTO_KEY_CIPHER`: Sets the cipher specification algorithm string. The default value is `aes-xts-plain64` for LUKS.
+- `CRYPTO_KEY_HASH`: Specifies the passphrase hash for `open`. The default value is `sha256`.
+- `CRYPTO_KEY_SIZE`: Sets the key size in bits and it must be a multiple of 8. The default value is `256`.
+- `CRYPTO_PBKDF`: Sets Password-Based Key Derivation Function (PBKDF) algorithm for LUKS keyslot. The default value is `argon2i`.
+- `CRYPTO_PBKDF_FORCE_ITERATIONS`: Sets a fixed iteration count for the PBKDF algorithm. When specified, this overrides cryptsetup’s default auto-tuning behavior. In FIPS mode, where PBKDF2 is required, specifying an explicit iteration count (such as `200000`) helps meet security policy requirements and avoids errors like "Not compatible PBKDF2 options". The default value is `200000` (Longhorn default).
+- `CRYPTO_PBKDF_MEMORY`: Sets the memory cost (in KB) for the PBKDF algorithm. This parameter is only applicable to memory-hard algorithms such as Argon2 (`argon2i` or `argon2id`) and has no effect when PBKDF2 is used. In FIPS mode, Argon2 is not allowed and PBKDF2 is used instead, so this parameter is ignored. The default value is `0`.
+
+For more information, see [cryptsetup(8)](https://man7.org/linux/man-pages/man8/cryptsetup.8.html) in the Linux man pages.
+
+- Example of a Secret:
+  ```yaml
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: longhorn-crypto
+    namespace: longhorn-system
+  stringData:
+    CRYPTO_KEY_VALUE: "Your encryption passphrase"
+    CRYPTO_KEY_PROVIDER: "secret"
+    CRYPTO_KEY_CIPHER: "aes-xts-plain64"
+    CRYPTO_KEY_HASH: "sha256"
+    CRYPTO_KEY_SIZE: "256"
+    CRYPTO_PBKDF: "argon2i"
+    CRYPTO_PBKDF_FORCE_ITERATIONS: "200000" 
+    CRYPTO_PBKDF_MEMORY: "0" 
+  ```
+
+- Example of a StorageClass with a global Secret:
+  ```yaml
+  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-crypto-global
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  parameters:
+    numberOfReplicas: "3"
+    staleReplicaTimeout: "2880" # 48 hours in minutes
+    fromBackup: ""
+    encrypted: "true"
+    # global secret that contains the encryption key that will be used for all volumes
+    csi.storage.k8s.io/provisioner-secret-name: "longhorn-crypto"
+    csi.storage.k8s.io/provisioner-secret-namespace: "longhorn-system"
+    csi.storage.k8s.io/node-publish-secret-name: "longhorn-crypto"
+    csi.storage.k8s.io/node-publish-secret-namespace: "longhorn-system"
+    csi.storage.k8s.io/node-stage-secret-name: "longhorn-crypto"
+    csi.storage.k8s.io/node-stage-secret-namespace: "longhorn-system"
+    csi.storage.k8s.io/node-expand-secret-name: "longhorn-crypto"
+    csi.storage.k8s.io/node-expand-secret-namespace: "longhorn-system"
+  ```
+
+- Example of a StorageClass with a volume-specific Secret:
+  ```yaml
+  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-crypto-per-volume
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  parameters:
+    numberOfReplicas: "3"
+    staleReplicaTimeout: "2880" # 48 hours in minutes
+    fromBackup: ""
+    encrypted: "true"
+    # per volume secret which utilizes the `pvc.name` and `pvc.namespace` template parameters
+    csi.storage.k8s.io/provisioner-secret-name: ${pvc.name}
+    csi.storage.k8s.io/provisioner-secret-namespace: ${pvc.namespace}
+    csi.storage.k8s.io/node-publish-secret-name: ${pvc.name}
+    csi.storage.k8s.io/node-publish-secret-namespace: ${pvc.namespace}
+    csi.storage.k8s.io/node-stage-secret-name: ${pvc.name}
+    csi.storage.k8s.io/node-stage-secret-namespace: ${pvc.namespace}
+    csi.storage.k8s.io/node-expand-secret-name: ${pvc.name}
+    csi.storage.k8s.io/node-expand-secret-namespace: ${pvc.namespace}
+  ```
+
+# Using an Encrypted Volume
+
+To create an encrypted volume, you must create a PVC using a StorageClass that has been configured for encryption. The above StorageClass examples can be used as a starting point.
+
+After creation of the PVC it will remain in `Pending` state till the associated secret has been created and can be retrieved
+A newly-created PVC remains in the `Pending` state until the associated Secret is created and can be retrieved by the csi `external-provisioner` sidecar. Afterwards, the regular volume creation process continues with encryption taking effect.
+
+# Filesystem Expansion
+
+Longhorn supports [both online and offline expansion](../../../nodes-and-volumes/volumes/expansion/#encrypted-volume) for encrypted volumes.
+
+StorageClass parameters are needed to enable online expansion:
+
+- `csi.storage.k8s.io/node-expand-secret-name`
+- `csi.storage.k8s.io/node-expand-secret-namespace`
+
+> **Notice**  
+> - Longhorn v1.8.0 does not support expansion of V2 volumes.
+
+# History
+
+- Encryption of volumes in `Filesystem` mode available starting v1.2.0 ([#1859](https://github.com/longhorn/longhorn/issues/1859))
+- Encryption of volumes in `Block` mode available starting v1.6.0 ([#4883](https://github.com/longhorn/longhorn/issues/4883))
+
+
+---
+
+## Article: advanced-resources/v2-data-engine/_index.md
+
+---
+title: V2 Data Engine
+weight: 110
+---
+
+---
+
+## Article: advanced-resources/v2-data-engine/configurable-cpu-cores.md
+
+---
+title: Configurable CPU Cores
+weight: 10
+aliases:
+- /spdk/features/configurable-cpu-cores.md
+---
+
+Longhorn now supports configurable CPU cores for the V2 data engine through the use of a **CPU Mask**. This mask allows you to define exactly which CPU cores are allocated to the engine, offering both global and per-node configuration options.
+
+## Understanding the CPU Mask
+
+The CPU mask is a **hexadecimal (hex) representation of a binary bitmask**, where each bit corresponds to a specific CPU core.
+
+- A bit set to **1** means the core is enabled for the data engine.
+- A bit set to **0** means the core is skipped.
+
+### How to Calculate the Mask
+
+To determine the correct hex string, visualize your CPU cores as a sequence of bits from right to left:
+
+| Desired No. of Cores | Binary Representation (Cores 3, 2, 1, 0) | Hexadecimal Value |
+| --- | --- | --- |
+| **1 Core**  | `0001` | **0x1** |
+| **2 Cores** | `0011` | **0x3** |
+| **3 Cores** | `0111` | **0x7** |
+| **4 Cores** | `1111` | **0xF** |
+
+**Example for 23 Cores**: To allocate 23 cores, you need 23 bits set to `1`.
+
+- **Binary**: `111 1111 1111 1111 1111 1111`
+- **Hexadecimal**: `0x7FFFFF`
+
+> **Note**: Do not confuse the number of cores with the hex value. For instance, setting `0x4` (Binary `0100`) only enables **one** core (Core #2), whereas `0xF` (Binary `1111`) enables **four** cores.
+
+## Global Configuration
+
+To set CPU cores globally across the cluster, update the [`data-engine-cpu-mask`](../../../references/settings#data-engine-cpu-mask) setting.
+
+1. Navigate to **Settings > General**.
+2. Locate **Data Engine CPU Mask**.
+3. Enter your calculated hex string (for example, `0xF`).
+
+## Per-node Configuration
+
+For node-specific CPU core allocation, update the `spec.dataEngineSpec.v2.cpuMask` field of the instance manager with a hexadecimal encoded string. By default, this value is empty, and the v2 data engine will use the global setting specified by `data-engine-cpu-mask`. When a per-node configuration is set, the v2 data engine will prioritize this value over the global setting for that specific node.
+
+## Calculation Tools
+
+You can use a [Binary to Hex Converter](https://www.rapidtables.com/convert/number/binary-to-hex.html) to help calculate your mask. Type a `1` for every core you wish to allocate and convert the resulting binary string to Hex.
+
+
+---
+
+## Article: advanced-resources/v2-data-engine/hugepage-configuration.md
+
+---
+title: Huge Page Configuration
+weight: 20
+---
+
+The V2 Data Engine uses SPDK, which by default allocates memory through huge pages for better performance. Longhorn allows you to configure the memory allocation size or disable huge pages entirely and use anonymous (legacy) memory instead.
+
+## Settings
+
+- [`data-engine-hugepage-enabled`](../../../references/settings#data-engine-hugepage-enabled)
+- [`data-engine-memory-size`](../../../references/settings#data-engine-memory-size)
+
+## Using Huge Pages (Default)
+
+When huge pages are enabled, you must pre-allocate huge pages on each node that runs V2 volumes.
+
+### Pre-allocate Huge Pages on Nodes
+
+The total huge page allocation on each node must be at least equal to the `data-engine-memory-size` value (default 2048 MiB). For detailed steps on enabling and verifying huge pages, see [Enable HugePages](../../../deploy/install#enable-hugepages).
+
+### Adjust Memory Size
+
+Before adjusting the memory size, ensure that the huge page allocation on each node is sufficient to meet the new memory requirement.
+
+To change the memory allocated to the SPDK target daemon, update the `data-engine-memory-size` setting. For example, set the value of the setting to `{"v2":"4096"}` to allocate 4096 MiB of memory.
+
+> **Note**: Changing this setting requires all V2 volumes to be detached. The instance manager pods will be restarted with the new memory allocation.
+
+## Disabling Huge Pages (Using Anonymous Memory)
+
+If huge pages are not available or not desired on your nodes, you can disable huge pages and use anonymous (legacy) memory instead by setting `data-engine-hugepage-enabled` to `{"v2":"false"}`.
+
+When huge pages are disabled:
+- SPDK uses anonymous (legacy) memory allocation instead of huge pages.
+- No `hugepages-2Mi` resource limit is set on the instance manager container.
+- The `data-engine-memory-size` setting still defines how much memory SPDK preallocates.
+
+> **Note**:
+>
+> Disabling huge pages reduces memory pressure on low-spec nodes and increases deployment flexibility. However, performance may be lower compared to running with huge pages.
+
+
+---
+
+## Article: advanced-resources/v2-data-engine/interrupt-mode.md
+
+---
+title: Interrupt Mode Support
+weight: 40
+---
+
+Starting with v1.10.0, Longhorn supports **SPDK interrupt mode** for V2 data engine volumes. Interrupt mode provides an alternative to the default **polling mode**, offering improved CPU efficiency in certain environment.
+
+Interrupt mode is particularly suitable for clusters with limited CPU resources and a relatively small number of volumes. While polling mode maximizes performance by keeping CPU utilization close to 100% on allocated cores, interrupt mode reduces CPU usage by allowing the SPDK reactor to adjust its usage dynamically instead of continuously polling.
+
+## Overview
+
+### Polling Mode vs Interrupt Mode
+
+**Polling Mode (Default)**:
+- Continuously polls for I/O operations
+- Provides the lowest latency
+- Consumes ~100% of the allocated CPU core at all times
+- Best suited for high-performance workloads with frequent I/O
+
+**Interrupt Mode**:
+- Uses interrupt-driven I/O handling
+- CPU consumption scales with the number of attached volumes
+- Better suited for resource-constrained environments
+
+## Prerequisites
+
+- Longhorn v1.10.0 or later
+- V2 data engine enabled
+- No attached v2 volumes when changing the setting
+- For NVMe disks, IOMMU must be enabled. To verify:
+    ```bash
+    find /sys/kernel/iommu_groups/ -type l
+    ```
+    Example output (IOMMU enabled):
+    ```
+    /sys/kernel/iommu_groups/0/devices/0000:e6:0b.1
+    /sys/kernel/iommu_groups/1/devices/0000:34:0a.6
+    /sys/kernel/iommu_groups/2/devices/0000:a0:00.0
+    ```
+    If the command returns no output, IOMMU is not enabled.
+
+    > **Note:** IOMMU support may not be exposed on virtualized instances. If unsure, consider using a bare-metal instance, or consult your cloud provider’s documentation or support team.
+
+    For more information, see the official [SPDK documentation](https://spdk.io/doc/system_configuration.html).
+
+## Configuration
+
+### Global Setting
+
+To enable interrupt mode globally, update the [data-engine-interrupt-mode-enabled](../../../references/settings#data-engine-interrupt-mode-enabled) setting.
+
+### Important Considerations
+
+- **Volume State Requirement**: The setting can only be changed when no V2 volumes are attached. Longhorn blocks updates if any V2 volume is active.
+- **Global Effect**: The setting applies to all V2 volumes.
+
+## Performance Characteristics
+
+### Recommended Use Cases
+
+Enable interrupt mode when:
+- Running in resource-constrained clusters
+- Managing only a small number of volumes
+- CPU resources are limited or shared with other workloads
+- I/O patterns are sporadic rather than continuous
+- Energy efficiency is a priority
+
+## Limitations
+
+### Hybrid Implementation
+
+The current V2 volume interrupt mode uses a hybrid approach for NVMe/TCP transport:
+
+- **Admin Queue Operations**: Still relies on periodic polling for keepalive and controller recovery
+- **I/O Queue Completion**: Uses polling for command completion
+- **Residual CPU Usage**: Results in a small but constant CPU load, even when attach volumes are idle
+
+### Performance Trade-offs
+
+- **Latency**: Slightly higher than polling mode
+
+### Operational Restrictions
+
+- **Setting Changes**: Cannot be modified while V2 volumes are attached
+- **Global Scope**: Applies globally; no per-volume override is available
+
+
+---
+
+## Article: advanced-resources/v2-data-engine/selective-v2-data-engine-activation.md
+
+---
+title: Selective V2 Data Engine Activation
+weight: 30
+---
+
+Starting with v1.6.0, Longhorn allows you to enable or disable the V2 Data Engine on specific cluster nodes. You can choose to enable the V2 Data Engine only on powerful nodes in a cluster with varied power states. This is not possible in v1.5.0, which enables the V2 Data Engine on all nodes.
+
+## Disabling the V2 Data Engine on Specific Nodes
+
+1. Identify the nodes that should not run the V2 Data Engine.
+
+1. Add the label `node.longhorn.io/disable-v2-data-engine: "true"` to the selected nodes.
+
+1. Enable the global setting `v2-data-engine`.
+
+As a result, the following occur only on *nodes without the label*:
+- Instance Manager pods for the V2 Data Engine are spawned.
+- V2 Data Engine functionality remains available.
+
+## Notice
+
+V2 volume creation is possible only on nodes where the V2 Data Engine is enabled. You must schedule workloads that use V2 volumes on such nodes.
+
+## Reference
+
+For more information, see [[FEATURE] Selective V2 Data Engine Activation](https://github.com/longhorn/longhorn/issues/7015).
+
+
+---
+
+## Article: advanced-resources/v2-data-engine/ublk-frontend-support.md
+
+---
+title: UBLK Frontend Support (Experimental)
+weight: 50
+---
+
+> **Note**: This feature is an Experimental feature and is only functional on Linux kernels below v6.17. On kernel v6.17.0 and above, UBLK fails due to upstream UBLK API changes that cause `EINVAL` errors when starting UBLK devices. This issue is being tracked in [GitHub Issue #11977](https://github.com/longhorn/longhorn/issues/11977).
+
+Starting with v1.9.0, Longhorn supports the UBLK frontend for v2 data engine volumes.
+This feature exposes v2 data engine volumes as a block device by using [UBLK SPDK framework](https://spdk.io/doc/ublk.html).
+In certain high-specification environments (for example, machines with fast SSDs capable of millions of IOPS and 32 CPU cores), the UBLK frontend may offer better performance compared to the default NVMe-oF frontend for v2 data engine volumes.
+See the reference [Longhorn-Performance-Investigation](https://github.com/longhorn/longhorn/wiki/Longhorn-Performance-Investigation).
+However, the UBLK frontend is less mature than the default NVMe-oF frontend (see the known limitations below).
+UBLK frontend also has more restriction as mentioned below.
+
+## Prerequisites
+
+1. The kernel version on nodes must be v6.0 or above. The UBLK kernel driver is only available starting from kernel v6.0.
+2. The kernel module `ublk_drv` must be loaded on each node where UBLK volumes are attached. You can load it manually on each volume for testing using: `modprobe ublk_drv`
+
+## How to use
+
+### When creating the v2 volume from UI
+Select `UBLK` as the volume frontend during volume creation.
+
+### When creating the v2 volume from manifest
+1. Create a StorageClass specifies UBLK frontend. For example:
+    ```yaml
+    kind: StorageClass
+    apiVersion: storage.k8s.io/v1
+    metadata:
+      name: my-ublk-frontend-storageclass
+    provisioner: driver.longhorn.io
+    allowVolumeExpansion: true
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    parameters:
+      numberOfReplicas: "1"
+      staleReplicaTimeout: "2880"
+      fsType: "ext4"
+      dataEngine: "v2"
+      frontend: "ublk"
+    ```
+1. Create a PVC referencing that StorageClass. For example:
+    ```yaml
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: my-ublk-frontend-pvc
+      namespace: default
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: my-ublk-frontend-storageclass
+      resources:
+        requests:
+          storage: 1Gi
+    ```
+2. Longhorn will automatically provision a v2 volume using the UBLK frontend based on the PVC and StorageClass definition
+
+## Known Limitations
+
+When an instance-manager pod crashes, it may leave orphaned UBLK devices on the node.
+Currently, removing these orphan devices manually can be difficult and may sometimes require a node reboot.
+We are investigating this issue further in [GitHub Issue #10738](https://github.com/longhorn/longhorn/issues/10738).
+
+
+## Reference
+
+Original GitHub issue for UBLK frontend support: [GitHub Issue #9456](https://github.com/longhorn/longhorn/issues/9456)
+
+
+---
+
+## Article: advanced-resources/os-distro-specific/_index.md
+
+---
+title: OS/Distro Specific Configuration
+weight: 2
+---
+
+
+
+---
+
+## Article: advanced-resources/os-distro-specific/container-optimized-os-support.md
+
+---
+title:  Container-Optimized OS (COS) Support
+weight: 5
+---
+
+## Requirements
+
+> **Note:**
+> Longhorn currently supports Container-Optimized OS only when used as the base image for Google Kubernetes Engine (GKE), which includes a pre-configured Kubernetes environment. The following information may not apply to manually created Kubernetes environments, including Kubernetes provisioned with other orchestrators.
+
+The [Container-Optimized OS (COS)](https://cloud.google.com/container-optimized-os/docs) does not include a package manager and does not allow non-containerized applications to run. Additionally, its root filesystem is mounted as read-only, which poses a challenge for IO operations.
+
+In GKE, Kubernetes tackles these constraints by housing necessary dependencies in a chroot environment (`/home/kubernetes/containerized_mounter/rootfs`) and mounting directories within it, enabling the execution of required tasks.
+
+Longhorn provides a GKE COS node agent daemonset, which leverages GKE Kubernetes solutions to configure and run necessary dependencies. This agent is responsible for the following operations:
+
+- Mounting the Longhorn data path.
+- Loading the kernel module.
+- Installing and running the iSCSI daemon.
+
+## GKE COS Node Agent Installation
+1. Configure the Longhorn GKE COS node agent. You can use the default settings, if applicable.
+    > **Tip:**
+    > You can use a comma-separated list when specifying values for the `node-agent` container's environment variable (`LONGHORN_DATA_PATHS`).
+    >
+    > Example:
+    >
+    > ```yaml
+    >  containers:
+    >    - name: node-agent
+    >      env:
+    >        - name: LONGHORN_DATA_PATHS
+    >          value: /var/lib/longhorn1,/var/lib/longhorn2
+
+
+1. Install the Longhorn GKE COS node agent.
+    ```
+    kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/prerequisite/longhorn-gke-cos-node-agent.yaml
+    ```
+
+1. Check the agent pod's status.
+    Example:
+    ```
+    $ kubectl -n longhorn-system get pod -l app=longhorn-gke-cos-node
+    NAME                                READY   STATUS    RESTARTS      AGE
+    longhorn-gke-cos-node-agent-222w8   1/1     Running   1 (86m ago)   86m
+    longhorn-gke-cos-node-agent-8r26h   1/1     Running   1 (86m ago)   86m
+    longhorn-gke-cos-node-agent-nwhsw   1/1     Running   1 (86m ago)   86m
+    ```
+
+1. Check the installation result in the agent pod logs.
+    ```
+    Completed!
+    Keep the container running for iscsi daemon
+    ```
+    > **Note:**
+    > The agent installs the iSCSI daemon (iscsid) in a container using a package manager. However, the package manager attempts to initiate iSCSI services through systemd, which the container environment does not fully support. As a result, you will likely see error logs similar to `System has not been booted with systemd as init system (PID 1). Can't operate`. To work around this, the script manually starts the daemon instead of relying on systemd. You can disregard the mentioned errors in this context.
+
+1. Verify that the dependent kernel module is loaded. You must run the command on the host.
+    ```
+    $ lsmod | grep -q iscsi_tcp && echo "The iSCSI module is loaded" || echo "The iSCSI module is NOT loaded"
+    The iSCSI module is loaded
+    ```
+
+1. Verify that the iSCSI daemon is running. You must run the command on the host.
+    ```
+    $ ps aux | grep -q '[i]scsid' && echo "The iSCSI daemon is running" || echo "The iSCSI daemon is NOT running"
+    The iSCSI daemon is running
+    ```
+
+1. Verify that the Longhorn data path (`/var/lib/longhorn`) is mounted on the host. If you specified multiple Longhorn data paths, run the command for each path on the host.
+    ```
+    $ findmnt --noheadings "/var/lib/longhorn"
+    /var/lib/longhorn /dev/sda1[/var/lib/longhorn] ext4   rw,relatime,commit=30
+    ```
+
+## Limitations
+
+- In COS clusters, Longhorn currently supports only V1 data volumes.
+- You can use `pbkdf2` for volume encryption if the built-in `cryptsetup` utility in your COS cluster does not support `argon2i` or `argon2id`. For more information, see [Issue #10049](https://github.com/longhorn/longhorn/issues/10049).
+
+## References
+
+- [[FEATURE] Container-Optimized OS support](https://github.com/longhorn/longhorn/issues/6165)
+
+
+---
+
+## Article: advanced-resources/os-distro-specific/csi-on-gke.md
+
+---
+title:  Longhorn CSI on GKE
+weight: 3
+---
+
+To operate Longhorn on a cluster provisioned with Google Kubernetes Engine, some additional configuration is required.
+
+1. GKE clusters must use the `Ubuntu` OS instead of `Container-Optimized` OS, in order to satisfy Longhorn's `open-iscsi` dependency.
+
+2. GKE requires a user to manually claim themselves as cluster admin to enable role-based access control. Before installing Longhorn, run the following command:
+
+    ```shell
+    kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=<name@example.com>
+    ```
+
+    where `name@example.com` is the user's account name in GCE.  It's case sensitive. See [this document](https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control) for more information.
+
+---
+
+## Article: advanced-resources/os-distro-specific/csi-on-k3s.md
+
+---
+  title: Longhorn CSI on K3s
+  weight: 1
+---
+
+In this section, you'll learn how to install Longhorn on a K3s Kubernetes cluster. [K3s](https://rancher.com/docs/k3s/latest/en/) is a fully compliant Kubernetes distribution that is easy to install, using half the memory, all in a binary of less than 50mb.
+
+## Requirements
+
+  -  Longhorn v0.7.0 or higher.
+  -  `open-iscsi` or `iscsiadm` installed on the node.
+
+## Instruction
+
+  Longhorn v0.7.0 and above support k3s v0.10.0 and above only by default. 
+  
+  If you want to deploy these new Longhorn versions on versions before k3s v0.10.0, you need to set `--kubelet-root-dir` to `<data-dir>/agent/kubelet` for the Deployment `longhorn-driver-deployer` in `longhorn/deploy/longhorn.yaml`. 
+  `data-dir` is a `k3s` arg and it can be set when you launch a k3s server. By default it is `/var/lib/rancher/k3s`.
+
+## Troubleshooting
+
+### Common issues
+
+#### Failed to get arg root-dir: Cannot get kubelet root dir, no related proc for root-dir detection ...
+
+This error is due to Longhorn cannot detect where is the root dir setup for Kubelet, so the CSI plugin installation failed.
+
+You can override the root-dir detection by setting environment variable `KUBELET_ROOT_DIR` in https://github.com/longhorn/longhorn/blob/v{{< current-version >}}/deploy/longhorn.yaml.
+
+#### How to find `root-dir`?
+
+**For K3S prior to v0.10.0**
+
+Run `ps aux | grep k3s` and get argument `--data-dir` or `-d` on k3s node.
+
+e.g.
+```
+$ ps uax | grep k3s
+root      4160  0.0  0.0  51420  3948 pts/0    S+   00:55   0:00 sudo /usr/local/bin/k3s server --data-dir /opt/test/kubelet
+root      4161 49.0  4.0 259204 164292 pts/0   Sl+  00:55   0:04 /usr/local/bin/k3s server --data-dir /opt/test/kubelet
+``` 
+You will find `data-dir` in the cmdline of proc `k3s`. By default it is not set and `/var/lib/rancher/k3s` will be used. Then joining `data-dir` with `/agent/kubelet` you will get the `root-dir`. So the default `root-dir` for K3S is `/var/lib/rancher/k3s/agent/kubelet`.
+
+If K3S is using a configuration file, you would need to check the configuration file to locate the `data-dir` parameter.
+
+**For K3S v0.10.0+**
+
+It is always `/var/lib/kubelet`
+
+## Background 
+#### Longhorn versions before v0.7.0 don't work on K3S v0.10.0 or above
+K3S now sets its kubelet directory to `/var/lib/kubelet`. See [the K3S release comment](https://github.com/rancher/k3s/releases/tag/v0.10.0) for details.
+
+## Reference
+https://github.com/kubernetes-csi/driver-registrar
+
+
+---
+
+## Article: advanced-resources/os-distro-specific/csi-on-rke-and-coreos.md
+
+---
+  title: Longhorn CSI on RKE and CoreOS
+  weight: 2
+---
+
+For minimalist Linux Operating systems, you'll need a little extra configuration to use Longhorn with RKE (Rancher Kubernetes Engine).  This document outlines the requirements for using RKE and CoreOS.
+
+###  Background 
+
+CSI doesn't work with CoreOS + RKE before Longhorn v0.4.1. The reason is that in the case of CoreOS, RKE sets the argument `root-dir=/opt/rke/var/lib/kubelet` for the kubelet , which is different from the default value `/var/lib/kubelet`.
+                                                                             
+**For k8s v1.12+**, the kubelet will detect the `csi.sock` according to argument `<--kubelet-registration-path>` passed in by Kubernetes CSI driver-registrar, and `<drivername>-reg.sock` (for Longhorn, it's `io.rancher.longhorn-reg.sock`) on kubelet path `<root-dir>/plugins`.
+   
+  **For k8s v1.11,** the kubelet will find both sockets on kubelet path `/var/lib/kubelet/plugins`.
+   
+By default, Longhorn CSI driver creates and expose these two sock files on the host path `/var/lib/kubelet/plugins`. Then the kubelet cannot find `<drivername>-reg.sock`, so CSI driver doesn't work.
+
+Furthermore, the kubelet will instruct the CSI plugin to mount the Longhorn volume on `<root-dir>/pods/<pod-name>/volumes/kubernetes.io~csi/<volume-name>/mount`. But this path inside the CSI plugin container won't be bind mounted on the host path. And the mount operation for the Longhorn volume is meaningless.
+
+Therefore, in this case, Kubernetes cannot connect to Longhorn using the CSI driver without additional configuration.
+
+### Requirements
+
+  -  Kubernetes v1.11 or higher.
+  -  Longhorn v0.4.1 or higher.
+
+###  1. Add extra binds for the kubelet
+
+> This step is only required for For CoreOS + and Kubernetes v1.11. It is not needed for Kubernetes v1.12+.
+
+Add extra_binds for kubelet in RKE `cluster.yml`:
+
+```
+
+services:
+  kubelet:
+    extra_binds:
+    - "/opt/rke/var/lib/kubelet/plugins:/var/lib/kubelet/plugins" 
+
+```
+
+This makes sure the kubelet plugins directory is exposed for CSI driver installation.
+
+### 2. Start the iSCSI Daemon
+
+If you want to enable iSCSI daemon automatically at boot, you need to enable the systemd service:
+
+```
+sudo su
+systemctl enable iscsid
+reboot
+```
+
+Or just start the iSCSI daemon for the current session:
+
+```
+sudo su
+systemctl start iscsid
+```
+
+### Troubleshooting
+
+#### Failed to get arg root-dir: Cannot get kubelet root dir, no related proc for root-dir detection ...
+
+This error happens because Longhorn cannot detect the root dir setup for the kubelet, so the CSI plugin installation failed.
+
+You can override the root-dir detection by setting environment variable `KUBELET_ROOT_DIR` in https://github.com/longhorn/longhorn/blob/v{{< current-version >}}/deploy/longhorn.yaml.
+
+#### How to find `root-dir`?
+ 
+Run `ps aux | grep kubelet` and get the argument `--root-dir` on host node. 
+
+For example,
+```
+
+$ ps aux | grep kubelet
+root      3755  4.4  2.9 744404 120020 ?       Ssl  00:45   0:02 kubelet --root-dir=/opt/rke/var/lib/kubelet --volume-plugin-dir=/var/lib/kubelet/volumeplugins
+
+```
+You will find `root-dir` in the cmdline of proc `kubelet`. If it's not set, the default value `/var/lib/kubelet` would be used. In the case of CoreOS, the root-dir would be `/opt/rke/var/lib/kubelet` as shown above.
+
+If the kubelet is using a configuration file, you need to check the configuration file to locate the `root-dir` parameter.
+
+### References
+https://github.com/kubernetes-csi/driver-registrar
+
+https://coreos.com/os/docs/latest/iscsi.html
+
+
+---
+
+## Article: advanced-resources/os-distro-specific/okd-support.md
+
+---
+title:  OCP/OKD Support
+weight: 4
+---
+
+To deploy Longhorn on a cluster provisioned with OpenShift 4.x, some additional configurations are required.
+
+> **Note**: OKD currently does not support the ARM platform. For more information, see the [OKD website](https://www.okd.io) and [GitHub issue #1165](https://github.com/okd-project/okd/issues/1165) (*OKD in ARM platform*).
+
+- [Install Longhorn](#install-longhorn)
+  - [Install With Helm](#install-with-helm)
+  - [Install With `oc` Command](#install-with-oc-command)
+- [Prepare A Customized Default Longhorn Disk (Optional)](#prepare-a-customized-default-longhorn-disk-optional)
+  - [Add An Extra Disk to Longhorn Storage](#add-an-extra-disk-to-longhorn-storage)
+    - [Create Filesystem For The Device](#create-filesystem-for-the-device)
+    - [Mounting The Device On Boot with MachineConfig CRD](#mounting-the-device-on-boot-with-machineconfig-crd)
+    - [Label and Annotate The Node](#label-and-annotate-the-node)
+- [Reference](#reference)
+- [Main Contributor](#main-contributor)
+
+## Install Longhorn
+
+### Install With Helm
+
+Please refer to this section [Install with Helm](../../../deploy/install/install-with-helm/) first.
+
+Install Longhorn with the following settings:
+
+| Setting | Value | Example |
+| --- | --- | --- |
+| `openshift.enabled` | `true` | N/A |
+| `image.openshift.oauthProxy.registry` | Container registry | `quay.io` |
+| `image.openshift.oauthProxy.repository` | Upstream image | `openshift/origin-oauth-proxy` |
+| `image.openshift.oauthProxy.tag` | Version 4.1 or later | `4.18` |
+
+```bash
+  helm install longhorn longhorn/longhorn \
+    --namespace longhorn-system \
+    --create-namespace \
+    --set openshift.enabled=true \
+    --set image.openshift.oauthProxy.registry=quay.io \
+    --set image.openshift.oauthProxy.repository=openshift/origin-oauth-proxy \
+    --set image.openshift.oauthProxy.tag=4.18
+```
+
+### Install With `oc` Command
+
+Perform the following steps to install Longhorn on [OKD](https://www.okd.io/) clusters.
+
+1. Download the `longhorn-okd.yaml` file.
+  ```
+  wget https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn-okd.yaml
+  ```
+1. Specify the target `oauth-proxy` container image in the `longhorn-okd.yaml` file (for example, `quay.io/openshift/origin-oauth-proxy:4.18`).
+
+1. Run the following command:
+  ```shell
+  oc apply -f longhorn-okd.yaml
+  ```
+
+One way to monitor the progress of the installation is to watch pods being created in the `longhorn-system` namespace:
+
+  ```shell
+    oc get pods \
+    --namespace longhorn-system \
+    --watch
+  ```
+
+For more information, see [Install with Kubectl](../../../deploy/install/install-with-kubectl).
+
+## Prepare A Customized Default Longhorn Disk (Optional)
+
+To understand more about configuring the disks for Longhorn, please refer to the section [Configuring Defaults for Nodes and Disks](../../../nodes-and-volumes/nodes/default-disk-and-node-config/#launch-longhorn-with-multiple-disks)
+
+Longhorn will use the directory `/var/lib/longhorn` as default storage mount point and that means Longhorn use the root device as the default storage. If you don't want to use the root device as the Longhorn storage, set ***defaultSettings.createDefaultDiskLabeledNodes*** true when installing Longhorn by helm:
+
+```txt
+--set defaultSettings.createDefaultDiskLabeledNodes=true
+```
+
+And then add another device formatted to Longhorn storage
+
+### Add An Extra Disk to Longhorn Storage
+
+#### Create Filesystem For The Device
+
+Create the filesystem on the device with the label `longhorn` on the storage node. Get into the node by oc command:
+
+```bash
+oc get nodes --no-headers | awk '{print $1}'
+oc debug node/${NODE_NAME} -t -- chroot /host bash
+```
+
+Check if the device is present and format it with Longhorn label:
+
+```bash
+lsblk
+sudo mkfs.ext4 -L longhorn /dev/${DEVICE_NAME}
+```
+
+#### Mounting The Device On Boot with MachineConfig CRD
+
+The secondary drive needs to be mounted automatically when node boots up by the `MachineConfig` that can be created and deployed by:
+
+```bash
+cat <<EOF >>auto-mount-machineconfig.yaml
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 71-mount-storage-worker
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    systemd:
+      units:
+        - name: var-mnt-longhorn.mount
+          enabled: true
+          contents: |
+            [Unit]
+            Before=local-fs.target
+            [Mount]
+            # Example mount point, you can change it to where you like for each device.
+            Where=/var/mnt/longhorn
+            What=/dev/disk/by-label/longhorn
+            Options=rw,relatime,discard
+            [Install]
+            WantedBy=local-fs.target
+EOF
+
+oc apply -f auto-mount-machineconfig.yaml
+```
+
+#### Label and Annotate The Node
+
+Please refer to the section [Customizing Default Disks for New Nodes](../../../nodes-and-volumes/nodes/default-disk-and-node-config/#customizing-default-disks-for-new-nodes) to label and annotate storage node on where your device is by oc commands:
+
+```bash
+oc get nodes --no-headers | awk '{print $1}'
+
+oc annotate node ${NODE_NAME} --overwrite node.longhorn.io/default-disks-config='[{"path":"/var/mnt/longhorn","allowScheduling":true}]'
+oc label node ${NODE_NAME} --overwrite node.longhorn.io/create-default-disk=config
+```
+
+**Note**: You might need to reboot the node to validate the modified configuration.
+
+## Reference
+
+- [OCP/OKD Documentation and Helm Support](https://github.com/longhorn/longhorn/pull/5004)
+- [OKD Official Website](https://www.okd.io/)
+- [OKD Official Documentation Website](https://docs.okd.io/latest/welcome/index.html)
+- [oauth-proxy](https://github.com/openshift/oauth-proxy/blob/master/contrib/sidecar.yaml)
+
+## Main Contributor
+
+- [@ArthurVardevanyan](https://github.com/ArthurVardevanyan)
+
+
+---
+
+## Article: advanced-resources/os-distro-specific/talos-linux-support.md
+
+---
+title: Talos Linux Support
+weight: 5
+---
+
+## Requirements
+
+The following requirements must be met before installing Longhorn on a Talos Linux cluster.
+
+### System Extensions
+
+Some Longhorn-dependent binary executables are not present in the default Talos root filesystem. To have access to these binaries, Talos offers system extension mechanism to extend the installation.
+
+- `siderolabs/iscsi-tools`: this extension enables iscsid daemon and iscsiadm to be available to all nodes for the Kubernetes persistent volumes operations.
+- `siderolabs/util-linux-tools`: this extension enables linux tool to be available to all nodes. For example, the `fstrim` binary is used for Longhorn volume trimming.
+
+The most straightforward method is to patch the extensions onto existing Talos Linux nodes. Alternatively, we can use the [Talos Linux Image Factory](https://factory.talos.dev/) and select the desired extensions under **System Extensions**. This approach is especially useful when combined with Infrastructure as Code (IaC) tools.
+
+```yaml
+customization:
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/iscsi-tools
+      - siderolabs/util-linux-tools
+```
+
+For detailed instructions, see the Talos documentation on [System Extensions](https://www.talos.dev/v1.6/talos-guides/configuration/system-extensions/) and [Boot Assets](https://www.talos.dev/v1.6/talos-guides/install/boot-assets/).
+
+### Pod Security
+
+Longhorn requires pod security `enforce: "privileged"`.
+
+By default, Talos Linux applies a `baseline` pod security profile across namespaces, except for the kube-system namespace. This default setting restricts Longhorn's ability to manage and access system resources. For more information, see [Root and Privileged Permission](../../../deploy/install/#root-and-privileged-permission).
+
+For detailed instructions, see [Pod Security Policies Disabled & Pod Security Admission Introduction](../../../../archives/1.7.0/important-notes/#pod-security-policies-disabled--pod-security-admission-introduction) and the Talos documentation on [Pod Security](https://www.talos.dev/v1.6/kubernetes-guides/configuration/pod-security/).
+
+## From Talos Linux v1.10.x Onwards
+
+### Data Path Mounts
+
+Since Talos Linux deprecated `.machine.disks`, we recommend using `UserVolumeConfig` to mount a disk for Longhorn. See [What's new in Talos v1.10](https://www.talos.dev/v1.10/introduction/what-is-new/#user-volumes) for more details.
+
+Optionally, we can also create a `VolumeConfig` to specify the size of Talos system volumes. This is **recommended**, as it avoids the need to set `defaultSettings.storageReservedPercentageForDefaultDisk`.
+
+> For more disk configuration options, see the [Talos documentation](https://www.talos.dev/v1.10/talos-guides/configuration/disk-management/#disk-layout).
+
+We must provide additional data path mounts to make them accessible to the Kubernetes Kubelet container.
+
+These mounts allow access to host directories and attach the volumes required by Longhorn components.
+
+The [default data path](../../../references/settings#default-data-path) for Longhorn is `/var/lib/longhorn`. To use the configuration below in Talos, first set your default data path to `/var/mnt/longhorn`. The method to do this depends on your [deployment method](../../deploy/customizing-default-settings).
+
+```yaml
+machine:
+  kubelet:
+    extraMounts:
+      - destination: /var/mnt/longhorn
+        type: bind
+        source: /var/mnt/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
+```
+
+Next, create a `UserVolumeConfig` to mount the disk for Longhorn. It will be automatically mounted to `/var/mnt/longhorn` on the configured node.
+
+```yaml
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn # name is used to identify the volume /var/mnt/<name>
+provisioning:
+  diskSelector:
+    match: disk.transport == "nvme"
+  grow: false
+  maxSize: 1700GB
+```
+
+For detailed instructions on `UserVolumeConfig` and `VolumeConfig`, see the Talos documentation on [Block configuration](https://www.talos.dev/v1.10/reference/configuration/block/). Refer to the [Talos API Reference](https://docs.siderolabs.com/talos/v1.11/reference/api) for more configuration details.
+
+## Up to Talos Linux v1.9.x
+
+### Data Path Mounts
+
+We need to provide additional data path mounts to be accessible to the Kubernetes Kubelet container.
+
+These mounts are necessary to provide access to the host directories, and attach volumes required by Longhorn components.
+
+```yaml
+machine:
+  kubelet:
+    extraMounts:
+      - destination: /var/lib/longhorn
+        type: bind
+        source: /var/lib/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
+```
+
+For detailed instructions, see the Talos documentation on [Editing Machine Configuration](https://www.talos.dev/v1.6/talos-guides/configuration/editing-machine-configuration/).
+
+## V2 Data Engine
+
+To use V2 volumes, all nodes must meet the V2 Data Engine [prerequisites](../../../v2-data-engine/prerequisites#prerequisites).
+
+```yaml
+machine:
+  sysctls:
+    vm.nr_hugepages: "1024"
+  kernel:
+    modules:
+      - name: nvme_tcp
+      - name: vfio_pci
+#     - name: uio_pci_generic
+```
+
+> **Note:**
+> Talos Linux v1.7.x and earlier versions do not include the `uio_pci_generic` kernel module. If the system device supports `vfio_pci`, which is the preferred kernel module for SPDK application deployment, we are not required to install and enable the `uio_pci_generic` kernel driver. For more information, see [System Configuration User Guide](https://spdk.io/doc/system_configuration.html) in the SPDK documentation.
+>
+> We can use `uio_pci_generic` if `vfio_pci` is incompatible with your system or specific hardware. Future versions of Talos Linux are expected to include native support for `uio_pci_generic`. For more information, see [Issue #9236](https://github.com/siderolabs/talos/issues/9236).
+> Since 1.8.0 `uio_pci_generic` is now supported.
+
+## Talos Linux Upgrades (version <1.8)
+
+### From v1.8.x Onwards
+
+The `--preserve` flag is no longer required. It is now automatically set for the `talosctl` upgrade command, as noted [here](https://www.talos.dev/v1.8/introduction/what-is-new/#upgrades).
+
+### Up to v1.8.x
+
+When [upgrading a Talos Linux node](https://www.talos.dev/v1.7/talos-guides/upgrading-talos/#talosctl-upgrade), always include the `--preserve` option in the command. This option explicitly tells Talos to keep ephemeral data intact.
+
+Example:
+
+```
+talosctl upgrade --nodes 10.20.30.40 --image ghcr.io/siderolabs/installer:v1.7.6 --preserve
+```
+
+> **Caution:**
+> If the `--preserve` option is not included, Talos wipes `/var/lib/longhorn`, destroying all replicas stored on that node.
+
+### Recovering from an Upgraded Node without Preserving Data
+
+If we were unable to include the `--preserve` option in the upgrade command, perform the following steps:
+
+1. On the Longhorn UI, go to the **Nodes** page.
+2. Select the upgraded node, and then select **Edit node and disks** in the **Operation** menu.
+3. On the **Edit Node and Disks** page, set **Scheduling** to **Disable**, delete the disk, and then click **Save**.
+4. Select the upgraded node again, and then select **Edit node and disks** in the **Operation** menu.
+5. On the **Edit Node and Disks** page, add a disk and configure the following settings:
+    - **Path**: Specify `/var/lib/longhorn/`.
+    - **Storage Reserved**: Specify a value that matches your requirements. By default, it is set to 30% of the disk capacity.
+    - **Scheduling**: Select **Enable**.
+6. Click **Save**.
+
+Longhorn synchronizes the replicas based on the configured settings.
+
+## References
+
+- [[FEATURE] Talos support](https://github.com/longhorn/longhorn/issues/3161)
+
+
+---
+
+## Article: advanced-resources/support-managed-k8s-service/_index.md
+
+---
+title: Support Managed Kubernetes Service
+weight: 4
+---
+
+
+
+---
+
+## Article: advanced-resources/support-managed-k8s-service/manage-node-group-on-aks.md
+
+---
+title:  Manage Node-Group on Azure AKS
+weight: 2
+---
+
+See [Create and manage multiple node pools for a cluster in Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/use-multiple-node-pools) for more information.
+
+Following is an example to replace cluster nodes with a new storage size.
+
+
+## Storage Expansion
+
+AKS does not support additional disk in its [template](https://docs.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2022-01-01/managedclusters?tabs=bicep#template-format). It is possible for manual disk attachment. Then raw device needs to be mounted either by manually mounting in VM or during launch with CustomScriptExtension that [is not supported](https://docs.microsoft.com/en-us/azure/aks/support-policies#user-customization-of-agent-nodes) in AKS.
+
+1. In Longhorn, set `replica-replenishment-wait-interval` to `0`.
+
+2. Add a new node-pool. Later Longhorn components will be automatically deployed on the nodes in this pool.
+
+    ```
+    AKS_NODEPOOL_NAME_NEW=<new-nodepool-name>
+    AKS_RESOURCE_GROUP=<aks-resource-group>
+    AKS_CLUSTER_NAME=<aks-cluster-name>
+    AKS_DISK_SIZE_NEW=<new-disk-size-in-gb>
+    AKS_NODE_NUM=<number-of-nodes>
+    AKS_K8S_VERSION=<kubernetes-version>
+
+    az aks nodepool add \
+      --resource-group ${AKS_RESOURCE_GROUP} \
+      --cluster-name ${AKS_CLUSTER_NAME} \
+      --name ${AKS_NODEPOOL_NAME_NEW} \
+      --node-count ${AKS_NODE_NUM} \
+      --node-osdisk-size ${AKS_DISK_SIZE_NEW} \
+      --kubernetes-version ${AKS_K8S_VERSION} \
+      --mode System
+    ```
+
+3. Using Longhorn UI to disable the disk scheduling and request eviction for nodes in the old node-pool.
+
+4. Cordon and drain Kubernetes nodes in the old node-pool.
+    ```
+    AKS_NODEPOOL_NAME_OLD=<old-nodepool-name>
+
+    for n in `kubectl get nodes | grep ${AKS_NODEPOOL_NAME_OLD}- | awk '{print $1}'`; do
+      kubectl cordon $n && \
+      kubectl drain $n --ignore-daemonsets --delete-emptydir-data
+    done
+    ```
+
+5. Delete old node-pool.
+    ```
+    az aks nodepool delete \
+      --cluster-name ${AKS_CLUSTER_NAME} \
+      --name ${AKS_NODEPOOL_NAME_OLD} \
+      --resource-group ${AKS_RESOURCE_GROUP}
+    ```
+
+
+---
+
+## Article: advanced-resources/support-managed-k8s-service/manage-node-group-on-eks.md
+
+---
+title:  Manage Node-Group on AWS EKS
+weight: 1
+---
+
+EKS supports configuring the same launch template. The nodes in the node-group will be recycled by new nodes with new configurations when updating the launch template version.
+
+See [Launch template support](https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html) for more information.
+
+The following is an example to replace cluster nodes with new storage size.
+
+
+## Storage Expansion
+
+1. In Longhorn, set `replica-replenishment-wait-interval` to `0`.
+
+2. Go to the launch template of the EKS cluster node-group. You can find in the EKS cluster tab `Configuration/Compute/<node-group-name>` and click the launch template.
+
+3. Click `Modify template (Create new version)` in the `Actions` drop-down menu.
+
+4. Choose the `Source template version` in the `Launch template name and version description`.
+
+5. Follow steps to [Expand volume](#expand-volume), or [Create additional volume](#create-additional-volume).
+> **Note:** If you choose to expand by [create additional volume](#create-additional-volume), the disks need to be manually added to the disk list of the nodes after the EKS cluster upgrade.
+
+
+### Expand volume
+1. Update the volume size in `Configure storage`.
+
+2. Click `Create template version` to save changes.
+
+3. Go to the EKS cluster node-group and change `Launch template version` in `Node Group configuration`. Track the status in the `Update history` tab.
+
+
+### Create additional volume
+1. Click `Advanced` then `Add new volume` in `Configure storage` and fill in the fields.
+
+2. Adjust the auto-mount script and add to `User data` in `Advanced details`. Make sure the `DEV_PATH` matches the `Device name` of the additional volume.
+    ```
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="==MYBOUNDARY=="
+
+    --==MYBOUNDARY==
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
+    #!/bin/bash
+
+    # https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html#launch-template-user-data
+    echo "Running custom user data script"
+
+    DEV_PATH="/dev/sdb"
+    mkfs -t ext4 ${DEV_PATH}
+
+    MOUNT_PATH="/mnt/longhorn"
+    mkdir ${MOUNT_PATH}
+    mount ${DEV_PATH} ${MOUNT_PATH}
+    ```
+
+3. Click `Create template version` to save changes.
+
+4. Go to the EKS cluster node-group and change `Launch template version` in `Node Group configuration`. Track the status in the `Update history` tab.
+
+5. In Longhorn, add the path of the mounted disk into the disk list of the nodes.
+
+
+---
+
+## Article: advanced-resources/support-managed-k8s-service/manage-node-group-on-gke.md
+
+---
+title:  Manage Node-Group on GCP GKE
+weight: 3
+---
+
+See [Migrating workloads to different machine types](https://cloud.google.com/kubernetes-engine/docs/tutorials/migrating-node-pool) for more information.
+
+The following is an example to replace cluster nodes with new storage size.
+
+
+## Storage Expansion
+
+GKE supports adding additional disk with `local-ssd-count`. However, each local SSD is fixed size to 375 GB. We suggest expanding the node size via node pool replacement.
+
+1. In Longhorn, set `replica-replenishment-wait-interval` to `0`.
+
+2. Add a new node-pool. Later Longhorn components will be automatically deployed on the nodes in this pool.
+
+    ```
+    GKE_NODEPOOL_NAME_NEW=<new-nodepool-name>
+    GKE_REGION=<gke-region>
+    GKE_CLUSTER_NAME=<gke-cluster-name>
+    GKE_IMAGE_TYPE=Ubuntu
+    GKE_MACHINE_TYPE=<gcp-machine-type>
+    GKE_DISK_SIZE_NEW=<new-disk-size-in-gb>
+    GKE_NODE_NUM=<number-of-nodes>
+
+    gcloud container node-pools create ${GKE_NODEPOOL_NAME_NEW} \
+      --region ${GKE_REGION} \
+      --cluster ${GKE_CLUSTER_NAME} \
+      --image-type ${GKE_IMAGE_TYPE} \
+      --machine-type ${GKE_MACHINE_TYPE} \
+      --disk-size ${GKE_DISK_SIZE_NEW} \
+      --num-nodes ${GKE_NODE_NUM}
+  
+    gcloud container node-pools list \
+      --zone ${GKE_REGION} \
+      --cluster ${GKE_CLUSTER_NAME} 
+    ```
+
+3. Using Longhorn UI to disable the disk scheduling and request eviction for nodes in the old node-pool.
+
+4. Cordon and drain Kubernetes nodes in the old node-pool.
+    ```
+    GKE_NODEPOOL_NAME_OLD=<old-nodepool-name>
+    for n in `kubectl get nodes | grep ${GKE_CLUSTER_NAME}-${GKE_NODEPOOL_NAME_OLD}- | awk '{print $1}'`; do
+      kubectl cordon $n && \
+      kubectl drain $n --ignore-daemonsets --delete-emptydir-data
+    done
+    ```
+
+5. Delete old node-pool.
+    ```
+    gcloud container node-pools delete ${GKE_NODEPOOL_NAME_OLD}\
+      --zone ${GKE_REGION} \
+      --cluster ${GKE_CLUSTER_NAME}
+    ```
+
+
+---
+
+## Article: advanced-resources/support-managed-k8s-service/upgrade-k8s-on-aks.md
+
+---
+title:  Upgrade Kubernetes on Azure AKS
+weight: 5
+---
+
+AKS provides `az aks upgrade` for in-places nodes upgrade by node reimaged, but this will cause the original Longhorn disks missing, then there will be no disks allowing replica rebuilding in upgraded nodes anymore.
+
+We suggest using node-pool replacement to upgrade the agent nodes but use `az aks upgrade` for control plane nodes to ensure data safety.
+
+1. In Longhorn, set `replica-replenishment-wait-interval` to `0`.
+
+2. Upgrade AKS control plane.
+    ```
+    AKS_RESOURCE_GROUP=<aks-resource-group>
+    AKS_CLUSTER_NAME=<aks-cluster-name>
+    AKS_K8S_VERSION_UPGRADE=<aks-k8s-version>
+
+    az aks upgrade \
+        --resource-group ${AKS_RESOURCE_GROUP} \
+        --name ${AKS_CLUSTER_NAME} \
+        --kubernetes-version ${AKS_K8S_VERSION_UPGRADE} \
+        --control-plane-only
+    ```
+
+3. Add a new node-pool.
+
+    ```
+    AKS_NODEPOOL_NAME_NEW=<new-nodepool-name>
+    AKS_DISK_SIZE=<disk-size-in-gb>
+    AKS_NODE_NUM=<number-of-nodes>
+
+    az aks nodepool add \
+      --resource-group ${AKS_RESOURCE_GROUP} \
+      --cluster-name ${AKS_CLUSTER_NAME} \
+      --name ${AKS_NODEPOOL_NAME_NEW} \
+      --node-count ${AKS_NODE_NUM} \
+      --node-osdisk-size ${AKS_DISK_SIZE} \
+      --kubernetes-version ${AKS_K8S_VERSION_UPGRADE} \
+      --mode System
+    ```
+
+4. Using Longhorn UI to disable the disk scheduling and request eviction for nodes in the old node-pool.
+
+5. Cordon and drain Kubernetes nodes in the old node-pool.
+    ```
+    AKS_NODEPOOL_NAME_OLD=<old-nodepool-name>
+
+    for n in `kubectl get nodes | grep ${AKS_NODEPOOL_NAME_OLD}- | awk '{print $1}'`; do
+      kubectl cordon $n && \
+      kubectl drain $n --ignore-daemonsets --delete-emptydir-data
+    done
+    ```
+
+6. Delete old node-pool.
+    ```
+    az aks nodepool delete \
+      --cluster-name ${AKS_CLUSTER_NAME} \
+      --name ${AKS_NODEPOOL_NAME_OLD} \
+      --resource-group ${AKS_RESOURCE_GROUP}
+    ```
+
+
+---
+
+## Article: advanced-resources/support-managed-k8s-service/upgrade-k8s-on-eks.md
+
+---
+title: Upgrade Kubernetes on AWS EKS
+weight: 4
+---
+
+In Longhorn, set `replica-replenishment-wait-interval` to `0`.
+
+See [Updating a cluster](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html) for instructions.
+
+> **Note:** If you have created [addition disks](../manage-node-group-on-eks#create-additional-volume) for Longhorn, you will need to manually add the path of the mounted disk into the disk list of the upgraded nodes.
+
+---
+
+## Article: advanced-resources/support-managed-k8s-service/upgrade-k8s-on-gke.md
+
+---
+title: Upgrade Kubernetes on GCP GKE
+weight: 6
+---
+
+In Longhorn, set `replica-replenishment-wait-interval` to `0`.
+
+See [Upgrading the cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/upgrading-a-cluster#upgrading_the_cluster) and [Upgrading node pools](https://cloud.google.com/kubernetes-engine/docs/how-to/upgrading-a-cluster#upgrading-nodes) for instructions.
+
+
+---
+
+## Article: advanced-resources/system-backup-restore/_index.md
+
+---
+title: Longhorn System Backup And Restore
+weight: 10
+---
+
+> Before v1.4.0, you can restore Longhorn with third-party tools.
+
+- [Restore to a cluster contains data using Rancher snapshot](./restore-to-a-cluster-contains-data-using-rancher-snapshot)
+- [Restore to a new cluster using Velero](./restore-to-a-new-cluster-using-velero)
+
+> Since v1.4.0, Longhorn introduced out-of-the-box Longhorn system backup and restore.
+> - Longhorn's custom resources will be backed up and bundled into a single system backup file, then saved to the remote backup target.
+> - Later, you can choose a system backup to restore to a new cluster or restore to an existing cluster.
+
+- [Backup Longhorn system](./backup-longhorn-system)
+- [Restore Longhorn system](./restore-longhorn-system)
+
+
+---
+
+## Article: advanced-resources/system-backup-restore/backup-longhorn-system.md
+
+---
+title: Backup Longhorn System
+weight: 1
+---
+
+- [Longhorn System Backup Bundle](#longhorn-system-backup-bundle)
+- [Create Longhorn System Backup](#create-longhorn-system-backup)
+  - [Prerequisite](#prerequisite)
+  - [Configuration](#configuration)
+    - [Volume Backup Policy](#volume-backup-policy)
+  - [Single Execution](#single-execution)
+    - [Create a System Backup Using the Longhorn UI](#create-a-system-backup-using-the-longhorn-ui)
+    - [Create a System Backup Using `kubectl`](#create-a-system-backup-using-kubectl)
+  - [Recurring Job](#recurring-job)
+    - [Create a Recurring Backup Job Using the Longhorn UI](#create-a-recurring-backup-job-using-the-longhorn-ui)
+    - [Create a Recurring Backup Job Using `kubectl`](#create-a-recurring-backup-job-using-kubectl)
+- [Delete Longhorn System Backup](#delete-longhorn-system-backup)
+  - [Delete a System Backup Using the Longhorn UI](#delete-a-system-backup-using-the-longhorn-ui)
+  - [Delete a System Backup Using `kubectl`](#delete-a-system-backup-using-kubectl)
+- [History](#history)
+
+## Longhorn System Backup Bundle
+
+Longhorn system backup creates a resource bundle and uploads it to the remote backup target.
+
+It includes below resources associating with the Longhorn system:
+- BackingImages
+- ClusterRoles
+- ClusterRoleBindings
+- ConfigMaps
+- CustomResourceDefinitions
+- DaemonSets
+- Deployments
+- EngineImages
+- PersistentVolumes
+- PersistentVolumeClaims
+- RecurringJobs
+- Roles
+- RoleBindings
+- Settings
+- Services
+- ServiceAccounts
+- StorageClasses
+- Volumes
+
+> **Note:**
+>
+> - The default backup target (`default`) is always used to store system backups.
+> - The Longhorn system backup bundle only includes resources operated by Longhorn.
+> - Longhorn does not back up the `Nodes` resource. The Longhorn Manager on the target cluster is responsible for creating its own Longhorn `Node` custom resources.
+> - Longhorn is unable to back up V2 Data Engine backing images.
+>
+> Here is an example of a cluster workload with a bare `Pod` workload. The system backup will collect the `PersistentVolumeClaim`, `PersistentVolume`, and `Volume`. The system backup will exclude the `Pod` during system backup resource collection.
+
+## Create Longhorn System Backup
+
+You can create a Longhorn system backup using the Longhorn UI. Or with the `kubectl` command.
+
+### Prerequisite
+
+- [Set the backup target](../../../snapshots-and-backups/backup-and-restore/set-backup-target). Longhorn saves the system backups to the remote backup store. You will see an error during creation when the backup target is unset.
+
+   > **Note:** Unsetting the backup target clears the existing `SystemBackup` custom resource. Longhorn syncs to the remote backup store after setting the backup target. Another cluster can also sync to the same list of system backups when the backup target is the same.
+
+- Create a backup for all volumes (optional).
+
+  > **Note:** Longhorn system restores volume with the latest backup. We recommend updating the last backup for all volumes. By taking volume backups, you ensure that the data is up-to-date with the system backup. For more information, please refer to the [Configuration - Volume Backup Policy](#volume-backup-policy) section.
+
+### Configuration
+
+#### Volume Backup Policy
+The Longhorn system backup offers the following volume backup policies:
+ - `if-not-present`: Longhorn will create a backup for volumes that either lack an existing backup or have an outdated latest backup.
+ - `always`: Longhorn will create a backup for all volumes, regardless of their existing backups.
+ - `disabled`: Longhorn will not create any backups for volumes.
+
+### Single Execution
+
+#### Create a System Backup Using the Longhorn UI
+
+1. Go to the `System Backups` page in the `Backup and Restore` drop-down list.
+
+1. Click `Create` under `System Backup`.
+
+1. Give a `Name` for the system backup.
+
+1. Select a `Volume Backup Policy` for the system backup.
+
+1. The system backup will be ready to use when the state changes to `Ready`.
+
+#### Create a System Backup Using `kubectl`
+
+1. Execute `kubectl create` to create a Longhorn `SystemBackup` custom resource.
+   ```yaml
+   apiVersion: longhorn.io/v1beta2
+   kind: SystemBackup
+   metadata:
+     name: demo
+     namespace: longhorn-system
+   spec:
+     volumeBackupPolicy: if-not-present
+   ```
+
+1. The system backup will be ready to use when the state changes to `Ready`.
+   ```
+   > kubectl -n longhorn-system get systembackup
+   NAME   VERSION   STATE   CREATED
+   demo   v1.4.0    Ready   2022-11-24T04:23:24Z
+   ```
+
+### Recurring Job
+
+#### Create a Recurring Backup Job Using the Longhorn UI
+
+1. Go to the `Recurring Jobs` page.
+
+1. Click on `Create Recurring Job`.
+
+1. Configure the following settings:
+   - **Name**: Specify a name for the recurring job.
+   - **Task**: Select **System Backup**.
+   - **Retain**: Specify the number of system backups that Longhorn must retain.
+   - **Cron**: Specify the cron expression (a string consisting of fields separated by whitespace characters) that defines the schedule properties.
+   - **Parameters**: Select **volume-backup-policy**.
+
+1. Click **OK**.
+
+Longhorn creates system backups according to the schedule defined in the **Cron** field.
+
+#### Create a Recurring Backup Job Using `kubectl`
+
+Run `kubectl create` to create a Longhorn `RecurringJob` custom resource with the task `system-backup`.
+
+Example:
+   ```yaml
+   apiVersion: longhorn.io/v1beta2
+   kind: RecurringJob
+   metadata:
+     name: demo
+     namespace: longhorn-system
+   spec:
+     task: system-backup
+     cron: '* * * * *'
+     retain: 1
+     parameters:
+       volume-backup-policy: if-not-present
+   ```
+
+Longhorn creates system backup according to the schedule defined in the `cron` field.
+
+## Delete Longhorn System Backup
+
+You can delete the Longhorn system backup in the remote backup target using the Longhorn UI. Or with the `kubectl` command.
+
+### Delete a System Backup Using the Longhorn UI
+
+1. Go to the `System Backup` page in the `Setting` drop-down list.
+
+1. Delete a single system backup in the `Operation` drop-down menu next to the system backup. Or delete in batch with the `Delete` button.
+
+   > **Note:** Deleting the system backup will also make a deletion in the backup store.
+
+### Delete a System Backup Using `kubectl`
+
+1. Execute `kubectl delete` to delete a Longhorn `SystemBackup` custom resource.
+   ```
+   > kubectl -n longhorn-system get systembackup
+   NAME   VERSION   STATE   CREATED
+   demo   v1.4.0    Ready   2022-11-24T04:23:24Z
+
+   > kubectl -n longhorn-system delete systembackup/demo
+   systembackup.longhorn.io "demo" deleted
+   ```
+
+## History
+[Original Feature Request](https://github.com/longhorn/longhorn/issues/1455)
+
+Available since v1.4.0
+
+
+---
+
+## Article: advanced-resources/system-backup-restore/restore-longhorn-system.md
+
+---
+title: Restore Longhorn System
+weight: 2
+---
+
+- [What does the Longhorn system restore rollout to the cluster](#longhorn-system-restore-rollouts)
+- [What are the limitations](#limitations)
+    - [Restore Path](#restore-path)
+- [How to restore from Longhorn system backup](#create-longhorn-system-restore)
+    - [Prerequisite](#prerequisite)
+    - [Using Longhorn UI](#using-longhorn-ui)
+    - [Using kubectl command](#using-kubectl-command)
+- [How to delete Longhorn system restore](#delete-longhorn-system-restore)
+    - [Using Longhorn UI](#using-longhorn-ui-1)
+    - [Using kubectl command](#using-kubectl-command-1)
+- [How to restart Longhorn System Restore](#restart-longhorn-system-restore)
+- [What settings are configurable](#configurable-settings)
+- [How to troubleshoot](#troubleshoot)
+- [History](#history)
+
+## Longhorn System Restore Rollouts
+
+- Longhorn restores the resource from the [Longhorn System Backup Bundle](../backup-longhorn-system#longhorn-system-backup-bundle).
+- Longhorn does not restore existing `Volumes` and their associated `PersistentVolume` and `PersistentVolumeClaim`.
+- Longhorn automatically restores a `Volume` from its latest backup.
+- To prevent overwriting eligible settings, Longhorn does not restore the `ConfigMap/longhorn-default-setting`.
+- Longhorn does not restore [configurable settings](#configurable-settings).
+- Since Longhorn does not back up V2 Data Engine backing images, you must ensure that those images are available in the cluster before you restore the Longhorn system. This allows Longhorn to restore volumes that use V2 Data Engine backing images.
+
+## Limitations
+### Restore Path
+
+Longhorn does not support cross-major/minor version system restore except for upgrade failures, ex: 1.4.x -> 1.5.
+## Create Longhorn System Restore
+
+You can restore the Longhorn system using Longhorn UI. Or with the `kubectl` command.
+
+### Prerequisite
+
+- A running Longhorn cluster for Longhorn to roll out the resources in the system backup bundle.
+- Set up the `Nodes` and disk tags for `StorageClass`.
+- Have a Longhorn system backup.
+
+  See [Backup Longhorn System - Create Longhorn System Backup](../backup-longhorn-system#create-longhorn-system-backup) for instructions.
+- All existing `Volumes` are detached.
+
+### Using Longhorn UI
+
+1. Go to the `System Backups` page in the `Backup and Restore`.
+1. Select a system backup to restore.
+1. Click `Restore` in the `Operation` drop-down menu.
+1. Give a `Name` for the system restore.
+1. The system restore starts and show the `Completed` state when done.
+
+## Using `kubectl` Command
+
+1. Find the Longhorn `SystemBackup` to restore.
+   ```
+   > kubectl -n longhorn-system get systembackup
+   NAME     VERSION   STATE   CREATED
+   demo     v1.4.0    Ready   2022-11-24T04:23:24Z
+   demo-2   v1.4.0    Ready   2022-11-24T05:00:59Z
+   ```
+1. Execute `kubectl create` to create a Longhorn `SystemRestore` of the `SystemBackup`.
+   ```yaml
+   apiVersion: longhorn.io/v1beta2
+   kind: SystemRestore
+   metadata:
+     name: restore-demo
+     namespace: longhorn-system
+   spec:
+     systemBackup: demo
+   ```
+1. The system restore starts.
+1. The `SystemRestore` change to state `Completed` when done.
+   ```
+   > kubectl -n longhorn-system get systemrestore
+   NAME           STATE       AGE
+   restore-demo   Completed   59s
+   ```
+
+## Delete Longhorn System Restore
+
+> **Warning:** Deleting the SystemRestore also deletes the associated job and will abort the remaining resource rollouts. You can [Restart the Longhorn System Restore](#restart-longhorn-system-restore) to roll out the remaining resources.
+
+You can abort or remove a completed Longhorn system restore using Longhorn UI. Or with the `kubectl` command.
+
+### Using Longhorn UI
+
+1. Go to the `System Backups` page in the `Backup and Restore`.
+1. Delete a single system restore in the `Operation` drop-down menu next to the system restore. Or delete in batch with the `Delete` button.
+
+### Using `kubectl` Command
+
+1. Execute `kubectl delete` to delete a Longhorn `SystemRestore`.
+   ```
+   > kubectl -n longhorn-system get systemrestore
+   NAME           STATE       AGE
+   restore-demo   Completed   2m37s
+   
+   > kubectl -n longhorn-system delete systemrestore/restore-demo
+   systemrestore.longhorn.io "restore-demo" deleted
+   ```
+
+## Restart Longhorn System Restore
+
+1. [Delete Longhorn System Restore](#delete-longhorn-system-restore) that is in progress.
+1. [Create Longhorn System Restore](#create-longhorn-system-restore).
+
+## Configurable Settings
+
+Some settings are excluded as configurable before the Longhorn system restore.
+- [Concurrent volume backup restore per node limit](../../../references/settings/#concurrent-volume-backup-restore-per-node-limit)
+- [Concurrent replica rebuild per node limit](../../../references/settings/#concurrent-replica-rebuild-per-node-limit)
+
+## Troubleshoot
+
+### System Restore Hangs
+
+1. Check the longhorn-system-rollout Pod log for any errors.
+```
+> kubectl -n longhorn-system logs --selector=job-name=longhorn-system-rollout-<SYSTEM-RESTORE-NAME>
+```
+1. Resolve if the issue is identifiable, ex: remove the problematic restoring resource.
+1. [Restart the Longhorn system restore](#restart-longhorn-system-restore).
+
+## History
+[Original Feature Request](https://github.com/longhorn/longhorn/issues/1455)
+
+Available since v1.4.0
+
+
+---
+
+## Article: advanced-resources/system-backup-restore/restore-to-a-cluster-contains-data-using-Rancher-snapshot.md
+
+---
+title: Restore to a cluster contains data using Rancher snapshot
+weight: 4
+---
+
+This doc describes what users need to do after restoring the cluster with a Rancher snapshot.
+
+## Assumptions:
+- **Most of the data and the underlying disks still exist** in the cluster before the restore and can be directly reused then.
+- There is a backupstore holding all volume data.
+- The setting [`Disable Revision Counter`](../../../references/settings/#disable-revision-counter) is false. (It's false by default.) Otherwise, users need to manually check if the data among volume replicas are consistent, or directly restore volumes from backup.
+
+## Expectation:
+- All settings and node & disk configs will be restored.
+- As long as the valid data still exists, the volumes can be recovered without using a backup. In other words, we will try to avoid restoring backups, which may help reduce Recovery Time Objective (RTO) as well as save bandwidth.
+- Detect the invalid or out-of-sync replicas as long as the related volume still contains a valid replica after the restore.
+
+## Behaviors & Requirement of Rancher restore
+According to [the Rancher restore article](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup), you have to restart the Kubernetes components on all nodes. Otherwise, there will be tons of resource update conflicts in Longhorn.
+
+## Actions after the restore
+- Restart all Kubernetes components for all nodes. See the above link for more details.
+
+- Kill all longhorn manager pods then Kubernetes will automatically restart them. Wait for conflicts in longhorn manager pods to disappear.
+
+- All volumes may be reattached. If a Longhorn volume is used by a single pod, users need to shut down then recreate it. For Deployments or Statefulsets, Longhorn will automatically kill then restart the related pods.
+
+- If the following happens after the snapshot and before the cluster restore:
+    - A volume is unchanged: Users don't need to do anything.
+    - The data is updated: Users don't need to do anything typically. Longhorn will automatically fail the replicas that don't contain the latest data.
+    - A new volume is created: This volume will disappear after the restore. Users need to recreate a new volume, launch [a single replica volume](../../data-recovery/export-from-replica) based on the replica of the disappeared volume, then transfer the data to the new volume.
+    - A volume is deleted: Since the data is cleaned up when the volume is removed, the restored volume contains no data. Users may need to re-delete it.
+    - For DR volumes: Users don't need to do anything. Longhorn will redo a full restore.
+    - Some operations are applied for a volume:
+        - Backup: The backup info of the volume should be resynced automatically.
+        - Snapshot: The snapshot info of the volume should be resynced once the volume is attached.
+        - Replica rebuilding & replica removal:
+            - If there are new replicas rebuilt, those replicas will disappear from the Longhorn system after the restoring. Users need to clean up the replica data manually, or use the data directories of these replicas to export a single replica volume then do data recovery if necessary.
+            - If there are some failed/removed replicas and there is at least one replica keeping healthy, those failed/removed replicas will be back after the restoration. Then Longhorn can detect these restored replicas do not contain any data, and copy the latest data from the healthy replica to these replicas.
+            - If all replicas are replaced by new replicas after the snapshot, the volume will contain invalid replicas only after the restore. Then users need to export [a single replica volume](../../data-recovery/export-from-replica) for the data recovery.
+        -  Engine image upgrade: Users need to redo the upgrade.
+        - Expansion: The spec size of the volume will be smaller than the current size. This is like someone requesting volume shrinking but actually Longhorn will refuse to handle it internally. To recover the volume, users need to scale down the workloads and re-do the expansion.
+
+    - **Notice**: If users don't know how to recover a problematic volume, the simplest way is always restoring a new volume from backup.
+
+- If the Longhorn system is upgraded after the snapshot, the new settings and the modifications on the node config will disappear. Users need to re-do the upgrade, then re-modify the settings and node configurations.
+
+- If a node is deleted from Longhorn system after the snapshot, the node won't be back, but the pods on the removed node will be restored. Users need to manually clean up them since these pod may get stuck in state `Terminating`.
+- If a node to added to Longhorn system after the snapshot, Longhorn should automatically relaunch all necessary workloads on the node after the cluster restore. But users should be aware that all new replicas or engines on this node will be gone after the restore.
+
+
+## References
+- The related GitHub issue is https://github.com/longhorn/longhorn/issues/2228.
+  In this GitHub post, one user is providing a way that restores the Longhorn to a new cluster that doesn't contain any data.
+
+
+---
+
+## Article: advanced-resources/system-backup-restore/restore-to-a-new-cluster-using-velero.md
+
+---
+title: Restore to a new cluster using Velero
+weight: 4
+---
+
+This doc instructs how users can restore workloads with Longhorn system to a new cluster via Velero.
+
+> **Note:** Need to use [Velero CSI plugin](https://github.com/vmware-tanzu/velero-plugin-for-csi) >= 0.4 to ensure restoring PersistentVolumeClaim successfully. Visit [here](/kb/troubleshooting-restore-pvc-stuck-using-velero-csi-plugin-version-lower-than-0.4) to get more information.
+
+
+## Assumptions:
+- A new cluster means there is **no Longhorn volume data** in it.
+- There is a remote backup target holds all Longhorn volume data.
+- There is a remote backup server that can store the cluster backups created by Velero.
+
+## Expectation:
+- All settings will be restored. But the node & disk configurations won't be applied.
+- All workloads using Longhorn volumes will get started after the volumes are restored from the remote backup target.
+
+## Workflow
+
+### Create backup for the old cluster
+1. Install Velero into a cluster using Longhorn.
+2. Create backups for all Longhorn volumes.
+3. Use Velero to create a cluster backup. Here, some Longhorn resources should be excluded from the cluster backup:
+    ```bash
+    velero backup create lh-cluster --exclude-resources persistentvolumes,persistentvolumeclaims,backuptargets.longhorn.io,backupvolumes.longhorn.io,backups.longhorn.io,nodes.longhorn.io,volumes.longhorn.io,engines.longhorn.io,replicas.longhorn.io,backingimagedatasources.longhorn.io,backingimagemanagers.longhorn.io,backingimages.longhorn.io,sharemanagers.longhorn.io,instancemanagers.longhorn.io,engineimages.longhorn.io
+    ```
+### Restore Longhorn and workloads to a new cluster
+1. Install Velero with the same remote backup sever for the new cluster.
+2. Restore the cluster backup. e.g.,
+    ```bash
+    velero restore create --from-backup lh-cluster
+    ```
+3. Removing all old instance manager pods and backing image manager pods from namespace `longhorn-system`. These old pods should be created by Longhorn rather than Velero and there should be corresponding CRs for them. The pods are harmless but they would lead to the endless logs printed in longhorn-manager pods. e.g.,:
+    ```log
+    [longhorn-manager-q6n7x] time="2021-12-20T10:42:49Z" level=warning msg="Can't find instance manager for pod instance-manager-r-1f19ecb0, may be deleted"
+    [longhorn-manager-q6n7x] time="2021-12-20T10:42:49Z" level=warning msg="Can't find instance manager for pod instance-manager-e-6c3be222, may be deleted"
+    [longhorn-manager-ldlvw] time="2021-12-20T10:42:55Z" level=warning msg="Can't find instance manager for pod instance-manager-e-bbf80f76, may be deleted"
+    [longhorn-manager-ldlvw] time="2021-12-20T10:42:55Z" level=warning msg="Can't find instance manager for pod instance-manager-r-3818fdca, may be deleted"
+    ```
+4. Re-config nodes and disks for the restored Longhorn system if necessary.
+5. Re-create backing images if necessary.
+6. Restore all Longhorn volumes from the remote backup target.
+7. If there are RWX backup volumes, users need to manually update the access mode to `ReadWriteMany` since all restored volumes are mode `ReadWriteOnce` by default.
+8. Create PVCs and PVs with previous names for the restored volumes.
+
+Note: We will enhance Longhorn system so that users don't need to apply step3 and step8 in the future.
+
+## References
+- The related GitHub issue is https://github.com/longhorn/longhorn/issues/3367
+
+
+---
+
+## Article: advanced-resources/data-cleanup/_index.md
+
+---
+title: Data Cleanup
+weight: 6
+---
+
+---
+
+## Article: advanced-resources/data-cleanup/orphaned-data-cleanup.md
+
+---
+title: Orphaned Data Cleanup
+weight: 4
+---
+
+Longhorn supports orphaned data cleanup. Currently, Longhorn can identify and clean up the orphaned replica directories on disks.
+
+## Orphaned Replica Directories
+
+When a user introduces a disk into a Longhorn node, it may contain replica directories that are not tracked by the Longhorn system. The untracked replica directories may belong to other Longhorn clusters. Or, the replica CRs associated with the replica directories are removed after the node or the disk is down. When the node or the disk comes back, the corresponding replica data directories are no longer tracked by the Longhorn system. These replica data directories are called orphaned.
+
+Longhorn supports the detection and cleanup of orphaned replica directories. It identifies the directories and gives a list of `orphan` resources that describe those directories. By default, Longhorn does not automatically delete `orphan` resources and their directories. Users can trigger the deletion of orphaned replica directories manually or have it done automatically.
+
+When automatic orphan deletion is enabled, Longhorn automatically deletes orphaned Custom Resources (CRs) and their associated directories after the delay defined by the `orphan-resource-auto-deletion-grace-period` setting. If a user manually deletes an orphaned CR, the deletion occurs immediately and does not respect this grace period.
+
+### Example
+
+In the example, we will explain how to manage orphaned replica directories identified by Longhorn via `kubectl` and Longhorn UI.
+
+#### Manage Orphaned Replica Directories via kubectl
+
+1. Introduce disks containing orphaned replica directories.
+   - Orphaned replica directories on Node `worker1` disks
+    ```
+    # ls /mnt/disk/replicas/
+    pvc-19c45b11-28ee-4802-bea4-c0cabfb3b94c-15a210ed
+    ```
+   - Orphaned replica directories on Node `worker2` disks
+    ```
+    # ls /var/lib/longhorn/replicas/
+    pvc-28255b31-161f-5621-eea3-a1cbafb4a12a-866aa0a5
+
+    # ls /mnt/disk/replicas/
+    pvc-19c45b11-28ee-4802-bea4-c0cabfb3b94c-a86771c0
+    ```
+
+2. Longhorn detects the orphaned replica directories and creates an `orphan` resources describing the directories.
+    ```
+    # kubectl -n longhorn-system get orphans -l "longhorn.io/orphan-type=replica"
+    NAME                                                                      TYPE      NODE
+    orphan-fed8c6c20965c7bdc3e3bbea5813fac52ccd6edcbf31e578f2d8bab93481c272   replica   rancher60-worker1
+    orphan-637f6c01660277b5333f9f942e4b10071d89379dbe7b4164d071f4e1861a1247   replica   rancher60-worker2
+    orphan-6360f22930d697c74bec4ce4056c05ac516017b908389bff53aca0657ebb3b4a   replica   rancher60-worker2
+    ```
+
+3. One can list the `orphan` resources created by Longhorn system by `kubectl -n longhorn-system get orphan`.
+    ```
+    kubectl -n longhorn-system get orphan
+    ```
+
+4. Get the detailed information of one of the orphaned replica directories in `spec.parameters` by `kubcel -n longhorn-system get orphan <name>`.
+   ```
+    # kubectl -n longhorn-system get orphans orphan-fed8c6c20965c7bdc3e3bbea5813fac52ccd6edcbf31e578f2d8bab93481c272 -o yaml
+    apiVersion: longhorn.io/v1beta2
+    kind: Orphan
+    metadata:
+    creationTimestamp: "2022-04-29T10:17:40Z"
+    finalizers:
+    - longhorn.io
+    generation: 1
+    labels:
+        longhorn.io/component: orphan
+        longhorn.io/managed-by: longhorn-manager
+        longhorn.io/orphan-type: replica
+        longhornnode: rancher60-worker1
+
+    ......
+
+    spec:
+    nodeID: rancher60-worker1
+    orphanType: replica
+    parameters:
+        DataName: pvc-19c45b11-28ee-4802-bea4-c0cabfb3b94c-15a210ed
+        DiskName: disk-1
+        DiskPath: /mnt/disk/
+        DiskUUID: 90f00e61-d54e-44b9-a095-35c2b56a0462
+    status:
+    conditions:
+    - lastProbeTime: ""
+        lastTransitionTime: "2022-04-29T10:17:40Z"
+        message: ""
+        reason: ""
+        status: "True"
+        type: DataCleanable
+    - lastProbeTime: ""
+        lastTransitionTime: "2022-04-29T10:17:40Z"
+        message: ""
+        reason: ""
+        status: "False"
+        type: Error
+    ownerID: rancher60-worker1
+   ```
+
+5. One can delete the `orphan` resource by `kubectl -n longhorn-system delete orphan <name>` and then the corresponding orphaned replica directory will be deleted.
+   ```
+    # kubectl -n longhorn-system delete orphan orphan-fed8c6c20965c7bdc3e3bbea5813fac52ccd6edcbf31e578f2d8bab93481c272
+
+    # kubectl -n longhorn-system get orphans -l "longhorn.io/orphan-type=replica"
+    NAME                                                                      TYPE      NODE
+    orphan-637f6c01660277b5333f9f942e4b10071d89379dbe7b4164d071f4e1861a1247   replica   rancher60-worker2
+    orphan-6360f22930d697c74bec4ce4056c05ac516017b908389bff53aca0657ebb3b4a   replica   rancher60-worker2
+   ```
+
+    The orphaned replica directory is deleted.
+    ```
+    # ls /mnt/disk/replicas/
+
+    ```
+
+6. By default, Longhorn will not automatically delete the orphaned replica directory. You can enable automatic deletion by setting the `orphan-resource-auto-deletion` setting.
+    ```
+    # kubectl -n longhorn-system edit settings.longhorn.io orphan-resource-auto-deletion
+    ```
+    Then, add `replica-data` to the list by including it as one of the semicolon-separated items.
+
+    ```
+    # kubectl -n longhorn-system get settings.longhorn.io orphan-resource-auto-deletion
+    NAME                            VALUE          APPLIED   AGE
+    orphan-resource-auto-deletion   replica-data   true      26m
+    ```
+
+7. After enabling the automatic deletion and wait for a while, the `orphan` resources and directories are deleted automatically.
+   ```
+    # kubectl -n longhorn-system get orphans.longhorn.io -l "longhorn.io/orphan-type=replica"
+    No resources found in longhorn-system namespace.
+   ```
+   The orphaned replica directories are deleted.
+   ```
+    # ls /mnt/disk/replicas/
+
+    # ls /var/lib/longhorn/replicas/
+
+   ```
+
+    Additionally, one can delete all orphaned replica directories on the specified node by
+    ```
+    # kubectl -n longhorn-system delete orphan -l "longhorn.io/orphan-type=replica-instance,longhornnode=<node name>”
+    ```
+
+#### Manage Orphaned Replica Directories via Longhorn UI
+
+1. In the top navigation bar, go to `Setting > Orphan Resources > Replica Data`.
+2. Review the list of orphaned replica directories grouped by node and disk.
+3. To delete a directory, click `Operation > Delete`.
+
+By default, Longhorn does not delete orphaned replica directories automatically. To enable automatic deletion, go to `Settings > Orphan`.
+
+### Exception
+Longhorn will not create an `orphan` resource for an orphaned directory when
+
+- The orphaned directory is not an **orphaned replica directory**.
+  - The directory name does not follow the replica directory's naming convention.
+  - The volume volume.meta file is missing.
+- The orphaned replica directory is on an evicted node.
+- The orphaned replica directory is in an evicted disk.
+- The orphaned data cleanup mechanism does not clean up a stale replica, also known as an error replica. Instead, the stale replica is cleaned up according to the [staleReplicaTimeout](../../../nodes-and-volumes/volumes/create-volumes/#creating-longhorn-volumes-with-kubectl) setting.
+
+
+---
+
+## Article: advanced-resources/data-cleanup/orphaned-instance-cleanup.md
+
+---
+title: Orphaned Instance Cleanup
+weight: 4
+---
+
+Longhorn can identify and clean up orphaned instances on each node.
+
+## Orphaned Runtime Instance
+
+When a network outage affects a Longhorn node, it may leave behind engine or replica runtime instances that are no longer tracked by the Longhorn system. The corresponding engine and replica CRs might be removed or rescheduled to another node during the outage. When the node comes back, the Longhorn system no longer tracks the corresponding runtime instances. These runtime instances, such as the engine and replica processes for v1 volumes, are called orphaned instances. Orphaned instances continue to consume CPU and memory.
+
+Longhorn supports the detection and cleanup of orphaned instance. It identifies the instances and gives a list of `orphan` resources that describe those orphans. By default, Longhorn does not automatically delete `orphan` instances. Users can trigger the deletion of orphaned instances manually or have it done automatically.
+
+When automatic orphan deletion is enabled, Longhorn automatically deletes orphaned Custom Resources (CRs) and their associated directories after the delay defined by the `orphan-resource-auto-deletion-grace-period` setting. If a user manually deletes an orphaned CR, the deletion occurs immediately and does not respect this grace period.
+
+### Example
+
+The following example shows how to manage orphaned instances using `kubectl`.
+
+#### Manage Orphaned Instances via kubectl
+
+1. Introduce nodes that orphaned instance processes running on
+    - Orphaned replica instance on Node `worker1`
+     ```
+     # kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker1"
+     Name:         instance-manager-8ff396d6d3744979b32abafc6346781c
+     Namespace:    longhorn-system
+     Kind:         InstanceManager
+     ...
+     Status:
+       Instance Replicas:
+         pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73:
+           Spec:
+             Data Engine:  v1
+             Name:         pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73
+           Status:
+             Conditions:         <nil>
+             Endpoint:
+             Error Msg:
+             Listen:
+             Port End:           10020
+             Port Start:         10011
+             Resource Version:   0
+             State:              running
+             Target Port End:    0
+             Target Port Start:  0
+             Type:               replica
+     ...
+     ```
+    - Orphaned engine instance on Node `worker2`
+     ```
+     # kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker2"
+     Name:         instance-manager-b87f10b867cec1dca2b814f5e78bcc90
+     Namespace:    longhorn-system
+     Kind:         InstanceManager
+     ...
+     Status:
+       Instance Engines:
+         pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0:
+           Spec:
+             Data Engine:  v1
+             Name:         pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0
+           Status:
+             Conditions:
+               Filesystem Read Only:  false
+             Endpoint:
+             Error Msg:
+             Listen:
+             Port End:                10020
+             Port Start:              10020
+             Resource Version:        0
+             State:                   running
+             Target Port End:         10020
+             Target Port Start:       10020
+             Type:                    engine
+     ...
+     ```
+
+2. Longhorn detects the orphaned instances and creates an `orphan` resources describing the instances.
+    ```
+    # kubectl -n longhorn-system get orphan -l "longhorn.io/orphan-type in (engine-instance,replica-instance)"
+    NAME                                                                      TYPE               NODE
+    orphan-1807009489e50534c35c350e22680449c97deca4e5d3b72f4591976145f8bc41   engine-instance    worker2
+    orphan-a91aa42ab5eda6b8b9fe1116d5b5f5673e5108d89be3db6fd18a275913463eef   replica-instance   worker1
+    ```
+
+3. You can view the list of `orphan` resources created by the Longhorn system by running `kubectl -n longhorn-system get orphan`.
+    ```
+    kubectl -n longhorn-system get orphan
+    ```
+
+4. Get the detailed information of one of the orphaned replica instance in `spec.parameters` by `kubectl -n longhorn-system get orphan <name>`.
+    ```
+    # kubectl -n longhorn-system get orphans orphan-a91aa42ab5eda6b8b9fe1116d5b5f5673e5108d89be3db6fd18a275913463eef -o yaml
+    apiVersion: longhorn.io/v1beta2
+    kind: Orphan
+    metadata:
+    creationTimestamp: "2025-05-02T06:07:32Z"
+    finalizers:
+    - longhorn.io
+    generation: 1
+    labels:
+        longhorn.io/component: orphan
+        longhorn.io/managed-by: longhorn-manager
+        longhorn.io/orphan-type: replica-instance
+        longhornnode: worker1
+        longhornreplica: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73
+
+    ......
+
+    spec:
+      dataEngine: v1
+      nodeID: worker1
+      orphanType: replica-instance
+      parameters:
+        InstanceManager: instance-manager-8ff396d6d3744979b32abafc6346781c
+        InstanceName: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73
+    status:
+    conditions:
+    - lastProbeTime: ""
+        lastTransitionTime: "2025-05-02T06:06:39Z"
+        message: ""
+        reason: running
+        status: "True"
+        type: InstanceExist
+    - lastProbeTime: ""
+        lastTransitionTime: "2025-05-02T06:06:39Z"
+        message: ""
+        reason: ""
+        status: "False"
+        type: Error
+    ownerID: worker1
+    ```
+
+5. Get the detailed information of one of the orphaned engine instance in `spec.parameters` by `kubectl -n longhorn-system get orphan <name>`.
+    ```
+    # kubectl -n longhorn-system get orphans orphan-1807009489e50534c35c350e22680449c97deca4e5d3b72f4591976145f8bc41 -o yaml
+    apiVersion: longhorn.io/v1beta2
+    kind: Orphan
+    metadata:
+    creationTimestamp: "2025-05-02T06:47:25Z"
+    finalizers:
+    - longhorn.io
+    generation: 1
+    labels:
+        longhorn.io/component: orphan
+        longhorn.io/managed-by: longhorn-manager
+        longhorn.io/orphan-type: engine-instance
+        longhornengine: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0
+        longhornnode: worker2
+
+    ......
+
+    spec:
+      dataEngine: v1
+      nodeID: worker2
+      orphanType: engine-instance
+      parameters:
+        InstanceManager: instance-manager-b87f10b867cec1dca2b814f5e78bcc90
+        InstanceName: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0
+    status:
+    conditions:
+    - lastProbeTime: ""
+        lastTransitionTime: "2025-05-02T06:47:25Z"
+        message: ""
+        reason: running
+        status: "True"
+        type: InstanceExist
+    - lastProbeTime: ""
+        lastTransitionTime: "2025-05-02T06:47:25Z"
+        message: ""
+        reason: ""
+        status: "False"
+        type: Error
+    ownerID: worker2
+    ```
+
+6. You can delete an `orphan` resource by running `kubectl -n longhorn-system delete orphan <name>`. The corresponding orphaned instance will also be removed.
+    ```
+    # kubectl -n longhorn-system delete orphan orphan-a91aa42ab5eda6b8b9fe1116d5b5f5673e5108d89be3db6fd18a275913463eef
+
+    # kubectl -n longhorn-system get orphan -l "longhorn.io/orphan-type in (engine-instance,replica-instance)"
+    NAME                                                                      TYPE               NODE
+    orphan-1807009489e50534c35c350e22680449c97deca4e5d3b72f4591976145f8bc41   engine-instance    worker2
+    ```
+
+    The orphaned instance is deleted.
+    ```
+    # kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker1"
+    Name:         instance-manager-8ff396d6d3744979b32abafc6346781c
+    Namespace:    longhorn-system
+    Kind:         InstanceManager
+    ...
+    Status:
+      Instance Replicas:
+    ...
+    ```
+
+7. By default, Longhorn does not automatically delete orphaned instances. You can enable automatic deletion by configuring the `orphan-resource-auto-deletion` setting.
+    ```
+    # kubectl -n longhorn-system edit settings.longhorn.io orphan-resource-auto-deletion
+    ```
+    Then, add `instance` to the list by including it as one of the semicolon-separated items.
+
+    ```
+    # kubectl -n longhorn-system get settings.longhorn.io orphan-resource-auto-deletion
+    NAME                            VALUE      APPLIED   AGE
+    orphan-resource-auto-deletion   instance   true      45h
+    ```
+
+8. After enabling the automatic deletion and wait for a while, the `orphan` resources and processes are deleted automatically.
+    ```
+    # kubectl -n longhorn-system get orphans.longhorn.io -l "longhorn.io/orphan-type in (engine-instance,replica-instance)"
+    No resources found in longhorn-system namespace.
+    ```
+    The orphaned instances are deleted from instance manager.
+    ```
+    # kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker1"
+    Name:         instance-manager-8ff396d6d3744979b32abafc6346781c
+    Namespace:    longhorn-system
+    Kind:         InstanceManager
+    ...
+    Status:
+      Instance Replicas:
+    ...
+
+    # kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker2"
+    Name:         instance-manager-b87f10b867cec1dca2b814f5e78bcc90
+    Namespace:    longhorn-system
+    Kind:         InstanceManager
+    ...
+    Status:
+      Instance Engines:
+    ...
+
+    ```
+
+    Additionally, you can delete all orphaned instances on the specified node by running:
+    ```
+    # kubectl -n longhorn-system delete orphan -l "longhorn.io/orphan-type in (engine-instance,replica-instance),longhornnode=<node name>"
+    ```
+
+#### Manage Orphaned Instances via Longhorn UI
+
+1. In the top navigation bar, go to `Advanced > Orphaned Resources > Instances`.
+2. Review the list of orphaned instances, displaying relevant instance information.
+3. To delete an orphaned instance, click `Operation > Delete`.
+
+By default, Longhorn does not automatically delete orphaned instances. To enable automatic deletion, go to `Settings > Orphan`.
+
+### Exception
+
+Longhorn does not create an orphan resource in the following scenarios:
+
+- The orphaned engine or replica is rescheduled back to the node.
+- The engine or replica is in a migrating, starting, or stopping state.
+- The node is evicted.
+
+
+---
+
+## Article: advanced-resources/rebuilding/_index.md
+
+---
+title: Replica Rebuilding
+weight: 6
+---
+- [Replica Rebuilding Workflow](#replica-rebuilding-workflow)
+  - [Full Replica Rebuilding](#full-replica-rebuilding)
+  - [Delta Replica Rebuilding](#delta-replica-rebuilding)
+  - [Fast Replica Rebuilding](#fast-replica-rebuilding)
+- [Factors That Affect Rebuilding Performance](#factors-that-affect-rebuilding-performance)
+- [Use Cases](#use-cases)
+  - [Node Reboot During Upgrade](#node-reboot-during-upgrade)
+  - [Short-Term Node Drain](#short-term-node-drain)
+- [Relevant Settings](#relevant-settings)
+  - [Settings Trade-Off Analysis](#settings-trade-off-analysis)
+
+When Longhorn detects a failed or deleted replica, it automatically initiates a rebuilding process. This document outlines the replica rebuilding workflow for v1 data engine, including **full**, **delta**, and **fast** rebuilding methods. It also explains the limitations associated with each method.
+
+**Rebuilding will not start in the following scenarios**:
+
+- The volume is migrating to another node.
+- The volume is an old restore/DR volume.
+- The volume is expanding in size.
+
+## Replica Rebuilding Workflow
+
+Replica rebuilding may be triggered in the following scenarios for v1 data engine:
+
+- A node is rebooted, drained or evicted.
+- A replica becomes unhealthy or is deleted.
+
+ {{< figure alt="Replica Rebuilding Flow Diagram" src="/img/diagrams/architecture/replica-rebuilding-flow.png" >}}
+
+1. Mark the target replica with `WO` (Write-Only) mode.
+2. Create a new snapshot to serve as the volume head reference point for data integrity checks.
+3. Generate the synchronization file list for the volume head and snapshot files.
+
+- For **V1 Data Engine**:  
+  4. Launch a receiver server on the target replica for each snapshot, then instruct the source replica to begin data synchronization.  
+  5. For each snapshot synchronization:
+    - Check whether the snapshot file exists in the target replica's data directory:
+        - If **NO**, transfer the entire snapshot data from the source replica to the target replica. See [Full Replica Rebuilding](#full-replica-rebuilding)
+        - If **YES**, check whether the snapshot checksum files exist, the modification time and checksums are identical between the target and source replicas:
+            - If **YES**, Longhorn skips transferring that snapshot’s data. This optimization reduces CPU usage, disk I/O, network I/O, and overall rebuild time. See [Fast Replica Rebuilding](#fast-replica-rebuilding)
+            - If **NO**, Longhorn calculates and compares block-by-block checksums for the snapshot file using the SHA-512 algorithm. If mismatches are found, only the differing data blocks are synchronized. See [Delta Replica Rebuilding](#delta-replica-rebuilding)
+- For **V2 Data Engine**:  
+  4. Expose the source and target replicas and prepare shallow copy with the SPDK engine.  
+  5. For each snapshot:
+    - Check if the snapshot timestamp, snapshot actual size, and snapshot checksum match between the source and target snapshots:
+      - If **YES**, Longhorn skips transferring that snapshot’s data.
+      - If **NO**, check if both the source and target snapshot hold ranged checksums
+        - If **YES**, fetching and comparing the entire ranges' checksums of the source and target snapshot. If mismatches are found, only copy mismatched parts. See [Fast Replica Rebuilding](#fast-replica-rebuilding)
+        - If **NO**, delete the existing target snapshot. Then start copying the entire snapshot from the source replica to the target replica. See [Full Replica Rebuilding](#full-replica-rebuilding)
+
+### Full Replica Rebuilding
+
+If the replica is unrecoverable or has no existing data, Longhorn synchronizes all data from a healthy replica. It reconstructs the replica by transferring the full snapshot chain.
+
+Full replica rebuilding consumes significant network bandwidth and results in heavy disk write operations on the target node. However, it is required when the target replica has no usable data.
+
+### Delta Replica Rebuilding
+
+Delta replica rebuilding is only for v1 data engine. It starts with a reusable failed replica, and it checks the data integrity for all snapshots' data block by block.
+
+- This is available for failed replica reuse only, and there is an existing snapshot file (with the same name) in the failed replica data directory
+- When a snapshot has no checksum, Longhorn performs delta replica rebuilding for this snapshot instead.
+
+- **Pros**:
+  - Reduce network bandwidth consumption.
+- **Cons**:
+  - Increased CPU overhead because Longhorn will compute the checksum of the snapshot data block by block for data integrity check.
+  - Rebuilding time is influenced by CPU performance.
+
+### Fast Replica Rebuilding
+
+Fast rebuilding is enabled when:
+
+- The fast replica building setting is enabled:
+  - `fast-replica-rebuild-enabled: true`
+- Snapshot checksum files are created (the snapshot checksums are pre-computed) via one of the following methods:
+  - `snapshot-data-integrity` is set to `enabled`:  scheduled job calculates checksums for all snapshots at a configured interval (default: 7 days), or
+  - `snapshot-data-integrity-immediate-check-after-snapshot-creation` is set to `true`: the snapshot checksum is calculated immediately after snapshot creation.
+
+  > **Note**: These checksum calculations consume storage and computing resources. The calculation time is unpredictable and may negatively impact the storage performance.  
+  > For more details, see [Snapshot Data Integrity](../data-integrity/snapshot-data-integrity-check)
+
+- **Pros**:
+  - Minimize network bandwidth consumption.
+  - Minimize disk IO.
+- **Cons**:
+  - Calculating the snapshot checksum can be time-consuming.
+  - The timing of checksum calculation is unpredictable. It can be triggered even if the node is experiencing heavy IO load.
+
+For more details, see [Fast Replica Rebuilding](./fast-replica-rebuilding).
+
+## Factors That Affect Rebuilding Performance
+
+- **Large volume head**
+  - **Why it matters**:  
+    The volume head is a special file that never has a precomputed checksum. If a replica fails, Longhorn must always synchronize the entire volume head file. The larger the volume head, the longer the rebuild process will take.
+  - **How to prevent**:  
+    Take snapshots regularly to reduce the amount of data in the volume head. Schedule snapshot creation before planned maintenance to minimize rebuild time.
+- **No snapshots exist**
+  - **Why it matters**:  
+    Without snapshots, Longhorn cannot skip data transfer or reuse existing data. If a snapshot of the volume head was just created, but its checksum has not yet been calculated, Longhorn must perform delta rebuilding for that snapshot. This increases CPU load due to block-by-block checksum comparisons.
+  - **How to prevent**:  
+    1. Enable `snapshot-data-integrity-immediate-check-after-snapshot-creation` or `snapshot-data-integrity`, so checksums are precomputed.
+       Trade-off: Increases CPU, disk I/O, and storage usage during checksum computation.
+    2. Use a recurring job to take snapshots regularly.
+- **Snapshot Purged**
+  - **Why it matters**:  
+    When snapshot purging starts, system-generated snapshots are coalesced into the next snapshot. As a result, the checksum of the next snapshot becomes invalid.
+  - **How to prevent**:
+    1. Enable `snapshot-data-integrity-immediate-check-after-snapshot-creation` to ensure the checksums are generated after purging.
+    2. Proactively create a snapshot and allow time for its checksum to be computed before upgrades or rebuilds.
+- **Concurrent rebuilds**
+  - **Why it matters**:  
+    Multiple rebuilds running simultaneously on a node can heavily consume CPU, disk I/O, and network I/O resources, impacting overall performance.
+  - **How to prevent**:  
+    Tune the number of concurrent rebuilds using the `concurrent-replica-rebuild-per-node-limit` setting.
+- **Multiple replica failures**
+  - **Why it matters**:  
+    Increases rebuild complexity and duration. If the `auto-cleanup-system-generated-snapshot` setting is `true` and no user-created snapshots exist, then when two replicas fail before either has been rebuilt, Longhorn must perform at least one **full data transfer** to restore volume health.  
+    For more details, see [Avoid "full data transfer" when rebuilding two failed replicas](https://github.com/longhorn/longhorn/issues/9335)
+  - **How to prevent**:
+    1. Manually disable `auto-cleanup-system-generated-snapshot before doing maintenance` before performing maintenance.
+    2. Take user-created snapshots of all volumes before starting maintenance.
+    3. Use a recurring job to take snapshots regularly.
+- **Scale Replica Rebuilding**
+  - **Why it matters**:  
+    Scale replica rebuilding allows a rebuilding replica to fetch snapshots from multiple healthy replicas concurrently, significantly improving rebuild performance for certain workload patterns.
+  - **How to enable**:  
+    Set `replica-rebuild-concurrent-sync-limit` > 1 to allow multiple healthy replicas to start sync servers. The rebuilding replica then fetches different snapshots from different source replicas simultaneously. This feature is particularly beneficial for volumes with scattered small data chunks and holes in their snapshots.
+    
+    For more details, see [Scale Replica Rebuilding](./scale-replica-rebuilding).
+
+## Use Cases
+
+### Node Reboot During Upgrade
+
+When a worker node with replicas is rebooted as part of a planned upgrade:
+
+1. The replica on that node becomes temporarily unavailable and fails, but read/write operations continue.
+2. If the node recovers within the `replica-replenishment-wait-interval`, Longhorn initiates a rebuild using the reusable failed replica.
+
+During the rebuilding process:
+
+  1. Longhorn selects the latest reusable failed replica if multiple reusable failed replicas are available.
+  2. Based on the rebuild scenario:
+      - **If fast replica rebuilding is enabled and all snapshot checksums exist:**
+        [Fast Replica Rebuilding](#fast-replica-rebuilding) is triggered.
+        - Only changed blocks in the volume head are synced, avoiding both full and delta rebuilding.
+      - **If fast replica rebuilding is enabled but some snapshot checksums are missing:**
+        [Delta Replica Rebuilding](#delta-replica-rebuilding) is used.
+        - Changed blocks from snapshots without checksums are synced, avoiding full rebuilding.
+      - **If fast replica rebuilding is disabled:**
+        - Changed blocks of **all snapshots** are synced (delta rebuilding), avoiding full rebuilding.
+
+### Short-Term Node Drain
+
+If a worker node is drained for short-term maintenance and then quickly restored:
+
+1. The replica on the drained node is marked as failed immediately.
+2. If the node is uncordoned before `replica-replenishment-wait-interval` expires, Longhorn attempts to reuse the failed replica..
+3. Rebuild behavior follows the same logic as described in the previous use case.
+
+## Relevant Settings
+
+| Setting| Default | Description |
+| :--- | :---: | :--- |
+| `fast-replica-rebuild-enabled` | `true` | Enables fast replica rebuilding. Relies on precomputed snapshot checksums. |
+| [snapshot-data-integrity](../data-integrity/snapshot-data-integrity-check) | `fast-check` | Hashes snapshot disk files only if they are unhashed or their modification time has changed. |
+| `snapshot-data-integrity-cronjob` | `0 0 */7 * *` | Cron schedule to compute checksums for all snapshots (default: every 7 days). |
+| `snapshot-data-integrity-immediate-check-after-snapshot-creation` | `false` | If enabled, checksums are computed immediately after snapshot creation. |
+| `replica-replenishment-wait-interval` | `600` |    Time in seconds to wait before creating a new replica, allowing reuse of failed replicas. |
+| `concurrent-replica-rebuild-per-node-limit` | `5` | Limits the number of concurrent replica rebuilds per node. |
+| `replica-rebuild-concurrent-sync-limit` | `1` | Maximum number of healthy replicas that can sync to a rebuilding replica concurrently. Range: 1-5. Setting to 1 disables scale rebuilding. |
+| `offline-replica-rebuilding` | `false` | Determines if degraded replicas are rebuilt while the volume is detached. |
+||||
+
+### Settings Trade-Off Analysis
+
+- **[fast-replica-rebuild-enabled](../../references/settings#fast-replica-rebuild-enabled)**
+  - `enabled`  
+    Skips snapshot data transfer if checksums are up to date — fast rebuild, but data isn't re-validated.
+  - `disabled`  
+    Performs delta rebuilding using block comparisons — slower, but ensures snapshot data integrity.
+- **[snapshot-data-integrity](../data-integrity/snapshot-data-integrity-check)**
+  - `enabled`  
+  By default, computes snapshot checksums every 7 days. This consumes resources and increases processing time.
+- **[snapshot-data-integrity-cronjob](../../references/settings#snapshot-data-integrity-check-cronjob)**
+  - Default: `0 0 */7 * *`  
+  If the `snapshot-data-integrity` setting is `enabled`, it defines when snapshot checksums are recalculated. Snapshots created within this interval may lack precomputed checksums.
+- **[snapshot-data-integrity-immediate-check-after-snapshot-creation](../../references/settings#immediate-snapshot-data-integrity-check-after-creating-a-snapshot)**
+  - `true`  
+  Immediately calculates checksums after snapshot creation, increasing CPU and disk I/O usage. Completes at an unpredictable time.
+  - `false`  
+  Snapshots may not have checksums until the next cron job runs with `snapshot-data-integrity` `enabled`. Delta rebuilding will be used if checksums are missing.
+- **[replica-replenishment-wait-interval](../../references/settings#replica-replenishment-wait-interval)**
+  - Default: `600` seconds
+    - **Short interval**: May skip reusing failed replicas and trigger full rebuilds.
+    - **Long interval**: Waits longer to reuse failed replicas but may delay recovery.
+- **[concurrent-replica-rebuild-per-node-limit](../../references/settings#concurrent-replica-rebuild-per-node-limit)**
+  - Default: `5`
+    - **High limit**: May overload node resources and slow down rebuilds and workloads.
+    - **Low limit**: Reduces resource strain but may increase total rebuild duration due to queuing.
+- **[replica-rebuild-concurrent-sync-limit](../../references/settings#replica-rebuild-concurrent-sync-limit)**
+  - Default: `1`
+    - When set to `1`, scale rebuilding is disabled and only traditional single-source rebuilding is used with minimal resource consumption. When set to values 2-5, enables scale rebuilding with multiple source replicas, providing significant performance improvement for volumes. However, higher values increase CPU consumption on source and destination replicas.
+    - This setting can be overridden by `volume.spec.RebuildConcurrentSyncLimit` on a per-volume basis.
+
+
+---
+
+## Article: advanced-resources/rebuilding/fast-replica-rebuilding.md
+
+---
+title: Fast Replica Rebuilding
+weight: 5
+---
+
+Longhorn supports fast replica rebuilding based on the checksums of snapshot disk files.
+
+## Introduction
+
+The legacy replica rebuilding process walks through all snapshot disk files. For each data block, the client (healthy replica) hashes the local data block as well as requests the checksum of the corresponding data block on the remote side (rebuilt replica). Then, the client compares the two checksums to determine if the data block needs to be sent to the remote side and override the data block. Thus, it is an IO- and computing-intensive process, especially if the volume is large or contains a large number of snapshot files.
+
+If users enable the snapshot data integrity check feature by configuring `snapshot-data-integrity` to `enabled` or `fast-check`, the change timestamps and the checksums of snapshot disk files are recorded. As long as the two below conditions are met, we can skip the synchronization of the snapshot disk file. 
+- The change timestamps on the snapshot disk file and the value recorded are the same.
+- Both the local and remote snapshot disk files have the same checksum.
+
+Then, a reduction in the number of unnecessary computations can speed up the entire process as well as reduce the impact on the system performance.
+
+## Settings
+### Global Settings
+- fast-replica-rebuild-enabled <br>
+
+    The setting enables fast replica rebuilding feature. It relies on the checksums of snapshot disk files, so setting the snapshot-data-integrity to **enable** or **fast-check** is a prerequisite. Please refer to [Snapshot Data Integrity Check](../../data-integrity/snapshot-data-integrity-check).
+
+
+
+---
+
+## Article: advanced-resources/rebuilding/offline-replica-rebuilding.md
+
+---
+title: Offline Replica Rebuilding
+weight: 5
+---
+
+Starting with v1.9.0, Longhorn supports offline replica rebuilding, allowing degraded volumes to automatically rebuild replicas while detached.​
+
+## Global Setting `offline-replica-rebuilding`
+
+- When enabled, Longhorn automatically initiates offline rebuilding for eligible volumes.​
+- For more information, see [settings](../../../references/settings#offline-replica-rebuilding).
+
+## Per-Volume Override
+
+- You can override the global `Offline Replica Rebuilding` setting for each volume individually using the Longhorn UI or by running `kubectl -n longhorn-system edit volume [volume-name]` and modifying the `Spec.OfflineRebuilding` field.
+- When set to `enabled` or `disabled`, this per-volume setting takes precedence over the global configuration. The default value is `ignored`.
+
+| Global Setting (`offline-replica-rebuilding`) | Per-Volume Setting (`spec.offlineRebuilding`) | Offline Rebuilding Enabled |
+| :-------------------------------------------: | :-------------------------------------------: | :------------------------: |
+| `true`                                        | `ignored`                                     | Yes                        |
+| `false`                                       | `ignored`                                     | No                         |
+| `true`                                        | `enabled`                                     | Yes                        |
+| `false`                                       | `enabled`                                     | Yes                        |
+| `true`                                        | `disabled`                                    | No                         |
+| `false`                                       | `disabled`                                    | No                         |
+
+## Rebuilding Process
+
+- When triggered, Longhorn attaches the volume without activating the frontend, rebuilds any missing replicas, and then detaches the volume upon completion.
+- This process can be interrupted if the workload scales up.
+
+## Rebuilding Not Started or Canceled
+
+When offline rebuilding starts, degraded volumes can get stuck in the attached state if rebuilding conditions are not met. To prevent this, if the necessary conditions are not satisfied, offline rebuilding will not start or will be canceled.
+
+- **Benefits:**
+  - It ensures volumes don't remain stuck in the attached state if rebuilding never finishes.
+  - It prevents wasteful rebuilding attempts.
+  - It reduces unnecessary volume attachment and detachment cycles.
+  - It provides predictable rebuilding behavior based on resource availability.
+
+- **Required conditions:**
+
+  Offline rebuilding automatically starts for degraded volumes once the required conditions are met. These conditions include:
+
+  - A reusable failed replica exists, or
+  - A disk candidate exists:
+    - The instance manager on the node hosting the disk must be ready.
+    - The disk's containing node is schedulable.
+    - The disk itself is schedulable.
+
+### Before Offline Rebuilding Starts
+
+When offline rebuilding is enabled, Longhorn determines whether it should start.
+
+1. Longhorn detects a degraded, detached volume.
+2. The system validates whether the required conditions are met before starting the rebuild.
+3. If the conditions are met, rebuilding proceeds. Otherwise, the volume remains detached.
+4. The required conditions are re-evaluated when a node is added, becomes ready, or becomes schedulable.
+
+### During Offline Rebuilding
+
+Longhorn determines if a rebuilding process should be canceled while in progress.
+
+1. Longhorn detects the volume's status when offline rebuilding starts and the volume is attached.
+2. If the volume's `Scheduled` condition status becomes `False`, the offline rebuilding is canceled, and the volume is detached.
+3. If the required conditions are met again, offline rebuilding restarts; otherwise, the volume remains detached.
+
+### Examples
+
+- Successful offline rebuilding:
+  1. A volume is created with 3 replicas in a 3-worker-node cluster.
+  2. Offline rebuilding is enabled.
+  3. The volume is detached and then a replica of the volume is deleted.
+  4. Offline rebuilding begins, and the volume is attached.
+  5. After rebuilding finishes, the volume is detached.
+- Offline rebuilding does not start even when it is enabled:
+  1. A volume is created with 3 replicas in a 3-worker-node (A, B, and C) cluster.
+  2. Offline rebuilding is enabled.
+  3. Worker node A is unschedulable.
+  4. The volume replica on worker node A is deleted.
+  5. Because only two schedulable worker nodes exist, offline rebuilding will not start.
+- A worker node is drained during offline rebuilding:
+  1. A volume is created with 3 replicas in a 3-worker-node (A, B, and C) cluster.
+  2. Offline rebuilding is enabled.
+  3. The volume is detached, and then the volume replica on worker node A is deleted.
+  4. Offline rebuilding begins, and the volume is attached to rebuild a replica on worker node A.
+  5. Worker node A is drained making it unschedulable, and the volume replica on worker node A is deleted.
+  6. The volume remains attached until the volume's `Scheduled` condition status becomes `False`.
+  7. The volume is detached until worker node A is uncordoned or a new schedulable node is added.
+
+## Limitations
+
+Offline rebuilding is not supported for faulted volumes.
+
+
+---
+
+## Article: advanced-resources/rebuilding/replica-rebuild-qos.md
+
+---
+title: Replica Rebuild QoS
+weight: 5
+---
+
+Longhorn supports rebuild bandwidth throttling (QoS) for v2 volumes based on SPDK. This feature allows users to apply bandwidth limits to replicas during rebuilding to avoid overloading the source and destination node’s storage throughput.
+
+## Global Setting: `v2-data-engine-rebuilding-mbytes-per-second`
+
+* A cluster-wide setting that defines the maximum write bandwidth (in MB/s) for rebuilding replicas.
+* When set to `0`, there is no limit.
+* This setting can only be configured via kubectl:
+
+```bash
+kubectl -n longhorn-system patch settings.longhorn.io v2-data-engine-rebuilding-mbytes-per-second \
+  --type=merge -p '{"value":"100"}'
+```
+
+## Per-Volume QoS Override
+
+You can override the global rebuild bandwidth limit per volume by setting `spec.rebuildingMbytesPerSecond` in the `volume` spec:
+
+```yaml
+spec:
+  rebuildingMbytesPerSecond: 50
+```
+
+## Effective QoS Resolution
+
+The effective rebuild bandwidth limit is determined by evaluating both global and volume-specific settings. If the volume-specific value is greater than zero, it overrides the global setting.
+
+| Global Setting | Volume Override | Effective QoS |
+| -------------- | --------------- | ------------- |
+| 0              | 0               | No limit      |
+| 100            | 0               | 100 MB/s      |
+| 0              | 200             | 200 MB/s      |
+| 100            | 200             | 200 MB/s      |
+
+The applied QoS is recorded in the field `status.rebuildStatus[*].appliedRebuildingMbps` in the `engine` status. 
+
+Example of how the applied bandwidth limit appears in the volume engine status:
+
+```yaml
+  Rebuild Status:
+    tcp://172.24.1.95:20001:
+      Error:
+      From Replica Address:  tcp://172.24.8.133:20001
+      Is Rebuilding:         true
+      Progress:              97
+      State:                 in_progress
+      appliedRebuildingMbps: 50
+```
+
+
+---
+
+## Article: advanced-resources/rebuilding/scale-replica-rebuilding.md
+
+---
+title: Scale Replica Rebuilding
+weight: 6
+---
+
+Starting with v1.11.0, Longhorn supports **scale replica rebuilding**, allowing a rebuilding replica to fetch snapshot data from multiple healthy replicas concurrently to improve rebuild performance.
+
+## Introduction
+
+Traditionally, Longhorn rebuilds a failed replica by fetching all snapshot data from a single healthy replica. With scale replica rebuilding, the rebuilding replica can fetch snapshot data from multiple source replicas simultaneously, potentially reducing rebuild time.
+
+This feature is particularly beneficial when volumes contain scattered small data chunks and holes in their snapshots, as it allows better utilization of available network bandwidth and parallel processing.
+
+## How It Works
+
+When scale replica rebuilding is enabled:
+
+1. Multiple healthy replicas start sync servers as snapshot data sources.
+2. The rebuilding replica fetches snapshot data from different snapshots across different source replicas simultaneously.
+3. The number of concurrent source replicas is controlled by the `replica-rebuild-concurrent-sync-limit` setting.
+
+## Settings
+
+### Global Setting: `replica-rebuild-concurrent-sync-limit`
+
+This setting controls the maximum number of healthy replicas that can sync snapshot data to a single rebuilding replica concurrently.
+
+- **Default**: `1` (scale rebuilding disabled)
+- **Range**: `1` to `5`
+
+When set to `1`, only one source replica syncs to the rebuilding replica at a time (traditional behavior). Values greater than `1` enable scale replica rebuilding, allowing multiple source replicas (up to the configured limit) to sync snapshot data to the rebuilding replica simultaneously.
+
+For more information, see [Settings Reference](../../../references/settings#replica-rebuild-concurrent-sync-limit).
+
+### Per-Volume Override
+
+You can override the global `replica-rebuild-concurrent-sync-limit` setting for individual volumes:
+
+- Using the Longhorn UI: Edit the volume and modify the `Rebuild Concurrent Sync Limit` field.
+- Using kubectl: Run `kubectl -n longhorn-system edit volume [volume-name]` and modify the `spec.rebuildConcurrentSyncLimit` field.
+
+When the per-volume setting is set to `0`, the volume uses the global setting. Otherwise, the per-volume setting takes precedence.
+
+## Performance Considerations
+
+### When Scale Rebuilding Helps
+
+Scale replica rebuilding provides significant performance improvements in the following scenarios:
+
+- **Volumes with scattered small data chunks**: When snapshots consist of intermittent small data chunks (e.g., 4K blocks) with holes, scale rebuilding can significantly reduce rebuild time by utilizing multiple source replicas.
+- **Network bandwidth availability**: When network bandwidth is underutilized during traditional rebuilding, adding more source replicas can better utilize available bandwidth.
+
+## Best Practices
+
+1. **Start with the default**: The default value of `1` (scale replica rebuilding disabled) is conservative and suitable for most environments.
+
+2. **Test before increasing**: Before increasing the limit, test in a non-production environment to understand the resource impact on your specific workload.
+
+3. **Consider your workload**:
+   - For volumes with scattered small data chunks: Consider enabling scale replica rebuilding (set to `2` or higher).
+   - For volumes with continuous large data chunks: The performance benefit may be minimal.
+
+4. **Monitor resource usage**: When scale replica rebuilding is enabled, monitor CPU usage on nodes hosting source and destination replicas to ensure sufficient resources are available.
+
+5. **Balance performance and resources**: Higher concurrent sync limits can improve rebuild speed but consume more CPU resources. Consider the trade-off based on your cluster's resource availability and rebuild urgency.
+
+## Limitations
+
+- The maximum number of concurrent source replicas is limited to `5`.
+- Scale replica rebuilding is disabled by default to avoid unexpected high resource consumption.
+- Actual performance improvements depend on factors including disk I/O performance, network bandwidth, data distribution patterns, and available CPU resources.
+
+## References
+
+For more information on related rebuilding features, see [Longhorn #11331](https://github.com/longhorn/longhorn/issues/11331).
+
+
+---
+
+## Article: advanced-resources/containerized-data-importer/_index.md
+
+---
+title: Containerized Data Importer (CDI)
+weight: 8
+---
+
+---
+
+## Article: advanced-resources/containerized-data-importer/containerized-data-importer.md
+
+---
+title: Longhorn with CDI Imports
+weight: 1
+---
+
+This document explains how to use the [Containerized Data Importer (CDI)](https://github.com/kubevirt/containerized-data-importer) to import Raw or QCOW2 images into Longhorn. It details the workflow for creating a reusable **Golden Image** and provisioning multiple workloads from it using CSI Volume Cloning.
+
+## Overview
+
+In Kubernetes environments that require pre-populated disk images, CDI enables importing external images into Longhorn-backed PersistentVolumeClaims (PVCs), which serve as the reusable Golden Image for provisioning subsequent workloads.
+
+Technically, the Golden Image acts as a **Base Image PVC**. Longhorn implements this via CSI Volume Cloning, creating a **full, independent copy** for each new claim. This ensures complete data isolation: workloads obtain their own writable volumes, and the original Golden Image remains unchanged and independent of the clones at runtime.
+
+## Workflow
+
+1.  **Import:** CDI pulls an image from an external source (HTTP, S3, or container registry) and populates a Longhorn-backed PVC.
+2.  **Protect:** This PVC functions as the "Golden Image." It is recommended to treat this PVC as **read-only** or immutable to ensure consistency for future clones.
+3.  **Clone:** Workloads create new PVCs referencing the base image as their `dataSource`. Longhorn copies the data from the base image to the new volume.
+
+### Creating a Base Image PVC
+
+A DataVolume manifest specifies the source image and the Longhorn storage class. For example, importing a QCOW2 image via HTTP:
+
+```
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: golden-base-image
+spec:
+  source:
+    http:
+      url: "https://example.com/images/base-image.qcow2"
+  pvc:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: longhorn
+```
+
+After creation, CDI handles the image import and conversion, resulting in a Longhorn-backed PVC that acts as the base image. It is recommended to treat this PVC as immutable and avoid direct writes from workloads.
+
+### Cloning Base Images
+
+Cloning a base image PVC in Longhorn is performed in full copy mode, creating a complete independent copy of the base image for each cloned PVC. This ensures that each workload has its own isolated volume without relying on the base image for runtime operations. For example:
+
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cloned-pvc-1
+spec:
+  dataSource:
+    name: golden-base-image
+    kind: PersistentVolumeClaim
+    apiGroup: ""
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: longhorn
+```
+
+Multiple clones can be created from the same base image, each as a full independent copy ensuring workload isolation.
+
+## References
+
+- [Containerized Data Importer](https://github.com/kubevirt/containerized-data-importer)
+
+---
+
+## Article: advanced-resources/backing-image/_index.md
+
+---
+title: Backing Image
+weight: 7
+---
+
+---
+
+## Article: advanced-resources/backing-image/backing-image-backup.md
+
+---
+title: Backing Image Backup
+weight: 2
+---
+
+As of v1.6.0, Longhorn supports backing up of backing images.
+
+## Prerequisites
+
+You must first [set up a backup target](../../../snapshots-and-backups/backup-and-restore/set-backup-target). If you skip this crucial step, the missing backup target will prevent Longhorn from creating a backup of the backing image.
+
+## Create a Backup of a Backing Image
+
+Because backing images are globally unique within the Longhorn system, the corresponding backups are also globally unique and are identified using the same name.
+
+### Create a Backup Using YAML
+
+Example of backing image:
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackingImage
+metadata:
+  name: parrot
+  namespace: longhorn-system
+spec:
+  sourceType: download
+  sourceParameters:
+    url: https://longhorn-backing-image.s3-us-west-1.amazonaws.com/parrot.raw
+  checksum: 304f3ed30ca6878e9056ee6f1b02b328239f0d0c2c1272840998212f9734b196371560b3b939037e4f4c2884ce457c2cbc9f0621f4f5d1ca983983c8cdf8cd9a
+```
+
+Example of YAML code used to create a backup of the sample backing image:
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackupBackingImage
+metadata:
+  name: parrot-backup
+  namespace: longhorn-system
+spec:
+  backingImage: parrot
+  backupTargetName: default
+  userCreated: true
+  labels:
+    usecase: test
+    type: raw
+```
+
+> **IMPORTANT:**
+> - `name`: If the names are not unique, Longhorn will not be able to create a backup of the backing image.
+> - `backingImage`: The backing image for the backup.
+> - `backupTargetName`: The backup target that is used to store the backup of the backing image.
+> - `userCreated`: Set the value to `true` to indicate that you created the backup custom resource, which enabled the creation of the backup in the backupstore. The value `false` indicates that the backup custom resource was synced from the backupstore.
+> - `labels`: You can add labels to the backing image backup.
+
+### Create a Backup Using the Longhorn UI
+1. Go to **Setting** > **Backing Image**.
+2. Select the backing image that you want to back up, and then click **Back Up** in the **Operation** menu.
+
+Longhorn creates the backup and adds the details to the **Backing Image Backup** list.
+
+{{< figure src="/img/screenshots/backing-image/backup.png" >}}
+
+
+## Restore a Backing Image from a Backup
+You can restore a backing image in another cluster after creating a backup in the backupstore.
+
+Example of YAML code used to restore a backing image:
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackingImage
+metadata:
+    name: parrot-restore
+    namespace: longhorn-system
+spec:
+    sourceType: restore
+    sourceParameters:
+        # change to your backup URL
+        # backup-url: nfs://longhorn-test-nfs-svc.default:/opt/backupstore?backingImage=parrot
+        backup-url: s3://backupbucket@us-east-1/?backingImage=parrot
+        concurrent-limit: "2"
+    checksum: 304f3ed30ca6878e9056ee6f1b02b328239f0d0c2c1272840998212f9734b196371560b3b939037e4f4c2884ce457c2cbc9f0621f4f5d1ca983983c8cdf8cd9a
+```
+
+> **IMPORTANT:**
+> - `sourceType`: Set the value to `restore`.
+> - `sourceParameters`: Configure the following parameters:
+>   - `backup-url`: URL of the backing image resource in the backupstore. You can find this information in the status of the backup custom resource `.Status.URL`.
+>   - `concurrent-limit`: Maximum number of worker threads that can concurrently run for each restore operation. When unspecified, Longhorn uses the default value.
+> - `checksum`: You can specify the expected SHA-512 checksum of the backing image file, which Longhorn uses to validate the restored file. When unspecified, Longhorn uses the checksum of the restored file as the truth.
+
+### Restore from a Backup Using the Longhorn UI
+1. Go to **Setting** > **Backing Image**.
+2. Select the backup that you want to use, and then click **Restore** in the **Operation** menu.
+3. Click **OK**.
+
+{{< figure src="/img/screenshots/backing-image/1.8.0/restore.png" >}}
+
+## Volume with a Backing Image
+
+When you create a backup of a volume, Longhorn automatically creates a backup of its backing image.
+
+You can restore a volume with a backing image. If the image already exists in the cluster, Longhorn uses the image directly. If the image exists in the backupstore but not in the cluster, Longhorn automatically restores the backing image.
+
+
+---
+
+## Article: advanced-resources/backing-image/backing-image-encryption.md
+
+---
+title: Backing Image Encryption
+weight: 2
+---
+
+Starting with v1.7.0, Longhorn allows you to encrypt and decrypt a backing image by cloning it. The backing image encryption mechanism utilizes the Linux kernel module `dm_crypt` and the command-line utility `cryptsetup`.
+
+## Clone a Backing Image
+You can clone a backing image using YAML code. Notice that, this will create a whole new backing image with the same content as the original one. The backing image also consumes the disk space.
+
+Example of a downloaded backing image:
+
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackingImage
+metadata:
+  name: parrot
+  namespace: longhorn-system
+spec:
+  sourceType: download
+  sourceParameters:
+    url: https://longhorn-backing-image.s3-us-west-1.amazonaws.com/parrot.raw
+  checksum: 304f3ed30ca6878e9056ee6f1b02b328239f0d0c2c1272840998212f9734b196371560b3b939037e4f4c2884ce457c2cbc9f0621f4f5d1ca983983c8cdf8cd9a
+```
+
+Example of YAML code used to clone the sample backing image:
+
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackingImage
+metadata:
+  name: parrot-cloned
+  namespace: longhorn-system
+spec:
+  sourceType: clone
+  sourceParameters:
+    backing-image: parrot
+    encryption: ignore
+```
+
+> **Important:**
+> - `backing-image`: Specify the name of the backing image to be cloned.
+> - `encryption`: Set the value to `ignore` to directly clone the backing image. If the value is not given, Longhorn use `ignore` as default value.
+
+You can also clone a backing image using the Longhorn UI.
+1. Go to **Setting** > **Backing Image**.
+2. Click **Create Backing Image**.
+3. Configure the following settings:
+  - **Created From**: Select **Clone From Existing Backing Image**.
+  - **Encryption**: Select **Ignore**.
+4. Click **OK**.
+
+{{< figure src="/img/screenshots/backing-image/clone.png" >}}
+
+## Encrypt a Backing Image
+You can enable encryption during cloning of a backing image so that the image can be used with an encrypted volume.
+
+Example of a downloaded backing image:
+
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackingImage
+metadata:
+  name: parrot
+  namespace: longhorn-system
+spec:
+  sourceType: download
+  sourceParameters:
+    url: https://longhorn-backing-image.s3-us-west-1.amazonaws.com/parrot.raw
+  checksum: 304f3ed30ca6878e9056ee6f1b02b328239f0d0c2c1272840998212f9734b196371560b3b939037e4f4c2884ce457c2cbc9f0621f4f5d1ca983983c8cdf8cd9a
+```
+
+Example of YAML code used to clone and encrypt the sample backing image:
+
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackingImage
+metadata:
+  name: parrot-cloned-encrypted
+  namespace: longhorn-system
+spec:
+  sourceType: clone
+  sourceParameters:
+    backing-image: parrot
+    encryption: encrypt
+    secret: longhorn-crypto
+    secret-namespace: longhorn-system
+```
+
+Example of YAML code used to encrypt the backing image:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: longhorn-crypto
+  namespace: longhorn-system
+stringData:
+  CRYPTO_KEY_VALUE: "Your encryption passphrase"
+  CRYPTO_KEY_PROVIDER: "secret"
+  CRYPTO_KEY_CIPHER: "aes-xts-plain64"
+  CRYPTO_KEY_HASH: "sha256"
+  CRYPTO_KEY_SIZE: "256"
+  CRYPTO_PBKDF: "argon2i"
+```
+
+> **Important:**
+> - `backing-image`: Specify the name of the backing image to be cloned.
+> - `encryption`: Set the value to `encrypt` to encrypt the backing image during cloning.
+> - `secret`: Specify the secret used to encrypt the backing image.
+> - `secret-namespace`: Specify the namespace of the secret used to encrypt the backing image.
+
+You can also create an encrypted copy of a backing image using the Longhorn UI.
+1. Go to **Setting** > **Backing Image**.
+2. Click **Create Backing Image**.
+3. Configure the following settings:
+  - **Created From**: Select **Clone From Existing Backing Image**.
+  - **Encryption**: Select **Encrypt**.
+4. Specify the secret and secret namespace to be used for encryption.
+5. Click **OK**.
+
+{{< figure src="/img/screenshots/backing-image/encrypt.png" >}}
+
+## Decrypt a Backing Image
+You can decrypt an encrypted backing image through cloning.
+
+Example of an encrypted backing image:
+
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackingImage
+metadata:
+  name: parrot-cloned-encrypted
+  namespace: longhorn-system
+spec:
+  sourceType: clone
+  sourceParameters:
+    backing-image: parrot
+    encryption: encrypt
+    secret: longhorn-crypto
+    secret-namespace: longhorn-system
+```
+
+Example of YAML code used to encrypt and decrypt the backing image:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: longhorn-crypto
+  namespace: longhorn-system
+stringData:
+  CRYPTO_KEY_VALUE: "Your encryption passphrase"
+  CRYPTO_KEY_PROVIDER: "secret"
+  CRYPTO_KEY_CIPHER: "aes-xts-plain64"
+  CRYPTO_KEY_HASH: "sha256"
+  CRYPTO_KEY_SIZE: "256"
+  CRYPTO_PBKDF: "argon2i"
+```
+
+Example of YAML code used to decrypt the backing image:
+
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackingImage
+metadata:
+  name: parrot-cloned-decrypt
+  namespace: longhorn-system
+spec:
+  sourceType: clone
+  sourceParameters:
+    backing-image: parrot-cloned-encrypted
+    encryption: decrypt
+    secret: longhorn-crypto
+    secret-namespace: longhorn-system
+```
+
+> **Important:**
+> - `backing-image`: Specify the name of the backing image to be cloned.
+> - `encryption`: Set the value to `decrypt` to decrypt the backing image during cloning.
+> - `secret`: Specify the secret used to decrypt the backing image.
+> - `secret-namespace`: Specify the namespace of the secret used to decrypt the backing image.
+
+You can also decrypt a backing image (through cloning) using the Longhorn UI.
+1. Go to **Setting** > **Backing Image**.
+2. Click **Create Backing Image**.
+3. Configure the following settings:
+  - **Created From**: Select **Clone From Existing Backing Image**.
+  - **Encryption**: Select **Decrypt**.
+4. Specify the secret and secret namespace to be used for decryption.
+5. Click **OK**.
+
+
+{{< figure src="/img/screenshots/backing-image/decrypt.png" >}}
+
+
+## Use an Encrypted Backing Image with an Encrypted Volume
+The secret used to encrypt the backing image and the volume must be identical. Once the encrypted backing image is ready, you can create the StorageClass with the corresponding backing image and the secret to create the volume for the workload.
+
+Example of YAML code for the encryption secret:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: longhorn-crypto
+  namespace: longhorn-system
+stringData:
+  CRYPTO_KEY_VALUE: "Your encryption passphrase"
+  CRYPTO_KEY_PROVIDER: "secret"
+  CRYPTO_KEY_CIPHER: "aes-xts-plain64"
+  CRYPTO_KEY_HASH: "sha256"
+  CRYPTO_KEY_SIZE: "256"
+  CRYPTO_PBKDF: "argon2i"
+```
+
+Example of YAML code for the StorageClass:
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-crypto-global
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "2880" # 48 hours in minutes
+  fromBackup: ""
+  encrypted: "true"
+  backingImage: "parrot-cloned-encrypted"
+  backingImageDataSourceType: "clone"
+  # global secret that contains the encryption key that will be used for all volumes
+  csi.storage.k8s.io/provisioner-secret-name: "longhorn-crypto"
+  csi.storage.k8s.io/provisioner-secret-namespace: "longhorn-system"
+  csi.storage.k8s.io/node-publish-secret-name: "longhorn-crypto"
+  csi.storage.k8s.io/node-publish-secret-namespace: "longhorn-system"
+  csi.storage.k8s.io/node-stage-secret-name: "longhorn-crypto"
+  csi.storage.k8s.io/node-stage-secret-namespace: "longhorn-system"
+```
+
+For more information, see [Volume Encryption](../../security/volume-encryption).
+
+## Limitations
+- Longhorn is unable to encrypt backing images that are already encrypted, and decrypt backing images that are not encrypted.
+- Longhorn does not allow you to change the encryption key of an encrypted backing image.
+- When encrypting a qcow2 image, Longhorn first creates a raw image from the qcow2 image and then encrypts it. The resulting encrypted raw image temporarily consumes extra space during cloning. For example,
+    1. If we encrypt a 10MiB qcow2 image with a virtual size of 200MiB, we first create the raw image from the qcow2 which will consume 200MiB of the space.
+    2. Longhorn then create the encrypted backing image from that 200MiB raw image which will take another 200MiB of the space.
+    3. After the encrypted backing image is created, the temporary raw image will be cleaned up and free the 200MiB from the space.
+- If the source backing image is a sparse file, the file loses its sparsity after encryption.
+- To allow storage of the LUKS metadata during encryption, the image size is increased by 16 MB. For more information, see the [cryptsetup release notes](https://gitlab.com/cryptsetup/cryptsetup/-/blob/master/docs/v2.1.0-ReleaseNotes#L27).
+
+
+---
+
+## Article: advanced-resources/backing-image/backing-image.md
+
+---
+title: Backing Image
+weight: 1
+---
+
+Longhorn natively supports backing images since v1.1.1.
+
+A QCOW2 or RAW image can be set as the backing/base image of a Longhorn volume, which allows Longhorn to be integrated with a VM like [Harvester](https://github.com/rancher/harvester).
+
+> **Important**:  
+> The image size must be **a multiple of 512 bytes**. Longhorn uses direct I/O, which requires alignment of file sizes with the underlying storage block size.
+
+## Create V1 Data Engine Backing Image
+
+### Parameters during creation
+
+#### The data source of a backing image
+You can prepare a V1 Data Engine backing image using any of the supported data sources.
+1. Download a backing image file (using a URL).
+2. Upload a file from your local machine. This option is available to Longhorn UI users.
+3. Export an existing in-cluster volume as a backing image.
+4. Restore a backing image from the backupstore, For more information, see [Backing Image Backup](../backing-image-backup).
+5. Clone a backing image.
+
+#### Volume exporting
+
+A backing image serves as the initial snapshot in the snapshot chain of a Longhorn volume. When you export a volume with an associated backing image, Longhorn merges that image with the delta changes, resulting in a new consolidated backing image.
+
+#### The checksum of a backing image
+- The checksum of a backing image is **the SHA512 checksum** of the whole backing image **file** rather than that of the actual content.
+  What's the difference? When Longhorn calculates the checksum of a qcow2 file, it will read the file as a raw file instead of using the qcow library to read the correct content. In other words, users always get the correct checksum by executing `shasum -a 512 <the file path>` regardless of the file format.
+- It's recommended to provide the expected checksum during backing image creation.
+  Otherwise, Longhorn will consider the checksum of the first file as the correct one. Once there is something wrong with the first file preparation, which then leads to an incorrect checksum as the expected value, this backing image is probably unavailable.
+
+#### Scheduling
+- Longhorn first prepares and stores the backing image file on a random node and disk, and then duplicates the file to the disks that are storing the replicas.
+- For improved space efficiency, you can add `nodeSelector` and `diskSelector` to force storing of backing image files on a specific set of nodes and disks.
+- The replicas cannot be scheduled on nodes or disks where the backing image cannot be scheduled.
+
+#### Number of copies
+- You can add `minNumberOfCopies` to ensure that multiple backing image files exist in the cluster.
+- You can adjust the `minNumberOfCopies` in the global setting to apply the default value to the BackingImage.
+
+### The way of creating a backing image
+
+#### Create a backing image via Longhorn UI
+On **Advanced > Backing Images** page, users can create backing images with any kinds of data source.
+
+#### Create a V1 Backing Image Using YAML
+You can download a file or export an existing volume as a backing image via YAML.
+It's better not to "upload" a file via YAML. Otherwise, you need to manually handle the data upload via HTTP requests.
+
+Here are some examples:
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackingImage
+metadata:
+  name: bi-download
+  namespace: longhorn-system
+spec:
+  dataEngine: v1
+  minNumberOfCopies: 2
+  nodeSelector:
+    - "node1"
+  diskSelector:
+    - "disk1"
+  sourceType: download
+  sourceParameters:
+    url: https://longhorn-backing-image.s3-us-west-1.amazonaws.com/parrot.raw
+  checksum: 304f3ed30ca6878e9056ee6f1b02b328239f0d0c2c1272840998212f9734b196371560b3b939037e4f4c2884ce457c2cbc9f0621f4f5d1ca983983c8cdf8cd9a
+```
+```yaml
+apiVersion: longhorn.io/v1beta2
+kind: BackingImage
+metadata:
+  name: bi-export
+  namespace: longhorn-system
+spec:
+  dataEngine: v1
+  minNumberOfCopies: 2
+  nodeSelector:
+    - "node1"
+  diskSelector:
+    - "disk1"
+  sourceType: export-from-volume
+  sourceParameters:
+    volume-name: vol-export-src
+    export-type: qcow2
+```
+
+#### Create and use a backing image via StorageClass and PVC
+1. In a Longhorn StorageClass.
+2. Setting parameter `backingImageName` means asking Longhorn to use this backing image during volume creation.
+3. If you want to create the backing image as long as it does not exist during the CSI volume creation, parameters `backingImageDataSourceType` and `backingImageDataSourceParameters` should be set as well. Similar to YAML, it's better not to create a backing image via "upload" in StorageClass. Note that if all of these parameters are set and the backing image already exists, Longhorn will validate if the parameters matches the existing one before using it.
+    - For `download`:
+      ```yaml
+      kind: StorageClass
+      apiVersion: storage.k8s.io/v1
+      metadata:
+        name: longhorn-backing-image-example
+      provisioner: driver.longhorn.io
+      allowVolumeExpansion: true
+      reclaimPolicy: Delete
+      volumeBindingMode: Immediate
+      parameters:
+        numberOfReplicas: "3"
+        staleReplicaTimeout: "2880"
+        backingImage: "bi-download"
+        backingImageDataSourceType: "download"
+        backingImageDataSourceParameters: '{"url": "https://backing-image-example.s3-region.amazonaws.com/test-backing-image"}'
+        backingImageChecksum: "SHA512 checksum of the backing image"
+        backingImageMinNumberOfCopies: "2"
+        backingImageNodeSelector: "node1"
+        backingImageDiskSelector: "disk1"
+        dataEngine: "v1"
+      ```
+    - For `export-from-volume`:
+      ```yaml
+      kind: StorageClass
+      apiVersion: storage.k8s.io/v1
+      metadata:
+        name: longhorn-backing-image-example
+      provisioner: driver.longhorn.io
+      allowVolumeExpansion: true
+      reclaimPolicy: Delete
+      volumeBindingMode: Immediate
+      parameters:
+        numberOfReplicas: "3"
+        staleReplicaTimeout: "2880"
+        backingImage: "bi-export-from-volume"
+        backingImageDataSourceType: "export-from-volume"
+        backingImageDataSourceParameters: '{"volume-name": "vol-export-src", "export-type": "qcow2"}'
+        backingImageMinNumberOfCopies: "2"
+        backingImageNodeSelector: "node1"
+        backingImageDiskSelector: "disk1"
+        dataEngine: "v1"
+      ```
+
+4. Create a PVC with the StorageClass. Then the backing image will be created (with the Longhorn volume) if it does not exist.
+5. Longhorn starts to prepare the backing images to disks for the replicas when a volume using the backing image is attached to a node.
+
+#### Notice:
+- Please be careful of the escape character `\` when you input a download URL in a StorageClass.
+- A backing image that is created using a StorageClass has the same data engine as the volume.
+
+## Utilize a backing image in a volume
+
+Users can [directly create then immediately use a backing image via StorageClass](./#create-and-use-a-backing-image-via-storageclass-and-pvc),
+or utilize an existing backing image as mentioned below.
+
+#### Use an existing backing
+##### Use an existing backing Image during volume creation
+1. Click **Advanced > Backing Images** in the Longhorn UI.
+2. Click **Create Backing Image** to create a backing image with a unique name and a valid URL.
+3. Select a backing image from the list. The volume and the backing image must use the same data engine.
+4. Longhorn starts to download the backing image to disks for the replicas when a volume using the backing image is attached to a node.
+
+##### Use an existing backing Image during volume restore
+1. Click `Backup` and pick up a backup volume for the restore.
+2. As long as the backing image is already set for the backup volume, Longhorn will automatically choose the backing image during the restore.
+3. Longhorn allows you to re-specify/override the backing image during the restore.
+
+#### Download the backing image file to the local machine
+Since v1.3.0, users can download existing backing image files to the local via UI.
+
+#### Notice:
+- Users need to make sure the backing image existence when they use UI to create or restore a volume with a backing image specified.
+- Before downloading an existing backing image file to the local, users need to guarantee there is a ready file for it.
+- Downloading of V2 Data Engine backing images is currently not supported.
+
+## Create a V2 Data Engine Backing Image
+
+Starting v1.8.0, you can create a backing image that is supported by the V2 Data Engine by configuring `Data Engine` in the YAML (through the UI or a StorageClass).
+
+### Parameters During Creation
+
+All parameters are the same as that of the V1 Data Engine backing image, except for `Data Engine`.
+
+#### Backing Image Data Sources
+
+You can prepare a V2 Data Engine backing image using any of the supported data sources.
+- Download a backing image file (using a URL).
+- Upload a file from your local machine. This option is available to Longhorn UI users.
+- Export an existing in-cluster V1 Data Engine volume as a backing image.
+- Restore a backing image from the backupstore. For more information, see [Backing Image Backup](../backing-image-backup).
+- Clone a V1 backing image.
+
+#### Notice
+
+- The following operations are currently not supported:
+  - Exporting from a V2 Data Engine volume
+  - Cloning a V2 backing image
+  - Backing up a V2 backing image
+- Unlike the V1 Data Engine, which is file-based, the V2 Data Engine requires Longhorn to store the backing image data in an SPDK logical volume. As a result, for qcow2 images, Longhorn must first convert the qcow2 image to a raw format before storing the data to the V2 Data Engine backing image, enabling it to read the correct data.
+
+## Clean up backing images
+
+#### Clean up backing images in disks
+- Longhorn automatically cleans up the unused backing image files in the disks based on [the setting `Backing Image Cleanup Wait Interval`](../../../references/settings#backing-image-cleanup-wait-interval). But Longhorn will retain at least one file in a disk for each backing image anyway.
+- You can manually remove backing images from disks using the Longhorn UI. Go to **Setting** > **Backing Image**, and then click the name of a specific backing image. In the window that opens, select one or more disks and then click **Clean Up**.
+- Once there is one replica in a disk using a backing image, no matter what the replica's current state is, the backing image file in this disk cannot be cleaned up.
+
+#### Delete backing images
+- The backing image can be deleted only when there is no volume using it.
+
+## Backing image recovery
+- If there is still a ready backing image file in one disk, Longhorn will automatically clean up the failed backing image files then re-launch these files from the ready one.
+- If somehow all files of a backing image become failed, and the first file is :
+  - downloaded from a URL, Longhorn will restart the downloading.
+  - exported from an existing volume, Longhorn will (attach the volume if necessary then) restart the export.
+  - uploaded from user local env, there is no way to recover it. Users need to delete this backing image then re-create a new one by re-uploading the file.
+- When a node is down or the backing image manager pod on the node is unavailable, all backing image files on the node will become `unknown`. Later on if the node is back and the pod is running, Longhorn will detect then reuse the existing files automatically.
+
+## Backing image eviction
+- You can manually evict all backing image files from a node or disk by setting `Scheduling` to `Disabled` and `Eviction Requested` to `True` on the Longhorn UI.
+- If only one backing image file exists in the cluster, Longhorn first duplicates the file to another disk and then deletes the file.
+- If the backing image file cannot be duplicated to other disks, Longhorn does not delete the file. You can update the settings to resolve the issue.
+
+## Backing image Workflow
+1. To manage all backing image files in a disk, Longhorn will create one backing image manager pod for each disk. Once the disk has no backing image file requirement, the backing image manager will be removed automatically.
+2. Once a backing image file is prepared by the backing image manager for a disk, the file will be shared among all volume replicas in this disk.
+3. When a backing image is created, Longhorn will launch a backing image data source pod to prepare the first file. The file data is from the data source users specified (download from remote/upload from local/export from the volume). After the preparation done, the backing image manager pod in the same disk will take over the file then Longhorn will stop the backing image data source pod.
+4. Once a new backing image is used by a volume, the backing image manager pods in the disks that the volume replicas reside on will be asked to sync the file from the backing image manager pods that already contain the file.
+5. As mentioned in the section [#clean-up-backing-images-in-disks](#clean-up-backing-images-in-disks), the file will be cleaned up automatically if all replicas in one disk do not use one backing image file.
+
+## Concurrent limit of backing image syncing
+- `Concurrent Backing Image Replenish Per Node Limit` in the global settings controls how many backing images copies on a node can be replenished simultaneously.
+- When set to 0, Longhorn won't replenish the copy automatically event it is less than the `minNumberOfCopies`
+
+## Warning
+- The download URL of the backing image should be public. We will improve this part in the future.
+- If there is high memory usage of one backing image manager pod after [file download](#download-the-backing-image-file-to-the-local-machine), this is caused by the system cache/buffer. The memory usage will decrease automatically hence you don't need to worry about it. See [the GitHub ticket](https://github.com/longhorn/longhorn/issues/4055) for more details.
+
+## History
+* Available since v1.1.1 [Enable backing image feature in Longhorn](https://github.com/Longhorn/Longhorn/issues/2006)
+* Support [upload](https://github.com/longhorn/longhorn/issues/2404) and [volume exporting](https://github.com/longhorn/longhorn/issues/2403) since v1.2.0.
+* Support [download to local](https://github.com/longhorn/longhorn/issues/2404) and [volume exporting](https://github.com/longhorn/longhorn/issues/3155) since v1.3.0.
+
+
+---
+
+## Article: advanced-resources/driver-migration/_index.md
+
+---
+title: CSI Driver Migration
+weight: 100
+---
+
+---
+
+## Article: advanced-resources/driver-migration/migrating-flexvolume.md
+
+---
+title: Migrating from the Flexvolume Driver to CSI
+weight: 5
+---
+
+As of Longhorn v0.8.0, the Flexvolume driver is no longer supported. This guide will show you how to migrate from the Flexvolume driver to CSI. CSI is the newest out-of-tree Kubernetes storage interface.
+
+> Note that the volumes created and used through one driver won't be recognized by Kubernetes using the other driver. So please don't switch the driver (e.g. during an upgrade) if you have existing volumes created using the old driver.
+
+Ensure your Longhorn App is up to date. Follow the relevant upgrade procedure before proceeding.
+
+The migration path between drivers requires backing up and restoring each volume and will incur both API and workload downtime. This can be a tedious process. Consider deleting unimportant workloads using the old driver to reduce effort.
+
+1. [Back up existing volumes](../../../snapshots-and-backups/backup-and-restore/create-a-backup).
+2. On Rancher UI, navigate to the `Catalog Apps` page, locate the `Longhorn` app and click the `Up to date` button. Under `Kubernetes Driver`, select
+`flexvolume`. We recommend leaving `Flexvolume Path` empty. Click `Upgrade`.
+3. Restore each volume. This [procedure](../../../snapshots-and-backups/backup-and-restore/restore-statefulset) is tailored to the StatefulSet workload, but the process is approximately the same for all workloads.
+
+---
+
+## Article: advanced-resources/longhornctl/_index.md
+
+---
+title: Command Line Tool (longhornctl)
+description: Command line interface (CLI) for Longhorn operations and troubleshooting.
+weight: 8
+---
+
+The `longhornctl` tool is a CLI interface to Longhorn operations. It interacts with Longhorn by creating Kubernetes Custom Resources (CRs) and executing commands inside a dedicated Pod for in-cluster and host operations.
+
+## Common usage scenarios
+
+* **Installation:**
+  * `longhornctl install preflight`: Perform preflight dependencies installation and setup before installing Longhorn.
+* **Operations:**
+  * `longhornctl export replica`: Extract data from a Longhorn replica data directory to a designated directory on its host machine. This is useful for recovering data when Longhorn is unavailable.
+  * `longhornctl trim volume`: Reclaim unused storage space within a Longhorn volume.
+* **Troubleshooting:**
+  * `longhornctl check preflight`: Identifies potential issues before usage.
+  * `longhornctl get replica`: Retrieve details about Longhorn replicas on the host.
+
+## Usage
+
+For more information about the available commands, see [this document](https://github.com/longhorn/cli/tree/v{{< current-version >}}/docs/longhornctl.md) in the GitHub repository, or run `longhornctl help` in your terminal.
+
+
+---
+
+## Article: advanced-resources/longhornctl/install-longhornctl.md
+
+---
+title: Install longhornctl
+weight: 1
+---
+
+## Use the Prebuilt Binary
+
+1. Download the binary:
+   ```bash
+   # Choose your architecture (amd64 or arm64).
+   ARCH="amd64"
+
+   # Download the release binary.
+   curl -LO "https://github.com/longhorn/cli/releases/download/v{{< current-version >}}/longhornctl-linux-${ARCH}"
+   ```
+1. Validate the binary:
+   ```bash
+   # Download the checksum for your architecture.
+   curl -LO "https://github.com/longhorn/cli/releases/download/v{{< current-version >}}/longhornctl-linux-${ARCH}.sha256"
+
+   # Verify the downloaded binary matches the checksum.
+   echo "$(cat longhornctl-linux-${ARCH}.sha256 | awk '{print $1}') longhornctl-linux-${ARCH}" | sha256sum --check
+   ```
+1. Install the binary:
+   ```bash
+   sudo install longhornctl-linux-${ARCH} /usr/local/bin/longhornctl
+   ```
+1. Verify installation:
+   ```bash
+   longhornctl version
+   ```
+
+## Build From Source
+
+See [this document](https://github.com/longhorn/cli/tree/{{< current-version >}}?tab=readme-ov-file#build-from-source) in the GitHub repository.
+
+
+---
+
 ## Article: deploy/_index.md
 
 ---
@@ -1785,667 +7218,6 @@ You will need to create an ELB (Elastic Load Balancer) to expose the nginx Ingre
 ## References
 
 https://kubernetes.github.io/ingress-nginx/
-
----
-
-## Article: deploy/upgrade/_index.md
-
----
-title: Upgrade
-weight: 3
----
-
-Here we cover how to upgrade to the latest Longhorn from all previous releases.
-
-# Deprecation & Incompatibility
-
-There are no deprecated or incompatible changes introduced in v{{< current-version >}}.
-
-# Upgrade Path Enforcement and Downgrade Prevention
-
-Starting with v1.5.0, Longhorn only supports upgrades from one minor version to the next. For example, upgrading from 1.5.x to 1.6.x is supported, but skipping versions (e.g., from 1.4.x to 1.6.x) is not. If you attempt to upgrade from an unsupported version or skip a minor version, the operation will fail automatically. However, you can revert to the previously installed version without service interruption or downtime.
-
-Moreover, Longhorn does not support downgrades to earlier versions. This restriction helps prevent unexpected system behavior and issues associated with function incompatibility, deprecation, or removal.
-
-> **Warning**:
-> - Once you successfully upgrade to v{{< current-version >}}, you will not be allowed to revert to the previously installed version.
-> - The Downgrade Prevention feature was introduced in v1.5.0 so Longhorn is unable to prevent downgrade attempts in older versions.
-However, downgrading is completely unsupported and is therefore not recommended.
-
-The following table outlines the supported upgrade paths.
-
-  |  Current version |  Target version |  Supported | Example |
-  |    :-:      |    :-:      |   :-:  |    :-:    |
-  |  x.y.*      |  x.(y+1).*  |   ✓    |  v1.4.2  to  v1.5.1  |
-  |  x.y.*      |  x.y.(*+n)  |   ✓    |  v1.5.0  to  v1.5.1  |
-  |  x.y[^lastMinorVersion].*      |  (x+1).y.*  |   ✓    |  v1.30.0 to  v2.0.0  |
-  |  x.(y-1).*  |  x.(y+1).*  |   X    |  v1.3.3  to  v1.5.1  |
-  |  x.(y-2).*  |  x.(y+1).*  |   X    |  v1.2.6  to  v1.5.1  |
-
-[^lastMinorVersion]: Longhorn only allows upgrades from any patch version of the last minor release before the new major version. For example, if v1.3.0 is the last minor version before v2.0, you can upgrade from any patch version of v1.3.0 to any patch version of v2.0.
-
-## Manual Checks Before Upgrade
-Automated checks are only performed on some upgrade paths, and the pre-upgrade checker may not cover some scenarios.  Manual checks, performed using either kubectl or the UI, are recommended for these schenarios.  You can take mitigating actions or defer the upgrade until issues are addressed.
-- Ensure that all V2 Data Engine volumes are detached and the replicas are stopped.  The V2 Data Engine currently does not support live upgrades.
-- Avoid upgrading when volumes are in the "Faulted" status.  If all the replicas are deemed unusable, they may be deleted and data may be permanently lost (if no usable backups exist).
-- Avoid upgrading if a failed BackingImage exists.  For more information, see [Backing Image](../../advanced-resources/backing-image/backing-image).
-- It is recommended to create a [Longhorn system backup](../../advanced-resources/system-backup-restore/backup-longhorn-system) before performing the upgrade. This ensures that all critical resources, such as volumes and backing images, are backed up and can be restored in case any issues arise.
-
-# Upgrading Longhorn
-
-There are normally two steps in the upgrade process: first upgrade Longhorn manager to the latest version, then manually upgrade the Longhorn engine to the latest version using the latest Longhorn manager.
-
-## 1. Upgrade Longhorn manager
-
-- To upgrade from v1.11.x, see [this section.](./longhorn-manager)
-
-## 2. Manually Upgrade Longhorn Engine
-
-After Longhorn Manager is upgraded, Longhorn Engine also needs to be upgraded [using the Longhorn UI.](./upgrade-engine)
-
-## 3. Automatically Upgrade Longhorn Engine
-
-Since Longhorn v1.1.1, we provide an option to help you [automatically upgrade engines](./auto-upgrade-engine)
-
-## 4. Automatically Migrate Recurring Jobs
-
-With the introduction of the new label-driven `Recurring Job` feature, Longhorn has removed the `RecurringJobs` field in the Volume Spec and planned to deprecate `RecurringJobs` in the StorageClass.
-
-During the upgrade, Longhorn will automatically:
-- Create new recurring job CRs from the `recurringJobs` field in Volume Spec and convert them to the volume labels.
-- Create new recurring job CRs from the `recurringJobs` in the StorageClass and convert them to the new `recurringJobSelector` parameter.
-
-Visit [Recurring Snapshots and Backups](../../snapshots-and-backups/scheduling-backups-and-snapshots) for more information about the new `Recurring Job` feature.
-
-# Extended Reading
-
-Visit [Some old instance manager pods are still running after upgrade](https://longhorn.io/kb/troubleshooting-some-old-instance-manager-pods-are-still-running-after-upgrade) for more information about the cleanup strategy of instance manager pods during upgrade.
-
-# Need Help?
-
-If you have any issues, please report it at
-https://github.com/longhorn/longhorn/issues and include your backup yaml files
-as well as manager logs.
-
-
----
-
-## Article: deploy/upgrade/auto-upgrade-engine.md
-
----
-title: Automatically Upgrading Longhorn Engine
-weight: 3
----
-
-> **Notice**:
->
-> This engine upgrade procedure applies only to V1 Data Engine volumes. In Longhorn v1.12, V2 Data Engine volumes do not support engine upgrades and all V2 volumes must be detached before upgrading Longhorn. Support for V2 Data Engine engine upgrades is planned for upgrades from Longhorn v1.12 to v1.13.
-
-Since Longhorn v1.1.1, we provide an option to help you automatically upgrade Longhorn volumes to the new default engine version after upgrading Longhorn manager.
-This feature reduces the amount of manual work you have to do when upgrading Longhorn.
-There are a few concepts related to this feature as listed below:
-
-## 1. Concurrent Automatic Engine Upgrade Per Node Limit Setting
-
-This is a setting that controls how Longhorn automatically upgrades volumes' engines to the new default engine image after upgrading Longhorn manager.
-The value of this setting specifies the maximum number of engines per node that are allowed to upgrade to the default engine image at the same time.
-If the value is 0, Longhorn will not automatically upgrade volumes' engines to the default version.
-The bigger this value is, the faster the engine upgrade process finishes.
-
-However, giving a bigger value for this setting will consume more CPU and memory of the node during the engine upgrade process.
-We recommend setting the value to 3 to leave some room for error but don't overwhelm the system with too many failed upgrades.
-
-## 2. The behavior of Longhorn with different volume conditions
-
-In the following cases, assume that the `concurrent automatic engine upgrade per node limit` setting is bigger than 0.
-
-1. Attached Volumes
-
-   If the volume is in attached state and healthy, Longhorn will automatically do a live upgrade for the volume's engine to the new default engine image.
-
-1. Detached Volumes
-
-   Longhorn automatically does an offline upgrade for detached volume.
-
-1. Disaster Recovery Volumes
-
-   Longhorn doesn't automatically upgrade [disaster recovery volumes](../../../snapshots-and-backups/setup-disaster-recovery-volumes/) to the new default engine image because it would trigger a full restoration for the disaster recovery volumes.
-The full restoration might affect the performance of other running Longhorn volumes in the system.
-So, Longhorn leaves it to you to decide when it is the good time to manually upgrade the engine for disaster recovery volumes (e.g., when the system is idle or during the maintenance time).
-
-   However, when you activate the disaster recovery volume, it will be activated and then detached.
-At this time, Longhorn will automatically do offline upgrade for the volume similar to the detached volume case.
-
-## 3. What Happened If The Upgrade Fails?
-
-If a volume failed to upgrade its engine, the engine image in volume's spec will remain to be different than the engine image in the volume's status.
-Longhorn will continuously retry to upgrade until it succeeds.
-
-If there are too many volumes that fail to upgrade per node (i.e., more than the `concurrent automatic engine upgrade per node limit` setting),
-Longhorn will stop upgrading volume on that node.
-
-## 4. Liveness and Cleanup of Old Instance Manager Pods During Automatic Upgrade
-
-For the liveness and cleanup of old instance manager pods during live upgrade, refer to the [Instance Manager Pods During Upgrade](../instance-manager-pods-during-upgrade) documentation.
-
-
----
-
-## Article: deploy/upgrade/instance-manager-pods-during-upgrade.md
-
----
-title: Instance Manager Pods During Upgrade
-weight: 4
----
-
-After a live upgrade, you may notice that some **old instance manager pods** are still running. This is expected behavior and **not a bug**.
-
-## Why This Happens
-
-Longhorn uses the following strategy to manage instance manager pods during a live upgrade:
-
-- Old instance manager pods are cleaned up immediately once no engine or replica processes are running in them.
-- During a **live engine upgrade** of a volume:
-  - Replica processes are re-created in new instance manager pods using the upgraded engine image.
-  - To avoid interrupting I/O, Longhorn cannot start a new engine process using the upgraded engine image in a new instance manager pod while the volume is attached. Instead, the old instance manager pod continues to manage the lifecycle of the new engine process until the volume is detached. As a result, the new engine process runs in the old instance manager pod.
-
-As a result, an old instance manager pod remains running as long as it hosts an active engine process. Once the volume is detached and no engine or replica processes remain, Longhorn will automatically clean up the old instance manager pod.
-
-## How to Check Which Volumes Are Using Old Instance Manager Pods
-
-You can check which volumes are still using the old instance manager pods from the Longhorn UI:
-
-- Navigate to **Volume** > **Name** > **Volume Details** > **Instance Manager**.
-
-## How to Fully Clean Up Old Instance Manager Pods
-
-To allow Longhorn to clean up all old instance manager pods:
-
-1. Detach all volumes that are still using old instance manager pods.
-2. Once no engine or replica processes remain, Longhorn will automatically remove the old instance manager pods.
-
-
----
-
-## Article: deploy/upgrade/longhorn-manager.md
-
----
-title: Upgrading Longhorn Manager
-weight: 1
----
-
-### Upgrading from v1.11.x
-
-We only support upgrading to v{{< current-version >}} from v1.11.x. For other versions, please upgrade to v1.11.x first.
-
-Engine live upgrade is supported from v1.11.x to v{{< current-version >}}.
-For airgap upgrades when Longhorn is installed as a Rancher app, you will need to modify the image names and remove the registry URL part.
-
-For example, the image `registry.example.com/longhorn/longhorn-manager:v{{< current-version >}}` is changed to `longhorn/longhorn-manager:v{{< current-version >}}` in Longhorn images section. For more information, see the air gap installation steps [here.](../../install/airgap/#using-a-rancher-app)
-
-#### Preparing for the Upgrade
-
-If Longhorn was installed using a Helm Chart, or if it was installed as Rancher catalog app, check to make sure the parameters in the default StorageClass weren't changed. Changing the default StorageClass's parameter might result in a chart upgrade failure. if you want to reconfigure the parameters in the StorageClass, you can copy the default StorageClass's configuration to create another StorageClass.
-
-    The current default StorageClass has the following parameters:
-
-        parameters:
-          numberOfReplicas: <user specified replica count, 3 by default>
-          staleReplicaTimeout: "30"
-          fromBackup: ""
-          baseImage: ""
-
-#### Upgrade
-
-> **Prerequisite:** Always back up volumes before upgrading. If anything goes wrong, you can restore the volume using the backup.
-
-#### Upgrade as a Rancher Catalog App
-
-To upgrade the Longhorn App, make sure which Rancher UI the existing Longhorn App was installed with. There are two Rancher UIs, one is the Cluster Manager (old UI), and the other one is the Cluster Explorer (new UI). The Longhorn App in different UIs considered as two different applications by Rancher. They cannot upgrade to each other. If you installed Longhorn in the Cluster Manager, you need to use the Cluster Manager to upgrade Longhorn to a newer version, and vice versa for the Cluster Explorer.
-
-> Note: Because the Cluster Manager (old UI) is being deprecated, we provided the instruction to migrate the existing Longhorn installation to the Longhorn chart in the Cluster Explorer (new UI) [here](https://longhorn.io/kb/how-to-migrate-longhorn-chart-installed-in-old-rancher-ui-to-the-chart-in-new-rancher-ui/)
-
-Different Rancher UIs screenshots.
-- The Cluster Manager (old UI)
-{{< figure src="/img/screenshots/install/cluster-manager.png" >}}
-- The Cluster Explorer (new UI)
-{{< figure src="/img/screenshots/install/cluster-explorer.png" >}}
-
-On Kubernetes clusters managed by Rancher 2.1 or newer, the steps to upgrade the catalog app `longhorn-system` are the similar to the installation steps.
-
-#### Upgrade with Kubectl
-
-To upgrade with kubectl, run this command:
-
-```
-kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml
-```
-
-#### Upgrade with Helm
-
-To upgrade with Helm, run this command:
-
-```
-helm upgrade longhorn longhorn/longhorn --namespace longhorn-system --version {{< current-version >}}
-```
-
-#### Upgrade with Helm Controller
-
-Update the value of `spec.version` in the `HelmChart` YAML file:
-
-```yaml
-spec:
-  version: v{{< current-version >}} # Replace with the Longhorn version you'd like to upgrade to
-  chart: longhorn
-  repo: https://charts.longhorn.io
-  failurePolicy: abort
-```
-
-Alternatively, if using the `spec.chartContent` key, create a patch file with 
-```yaml
-spec:
-  chartContent: <base64 content> # tar cz of longhorn charts directory for release | base64 -w 0
-```
-and then apply it with 
-```
-kubectl  patch helmchart longhorn -n <namespace> --type merge --patch-file <name of patch file>
-```
-
-> **IMPORTANT!** In both cases, ensure that `spec.failurePolicy` is set to "abort".  The only other value is the default: "reinstall", which performs an uninstall of Longhorn if the pre-upgrade check or the upgrade fails.  With "abort", it retries periodically, giving the user a chance to fix the problem.
-
-#### Upgrade with Fleet
-
-Update the value of `helm.version` in the `fleet` YAML file of your GitOps repository.
-
-```yaml
-helm:
-  repo: https://charts.longhorn.io
-  chart: longhorn
-  version: v{{< current-version >}} # Replace with the Longhorn version you'd like to upgrade to
-  releaseName: longhorn
-```
-
-#### Upgrade with Flux
-
-Update the value of `spec.chart.spec.version` in the `HelmRelease` YAML file of your GitOps repository.
-
-```yaml
-spec:
-  chart:
-    spec:
-      chart: longhorn
-      reconcileStrategy: ChartVersion
-      sourceRef:
-        kind: HelmRepository
-        name: longhorn
-      version: v{{< current-version >}} # Replace with the Longhorn version you'd like to upgrade to
-```
-
-#### Upgrade with Argo CD
-
-Update the value of `targetRevision` in the `Application` YAML file of your GitOps repository.
-
-```yaml
-spec:
-  project: default
-  sources:
-    - chart: longhorn
-      repoURL: https://charts.longhorn.io
-      targetRevision: v{{< current-version >}} # Replace with the Longhorn version you'd like to upgrade to
-```
-
-Then wait for all the pods to become running and Longhorn UI working. e.g.:
-
-```
-$ kubectl -n longhorn-system get pod
-NAME                                                  READY   STATUS    RESTARTS      AGE
-engine-image-ei-4dbdb778-nw88l                        1/1     Running   0             4m29s
-longhorn-ui-b7c844b49-jn5g6                           1/1     Running   0             75s
-longhorn-manager-z2p8h                                1/1     Running   0             71s
-instance-manager-b34d5db1fe1e2d52bcfb308be3166cfc     1/1     Running   0             65s
-longhorn-driver-deployer-6bd59c9f76-jp6pg             1/1     Running   0             75s
-engine-image-ei-df38d2e5-zccq5                        1/1     Running   0             65s
-csi-snapshotter-588457fcdf-h2lgc                      1/1     Running   0             30s
-csi-resizer-6d8cf5f99f-8v4sp                          1/1     Running   1 (30s ago)   37s
-csi-snapshotter-588457fcdf-6pgf4                      1/1     Running   0             30s
-csi-provisioner-869bdc4b79-7ddwd                      1/1     Running   1 (30s ago)   44s
-csi-snapshotter-588457fcdf-p4kkn                      1/1     Running   0             30s
-csi-attacher-7bf4b7f996-mfbdn                         1/1     Running   1 (30s ago)   50s
-csi-provisioner-869bdc4b79-4dc7n                      1/1     Running   1 (30s ago)   43s
-csi-resizer-6d8cf5f99f-vnspd                          1/1     Running   1 (30s ago)   37s
-csi-attacher-7bf4b7f996-hrs7w                         1/1     Running   1 (30s ago)   50s
-csi-attacher-7bf4b7f996-rt2s9                         1/1     Running   1 (30s ago)   50s
-csi-resizer-6d8cf5f99f-7vv89                          1/1     Running   1 (30s ago)   37s
-csi-provisioner-869bdc4b79-sn6zr                      1/1     Running   1 (30s ago)   43s
-longhorn-csi-plugin-b2zzj                             2/2     Running   0             24s
-```
-
-Next, [upgrade Longhorn engine.](../upgrade-engine)
-
-### Upgrading from Unsupported Versions
-
-We only support upgrading to v{{< current-version >}} from v1.11.x. For other versions, please upgrade to v1.11.x first.
-
-If you attempt to upgrade from an unsupported version, the upgrade will fail. When encountering an upgrade failure, please consider the following scenarios to recover the state based on different upgrade methods.
-
-#### Upgrade with Kubectl
-
-When you upgrade with kubectl by running this command:
-
-```shell
-kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml
-```
-
-Longhorn will block the upgrade process and provide the failure reason in the logs of the `longhorn-manager` pod.
-During the upgrade failure, the user's Longhorn system should remain intact without any impacts except `longhorn-manager` daemon set.
-
-To recover, you need to apply the manifest of the previously installed version using the following command:
-
-```shell
-kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/[previous installed version]/deploy/longhorn.yaml
-```
-
-Besides, users might need to delete new components introduced by the new version manually.
-
-#### Upgrade with Helm or Rancher App Marketplace
-
-To prevent any impact caused by failed upgrades from unsupported versions, Longhorn will automatically initiate a new job (`pre-upgrade`) to verify if the upgrade path is supported before upgrading when upgrading through `Helm` or `Rancher App Marketplace`.
-
-The `pre-upgrade` job will block the upgrade process and provide the failure reason in the logs of the pod.  It will also be recorded in an event, for instance:
-
-```
-2m33s               Normal    Created                 Pod/longhorn-pre-upgrade-v5tqq    Created container longhorn-pre-upgrade
-2m33s               Warning   FailedUpgradePreCheck   /longhorn-pre-upgrade             failed to upgrade since upgrading from v1.6.2 to v1.8.0 for minor version is not supported
-```
-
-During the upgrade failure, the user's Longhorn system should remain intact without any impacts.
-
-To recover, you need to run the below commands to rollback to the previously installed revision:
-
-```shell
-# get previous installed Longhorn REVISION
-helm history longhorn
-helm rollback longhorn [REVISION]
-
-# or
-helm upgrade longhorn longhorn/longhorn --namespace longhorn-system --version [previous installed version]
-```
-
-To recover, you need to upgrade to the previously installed revision at `Rancher App Marketplace` again.
-
-### TroubleShooting
-1. Error: `"longhorn" is invalid: provisioner: Forbidden: updates to provisioner are forbidden.`
-- This means there are some modifications applied to the default storageClass and you need to clean up the old one before upgrade.
-
-- To clean up the deprecated StorageClass, run this command:
-    ```
-    kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/examples/storageclass.yaml
-    ```
-
-
----
-
-## Article: deploy/upgrade/upgrade-engine.md
-
----
-title: Manually Upgrading Longhorn Engine
-weight: 2
----
-
-In this section, you'll learn how to manually upgrade the Longhorn Engine from the Longhorn UI.
-
-> **Notice**:
->
-> This engine upgrade procedure applies only to V1 Data Engine volumes. In Longhorn v1.12, V2 Data Engine volumes do not support engine upgrades and all V2 volumes must be detached before upgrading Longhorn. Support for V2 Data Engine engine upgrades is planned for upgrades from Longhorn v1.12 to v1.13.
-
-## Prerequisites
-
-Always make backups before upgrading the Longhorn engine images.
-
-Upgrade the Longhorn manager before upgrading the Longhorn engine.
-
-## Offline Upgrade
-
-Follow these steps if the live upgrade is not available, or if the volume is stuck in degraded state:
-
-1. Follow [the detach procedure for relevant workloads](../../../nodes-and-volumes/volumes/detaching-volumes).
-2. Select all the volumes using batch selection. Click the batch operation button **Upgrade Engine**, and choose the engine image available in the list. It's the default engine shipped with the manager for this release.
-3. Resume all workloads. Any volume not part of a Kubernetes workload must be attached from the Longhorn UI.
-
-## Live Upgrade
-
-Live upgrade is supported when upgrading from v1.11.x to v{{< current-version >}}.
-
-The `iSCSI` frontend does **not** support live upgrades.
-
-Live upgrades should only be performed on **healthy volumes**.
-
-1. Select the volume you want to upgrade.
-2. Click **Upgrade Engine** from the dropdown menu.
-3. Select the engine image you want to upgrade to.
-   1. Normally, this is the only engine image available in the list, as the UI excludes the current engine image.
-4. Click **OK**.
-
-During the live upgrade, the user will see double number of the replicas temporarily. After upgrade complete, the user should see the same number of the replicas as before, and the `Engine Image` field of the volume should be updated.
-
-For the liveness and cleanup of old instance manager pods during live upgrade, refer to the [Instance Manager Pods During Upgrade](../instance-manager-pods-during-upgrade) documentation.
-
-
----
-
-## Article: deploy/uninstall/_index.md
-
----
-title: Uninstall Longhorn
-weight: 6
----
-
-In this section, you'll learn how to uninstall Longhorn.
-
-
-- [Prerequisite](#prerequisite)
-- [Uninstalling Longhorn from the Rancher UI](#uninstalling-longhorn-from-the-rancher-ui)
-- [Uninstalling Longhorn using Helm](#uninstalling-longhorn-using-helm)
-- [Uninstalling Longhorn using Helm Controller](#uninstalling-longhorn-using-helm-controller)
-- [Uninstalling Longhorn using Fleet](#uninstalling-longhorn-using-fleet)
-- [Uninstalling Longhorn using Flux](#uninstalling-longhorn-using-flux)
-- [Uninstalling Longhorn using Argo CD](#uninstalling-longhorn-using-argo-cd)
-- [Uninstalling Longhorn using kubectl](#uninstalling-longhorn-using-kubectl)
-- [Troubleshooting](#troubleshooting)
-  - [Uninstalling using Rancher UI or Helm failed, I am not sure why](#uninstalling-using-rancher-ui-or-helm-failed-i-am-not-sure-why)
-  - [I deleted the Longhorn App from Rancher UI instead of following the uninstallation procedure](#i-deleted-the-longhorn-app-from-rancher-ui-instead-of-following-the-uninstallation-procedure)
-  - [Problems with CRDs](#problems-with-crds)
-
-### Prerequisite
-To prevent Longhorn from being accidentally uninstalled (which leads to data lost),
-we introduce a new setting, [deleting-confirmation-flag](../../references/settings/#deleting-confirmation-flag).
-If this flag is **false**, the Longhorn uninstallation job will fail.
-Set this flag to **true** to allow Longhorn uninstallation.
-You can set this flag using setting page in Longhorn UI or `kubectl -n longhorn-system patch -p '{"value": "true"}' --type=merge lhs deleting-confirmation-flag`
-
-
-To prevent damage to the Kubernetes cluster, we recommend deleting all Kubernetes workloads using Longhorn volumes (PersistentVolume, PersistentVolumeClaim, StorageClass, Deployment, StatefulSet, DaemonSet, etc).
-
-### Uninstalling Longhorn from the Rancher UI
-
-From Rancher UI, navigate to `Catalog Apps` tab and delete Longhorn app.
-
-### Uninstalling Longhorn using Helm
-
-Run this command:
-
-```
-helm uninstall longhorn -n longhorn-system
-```
-
-### Uninstalling Longhorn using Helm Controller
-
-Run this command:
-
-```
-kubectl delete helmchart <HelmChart name> -n <HelmChart namespace>
-```
-
-### Uninstalling Longhorn Using Fleet
-
-Run the following command:
-
-```
-kubectl delete GitRepo longhorn -n fleet-local
-```
-
-After the `longhorn-uninstall` job is completed, run the following command:
-
-```
-kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml
-```
-
-### Uninstalling Longhorn Using Flux
-
-Run the following command:
-
-```
-flux delete helmrelease longhorn-release -n longhorn-system
-```
-
-### Uninstalling Longhorn Using Argo CD
-
-Argo CD currently does not support the PreDelete resource hook. Instead of running `argocd app delete longhorn` directly, you must [uninstall Longhorn using kubectl](#uninstalling-longhorn-using-kubectl) to prevent dangling resources from remaining in the `longhorn-system` namespace.
-
-### Uninstalling Longhorn using kubectl
-
-1. Create the uninstallation job to clean up CRDs from the system and wait for success:
-
-    ```
-    kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/uninstall/uninstall.yaml
-    kubectl get job/longhorn-uninstall -n longhorn-system -w
-    ```
-
-    Example output:
-    ```
-    $ kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/uninstall/uninstall.yaml
-    serviceaccount/longhorn-uninstall-service-account created
-    clusterrole.rbac.authorization.k8s.io/longhorn-uninstall-role created
-    clusterrolebinding.rbac.authorization.k8s.io/longhorn-uninstall-bind created
-    job.batch/longhorn-uninstall created
-
-    $ kubectl get job/longhorn-uninstall -n longhorn-system -w
-    NAME                 COMPLETIONS   DURATION   AGE
-    longhorn-uninstall   0/1           3s         3s
-    longhorn-uninstall   1/1           20s        20s
-    ```
-
-2. Remove remaining components:
-    ```
-    kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml
-    kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/uninstall/uninstall.yaml
-    ```
-
-> **Tip:** If you try `kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml` first and get stuck there,
-pressing `Ctrl C` then running `kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/uninstall/uninstall.yaml` can also help you remove Longhorn. Finally, don't forget to cleanup remaining components.
-
-
-
-
-### Troubleshooting
-#### Uninstalling using Rancher UI or Helm failed, I am not sure why
-You might want to check the logs of the `longhorn-uninstall-xxx` pod inside `longhorn-system` namespace to see why it failed.
-One reason can be that [deleting-confirmation-flag](../../references/settings/#deleting-confirmation-flag) is `false`.
-You can set it to `true` by using setting page in Longhorn UI or `kubectl -n longhorn-system patch -p '{"value": "true"}' --type=merge lhs deleting-confirmation-flag`
-then retry the Helm/Rancher uninstallation.
-
-If the uninstallation was an accident (you don't actually want to uninstall Longhorn),
-you can cancel the uninstallation as the following.
-1. If you use Rancher UI to deploy Longhorn
-   1. Open a kubectl shell on Rancher UI
-   1. Find the latest revision of Longhorn release
-      ```shell
-      > helm list -n longhorn-system -a
-      NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                                   APP VERSION
-      longhorn        longhorn-system 2               2022-10-14 01:22:36.929130451 +0000 UTC uninstalling    longhorn-100.2.3+up1.3.2-rc1            v1.3.2-rc1
-      longhorn-crd    longhorn-system 3               2022-10-13 22:19:05.976625081 +0000 UTC deployed        longhorn-crd-100.2.3+up1.3.2-rc1        v1.3.2-rc1
-      ```
-   1. Rollback to the latest revision
-      ```shell
-      > helm rollback longhorn 2 -n longhorn-system
-      checking 22 resources for changes
-      ...
-      Rollback was a success! Happy Helming!
-      ```
-1. If you use Helm deploy Longhorn
-   1. Open a kubectl terminal
-   1. Find the latest revision of Longhorn release
-      ```shell
-      ➜ helm list --namespace longhorn-system -a
-      NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
-      longhorn        longhorn-system 1               2022-10-14 13:45:25.341292504 -0700 PDT uninstalling    longhorn-1.4.0-dev      v1.4.0-dev
-      ```
-   1. Rollback to the latest revision
-      ```shell
-      ➜  helm rollback longhorn 1 -n longhorn-system
-      Rollback was a success! Happy Helming!
-      ```
-
-
-#### I deleted the Longhorn App from Rancher UI instead of following the uninstallation procedure
-
-Redeploy the (same version) Longhorn App. Follow the uninstallation procedure above.
-
-#### Problems with CRDs
-
-If your CRD instances or the CRDs themselves can't be deleted for whatever reason, run the commands below to clean up. Caution: this will wipe all Longhorn state!
-
-```shell
-# Delete CRD finalizers, instances and definitions
-for crd in $(kubectl get crd -o jsonpath={.items[*].metadata.name} | tr ' ' '\n' | grep longhorn.io); do
-  kubectl -n ${NAMESPACE} get $crd -o yaml | sed "s/\- longhorn.io//g" | kubectl apply -f -
-  kubectl -n ${NAMESPACE} delete $crd --all
-  kubectl delete crd/$crd
-done
-```
-
-If you encounter the following error, it is possible that an incomplete uninstallation removed the Longhorn validation or modification webhook services, but left the same services registered.  
-
-`for: "STDIN": error when patching "STDIN": Internal error occurred: failed calling webhook "validator.longhorn.io": failed to call webhook: Post "https://longhorn-admission-webhook.longhorn-system.svc:9502/v1/webhook/validation?timeout=10s": service "longhorn-admission-webhook" not found`
-
-You can run the following commands to check the status of the webhook services.
-
-```shell
-$ kubectl get ValidatingWebhookConfiguration -A
-NAME                               WEBHOOKS   AGE
-longhorn-webhook-validator         1          46d
-rancher.cattle.io                  7          133d
-rke2-ingress-nginx-admission       1          133d
-rke2-snapshot-validation-webhook   1          133d
-
-$ kubectl get MutatingWebhookConfiguration -A
-NAME                       WEBHOOKS   AGE
-longhorn-webhook-mutator   1          46d
-rancher.cattle.io          4          133d
-```
-
-If either or both are still registered, you can delete the configuration to remove the services from the patch operation call path.
-
-```shell
-$ kubectl delete ValidatingWebhookConfiguration longhorn-webhook-validator
-validatingwebhookconfiguration.admissionregistration.k8s.io "longhorn-webhook-validator" deleted
-
-$ kubectl delete MutatingWebhookConfiguration longhorn-webhook-mutator
-mutatingwebhookconfiguration.admissionregistration.k8s.io "longhorn-webhook-mutator" deleted
-```
-
-The script should run successfully after the configuration is deleted.
-
-```shell
-Warning: Detected changes to resource pvc-279e8c3e-bfb0-4233-8899-77b5b178c08c which is currently being deleted.
-volumeattachment.longhorn.io/pvc-279e8c3e-bfb0-4233-8899-77b5b178c08c configured
-No resources found
-customresourcedefinition.apiextensions.k8s.io "volumeattachments.longhorn.io" deleted
-```
-
----
-Please see [link](https://github.com/longhorn/longhorn) for more information.
-
 
 ---
 
@@ -4220,6 +8992,3849 @@ Another way to resolve the issue is by running the server nodes with `egress-sel
 
 ---
 
+## Article: deploy/upgrade/_index.md
+
+---
+title: Upgrade
+weight: 3
+---
+
+Here we cover how to upgrade to the latest Longhorn from all previous releases.
+
+# Deprecation & Incompatibility
+
+There are no deprecated or incompatible changes introduced in v{{< current-version >}}.
+
+# Upgrade Path Enforcement and Downgrade Prevention
+
+Starting with v1.5.0, Longhorn only supports upgrades from one minor version to the next. For example, upgrading from 1.5.x to 1.6.x is supported, but skipping versions (e.g., from 1.4.x to 1.6.x) is not. If you attempt to upgrade from an unsupported version or skip a minor version, the operation will fail automatically. However, you can revert to the previously installed version without service interruption or downtime.
+
+Moreover, Longhorn does not support downgrades to earlier versions. This restriction helps prevent unexpected system behavior and issues associated with function incompatibility, deprecation, or removal.
+
+> **Warning**:
+> - Once you successfully upgrade to v{{< current-version >}}, you will not be allowed to revert to the previously installed version.
+> - The Downgrade Prevention feature was introduced in v1.5.0 so Longhorn is unable to prevent downgrade attempts in older versions.
+However, downgrading is completely unsupported and is therefore not recommended.
+
+The following table outlines the supported upgrade paths.
+
+  |  Current version |  Target version |  Supported | Example |
+  |    :-:      |    :-:      |   :-:  |    :-:    |
+  |  x.y.*      |  x.(y+1).*  |   ✓    |  v1.4.2  to  v1.5.1  |
+  |  x.y.*      |  x.y.(*+n)  |   ✓    |  v1.5.0  to  v1.5.1  |
+  |  x.y[^lastMinorVersion].*      |  (x+1).y.*  |   ✓    |  v1.30.0 to  v2.0.0  |
+  |  x.(y-1).*  |  x.(y+1).*  |   X    |  v1.3.3  to  v1.5.1  |
+  |  x.(y-2).*  |  x.(y+1).*  |   X    |  v1.2.6  to  v1.5.1  |
+
+[^lastMinorVersion]: Longhorn only allows upgrades from any patch version of the last minor release before the new major version. For example, if v1.3.0 is the last minor version before v2.0, you can upgrade from any patch version of v1.3.0 to any patch version of v2.0.
+
+## Manual Checks Before Upgrade
+Automated checks are only performed on some upgrade paths, and the pre-upgrade checker may not cover some scenarios.  Manual checks, performed using either kubectl or the UI, are recommended for these schenarios.  You can take mitigating actions or defer the upgrade until issues are addressed.
+- Ensure that all V2 Data Engine volumes are detached and the replicas are stopped.  The V2 Data Engine currently does not support live upgrades.
+- Avoid upgrading when volumes are in the "Faulted" status.  If all the replicas are deemed unusable, they may be deleted and data may be permanently lost (if no usable backups exist).
+- Avoid upgrading if a failed BackingImage exists.  For more information, see [Backing Image](../../advanced-resources/backing-image/backing-image).
+- It is recommended to create a [Longhorn system backup](../../advanced-resources/system-backup-restore/backup-longhorn-system) before performing the upgrade. This ensures that all critical resources, such as volumes and backing images, are backed up and can be restored in case any issues arise.
+
+# Upgrading Longhorn
+
+There are normally two steps in the upgrade process: first upgrade Longhorn manager to the latest version, then manually upgrade the Longhorn engine to the latest version using the latest Longhorn manager.
+
+## 1. Upgrade Longhorn manager
+
+- To upgrade from v1.11.x, see [this section.](./longhorn-manager)
+
+## 2. Manually Upgrade Longhorn Engine
+
+After Longhorn Manager is upgraded, Longhorn Engine also needs to be upgraded [using the Longhorn UI.](./upgrade-engine)
+
+## 3. Automatically Upgrade Longhorn Engine
+
+Since Longhorn v1.1.1, we provide an option to help you [automatically upgrade engines](./auto-upgrade-engine)
+
+## 4. Automatically Migrate Recurring Jobs
+
+With the introduction of the new label-driven `Recurring Job` feature, Longhorn has removed the `RecurringJobs` field in the Volume Spec and planned to deprecate `RecurringJobs` in the StorageClass.
+
+During the upgrade, Longhorn will automatically:
+- Create new recurring job CRs from the `recurringJobs` field in Volume Spec and convert them to the volume labels.
+- Create new recurring job CRs from the `recurringJobs` in the StorageClass and convert them to the new `recurringJobSelector` parameter.
+
+Visit [Recurring Snapshots and Backups](../../snapshots-and-backups/scheduling-backups-and-snapshots) for more information about the new `Recurring Job` feature.
+
+# Extended Reading
+
+Visit [Some old instance manager pods are still running after upgrade](https://longhorn.io/kb/troubleshooting-some-old-instance-manager-pods-are-still-running-after-upgrade) for more information about the cleanup strategy of instance manager pods during upgrade.
+
+# Need Help?
+
+If you have any issues, please report it at
+https://github.com/longhorn/longhorn/issues and include your backup yaml files
+as well as manager logs.
+
+
+---
+
+## Article: deploy/upgrade/auto-upgrade-engine.md
+
+---
+title: Automatically Upgrading Longhorn Engine
+weight: 3
+---
+
+> **Notice**:
+>
+> This engine upgrade procedure applies only to V1 Data Engine volumes. In Longhorn v1.12, V2 Data Engine volumes do not support engine upgrades and all V2 volumes must be detached before upgrading Longhorn. Support for V2 Data Engine engine upgrades is planned for upgrades from Longhorn v1.12 to v1.13.
+
+Since Longhorn v1.1.1, we provide an option to help you automatically upgrade Longhorn volumes to the new default engine version after upgrading Longhorn manager.
+This feature reduces the amount of manual work you have to do when upgrading Longhorn.
+There are a few concepts related to this feature as listed below:
+
+## 1. Concurrent Automatic Engine Upgrade Per Node Limit Setting
+
+This is a setting that controls how Longhorn automatically upgrades volumes' engines to the new default engine image after upgrading Longhorn manager.
+The value of this setting specifies the maximum number of engines per node that are allowed to upgrade to the default engine image at the same time.
+If the value is 0, Longhorn will not automatically upgrade volumes' engines to the default version.
+The bigger this value is, the faster the engine upgrade process finishes.
+
+However, giving a bigger value for this setting will consume more CPU and memory of the node during the engine upgrade process.
+We recommend setting the value to 3 to leave some room for error but don't overwhelm the system with too many failed upgrades.
+
+## 2. The behavior of Longhorn with different volume conditions
+
+In the following cases, assume that the `concurrent automatic engine upgrade per node limit` setting is bigger than 0.
+
+1. Attached Volumes
+
+   If the volume is in attached state and healthy, Longhorn will automatically do a live upgrade for the volume's engine to the new default engine image.
+
+1. Detached Volumes
+
+   Longhorn automatically does an offline upgrade for detached volume.
+
+1. Disaster Recovery Volumes
+
+   Longhorn doesn't automatically upgrade [disaster recovery volumes](../../../snapshots-and-backups/setup-disaster-recovery-volumes/) to the new default engine image because it would trigger a full restoration for the disaster recovery volumes.
+The full restoration might affect the performance of other running Longhorn volumes in the system.
+So, Longhorn leaves it to you to decide when it is the good time to manually upgrade the engine for disaster recovery volumes (e.g., when the system is idle or during the maintenance time).
+
+   However, when you activate the disaster recovery volume, it will be activated and then detached.
+At this time, Longhorn will automatically do offline upgrade for the volume similar to the detached volume case.
+
+## 3. What Happened If The Upgrade Fails?
+
+If a volume failed to upgrade its engine, the engine image in volume's spec will remain to be different than the engine image in the volume's status.
+Longhorn will continuously retry to upgrade until it succeeds.
+
+If there are too many volumes that fail to upgrade per node (i.e., more than the `concurrent automatic engine upgrade per node limit` setting),
+Longhorn will stop upgrading volume on that node.
+
+## 4. Liveness and Cleanup of Old Instance Manager Pods During Automatic Upgrade
+
+For the liveness and cleanup of old instance manager pods during live upgrade, refer to the [Instance Manager Pods During Upgrade](../instance-manager-pods-during-upgrade) documentation.
+
+
+---
+
+## Article: deploy/upgrade/instance-manager-pods-during-upgrade.md
+
+---
+title: Instance Manager Pods During Upgrade
+weight: 4
+---
+
+After a live upgrade, you may notice that some **old instance manager pods** are still running. This is expected behavior and **not a bug**.
+
+## Why This Happens
+
+Longhorn uses the following strategy to manage instance manager pods during a live upgrade:
+
+- Old instance manager pods are cleaned up immediately once no engine or replica processes are running in them.
+- During a **live engine upgrade** of a volume:
+  - Replica processes are re-created in new instance manager pods using the upgraded engine image.
+  - To avoid interrupting I/O, Longhorn cannot start a new engine process using the upgraded engine image in a new instance manager pod while the volume is attached. Instead, the old instance manager pod continues to manage the lifecycle of the new engine process until the volume is detached. As a result, the new engine process runs in the old instance manager pod.
+
+As a result, an old instance manager pod remains running as long as it hosts an active engine process. Once the volume is detached and no engine or replica processes remain, Longhorn will automatically clean up the old instance manager pod.
+
+## How to Check Which Volumes Are Using Old Instance Manager Pods
+
+You can check which volumes are still using the old instance manager pods from the Longhorn UI:
+
+- Navigate to **Volume** > **Name** > **Volume Details** > **Instance Manager**.
+
+## How to Fully Clean Up Old Instance Manager Pods
+
+To allow Longhorn to clean up all old instance manager pods:
+
+1. Detach all volumes that are still using old instance manager pods.
+2. Once no engine or replica processes remain, Longhorn will automatically remove the old instance manager pods.
+
+
+---
+
+## Article: deploy/upgrade/longhorn-manager.md
+
+---
+title: Upgrading Longhorn Manager
+weight: 1
+---
+
+### Upgrading from v1.11.x
+
+We only support upgrading to v{{< current-version >}} from v1.11.x. For other versions, please upgrade to v1.11.x first.
+
+Engine live upgrade is supported from v1.11.x to v{{< current-version >}}.
+For airgap upgrades when Longhorn is installed as a Rancher app, you will need to modify the image names and remove the registry URL part.
+
+For example, the image `registry.example.com/longhorn/longhorn-manager:v{{< current-version >}}` is changed to `longhorn/longhorn-manager:v{{< current-version >}}` in Longhorn images section. For more information, see the air gap installation steps [here.](../../install/airgap/#using-a-rancher-app)
+
+#### Preparing for the Upgrade
+
+If Longhorn was installed using a Helm Chart, or if it was installed as Rancher catalog app, check to make sure the parameters in the default StorageClass weren't changed. Changing the default StorageClass's parameter might result in a chart upgrade failure. if you want to reconfigure the parameters in the StorageClass, you can copy the default StorageClass's configuration to create another StorageClass.
+
+    The current default StorageClass has the following parameters:
+
+        parameters:
+          numberOfReplicas: <user specified replica count, 3 by default>
+          staleReplicaTimeout: "30"
+          fromBackup: ""
+          baseImage: ""
+
+#### Upgrade
+
+> **Prerequisite:** Always back up volumes before upgrading. If anything goes wrong, you can restore the volume using the backup.
+
+#### Upgrade as a Rancher Catalog App
+
+To upgrade the Longhorn App, make sure which Rancher UI the existing Longhorn App was installed with. There are two Rancher UIs, one is the Cluster Manager (old UI), and the other one is the Cluster Explorer (new UI). The Longhorn App in different UIs considered as two different applications by Rancher. They cannot upgrade to each other. If you installed Longhorn in the Cluster Manager, you need to use the Cluster Manager to upgrade Longhorn to a newer version, and vice versa for the Cluster Explorer.
+
+> Note: Because the Cluster Manager (old UI) is being deprecated, we provided the instruction to migrate the existing Longhorn installation to the Longhorn chart in the Cluster Explorer (new UI) [here](https://longhorn.io/kb/how-to-migrate-longhorn-chart-installed-in-old-rancher-ui-to-the-chart-in-new-rancher-ui/)
+
+Different Rancher UIs screenshots.
+- The Cluster Manager (old UI)
+{{< figure src="/img/screenshots/install/cluster-manager.png" >}}
+- The Cluster Explorer (new UI)
+{{< figure src="/img/screenshots/install/cluster-explorer.png" >}}
+
+On Kubernetes clusters managed by Rancher 2.1 or newer, the steps to upgrade the catalog app `longhorn-system` are the similar to the installation steps.
+
+#### Upgrade with Kubectl
+
+To upgrade with kubectl, run this command:
+
+```
+kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml
+```
+
+#### Upgrade with Helm
+
+To upgrade with Helm, run this command:
+
+```
+helm upgrade longhorn longhorn/longhorn --namespace longhorn-system --version {{< current-version >}}
+```
+
+#### Upgrade with Helm Controller
+
+Update the value of `spec.version` in the `HelmChart` YAML file:
+
+```yaml
+spec:
+  version: v{{< current-version >}} # Replace with the Longhorn version you'd like to upgrade to
+  chart: longhorn
+  repo: https://charts.longhorn.io
+  failurePolicy: abort
+```
+
+Alternatively, if using the `spec.chartContent` key, create a patch file with 
+```yaml
+spec:
+  chartContent: <base64 content> # tar cz of longhorn charts directory for release | base64 -w 0
+```
+and then apply it with 
+```
+kubectl  patch helmchart longhorn -n <namespace> --type merge --patch-file <name of patch file>
+```
+
+> **IMPORTANT!** In both cases, ensure that `spec.failurePolicy` is set to "abort".  The only other value is the default: "reinstall", which performs an uninstall of Longhorn if the pre-upgrade check or the upgrade fails.  With "abort", it retries periodically, giving the user a chance to fix the problem.
+
+#### Upgrade with Fleet
+
+Update the value of `helm.version` in the `fleet` YAML file of your GitOps repository.
+
+```yaml
+helm:
+  repo: https://charts.longhorn.io
+  chart: longhorn
+  version: v{{< current-version >}} # Replace with the Longhorn version you'd like to upgrade to
+  releaseName: longhorn
+```
+
+#### Upgrade with Flux
+
+Update the value of `spec.chart.spec.version` in the `HelmRelease` YAML file of your GitOps repository.
+
+```yaml
+spec:
+  chart:
+    spec:
+      chart: longhorn
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn
+      version: v{{< current-version >}} # Replace with the Longhorn version you'd like to upgrade to
+```
+
+#### Upgrade with Argo CD
+
+Update the value of `targetRevision` in the `Application` YAML file of your GitOps repository.
+
+```yaml
+spec:
+  project: default
+  sources:
+    - chart: longhorn
+      repoURL: https://charts.longhorn.io
+      targetRevision: v{{< current-version >}} # Replace with the Longhorn version you'd like to upgrade to
+```
+
+Then wait for all the pods to become running and Longhorn UI working. e.g.:
+
+```
+$ kubectl -n longhorn-system get pod
+NAME                                                  READY   STATUS    RESTARTS      AGE
+engine-image-ei-4dbdb778-nw88l                        1/1     Running   0             4m29s
+longhorn-ui-b7c844b49-jn5g6                           1/1     Running   0             75s
+longhorn-manager-z2p8h                                1/1     Running   0             71s
+instance-manager-b34d5db1fe1e2d52bcfb308be3166cfc     1/1     Running   0             65s
+longhorn-driver-deployer-6bd59c9f76-jp6pg             1/1     Running   0             75s
+engine-image-ei-df38d2e5-zccq5                        1/1     Running   0             65s
+csi-snapshotter-588457fcdf-h2lgc                      1/1     Running   0             30s
+csi-resizer-6d8cf5f99f-8v4sp                          1/1     Running   1 (30s ago)   37s
+csi-snapshotter-588457fcdf-6pgf4                      1/1     Running   0             30s
+csi-provisioner-869bdc4b79-7ddwd                      1/1     Running   1 (30s ago)   44s
+csi-snapshotter-588457fcdf-p4kkn                      1/1     Running   0             30s
+csi-attacher-7bf4b7f996-mfbdn                         1/1     Running   1 (30s ago)   50s
+csi-provisioner-869bdc4b79-4dc7n                      1/1     Running   1 (30s ago)   43s
+csi-resizer-6d8cf5f99f-vnspd                          1/1     Running   1 (30s ago)   37s
+csi-attacher-7bf4b7f996-hrs7w                         1/1     Running   1 (30s ago)   50s
+csi-attacher-7bf4b7f996-rt2s9                         1/1     Running   1 (30s ago)   50s
+csi-resizer-6d8cf5f99f-7vv89                          1/1     Running   1 (30s ago)   37s
+csi-provisioner-869bdc4b79-sn6zr                      1/1     Running   1 (30s ago)   43s
+longhorn-csi-plugin-b2zzj                             2/2     Running   0             24s
+```
+
+Next, [upgrade Longhorn engine.](../upgrade-engine)
+
+### Upgrading from Unsupported Versions
+
+We only support upgrading to v{{< current-version >}} from v1.11.x. For other versions, please upgrade to v1.11.x first.
+
+If you attempt to upgrade from an unsupported version, the upgrade will fail. When encountering an upgrade failure, please consider the following scenarios to recover the state based on different upgrade methods.
+
+#### Upgrade with Kubectl
+
+When you upgrade with kubectl by running this command:
+
+```shell
+kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml
+```
+
+Longhorn will block the upgrade process and provide the failure reason in the logs of the `longhorn-manager` pod.
+During the upgrade failure, the user's Longhorn system should remain intact without any impacts except `longhorn-manager` daemon set.
+
+To recover, you need to apply the manifest of the previously installed version using the following command:
+
+```shell
+kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/[previous installed version]/deploy/longhorn.yaml
+```
+
+Besides, users might need to delete new components introduced by the new version manually.
+
+#### Upgrade with Helm or Rancher App Marketplace
+
+To prevent any impact caused by failed upgrades from unsupported versions, Longhorn will automatically initiate a new job (`pre-upgrade`) to verify if the upgrade path is supported before upgrading when upgrading through `Helm` or `Rancher App Marketplace`.
+
+The `pre-upgrade` job will block the upgrade process and provide the failure reason in the logs of the pod.  It will also be recorded in an event, for instance:
+
+```
+2m33s               Normal    Created                 Pod/longhorn-pre-upgrade-v5tqq    Created container longhorn-pre-upgrade
+2m33s               Warning   FailedUpgradePreCheck   /longhorn-pre-upgrade             failed to upgrade since upgrading from v1.6.2 to v1.8.0 for minor version is not supported
+```
+
+During the upgrade failure, the user's Longhorn system should remain intact without any impacts.
+
+To recover, you need to run the below commands to rollback to the previously installed revision:
+
+```shell
+# get previous installed Longhorn REVISION
+helm history longhorn
+helm rollback longhorn [REVISION]
+
+# or
+helm upgrade longhorn longhorn/longhorn --namespace longhorn-system --version [previous installed version]
+```
+
+To recover, you need to upgrade to the previously installed revision at `Rancher App Marketplace` again.
+
+### TroubleShooting
+1. Error: `"longhorn" is invalid: provisioner: Forbidden: updates to provisioner are forbidden.`
+- This means there are some modifications applied to the default storageClass and you need to clean up the old one before upgrade.
+
+- To clean up the deprecated StorageClass, run this command:
+    ```
+    kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/examples/storageclass.yaml
+    ```
+
+
+---
+
+## Article: deploy/upgrade/upgrade-engine.md
+
+---
+title: Manually Upgrading Longhorn Engine
+weight: 2
+---
+
+In this section, you'll learn how to manually upgrade the Longhorn Engine from the Longhorn UI.
+
+> **Notice**:
+>
+> This engine upgrade procedure applies only to V1 Data Engine volumes. In Longhorn v1.12, V2 Data Engine volumes do not support engine upgrades and all V2 volumes must be detached before upgrading Longhorn. Support for V2 Data Engine engine upgrades is planned for upgrades from Longhorn v1.12 to v1.13.
+
+## Prerequisites
+
+Always make backups before upgrading the Longhorn engine images.
+
+Upgrade the Longhorn manager before upgrading the Longhorn engine.
+
+## Offline Upgrade
+
+Follow these steps if the live upgrade is not available, or if the volume is stuck in degraded state:
+
+1. Follow [the detach procedure for relevant workloads](../../../nodes-and-volumes/volumes/detaching-volumes).
+2. Select all the volumes using batch selection. Click the batch operation button **Upgrade Engine**, and choose the engine image available in the list. It's the default engine shipped with the manager for this release.
+3. Resume all workloads. Any volume not part of a Kubernetes workload must be attached from the Longhorn UI.
+
+## Live Upgrade
+
+Live upgrade is supported when upgrading from v1.11.x to v{{< current-version >}}.
+
+The `iSCSI` frontend does **not** support live upgrades.
+
+Live upgrades should only be performed on **healthy volumes**.
+
+1. Select the volume you want to upgrade.
+2. Click **Upgrade Engine** from the dropdown menu.
+3. Select the engine image you want to upgrade to.
+   1. Normally, this is the only engine image available in the list, as the UI excludes the current engine image.
+4. Click **OK**.
+
+During the live upgrade, the user will see double number of the replicas temporarily. After upgrade complete, the user should see the same number of the replicas as before, and the `Engine Image` field of the volume should be updated.
+
+For the liveness and cleanup of old instance manager pods during live upgrade, refer to the [Instance Manager Pods During Upgrade](../instance-manager-pods-during-upgrade) documentation.
+
+
+---
+
+## Article: deploy/uninstall/_index.md
+
+---
+title: Uninstall Longhorn
+weight: 6
+---
+
+In this section, you'll learn how to uninstall Longhorn.
+
+
+- [Prerequisite](#prerequisite)
+- [Uninstalling Longhorn from the Rancher UI](#uninstalling-longhorn-from-the-rancher-ui)
+- [Uninstalling Longhorn using Helm](#uninstalling-longhorn-using-helm)
+- [Uninstalling Longhorn using Helm Controller](#uninstalling-longhorn-using-helm-controller)
+- [Uninstalling Longhorn using Fleet](#uninstalling-longhorn-using-fleet)
+- [Uninstalling Longhorn using Flux](#uninstalling-longhorn-using-flux)
+- [Uninstalling Longhorn using Argo CD](#uninstalling-longhorn-using-argo-cd)
+- [Uninstalling Longhorn using kubectl](#uninstalling-longhorn-using-kubectl)
+- [Troubleshooting](#troubleshooting)
+  - [Uninstalling using Rancher UI or Helm failed, I am not sure why](#uninstalling-using-rancher-ui-or-helm-failed-i-am-not-sure-why)
+  - [I deleted the Longhorn App from Rancher UI instead of following the uninstallation procedure](#i-deleted-the-longhorn-app-from-rancher-ui-instead-of-following-the-uninstallation-procedure)
+  - [Problems with CRDs](#problems-with-crds)
+
+### Prerequisite
+To prevent Longhorn from being accidentally uninstalled (which leads to data lost),
+we introduce a new setting, [deleting-confirmation-flag](../../references/settings/#deleting-confirmation-flag).
+If this flag is **false**, the Longhorn uninstallation job will fail.
+Set this flag to **true** to allow Longhorn uninstallation.
+You can set this flag using setting page in Longhorn UI or `kubectl -n longhorn-system patch -p '{"value": "true"}' --type=merge lhs deleting-confirmation-flag`
+
+
+To prevent damage to the Kubernetes cluster, we recommend deleting all Kubernetes workloads using Longhorn volumes (PersistentVolume, PersistentVolumeClaim, StorageClass, Deployment, StatefulSet, DaemonSet, etc).
+
+### Uninstalling Longhorn from the Rancher UI
+
+From Rancher UI, navigate to `Catalog Apps` tab and delete Longhorn app.
+
+### Uninstalling Longhorn using Helm
+
+Run this command:
+
+```
+helm uninstall longhorn -n longhorn-system
+```
+
+### Uninstalling Longhorn using Helm Controller
+
+Run this command:
+
+```
+kubectl delete helmchart <HelmChart name> -n <HelmChart namespace>
+```
+
+### Uninstalling Longhorn Using Fleet
+
+Run the following command:
+
+```
+kubectl delete GitRepo longhorn -n fleet-local
+```
+
+After the `longhorn-uninstall` job is completed, run the following command:
+
+```
+kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml
+```
+
+### Uninstalling Longhorn Using Flux
+
+Run the following command:
+
+```
+flux delete helmrelease longhorn-release -n longhorn-system
+```
+
+### Uninstalling Longhorn Using Argo CD
+
+Argo CD currently does not support the PreDelete resource hook. Instead of running `argocd app delete longhorn` directly, you must [uninstall Longhorn using kubectl](#uninstalling-longhorn-using-kubectl) to prevent dangling resources from remaining in the `longhorn-system` namespace.
+
+### Uninstalling Longhorn using kubectl
+
+1. Create the uninstallation job to clean up CRDs from the system and wait for success:
+
+    ```
+    kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/uninstall/uninstall.yaml
+    kubectl get job/longhorn-uninstall -n longhorn-system -w
+    ```
+
+    Example output:
+    ```
+    $ kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/uninstall/uninstall.yaml
+    serviceaccount/longhorn-uninstall-service-account created
+    clusterrole.rbac.authorization.k8s.io/longhorn-uninstall-role created
+    clusterrolebinding.rbac.authorization.k8s.io/longhorn-uninstall-bind created
+    job.batch/longhorn-uninstall created
+
+    $ kubectl get job/longhorn-uninstall -n longhorn-system -w
+    NAME                 COMPLETIONS   DURATION   AGE
+    longhorn-uninstall   0/1           3s         3s
+    longhorn-uninstall   1/1           20s        20s
+    ```
+
+2. Remove remaining components:
+    ```
+    kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml
+    kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/uninstall/uninstall.yaml
+    ```
+
+> **Tip:** If you try `kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml` first and get stuck there,
+pressing `Ctrl C` then running `kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/uninstall/uninstall.yaml` can also help you remove Longhorn. Finally, don't forget to cleanup remaining components.
+
+
+
+
+### Troubleshooting
+#### Uninstalling using Rancher UI or Helm failed, I am not sure why
+You might want to check the logs of the `longhorn-uninstall-xxx` pod inside `longhorn-system` namespace to see why it failed.
+One reason can be that [deleting-confirmation-flag](../../references/settings/#deleting-confirmation-flag) is `false`.
+You can set it to `true` by using setting page in Longhorn UI or `kubectl -n longhorn-system patch -p '{"value": "true"}' --type=merge lhs deleting-confirmation-flag`
+then retry the Helm/Rancher uninstallation.
+
+If the uninstallation was an accident (you don't actually want to uninstall Longhorn),
+you can cancel the uninstallation as the following.
+1. If you use Rancher UI to deploy Longhorn
+   1. Open a kubectl shell on Rancher UI
+   1. Find the latest revision of Longhorn release
+      ```shell
+      > helm list -n longhorn-system -a
+      NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                                   APP VERSION
+      longhorn        longhorn-system 2               2022-10-14 01:22:36.929130451 +0000 UTC uninstalling    longhorn-100.2.3+up1.3.2-rc1            v1.3.2-rc1
+      longhorn-crd    longhorn-system 3               2022-10-13 22:19:05.976625081 +0000 UTC deployed        longhorn-crd-100.2.3+up1.3.2-rc1        v1.3.2-rc1
+      ```
+   1. Rollback to the latest revision
+      ```shell
+      > helm rollback longhorn 2 -n longhorn-system
+      checking 22 resources for changes
+      ...
+      Rollback was a success! Happy Helming!
+      ```
+1. If you use Helm deploy Longhorn
+   1. Open a kubectl terminal
+   1. Find the latest revision of Longhorn release
+      ```shell
+      ➜ helm list --namespace longhorn-system -a
+      NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+      longhorn        longhorn-system 1               2022-10-14 13:45:25.341292504 -0700 PDT uninstalling    longhorn-1.4.0-dev      v1.4.0-dev
+      ```
+   1. Rollback to the latest revision
+      ```shell
+      ➜  helm rollback longhorn 1 -n longhorn-system
+      Rollback was a success! Happy Helming!
+      ```
+
+
+#### I deleted the Longhorn App from Rancher UI instead of following the uninstallation procedure
+
+Redeploy the (same version) Longhorn App. Follow the uninstallation procedure above.
+
+#### Problems with CRDs
+
+If your CRD instances or the CRDs themselves can't be deleted for whatever reason, run the commands below to clean up. Caution: this will wipe all Longhorn state!
+
+```shell
+# Delete CRD finalizers, instances and definitions
+for crd in $(kubectl get crd -o jsonpath={.items[*].metadata.name} | tr ' ' '\n' | grep longhorn.io); do
+  kubectl -n ${NAMESPACE} get $crd -o yaml | sed "s/\- longhorn.io//g" | kubectl apply -f -
+  kubectl -n ${NAMESPACE} delete $crd --all
+  kubectl delete crd/$crd
+done
+```
+
+If you encounter the following error, it is possible that an incomplete uninstallation removed the Longhorn validation or modification webhook services, but left the same services registered.  
+
+`for: "STDIN": error when patching "STDIN": Internal error occurred: failed calling webhook "validator.longhorn.io": failed to call webhook: Post "https://longhorn-admission-webhook.longhorn-system.svc:9502/v1/webhook/validation?timeout=10s": service "longhorn-admission-webhook" not found`
+
+You can run the following commands to check the status of the webhook services.
+
+```shell
+$ kubectl get ValidatingWebhookConfiguration -A
+NAME                               WEBHOOKS   AGE
+longhorn-webhook-validator         1          46d
+rancher.cattle.io                  7          133d
+rke2-ingress-nginx-admission       1          133d
+rke2-snapshot-validation-webhook   1          133d
+
+$ kubectl get MutatingWebhookConfiguration -A
+NAME                       WEBHOOKS   AGE
+longhorn-webhook-mutator   1          46d
+rancher.cattle.io          4          133d
+```
+
+If either or both are still registered, you can delete the configuration to remove the services from the patch operation call path.
+
+```shell
+$ kubectl delete ValidatingWebhookConfiguration longhorn-webhook-validator
+validatingwebhookconfiguration.admissionregistration.k8s.io "longhorn-webhook-validator" deleted
+
+$ kubectl delete MutatingWebhookConfiguration longhorn-webhook-mutator
+mutatingwebhookconfiguration.admissionregistration.k8s.io "longhorn-webhook-mutator" deleted
+```
+
+The script should run successfully after the configuration is deleted.
+
+```shell
+Warning: Detected changes to resource pvc-279e8c3e-bfb0-4233-8899-77b5b178c08c which is currently being deleted.
+volumeattachment.longhorn.io/pvc-279e8c3e-bfb0-4233-8899-77b5b178c08c configured
+No resources found
+customresourcedefinition.apiextensions.k8s.io "volumeattachments.longhorn.io" deleted
+```
+
+---
+Please see [link](https://github.com/longhorn/longhorn) for more information.
+
+
+---
+
+## Article: maintenance/_index.md
+
+---
+title: Maintenance and Upgrade
+weight: 3
+---
+
+---
+
+## Article: maintenance/maintenance.md
+
+---
+title: Node Maintenance and Kubernetes Upgrade Guide
+weight: 3
+---
+
+This section describes how to handle planned node maintenance or upgrading Kubernetes version for the cluster.
+
+- [Updating the Node OS or Container Runtime](#updating-the-node-os-or-container-runtime)
+- [Removing a Disk](#removing-a-disk)
+  - [Reusing the Node Name](#reusing-the-node-name)
+- [Removing a Node](#removing-a-node)
+- [Upgrading Kubernetes](#upgrading-kubernetes)
+  - [In-place Upgrade](#in-place-upgrade)
+  - [Managed Kubernetes](#managed-kubernetes)
+- [Node Drain Policy Recommendations](#node-drain-policy-recommendations)
+  - [Important Notes](#important-notes)
+  - [Block If Contains Last Replica](#block-if-contains-last-replica)
+  - [Allow If Last Replica Is Stopped](#allow-if-last-replica-is-stopped)
+  - [Always Allow](#always-allow)
+  - [Block For Eviction](#block-for-eviction)
+  - [Block For Eviction If Contains Last Replica](#block-for-eviction-if-contains-last-replica)
+
+## Updating the Node OS or Container Runtime
+
+1. Cordon the node. Longhorn will automatically disable the node scheduling when a Kubernetes node is cordoned.
+
+1. Drain the node to move the workload to somewhere else.
+
+   It is necessary to use `--ignore-daemonsets` to drain the node. The `--ignore-daemonsets` is needed because Longhorn
+   deployed some daemonsets such as `Longhorn manager`, `Longhorn CSI plugin`, `engine image`.
+
+   While the drain proceeds, engine processes on the node will be migrated with the workload pods to other nodes.
+
+   > **Note:** Volumes that are not attached through the CSI flow on the node (for example, manually attached using
+   > UI) will not be automatically attached to new nodes by Kubernetes during the draining. Therefore, Longhorn will
+   > prevent the node from completing the drain operation. The user will need to detach these volumes manually to
+   > unblock the draining.
+
+   While the drain proceeds, replica processes on the node will either continue to run or eventually be evicted and
+   stopped based on the [Node Drain Policy](#node-drain-policy-recommendations).
+
+   > **Note:** By default, if there is one last healthy replica for a volume on the node, Longhorn will prevent the node
+   > from completing the drain operation, to protect the last replica and prevent the disruption of the workload. You
+   > can control this behavior with the setting [Node Drain Policy](../../references/settings#node-drain-policy), or
+   > [evict the replica to other nodes before draining](../../nodes-and-volumes/nodes/disks-or-nodes-eviction). See [Node Drain Policy
+   > Recommendations](#node-drain-policy-recommendations) for considerations when selecting a policy.
+
+   After the drain is completed, there should be no engine or replica processes running on the node, as the
+   instance-manager pod that was running them will be stopped. Depending on the [Node Drain
+   Policy](#node-drain-policy-recommendations), replicas scheduled to the node will either appear as `Failed` or be
+   removed in favor of replacements. Workloads using Longhorn volumes will function as expected and enough replicas will
+   be running elsewhere to meet the requirements of the policy.
+
+   > **Note:** Normally you don't need to evict the replicas before the drain operation, as long as you have healthy
+   > replicas on other nodes. The replicas can be reused later, once the node back online and uncordoned. See [Node
+   > Drain Policy](#node-drain-policy-recommendations) for further guidance.
+
+1. Perform the necessary maintenance, including shutting down or rebooting the node.
+1. Uncordon the node. Longhorn will automatically re-enable the node scheduling. If there are existing replicas on the
+   node, Longhorn might use those replicas to speed up the rebuilding process. You can set the [Replica Replenishment
+   Wait Interval](../../references/settings#replica-replenishment-wait-interval) setting to customize how long Longhorn
+   should wait for potentially reusable replica to be available.
+
+## Removing a Disk
+
+To remove a disk:
+
+1. Disable the disk scheduling.
+1. Evict all the replicas on the disk.
+1. Delete the disk.
+
+### Reusing the Node Name
+
+These steps also apply if you've replaced a node using the same node name. Longhorn will recognize that the disks are
+different once the new node is up. You will need to remove the original disks first and add them back for the new node
+if it uses the same name as the previous node.
+
+## Removing a Node
+
+To remove a node:
+
+1. Disable the disk scheduling.
+1. Evict all the replicas on the node.
+1. Detach all the volumes on the node.
+
+   If the node has been drained, all the workloads should be migrated to another node already.
+
+   If there are any other volumes remaining attached, detach them before continuing.
+
+1. Remove the node from Longhorn using the `Delete` in the `Node` tab.
+
+   Or, remove the node from Kubernetes, using:
+
+      kubectl delete node <node-name>
+
+1. Longhorn will automatically remove the node from the cluster.
+
+## Upgrading Kubernetes
+
+### In-place Upgrade
+
+In-place upgrade is upgrading method in which nodes are upgraded without being removed from the cluster. Some example
+solutions that use this upgrade methods are [k3s automated upgrades](https://docs.k3s.io/upgrades/automated), [Rancher's
+Kubernetes upgrade
+guide](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/upgrading-kubernetes/#upgrading-the-kubernetes-version),
+[Kubeadm upgrade](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/), etc...
+
+With the assumption that node and disks are not being deleted/removed, the recommended upgrading guide is:
+
+1. Cordon and drain a node before upgrading Kubernetes components. Draining instructions are similar to the ones at
+   [Updating the Node OS or Container Runtime](#updating-the-node-os-or-container-runtime).
+2. The drain `--timeout` should be big enough so that replica rebuildings on healthy nodes can finish between node
+   upgrades. The more Longhorn replicas you have on the draining node, the more time it takes for the Longhorn replicas
+   to be rebuilt on other healthy nodes. We recommending you to test and select a big enough value or set it to 0 (aka
+   never timeout).
+3. The number of nodes upgrading at a time should be smaller than the number of Longhorn replicas for each volume.
+   This is so that a running Longhorn volume has at least one healthy replica running at a time.
+4. Consider setting the setting [Node Drain Policy](../../references/settings#node-drain-policy) to
+   `allow-if-replica-is-stopped` so that the drain is not blocked by the last healthy replica of a detached volume. See
+   [Node Drain Policy Recommendations](#node-drain-policy-recommendations) for considerations when selecting a policy.
+
+### Managed Kubernetes
+
+See the instruction at [Support Managed Kubernetes Service](../../advanced-resources/support-managed-k8s-service).
+
+## Node Drain Policy Recommendations
+
+There are currently five Node Drain Policies available for selection. Each has its own benefits and drawbacks. This
+section provides general guidance on each and suggests situations in which each might be used.
+
+### Important Notes
+
+Node Drain Policy is intended to govern Longhorn behavior when a node is actively being drained. However, there is no
+way for Longhorn to determine the difference between the cordoning and draining of a node, so, depending on the policy,
+Longhorn may take action any time a node is cordoned, even if it is not being drained.
+
+Node drain policy works to prevent the eviction of an instance-manager pod during a drain until certain conditions are
+met. If the instance-manager pod cannot be evicted, the drain cannot complete. This prevents a user (or automated
+process) from continuing to shut down or restart a node if it is not safe to do so. It may be tempting to ignore the
+drain failure and proceed with maintenance operations if it seems to take too long, but this limits Longhorn's ability
+to protect data. Always look at events and/or logs to try to determine WHY the drain is not progressing and take actions
+to fix the underlying issue.
+
+### Block If Contains Last Replica
+
+This is the default policy. It is intended to provide a good balance between convenience and data protection. While it
+is in effect, Longhorn will prevent the eviction of an instance-manager pod (and the completion of a drain) on a
+cordoned node that contains the last healthy replica of a volume.
+
+Benefits:
+
+- Protects data by preventing the drain operation from completing until there is a healthy replica available for each
+  volume available on another node.
+
+Drawbacks:
+
+- If there is only one replica for the volume, or if its other replicas are unhealthy, the user may need to manually
+  (through the UI) request the eviction of replicas from the disk or node.
+- Volumes may be degraded after the drain is complete. If the node is rebooted, redundancy is reduced until it is
+  running again. If the node is removed, redundancy is reduced until another replica rebuilds.
+
+### Allow If Last Replica Is Stopped
+
+This policy is similar to `Block If Contains Last Replica`. It is inherently less safe, but can allow drains to complete
+more quickly. It only prevents the eviction of an instance-manager pod (and the completion of a drain) on a node that
+contains the last RUNNING healthy replica.
+
+Benefits:
+
+- Allows the drain operation to proceed in situations where the node being drained is expected to come back online
+  (data will not be lost) and the replicas stored on the node's disks are not actively being used.
+
+Drawbacks:
+
+- Similar drawbacks to `Block If Contains Last Replica`.
+- If, for some reason, the node never comes back, data is lost.
+
+### Always Allow
+
+This policy does not protect data in any way, but allows drains to immediately complete. It never prevents the eviction
+of an instance-manager pod (and the completion of a drain). Do not use it in a production environment.
+
+Benefits:
+
+- The drain operation completes quickly without Longhorn getting in the way.
+
+Drawbacks:
+
+- There is no opportunity for Longhorn to protect data.
+
+### Block For Eviction
+
+This policy provides the maximum amount of data protection, but can lead to long drain times and unnecessary data
+movement. It prevents the eviction of an instance-manager pod (and the completion of a drain) as long as any replicas
+remain on a node. In addition, it takes action to automatically evict replicas from the node.
+
+It is not recommended to leave this policy enabled under normal use, as it will trigger replica eviction any time a
+node is cordoned. Only enable it during planned maintenance.
+
+A primary use case for this policy is when automatically upgrading clusters in which volumes have no redundancy
+(`numberOfReplicas == 1`). Other policies will prevent the drain until such replicas are manually evicted, which is
+inconvenient for automation.
+
+Benefits:
+
+- Protects data by preventing the drain operation from completing until all replicas have been relocated.
+- Automatically evicts replicas, so the user does not need to do it manually (through the UI).
+- Maintains replica redundancy at all times.
+
+Drawbacks:
+
+- The drain operation is significantly slower than for other behaviors. Every replica must be rebuilt on another node
+  before it can complete. Drain timeout must be adjusted as appropriate for the amount of data that will move during
+  rebuilding.
+- The drain operation is data-intensive, especially when Replica Auto Balance is enabled, as evicted replicas may be
+  moved back to the drained node when/if it comes back online.
+- Like all of these policies, it triggers on cordon, not on drain. If a user regularly cordons nodes without draining
+  them, replicas will be rebuilt pointlessly.
+
+### Block For Eviction If Contains Last Replica
+
+This policy provides the data protection of the default `Block If Contains Last Replica` with the added convenience of
+automatic eviction. While it is in effect, Longhorn will prevent the eviction of an instance-manager pod (and the
+completion of a drain) on a cordoned node that contains the last healthy replica of a volume. In addition, replicas that
+meet this condition are automatically evicted from the node.
+
+It is not recommended to leave this policy enabled under normal use, as it may trigger replica eviction any time a
+node is cordoned. Only enable it during planned maintenance.
+
+A primary use case for this policy is when automatically upgrading clusters in which volumes have no redundancy
+(`numberOfReplicas == 1`). Other policies will prevent the drain until such replicas are manually evicted, which is
+inconvenient for automation.
+
+Benefits:
+
+- Protects data by preventing the drain operation from completing until there is a healthy replica available for each
+  volume available on another node.
+- Automatically evicts replicas, so the user does not need to do it manually (through the UI).
+- The drain operation is only as slow and data-intensive as is necessary to protect data.
+
+Drawbacks:
+
+- Volumes may be degraded after the drain is complete. If the node is rebooted, redundancy is reduced until it is
+  running again. If the node is removed, redundancy is reduced until another replica rebuilds.
+- Like all of these policies, it triggers on cordon, not on drain. If a user regularly cordons nodes without draining
+  them, replicas will be rebuilt pointlessly.
+
+
+---
+
+## Article: nodes-and-volumes/_index.md
+
+---
+title: Nodes and Volumes
+weight: 4
+---
+
+---
+
+## Article: nodes-and-volumes/volumes/_index.md
+
+---
+title: Volumes
+weight: 2
+---
+
+---
+
+## Article: nodes-and-volumes/volumes/create-volumes.md
+
+---
+title: Create Longhorn Volumes
+weight: 1
+---
+
+- [Access Modes](#access-modes)
+- [Create Longhorn Volumes](#create-longhorn-volumes)
+  - [Creating V1 Longhorn Volumes with kubectl](#creating-v1-longhorn-volumes-with-kubectl)
+  - [Creating V2 Longhorn Volumes with kubectl](#creating-v2-longhorn-volumes-with-kubectl)
+  - [Binding Workloads to PVs without a Kubernetes StorageClass](#binding-workloads-to-pvs-without-a-kubernetes-storageclass)
+  - [Creating Longhorn Volumes with the Longhorn UI](#creating-longhorn-volumes-with-the-longhorn-ui)
+  - [PV/PVC Creation for Existing Longhorn Volume](#pvpvc-creation-for-existing-longhorn-volume)
+  - [The Failure of the Longhorn Volume Creation](#the-failure-of-the-longhorn-volume-creation)
+
+In this tutorial, you'll learn how to create Kubernetes persistent storage resources of PersistentVolumes (PVs) and PersistentVolumeClaims (PVCs) that correspond to Longhorn volumes. You will use kubectl to dynamically provision V1 and V2 volumes for workloads using Longhorn storage classes. For help creating volumes from the Longhorn UI, see the Creating Longhorn Volumes with the [Longhorn UI section](#creating-longhorn-volumes-with-the-longhorn-ui).
+
+> This section assumes that you understand how Kubernetes persistent storage works. For more information, see the [Kubernetes documentation.](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+
+## Access Modes
+
+Longhorn supports the following Kubernetes PersistentVolume access modes:
+
+- **ReadWriteOnce (RWO)**: The volume can be mounted as read-write by a single node. Multiple pods on the same node can access the volume. This is the default and most common access mode.
+- **ReadWriteOncePod (RWOP)**: The volume can be mounted as read-write by a single pod in the entire cluster. This provides the strongest isolation guarantee, ensuring only one pod can access the volume at any time. Ideal for stateful workloads requiring single-writer access.
+- **ReadWriteMany (RWX)**: The volume can be mounted as read-write by many nodes simultaneously, enabling shared access across multiple pods. See [ReadWriteMany (RWX) Volume](../rwx-volumes) for more details.
+
+> **Note**: ReadOnlyMany (ROX) is not supported by Longhorn. For read-only access from multiple pods, consider using ReadWriteMany with read-only mount options in your pod specification.
+
+## Create Longhorn Volumes
+
+### Creating V1 Longhorn Volumes with kubectl
+
+Before creating a V1 volume, ensure that Longhorn has at least one available filesystem-type disk. V1 volumes are scheduled only to filesystem-type disks. For more information, see [Add a Filesystem-Type Disk](../nodes/multidisk/#add-a-filesystem-type-disk).
+
+First, you will create a Longhorn StorageClass. The Longhorn StorageClass contains the parameters to provision PVs.
+
+Next, a PersistentVolumeClaim is created that references the StorageClass. Finally, the PersistentVolumeClaim is mounted as a volume within a Pod.
+
+When the Pod is deployed, the Kubernetes master will check the PersistentVolumeClaim to make sure the resource request can be fulfilled. If storage is available, the Kubernetes master will create the Longhorn volume and bind it to the Pod.
+
+1. Use following command to create a StorageClass called `longhorn`:
+
+    ```shell
+    kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/examples/storageclass.yaml
+    ```
+
+    The following example StorageClass is created:
+
+    ```yaml
+    kind: StorageClass
+    apiVersion: storage.k8s.io/v1
+    metadata:
+      name: longhorn
+    provisioner: driver.longhorn.io
+    allowVolumeExpansion: true
+    parameters:
+      numberOfReplicas: "3"
+      staleReplicaTimeout: "2880" # 48 hours in minutes
+      fromBackup: ""
+      fsType: "ext4"
+    #  backupTargetName: "default"
+    #  mkfsParams: "-I 256 -b 4096 -O ^metadata_csum,^64bit"
+    #  diskSelector: "ssd,fast"
+    #  nodeSelector: "storage,fast"
+    #  recurringJobSelector: '[
+    #   {
+    #     "name":"snap",
+    #     "isGroup":true,
+    #   },
+    #   {
+    #     "name":"backup",
+    #     "isGroup":false,
+    #   }
+    #  ]'
+    ```
+
+    In particular, starting with v1.4.0, the parameter `mkfsParams` can be used to specify filesystem format options for each StorageClass.
+    Starting with v1.8.0, the parameter `backupTargetName` can be used to specify the backup target. The name of the default backup target (`default`) is used if `backupTargetName` is not specified.
+    Parameters may be omitted from the StorageClass specification. When the storage class is used to create a PV and a volume, parameters that are not specified will generally be set using a default value taken from the global settings. See [Storage Class Parameters](../../../references/storage-class-parameters) for the list of storage class parameters, and [Settings](../../../references/settings) for the full list of global settings.
+
+2. Create a Pod that uses Longhorn volumes by running this command:
+
+    ```shell
+    kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/examples/pod_with_pvc.yaml
+    ```
+
+    A Pod named `volume-test` is launched, along with a PersistentVolumeClaim named `longhorn-volv-pvc`. The PersistentVolumeClaim references the Longhorn StorageClass:
+
+    ```yaml
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: longhorn-volv-pvc
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: 2Gi
+    ```
+
+    The persistentVolumeClaim is mounted in the Pod as a volume:
+
+    ```yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: volume-test
+      namespace: default
+    spec:
+      containers:
+      - name: volume-test
+        image: nginx:stable-alpine
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: volv
+          mountPath: /data
+        ports:
+        - containerPort: 80
+      volumes:
+      - name: volv
+        persistentVolumeClaim:
+          claimName: longhorn-volv-pvc
+    ```
+
+### Creating V2 Longhorn Volumes with kubectl
+
+Before creating a V2 volume, ensure that the V2 Data Engine is enabled and Longhorn has available block-type disks. V2 volumes are scheduled only to block-type disks. For more information, see [V2 Data Engine Quick Start](../../v2-data-engine/quick-start) and [Add a Block-Type Disk](../nodes/multidisk/#add-a-block-type-disk).
+
+1. Use the following command to create a StorageClass called `longhorn-v2-data-engine`:
+
+    ```shell
+    kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/examples/v2/storageclass.yaml
+    ```
+
+    The following example StorageClass is created:
+
+    ```yaml
+    kind: StorageClass
+    apiVersion: storage.k8s.io/v1
+    metadata:
+      name: longhorn-v2-data-engine
+    provisioner: driver.longhorn.io
+    allowVolumeExpansion: true
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    parameters:
+      numberOfReplicas: "3"
+      staleReplicaTimeout: "2880"
+      fsType: "ext4"
+      dataEngine: "v2"
+    ```
+
+    The `dataEngine` parameter must be set to `v2` so Longhorn provisions a V2 volume. See [Storage Class Parameters](../../../references/storage-class-parameters) for the list of supported parameters.
+
+2. Create a Pod that uses a V2 Longhorn volume by running this command:
+
+    ```shell
+    kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/examples/v2/pod_with_pvc.yaml
+    ```
+
+    A Pod named `volume-test` is launched, along with a PersistentVolumeClaim named `longhorn-volv-pvc`. The PersistentVolumeClaim references the V2 StorageClass:
+
+    ```yaml
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: longhorn-volv-pvc
+      namespace: default
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: longhorn-v2-data-engine
+      resources:
+        requests:
+          storage: 2Gi
+    ```
+
+    The PersistentVolumeClaim is mounted in the Pod as a volume:
+
+    ```yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: volume-test
+      namespace: default
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: volume-test
+        image: nginx:stable-alpine
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+              - ls
+              - /data/lost+found
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: volv
+          mountPath: /data
+        ports:
+        - containerPort: 80
+      volumes:
+      - name: volv
+        persistentVolumeClaim:
+          claimName: longhorn-volv-pvc
+    ```
+
+More examples are available under the [examples section](../../../references/examples).
+
+### Binding Workloads to PVs without a Kubernetes StorageClass
+
+It is possible to use a Longhorn StorageClass to bind a workload to a PV without creating a StorageClass object in Kubernetes.
+
+Since the Storage Class is also a field used to match a PVC with a PV, which doesn't have to be created by a Provisioner, you can create a PV manually with a custom StorageClass name, then create a PVC asking for the same StorageClass name.
+
+When a PVC requests a StorageClass that does not exist as a Kubernetes resource, Kubernetes will try to bind your PVC to a PV with the same StorageClass name. The StorageClass will be used like a label to find the matching PV, and only existing PVs labeled with the StorageClass name will be used.
+
+If the PVC names a StorageClass, Kubernetes will:
+
+1. Look for an existing PV that has the label matching the StorageClass
+2. Look for an existing StorageClass Kubernetes resource. If the StorageClass exists, it will be used to create a PV.
+
+### Creating Longhorn Volumes with the Longhorn UI
+
+Since the Longhorn volume already exists while creating PV/PVC, a StorageClass is not needed for dynamically provisioning Longhorn volume. However, the field `storageClassName` should be set in PVC/PV, to be used for PVC binding purpose. It's unnecessary for users to create the related StorageClass object.
+
+By default the StorageClass for Longhorn created PV/PVC is `longhorn-static`. Users can modify it in `Setting - General - Default Longhorn Static StorageClass Name` as they need.
+
+Users need to manually delete PVC and PV created by Longhorn.
+
+### PV/PVC Creation for Existing Longhorn Volume
+
+Now users can create PV/PVC via our Longhorn UI for the existing Longhorn volumes.
+Only detached volume can be used by a newly created pod.
+
+### The Failure of the Longhorn Volume Creation
+
+Creating a Longhorn volume can fail for different reasons. The issues are categorized into:
+
+- insufficient storage
+- disk not found
+- disks are unavailable
+- tags not fulfilled
+- node not found
+- nodes are unavailable
+- none of the node candidates contains a ready engine image
+- hard affinity cannot be satisfied
+- replica scheduling failed
+- unused failed replica is not supported
+- replica already scheduled
+- longhorn client operation failed
+- incompatible volume size
+
+The failure results in the workload failing to use the provisioned PV and showing a warning message
+```
+# kubectl describe pod workload-test
+
+Events:
+  Type     Reason              Age                From                     Message
+  ----     ------              ----               ----                     -------
+  Warning  FailedAttachVolume  14s (x8 over 82s)  attachdetach-controller  AttachVolume.Attach
+  failed for volume "pvc-e130e369-274d-472d-98d1-f6074d2725e8" : rpc error: code = Aborted
+  desc = volume pvc-e130e369-274d-472d-98d1-f6074d2725e8 is not ready for workloads
+```
+
+In order to help users understand the error causes, Longhorn summarizes them in the PV annotation, `longhorn.io/volume-scheduling-error`. Failures are combined in this annotation and separated by a semicolon, for example, `longhorn.io/volume-scheduling-error: insufficient storage;disks are unavailable`. The annotation can be checked by using `kubectl describe pv <pvc name>`.
+```
+# kubectl describe pv pvc-e130e369-274d-472d-98d1-f6074d2725e8
+Name:            pvc-e130e369-274d-472d-98d1-f6074d2725e8
+Labels:          <none>
+Annotations:     longhorn.io/volume-scheduling-error: insufficient storage
+                 pv.kubernetes.io/provisioned-by: driver.longhorn.io
+
+...
+
+```
+
+
+---
+
+## Article: nodes-and-volumes/volumes/delete-volumes.md
+
+---
+title: Delete Longhorn Volumes
+weight: 2
+---
+Once you are done utilizing a Longhorn volume for storage, there are a number of ways to delete the volume, depending on how you used the volume.
+
+## Deleting Volumes Through Kubernetes
+> **Note:** This method only works if the volume was provisioned by a StorageClass and the PersistentVolume for the Longhorn volume has its Reclaim Policy set to Delete.
+
+You can delete a volume through Kubernetes by deleting the PersistentVolumeClaim that uses the provisioned Longhorn volume. This will cause Kubernetes to clean up the PersistentVolume and then delete the volume in Longhorn.
+
+## Deleting Volumes Through Longhorn
+All Longhorn volumes, regardless of how they were created, can be deleted through the Longhorn UI.
+
+To delete a single volume, go to the Volumes page in the UI. Under the Operation dropdown, select Delete. You will be prompted with a confirmation before deleting the volume.
+
+To delete multiple volumes at the same time, you can check multiple volumes on the Volumes page and select Delete at the top.
+
+> **Note:** If Longhorn detects that a volume is tied to a PersistentVolume or PersistentVolumeClaim, then these resources will also be deleted once you delete the volume. You will be warned in the UI about this before proceeding with deletion. Longhorn will also warn you when deleting an attached volume, since it may be in use.
+
+
+---
+
+## Article: nodes-and-volumes/volumes/detaching-volumes.md
+
+---
+title: Detach Longhorn Volumes
+weight: 3
+---
+
+Shut down all Kubernetes Pods using Longhorn volumes in order to detach the volumes. The easiest way to achieve this is by deleting all workloads and recreate them later after upgrade. If this is not desirable, some workloads may be suspended.
+
+In this section, you'll learn how each workload can be modified to shut down its pods.
+
+#### Deployment
+Edit the deployment with `kubectl edit deploy/<name>`.
+
+Set `.spec.replicas` to `0`.
+
+#### StatefulSet
+Edit the statefulset with `kubectl edit statefulset/<name>`.
+
+Set `.spec.replicas` to `0`.
+
+#### DaemonSet
+Edit the daemonset with `kubectl edit ds/<name>`.
+
+Add a nodeSelector to the pod spec:
+```yaml
+spec:
+  template:
+    spec:
+      nodeSelector:
+        no-schedule: "true"
+```
+
+#### Pod
+Delete the pod with `kubectl delete pod/<name>`.
+
+There is no way to suspend a pod not managed by a workload controller.
+
+#### CronJob
+Edit the cronjob with `kubectl edit cronjob/<name>`.
+
+Set `.spec.suspend` to `true`.
+
+Wait for any currently executing jobs to complete, or terminate them by deleting relevant pods.
+
+#### Job
+Consider allowing the single-run job to complete.
+
+Otherwise, delete the job with `kubectl delete job/<name>`.
+
+#### ReplicaSet
+Edit the replicaset with `kubectl edit replicaset/<name>`.
+
+Set `.spec.replicas` to `0`.
+
+#### ReplicationController
+Edit the replicationcontroller with `kubectl edit rc/<name>`.
+
+Set `.spec.replicas` to `0`.
+
+Wait for the volumes using by the Kubernetes to complete detaching.
+
+Then detach all remaining volumes from Longhorn UI. These volumes were most likely created and attached outside of Kubernetes via Longhorn UI or REST API.
+
+---
+
+## Article: nodes-and-volumes/volumes/expansion.md
+
+---
+title: Volume Expansion
+weight: 6
+---
+
+Volumes are expanded in two stages. First, Longhorn resizes the block device, then it expands the filesystem. 
+
+Since v1.4.0, Longhorn supports online expansion. Most of the time Longhorn can directly expand an attached volumes without limitations, no matter if the volume is being R/W or rebuilding.
+
+If the volume was not expanded though the CSI interface (for example, for Kubernetes older than v1.16), the capacity of the corresponding PVC and PV would not change.
+
+## Prerequisites
+
+- For offline expansion, the Longhorn version must be v0.8.0 or higher.
+- For online expansion (V1 Data Engine), the Longhorn version must be v1.4.0 or higher.
+- For online expansion (V2 Data Engine), the Longhorn version must be v1.10.0 or higher, and the volume must use the **NVMe** (`NVMf`) or **Block Device** frontend. *(Note: The `UBLK` frontend is not supported for online expansion as of v1.10.0).*
+
+## Expand a Longhorn volume
+
+During the expansion process, Longhorn automatically resizes all replicas to match the user-requested size. There are two ways to expand a Longhorn volume: with a PersistentVolumeClaim (PVC) and with the Longhorn UI.
+
+### Via PVC
+
+This method is applied only if:
+
+- The PVC is dynamically provisioned by the Kubernetes with Longhorn StorageClass.
+- The field `allowVolumeExpansion` should be `true` in the related StorageClass.
+
+This method is recommended if it is applicable, because the PVC and PV will be updated automatically and everything is kept consistent after expansion.
+
+#### V1 Data Engine
+
+Find the corresponding PVC for the Longhorn volume, then modify the requested `spec.resources.requests.storage` of the PVC:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{},"name":"longhorn-simple-pvc","namespace":"default"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"1Gi"}},"storageClassName":"longhorn"}}
+    pv.kubernetes.io/bind-completed: "yes"
+    pv.kubernetes.io/bound-by-controller: "yes"
+    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+  creationTimestamp: "2019-12-21T01:36:16Z"
+  finalizers:
+  - kubernetes.io/pvc-protection
+  name: longhorn-simple-pvc
+  namespace: default
+  resourceVersion: "162431"
+  selfLink: /api/v1/namespaces/default/persistentvolumeclaims/longhorn-simple-pvc
+  uid: 0467ae73-22a5-4eba-803e-464cc0b9d975
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem
+  volumeName: pvc-0467ae73-22a5-4eba-803e-464cc0b9d975
+status:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  phase: Bound
+```
+
+#### V2 Data Engine
+
+For the V2 Data Engine, ensure your StorageClass has `allowVolumeExpansion: true` and `dataEngine: "v2"`:
+
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+    name: longhorn-v2-data-engine
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "2880"
+  fsType: "ext4"
+  dataEngine: "v2"
+```
+
+To expand the volume, edit the corresponding PVC manifest to increase the storage request to a larger size, then apply the updated manifest:
+
+```yaml
+  resources:
+    requests:
+      storage: 3Gi
+```
+
+### Via Longhorn UI
+
+**Usage**: On the **Volumes** page of the Longhorn UI, click **Expand Volume** in the operation menu for the volume, enter the new desired size, and confirm. The expansion will begin automatically.
+*(For V2 Data Engine volumes, verify that the frontend is set to `Block Device` or `NVMf` before expanding)*.
+
+## Filesystem expansion
+
+Longhorn tries to expand the file system only if:
+
+- The expanded size should be greater than the current size.
+- There is a Linux filesystem in the Longhorn volume.
+- The filesystem used in the Longhorn volume is one of the following:
+- ext4
+- xfs
+- The expanded size must be less than the maximum file size allowed by the file system (for example, 16TiB for `ext4`).
+- The Longhorn volume is using the block device frontend.
+
+## Corner cases
+
+### Handling Volume Revert
+
+If a volume is reverted to a snapshot with smaller size, the frontend of the volume is still holding the expanded size. But the filesystem size will be the same as that of the reverted snapshot. In this case, you will need to handle the filesystem manually:
+
+1. Attach the volume to a random node.
+2. Log in to the corresponding node, and expand the filesystem.
+If the filesystem is `ext4`, the volume might need to be [mounted](https://linux.die.net/man/8/mount) and [umounted](https://linux.die.net/man/8/umount) once before resizing the filesystem manually. Otherwise, executing `resize2fs` might result in an error:
+    ```text
+    resize2fs: Superblock checksum does not match superblock while trying to open ......
+    Couldn't find valid filesystem superblock.
+    ```
+
+
+Follow the steps below to resize the filesystem:
+
+```bash
+mount /dev/longhorn/<volume name> <arbitrary mount directory>
+umount /dev/longhorn/<volume name>
+mount /dev/longhorn/<volume name> <arbitrary mount directory>
+resize2fs /dev/longhorn/<volume name>
+umount /dev/longhorn/<volume name>
+```
+
+3. If the filesystem is `xfs`, you can directly mount, then expand the filesystem using:
+
+```bash
+mount /dev/longhorn/<volume name> <arbitrary mount directory>
+xfs_growfs <the mount directory>
+umount /dev/longhorn/<volume name>
+```
+
+### Encrypted volume
+
+Longhorn support for online expansion depends on Kubernetes.
+
+- Kubernetes natively supports [authenticated CSI storage resizing](https://kubernetes.io/blog/2023/12/15/csi-node-expand-secret-support-ga/) starting in v1.29.
+- In [Kubernetes v1.25 to v1.28](https://kubernetes.io/blog/2022/09/21/kubernetes-1-25-use-secrets-while-expanding-csi-volumes-on-node-alpha/), the feature gate `CSINodeExpandSecret` is required.
+You can enable online expansion for encrypted volumes by specifying the following [encryption parameters in the StorageClass](../../../advanced-resources/security/volume-encryption#setting-up-kubernetes-secrets-and-storageclasses):
+    - `csi.storage.k8s.io/node-expand-secret-name`
+    - `csi.storage.k8s.io/node-expand-secret-namespace`
+
+If you cannot enable it but still prefer to do online expansion, you can:
+
+1. Login the node host the encrypted volume is attached to.
+2. Execute `cryptsetup resize <volume name>`. The passphrase this command requires is the field `CRYPTO_KEY_VALUE` of the corresponding secret.
+3. Expand the filesystem.
+
+### RWX volume
+
+From v1.8.0, Longhorn supports fully automatic online expansion of the filesystem (NFS) for RWX volumes. The feature requires the v1.8.0 versions of these components to be running:
+
+- Longhorn-Manager
+- CSI plugin
+- Share Manager, which manages the NFS export
+
+If you have upgraded from a previous version, the Share Manager pods (one for each RWX volume) are not upgraded automatically, to avoid disruption during the upgrade.
+
+After growing the block device, the CSI layer sends a resize command to the Share Manager to grow the filesystem within the block device. With a down-rev share-manager, the command fails with an "unimplemented" error code and so no expansion happens. To get the right image before the expansion, the simplest thing is to force a restart of the pod. Identify the Share Manager pod of the RWX volume (typically named `share-manager-<volume name>`) and delete it:
+
+```shell
+kubectl -n longhorn-system delete pod <the share manager pod>
+```
+
+The pod will automatically be recreated using the appropriate version, and the expansion completes. Further expansions will not require any further intervention.
+
+#### Offline
+
+It is still possible to expand the RWX volume offline using these steps:
+
+1. Detach the RWX volume by scaling down the workload to `replicas=0`. Ensure that the volume is fully detached.
+2. After the scale command returns, run the following command and verify that the state is `detached`.
+    ```shell
+    kubectl -n longhorn-system get volume <volume-name>
+    ```
+3. Expand the block device using either the PVC or the Longhorn UI.
+4. Scale up the workload.
+
+The reattached volume will have the expanded size. Furthermore, the Share Manager pod will be recreated with the current version.
+
+## References
+
+- [[FEATURE] v2 supports volume expansion](https://github.com/longhorn/longhorn/issues/8022)
+
+
+---
+
+## Article: nodes-and-volumes/volumes/iscsi.md
+
+---
+title: Use Longhorn Volume as an iSCSI Target
+weight: 4
+---
+
+Longhorn supports iSCSI target frontend mode. You can connect to it
+through any iSCSI client, including `open-iscsi`, and virtual machine
+hypervisor like KVM, as long as it's in the same network as the Longhorn system.
+
+The Longhorn CSI driver doesn't support iSCSI mode.
+
+To start a volume with the iSCSI target frontend mode, select `iSCSI` as the frontend when [creating the volume.](../create-volumes)
+
+After the volume has been attached, you will see something like the following in the `endpoint` field:
+
+```text
+iscsi://10.42.0.21:3260/iqn.2014-09.com.rancher:testvolume/1
+```
+
+In this example,
+
+- The IP and port is `10.42.0.21:3260`.
+- The target name is `iqn.2014-09.com.rancher:testvolume`.
+- The volume name is `testvolume`.
+- The LUN number is 1. Longhorn always uses LUN 1.
+
+The above information can be used to connect to the iSCSI target provided by Longhorn using an iSCSI client.
+
+
+---
+
+## Article: nodes-and-volumes/volumes/pvc-ownership-and-permission.md
+
+---
+title: Longhorn PVC Ownership and Permission
+weight: 1
+---
+
+Kubernetes supports the 2 [volume modes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode) for PVC: Filesystem and Block.
+When a pod defines the security context and requests a Longhorn PVC, Kubernetes will handle the ownership and permission modification for the PVC differently based on the volume mode.
+
+### Longhorn PVC with Filesystem Volume Mode
+
+Because the Longhorn CSI driver `csiDriver.spec.fsGroupPolicy` is set to `ReadWriteOnceWithFSType`, the Kubelet attempts to change the ownership and permission of a Longhorn PVC in the following manner:
+1. Check `pod.spec.securityContext.fsGroup`.
+* If non-empty, continue to the next step.
+* If empty, the Kubelet doesn't attempt to change the ownership and permission for the volume.
+1. Check `fsType` of the PV and `accessModes` of the PVC.
+* If the PV's `fsType` is defined and the PVC's `accessModes` list contains `ReadWriteOnce`, continue to the next step.
+* Otherwise, the Kubelet doesn't attempt to change the ownership and permission for the volume.
+1. Check `pod.spec.securityContext.fsGroupChangePolicy`.
+* If the `pod.spec.securityContext.fsGroupChangePolicy` is set to `always` or empty, the kubelet performs the following actions:
+  * Ensures that all processes of the containers inside the pod are part of the supplementary group id `pod.spec.securityContext.fsGroup`
+  * Ensures that any new files created in the volume will be in group id `pod.spec.securityContext.fsGroup`
+  * Recursively changes permission and ownership of the volume to have the same group id as `pod.spec.securityContext.fsGroup` every time the volume is mounted
+* If the `pod.spec.securityContext.fsGroupChangePolicy` is set to `OnRootMismatch`:
+  * If the root of the volume already has the correct permissions (i.e., belongs to the group id as `pod.spec.securityContext.fsGroup`) , the recursive permission and ownership change will be skipped.
+  * Otherwise, Kubelet recursively changes permission and ownership of the volume to have the same group id as `pod.spec.securityContext.fsGroup`
+
+For more information, see:
+* https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#configure-volume-permission-and-ownership-change-policy-for-pods
+* https://github.com/longhorn/longhorn/issues/2131#issuecomment-778897129
+
+### Longhorn PVC with Block Volume Mode
+
+For PVC with Block volume mode, Kubelet never attempts to change the permission and ownership of the block device when making it available inside the container.
+You must set the correct group ID in the `pod.spec.securityContext` for the pod to be able to read and write to the block device or run the container as root.
+
+By default, Longhorn puts the block device into group id 6, which is typically associated with the "disk" group.
+Therefore, pods that use Longhorn PVC with Block volume mode must either set the group id 6 in the `pod.spec.securityContext`, or run as root.
+For example:
+1. Pod that sets the group id 6 in the `pod.spec.securityContext`
+    ```yaml
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: longhorn-block-vol
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      volumeMode: Block
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: 2Gi
+    ---
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: block-volume-test
+      namespace: default
+    spec:
+      securityContext:
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        supplementalGroups:
+        - 6
+      containers:
+        - name: block-volume-test
+          image: ubuntu:20.04
+          command: ["sleep", "360000"]
+          imagePullPolicy: IfNotPresent
+          volumeDevices:
+            - devicePath: /dev/longhorn/testblk
+              name: block-vol
+      volumes:
+        - name: block-vol
+          persistentVolumeClaim:
+            claimName: longhorn-block-vol
+    ```
+1. Pod that runs as root
+    ```yaml
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: longhorn-block-vol
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      volumeMode: Block
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: 2Gi
+    ---
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: block-volume-test
+      namespace: default
+    spec:
+      containers:
+        - name: block-volume-test
+          image: ubuntu:20.04
+          command: ["sleep", "360000"]
+          imagePullPolicy: IfNotPresent
+          volumeDevices:
+            - devicePath: /dev/longhorn/testblk
+              name: block-vol
+      volumes:
+        - name: block-vol
+          persistentVolumeClaim:
+            claimName: longhorn-block-vol
+    ```
+
+
+---
+
+## Article: nodes-and-volumes/volumes/rwx-volumes.md
+
+---
+title: ReadWriteMany (RWX) Volume
+weight: 4
+---
+
+- [Introduction](#introduction)
+  - [Generic (Non-Migratable) RWX volumes](#generic-non-migratable-rwx-volumes)
+  - [Migratable RWX volumes](#migratable-rwx-volumes)
+- [Requirements for Generic (Non-Migratable) RWX Volumes](#requirements-for-generic-non-migratable-rwx-volumes)
+- [Creation and Usage of Generic (Non-Migratable) RWX Volumes](#creation-and-usage-of-generic-non-migratable-rwx-volumes)
+- [Configuring Volume Locality for Generic (Non-Migratable) RWX Volumes](#configuring-volume-locality-for-generic-non-migratable-rwx-volumes)
+  - [`shareManagerNodeSelector`](#sharemanagernodeselector)
+  - [`allowedTopologies`](#allowedtopologies)
+  - [`shareManagerTolerations`](#sharemanagertolerations)
+- [Configuring Volume Mount Options for Generic (Non-Migratable) RWX Volumes](#configuring-volume-mount-options-for-generic-non-migratable-rwx-volumes)
+  - [Notes](#notes)
+- [Failure Handling for Generic (Non-Migratable) RWX Volumes](#failure-handling-for-generic-non-migratable-rwx-volumes)
+- [Migration from Previous External Provisioner](#migration-from-previous-external-provisioner)
+- [History](#history)
+
+---
+
+Longhorn supports ReadWriteMany (RWX) volumes by exposing regular Longhorn volumes via NFSv4 servers that reside in share-manager pods.
+
+## Introduction
+
+Longhorn provides two types of RWX volumes, each optimized for different workload requirements:
+
+### Generic (Non-Migratable) RWX volumes
+
+Generic RWX volumes provide shared filesystem access across multiple nodes. They use dedicated NFSv4.1 servers that run in `share-manager-<volume-name>` Pods within the `longhorn-system` namespace. Each RWX volume is paired with a corresponding Service that exposes the NFS endpoint to clients.
+
+These volumes are ideal for workloads that need concurrent file access but do not require live migration. Live migration means volumes are only accessible from the source workload during the migration. After migration completes, the destination workload will take over access, and the source workload will be terminated. Workload services continue uninterrupted during this period. 
+
+**Characteristics**:
+
+- Not capable of [live migration](https://kubevirt.io/user-guide/compute/live_migration/).
+- Use NFSv4.1 for filesystem–based sharing.
+- Suitable for general shared storage and multi-node file access workloads.
+
+{{< figure src="/img/diagrams/rwx/rwx-arch.png" >}}
+
+> **Notice: Deferred Share-Manager Pod Image Updates on Active RWX Volumes**
+>
+> Following a Longhorn system upgrade, when a Generic (Non-Migratable) RWX volume remains attached, modifications to the `spec.image` of the corresponding `share-manager` pod will not take effect immediately. The updated image is applied only after the volume is detached, at which point the pod is recreated with the new share-manager image. This behavior ensures volume stability and prevents disruption of active I/O operations.
+
+### Migratable RWX volumes
+
+Migratable RWX volumes are designed specifically for virtualized workloads such as KubeVirt VMs that require [live migration](https://kubevirt.io/user-guide/compute/live_migration/) while maintaining ongoing I/O operations. These volumes enable seamless VM movement between nodes during maintenance, failover, or rebalancing operations without service disruption.
+
+**Characteristics**:
+
+- Designed for live migration scenarios.
+- Require `volumeMode: Block` (`Filesystem` mode is not supported).
+- Require ReadWriteMany access mode and a StorageClass with `migratable: "true"` (which sets `volume.spec.migratable=true` on the Longhorn volume).
+- Not intended for general shared filesystem workloads.
+
+> **Note**: You can distinguish migratable RWX volumes from non-migratable ones by checking the `volume.spec.migratable` field in the volume specification.
+
+## Requirements for Generic (Non-Migratable) RWX Volumes
+
+1. Each NFS client node needs to have a NFSv4 client installed.
+
+    Please refer to [Installing NFSv4 client](../../../deploy/install/#installing-nfsv4-client) for more installation details.
+
+      > **Troubleshooting:** If the NFSv4 client is not available on the node, when trying to mount the volume the below message will be part of the error:
+      > ```
+      > for several filesystems (e.g. nfs, cifs) you might need a /sbin/mount.<type> helper program.
+      > ```
+
+2. The hostname of each node is unique in the Kubernetes cluster.
+
+    There is a dedicated recovery backend service for NFS servers in Longhorn system. When a client connects to an NFS server, the client's information, including its hostname, will be stored in the recovery backend. When a share-manager Pod or NFS server is abnormally terminated, Longhorn will create a new one. Within the 90-seconds grace period, clients will reclaim locks using the client information stored in the recovery backend.
+
+## Creation and Usage of Generic (Non-Migratable) RWX Volumes
+
+> **Notice**  
+> An RWX volume must have the access mode set to `ReadWriteMany` and the "migratable" flag disabled (*parameters.migratable: `false`*).
+
+1. For dynamically provisioned Longhorn volumes, the access mode is based on the PVC's access mode.
+2. For manually created Longhorn volumes (restore, DR volume) the access mode can be specified during creation in the Longhorn UI.
+3. When creating a PV/PVC for a Longhorn volume via the UI, the access mode of the PV/PVC will be based on the volume's access mode.
+4. One can change the Longhorn volume's access mode via the UI as long as the volume is not bound to a PVC.
+5. For a Longhorn volume that gets used by an RWX PVC, the volume access mode will be changed to RWX.
+
+## Configuring Volume Locality for Generic (Non-Migratable) RWX Volumes
+
+Longhorn provides new settings that allow you to precisely control the data locality of RWX volumes (through identification of associated Share Manager pods). These granular settings work with related global settings to provide optimal performance, resilience, and adherence to organizational policies or constraints.
+
+### `shareManagerNodeSelector`
+
+You can use the StorageClass parameter `shareManagerNodeSelector` to specify selectors for identifying nodes that RWX volumes can be scheduled on. These selectors are merged with global `system-managed-components-node-selector` settings and then applied to the Share Manager pods of the RWX volumes to provide more control over volume locality.
+
+  Example:
+  ```
+  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-rwx
+  provisioner: driver.longhorn.io
+  parameters:
+    shareManagerNodeSelector: label-key1:label-value1;label-key2:label-value2
+  ```
+  In this example, RWX volumes provisioned with the specified StorageClass will be scheduled on nodes with the labels `label-key1:label-value1` and `label-key2:label-value2`. 
+
+### `allowedTopologies`
+
+Longhorn converts the `storageClass.allowedTopologies` settings into affinity rules for the Share Manager pods of the RWX volumes. This ensures that the pods are scheduled on nodes that meet the specified topological requirements (such as regions and zones) and align with the RWX volume locality.
+
+  Example:
+  ```
+  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-rwx
+  provisioner: driver.longhorn.io
+  allowedTopologies:
+  - matchLabelExpressions:
+    - key: topology.kubernetes.io/region
+      values:
+      - us-west-1
+  ```
+  In this example, the Share Manager pods and RWX volumes will be scheduled in the `us-west-1` region.
+
+### `shareManagerTolerations`
+
+You can also use the StorageClass parameter `shareManagerTolerations` to allow more flexible scheduling based on node taints. The defined tolerations are merged with global `taint-toleration` settings and then applied to the Share Manager pods.
+
+  Example:
+  ```
+  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-rwx
+  provisioner: driver.longhorn.io
+  parameters:
+    shareManagerTolerations: nodetype=storage:NoSchedule
+  ```
+  In this example, the Share Manager pods will tolerate the `nodetype=storage:NoSchedule` taint on nodes, allowing them to be scheduled on those nodes.
+
+## Configuring Volume Mount Options for Generic (Non-Migratable) RWX Volumes
+
+An RWX volume is accessible only when mounted via NFS. By default Longhorn uses NFS version 4.1 with the `softerr` mount option, a `timeo` value of "600", and a `retrans` value of "5".
+
+If the NFS server becomes inaccessible, requests from NFS clients are retried according to the configured `retrans` value. Longer-duration events such as power outages and factors such as network partitions cause the requests to eventually fail. An NFS error (`ETIMEDOUT` for the `softerr` mount option) is returned to the calling application and data loss may occur. If `softerr` is not supported, Longhorn automatically uses the `soft` mount option instead, which returns an `EIO` as the error.
+
+You can use specific mount options for new volumes. First, create a customized StorageClass with an `nfsOptions` parameter, and then create PVCs for RWX volumes using that specific StorageClass.
+
+Example:
+
+  ```yaml
+  kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-test
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  parameters:
+    numberOfReplicas: "3"
+    staleReplicaTimeout: "2880"
+    fromBackup: ""
+    fsType: "ext4"
+    nfsOptions: "vers=4.2,noresvport,softerr,timeo=600,retrans=5"
+  ```
+
+> **Important:**
+> To create PVCs for RWX volumes using the sample StorageClass, replace the `nfsOptions` string with a customized comma-separated list of legal options.
+
+### Notes
+
+1. You must provide the complete set of desired options. Any options not supplied will use the NFS-server side defaults, not Longhorn's own.
+
+2. Longhorn does not validate the `nfsOptions` string, so erroneous values and typographical errors are not flagged. When the string is invalid, the mount is rejected by the NFS server and the volume is not created nor attached.
+
+3. In Longhorn v1.4.0 to 1.4.3 and v1.5.0 to v1.5.1, volumes within a share manager pod (specifically, in the `NodeStageVolume` step) are hard mounted by default by the Longhorn CSI plugin. Hard mounting allows Longhorn to persistently retry sending NFS requests, ensuring that IOs do not fail even when the NFS server becomes inaccessible for some time. IOs resume seamlessly when the server regains connectivity or a replacement server is created.
+
+   This mechanism for guaranteeing data integrity, however, comes with some risk. To maintain stability, the Linux kernel does not allow unmounting of a file system until all pending IOs are completed. This is a concern because the system cannot shut down until all file systems are unmounted. If the NFS server is unable to recover, the client nodes must undergo a forced reboot.
+
+   To mitigate the issue, upgrade to v1.4.4, v1.5.2, or a later version. After upgrading, either `softerr` or `soft` is automatically applied to the `nfsOptions` parameter whenever RWX volumes are reattached (if the default settings are not overridden).
+
+4. You can still use the `hard` mount option (via the `nfsOptions` override mechanism), but hard-mounted volumes are subject to the outlined risks.
+
+For more information, see [#6655](https://github.com/longhorn/longhorn/issues/6655).
+
+## Failure Handling for Generic (Non-Migratable) RWX Volumes
+
+1. share-manager Pod is abnormally terminated
+
+    Client IO will be blocked until Longhorn creates a new share-manager Pod and the associated volume. Once the Pod is successfully created, the 90-seconds grace period for lock reclamation is started, and users would expect
+      - Before the grace period ends, client IO to the RWX volume will still be blocked.
+      - The server rejects READ and WRITE operations and non-reclaim locking requests with an error of NFS4ERR_GRACE.
+      - The grace period can be terminated early if all locks are successfully reclaimed.
+
+    After exiting the grace period, IOs of the clients successfully reclaiming the locks continue without stale file handle errors or IO errors. If a lock cannot be reclaimed within the grace period, the lock is discarded, and the server returns IO error to the client. The client re-establishes a new lock. The application should handle the IO error. Nevertheless, not all applications can handle IO errors due to their implementation. Thus, it may result in the failure of the IO operation and the data loss. Data consistency may be an issue.
+
+    Here is an example of a DaemonSet using an RWX volume.
+
+    Each Pod of the DaemonSet is writing data to the RWX volume. If the node where the share-manager Pod is running is down, a new share-manager Pod is created on another node. Since one of the clients located on the down node has gone, the lock reclaim process cannot be terminated earlier than the 90-second grace period, even though the remaining clients' locks have been successfully reclaimed. The IOs of these clients continue after the grace period has expired.
+
+2. If the Kubernetes DNS service goes down, share-manager Pods will not be able to communicate with longhorn-nfs-recovery-backend
+
+    The NFS-ganesha server in a share-manager Pod communicates with longhorn-nfs-recovery-backend via the service `longhorn-recovery-backend`'s IP. If the DNS service is out of service, the creation and deletion of RWX volumes as well as the recovery of NFS servers will be inoperable. Thus, the high availability of the DNS service is recommended for avoiding the communication failure.
+
+3. Fast failover feature.
+
+    Longhorn supports a feature that can improve availability by shortening the time it takes to recover from a failure of the node on which the volume's share-manager NFS server pod is running.  The feature uses a direct heartbeat to monitor the server. If the server is unresponsive it acts to create a new one faster than the usual sequence. It also configures the NFS server differently, to shorten the recovery grace period from 90 to 30 seconds.  
+    More details are at [RWX Volume Fast Failover](../../../high-availability/rwx-volume-fast-failover).
+
+## Migration from Previous External Provisioner
+
+The below PVC creates a Kubernetes job that can copy data from one volume to another.
+
+- Replace the `data-source-pvc` with the name of the previous NFSv4 RWX PVC that was created by Kubernetes.
+- Replace the `data-target-pvc` with the name of the new RWX PVC that you wish to use for your new workloads.
+
+You can manually create a new RWX Longhorn volume + PVC/PV, or just create an RWX PVC and then have Longhorn dynamically provision a volume for you.
+
+Both PVCs need to exist in the same namespace. If you were using a different namespace than the default, change the job's namespace below.
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: default  # namespace where the PVC's exist
+  name: volume-migration
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  template:
+    metadata:
+      name: volume-migration
+      labels:
+        name: volume-migration
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: volume-migration
+          image: ubuntu:xenial
+          tty: true
+          command: [ "/bin/sh" ]
+          args: [ "-c", "cp -r -v /mnt/old /mnt/new" ]
+          volumeMounts:
+            - name: old-vol
+              mountPath: /mnt/old
+            - name: new-vol
+              mountPath: /mnt/new
+      volumes:
+        - name: old-vol
+          persistentVolumeClaim:
+            claimName: data-source-pvc # change to data source PVC
+        - name: new-vol
+          persistentVolumeClaim:
+            claimName: data-target-pvc # change to data target PVC
+```
+
+## History
+
+- Available since v1.0.1 [External provisioner](https://github.com/Longhorn/Longhorn/issues/1183)
+- Available since v1.1.0 [Native RWX support](https://github.com/Longhorn/Longhorn/issues/1470)
+
+
+---
+
+## Article: nodes-and-volumes/volumes/trim-filesystem.md
+
+---
+title: Trim Filesystem
+weight: 7
+---
+
+Since v1.4.0, Longhorn supports trimming filesystem inside Longhorn volumes. Trimming will reclaim space wasted by the removed files of the filesystem.
+
+> **Note:**
+> - Trimming removed files in snapshots has no effect on the filesystem because valid snapshots are immutable. However,
+    the filesystem remembers whenever it has trimmed blocks associated with a snapshot. Because of this, you may need to
+    unmount and remount the filesystem before reattempting to trim a snapshot that has been marked as removed.
+>
+> - If you allow automatic snapshot removal during filesystem trim, use the mount option `discard` with caution.
+    `discard` frequently triggers snapshot removal and interrupts operations such as backup creation.
+
+## Prerequisites
+
+- The Longhorn version must be v1.4.0 or higher.
+- There is a trimmable filesystem like EXT4 or XFS inside the Longhorn volume.
+- The volume is attached and mounted on a mount point before trimming.
+
+## Trim the filesystem in a Longhorn volume
+
+You can trim a Longhorn volume using either the Longhorn UI or the `fstrim` command.
+
+### Via Longhorn UI
+
+You can directly click volume operation `Trim Filesystem` for attached volumes.
+
+Then Longhorn will **try its best** to figure out the mount point and execute `fstrim <the mount point>`.  If something is wrong or the filesystem does not exist, the UI will return an error.
+
+### Via shell command
+
+When using `fstrim`, you must identify the mount point of the volume and then run the command `fstrim <the mount point>`.
+
+- RWO volume: The mount point is either a pod of the workload or the node to which the volume was manually attached.
+- RWX volume: The mount point is the share manager pod of the volume. The share manager pod contains the NFS server and is typically named `share-manager-<volume name>`.
+
+To trim an RWX volume, perform the following steps:
+
+1. Identify and then open a shell inside the share manager pod of the volume.
+    ```
+    kubectl -n longhorn-system exec -it <the share manager pod> -- bash
+    ```
+1. Identify the work directory of the NFS server (for example, `/export/<volume name>`).
+    ```
+    mount | grep <volume name>
+    /dev/longhorn/<volume name> on /export/<volume name> type ext4 (rw,relatime)
+    ```
+1. Trim the work directory.
+    ```
+    fstrim /export/<volume name>
+    ```
+
+#### Periodically trim the filesystem
+
+You can set up a [RecurringJob](../../../snapshots-and-backups/scheduling-backups-and-snapshots/#set-up-recurring-jobs) to periodically trim the filesystem.
+
+## Automatically Remove Snapshots During Filesystem Trim
+
+By design, valid snapshots of Longhorn volumes are immutable so you can only use the filesystem trim feature with the
+following:
+
+- Volume head
+- Preceding continuous chain of snapshots created by the system or marked as removed
+
+If most of the actual space consumed by a volume is associated with valid snapshots, the trim operation is not very
+effective.
+
+### Global Setting: "Remove Snapshots During Filesystem Trim"
+
+If you want Longhorn to automatically reclaim the maximum amount of space, you can enable the setting
+[_Remove Snapshots During Filesystem Trim_](../../../references/settings/#remove-snapshots-during-filesystem-trim).
+When this global setting is enabled, the latest snapshot and the preceding continuous chain of snapshots are
+automatically marked as removed, allowing Longhorn to reclaim space for as many snapshots as possible. However, the
+setting can cause removal (and eventual purging) of snapshots that you intentionally created.
+
+### The Volume Spec Field "UnmapMarkSnapChainRemoved"
+
+There is a per-volume field `volume.Spec.UnmapMarkSnapChainRemoved` that overwrites the global setting mentioned above.
+
+The options for this volume-specific setting are "disabled", "enabled", and "ignored". When the value is "ignored", the
+global setting takes effect.
+
+You can configure this setting in a StorageClass so that the value is applied to all volumes created using that
+StorageClass.
+
+## Known Issues & Limitations
+
+### Rebuilding Volumes
+
+By design, Longhorn unmaps blocks in the volume head and in the preceding continuous chain of snapshots marked as
+removed. Some of these snapshots may be moved from one replica to another during volume rebuilding, so Longhorn is
+unable to trim the filesystem of affected volumes when rebuilding is in progress.
+
+Because rebuilding may take a long time, Longhorn simply does not unmap blocks during a rebuild instead of returning an
+I/O error to the filesystem. This behavior benefits VM workloads in particular, which respond poorly when repeated
+attempts to complete a trim return errors. See [Issue #7103](https://github.com/longhorn/longhorn/issues/7103) for more
+information.
+
+A trim operation that is started during rebuilding has no effect. Future trim operations on the same mounted volume may
+also have no effect because the filesystem remembers which blocks it has trimmed. You may need to unmount and remount
+the filesystem before attempting to start the trim operation again.
+
+### Expanding Volumes
+
+Longhorn is unable to trim the filesystem during volume expansion. Because expansion is fast, Longhorn returns an I/O
+error whenever the issue is encountered. The filesystem recognizes that blocks were not trimmed and can try again
+without a remount.
+
+### Encrypted Volumes
+
+- By default, TRIM commands are not enabled by the device-mapper. You can check [this doc](https://wiki.archlinux.org/title/Dm-crypt/Specialties#Discard/TRIM_support_for_solid_state_drives_(SSD)) for details.
+
+- If you still want to trim an encrypted Longhorn volume, you can:
+    1. Enter into the node host the volume is attached to.
+    2. Enable flag `discards` for the encrypted volume. The passphrase is recorded in the corresponding secret:
+    ```shell
+    cryptsetup --allow-discards --persistent refresh <Longhorn volume name>
+    ```
+    3. Directly use Longhorn UI to trim the volume or execute `fstrim` for **the mount point** of `/dev/mapper/<volume name>` manually.
+
+
+---
+
+## Article: nodes-and-volumes/volumes/volume-conditions.md
+
+---
+title: Volume Conditions
+weight: 7
+---
+
+## Volume Conditions 
+
+Volume conditions describe the current status of a volume and potential issues that may occur.
+- `Scheduled`: All replicas were scheduled successfully. 
+    If Longhorn was unable to schedule any of the replicas, the condition is set to `false` and error messages are displayed. The condition is set to `true` when the setting [Allow Volume Creation With Degraded Availability](../../../references/settings#allow-volume-creation-with-degraded-availability) is enabled and at least one replica is scheduled.
+- `TooManySnapshots`: This specific volume has more than 100 snapshots.
+    Longhorn allows you to create a maximum of 250 snapshots for each volume. For more information about configuring the maximum snapshot count, see [Snapshot Space Management](../../../snapshots-and-backups/snapshot-space-management).
+- `Restore`: Longhorn is restoring the volume from a backup.
+- `WaitForBackingImage`: The replicas have not started because the backing images must first be synced with their disks.
+- `OfflineRebuildingInProgress`: The volume is being rebuilt using offline rebuilding.
+
+## Engine Conditions
+
+Engine conditions describe the current status of an engine and potential issues that may occur.
+`FilesystemReadOnly`: The state of the current volume mount point has changed to read-only. 
+This change may prevent workloads from writing data to the volume. For troubleshooting information, see [Volume Recovery](../../../high-availability/recover-volume).
+
+
+## Replica Conditions
+
+Replica conditions describe the current status of a replica and potential issues that may occur.
+- `RebuildFailed`: The replica failed to rebuild.
+- `WaitForBackingImage`: The replicas have not started because the backing images must first be synced with their disks.
+
+---
+
+## Article: nodes-and-volumes/volumes/volume-size.md
+
+---
+title: Volume Size
+weight: 4
+---
+
+In this section, you'll have a better understanding of concepts related to volume size.
+
+## Volume `Size`:
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-nominal-size.png" >}}
+
+This value, which you specified during volume creation, represents the amount of space available to the volume when in use. 
+
+The following are other ways of understanding this concept:
+
+- The volume itself is just a Kubernetes CRD object and volume data is stored in replicas. This value represents the nominal size of each replica. 
+- Longhorn replicas use [sparse files](https://wiki.archlinux.org/index.php/Sparse_file) to store data. This value represents the maximum size to which a sparse file may expand.
+
+Replicas are scheduled on nodes with enough allocatable space to cover this nominal size during volume creation. For more information, see [Node Space Usage](../../nodes/node-space-usage).
+
+> **Note**: The maximum volume size is based on the disk's file system (for example, 16383 GiB for `ext4`).
+
+## Volume `Actual Size`
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-actual-size.png" >}}
+
+This value represents the amount of space used by each replica (including the volume head and snapshots) on the node.
+
+Because all historical data (stored in the snapshots) and active data are included in the calculation, this value can exceed the user-defined nominal size.
+
+The Longhorn UI displays this value only when the volume is running.
+
+## Example
+
+In the example, we will explain how volume `size` and `actual size` get changed after a bunch of IO and snapshot related operations.
+
+> The illustration presents the file organization of **one replica**. The volume head and snapshots are actually sparse files, which we mentioned above.
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration.png" >}}
+
+
+1. Create a 12 Gi volume with a single replica, then attach and mount it on a node. See Figure 1 of the illustration.
+    - For the empty volume, the nominal `size` is 12 Gi and the `actual size` is almost 0.
+    - There is some meta info in the volume hence the `actual size` is 260 Mi and is not exactly 0.
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig1.png" >}}
+
+2. Write 4 Gi data (data#0) in the volume mount point. The `actual size` is increased by 4 Gi because of the allocated blocks in the replica for the 4 Gi data. Meanwhile, `df` command in the filesystem also shows the 4 Gi used space. See Figure 2 of the illustration.
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig2.png" >}}
+
+3. Delete the 4 Gi data. Then, `df` command shows that the used space of the filesystem is nearly 0, but the `actual size` is unchanged.
+
+    > Users can see by default the volume `actual size` is not shrunk after deleting the 4 Gi data. Longhorn is a block-level storage system. Therefore, the deletion in the filesystem only marks the blocks that belong to the deleted file as unused. Currently, Longhorn will not apply TRIM/UNMAP operations automatically/periodically. if you want to do filesystem trim, please check [this doc](../trim-filesystem) for details.
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig2.png" >}}
+
+4. Then, rewrite the 4 Gi data (data#1), and the `df` command in the filesystem shows 4 Gi used space again. However, the `actual size` is increased by 4 Gi and becomes 8.25Gi. See Figure 3(a) of the illustration.
+
+     > After deletion, filesystem may or maynot reuse the recently freed blocks from recently deleted files according to the filesystem design and please refer to [Block allocation strategies of various filesystems](https://www.ogris.de/blkalloc). If the volume nominal `size` is 12 Gi, the `actual size` in the end would range from 4 Gi to 8 Gi since the filesystem may or maynot reuse the freed blocks. On the other hand, if the volume nominal `size` is 6 Gi, the `actual size` at the end would range from 4 Gi to 6 Gi, because the filesystem has to reuse the freed blocks in the 2nd round of writing. See Figure 3(b) of the illustration.
+     >
+     > Thus, allocating an appropriate nominal `size` for a volume that holds heavy writing tasks according to the IO pattern would make disk space usage more efficient.
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig3.png" >}}
+
+5. Take a snapshot (snapshot#1). See Figure 4 of the illustration.
+    - Now data#1 is stored in snapshot#1.
+    - The new volume head size is almost 0.
+    - With the volume head and the snapshot included, the `actual size` remains 8.25 Gi.
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig4.png" >}}
+
+6. Delete data#1 from the mount point.
+    - The data#1 filesystem level removal info is stored in current volume head file. For snapshot#1, data#1 is still retained as the historical data.
+    - The `actual size` is still 8.25 Gi.
+
+7. Write 8 Gi data (data#2) in the volume mount, then take one more snapshot (snapshot#2). See Figure 5 of the illustration.
+    - Now the `actual size` is 16.2 Gi, which is greater than the volume nominal `size`.
+    - From a filesystem's perspective, the overlapping part between the two snapshots is considered as the blocks that have to be reused or overwritten. But in terms of Longhorn, these blocks are actually fresh ones held in another snapshot/volume head. See the 2 snapshots in Figure 6.
+
+    > The volume head holds the latest data of the volume only, while each snapshot may store historical data as well as active data, which consumes at most size space. Therefore, the volume `actual size`, which is the size sum of the volume head and all snapshots, is possibly bigger than the size specified by users.
+    >
+    > Even if users will not take snapshots for volumes, there are operations like rebuilding, expansion, or backing up that would lead to system (hidden) snapshot creation. As a result, volume `actual size` being larger than size is unavoidable under some use cases.
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig5.png" >}}
+
+8. Delete snapshot#1 and wait for snapshot purge complete. See Figure 7 of the illustration.
+    - Here Longhorn actually coalesces the snapshot#1 with the snapshot#2.
+    - For the overlapping part during coalescing, the newer data (data#2) will be retained in the blocks. Then some historical data is removed and the volume gets shrunk (from 16.2 Gi to 11.4 Gi in the example).
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig6.png" >}}
+
+9. Delete all existing data (data#2) and write 11.5 Gi data (data#3) in the volume mount. See Figure 8 of the illustration.
+    - this makes the volume head actual size becomes 11.5 Gi and the volume total actual size becomes 22.9 Gi.
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig7.png" >}}
+
+10. Try to delete the only snapshot (snapshot#2) of the volume. See Figure 9 of the illustration.
+    - The snapshot directly behinds the volume head cannot be cleaned up.
+      If users try to delete this kind of snapshot, Longhorn will mark the snapshot as Removing, hide it, then try to free the overlapping part between the volume head and the snapshot for the snapshot file.
+      The last operation is called snapshot prune in Longhorn and is available since v1.3.0.
+    - Since in the example both the snapshot and the volume head use up most of the nominal space, the overlapping part almost equals to the snapshot actual size. After the pruning, the snapshot actual size is down to 259 Mi and the volume gets shrunk from 22.9 Gi to 11.8 Gi.
+
+{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig8.png" >}}
+
+
+Here we summarize the important things related to disk space usage we have in the example:
+
+- Unused blocks are not released
+
+  Longhorn will not issue TRIM/UNMAP operations automatically. Hence deleting files from filesystems will not lead to volume actual size decreasing/shrinking. You may need to check [the doc](../trim-filesystem) and handle it by yourself if needed.
+
+
+- Allocated blocks but unused are not reused
+
+  Deleting then writing new files would lead to the actual size keeps increasing. Since the filesystem may not reuse the recently freed blocks from recently deleted files. Thus, allocating an appropriate nominal size for a volume that holds heavy writing tasks according to the IO pattern would make disk space usage more efficient.
+
+- By deleting snapshots, the overlapping part of the used blocks might be eliminated regardless of whether the blocks are recently released blocks by the filesystem or still contain historical data.
+
+## Space Configuration Suggestions for Volumes
+
+1. Reserve enough free space in disks as buffers in case of the actual size of existing volumes keep growing up.
+    - A general estimation for the maximum space consumption of a volume is
+
+        ```
+        (N + 1) x head/snapshot average actual size
+        ```
+
+        - where `N` is the total number of snapshots the volume contains (including the volume head), and the extra `1` is for the temporary space that may be required by snapshot deletion.
+        - The average actual size of the snapshots varies and depends on the use cases.
+          If snapshots are created periodically for a volume (e.g. by relying on snapshot recurring jobs), the average value would be the average modified data size for the volume in the snapshot creation interval.
+          If there are heavy writing tasks for volumes, the head/snapshot average actual size would be volume the nominal size. In this case, it's better to set [`Storage Over Provisioning Percentage`](../../../references/settings/#storage-over-provisioning-percentage) to be smaller than 100% to avoid disk space exhaustion.
+        - Some extended cases:
+            - There is one snapshot recurring job with retention number is `N`. Then the formula can be extended to:
+
+                ```
+                (M + N + 1 + 1 + 1 + 1) x head/snapshot average actual size
+                ```
+
+                - The explanation of the formula:
+                    - `M` is the snapshots created by users manually. Recurring jobs are not responsible for removing this kind of snapshot. They can be deleted by users only.
+                    - `N` is the snapshot recurring job retain number.
+                    - The 1st `1` means the volume head.
+                    - The 2nd `1` means the extra snapshot created by the recurring job. Since the recurring job always creates a new snapshot then deletes the oldest snapshot when the current snapshots created by itself exceeds the retention number. Before the deletion starts, there is one extra snapshot that can take extra disk space.
+                    - The 3rd `1` is the system snapshot. If the rebuilding is triggered or the expansion is issued, Longhorn will create a system snapshot before starting the operations. And this system snapshot may not be able to get cleaned up immediately.
+                    - The 4th `1` is for the temporary space that may be required by snapshot deletion/purge.
+            - Users don't want snapshot at all. Neither (manually created) snapshot nor recurring job will be launched. Assume [setting _Automatically Cleanup System Generated Snapshot_](../../../references/settings/#automatically-clean-up-system-generated-snapshot) is enabled, then formula would become:
+
+                ```
+                (1 + 1 + 1) x head/snapshot average actual size
+                ```
+
+                - The worst case that leads to so much space usage:
+                    1. At some point the 1st rebuilding/expansion is triggered, which leads to the 1st system snapshot creation.
+                        - The purges before and after the 1st rebuilding does nothing.
+                    2. There is data written to the new volume head, and the 2nd rebuilding/expansion somehow is triggered.
+                        - The snapshot purge before the 2nd rebuilding may lead to the shrink of the 1st system snapshot.
+                        - Then the 2nd system snapshot is created and the rebuilding is started.
+                        - After the rebuilding done, the subsequent snapshot purge would lead to the coalescing of the 2 system snapshots. This coalescing requires temporary space.
+                    3. During the afterward snapshot purging for the 2nd rebuilding, there is more data written to the new volume head.
+                - The explanation of the formula:
+                    - The 1st `1` means the volume head.
+                    - The 2nd `1` is the second system snapshot mentioned in the worst case.
+                    - The 3rd `1` is for the temporary space that may be required by the 2 system snapshot purge/coalescing.
+
+2. Do not retain too many snapshots for the volumes.
+
+3. Cleaning up snapshots will help reclaim disk space. There are two ways to clean up snapshots:
+    - Delete the snapshots manually via Longhorn UI.
+    - Set a snapshot recurring job with retention 1, then the snapshots will be cleaned up automatically.
+
+    Also, notice that the extra space, up to volume nominal `size`, is required during snapshot cleanup and merge.
+
+4. An appropriate the volume nominal `size` according to the workloads.
+
+## Troubleshooting
+
+### Workload is Hitting "no space left on device" Error
+
+To address the "no space left on device" error, you need to understand that the difference between a volume being full and the node disks being full is crucial for proper storage management in Longhorn.
+
+#### Volume Full
+
+A volume is full when the filesystem mounted on it has reached its capacity limit.
+
+- Data writes fail with "no space left on device" errors.
+- The host disk for the replica of the volume may still have available space for other volumes.
+
+- **Characteristics:**
+  - The `df` command shows 100% usage for the mounted filesystem.
+  - Applications cannot write new data to the volume mount point.
+
+- **Example**
+
+    ```bash
+    $ df -h /mnt/longhorn-volume-example-dir
+    Filesystem                    Size  Used Avail Use% Mounted on
+    /dev/longhorn-volume-example   12G   12G    0  100% /mnt/longhorn-volume-example-dir
+    ```
+
+#### Node Disk Full
+
+Node disks do not have enough space to accommodate volume operations because volumes are thin-provisioned and the replica sizes on the disks continue to grow.
+
+- Data writes fail with "no space left on device" errors.
+- Volume operations, such as volume creation/expansion, snapshot creation/deletion, and replica rebuilding, may be limited.
+- Replicas of newly created volumes are prevented from being scheduled to the full disks.
+
+- **Characteristics:**
+  - Applications cannot write new data to the volume mount point even though the volume is not full.
+  - Longhorn operations for volumes on these node disks, such as replica creation, rebuilding, or snapshot operations, may fail.
+  - Volumes with replicas sharing the same node disks are affected.
+
+##### Data Integrity Protection for Disks Out-of-Space Scenarios
+
+When multiple replicas simultaneously encounter "no space left on device" errors, Longhorn implements data integrity protection. If all writable replicas are on disks that are out of space, the system preserves the maximum number of replicas that have written the same amount of data (the highest written bytes count). This ensures data consistency by:
+
+1. **Retaining** the maximum number of replicas that have written the same amount of data.  
+This avoids massive replica rebuilding operations, allows for efficient rebuilding when node disks recover from out-of-space issues and ensures that users can still read data consistently.
+2. **Marking** other replicas as **ERR** to prevent data corruption.  
+This ensures that users can read data consistently from retained replicas, and replicas marked as `ERR` will be rebuilt from retained replicas to maintain data integrity when node disks recover from out-of-space issues.
+3. **Maintaining** volume accessibility even when all underlying disks are full.
+
+For example, if replicas A, B, and C encounter space errors after writing 1MB, 2MB, and 2MB respectively, replicas B and C (having written the most data consistently) will remain active while replica A is marked as **ERR**.
+
+### Solutions
+
+When encountering the `no space left on device` error, first check whether the volume’s filesystem is full, and then check whether the disk hosting the volume replica is full.
+
+- **Check volume filesystem usage**
+
+    If the volume's filesystem usage is 100% using the following command:
+
+    ```bash
+    df -h /mnt/your-volume
+    ```
+
+    Please expand the volume or remove the unnecessary files in the filesystem first.
+
+- **Check Longhorn node disk usage**
+
+    If the disk usage is 100% using the following command or checking the Longhorn UI page `Node > Node Disk`:
+
+    ```bash
+    # Check through Longhorn UI: Node > Node Disk
+    # Or check the data path mount point
+    df -h /var/lib/longhorn # default data path
+    ```
+
+    Please follow the steps to recovery the workloads:
+
+    1. Scale down the workload.
+    2. Expand the disk size, or remove unnecessary files, for example, [orphaned replica directories](../../../advanced-resources/data-cleanup/orphaned-data-cleanup#orphaned-replica-directories) and [used backing images](../../../advanced-resources/backing-image/backing-image#clean-up-backing-images), on the disk.
+    3. Then scale up the workload.
+
+
+---
+
+## Article: nodes-and-volumes/volumes/workload-identification.md
+
+---
+title: Viewing Workloads that Use a Volume
+weight: 5
+---
+
+Now users can identify current workloads or workload history for existing Longhorn persistent volumes (PVs) and their history of being bound to persistent volume claims (PVCs).
+
+From the Longhorn UI, go to the **Volumes** tab. Each Longhorn volume is listed on the page. The **Attached To** column displays the name of the workload using the volume. If you click the workload name, you will be able to see more details, including the workload type, pod name, and status.
+
+Workload information is also available on the Longhorn volume detail page. To see the details, click the volume name:
+
+```
+State: attached
+...
+Namespace:default
+PVC Name:longhorn-volv-pvc
+PV Name:pvc-0edf00f3-1d67-4783-bbce-27d4458f6db7
+PV Status:Bound
+Pod Name:teststatefulset-0
+Pod Status:Running
+Workload Name:teststatefulset
+Workload Type:StatefulSet
+```
+
+## History
+
+After the workload is no longer using the Longhorn volume, the volume detail page shows the historical status of the most recent workload that used the volume:
+
+```
+Last time used by Pod: a few seconds ago
+...
+Last Pod Name: teststatefulset-0
+Last Workload Name: teststatefulset
+Last Workload Type: Statefulset
+```
+
+If these fields are set, they indicate that currently no workload is using this volume.
+
+When a PVC is no longer bound to the volume, the following status is shown:
+
+```
+Last time bound with PVC:a few seconds ago
+Last time used by Pod:32 minutes ago
+Last Namespace:default
+Last Bounded PVC Name:longhorn-volv-pvc
+```
+
+If the `Last time bound with PVC` field is set, it indicates currently there is no bound PVC for this volume. The related fields will show the most recent workload using this volume.
+
+
+---
+
+## Article: nodes-and-volumes/nodes/_index.md
+
+---
+title: Nodes
+weight: 1
+---
+
+---
+
+## Article: nodes-and-volumes/nodes/default-disk-and-node-config.md
+
+---
+title: Configuring Defaults for Nodes and Disks
+weight: 3
+---
+
+_Available as of v0.8.1_
+
+This feature allows the user to customize the default disks and node configurations in Longhorn for newly added nodes using Kubernetes labels and annotations instead of the Longhorn API or UI.
+
+Customizing the default configurations for disks and nodes is useful for scaling the cluster because it eliminates the need to configure Longhorn manually for each new node if the node contains more than one disk, or if the disk configuration is different for new nodes.
+
+Longhorn will not keep the node labels or annotations in sync with the current Longhorn node disks or tags. Nor will Longhorn keep the node disks or tags in sync with the nodes, labels or annotations after the default disks or tags have been created.
+
+### Adding Node Tags to New Nodes
+
+When a node does not have a tag, you can use a node annotation to set the node tags, as an alternative to using the Longhorn UI or API.
+
+1. Scale up the Kubernetes cluster. The newly added nodes contain no node tags.
+2. Add annotations to the new Kubernetes nodes that specify what the default node tags should be. The annotation format is:
+
+    ```
+    node.longhorn.io/default-node-tags: <node tag list with JSON string format>
+    ```
+    For example:
+
+    ```
+    node.longhorn.io/default-node-tags: '["fast","storage"]'
+    ``` 
+3. Wait for Longhorn to sync the node tag automatically.
+
+> **Result:** If the node tag list was originally empty, Longhorn updates the node with the tag list, and you will see the tags for that node updated according to the annotation. If the node already had tags, you will see no change to the tag list.
+### Customizing Default Disks for New Nodes
+
+Longhorn uses the **Create Default Disk on Labeled Nodes** setting to enable default disk customization.
+
+If the setting is disabled, Longhorn will create a default disk using `setting.default-data-path` on all new nodes.
+
+If the setting is enabled, Longhorn will decide to create the default disks or not, depending on the node's label value of `node.longhorn.io/create-default-disk`.
+
+- If the node's label value is `true`, Longhorn will create the default disk using `settings.default-data-path` on the node. If the node already has existing disks, Longhorn will not change anything.
+- If the node's label value is `config`, Longhorn will check for the `node.longhorn.io/default-disks-config` annotation and create default disks according to it. If there is no annotation, or if the annotation is invalid, or the label value is invalid, Longhorn will not change anything.
+
+The value of the label will be in effect only when the setting is enabled.
+
+If the `create-default-disk` label is not set, the default disk will not be automatically created on the new nodes when the setting is enabled.
+
+The configuration described in the annotation only takes effect when there are no existing disks or tags on the node.
+
+If the label or annotation fails validation, the whole annotation is ignored. 
+
+> **Prerequisite:** The Longhorn setting **Create Default Disk on Labeled Nodes** must be enabled.
+1. Add new nodes to the Kubernetes cluster.
+2. Add the label to the node. Longhorn relies on the label to decide how to customize default disks:
+
+    ```
+    node.longhorn.io/create-default-disk: 'config'
+    ```
+
+3. Then add an annotation to the node. The annotation is used to specify the configuration of default disks. The format is:
+
+    ```
+    node.longhorn.io/default-disks-config: <disks configuration with JSON string format>
+    ```
+
+    For example, the following disk configuration can be specified in the annotation:
+
+    ```
+    node.longhorn.io/default-disks-config: 
+    '[
+        { 
+            "path":"/mnt/disk1",
+            "allowScheduling":true
+        },
+        {   
+            "name":"fast-ssd-disk", 
+            "path":"/mnt/disk2",
+            "allowScheduling":false,
+            "storageReserved":10485760,
+            "tags":[
+                "ssd",
+                "fast"
+            ]
+        }
+    ]'
+    ```
+
+    > **Note:** If the same name is specified for different disks, the configuration will be treated as invalid.
+    
+4. Wait for Longhorn to create the customized default disks automatically.
+
+> **Result:** The disks will be updated according to the annotation.
+
+### Launch Longhorn with multiple disks
+1. Add the label to all nodes before launching Longhorn. 
+
+    ```
+    node.longhorn.io/create-default-disk: 'config'
+    ```
+
+2. Then add the disk config annotation to all nodes:
+
+    ```
+    node.longhorn.io/default-disks-config: '[ { "path":"/var/lib/longhorn", "allowScheduling":true
+      }, { "name":"fast-ssd-disk", "path":"/mnt/extra", "allowScheduling":false, "storageReserved":10485760,
+      "tags":[ "ssd", "fast" ] }]'
+    ```
+3. Deploy Longhorn with `create-default-disk-labeled-nodes: true`, check [here](../../../advanced-resources/deploy/customizing-default-settings) for customizing the default settings of Longhorn.
+
+
+---
+
+## Article: nodes-and-volumes/nodes/disks-or-nodes-eviction.md
+
+---
+title: Evicting Replicas on Disabled Disks or Nodes
+weight: 6
+---
+
+Longhorn supports auto eviction for evicting the replicas on the selected disabled disks or nodes to other suitable disks and nodes. Meanwhile the same level of high availability is maintained during the eviction.
+
+> **Note:** This eviction feature can only be enabled when the selected disks or nodes have scheduling disabled. And during the eviction time, the selected disks or nodes cannot be re-enabled for scheduling.
+
+> **Note:** This eviction feature works for volumes that are `Attached` and `Detached`. If the volume is 'Detached', Longhorn will automatically attach it before the eviction and automatically detach it once eviction is done.
+
+By default, `Eviction Requested` for disks or nodes is `false`. And to keep the same level of high availability during the eviction, Longhorn only evicts a replica per volume after the replica rebuild for this volume is a success.
+
+## Select Disks or Nodes for Eviction
+
+To evict disks for a node,
+
+1. Head to the `Node` tab, select one of the nodes, and select `Edit Node and Disks` in the dropdown menu.
+1. Make sure the disk is disabled for scheduling and set `Scheduling` to `Disable`.
+2. Set `Eviction Requested` to `true` and save.
+
+To evict a node,
+
+1. Head to the `Node` tab, select one or more nodes, and click `Edit Node`.
+1. Make sure the node is disabled for scheduling and set `Scheduling` to `Disable`.
+2. Set `Eviction Requested` to `true`, and save.
+
+## Cancel Disks or Nodes Eviction
+
+To cancel the eviction for a disk or a node, set the corresponding `Eviction Requested` setting to `false`.
+
+## Check Eviction Status
+
+The `Replicas` number on the selected disks or nodes should be reduced to 0 once the eviction is a success.
+
+If you click on the `Replicas` number, it will show the replica name on this disk. When you click on the replica name, the Longhorn UI will redirect the webpage to the corresponding volume page, and it will display the volume status. If there is any error, e.g. no space, or couldn't find another schedulable disk (schedule failure), the error will be shown. All of the errors will be logged in the Event log.
+
+If any error happened during the eviction, the eviction will be suspended until new space has been cleared or it will be cancelled. And if the eviction is cancelled, the remaining replicas on the selected disks or nodes will remain on the disks or nodes.
+
+
+---
+
+## Article: nodes-and-volumes/nodes/graceful-node-removal.md
+
+---
+title: Graceful Node Removal
+weight: 7
+---
+
+Removing a node from a Kubernetes cluster requires careful coordination with Longhorn to ensure data availability. Simply running `kubectl delete node` is insufficient because Kubernetes does not automatically notify CSI storage layers to migrate data replicas before the node is destroyed.
+
+If a node is removed without following this procedure, the replicas stored on that node will be lost, potentially leaving your volumes in a **Degraded** or **Faulted** state.
+
+## Prerequisites
+
+- The cluster must have enough available space and schedulable nodes to receive the replicas being moved.
+
+## Step-by-Step Procedure
+
+### 1. Cordon and Drain the Kubernetes Node
+
+Prepare the node for removal by moving all running workloads (Pods) to other nodes. Using a timeout and force flag ensures that the drain completes even if some pods are slow to terminate or protected by Pod Disruption Budgets.
+
+```bash
+kubectl cordon <NODE_NAME>
+kubectl drain <NODE_NAME> \
+  --ignore-daemonsets \
+  --delete-emptydir-data \
+  --force \
+  --grace-period=-1 \
+  --timeout=300s
+```
+
+> **Note**: The `--grace-period=-1` flag allows pods to honor their own `terminationGracePeriodSeconds`. The `--force` flag is necessary to remove pods that are not managed by a ReplicationController, ReplicaSet, Job, DaemonSet, or StatefulSet.
+
+### 2. Disable Scheduling and Trigger Eviction
+
+You must prevent new data from being scheduled on the node and move existing data to other healthy nodes. This can be done via the Longhorn UI or the command line.
+
+#### Via Longhorn UI
+
+1. Open the Longhorn UI and navigate to the **Nodes** tab.
+2. Select the node and click the **Edit Node** button.
+3. Set **Node Scheduling** to **Disable**.
+4. Set **Eviction Requested** to **true**.
+5. Click **Save**.
+
+#### Via kubectl
+
+Patch the Longhorn Node CR to disable scheduling and request eviction in a single command:
+
+```bash
+kubectl patch node.longhorn.io <NODE_NAME> \
+  -n longhorn-system --type=merge \
+  -p '{"spec":{"allowScheduling":false,"evictionRequested":true}}'
+```
+
+### 3. Monitor Eviction Progress
+
+Before proceeding to delete the node, you must ensure all replicas has successfully migrated.
+
+* **Via UI**: In the **Nodes** list, watch the **Replicas** column for the node. Wait until the count reaches **0**.
+* **Via CLI**: Poll the node status to confirm all resources (Replicas and Backing Images) have migrated:
+
+    ```bash
+    kubectl get node.longhorn.io <NODE_NAME> -n longhorn-system -o json \
+    | jq '.status.diskStatus | to_entries[]
+            | {disk: .key,
+            scheduledReplicas: (.value.scheduledReplica | length),
+            scheduledBackingImages: (.value.scheduledBackingImage | length)}'
+    ```
+
+> **Note**: Eviction is complete only when every disk reports `scheduledReplicas: 0` and `scheduledBackingImages: 0`. This process works for both `Attached` and `Detached` volumes. Longhorn will automatically attach detached volumes to migrate data and detach them when finished.
+
+### 4. Delete the Kubernetes Node
+
+Remove the node resource from the Kubernetes cluster. Longhorn requires the Kubernetes node to be removed before it will allow the deletion of the Longhorn Node resource.
+
+```bash
+kubectl delete node <NODE_NAME>
+```
+
+### 5. Delete the Longhorn Node
+
+Once the Kubernetes node is deleted, the Longhorn UI will show the node in a **Down** state. You can now safely remove the metadata.
+
+- **Via UI**: In the **Nodes** tab, the **Delete** button for the node will now be enabled. Click **Delete**.
+- **Via CLI**: If you prefer using `kubectl`, you can delete the Longhorn Node resource directly using the following command:    
+    ```bash
+    kubectl -n longhorn-system delete nodes.longhorn.io <NODE_NAME>
+    ```
+
+## Troubleshooting
+
+### Node "Delete" button is greyed out
+
+The UI disables the **Delete** button if the corresponding Kubernetes node still exists. Ensure you have successfully executed `kubectl delete node <NODE_NAME>` first.
+
+### Eviction is stuck
+
+If the replica count does not reach 0, check the **Events** log. Common causes include:
+
+- **Insufficient Space**: No other nodes have enough disk space to house the replicas. To recover from this, you can refer to [Manual Recovery of Nodes with Insufficient Space](../../../../kb/manual-recovery-of-nodes-with-insufficient-space).
+- **Anti-Affinity Constraints**: If `Replica Node Level Soft Anti-Affinity` is disabled, and all other nodes already host a replica of the same volume, the eviction will have no valid destination. To learn more about anti-affinity and how to resolve this, see [Replica Scheduling and Anti-Affinity](../../best-practices.md#replica-node-level-soft-anti-affinity).
+- **Volume Health**: Rebuilding cannot start if the volume is already in a `Faulted` state. To learn more volume and volume health, refer to [Volume documentation](../volumes/create-volumes).
+
+
+---
+
+## Article: nodes-and-volumes/nodes/multidisk.md
+
+---
+title: Multiple Disk Support
+weight: 4
+aliases:
+- /docs/1.12.0/v2-data-engine/features/node-disk-support/
+- /spdk/features/node-disk-support.md
+---
+
+- [Disk Types](#disk-types)
+- [Default Disk Behavior](#default-disk-behavior)
+- [Add a Disk](#add-a-disk)
+  - [Add a Filesystem-Type Disk](#add-a-filesystem-type-disk)
+    - [Use an Alternative Path for a Filesystem-Type Disk on the Node](#use-an-alternative-path-for-a-filesystem-type-disk-on-the-node)
+  - [Add a Block-Type Disk](#add-a-block-type-disk)
+    - [Prerequisites](#prerequisites)
+    - [Steps](#steps)
+    - [Disk Driver](#disk-driver)
+      - [Using AIO Disks](#using-aio-disks)
+      - [Using NVMe Disks](#using-nvme-disks)
+      - [Using VirtIO Disks](#using-virtio-disks)
+  - [Root Disk Reservation](#root-disk-reservation)
+- [Remove a Disk](#remove-a-disk)
+- [Disk Scheduling Configuration](#disk-scheduling-configuration)
+
+## Disk Types
+
+Longhorn supports two types of disks:
+
+- **Filesystem-type disk (`diskType: filesystem`):** Used by the **V1 Data Engine**. The disk must be formatted with an extent-based filesystem (for example, ext4 or xfs) and mounted to a directory on the host.
+- **Block-type disk (`diskType: block`):** Used by the **V2 Data Engine**. The disk is used as a raw block device without a filesystem.
+
+Each disk type is tied to its corresponding data engine:
+
+- V1 volumes are scheduled only to filesystem-type disks.
+- V2 volumes are scheduled only to block-type disks.
+
+## Default Disk Behavior
+
+When a node is first added to Longhorn, the system creates a default **filesystem-type disk** at `/var/lib/longhorn`. This default disk is used for V1 volumes unless you disable scheduling for it or add other filesystem-type disks.
+
+## Add a Disk
+
+### Add a Filesystem-Type Disk
+
+Filesystem-type disks are used for V1 volumes. Before adding one to Longhorn, you must prepare and mount it on the host.
+
+1. **Choose a Disk:** Select the physical or virtual disk you want to use for Longhorn storage and format it with an extent-based filesystem (e.g., ext4, xfs).
+2. **Mount the Disk:** Mount the disk to a directory on the host, such as `/mnt/example-disk`. Ensure the directory is accessible and properly configured.
+
+After the disk is mounted, you can add it to Longhorn using either the UI or the `kubectl` command-line tool.
+
+- **Using the Longhorn UI**
+
+  1. Go to the **Nodes** tab, select a node, and choose **Edit Disks** from the dropdown menu.
+  2. Add the mount path of the disk to the disk list.
+
+- **Using `kubectl` Command**
+
+  1. Run `kubectl edit node.longhorn.io <node-name>` to edit the Longhorn node resource.
+  2. Add the disk path to `spec.disks`. For example:
+
+    ```yaml
+    ...
+    spec:
+      ...
+      disks:
+        ...
+        example-disk:
+          allowScheduling: true
+          diskDriver: ""
+          diskType: filesystem
+          evictionRequested: false
+          path: /mnt/example-disk
+          storageReserved: 0
+          tags: []
+    ...
+    ```
+
+  3. Save and exit the editor.
+
+Once a disk is added:
+
+- Longhorn automatically detects the storage details of the disk, such as maximum and available capacity.
+- If the disk is suitable for storing volume data, Longhorn begins scheduling volumes to it.
+
+> **Notice**:
+>
+> 1. You cannot add a disk path that is already in use by another Longhorn disk.
+> 2. Longhorn uses the filesystem ID to detect duplicate mounts. Therefore, you cannot add a disk with the **same filesystem ID** as another disk on the same node.  
+>    See: [Issue #2477](https://github.com/longhorn/longhorn/issues/2477)
+
+#### Use an Alternative Path for a Filesystem-Type Disk on the Node
+
+If you prefer to use a different path for a filesystem-type disk (rather than the original mount point), you can use `mount --bind` to create an alternative path. Do **not** use symbolic link (`lh -s`), as these are not properly resolved inside Longhorn pods.
+
+Make sure the alternative path is remounted after a node reboot, for example, by adding it to `/etc/fstab`.
+
+### Add a Block-Type Disk
+
+Block-type disks are used for V2 volumes. The V2 Data Engine requires raw block devices for direct access.
+
+Longhorn supports several ways to manage block-type disks on a node:
+
+- **NVMe disks:** Managed with the `nvme` driver.
+- **VirtIO disks:** Managed with the `virtio-blk` driver.
+- **Other block devices:** Managed with the `aio` driver.
+
+#### Prerequisites
+
+- The V2 Data Engine must be enabled. See [V2 Data Engine Quick Start](../../v2-data-engine/quick-start) for details.
+- Longhorn prevents adding block disks that contain an existing file system or partition table. Clean the disk first:
+
+    ```shell
+    wipefs -a /path/to/block/device
+    ```
+
+#### Steps
+
+You can add a block-type disk using the Longhorn UI or `kubectl`.
+
+- **Using the Longhorn UI**
+
+  1. Go to the **Nodes** tab, select a node, and choose **Edit Disks** from the dropdown menu.
+  2. Add the block device path and set the disk type to **Block**.
+
+- **Using `kubectl` Command**
+
+  1. Run `kubectl edit node.longhorn.io <node-name>` to edit the Longhorn node resource.
+  2. Add the block disk to `spec.disks`. For example:
+
+    ```yaml
+    ...
+    spec:
+      ...
+      disks:
+        ...
+        block-disk:
+          allowScheduling: true
+          diskDriver: auto
+          diskType: block
+          evictionRequested: false
+          path: /dev/sdb
+          storageReserved: 0
+          tags: []
+    ...
+    ```
+
+  1. Save and exit the editor.
+
+#### Disk Driver
+
+The `diskDriver` field controls how Longhorn accesses the block device. Setting it to `auto` allows Longhorn to detect the appropriate driver automatically:
+
+- **NVMe disks:** Uses the `nvme` driver. The `path` can be a BDF (Bus Device Function) notation (e.g., `0000:05:00.0`).
+- **VirtIO disks:** Uses the `virtio-blk` driver. The `path` can also be a BDF notation.
+- **Other disks:** Falls back to the `aio` (Linux AIO) driver. The `path` should be a standard device path (e.g., `/dev/sdb`).
+
+After the disk is added, check `node.status.diskStatus` to confirm that Longhorn detected the disk without errors and assigned the expected `diskDriver`.
+
+> **Note**
+>
+> When a disk is managed by the `nvme` or `virtio-blk` driver, it is no longer exposed through the original Linux kernel device node such as `/dev/nvmeXnY` or `/dev/vdX`.
+
+##### Using AIO Disks
+
+> **Tip:** Prefer a stable path under `/dev/disk/by-id/` (for example,
+> `/dev/disk/by-id/nvme-...`) rather than kernel-assigned names like `/dev/sdb`
+> or `/dev/nvmeXnY`, which can change across reboots or differ between nodes.
+
+When a block device is neither NVMe nor VirtIO, or when you want to force Linux AIO, configure it with `diskDriver: aio` and use a standard device path.
+
+```yaml
+aio-disk:
+  allowScheduling: true
+  diskDriver: aio
+  diskType: block
+  evictionRequested: false
+  path: /dev/disk/by-id/wwn-0x5000c500a0b1c2d3   # stable; avoid /dev/sdb
+  storageReserved: 0
+  tags: []
+```
+
+> **Notice**:
+>
+> 1. Block-type disks are exclusively used by the V2 Data Engine and cannot be used for V1 volumes.
+> 2. The disk must be clean and must not contain an existing file system or partition table before it is added. Use `wipefs -a /path/to/block/device` to clean it.
+> 3. For disk-specific configuration examples, see [Using NVMe Disks](#using-nvme-disks), [Using VirtIO Disks](#using-virtio-disks), and [Using AIO Disks](#using-aio-disks).
+
+##### Using NVMe Disks
+
+> **Warning: Do not rely on kernel NVMe device names such as `/dev/nvmeXnY`.**
+>
+> NVMe device names are assigned dynamically by the kernel and are **not
+> guaranteed to be stable** across reboots or consistent across nodes. The same
+> physical disk may appear as `nvme0n1` on one node and `nvme2n1` on another, or
+> change after a reboot.
+>
+> - For the `nvme` driver, always add the disk by its **BDF** (for example,
+>   `0000:05:00.0`), which is stable.
+> - If you must use a device-path–based driver (such as `aio`), use a persistent
+>   symlink under `/dev/disk/by-id/` instead of `/dev/nvmeXnY`.
+
+To let Longhorn use the `nvme` driver, add the disk by its BDF instead of the Linux device path.
+
+1. Identify the available disks on the node. For example:
+
+    ```bash
+    ls -al /sys/block/
+    ```
+
+    Example output:
+
+    ```bash
+    lrwxrwxrwx  1 root root 0 Jul 30 12:20 loop0 -> ../devices/virtual/block/loop0
+    lrwxrwxrwx  1 root root 0 Jul 30 12:20 nvme0n1 -> ../devices/pci0000:00/0000:00:01.2/0000:02:00.0/nvme/nvme0/nvme0n1
+    lrwxrwxrwx  1 root root 0 Jul 30 12:20 nvme1n1 -> ../devices/pci0000:00/0000:00:01.2/0000:05:00.0/nvme/nvme1/nvme1n1
+    ```
+
+2. Find the BDF of the target NVMe disk. In the example above, the BDF of `/dev/nvme1n1` is `0000:05:00.0`.
+
+3. Add the disk to `spec.disks`. For example:
+
+    ```yaml
+    nvme-disk:
+      allowScheduling: true
+      diskType: block
+      diskDriver: auto
+      evictionRequested: false
+      path: 0000:05:00.0
+      storageReserved: 0
+      tags: []
+    ```
+
+If you instead add the same disk using `/dev/nvme1n1`, Longhorn treats it as an `aio` disk instead of an `nvme` disk.
+
+##### Using VirtIO Disks
+
+VirtIO disks follow the same pattern. To let Longhorn use the `virtio-blk` driver, add the disk by its BDF.
+
+1. Identify the available disks on the node. For example:
+
+    ```bash
+    ls -al /sys/block/
+    ```
+
+    Example output:
+
+    ```bash
+    lrwxrwxrwx  1 root root 0 Feb 22 14:04 vda -> ../devices/pci0000:00/0000:00:02.3/0000:04:00.0/virtio2/block/vda
+    lrwxrwxrwx  1 root root 0 Feb 22 14:24 vdb -> ../devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio5/block/vdb
+    ```
+
+2. Find the BDF of the target VirtIO disk. In the example above, the BDF of `/dev/vdb` is `0000:07:00.0`.
+
+3. Add the disk to `spec.disks`. For example:
+
+    ```yaml
+    virtio-disk:
+      allowScheduling: true
+      diskType: block
+      diskDriver: auto
+      evictionRequested: false
+      path: 0000:07:00.0
+      storageReserved: 0
+      tags: []
+    ```
+
+If you instead add the same disk using `/dev/vdb`, Longhorn treats it as an `aio` disk instead of a `virtio-blk` disk.
+
+### Root Disk Reservation
+
+You can use the `Space Reserved` field in the UI or `spec.disks.<disk-name>.storageReserved` to reserve a portion of any disk's space (in bytes) for other purposes. This reserved space will not be used by Longhorn for volume data.
+
+To maintain node stability when compute resources (for example memory or disk) are under pressure, the `kubelet` requires some space to remain free. If these critical resources are exhausted, it can lead to node instability.
+
+For the default filesystem-type disk at `/var/lib/longhorn`, Longhorn **reserves 30% of the root disk space by default** to help prevent issues such as `DiskPressure` conditions from the `kubelet`, particularly after scheduling multiple volumes. This behavior is controlled by the `storage-reserved-percentage-for-default-disk` setting.
+
+This automatic reservation applies only to the default filesystem-type disk created for V1 volumes. Block-type disks for V2 volumes must be configured explicitly, including any `storageReserved` value that you want to apply.
+
+## Remove a Disk
+
+Nodes and disks can be excluded from future scheduling. Note that any storage already scheduled on the node will not be automatically released when scheduling is disabled for the node.
+
+To remove a disk:
+
+- Disable scheduling for the disk.
+- Ensure there are **no replicas or backing images** left on the disk, including any in an error state. For instructions on how to evict replicas from disabled disks, see [Select Disks or Nodes for Eviction](../disks-or-nodes-eviction/#select-disks-or-nodes-for-eviction).
+
+Once the disk is empty and scheduling is disabled, you can safely remove it from the node configuration.
+
+## Disk Scheduling Configuration
+
+There are two global settings that affect disk scheduling.
+
+These settings apply to both filesystem-type and block-type disks. However, the V1 Data Engine uses sparse files for thin provisioning, so over-provisioning behavior is commonly discussed in the context of filesystem-type disks.
+
+- `StorageOverProvisioningPercentage` defines the maximum total storage that can be **scheduled** on a disk, relative to its usable capacity. The formula is:
+
+    ```bash
+    ScheduledStorage / (MaximumStorage - ReservedStorage)
+    ```
+
+    The default is `100` (%).
+
+    On a 200 GiB disk with 50 GiB reserved, Longhorn sees 150 GiB of usable space. With the default setting, it can schedule up to 150 GiB of volume data.
+
+    Since workloads typically do not consume the entire allocated volume size, increasing this setting can help optimize disk utilization. For V1 volumes, higher values are commonly used because the V1 Data Engine uses sparse files for thin provisioning.
+
+- `StorageMinimalAvailablePercentage` specifies the minimum percentage of free space that must remain on a disk in order to schedule new replicas. The formula is:
+
+    ```bash
+    AvailableStorage / MaximumStorage
+    ```
+
+    The default is `25` (%).
+
+    For a 200 GiB disk with 50 GiB reserved, Longhorn will stop scheduling new replicas if available space falls below 37.5 GiB  (25% of 150 GiB). A new volume also will not be scheduled if its size would push available space below that limit.
+
+    This setting helps prevent disks from becoming too full, which could lead to scheduling failures or volume operation issues.
+
+> **Warning**:
+>
+> Currently, Longhorn cannot fully enforce the `StorageMinimalAvailablePercentage` limit in all scenarios because:
+>
+> - Longhorn volumes may use more space than their requested size, especially when snapshots are taken.
+> - Longhorn allows over-provisioning by default.
+
+
+---
+
+## Article: nodes-and-volumes/nodes/node-conditions.md
+
+---
+title: Node Conditions
+weight: 7
+---
+
+Node conditions describe the status of all worker nodes and are used to check the environment settings of worker nodes to identify potential issues before any system impact.
+
+Node conditions:
+
+- `Ready`:  
+  Indicates that the node is ready for Longhorn operations, including that a `longhorn-manager` pod is running on this node, the Kubernetes node is ready, and there is no physical resources pressure.  
+
+- `Schedulable`:  
+  Indicated that the node is not cordoned and workload can be scheduled to this node.
+
+- `MountPropagation`:  
+  Indicates that the node supports mount propagation. This is necessary for sharing of volumes mounted by a container with other containers in the same Longhorn pod, or to other Longhorn pods on the same node.  
+
+- `Multipathd`:  
+  Confirms if the `multipathd` service is not running on the node, which may affect the pod with the volume startup. See [Troubleshooting: `MountVolume.SetUp failed for volume` due to multipathd on the node](../../../../../kb/troubleshooting-volume-with-multipath).  
+
+- `RequiredPackages`:  
+  Checks if all required packages ([NFS client](../../../deploy/install/#installing-nfsv4-client), [iSCSI tool](../../../deploy/install/#installing-open-iscsi), [cryptsetup](../../../deploy/install/#installing-cryptsetup-and-luks), [dmsetup](../../../deploy/install/#installing-device-mapper-userspace-tool)) exist for Longhorn  
+
+- `NFSClientInstalled`:  
+  Identifies if any of the following NFS clients are supported: `v4.2`, `v4.1`, or `v4.0`. NFS client is required for RWX volume and backup.  
+
+- `KernelModulesLoaded`:  
+  Identifies if the following Kernel modules are loaded:
+  - `dm_crypt`: Is required for the volume and backing image encryption.  
+  - For engine v2 only:
+    - `vfio_pci`: Is required for SPDK and PCI device management
+    - `uio_pci_generic`: Is required for SPDK UIO support
+    - `nvme_tcp`: Is required for NVMe-over-TCP device usage
+
+- `HugePagesAvailable`:
+  Indicates whether the node is properly configured with HugePages (2Mi) as required by the Longhorn v2 data engine. This includes verifying that:
+  - HugePages (2Mi) are registered as a Kubernetes resource (`hugepages-2Mi`).
+  - The configured HugePages capacity meets or exceeds the value defined in the `v2-data-engine-hugepage-limit` setting.
+
+Node conditions do not block the Longhorn deployment but they result in warnings in the Longhorn `Node` resource.
+For more information, see [Longhorn Installation Requirements](../../../deploy/install/#installation-requirements).
+
+
+---
+
+## Article: nodes-and-volumes/nodes/node-space-usage.md
+
+---
+title: Node Space Usage
+weight: 1
+---
+
+In this section, you'll have a better understanding of the space usage info presented by the Longhorn UI. 
+
+
+### Whole Cluster Space Usage
+
+In `Dashboard` page, Longhorn will show you the cluster space usage info:
+
+{{< figure src="/img/screenshots/volumes-and-nodes/space-usage-info-dashboard-page.png" >}}
+
+`Schedulable`: The actual space that can be used for Longhorn volume scheduling.
+
+`Reserved`: The space reserved for other applications and system.
+
+`Used`: The actual space that has been used by Longhorn, system, and other applications.
+
+`Disabled`: The total space of the disks/nodes on which Longhorn volumes are not allowed for scheduling.
+
+### Space Usage of Each Node
+
+In `Node` page, Longhorn will show the space allocation, schedule, and usage info for each node:
+
+{{< figure src="/img/screenshots/volumes-and-nodes/space-usage-info-node-page.png" >}}
+
+`Size` column: The **max actual available space** that can be used by Longhorn volumes. It equals the total disk space of the node minus reserved space. 
+
+`Allocated` column: The left number is the size that has been used for **volume scheduling**, and it does not mean the space has been used for the Longhorn volume data store. The right number is the **max** size for volume scheduling, which the result of `Size` multiplying `Storage Over Provisioning Percentage`. (In the above illustration, `Storage Over Provisioning Percentage` is 500.) Hence, the difference between the 2 numbers (let's call it as the allocable space) determines if a volume replica can be scheduled to this node.
+
+`Used` column: The left part indicates the currently used space of this node. The whole bar indicates the total space of the node.
+
+Notice that the allocable space may be greater than the actual available space of the node when setting `Storage Over Provisioning Percentage` to a value greater than 100. If the volumes are heavily used and lots of historical data will be stored in the volume snapshots, please be careful about using a large value for this setting. For more info about the setting, see [here](../../../references/settings/#storage-over-provisioning-percentage) for details. 
+
+### Disk Schedulability Status and Troubleshooting Message
+
+When a disk becomes **unschedulable**, Longhorn exposes the underlying reason directly in the UI.
+On the **Node** page, if a disk’s internal `Schedulable` condition is `False`, the UI displays the exact message from `node.diskStatus[x].conditions[Schedulable]`.
+This information is essential for diagnosing issues related to space limits or over-provisioning.
+
+**Example Troubleshooting Message:**
+
+```
+Disk default-disk-1030100000000 (/var/lib/longhorn/) on the node ip-192-168-203-144.ap-southeast-1.compute.internal is not schedulable for more replica; Scheduling space condition failed: ScheduledTotal = 4294967296 (Size + StorageScheduled) is greater than ProvisionedLimit = -64504221696 (100% of StorageMax - StorageReserved).
+```
+
+**How to interpret this message:**
+
+- **`ScheduledTotal`**: The total space currently *scheduled* for replicas (both existing and pending) on this disk.
+  > **Note**: This does not represent the actual disk usage.
+
+- **`ProvisionedLimit`**: The **maximum allowed scheduling capacity** for this disk. It is derived from:
+  - the disk’s physical size (`StorageMax`)
+  - its reserved space (`StorageReserved`)
+  - multiplied by the cluster’s `Storage Over Provisioning Percentage`
+
+When `ScheduledTotal` exceeds `ProvisionedLimit`, the disk becomes unschedulable and will not accept new replicas until the disk configuration or cluster settings are adjusted.
+
+
+---
+
+## Article: nodes-and-volumes/nodes/scheduling.md
+
+---
+title: Scheduling
+weight: 5
+---
+
+In this section, you'll learn how Longhorn schedules replicas based on multiple factors.
+
+## Scheduling Policy
+
+Longhorn's scheduling policy has two stages. The scheduler only goes to the next stage if the previous stage is satisfied. Otherwise, the scheduling will fail.
+
+If any tag has been set in order to be selected for scheduling, the node tag and the disk tag have to match when the node or the disk is selected.
+
+The first stage is the **node and zone selection stage.** Longhorn will filter the node and zone based on the `Replica Node Level Soft Anti-Affinity` and `Replica Zone Level Soft Anti-Affinity` settings.
+
+The second stage is the **disk selection stage.** Longhorn will filter the disks that satisfy the first stage based on the `Replica Disk Level Soft Anti-Affinity`, `Storage Minimal Available Percentage`, `Storage Over Provisioning Percentage`, and other disk-related factors like requested disk space.
+
+### The Node and Zone Selection Stage
+
+Longhorn evaluates which **nodes** are suitable for scheduling a new replica based on a series of criteria. The decision-making process follows a specific order to ensure optimal placement for fault tolerance. 
+
+#### 1. Node Tag Matching
+
+Longhorn first checks for node selector tags on the volume.
+- If the volume has node selector tags, only nodes with matching tags are eligible.
+- If the volume has **no node selector**, the behavior depends on the setting **Allow Empty Node Selector Volume**:
+    - `true` (default): Schedules on nodes **with or without tags**.
+    - `false`: Schedules **only** on nodes **without tags**.
+
+#### 2. Cordoned Node Handling
+
+The setting **Disable Scheduling On Cordoned Node** determines whether cordoned nodes are eligible for replica scheduling:
+- `true` (default): Cordoned nodes are **excluded**.
+- `false`: Cordoned nodes are **eligible**.
+
+#### 3.  Anti-Affinity Rules Across Nodes and Zones
+
+Longhorn prioritizes spreading replicas across different **nodes** and **zones** to improve fault tolerance. A **"new"** node or zone is one that does **not** currently host any replica of the volume, while an **"existing"** node or zone already hosts a replica of the volume. The selection logic proceeds in the following order:
+
+The scheduler attempts to place the new replica in the most "isolated" location possible, following this hierarchy of preference:
+1.  **New Node in a New Zone** (most preferred)
+2.  **New Node in an Existing Zone**
+3.  **Existing Node in an Existing Zone** (least preferred)
+
+The following table details the required settings for a replica to be scheduled in each scenario:
+
+| **Scenario** | **Replica Zone Level Soft Anti-Affinity** | **Replica Node Level Soft Anti-Affinity** | **Scheduler Action** |
+| :--- | :--- | :--- | :--- |
+| **New Node in a New Zone** | `false` | `false` | **Schedules** the replica. |
+| | Any other value | Any other value | **Does not** schedule the replica. |
+| **New Node in an Existing Zone** | `true` | `false` | **Schedules** the replica if no new zone is available. |
+| | Any other value | Any other value | **Does not** schedule the replica. |
+| **Existing Node in an Existing Zone** | `true` | `true` | **Schedules** the replica if no other options are available. |
+| | Any other value | Any other value | **Does not** schedule the replica. |
+
+### Disk Selection Stage
+
+Once the node and zone stage is satisfied, Longhorn decides whether it can schedule the replica on any disk of the selected node. It checks the available disks based on matching tags, total disk space, and available disk space. It also considers whether another replica already exists and the anti-affinity settings.
+
+Longhorn checks all available disks on the selected node to ensure they meet the following criteria:
+
+1.  **Disk Tag Matching**:
+    - If the volume has disk tags, the disk must match any specified tags required for the replica.
+    - If the volume has no disk tags, the behavior depends on the setting **Allow Empty Disk Selector Volume**:
+        - `true` (default): Allows scheduling on disks **with or without tags**.
+        - `false`: Only allows scheduling on disks **without tags**.
+2.  **Available Space Check**:
+    - The disk must have sufficient available space based on the configured `Storage Minimal Available Percentage`.
+3.  **Anti-Affinity Settings**:
+    - **Hard Anti-Affinity**: Prevents scheduling a replica on a disk that already hosts another replica of the same volume.
+    - **Soft Anti-Affinity** (when enabled): Prefers scheduling the replica on a disk without an existing replica, even if it’s a less optimal choice in terms of space or other factors.
+4.  **Space Conditions**: Two formulas determine if a disk is schedulable:
+    - **Actual Space Usage Condition**: Ensures sufficient usable storage remains after accounting for currently used space.
+        - Formula: `(Storage Available - Actual Size) > (Storage Maximum × Minimal Available Percentage) / 100`
+    - **Scheduling Space Condition**: Ensures the replica’s size (plus any scheduled but unwritten data) fits within the over-provisioning limit.
+        - Formula: `(Size + Storage Scheduled) ≤ ((Storage Maximum - Storage Reserved) × Over Provisioning Percentage) / 100`
+
+    > **Note:** During disk evaluation, since no specific replica is being scheduled yet, `Actual Size` and `Size` are temporarily treated as `0` in these formulas.
+
+If any of these conditions fail including disk tag, anti-affinity, or space requirements, the disk is marked unschedulable, and Longhorn will not place the replica on it.
+
+If either condition fails or the disk does not meet tag or anti-affinity requirements, it is marked unschedulable, and Longhorn will not place the replica on that disk.
+
+#### Example Scenario
+
+Consider a node (**Node A**) with two disks:
+- **Disk X**: 1 GB available, 4 GB max space
+- **Disk Y**: 2 GB available, 8 GB max space
+
+##### Stage 1: Initial Disk Evaluation
+
+During the initial disk selection stage, Longhorn performs a basic check on all available disks. At this point, no specific replica has been selected, so `Actual Size` and `Size` are treated as `0`.
+
+**Disk X Evaluation**
+- **Available Space**: 1 GB
+- **`Storage Minimal Available Percentage`**: 25% (default)
+- **Minimum required available space**: `(4 GB × 25) / 100 = 1 GB`
+- **Result**: **Disk X** fails the `Actual Space Usage Condition` because its available space (1 GB) is **not greater than** the minimum required (1 GB). Therefore, Disk X is not schedulable unless the `Storage Minimal Available Percentage` is set to 0.
+
+**Disk Y Evaluation**
+- **Available Space**: 2 GB
+- **`Storage Minimal Available Percentage`**: 10%
+- **Minimum required available space**: `(8 GB × 10) / 100 = 0.8 GB`
+- **Result**: **Disk Y** passes the `Actual Space Usage Condition` because its available space (2 GB) is greater than the minimum required (0.8 GB).
+
+Next, we check the **Scheduling Space Condition**:
+- **Scheduled Space**: 2 GB
+- **`Storage Reserved`**: 1 GB
+- **`Over Provisioning Percentage`**: 100% (default)
+- **Max Provisionable Storage**: `(8 GB - 1 GB) × 100 / 100 = 7 GB`
+- **Result**: **Disk Y** passes the `Scheduling Space Condition` because the currently scheduled space (2 GB) is less than the max provisionable storage (7 GB).
+
+Since Disk Y passes all conditions, it is marked as a schedulable disk candidate.
+
+##### Stage 2: Anti-Affinity Rules
+
+Let's assume both Disk X and Disk Y pass the initial space checks and Disk X already hosts a replica for the same volume.
+
+**Hard Anti-Affinity**
+- Longhorn will not schedule the new replica on Disk X. It will instead attempt to schedule it on Disk Y.
+* If Disk Y is not suitable (e.g., mismatched disk tags), scheduling for this replica will fail.
+
+**Soft Anti-Affinity**
+- If **soft anti-affinity** is enabled, Longhorn **prefers** to schedule the replica on Disk Y to avoid co-locating replicas.
+- However, if Disk Y is unsuitable for any reason, Longhorn **may still schedule** the replica on Disk X. This allows for sharing a disk as a fallback option when no other viable candidates are available.
+
+## Schedule Algorithm
+
+After identifying the candidate disks that meet all scheduling requirements, the final step is to select the optimal disk for the replica. This selection is determined using the balance algorithm, which aims to evenly distribute replicas across nodes and disks.
+
+### Balance Factor Formula by Usable Storage: 
+
+- `Disk_Usable_Storage = (Disk.StorageAvailable - Disk.StorageReserved) - Disk.StorageScheduled`
+- Lower score = more balanced distribution.
+
+- **Formula**:
+
+    `BalanceScore(X) = (max(X) - min(X)) / mean(X)`
+
+    Where:
+    - X = set of usable storage values (per node or per disk).
+
+- **Selection process**:
+
+    1. Simulate placing the replica on each candidate node and compute the resulting balance score.
+    → Choose the node with the lowest score (most balanced distribution).
+
+    2. Within the selected node, simulate placement on each candidate disk and compute the balance score again.
+    → Choose the disk with the lowest score among them.
+
+#### Example Scenario
+
+Suppose the cluster has two nodes, and each node contains two candidate disks that are eligible for replica scheduling.
+
+Replica size = 100 GiB.
+
+| Node   | Disk | Usable Storage (GiB) |
+| ------ | ---- | -------------------- |
+| Node A | A1   | 900                  |
+| Node A | A2   | 100                  |
+| Node B | B1   | 600                  |
+| Node B | B2   | 700                  |
+
+***Step 1: Node Selection***
+- Simulate placing on Node A
+    - New totals:
+        - Node A = (900 + 100) − 100 = 900
+        - Node B = (600 + 700) = 1300
+    - Node balance score:
+
+```
+        BalanceScore_NodeA  = (1300 - 900) / ((1300 + 900) / 2)
+                            = 400 / 1100
+                            ≈ 0.364
+```
+
+- Simulate placing on Node B
+    - New totals:
+        - Node A = (900 + 100) = 1000
+        - Node B = (600 + 700) - 1000 = 1200
+    - Node balance score:
+
+```
+        BalanceScore_NodeB  = (1200 - 1000) / ((1200 + 1000) / 2)
+                            = 200 / 1100
+                            ≈ 0.182
+```
+
+Choose Node B (lower score, more balanced).
+
+***Step 2: Disk Selection***
+- Simulate placing on B1 (600 → 500)
+    - New disk usable: B1 = 500, B2 = 700
+    - Disk balance score:
+
+```
+        BalanceScore_DiskB1 = (700 - 500) / ((700 + 500) / 2)
+                            = 200 / 600
+                            ≈ 0.333
+```
+
+- Simulate placing on B2 (700 → 600)
+    - New disk usable: B1 = 600, B2 = 600
+    - Disk balance score:
+
+```
+        BalanceScore_DiskB2 = (600 - 600) / ((600 + 600) / 2)
+                            = 0 / 600
+                            = 0
+```
+
+Choose Disk B2 (perfect balance between B1 and B2).
+
+## Settings
+
+For more information on settings that are relevant to scheduling replicas on nodes and disks, refer to the settings reference:
+
+- [Disable Scheduling On Cordoned Node](../../../references/settings/#disable-scheduling-on-cordoned-node)
+- [Replica Soft Anti-Affinity](../../../references/settings/#replica-node-level-soft-anti-affinity) (also called Replica Node Level Soft Anti-Affinity)
+- [Replica Zone Level Soft Anti-Affinity](../../../references/settings/#replica-zone-level-soft-anti-affinity)
+- [Replica Disk Level Soft Anti-Affinity](../../../references/settings/#replica-disk-level-soft-anti-affinity)
+- [Storage Minimal Available Percentage](../../../references/settings/#storage-minimal-available-percentage)
+- [Storage Over Provisioning Percentage](../../../references/settings/#storage-over-provisioning-percentage)
+- [Allow Empty Node Selector Volume](../../../references/settings/#allow-empty-node-selector-volume)
+- [Allow Empty Disk Selector Volume](../../../references/settings/#allow-empty-disk-selector-volume)
+
+## Notice
+Longhorn relies on label `topology.kubernetes.io/zone=<Zone name of the node>` or `topology.kubernetes.io/region=<Region name of the node>` in the Kubernetes node object to identify the zone/region.
+
+Since these are reserved and used by Kubernetes as [well-known labels](https://kubernetes.io/docs/reference/labels-annotations-taints/#topologykubernetesiozone).
+
+
+---
+
+## Article: nodes-and-volumes/nodes/storage-tags.md
+
+---
+title: Storage Tags
+weight: 2
+---
+
+## Overview
+
+The storage tag feature enables only certain nodes or disks to be used for storing Longhorn volume data. For example, performance-sensitive data can use only the high-performance disks which can be tagged as `fast`, `ssd` or `nvme`, or only the high-performance node tagged as `baremetal`.
+
+This feature supports both disks and nodes. 
+
+## Setup
+
+The tags can be set up using the Longhorn UI:
+
+1. *Node -> Select one node -> Edit Node and Disks*
+2. Click `+New Node Tag` or `+New Disk Tag` to add new tags.
+
+All the existing scheduled replica on the node or disk won't be affected by the new tags.
+
+## Usage
+
+When multiple tags are specified for a volume, the disk and the node (the disk belong to) must have all the specified tags to become usable.
+
+### UI
+
+When creating a volume, specify the disk tag and node tag in the UI.
+
+### Kubernetes
+
+Use Kubernetes StorageClass parameters to specify tags.
+
+You can specify tags in the default Longhorn StorageClass by adding parameter `nodeSelector: "storage,fast"` in the ConfigMap named `longhorn-storageclass`. 
+For example:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+data:
+  storageclass.yaml: |
+    kind: StorageClass
+    apiVersion: storage.k8s.io/v1
+    metadata:
+      name: longhorn
+      annotations:
+        storageclass.kubernetes.io/is-default-class: "true"
+    provisioner: driver.longhorn.io
+    allowVolumeExpansion: true
+    reclaimPolicy: "Delete"
+    volumeBindingMode: Immediate
+    parameters:
+      numberOfReplicas: "3"
+      staleReplicaTimeout: "480"
+      diskSelector: "ssd"
+      nodeSelector: "storage,fast"
+```
+If Longhorn is installed via Helm, you can achieve that by editing `persistence.defaultNodeSelector` in [values.yaml](https://github.com/longhorn/longhorn/blob/v{{< current-version >}}/chart/values.yaml).
+
+Alternatively, a custom storageClass setting can be used, e.g.:
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-fast
+provisioner: driver.longhorn.io
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "480" # 8 hours in minutes
+  diskSelector: "ssd"
+  nodeSelector: "storage,fast"
+```
+
+## History
+* [Original feature request](https://github.com/longhorn/longhorn/issues/311)
+* Available since v0.6.0
+
+
+---
+
+## Article: nodes-and-volumes/nodes/topology-aware-provisioning.md
+
+---
+title: Topology-Aware Provisioning
+weight: 6
+---
+
+Topology-aware provisioning allows you to control the `nodeAffinity` rules that Kubernetes writes into a PersistentVolume (PV) at creation time. This is useful when you want to pin volumes to specific zones or regions so that pods and their data always land in the same failure domain.
+
+Longhorn supports this through two complementary features:
+
+- **`csi-allowed-topology-keys` setting** — Controls which topology keys (for example, `topology.kubernetes.io/zone`) appear in the PV `nodeAffinity`.
+- **`strictTopology` StorageClass parameter** — When enabled, pins the PV to the topology of the exact node selected by the scheduler instead of all matching topologies.
+
+## Prerequisites
+
+1. Nodes in your cluster must be labeled with the topology keys you plan to use. Kubernetes automatically applies the well-known label `topology.kubernetes.io/zone` in most cloud environments. Verify with:
+
+   ```shell
+   kubectl get nodes --label-columns topology.kubernetes.io/zone
+   ```
+
+2. Configure the **CSI Allowed Topology Keys** setting in Longhorn. Set the value to a comma-separated list of topology keys that Longhorn should pass through to Kubernetes.
+
+   - **Longhorn UI**: Go to **Setting > General > CSI Allowed Topology Keys** and enter, for example, `topology.kubernetes.io/zone`.
+   - **Longhorn API / kubectl**:
+     ```shell
+     kubectl -n longhorn-system edit settings.longhorn.io csi-allowed-topology-keys
+     ```
+     Set the `value` field to `topology.kubernetes.io/zone`.
+
+   > **Note:** After changing this setting, you must manually restart the longhorn-csi-plugin DaemonSet for the change to take effect. Topology is applied correctly only after the CSI plugin pod on each node has restarted.
+
+## How It Works
+
+When a PVC is created against a StorageClass that uses the Longhorn CSI driver, several fields interact to determine what `nodeAffinity` the resulting PV receives:
+
+| Field | Role |
+|-------|------|
+| `csi-allowed-topology-keys` (Longhorn setting) | Tells the CSI driver which topology keys to advertise. If empty (the default), no topology information is passed to Kubernetes, and PVs do not receive topology-based `nodeAffinity`. |
+| `allowedTopologies` (StorageClass field) | Restricts which topology values are eligible. For example, you can limit provisioning to zones `a` and `b` out of `a`, `b`, and `c`. |
+| `volumeBindingMode` (StorageClass field) | `WaitForFirstConsumer` (WFFC) delays provisioning until a pod is scheduled, giving the scheduler a preferred node. `Immediate` provisions right away. |
+| `strictTopology` (StorageClass parameter) | When `"true"` and used with `WaitForFirstConsumer`, the PV is pinned to only the zone of the node where the pod was scheduled, rather than all allowed zones. This setting has effect only when `csi-allowed-topology-keys` includes the relevant topology key. |
+
+## Examples
+
+The examples below assume a cluster with six nodes across three zones:
+
+| Node | Zone |
+|------|------|
+| node2 | a |
+| node3 | b |
+| node4 | c |
+| node5 | a |
+| node6 | b |
+| node7 | c |
+
+### Basic Zone-Level Affinity
+
+Use `WaitForFirstConsumer` together with `allowedTopologies` and `csi-allowed-topology-keys` to restrict volumes to specific zones.
+
+**Longhorn setting:**
+
+```
+csi-allowed-topology-keys = topology.kubernetes.io/zone
+```
+
+**StorageClass:**
+
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-zone-ab
+provisioner: driver.longhorn.io
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  numberOfReplicas: "3"
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: topology.kubernetes.io/zone
+        values:
+          - a
+          - b
+```
+
+**Result:** The PV `nodeAffinity` is set to `zone in [a, b]`. The PV can only be attached to nodes in zones `a` or `b`.
+
+### Strict Topology Pinning
+
+Add `strictTopology: "true"` to pin the PV to the exact zone of the scheduled node.
+
+**Longhorn setting:**
+
+```
+csi-allowed-topology-keys = topology.kubernetes.io/zone
+```
+
+**StorageClass:**
+
+```yaml
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-strict-zone
+provisioner: driver.longhorn.io
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  numberOfReplicas: "3"
+  strictTopology: "true"
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: topology.kubernetes.io/zone
+        values:
+          - a
+          - b
+          - c
+```
+
+**Result:** Even though all three zones are listed in `allowedTopologies`, the PV `nodeAffinity` is set to only the zone of the node where the pod was scheduled (for example, `zone in [a]` if the pod lands on `node2` or `node5`).
+
+## Behavior Reference
+
+In the following table, zones `[a, b, c]` represent all zones present in the example cluster above.
+
+| # | `volumeBindingMode` | `allowedTopologies` | `csi-allowed-topology-keys` | `strictTopology` | PV `nodeAffinity` |
+|--:|---|---|---|---|---|
+| 1 | Immediate | None | `""` (empty) | false | None |
+| 2 | Immediate | None | `zone` | false | zone in [a, b, c] |
+| 3 | Immediate | zone: [a, b] | `zone` | false | zone in [a, b] |
+| 4 | WFFC | None | `""` (empty) | false | None |
+| 5 | WFFC | None | `zone` | false | zone in [a, b, c] |
+| 6 | WFFC | None | `zone` | true | zone in [selected] |
+| 7 | WFFC | zone: [a] | `zone` | false | zone in [a] |
+| 8 | WFFC | zone: [a, b, c] | `zone` | true | zone in [selected] |
+
+> In this table, `zone` is shorthand for `topology.kubernetes.io/zone`, and `[selected]` means the zone of the node chosen by the Kubernetes scheduler.
+
+**Key takeaways:**
+
+- Without `csi-allowed-topology-keys`, no topology information is passed and PVs do not receive topology-based `nodeAffinity` (scenarios 1, 4).
+- `strictTopology` only pins the PV to the scheduled Pod’s topology when used with `WaitForFirstConsumer`. With `Immediate`, the PV is created before the Pod is scheduled, so its topology is selected randomly.
+- `allowedTopologies` narrows the set of eligible zones; `strictTopology` further narrows it to the single selected zone.
+
+## Notes and Warnings
+
+- Do **not** use `allowedTopologies` together with `dataLocality: strict-local`. The PV `nodeAffinity` is immutable once set and will conflict with Longhorn's strict-local volume pinning. See [Data Locality](../../../high-availability/data-locality/) for details.
+- The most common configuration for users who do **not** need topology-aware provisioning is to leave `csi-allowed-topology-keys` empty (scenarios 1 and 4). This is the default.
+- For users who **do** want topology-aware provisioning, the recommended configurations are scenarios 7 and 8 — use `WaitForFirstConsumer` together with `allowedTopologies` and `csi-allowed-topology-keys`.
+
+## Related Documentation
+
+- [Storage Class Parameters](../../../references/storage-class-parameters/)
+- [CSI Allowed Topology Keys setting](../../../references/settings/#csi-allowed-topology-keys)
+- [Scheduling](../scheduling)
+
+
+---
+
+## Article: important-notes/_index.md
+
+---
+title: Important Notes
+weight: 1
+---
+
+This page summarizes the key notes for Longhorn v{{< current-version >}}.
+For the full release note, see the Longhorn v{{< current-version >}} release notes on GitHub.
+
+- [Removal](#removal)
+- [V2 Data Engine](#v2-data-engine)
+  - [General Availability](#general-availability)
+  - [Notice](#notice)
+    - [Volume Attach Latency at Scale](#volume-attach-latency-at-scale)
+    - [ARM64 NVMe-backed Block-Type Node Disk Limitation](#arm64-nvme-backed-block-type-node-disk-limitation)
+    - [UBLK Frontend Kernel Limitation](#ublk-frontend-kernel-limitation)
+    - [Longhorn System Upgrade](#longhorn-system-upgrade)
+  - [Default CPU Allocation](#default-cpu-allocation)
+  - [IPv6 Support](#ipv6-support)
+  - [Features Planned for Longhorn v1.12.1](#features-planned-for-longhorn-v1121)
+    - [Fast Volume Cloning](#fast-volume-cloning)
+    - [Storage Sharding](#storage-sharding)
+- [Important Fixes](#important-fixes)
+  - [Instance Manager Panic During Replica Rebuild](#instance-manager-panic-during-replica-rebuild)
+  - [Replica Rebuild Progress Reporting](#replica-rebuild-progress-reporting)
+  - [Replica Auto-Balance Scheduling Loop](#replica-auto-balance-scheduling-loop)
+  - [Replica CR Leak During Failed Local Scheduling](#replica-cr-leak-during-failed-local-scheduling)
+  - [CSI Storage Capacity Tracking](#csi-storage-capacity-tracking)
+  - [Encrypted Volume Size Correction](#encrypted-volume-size-correction)
+- [General](#general)
+  - [Kubernetes Version Requirement](#kubernetes-version-requirement)
+  - [Manual Checks Before Upgrade](#manual-checks-before-upgrade)
+- [Scheduling](#scheduling)
+  - [Topology-Aware PV Node Affinity Control](#topology-aware-pv-node-affinity-control)
+- [Stability](#stability)
+  - [Configurable Engine Image Pod Liveness Probe](#configurable-engine-image-pod-liveness-probe)
+- [Resource Efficiency](#resource-efficiency)
+  - [Longhorn Manager Memory Optimization](#longhorn-manager-memory-optimization)
+- [Networking](#networking)
+  - [Dual-Stack Cluster Support](#dual-stack-cluster-support)
+- [Monitoring](#monitoring)
+  - [Toggle Kubernetes Metrics Server Integration](#toggle-kubernetes-metrics-server-integration)
+- [Command-Line Tool](#command-line-tool)
+  - [On-Demand Snapshot Checksum Calculation](#on-demand-snapshot-checksum-calculation)
+
+## Removal
+
+V2 Backing Images are removed in Longhorn v{{< current-version >}}. Use the Containerized Data Importer (CDI) to import images into Longhorn for compatibility with the current engine.
+
+**Migration required for existing V2 volumes with backing images:**
+
+If you have V2 volumes that were created from backing images, you must migrate them before upgrading to v{{< current-version >}}:
+
+1. **Backup and recreate** (recommended): Create a backup of the V2 volume, delete the original volume, then restore from backup. The restored volume will not have a backing image dependency.
+2. **Delete the volume**: If the data is not needed, delete the V2 volume directly.
+
+V2 volumes with backing image dependencies cannot be upgraded in-place. Attempting to upgrade without migration may result in volume attachment failures.
+
+For more information, see [Issue #13181](https://github.com/longhorn/longhorn/issues/13181) and [Longhorn with CDI Imports](../advanced-resources/containerized-data-importer/containerized-data-importer).
+
+## V2 Data Engine
+
+### General Availability
+
+The V2 Data Engine is generally available in Longhorn v{{< current-version >}}. This milestone reflects improvements in stability, operational safety, networking support, and feature maturity, making V2 volumes suitable for production use in supported environments.
+
+For a summary of the current V1 and V2 behavior differences and feature parity, see [V1 and V2 Volume Behavior and Feature Parity](../v1-v2-volume-behavior-and-feature-parity).
+
+For more information, see [Issue #6229](https://github.com/longhorn/longhorn/issues/6229).
+
+### Notice
+
+#### Volume Attach Latency at Scale
+
+In environments with a growing number of attached V2 volumes, increased attach latency has been observed for subsequent volumes. Initial analysis suggests this may be related to NVMe-TCP connection handling at scale, though the precise layer (SPDK user-space or Linux kernel) has not yet been identified. Further investigation is in progress. For follow-up status, see [Issue #13241](https://github.com/longhorn/longhorn/issues/13241).
+
+#### ARM64 NVMe-backed Block-Type Node Disk Limitation
+
+On ARM64 systems, V2 volumes may experience stuck I/O when SPDK is configured with two or more CPU cores and node disks use the NVMe driver. The root cause may lie in either the Linux kernel or SPDK itself, and further investigation is required. As a workaround, use [AIO-backed node disks](../nodes-and-volumes/nodes/multidisk#using-aio-disks) instead of [NVMe-backed node disks](../nodes-and-volumes/nodes/multidisk#using-nvme-disks) on ARM64 systems. For follow-up status, see [Issue #13243](https://github.com/longhorn/longhorn/issues/13243).
+
+#### UBLK Frontend Kernel Limitation
+
+The UBLK frontend for V2 Data Engine volumes is experimental and only functional on Linux kernels below v6.17. On kernel v6.17.0 and above, UBLK fails due to upstream UBLK API changes that cause `EINVAL` errors when starting UBLK devices.
+
+For more information, see [Issue #11977](https://github.com/longhorn/longhorn/issues/11977) and [UBLK Frontend Support](../advanced-resources/v2-data-engine/ublk-frontend-support).
+
+#### Longhorn System Upgrade
+
+V2 volumes do not support live upgrades between Longhorn v1.12 patch releases and must be detached before upgrading. Support is planned when upgrading from a Longhorn v1.12 release to a Longhorn v1.13 release.
+
+### Default CPU Allocation
+
+Longhorn v{{< current-version >}} changes the default `data-engine-cpu-mask` from `0x1` (1 CPU core) to `0x3` (2 CPU cores). V2 Data Engine uses a busy-polling reactor model where the master reactor handles both I/O polling and management RPCs. When only a single core is assigned, heavy I/O workloads can delay or starve RPC processing, resulting in increased latency, timeout events, and operational instability.
+
+Assigning 2 or more cores allows I/O and management tasks to run on separate reactors, improving responsiveness and operational stability.
+
+For more information, see [Issue #13237](https://github.com/longhorn/longhorn/issues/13237) and [Configurable CPU Cores](../advanced-resources/v2-data-engine/configurable-cpu-cores).
+
+### IPv6 Support
+
+V2 volumes now support single-stack IPv6 Kubernetes clusters. For dual-stack cluster support and its limitations, see [Dual-Stack Cluster Support](#dual-stack-cluster-support).
+
+For more information, see [Issue #10928](https://github.com/longhorn/longhorn/issues/10928).
+
+### Features Planned for Longhorn v1.12.1
+
+#### Fast Volume Cloning
+
+Fast volume cloning for the V2 Data Engine is planned for Longhorn v1.12.1. This enhancement is intended to allow the initial `linked-clone` to be created with multiple replicas in parallel instead of being limited to a single replica.
+
+For more information, see [Issue #12552](https://github.com/longhorn/longhorn/issues/12552).
+
+#### Storage Sharding
+
+Storage sharding for the V2 Data Engine is planned as an experimental feature for Longhorn v1.12.1. This capability is intended to address the existing space efficiency limitations caused by replica-based storage overhead.
+
+For more information, see [Issue #1061](https://github.com/longhorn/longhorn/issues/1061).
+
+## Important Fixes
+
+This release includes critical stability fixes.
+
+### Instance Manager Panic During Replica Rebuild
+
+Longhorn v{{< current-version >}} fixes an instance-manager panic that could occur during replica rebuild storms. In affected environments, the panic could terminate all iSCSI targets served by the instance-manager and trigger cascading volume detachments across multiple PVCs.
+
+For more information, see [Issue #13087](https://github.com/longhorn/longhorn/issues/13087).
+
+### Replica Rebuild Progress Reporting
+
+Longhorn v{{< current-version >}} fixes a replica rebuild progress reporting bug that could display values greater than 100% after file-sync retries on unstable networks. Progress accounting is now reset correctly for retried files, so rebuild progress remains within the valid 0% to 100% range.
+
+For more information, see [Issue #12949](https://github.com/longhorn/longhorn/issues/12949).
+
+### Replica Auto-Balance Scheduling Loop
+
+Longhorn v{{< current-version >}} fixes a regression in replica auto-balance that could trigger a repeated replica create-and-delete loop when `Replica Auto Balance` was set to `best-effort`. In affected clusters, Longhorn could keep scheduling an extra replica instead of stabilizing at the configured replica count.
+
+For more information, see [Issue #12926](https://github.com/longhorn/longhorn/issues/12926).
+
+### Replica CR Leak During Failed Local Scheduling
+
+Longhorn v{{< current-version >}} fixes a replica scheduling issue where large numbers of stopped Replica CRs could accumulate when `dataLocality` was set to `best-effort` and the node did not have enough eligible local disk space for another replica. In affected clusters, recurring reconciliation could keep creating placeholder Replica CRs instead of reusing a single failed-schedule placeholder.
+
+For more information, see [Issue #13152](https://github.com/longhorn/longhorn/issues/13152).
+
+### CSI Storage Capacity Tracking
+
+Longhorn v{{< current-version >}} fixes a CSIStorageCapacity scheduling issue that could cause compute nodes without Longhorn disks to report zero capacity and be rejected by `WaitForFirstConsumer` scheduling. In affected clusters with separated compute and storage nodes, new PVCs could remain pending even though eligible storage was available on storage nodes.
+
+For more information, see [Issue #12807](https://github.com/longhorn/longhorn/issues/12807) and [Settings](../references/settings#csi-storage-capacity-tracking).
+
+### Encrypted Volume Size Correction
+
+Longhorn v{{< current-version >}} pre-allocates the 16 MiB LUKS2 header in the replica backend file for encrypted volumes (replica size = requested size + 16 MiB). As a result, the dm-crypt device now exposes the full requested size to workloads.
+
+**Before v1.12**: The 16 MiB LUKS2 header was consumed from the usable volume space. For example, a 1 GiB encrypted volume yielded approximately 1008 MiB to the workload.
+
+**After upgrading to v1.12**: Once the engine image is upgraded for an encrypted volume, Longhorn automatically expands the backend size by 16 MiB. The dm-crypt device then exposes the full requested size (e.g., exactly 1 GiB for a 1 GiB volume). Existing data is not affected.
+
+**Live migration restriction**: Encrypted migratable volumes cannot be live-migrated when using an engine image with a CLI API version older than 12 (pre-v1.12 engine images). Upgrade the engine image to v1.12 or later before attempting live migration of encrypted volumes.
+
+For more information, see [Issue #9205](https://github.com/longhorn/longhorn/issues/9205).
+
+## General
+
+### Kubernetes Version Requirement
+
+Because the CSI external snapshotter is upgraded to v8.2.0, all clusters must be running Kubernetes v1.25 or later before upgrading to Longhorn v{{< current-version >}}.
+
+### Manual Checks Before Upgrade
+
+Automated pre-upgrade checks do not cover all scenarios. Manual checks via kubectl or the UI are recommended:
+
+- Ensure all V2 Data Engine volumes are detached and replicas are stopped. The V2 engine does not support live upgrades.
+- Avoid upgrading when volumes are in the "Faulted" state, as unusable replicas may be deleted, causing permanent data loss if no backups exist.
+- Avoid upgrading if a failed BackingImage exists. See [Backing Image](../advanced-resources/backing-image/backing-image) for details.
+- Creating a [Longhorn system backup](../advanced-resources/system-backup-restore/backup-longhorn-system) before upgrading is recommended to ensure recoverability.
+
+## Scheduling
+
+### Topology-Aware PV Node Affinity Control
+
+Longhorn v{{< current-version >}} adds the `csi-allowed-topology-keys` setting and `strictTopology` StorageClass parameter for more precise control of PV `nodeAffinity`. These options allow users to limit which topology keys are propagated and, with `WaitForFirstConsumer`, pin the PV to the selected node topology when needed.
+
+For more information, see [Issue #12684](https://github.com/longhorn/longhorn/issues/12684) and [Topology-Aware Provisioning](../nodes-and-volumes/nodes/topology-aware-provisioning).
+
+## Stability
+
+### Configurable Engine Image Pod Liveness Probe
+
+Longhorn v{{< current-version >}} adds settings to configure the engine-image DaemonSet liveness probe period, timeout, and failure threshold. These settings help reduce unnecessary engine-image pod restarts on resource-constrained clusters, especially during upgrades or transient CPU spikes.
+
+For more information, see [Issue #12846](https://github.com/longhorn/longhorn/issues/12846) and [Settings](../references/settings#engine-image-pod-liveness-probe-period).
+
+## Resource Efficiency
+
+### Longhorn Manager Memory Optimization
+
+Longhorn v{{< current-version >}} optimizes longhorn-manager informer caching to reduce memory usage, especially in large clusters with high pod counts. This lowers cluster-wide memory overhead caused by repeated caching of non-Longhorn pod data on every manager instance.
+
+For more information, see [Issue #12771](https://github.com/longhorn/longhorn/issues/12771).
+
+## Networking
+
+### Dual-Stack Cluster Support
+
+Longhorn supports dual-stack Kubernetes clusters under a specific requirement: all nodes must be configured with their IP families in the same order (either all IPv4-first, or all IPv6-first). When the order is consistent, Longhorn uses the first IP family of each node and operates correctly. This applies to both the V1 and V2 Data Engines.
+
+> **Warning:** Dual-stack clusters with mixed IP family ordering across nodes are not supported and may result in connectivity failures between replicas and the engine.
+
+For more information, see [Issue #11531](https://github.com/longhorn/longhorn/issues/11531).
+
+## Monitoring
+
+### Toggle Kubernetes Metrics Server Integration
+
+Longhorn v{{< current-version >}} adds the `Kubernetes Metrics Server Metrics Enabled` setting to disable metrics-server-dependent metrics when the Kubernetes Metrics Server API is unavailable. This reduces repeated scrape warnings and unnecessary API calls while preserving other Longhorn metrics.
+
+For more information, see [Issue #13011](https://github.com/longhorn/longhorn/issues/13011) and [Settings](../references/settings#kubernetes-metrics-server-metrics-enabled).
+
+## Command-Line Tool
+
+### On-Demand Snapshot Checksum Calculation
+
+Longhorn v{{< current-version >}} adds `longhornctl` support for triggering on-demand snapshot checksum calculation. This is useful when snapshot checksum recalculation needs to be requested without waiting for the periodic integrity-check schedule.
+
+The command can target a specific volume, all volumes on a specific node, or all volumes in the cluster. The checksum operation runs asynchronously in the background.
+
+For more information, see [Issue #11442](https://github.com/longhorn/longhorn/issues/11442) and [On-Demand Snapshot Checksum Calculation](../advanced-resources/data-integrity/on-demand-snapshot-data-integrity).
+
+
+---
+
 ## Article: snapshots-and-backups/_index.md
 
 ---
@@ -4951,6 +13566,562 @@ This threshold is only active when `SnapshotMaxSize` is set to a non-zero value.
 ### Combined Warnings
 
 Both thresholds are evaluated independently during each reconciliation. When both are exceeded simultaneously, the condition message includes a description for each reason, separated by a semicolon.
+
+
+---
+
+## Article: snapshots-and-backups/csi-snapshot-support/_index.md
+
+---
+title: CSI Snapshot Support
+description: Creating and Restoring Longhorn Snapshots/Backups via the kubernetes CSI snapshot mechanism
+weight: 3
+---
+
+## History
+
+- [GitHub Issue](https://github.com/longhorn/longhorn/issues/304)
+- [Longhorn Enhancement Proposal](https://github.com/longhorn/longhorn/blob/master/enhancements/20200904-csi-snapshot-support.md)
+
+Available since v1.1.0
+
+
+---
+
+## Article: snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-backing-image.md
+
+---
+title: CSI VolumeSnapshot Associated with Longhorn BackingImage
+weight: 2
+---
+
+BackingImage in Longhorn is an object that represents a QCOW2 or RAW image which can be set as the backing/base image of a Longhorn volume.
+
+Instead of directly using Longhorn BackingImage resource for BackingImage management. You can also use the generic Kubernetes CSI VolumeSnapshot mechanism. To learn more about the CSI VolumeSnapshot mechanism, click [here](https://kubernetes.io/docs/concepts/storage/volume-snapshots/).
+
+> **Prerequisite:** CSI snapshot support needs to be enabled on your cluster.
+> If your kubernetes distribution does not provide the kubernetes snapshot controller
+> as well as the snapshot related custom resource definitions, you need to manually deploy them.
+> For more information, see [Enable CSI Snapshot Support](../enable-csi-snapshot-support).
+
+## Create A CSI VolumeSnapshot Associated With Longhorn BackingImage
+
+To create a CSI VolumeSnapshot associated with a Longhorn BackingImage, you first need to create a `VolumeSnapshotClass` object
+with the parameter `type` set to `bi` as follow:
+```yaml
+kind: VolumeSnapshotClass
+apiVersion: snapshot.storage.k8s.io/v1
+metadata:
+  name: longhorn-snapshot-vsc
+driver: driver.longhorn.io
+deletionPolicy: Delete
+parameters:
+  type: bi
+  # export-type default to raw if it is not given
+  export-type: qcow2
+```
+For more information about `VolumeSnapshotClass`, see the kubernetes documentation for [VolumeSnapshotClasses](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/).
+
+After that, create a Kubernetes `VolumeSnapshot` object with `volumeSnapshotClassName` points to the name of the `VolumeSnapshotClass` (`longhorn-snapshot-vsc`) and
+the `source` points to the PVC of the Longhorn volume for which a Longhorn BackingImage should be exported from.
+```yaml
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: test-csi-volume-snapshot-longhorn-backing-image
+spec:
+  volumeSnapshotClassName: longhorn-snapshot-vsc
+  source:
+    persistentVolumeClaimName: test-vol
+```
+
+**Result:**
+A Longhorn BackingImage is created. The `VolumeSnapshot` object creation leads to the creation of a `VolumeSnapshotContent` Kubernetes object.
+The `VolumeSnapshotContent` refers to a Longhorn BackingImage in its `VolumeSnapshotContent.snapshotHandle` field with the name `bi://backing?backingImageDataSourceType=export-from-volume&backingImage=${GENERATED_SNAPSHOT_NAME}&volume-name=test-vol&export-type=qcow2`.
+
+### Viewing the Longhorn BackingImage
+
+To see the BackingImage, click **Advanced > Backing Images** in the top navigation bar and click the BackingImage mentioned in the `VolumeSnapshotContent.snapshotHandle`.
+
+
+### How the CSI Mechanism Works in this Scenario
+
+When the VolumeSnapshot object is created with kubectl, the `VolumeSnapshot.uuid` field is used to identify a Longhorn BackingImage and the associated `VolumeSnapshotContent` object.
+
+This creates a new Longhorn BackingImage named `snapshot-uuid` and the CSI request returns.
+
+Afterwards a `VolumeSnapshotContent` object named `snapcontent-uuid` is created with the `VolumeSnapshotContent.readyToUse` flag is set to **true**.
+
+
+## Restore PVC from CSI VolumeSnapshot Associated With Longhorn BackingImage
+Create a `PersistentVolumeClaim` object where the `dataSource` field points to an existing `VolumeSnapshot` object that is associated with Longhorn BackingImage.
+
+The csi-provisioner will pick this up and instruct the Longhorn CSI driver to provision a new volume using the associated Longhorn BackingImage.
+
+An example `PersistentVolumeClaim` is below. The `dataSource` field needs to point to an existing `VolumeSnapshot` object.
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-restore-pvc
+spec:
+  storageClassName: longhorn
+  dataSource:
+    name: test-csi-volume-snapshot-longhorn-backing-image
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+```
+
+### Restore a Longhorn BackingImage that Has No Associated `VolumeSnapshot` (pre-provision)
+
+You can use the CSI mechanism to restore Longhorn BackingImage that has not been created via the CSI mechanism.
+To restore Longhorn BackingImage that has not been created via the CSI mechanism, you have to first manually create a `VolumeSnapshot` and `VolumeSnapshotContent` object for the BackingImage.
+
+Create a `VolumeSnapshotContent` object with the `snapshotHandle` field set to `bi://backing?backingImageDataSourceType=${TYPE}&backingImage=${BACKINGIMAGE_NAME}&backingImageChecksum=${backingImageChecksum}&${OTHER_PARAMETERS}` which point to an existing BackingImage.
+
+- Users need to provide following query parameters in `snapshotHandle` for validation purpose:
+    - `backingImageDataSourceType`: `sourceType` of existing BackingImage, e.g. `export-from-volume`, `download`
+    - `backingImage`: Name of the BackingImage
+    - `backingImageChecksum`: Optional. Checksum of the BackingImage.
+    - you should also provide the `sourceParameters` of existing BackingImage in the `snapshotHandle` based on the `backingImageDataSourceType`
+      - `export-from-volume`:
+        - `volume-name`: volume to be expoted from.
+        - `export-type`: qcow2 or raw.
+      - `download`:
+        - `url`: url of the BackingImage.
+        - `checksum`: optional.
+
+The parameters can be retrieved from the **Advanced > Backing Images** page in the Longhorn UI.
+
+```yaml
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotContent
+metadata:
+  name: test-existing-backing
+spec:
+  volumeSnapshotClassName: longhorn-snapshot-vsc
+  driver: driver.longhorn.io
+  deletionPolicy: Delete
+  source:
+    snapshotHandle: bi://backing?backingImageDataSourceType=download&backingImage=test-bi&url=https%3A%2F%2Flonghorn-backing-image.s3-us-west-1.amazonaws.com%2Fparrot.qcow2&backingImageChecksum=bd79ab9e6d45abf4f3f0adf552a868074dd235c4698ce7258d521160e0ad79ffe555b94e7d4007add6e1a25f4526885eb25c53ce38f7d344dd4925b9f2cb5d3b
+  volumeSnapshotRef:
+    name: test-snapshot-existing-backing
+    namespace: default
+```
+
+Create the associated `VolumeSnapshot` object with the `name` field set to `test-snapshot-existing-backing`, where the `source` field refers to a `VolumeSnapshotContent` object via the `volumeSnapshotContentName` field.
+
+This differs from the creation of a BackingImage, in which case the `source` field refers to a `PerstistentVolumeClaim` via the `persistentVolumeClaimName` field.
+
+Only one type of reference can be set for a `VolumeSnapshot` object.
+
+```yaml
+apiVersion: snapshot.storage.k8s.io/v1beta1
+kind: VolumeSnapshot
+metadata:
+  name: test-snapshot-existing-backing
+spec:
+  volumeSnapshotClassName: longhorn-snapshot-vsc
+  source:
+    volumeSnapshotContentName: test-existing-backing
+```
+
+Now you can create a `PerstistantVolumeClaim` object that refers to the newly created `VolumeSnapshot` object.
+For an example see [Restore PVC from CSI VolumeSnapshot Associated With Longhorn BackingImage](#restore-pvc-from-csi-volumesnapshot-associated-with-longhorn-backingimage) above.
+
+
+### Restore a Longhorn BackingImage that Has Not Created (on-demand provision)
+
+You can use the CSI mechanism to restore Longhorn BackingImage which has not been created yet. This mechanism only support following 2 kinds of BackingImage data sources.
+
+1. `download`: Download a file from a URL as a BackingImage.
+2. `export-from-volume`: Export an existing in-cluster volume as a backing image.
+
+Users need to create the `VolumeSnapshotContent` with an associated `VolumeSnapshot`. The `snapshotHandle` of the `VolumeSnapshotContent` needs to provide the parameters of the data source. Example below for a non-existing BackingImage `test-bi` with two different data sources.
+
+1. `download`: Users need to provide following parameters
+    - `backingImageDataSourceType`: `download` for on-demand download.
+    - `backingImage`: Name of the BackingImage
+    - `url`: Download the file from a URL as a BackingImage.
+    - `backingImageChecksum`: Optional. Used for validating the file.
+    - example yaml:
+        ```yaml
+        apiVersion: snapshot.storage.k8s.io/v1
+        kind: VolumeSnapshotContent
+        metadata:
+            name: test-on-demand-backing
+        spec:
+            volumeSnapshotClassName: longhorn-snapshot-vsc
+            driver: driver.longhorn.io
+            deletionPolicy: Delete
+            source:
+              # NOTE: change this to provide the correct parameters
+              snapshotHandle: bi://backing?backingImageDataSourceType=download&backingImage=test-bi&url=https%3A%2F%2Flonghorn-backing-image.s3-us-west-1.amazonaws.com%2Fparrot.qcow2&backingImageChecksum=bd79ab9e6d45abf4f3f0adf552a868074dd235c4698ce7258d521160e0ad79ffe555b94e7d4007add6e1a25f4526885eb25c53ce38f7d344dd4925b9f2cb5d3b
+        volumeSnapshotRef:
+            name: test-snapshot-on-demand-backing
+            namespace: default
+        ```
+
+2. `export-from-volume`: Users need to provide following parameters
+    - `backingImageDataSourceType`: `export-form-volume` for on-demand export.
+    - `backingImage`: Name of the BackingImage
+    - `volume-name`: Volume to be exported for the BackingImage
+    - `export-type`: Currently Longhorn supports `raw` or `qcow2`
+    - example yaml:
+        ```yaml
+        apiVersion: snapshot.storage.k8s.io/v1
+        kind: VolumeSnapshotContent
+        metadata:
+        name: test-on-demand-backing
+        spec:
+        volumeSnapshotClassName: longhorn-snapshot-vsc
+        driver: driver.longhorn.io
+        deletionPolicy: Delete
+        source: 
+          # NOTE: change this to provide the correct parameters
+          snapshotHandle: bi://backing?backingImageDataSourceType=export-from-volume&backingImage=test-bi&volume-name=vol-export-src&export-type=qcow2
+        volumeSnapshotRef:
+            name: test-snapshot-on-demand-backing
+            namespace: default
+        ```
+
+Create the associated `VolumeSnapshot` object with the `name` field set to `test-snapshot-on-demand-backing`, where the `source` field refers to a `VolumeSnapshotContent` object via the `volumeSnapshotContentName` field.
+
+This differs from the creation of a BackingImage, in which case the `source` field refers to a `PerstistentVolumeClaim` via the `persistentVolumeClaimName` field.
+
+Only one type of reference can be set for a `VolumeSnapshot` object.
+
+```yaml
+apiVersion: snapshot.storage.k8s.io/v1beta1
+kind: VolumeSnapshot
+metadata:
+  name: test-snapshot-on-demand-backing
+spec:
+  volumeSnapshotClassName: longhorn-snapshot-vsc
+  source:
+    volumeSnapshotContentName: test-on-demand-backing
+```
+
+Now you can create a `PerstistantVolumeClaim` object that refers to the newly created `VolumeSnapshot` object.
+Longhorn will create the BackingImage with the parameters provide in the `snapshotHandle`.
+For an example see [Restore PVC from CSI VolumeSnapshot Associated With Longhorn BackingImage](#restore-pvc-from-csi-volumesnapshot-associated-with-longhorn-backingimage) above.
+
+
+---
+
+## Article: snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-backup.md
+
+---
+title: CSI VolumeSnapshot Associated with Longhorn Backup
+weight: 3
+---
+
+Backups in Longhorn are objects in an off-cluster backupstore, and the endpoint to access the backupstore is the backup target. For more information, see [this section.](../../../concepts/#31-how-backups-work)
+
+To programmatically create backups, you can use the generic Kubernetes CSI VolumeSnapshot mechanism. To learn more about the CSI VolumeSnapshot mechanism, click [here](https://kubernetes.io/docs/concepts/storage/volume-snapshots/).
+
+> **Prerequisite:** CSI snapshot support needs to be enabled on your cluster.
+> If your kubernetes distribution does not provide the kubernetes snapshot controller
+> as well as the snapshot related custom resource definitions, you need to manually deploy them.
+> For more information, see [Enable CSI Snapshot Support](../enable-csi-snapshot-support).
+
+## Create A CSI VolumeSnapshot Associated With Longhorn Backup
+
+To create a CSI VolumeSnapshot associated with a Longhorn backup, you first need to create a `VolumeSnapshotClass` object
+with the parameter `type` set to `bak` as follow:
+```yaml
+kind: VolumeSnapshotClass
+apiVersion: snapshot.storage.k8s.io/v1
+metadata:
+  name: longhorn-backup-vsc
+driver: driver.longhorn.io
+deletionPolicy: Delete
+parameters:
+  type: bak
+  backupMode: full
+```
+
+Longhorn performs incremental backups by default. Add the `backupMode: full` parameter to create a full backup. For more information about `backupMode`, see [Create A Backup](../../backup-and-restore/create-a-backup).
+
+For more information about `VolumeSnapshotClass`, see the kubernetes documentation for [VolumeSnapshotClasses](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/).
+
+After that, create a Kubernetes `VolumeSnapshot` object with `volumeSnapshotClassName` points to the name of the `VolumeSnapshotClass` (`longhorn-backup-vsc`) and
+the `source` points to the PVC of the Longhorn volume for which a backup should be created.
+```yaml
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: test-csi-volume-snapshot-longhorn-backup
+spec:
+  volumeSnapshotClassName: longhorn-backup-vsc
+  source:
+    persistentVolumeClaimName: test-vol
+```
+
+**Result:**
+A backup is created. The `VolumeSnapshot` object creation leads to the creation of a `VolumeSnapshotContent` Kubernetes object.
+The `VolumeSnapshotContent` refers to a Longhorn backup in its `VolumeSnapshotContent.snapshotHandle` field with the name `bak://backup-volume/backup-name`.
+
+### Viewing the Backup
+
+To see the backup, click **Backup** in the top navigation bar and navigate to the backup-volume mentioned in the `VolumeSnapshotContent.snapshotHandle`.
+
+For information on how to restore a volume via a `VolumeSnapshot` object, refer to the below sections.
+
+### How the CSI Mechanism Works in this Scenario
+
+When the VolumeSnapshot object is created with kubectl, the `VolumeSnapshot.uuid` field is used to identify a Longhorn snapshot and the associated `VolumeSnapshotContent` object.
+
+This creates a new Longhorn snapshot named `snapshot-uuid`.
+
+Then a backup of that snapshot is initiated, and the CSI request returns.
+
+Afterwards a `VolumeSnapshotContent` object named `snapcontent-uuid` is created.
+
+The CSI snapshotter sidecar periodically queries the Longhorn CSI plugin to evaluate the backup status.
+
+Once the backup is completed, the `VolumeSnapshotContent.readyToUse` flag is set to **true**.
+
+
+## Restore PVC from CSI VolumeSnapshot Associated With Longhorn Backup
+Create a `PersistentVolumeClaim` object where the `dataSource` field points to an existing `VolumeSnapshot` object that is associated with Longhorn backup.
+
+The csi-provisioner will pick this up and instruct the Longhorn CSI driver to provision a new volume with the data from the associated backup.
+
+An example `PersistentVolumeClaim` is below. The `dataSource` field needs to point to an existing `VolumeSnapshot` object.
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-restore-pvc
+spec:
+  storageClassName: longhorn
+  dataSource:
+    name: test-csi-volume-snapshot-longhorn-backup
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+```
+Note that the `spec.resources.requests.storage` value must be the same as the size of `VolumeSnapshot` object.
+
+
+#### Restore a Longhorn Backup that Has No Associated `VolumeSnapshot`
+You can use the CSI mechanism to restore Longhorn backups that have not been created via the CSI mechanism.
+To restore Longhorn backups that have not been created via the CSI mechanism, you have to first manually create a `VolumeSnapshot` and `VolumeSnapshotContent` object for the backup.
+
+Create a `VolumeSnapshotContent` object with the `snapshotHandle` field set to `bak://backup-volume/backup-name`.
+
+The `backup-volume` and `backup-name` values can be retrieved from the **Backup** page in the Longhorn UI.
+
+```yaml
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotContent
+metadata:
+  name: test-existing-backup
+spec:
+  volumeSnapshotClassName: longhorn
+  driver: driver.longhorn.io
+  deletionPolicy: Delete
+  source:
+    # NOTE: change this to point to an existing backup on the backupstore
+    snapshotHandle: bak://test-vol/backup-625159fb469e492e
+  volumeSnapshotRef:
+    name: test-snapshot-existing-backup
+    namespace: default
+```
+
+Create the associated `VolumeSnapshot` object with the `name` field set to `test-snapshot-existing-backup`, where the `source` field refers to a `VolumeSnapshotContent` object via the `volumeSnapshotContentName` field.
+
+This differs from the creation of a backup, in which case the `source` field refers to a `PerstistentVolumeClaim` via the `persistentVolumeClaimName` field.
+
+Only one type of reference can be set for a `VolumeSnapshot` object.
+
+```yaml
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: test-snapshot-existing-backup
+spec:
+  volumeSnapshotClassName: longhorn
+  source:
+    volumeSnapshotContentName: test-existing-backup
+```
+
+Now you can create a `PerstistantVolumeClaim` object that refers to the newly created `VolumeSnapshot` object.
+For an example see [Restore PVC from CSI VolumeSnapshot Associated With Longhorn Backup](#restore-pvc-from-csi-volumesnapshot-associated-with-longhorn-backup) above.
+
+
+---
+
+## Article: snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-snapshot.md
+
+---
+title: CSI VolumeSnapshot Associated with Longhorn Snapshot
+weight: 2
+---
+
+Snapshot in Longhorn is an object that represents content of a Longhorn volume at a particular moment. It is stored inside the cluster.
+
+To programmatically create Longhorn snapshots, you can use the generic Kubernetes CSI VolumeSnapshot mechanism. To learn more about the CSI VolumeSnapshot mechanism, click [here](https://kubernetes.io/docs/concepts/storage/volume-snapshots/).
+
+> **Prerequisite:** CSI snapshot support needs to be enabled on your cluster.
+> If your kubernetes distribution does not provide the kubernetes snapshot controller
+> as well as the snapshot related custom resource definitions, you need to manually deploy them.
+> For more information, see [Enable CSI Snapshot Support](../enable-csi-snapshot-support).
+
+## Create A CSI VolumeSnapshot Associated With Longhorn Snapshot
+
+To create a CSI VolumeSnapshot associated with a Longhorn snapshot, you first need to create a `VolumeSnapshotClass` object
+with the parameter `type` set to `snap` as follow:
+```yaml
+kind: VolumeSnapshotClass
+apiVersion: snapshot.storage.k8s.io/v1
+metadata:
+  name: longhorn-snapshot-vsc
+driver: driver.longhorn.io
+deletionPolicy: Delete
+parameters:
+  type: snap
+```
+For more information about `VolumeSnapshotClass`, see the kubernetes documentation for [VolumeSnapshotClasses](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/).
+
+After that, create a Kubernetes `VolumeSnapshot` object with `volumeSnapshotClassName` points to the name of the `VolumeSnapshotClass` (`longhorn-snapshot-vsc`) and
+the `source` points to the PVC of the Longhorn volume for which a Longhorn snapshot should be created.
+```yaml
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: test-csi-volume-snapshot-longhorn-snapshot
+spec:
+  volumeSnapshotClassName: longhorn-snapshot-vsc
+  source:
+    persistentVolumeClaimName: test-vol
+```
+
+**Result:**
+A Longhorn snapshot is created. The `VolumeSnapshot` object creation leads to the creation of a `VolumeSnapshotContent` Kubernetes object.
+The `VolumeSnapshotContent` refers to a Longhorn snapshot in its `VolumeSnapshotContent.snapshotHandle` field with the name `snap://volume-name/snapshot-name`.
+
+### Viewing the Longhorn Snapshot
+
+To see the snapshot, click **Volume** in the top navigation bar and click the volume mentioned in the `VolumeSnapshotContent.snapshotHandle`. Scroll down to see the list of all volume snapshots.
+
+
+### How the CSI Mechanism Works in this Scenario
+
+When the VolumeSnapshot object is created with kubectl, the `VolumeSnapshot.uuid` field is used to identify a Longhorn snapshot and the associated `VolumeSnapshotContent` object.
+
+This creates a new Longhorn snapshot named `snapshot-uuid` and the CSI request returns.
+
+Afterwards a `VolumeSnapshotContent` object named `snapcontent-uuid` is created with the `VolumeSnapshotContent.readyToUse` flag is set to **true**.
+
+
+## Restore PVC from CSI VolumeSnapshot Associated With Longhorn Snapshot
+Create a `PersistentVolumeClaim` object where the `dataSource` field points to an existing `VolumeSnapshot` object that is associated with Longhorn snapshot.
+
+The csi-provisioner will pick this up and instruct the Longhorn CSI driver to provision a new volume with the data from the associated Longhorn snapshot.
+
+An example `PersistentVolumeClaim` is below. The `dataSource` field needs to point to an existing `VolumeSnapshot` object.
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-restore-pvc
+spec:
+  storageClassName: longhorn
+  dataSource:
+    name: test-csi-volume-snapshot-longhorn-snapshot
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+```
+
+> **Note**:
+> 1. The `spec.resources.requests.storage` value must match the size of the VolumeSnapshot object.
+> 2. If you are restoring a volume from a `VolumeSnapshot` associated with a V2 data engine volume, you can use a `StorageClass` to specify the clone mode.
+>    - Set the `cloneMode` parameter to either `full-copy` or `linked-clone`.
+>    - If `cloneMode` is not specified, the default is `full-copy`.
+>
+>    For more information, see [the V2 Volume Clone Support documentation](../../../v2-data-engine/features/volume-clone).
+
+
+---
+
+## Article: snapshots-and-backups/csi-snapshot-support/enable-csi-snapshot-support.md
+
+---
+title: Enable CSI Snapshot Support on a Cluster
+description: Enable CSI Snapshot Support for Programmatic Creation of Longhorn Snapshots/Backups
+weight: 1
+---
+
+> **Prerequisite**
+>
+> It is the responsibility of the Kubernetes distribution to deploy the snapshot controller as well as the related custom resource definitions.
+>
+> For more information, see [CSI Volume Snapshots](https://kubernetes.io/docs/concepts/storage/volume-snapshots/).
+
+#### If your Kubernetes Distribution Does Not Bundle the Snapshot Controller
+
+You may manually install these components by executing the following steps.
+
+> **Prerequisite**
+>
+> Please install the snapshot CRDs and snapshot controller from the same release version to ensure that the CRD version is compatible with the controller. You can refer to the external snapshotter version `image.csi.snapshotter.tag` listed in [Helm Values](../../../references/helm-values/) to determine which version of the snapshot CRDs and snapshot controller to install. Then replace `<version>` in the following steps with the appropriate version. For example, if the external snapshotter version is v8.5.0-xxx, use v8.5.0 for both the snapshot CRDs and snapshot controller.
+>
+> For general use, update the snapshot controller YAMLs with an appropriate **namespace** prior to installing.
+>
+> For example, on a vanilla Kubernetes cluster, update the namespace from `default` to `kube-system` prior to issuing the `kubectl create` command.
+
+Install the Snapshot CRDs:
+
+1. Download the files from `https://github.com/kubernetes-csi/external-snapshotter/tree/<version>/client/config/crd`
+2. Run `kubectl create -k client/config/crd`.
+3. Do this once per cluster.
+
+Install the Common Snapshot Controller:
+
+1. Download the files from `https://github.com/kubernetes-csi/external-snapshotter/tree/<version>/deploy/kubernetes/snapshot-controller`
+2. Update the namespace to an appropriate value for your environment (e.g. `kube-system`)
+3. Run `kubectl create -k deploy/kubernetes/snapshot-controller`.
+4. Do this once per cluster.
+
+> **Note:** previously, the snapshot controller YAML files were deployed into the `default` namespace by default.
+> The updated YAML files are being deployed into `kube-system` namespace by default.
+> Therefore, we suggest deleting the previous snapshot controller in the `default` namespace to avoid having multiple snapshot controllers.
+
+See the [Usage](https://github.com/kubernetes-csi/external-snapshotter#usage) section from the kubernetes
+external-snapshotter git repo for additional information.
+
+#### Add a Default `VolumeSnapshotClass`
+
+Ensure the availability of the Snapshot CRDs. Afterwards create a default `VolumeSnapshotClass`.
+
+```yaml
+# Use v1 as an example
+kind: VolumeSnapshotClass
+apiVersion: snapshot.storage.k8s.io/v1
+metadata:
+  name: longhorn
+driver: driver.longhorn.io
+deletionPolicy: Delete
+```
 
 
 ---
@@ -6131,562 +15302,6 @@ Earlier Longhorn versions poll and update all backup volumes at a fixed poll int
   1. Click **Sync Backup Volume**.
 
 To check if synchronization was successful, click the name of the backup volume on the **Backup** page.
-
-
----
-
-## Article: snapshots-and-backups/csi-snapshot-support/_index.md
-
----
-title: CSI Snapshot Support
-description: Creating and Restoring Longhorn Snapshots/Backups via the kubernetes CSI snapshot mechanism
-weight: 3
----
-
-## History
-
-- [GitHub Issue](https://github.com/longhorn/longhorn/issues/304)
-- [Longhorn Enhancement Proposal](https://github.com/longhorn/longhorn/blob/master/enhancements/20200904-csi-snapshot-support.md)
-
-Available since v1.1.0
-
-
----
-
-## Article: snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-backing-image.md
-
----
-title: CSI VolumeSnapshot Associated with Longhorn BackingImage
-weight: 2
----
-
-BackingImage in Longhorn is an object that represents a QCOW2 or RAW image which can be set as the backing/base image of a Longhorn volume.
-
-Instead of directly using Longhorn BackingImage resource for BackingImage management. You can also use the generic Kubernetes CSI VolumeSnapshot mechanism. To learn more about the CSI VolumeSnapshot mechanism, click [here](https://kubernetes.io/docs/concepts/storage/volume-snapshots/).
-
-> **Prerequisite:** CSI snapshot support needs to be enabled on your cluster.
-> If your kubernetes distribution does not provide the kubernetes snapshot controller
-> as well as the snapshot related custom resource definitions, you need to manually deploy them.
-> For more information, see [Enable CSI Snapshot Support](../enable-csi-snapshot-support).
-
-## Create A CSI VolumeSnapshot Associated With Longhorn BackingImage
-
-To create a CSI VolumeSnapshot associated with a Longhorn BackingImage, you first need to create a `VolumeSnapshotClass` object
-with the parameter `type` set to `bi` as follow:
-```yaml
-kind: VolumeSnapshotClass
-apiVersion: snapshot.storage.k8s.io/v1
-metadata:
-  name: longhorn-snapshot-vsc
-driver: driver.longhorn.io
-deletionPolicy: Delete
-parameters:
-  type: bi
-  # export-type default to raw if it is not given
-  export-type: qcow2
-```
-For more information about `VolumeSnapshotClass`, see the kubernetes documentation for [VolumeSnapshotClasses](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/).
-
-After that, create a Kubernetes `VolumeSnapshot` object with `volumeSnapshotClassName` points to the name of the `VolumeSnapshotClass` (`longhorn-snapshot-vsc`) and
-the `source` points to the PVC of the Longhorn volume for which a Longhorn BackingImage should be exported from.
-```yaml
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshot
-metadata:
-  name: test-csi-volume-snapshot-longhorn-backing-image
-spec:
-  volumeSnapshotClassName: longhorn-snapshot-vsc
-  source:
-    persistentVolumeClaimName: test-vol
-```
-
-**Result:**
-A Longhorn BackingImage is created. The `VolumeSnapshot` object creation leads to the creation of a `VolumeSnapshotContent` Kubernetes object.
-The `VolumeSnapshotContent` refers to a Longhorn BackingImage in its `VolumeSnapshotContent.snapshotHandle` field with the name `bi://backing?backingImageDataSourceType=export-from-volume&backingImage=${GENERATED_SNAPSHOT_NAME}&volume-name=test-vol&export-type=qcow2`.
-
-### Viewing the Longhorn BackingImage
-
-To see the BackingImage, click **Advanced > Backing Images** in the top navigation bar and click the BackingImage mentioned in the `VolumeSnapshotContent.snapshotHandle`.
-
-
-### How the CSI Mechanism Works in this Scenario
-
-When the VolumeSnapshot object is created with kubectl, the `VolumeSnapshot.uuid` field is used to identify a Longhorn BackingImage and the associated `VolumeSnapshotContent` object.
-
-This creates a new Longhorn BackingImage named `snapshot-uuid` and the CSI request returns.
-
-Afterwards a `VolumeSnapshotContent` object named `snapcontent-uuid` is created with the `VolumeSnapshotContent.readyToUse` flag is set to **true**.
-
-
-## Restore PVC from CSI VolumeSnapshot Associated With Longhorn BackingImage
-Create a `PersistentVolumeClaim` object where the `dataSource` field points to an existing `VolumeSnapshot` object that is associated with Longhorn BackingImage.
-
-The csi-provisioner will pick this up and instruct the Longhorn CSI driver to provision a new volume using the associated Longhorn BackingImage.
-
-An example `PersistentVolumeClaim` is below. The `dataSource` field needs to point to an existing `VolumeSnapshot` object.
-
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: test-restore-pvc
-spec:
-  storageClassName: longhorn
-  dataSource:
-    name: test-csi-volume-snapshot-longhorn-backing-image
-    kind: VolumeSnapshot
-    apiGroup: snapshot.storage.k8s.io
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-```
-
-### Restore a Longhorn BackingImage that Has No Associated `VolumeSnapshot` (pre-provision)
-
-You can use the CSI mechanism to restore Longhorn BackingImage that has not been created via the CSI mechanism.
-To restore Longhorn BackingImage that has not been created via the CSI mechanism, you have to first manually create a `VolumeSnapshot` and `VolumeSnapshotContent` object for the BackingImage.
-
-Create a `VolumeSnapshotContent` object with the `snapshotHandle` field set to `bi://backing?backingImageDataSourceType=${TYPE}&backingImage=${BACKINGIMAGE_NAME}&backingImageChecksum=${backingImageChecksum}&${OTHER_PARAMETERS}` which point to an existing BackingImage.
-
-- Users need to provide following query parameters in `snapshotHandle` for validation purpose:
-    - `backingImageDataSourceType`: `sourceType` of existing BackingImage, e.g. `export-from-volume`, `download`
-    - `backingImage`: Name of the BackingImage
-    - `backingImageChecksum`: Optional. Checksum of the BackingImage.
-    - you should also provide the `sourceParameters` of existing BackingImage in the `snapshotHandle` based on the `backingImageDataSourceType`
-      - `export-from-volume`:
-        - `volume-name`: volume to be expoted from.
-        - `export-type`: qcow2 or raw.
-      - `download`:
-        - `url`: url of the BackingImage.
-        - `checksum`: optional.
-
-The parameters can be retrieved from the **Advanced > Backing Images** page in the Longhorn UI.
-
-```yaml
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshotContent
-metadata:
-  name: test-existing-backing
-spec:
-  volumeSnapshotClassName: longhorn-snapshot-vsc
-  driver: driver.longhorn.io
-  deletionPolicy: Delete
-  source:
-    snapshotHandle: bi://backing?backingImageDataSourceType=download&backingImage=test-bi&url=https%3A%2F%2Flonghorn-backing-image.s3-us-west-1.amazonaws.com%2Fparrot.qcow2&backingImageChecksum=bd79ab9e6d45abf4f3f0adf552a868074dd235c4698ce7258d521160e0ad79ffe555b94e7d4007add6e1a25f4526885eb25c53ce38f7d344dd4925b9f2cb5d3b
-  volumeSnapshotRef:
-    name: test-snapshot-existing-backing
-    namespace: default
-```
-
-Create the associated `VolumeSnapshot` object with the `name` field set to `test-snapshot-existing-backing`, where the `source` field refers to a `VolumeSnapshotContent` object via the `volumeSnapshotContentName` field.
-
-This differs from the creation of a BackingImage, in which case the `source` field refers to a `PerstistentVolumeClaim` via the `persistentVolumeClaimName` field.
-
-Only one type of reference can be set for a `VolumeSnapshot` object.
-
-```yaml
-apiVersion: snapshot.storage.k8s.io/v1beta1
-kind: VolumeSnapshot
-metadata:
-  name: test-snapshot-existing-backing
-spec:
-  volumeSnapshotClassName: longhorn-snapshot-vsc
-  source:
-    volumeSnapshotContentName: test-existing-backing
-```
-
-Now you can create a `PerstistantVolumeClaim` object that refers to the newly created `VolumeSnapshot` object.
-For an example see [Restore PVC from CSI VolumeSnapshot Associated With Longhorn BackingImage](#restore-pvc-from-csi-volumesnapshot-associated-with-longhorn-backingimage) above.
-
-
-### Restore a Longhorn BackingImage that Has Not Created (on-demand provision)
-
-You can use the CSI mechanism to restore Longhorn BackingImage which has not been created yet. This mechanism only support following 2 kinds of BackingImage data sources.
-
-1. `download`: Download a file from a URL as a BackingImage.
-2. `export-from-volume`: Export an existing in-cluster volume as a backing image.
-
-Users need to create the `VolumeSnapshotContent` with an associated `VolumeSnapshot`. The `snapshotHandle` of the `VolumeSnapshotContent` needs to provide the parameters of the data source. Example below for a non-existing BackingImage `test-bi` with two different data sources.
-
-1. `download`: Users need to provide following parameters
-    - `backingImageDataSourceType`: `download` for on-demand download.
-    - `backingImage`: Name of the BackingImage
-    - `url`: Download the file from a URL as a BackingImage.
-    - `backingImageChecksum`: Optional. Used for validating the file.
-    - example yaml:
-        ```yaml
-        apiVersion: snapshot.storage.k8s.io/v1
-        kind: VolumeSnapshotContent
-        metadata:
-            name: test-on-demand-backing
-        spec:
-            volumeSnapshotClassName: longhorn-snapshot-vsc
-            driver: driver.longhorn.io
-            deletionPolicy: Delete
-            source:
-              # NOTE: change this to provide the correct parameters
-              snapshotHandle: bi://backing?backingImageDataSourceType=download&backingImage=test-bi&url=https%3A%2F%2Flonghorn-backing-image.s3-us-west-1.amazonaws.com%2Fparrot.qcow2&backingImageChecksum=bd79ab9e6d45abf4f3f0adf552a868074dd235c4698ce7258d521160e0ad79ffe555b94e7d4007add6e1a25f4526885eb25c53ce38f7d344dd4925b9f2cb5d3b
-        volumeSnapshotRef:
-            name: test-snapshot-on-demand-backing
-            namespace: default
-        ```
-
-2. `export-from-volume`: Users need to provide following parameters
-    - `backingImageDataSourceType`: `export-form-volume` for on-demand export.
-    - `backingImage`: Name of the BackingImage
-    - `volume-name`: Volume to be exported for the BackingImage
-    - `export-type`: Currently Longhorn supports `raw` or `qcow2`
-    - example yaml:
-        ```yaml
-        apiVersion: snapshot.storage.k8s.io/v1
-        kind: VolumeSnapshotContent
-        metadata:
-        name: test-on-demand-backing
-        spec:
-        volumeSnapshotClassName: longhorn-snapshot-vsc
-        driver: driver.longhorn.io
-        deletionPolicy: Delete
-        source: 
-          # NOTE: change this to provide the correct parameters
-          snapshotHandle: bi://backing?backingImageDataSourceType=export-from-volume&backingImage=test-bi&volume-name=vol-export-src&export-type=qcow2
-        volumeSnapshotRef:
-            name: test-snapshot-on-demand-backing
-            namespace: default
-        ```
-
-Create the associated `VolumeSnapshot` object with the `name` field set to `test-snapshot-on-demand-backing`, where the `source` field refers to a `VolumeSnapshotContent` object via the `volumeSnapshotContentName` field.
-
-This differs from the creation of a BackingImage, in which case the `source` field refers to a `PerstistentVolumeClaim` via the `persistentVolumeClaimName` field.
-
-Only one type of reference can be set for a `VolumeSnapshot` object.
-
-```yaml
-apiVersion: snapshot.storage.k8s.io/v1beta1
-kind: VolumeSnapshot
-metadata:
-  name: test-snapshot-on-demand-backing
-spec:
-  volumeSnapshotClassName: longhorn-snapshot-vsc
-  source:
-    volumeSnapshotContentName: test-on-demand-backing
-```
-
-Now you can create a `PerstistantVolumeClaim` object that refers to the newly created `VolumeSnapshot` object.
-Longhorn will create the BackingImage with the parameters provide in the `snapshotHandle`.
-For an example see [Restore PVC from CSI VolumeSnapshot Associated With Longhorn BackingImage](#restore-pvc-from-csi-volumesnapshot-associated-with-longhorn-backingimage) above.
-
-
----
-
-## Article: snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-backup.md
-
----
-title: CSI VolumeSnapshot Associated with Longhorn Backup
-weight: 3
----
-
-Backups in Longhorn are objects in an off-cluster backupstore, and the endpoint to access the backupstore is the backup target. For more information, see [this section.](../../../concepts/#31-how-backups-work)
-
-To programmatically create backups, you can use the generic Kubernetes CSI VolumeSnapshot mechanism. To learn more about the CSI VolumeSnapshot mechanism, click [here](https://kubernetes.io/docs/concepts/storage/volume-snapshots/).
-
-> **Prerequisite:** CSI snapshot support needs to be enabled on your cluster.
-> If your kubernetes distribution does not provide the kubernetes snapshot controller
-> as well as the snapshot related custom resource definitions, you need to manually deploy them.
-> For more information, see [Enable CSI Snapshot Support](../enable-csi-snapshot-support).
-
-## Create A CSI VolumeSnapshot Associated With Longhorn Backup
-
-To create a CSI VolumeSnapshot associated with a Longhorn backup, you first need to create a `VolumeSnapshotClass` object
-with the parameter `type` set to `bak` as follow:
-```yaml
-kind: VolumeSnapshotClass
-apiVersion: snapshot.storage.k8s.io/v1
-metadata:
-  name: longhorn-backup-vsc
-driver: driver.longhorn.io
-deletionPolicy: Delete
-parameters:
-  type: bak
-  backupMode: full
-```
-
-Longhorn performs incremental backups by default. Add the `backupMode: full` parameter to create a full backup. For more information about `backupMode`, see [Create A Backup](../../backup-and-restore/create-a-backup).
-
-For more information about `VolumeSnapshotClass`, see the kubernetes documentation for [VolumeSnapshotClasses](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/).
-
-After that, create a Kubernetes `VolumeSnapshot` object with `volumeSnapshotClassName` points to the name of the `VolumeSnapshotClass` (`longhorn-backup-vsc`) and
-the `source` points to the PVC of the Longhorn volume for which a backup should be created.
-```yaml
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshot
-metadata:
-  name: test-csi-volume-snapshot-longhorn-backup
-spec:
-  volumeSnapshotClassName: longhorn-backup-vsc
-  source:
-    persistentVolumeClaimName: test-vol
-```
-
-**Result:**
-A backup is created. The `VolumeSnapshot` object creation leads to the creation of a `VolumeSnapshotContent` Kubernetes object.
-The `VolumeSnapshotContent` refers to a Longhorn backup in its `VolumeSnapshotContent.snapshotHandle` field with the name `bak://backup-volume/backup-name`.
-
-### Viewing the Backup
-
-To see the backup, click **Backup** in the top navigation bar and navigate to the backup-volume mentioned in the `VolumeSnapshotContent.snapshotHandle`.
-
-For information on how to restore a volume via a `VolumeSnapshot` object, refer to the below sections.
-
-### How the CSI Mechanism Works in this Scenario
-
-When the VolumeSnapshot object is created with kubectl, the `VolumeSnapshot.uuid` field is used to identify a Longhorn snapshot and the associated `VolumeSnapshotContent` object.
-
-This creates a new Longhorn snapshot named `snapshot-uuid`.
-
-Then a backup of that snapshot is initiated, and the CSI request returns.
-
-Afterwards a `VolumeSnapshotContent` object named `snapcontent-uuid` is created.
-
-The CSI snapshotter sidecar periodically queries the Longhorn CSI plugin to evaluate the backup status.
-
-Once the backup is completed, the `VolumeSnapshotContent.readyToUse` flag is set to **true**.
-
-
-## Restore PVC from CSI VolumeSnapshot Associated With Longhorn Backup
-Create a `PersistentVolumeClaim` object where the `dataSource` field points to an existing `VolumeSnapshot` object that is associated with Longhorn backup.
-
-The csi-provisioner will pick this up and instruct the Longhorn CSI driver to provision a new volume with the data from the associated backup.
-
-An example `PersistentVolumeClaim` is below. The `dataSource` field needs to point to an existing `VolumeSnapshot` object.
-
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: test-restore-pvc
-spec:
-  storageClassName: longhorn
-  dataSource:
-    name: test-csi-volume-snapshot-longhorn-backup
-    kind: VolumeSnapshot
-    apiGroup: snapshot.storage.k8s.io
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-```
-Note that the `spec.resources.requests.storage` value must be the same as the size of `VolumeSnapshot` object.
-
-
-#### Restore a Longhorn Backup that Has No Associated `VolumeSnapshot`
-You can use the CSI mechanism to restore Longhorn backups that have not been created via the CSI mechanism.
-To restore Longhorn backups that have not been created via the CSI mechanism, you have to first manually create a `VolumeSnapshot` and `VolumeSnapshotContent` object for the backup.
-
-Create a `VolumeSnapshotContent` object with the `snapshotHandle` field set to `bak://backup-volume/backup-name`.
-
-The `backup-volume` and `backup-name` values can be retrieved from the **Backup** page in the Longhorn UI.
-
-```yaml
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshotContent
-metadata:
-  name: test-existing-backup
-spec:
-  volumeSnapshotClassName: longhorn
-  driver: driver.longhorn.io
-  deletionPolicy: Delete
-  source:
-    # NOTE: change this to point to an existing backup on the backupstore
-    snapshotHandle: bak://test-vol/backup-625159fb469e492e
-  volumeSnapshotRef:
-    name: test-snapshot-existing-backup
-    namespace: default
-```
-
-Create the associated `VolumeSnapshot` object with the `name` field set to `test-snapshot-existing-backup`, where the `source` field refers to a `VolumeSnapshotContent` object via the `volumeSnapshotContentName` field.
-
-This differs from the creation of a backup, in which case the `source` field refers to a `PerstistentVolumeClaim` via the `persistentVolumeClaimName` field.
-
-Only one type of reference can be set for a `VolumeSnapshot` object.
-
-```yaml
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshot
-metadata:
-  name: test-snapshot-existing-backup
-spec:
-  volumeSnapshotClassName: longhorn
-  source:
-    volumeSnapshotContentName: test-existing-backup
-```
-
-Now you can create a `PerstistantVolumeClaim` object that refers to the newly created `VolumeSnapshot` object.
-For an example see [Restore PVC from CSI VolumeSnapshot Associated With Longhorn Backup](#restore-pvc-from-csi-volumesnapshot-associated-with-longhorn-backup) above.
-
-
----
-
-## Article: snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-snapshot.md
-
----
-title: CSI VolumeSnapshot Associated with Longhorn Snapshot
-weight: 2
----
-
-Snapshot in Longhorn is an object that represents content of a Longhorn volume at a particular moment. It is stored inside the cluster.
-
-To programmatically create Longhorn snapshots, you can use the generic Kubernetes CSI VolumeSnapshot mechanism. To learn more about the CSI VolumeSnapshot mechanism, click [here](https://kubernetes.io/docs/concepts/storage/volume-snapshots/).
-
-> **Prerequisite:** CSI snapshot support needs to be enabled on your cluster.
-> If your kubernetes distribution does not provide the kubernetes snapshot controller
-> as well as the snapshot related custom resource definitions, you need to manually deploy them.
-> For more information, see [Enable CSI Snapshot Support](../enable-csi-snapshot-support).
-
-## Create A CSI VolumeSnapshot Associated With Longhorn Snapshot
-
-To create a CSI VolumeSnapshot associated with a Longhorn snapshot, you first need to create a `VolumeSnapshotClass` object
-with the parameter `type` set to `snap` as follow:
-```yaml
-kind: VolumeSnapshotClass
-apiVersion: snapshot.storage.k8s.io/v1
-metadata:
-  name: longhorn-snapshot-vsc
-driver: driver.longhorn.io
-deletionPolicy: Delete
-parameters:
-  type: snap
-```
-For more information about `VolumeSnapshotClass`, see the kubernetes documentation for [VolumeSnapshotClasses](https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/).
-
-After that, create a Kubernetes `VolumeSnapshot` object with `volumeSnapshotClassName` points to the name of the `VolumeSnapshotClass` (`longhorn-snapshot-vsc`) and
-the `source` points to the PVC of the Longhorn volume for which a Longhorn snapshot should be created.
-```yaml
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshot
-metadata:
-  name: test-csi-volume-snapshot-longhorn-snapshot
-spec:
-  volumeSnapshotClassName: longhorn-snapshot-vsc
-  source:
-    persistentVolumeClaimName: test-vol
-```
-
-**Result:**
-A Longhorn snapshot is created. The `VolumeSnapshot` object creation leads to the creation of a `VolumeSnapshotContent` Kubernetes object.
-The `VolumeSnapshotContent` refers to a Longhorn snapshot in its `VolumeSnapshotContent.snapshotHandle` field with the name `snap://volume-name/snapshot-name`.
-
-### Viewing the Longhorn Snapshot
-
-To see the snapshot, click **Volume** in the top navigation bar and click the volume mentioned in the `VolumeSnapshotContent.snapshotHandle`. Scroll down to see the list of all volume snapshots.
-
-
-### How the CSI Mechanism Works in this Scenario
-
-When the VolumeSnapshot object is created with kubectl, the `VolumeSnapshot.uuid` field is used to identify a Longhorn snapshot and the associated `VolumeSnapshotContent` object.
-
-This creates a new Longhorn snapshot named `snapshot-uuid` and the CSI request returns.
-
-Afterwards a `VolumeSnapshotContent` object named `snapcontent-uuid` is created with the `VolumeSnapshotContent.readyToUse` flag is set to **true**.
-
-
-## Restore PVC from CSI VolumeSnapshot Associated With Longhorn Snapshot
-Create a `PersistentVolumeClaim` object where the `dataSource` field points to an existing `VolumeSnapshot` object that is associated with Longhorn snapshot.
-
-The csi-provisioner will pick this up and instruct the Longhorn CSI driver to provision a new volume with the data from the associated Longhorn snapshot.
-
-An example `PersistentVolumeClaim` is below. The `dataSource` field needs to point to an existing `VolumeSnapshot` object.
-
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: test-restore-pvc
-spec:
-  storageClassName: longhorn
-  dataSource:
-    name: test-csi-volume-snapshot-longhorn-snapshot
-    kind: VolumeSnapshot
-    apiGroup: snapshot.storage.k8s.io
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-```
-
-> **Note**:
-> 1. The `spec.resources.requests.storage` value must match the size of the VolumeSnapshot object.
-> 2. If you are restoring a volume from a `VolumeSnapshot` associated with a V2 data engine volume, you can use a `StorageClass` to specify the clone mode.
->    - Set the `cloneMode` parameter to either `full-copy` or `linked-clone`.
->    - If `cloneMode` is not specified, the default is `full-copy`.
->
->    For more information, see [the V2 Volume Clone Support documentation](../../../v2-data-engine/features/volume-clone).
-
-
----
-
-## Article: snapshots-and-backups/csi-snapshot-support/enable-csi-snapshot-support.md
-
----
-title: Enable CSI Snapshot Support on a Cluster
-description: Enable CSI Snapshot Support for Programmatic Creation of Longhorn Snapshots/Backups
-weight: 1
----
-
-> **Prerequisite**
->
-> It is the responsibility of the Kubernetes distribution to deploy the snapshot controller as well as the related custom resource definitions.
->
-> For more information, see [CSI Volume Snapshots](https://kubernetes.io/docs/concepts/storage/volume-snapshots/).
-
-#### If your Kubernetes Distribution Does Not Bundle the Snapshot Controller
-
-You may manually install these components by executing the following steps.
-
-> **Prerequisite**
->
-> Please install the snapshot CRDs and snapshot controller from the same release version to ensure that the CRD version is compatible with the controller. You can refer to the external snapshotter version `image.csi.snapshotter.tag` listed in [Helm Values](../../../references/helm-values/) to determine which version of the snapshot CRDs and snapshot controller to install. Then replace `<version>` in the following steps with the appropriate version. For example, if the external snapshotter version is v8.5.0-xxx, use v8.5.0 for both the snapshot CRDs and snapshot controller.
->
-> For general use, update the snapshot controller YAMLs with an appropriate **namespace** prior to installing.
->
-> For example, on a vanilla Kubernetes cluster, update the namespace from `default` to `kube-system` prior to issuing the `kubectl create` command.
-
-Install the Snapshot CRDs:
-
-1. Download the files from `https://github.com/kubernetes-csi/external-snapshotter/tree/<version>/client/config/crd`
-2. Run `kubectl create -k client/config/crd`.
-3. Do this once per cluster.
-
-Install the Common Snapshot Controller:
-
-1. Download the files from `https://github.com/kubernetes-csi/external-snapshotter/tree/<version>/deploy/kubernetes/snapshot-controller`
-2. Update the namespace to an appropriate value for your environment (e.g. `kube-system`)
-3. Run `kubectl create -k deploy/kubernetes/snapshot-controller`.
-4. Do this once per cluster.
-
-> **Note:** previously, the snapshot controller YAML files were deployed into the `default` namespace by default.
-> The updated YAML files are being deployed into `kube-system` namespace by default.
-> Therefore, we suggest deleting the previous snapshot controller in the `default` namespace to avoid having multiple snapshot controllers.
-
-See the [Usage](https://github.com/kubernetes-csi/external-snapshotter#usage) section from the kubernetes
-external-snapshotter git repo for additional information.
-
-#### Add a Default `VolumeSnapshotClass`
-
-Ensure the availability of the Snapshot CRDs. Afterwards create a default `VolumeSnapshotClass`.
-
-```yaml
-# Use v1 as an example
-kind: VolumeSnapshotClass
-apiVersion: snapshot.storage.k8s.io/v1
-metadata:
-  name: longhorn
-driver: driver.longhorn.io
-deletionPolicy: Delete
-```
 
 
 ---
@@ -9439,8125 +18054,6 @@ If Longhorn is installed via Helm, values in the default storage class can be se
 
 ---
 
-## Article: troubleshoot/_index.md
-
----
-title: Troubleshoot
-weight: 10
----
-
----
-
-## Article: troubleshoot/support-bundle.md
-
----
-title: Support Bundle
-weight: 2
----
-
-Since v1.4.0, Longhorn replaced the in-house support bundle generation with a general-purpose [support bundle kit](https://github.com/rancher/support-bundle-kit). 
-
-You can click the `Generate Support Bundle` at the bottom of Longhorn UI to download a zip file containing cluster manifests and logs.
-
-During support bundle generation, Longhorn will create a Deployment for the support bundle manager.
-
-> **Note:** The support bundle manager will use a dedicated `longhorn-support-bundle` service account and `longhorn-support-bundle` cluster role binding with `cluster-admin` access for bundle collection.
-
-With the support bundle, you can simulate a mocked Kubernetes cluster that is interactable with the `kubectl` command. See [simulator command](https://github.com/rancher/support-bundle-kit#simulator-command) for more details.
-
-
-## Limitations
-
-Longhorn currently does not support concurrent generation of multiple support bundles. We recommend waiting until the completion of the ongoing support bundle before initiating a new one. If a new support bundle is created while another one is still in progress, Longhorn will overwrite the older support bundle.
-
-
-## History
-[Original Feature Request](https://github.com/longhorn/longhorn/issues/2759)
-
-Available since v1.4.0
-
-
----
-
-## Article: troubleshoot/troubleshooting.md
-
----
-title: Troubleshooting Problems
-weight: 1
----
-
-- [Troubleshooting Guide](#troubleshooting-guide)
-  - [UI](#ui)
-  - [Manager and Engines](#manager-and-engines)
-  - [CSI driver](#csi-driver)
-  - [FlexVolume Driver](#flexvolume-driver)
-- [Common Issues](#common-issues)
-  - [A volume can be attached/detached from the UI, but Kubernetes Pods/StatefulSets cannot use it](#a-volume-can-be-attacheddetached-from-the-ui-but-kubernetes-podsstatefulsets-cannot-use-it)
-    - [Using with FlexVolume Plug-in](#using-with-flexvolume-plug-in)
-  - ["Package 'linux-modules-extra-x.x.x-x-generic' Has No Installation Candidate" Error During Installation on Debian Machines](#package-linux-modules-extra-xxx-x-generic-has-no-installation-candidate-error-during-installation-on-debian-machines)
-  - ["Invalid argument" Error in Disk Status After Adding a Block-Type Disk](#invalid-argument-error-in-disk-status-after-adding-a-block-type-disk)
-
-## Troubleshooting Guide
-
-> For a more in-depth troubleshooting flow please see [Longhorn Troubleshooting](https://github.com/longhorn/longhorn/wiki/Troubleshooting).
-
-There are a few components in Longhorn: Manager, Engine, Driver and UI. By default, all those components run as pods in the `longhorn-system` namespace in the Kubernetes cluster.
-
-Most of the logs are included in the Support Bundle. You can click the **Generate Support Bundle** link at the bottom of the UI to download a zip file that contains Longhorn-related configuration and logs.
-
-See [Support Bundle](../support-bundle) for detail.
-
-One exception is the `dmesg`, which needs to be retrieved from each node by the user.
-
-### UI
-
-Make use of the Longhorn UI is a good start for the troubleshooting. For example, if Kubernetes cannot mount one volume correctly, after stop the workload, try to attach and mount that volume manually on one node and access the content to check if volume is intact.
-
-Also, the event logs in the UI dashboard provides information of probable issues. Check for the event logs in `Warning` level.
-
-### Manager and Engines
-
-You can get the logs from the Longhorn Manager and Engines to help with troubleshooting. The most useful logs are the ones from `longhorn-manager-xxx`, and the logs inside Longhorn instance managers, for example, `instance-manager-xxxx`, `instance-manager-e-xxxx` and `instance-manager-r-xxxx`.
-
-Since normally there are multiple Longhorn Managers running at the same time, we recommend using [kubetail](https://github.com/johanhaleby/kubetail), which is a great tool to keep track of the logs of multiple pods. To track the manager logs in real time, you can use:
-
-```bash
-kubetail longhorn-manager -n longhorn-system
-```
-
-### CSI driver
-
-For the CSI driver, check the logs for `csi-attacher-0` and `csi-provisioner-0`, as well as containers in `longhorn-csi-plugin-xxx`.
-
-### FlexVolume Driver
-
-The FlexVolume driver is deprecated as of Longhorn v0.8.0 and should no longer be used.
-
-First check where the driver has been installed on the node. Check the log of `longhorn-driver-deployer-xxxx` for that information.
-
-Then check the kubelet logs. The FlexVolume driver itself does not run inside the container. It would run along with the kubelet process.
-
-If kubelet is running natively on the node, you can use the following command to get the logs:
-
-```bash
-journalctl -u kubelet
-```
-
-Or if kubelet is running as a container (for example, in RKE), use the following command instead:
-
-```bash
-docker logs kubelet
-```
-
-For even more detailed logs of Longhorn FlexVolume, run the following command on the node or inside the container (if kubelet is running as a container, for example, in RKE):
-
-```bash
-touch /var/log/longhorn_driver.log
-```
-
-## Common Issues
-
-### A volume can be attached/detached from the UI, but Kubernetes Pods/StatefulSets cannot use it
-
-#### Using with FlexVolume Plug-in
-
-Check if the volume plug-in directory has been set correctly. This is automatically detected unless the user explicitly sets it.
-
-By default, Kubernetes uses `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/`, as stated in the [official document](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-storage/flexvolume.md/#prerequisites).
-
-Some vendors choose to change the directory for several reasons. For example, GKE uses `/home/kubernetes/flexvolume` instead.
-
-The correct directory can be found by running `ps aux|grep kubelet` on the host and check the `--volume-plugin-dir` parameter. If there is none, the default `/usr/libexec/kubernetes/kubelet-plugins/volume/exec/` will be used.
-
-### "Package 'linux-modules-extra-x.x.x-x-generic' Has No Installation Candidate" Error During Installation on Debian Machines
-
-For Debian machines, if you encounter errors similar to the below when installing Linux kernel extra modules, you need to find an available version in the pkg collection websites like [this](https://pkgs.org/search/?q=linux-modules-extra) rather than directly relying on `uname -r` instead:
-
-```log
-apt install -y linux-modules-extra-`uname -r`
-Reading package lists... Done
-Building dependency tree... Done
-Reading state information... Done
-Package linux-modules-extra-5.15.0-67-generic is not available, but is referred to by another package.
-This may mean that the package is missing, has been obsoleted, or
-is only available from another source
-
-E: Package 'linux-modules-extra-5.15.0-67-generic' has no installation candidate
-```
-
-For example, for Ubuntu 22.04, one valid version is `linux-modules-extra-5.15.0-76-generic`:
-
-```bash
-apt update -y
-apt install -y linux-modules-extra-5.15.0-76-generic
-```
-
-### "Invalid argument" Error in Disk Status After Adding a Block-Type Disk
-
-After adding a block-type disk, the disk status displays error messages:
-
-```plaintext
-Disk disk-1(/dev/nvme1n1) on node dereksu-ubuntu-pool1-bf77ed93-2d2p9 is not ready: 
-failed to generate disk config: error: rpc error: code = Internal desc = rpc error: code = Internal 
-desc = failed to add block device: failed to create AIO bdev: error sending message, id 10441, 
-method bdev_aio_create, params {disk-1 /host/dev/nvme1n1 4096}: {"code": -22,"message": "Invalid argument"}
-```
-
-Next, inspect the log message of the instance-manager pod on the same node. If the log reveals the following:
-
-```log
-[2023-06-29 08:51:53.762597] bdev_aio.c: 762:create_aio_bdev: *WARNING*: Specified block size 4096 does not match auto-detected block size 512
-[2023-06-29 08:51:53.762640] bdev_aio.c: 788:create_aio_bdev: *ERROR*: Disk size 100000000000 is not a multiple of block size 4096
-```
-
-These messages indicate that the size of your disk is not a multiple of the block size 4096 and is not supported by Longhorn system.
-
-To resolve this issue, you can follow the steps:
-
-1. Remove the newly added block-type disk from the node.
-2. Partition the block-type disk using the `fdisk` utility and ensure that the partition size is a multiple of the block size 4096.
-3. Add the partitioned disk to the Longhorn node.
-
-## Profiling
-
-### Engine, replica, and sync agent runtime
-
-You can enable the `pprof` server dynamically to perform runtime profiling.
-To enable profiling, you can:
-
-1. Shell into the instance manager pod.
-2. Identify the runtime process and its port using `ps`:
-    ```bash
-    $ ps aux | more
-
-    USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-    ...
-    root        1996  0.0  0.6 1990080 20996 ?       Sl   Jul25   0:05 /host/var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --volume-name     vol replica /host/var/lib/longhorn/replicas/vol-3004fc59 --size 1073741824 --disableRevCounter --replica-instance-name vol-r-ec7e35e4 --snapshot-max-count 250     --snapshot-max-size 0 --sync-agent-port-count 7 --listen 0.0.0.0:10000
-    root        2004  0.0  0.6 1695152 22708 ?       Sl   Jul25   0:09 /host/var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --volume-name     vol sync-agent --listen 0.0.0.0:10002 --replica 0.0.0.0:10000 --listen-port-range 10003-10009 --replica-instance-name vol-r-ec7e35e4
-    root        2031  0.0  0.6 1916348 23760 ?       Sl   Jul25   0:46 /engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --engine-instance-name vol-e-0     controller vol --frontend tgt-blockdev --disableRevCounter --size 1073741824 --current-size 0 --engine-replica-timeout 8 --file-sync-http-client-timeout 30     --snapshot-max-count 250 --snapshot-max-size 0 --replica tcp://10.42.2.7:10000 --replica tcp://10.42.0.15:10000 --replica tcp://10.42.1.7:10000 --listen 0.0.0.0:10010
-    ```
-3. Enable the `pprof` server for the desired runtime (for example, sync-agent):
-    > In this example, the sync-agent process listens on port `10002`.
-
-    ```bash
-    $ /host/var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --url http://localhost:10002 profiler enable --port 36060
-    $ /host/var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --url http://localhost:10002 profiler show
-
-    Profiler enabled at Addr: *:36060
-    ```
-
-    > The `pprof` server is now accessible at `http://localhost:36060` *inside the instance manager pod*.
-4. Use the `pprof` interface for runtime inspection. For more details, refer to the [official pprof documentation](https://pkg.go.dev/net/http/pprof#hdr-Usage_examples).
-5. Disable the profiler after completing your analysis:
-    ```bash
-    $ /host/var/lib/longhorn/engine-binaries/longhornio-longhorn-engine-v1.10.0/longhorn --url http://localhost:10002 profiler disable
-
-    Profiler is disabled!
-    ```
-
-### SPDK - Failed to bind NVMe disk (Error -22)
-
-If `instance-manager` logs show `failed to bind NVMe disk` or `vfio-pci: probe ... failed with error -22`, your NVMe likely shares an IOMMU group with a PCIe bridge.
-
-**Validation**: Run `lspci -t` or check `/sys/kernel/iommu_groups/`. If the NVMe and Bridge are in the same group, you must switch the disk to **AIO mode** in the Longhorn UI.
-
-
----
-
-## Article: nodes-and-volumes/_index.md
-
----
-title: Nodes and Volumes
-weight: 4
----
-
----
-
-## Article: nodes-and-volumes/nodes/_index.md
-
----
-title: Nodes
-weight: 1
----
-
----
-
-## Article: nodes-and-volumes/nodes/default-disk-and-node-config.md
-
----
-title: Configuring Defaults for Nodes and Disks
-weight: 3
----
-
-_Available as of v0.8.1_
-
-This feature allows the user to customize the default disks and node configurations in Longhorn for newly added nodes using Kubernetes labels and annotations instead of the Longhorn API or UI.
-
-Customizing the default configurations for disks and nodes is useful for scaling the cluster because it eliminates the need to configure Longhorn manually for each new node if the node contains more than one disk, or if the disk configuration is different for new nodes.
-
-Longhorn will not keep the node labels or annotations in sync with the current Longhorn node disks or tags. Nor will Longhorn keep the node disks or tags in sync with the nodes, labels or annotations after the default disks or tags have been created.
-
-### Adding Node Tags to New Nodes
-
-When a node does not have a tag, you can use a node annotation to set the node tags, as an alternative to using the Longhorn UI or API.
-
-1. Scale up the Kubernetes cluster. The newly added nodes contain no node tags.
-2. Add annotations to the new Kubernetes nodes that specify what the default node tags should be. The annotation format is:
-
-    ```
-    node.longhorn.io/default-node-tags: <node tag list with JSON string format>
-    ```
-    For example:
-
-    ```
-    node.longhorn.io/default-node-tags: '["fast","storage"]'
-    ``` 
-3. Wait for Longhorn to sync the node tag automatically.
-
-> **Result:** If the node tag list was originally empty, Longhorn updates the node with the tag list, and you will see the tags for that node updated according to the annotation. If the node already had tags, you will see no change to the tag list.
-### Customizing Default Disks for New Nodes
-
-Longhorn uses the **Create Default Disk on Labeled Nodes** setting to enable default disk customization.
-
-If the setting is disabled, Longhorn will create a default disk using `setting.default-data-path` on all new nodes.
-
-If the setting is enabled, Longhorn will decide to create the default disks or not, depending on the node's label value of `node.longhorn.io/create-default-disk`.
-
-- If the node's label value is `true`, Longhorn will create the default disk using `settings.default-data-path` on the node. If the node already has existing disks, Longhorn will not change anything.
-- If the node's label value is `config`, Longhorn will check for the `node.longhorn.io/default-disks-config` annotation and create default disks according to it. If there is no annotation, or if the annotation is invalid, or the label value is invalid, Longhorn will not change anything.
-
-The value of the label will be in effect only when the setting is enabled.
-
-If the `create-default-disk` label is not set, the default disk will not be automatically created on the new nodes when the setting is enabled.
-
-The configuration described in the annotation only takes effect when there are no existing disks or tags on the node.
-
-If the label or annotation fails validation, the whole annotation is ignored. 
-
-> **Prerequisite:** The Longhorn setting **Create Default Disk on Labeled Nodes** must be enabled.
-1. Add new nodes to the Kubernetes cluster.
-2. Add the label to the node. Longhorn relies on the label to decide how to customize default disks:
-
-    ```
-    node.longhorn.io/create-default-disk: 'config'
-    ```
-
-3. Then add an annotation to the node. The annotation is used to specify the configuration of default disks. The format is:
-
-    ```
-    node.longhorn.io/default-disks-config: <disks configuration with JSON string format>
-    ```
-
-    For example, the following disk configuration can be specified in the annotation:
-
-    ```
-    node.longhorn.io/default-disks-config: 
-    '[
-        { 
-            "path":"/mnt/disk1",
-            "allowScheduling":true
-        },
-        {   
-            "name":"fast-ssd-disk", 
-            "path":"/mnt/disk2",
-            "allowScheduling":false,
-            "storageReserved":10485760,
-            "tags":[
-                "ssd",
-                "fast"
-            ]
-        }
-    ]'
-    ```
-
-    > **Note:** If the same name is specified for different disks, the configuration will be treated as invalid.
-    
-4. Wait for Longhorn to create the customized default disks automatically.
-
-> **Result:** The disks will be updated according to the annotation.
-
-### Launch Longhorn with multiple disks
-1. Add the label to all nodes before launching Longhorn. 
-
-    ```
-    node.longhorn.io/create-default-disk: 'config'
-    ```
-
-2. Then add the disk config annotation to all nodes:
-
-    ```
-    node.longhorn.io/default-disks-config: '[ { "path":"/var/lib/longhorn", "allowScheduling":true
-      }, { "name":"fast-ssd-disk", "path":"/mnt/extra", "allowScheduling":false, "storageReserved":10485760,
-      "tags":[ "ssd", "fast" ] }]'
-    ```
-3. Deploy Longhorn with `create-default-disk-labeled-nodes: true`, check [here](../../../advanced-resources/deploy/customizing-default-settings) for customizing the default settings of Longhorn.
-
-
----
-
-## Article: nodes-and-volumes/nodes/disks-or-nodes-eviction.md
-
----
-title: Evicting Replicas on Disabled Disks or Nodes
-weight: 6
----
-
-Longhorn supports auto eviction for evicting the replicas on the selected disabled disks or nodes to other suitable disks and nodes. Meanwhile the same level of high availability is maintained during the eviction.
-
-> **Note:** This eviction feature can only be enabled when the selected disks or nodes have scheduling disabled. And during the eviction time, the selected disks or nodes cannot be re-enabled for scheduling.
-
-> **Note:** This eviction feature works for volumes that are `Attached` and `Detached`. If the volume is 'Detached', Longhorn will automatically attach it before the eviction and automatically detach it once eviction is done.
-
-By default, `Eviction Requested` for disks or nodes is `false`. And to keep the same level of high availability during the eviction, Longhorn only evicts a replica per volume after the replica rebuild for this volume is a success.
-
-## Select Disks or Nodes for Eviction
-
-To evict disks for a node,
-
-1. Head to the `Node` tab, select one of the nodes, and select `Edit Node and Disks` in the dropdown menu.
-1. Make sure the disk is disabled for scheduling and set `Scheduling` to `Disable`.
-2. Set `Eviction Requested` to `true` and save.
-
-To evict a node,
-
-1. Head to the `Node` tab, select one or more nodes, and click `Edit Node`.
-1. Make sure the node is disabled for scheduling and set `Scheduling` to `Disable`.
-2. Set `Eviction Requested` to `true`, and save.
-
-## Cancel Disks or Nodes Eviction
-
-To cancel the eviction for a disk or a node, set the corresponding `Eviction Requested` setting to `false`.
-
-## Check Eviction Status
-
-The `Replicas` number on the selected disks or nodes should be reduced to 0 once the eviction is a success.
-
-If you click on the `Replicas` number, it will show the replica name on this disk. When you click on the replica name, the Longhorn UI will redirect the webpage to the corresponding volume page, and it will display the volume status. If there is any error, e.g. no space, or couldn't find another schedulable disk (schedule failure), the error will be shown. All of the errors will be logged in the Event log.
-
-If any error happened during the eviction, the eviction will be suspended until new space has been cleared or it will be cancelled. And if the eviction is cancelled, the remaining replicas on the selected disks or nodes will remain on the disks or nodes.
-
-
----
-
-## Article: nodes-and-volumes/nodes/graceful-node-removal.md
-
----
-title: Graceful Node Removal
-weight: 7
----
-
-Removing a node from a Kubernetes cluster requires careful coordination with Longhorn to ensure data availability. Simply running `kubectl delete node` is insufficient because Kubernetes does not automatically notify CSI storage layers to migrate data replicas before the node is destroyed.
-
-If a node is removed without following this procedure, the replicas stored on that node will be lost, potentially leaving your volumes in a **Degraded** or **Faulted** state.
-
-## Prerequisites
-
-- The cluster must have enough available space and schedulable nodes to receive the replicas being moved.
-
-## Step-by-Step Procedure
-
-### 1. Cordon and Drain the Kubernetes Node
-
-Prepare the node for removal by moving all running workloads (Pods) to other nodes. Using a timeout and force flag ensures that the drain completes even if some pods are slow to terminate or protected by Pod Disruption Budgets.
-
-```bash
-kubectl cordon <NODE_NAME>
-kubectl drain <NODE_NAME> \
-  --ignore-daemonsets \
-  --delete-emptydir-data \
-  --force \
-  --grace-period=-1 \
-  --timeout=300s
-```
-
-> **Note**: The `--grace-period=-1` flag allows pods to honor their own `terminationGracePeriodSeconds`. The `--force` flag is necessary to remove pods that are not managed by a ReplicationController, ReplicaSet, Job, DaemonSet, or StatefulSet.
-
-### 2. Disable Scheduling and Trigger Eviction
-
-You must prevent new data from being scheduled on the node and move existing data to other healthy nodes. This can be done via the Longhorn UI or the command line.
-
-#### Via Longhorn UI
-
-1. Open the Longhorn UI and navigate to the **Nodes** tab.
-2. Select the node and click the **Edit Node** button.
-3. Set **Node Scheduling** to **Disable**.
-4. Set **Eviction Requested** to **true**.
-5. Click **Save**.
-
-#### Via kubectl
-
-Patch the Longhorn Node CR to disable scheduling and request eviction in a single command:
-
-```bash
-kubectl patch node.longhorn.io <NODE_NAME> \
-  -n longhorn-system --type=merge \
-  -p '{"spec":{"allowScheduling":false,"evictionRequested":true}}'
-```
-
-### 3. Monitor Eviction Progress
-
-Before proceeding to delete the node, you must ensure all replicas has successfully migrated.
-
-* **Via UI**: In the **Nodes** list, watch the **Replicas** column for the node. Wait until the count reaches **0**.
-* **Via CLI**: Poll the node status to confirm all resources (Replicas and Backing Images) have migrated:
-
-    ```bash
-    kubectl get node.longhorn.io <NODE_NAME> -n longhorn-system -o json \
-    | jq '.status.diskStatus | to_entries[]
-            | {disk: .key,
-            scheduledReplicas: (.value.scheduledReplica | length),
-            scheduledBackingImages: (.value.scheduledBackingImage | length)}'
-    ```
-
-> **Note**: Eviction is complete only when every disk reports `scheduledReplicas: 0` and `scheduledBackingImages: 0`. This process works for both `Attached` and `Detached` volumes. Longhorn will automatically attach detached volumes to migrate data and detach them when finished.
-
-### 4. Delete the Kubernetes Node
-
-Remove the node resource from the Kubernetes cluster. Longhorn requires the Kubernetes node to be removed before it will allow the deletion of the Longhorn Node resource.
-
-```bash
-kubectl delete node <NODE_NAME>
-```
-
-### 5. Delete the Longhorn Node
-
-Once the Kubernetes node is deleted, the Longhorn UI will show the node in a **Down** state. You can now safely remove the metadata.
-
-- **Via UI**: In the **Nodes** tab, the **Delete** button for the node will now be enabled. Click **Delete**.
-- **Via CLI**: If you prefer using `kubectl`, you can delete the Longhorn Node resource directly using the following command:    
-    ```bash
-    kubectl -n longhorn-system delete nodes.longhorn.io <NODE_NAME>
-    ```
-
-## Troubleshooting
-
-### Node "Delete" button is greyed out
-
-The UI disables the **Delete** button if the corresponding Kubernetes node still exists. Ensure you have successfully executed `kubectl delete node <NODE_NAME>` first.
-
-### Eviction is stuck
-
-If the replica count does not reach 0, check the **Events** log. Common causes include:
-
-- **Insufficient Space**: No other nodes have enough disk space to house the replicas. To recover from this, you can refer to [Manual Recovery of Nodes with Insufficient Space](../../../../kb/manual-recovery-of-nodes-with-insufficient-space).
-- **Anti-Affinity Constraints**: If `Replica Node Level Soft Anti-Affinity` is disabled, and all other nodes already host a replica of the same volume, the eviction will have no valid destination. To learn more about anti-affinity and how to resolve this, see [Replica Scheduling and Anti-Affinity](../../best-practices.md#replica-node-level-soft-anti-affinity).
-- **Volume Health**: Rebuilding cannot start if the volume is already in a `Faulted` state. To learn more volume and volume health, refer to [Volume documentation](../volumes/create-volumes).
-
-
----
-
-## Article: nodes-and-volumes/nodes/multidisk.md
-
----
-title: Multiple Disk Support
-weight: 4
-aliases:
-- /docs/1.12.0/v2-data-engine/features/node-disk-support/
-- /spdk/features/node-disk-support.md
----
-
-- [Disk Types](#disk-types)
-- [Default Disk Behavior](#default-disk-behavior)
-- [Add a Disk](#add-a-disk)
-  - [Add a Filesystem-Type Disk](#add-a-filesystem-type-disk)
-    - [Use an Alternative Path for a Filesystem-Type Disk on the Node](#use-an-alternative-path-for-a-filesystem-type-disk-on-the-node)
-  - [Add a Block-Type Disk](#add-a-block-type-disk)
-    - [Prerequisites](#prerequisites)
-    - [Steps](#steps)
-    - [Disk Driver](#disk-driver)
-      - [Using AIO Disks](#using-aio-disks)
-      - [Using NVMe Disks](#using-nvme-disks)
-      - [Using VirtIO Disks](#using-virtio-disks)
-  - [Root Disk Reservation](#root-disk-reservation)
-- [Remove a Disk](#remove-a-disk)
-- [Disk Scheduling Configuration](#disk-scheduling-configuration)
-
-## Disk Types
-
-Longhorn supports two types of disks:
-
-- **Filesystem-type disk (`diskType: filesystem`):** Used by the **V1 Data Engine**. The disk must be formatted with an extent-based filesystem (for example, ext4 or xfs) and mounted to a directory on the host.
-- **Block-type disk (`diskType: block`):** Used by the **V2 Data Engine**. The disk is used as a raw block device without a filesystem.
-
-Each disk type is tied to its corresponding data engine:
-
-- V1 volumes are scheduled only to filesystem-type disks.
-- V2 volumes are scheduled only to block-type disks.
-
-## Default Disk Behavior
-
-When a node is first added to Longhorn, the system creates a default **filesystem-type disk** at `/var/lib/longhorn`. This default disk is used for V1 volumes unless you disable scheduling for it or add other filesystem-type disks.
-
-## Add a Disk
-
-### Add a Filesystem-Type Disk
-
-Filesystem-type disks are used for V1 volumes. Before adding one to Longhorn, you must prepare and mount it on the host.
-
-1. **Choose a Disk:** Select the physical or virtual disk you want to use for Longhorn storage and format it with an extent-based filesystem (e.g., ext4, xfs).
-2. **Mount the Disk:** Mount the disk to a directory on the host, such as `/mnt/example-disk`. Ensure the directory is accessible and properly configured.
-
-After the disk is mounted, you can add it to Longhorn using either the UI or the `kubectl` command-line tool.
-
-- **Using the Longhorn UI**
-
-  1. Go to the **Nodes** tab, select a node, and choose **Edit Disks** from the dropdown menu.
-  2. Add the mount path of the disk to the disk list.
-
-- **Using `kubectl` Command**
-
-  1. Run `kubectl edit node.longhorn.io <node-name>` to edit the Longhorn node resource.
-  2. Add the disk path to `spec.disks`. For example:
-
-    ```yaml
-    ...
-    spec:
-      ...
-      disks:
-        ...
-        example-disk:
-          allowScheduling: true
-          diskDriver: ""
-          diskType: filesystem
-          evictionRequested: false
-          path: /mnt/example-disk
-          storageReserved: 0
-          tags: []
-    ...
-    ```
-
-  3. Save and exit the editor.
-
-Once a disk is added:
-
-- Longhorn automatically detects the storage details of the disk, such as maximum and available capacity.
-- If the disk is suitable for storing volume data, Longhorn begins scheduling volumes to it.
-
-> **Notice**:
->
-> 1. You cannot add a disk path that is already in use by another Longhorn disk.
-> 2. Longhorn uses the filesystem ID to detect duplicate mounts. Therefore, you cannot add a disk with the **same filesystem ID** as another disk on the same node.  
->    See: [Issue #2477](https://github.com/longhorn/longhorn/issues/2477)
-
-#### Use an Alternative Path for a Filesystem-Type Disk on the Node
-
-If you prefer to use a different path for a filesystem-type disk (rather than the original mount point), you can use `mount --bind` to create an alternative path. Do **not** use symbolic link (`lh -s`), as these are not properly resolved inside Longhorn pods.
-
-Make sure the alternative path is remounted after a node reboot, for example, by adding it to `/etc/fstab`.
-
-### Add a Block-Type Disk
-
-Block-type disks are used for V2 volumes. The V2 Data Engine requires raw block devices for direct access.
-
-Longhorn supports several ways to manage block-type disks on a node:
-
-- **NVMe disks:** Managed with the `nvme` driver.
-- **VirtIO disks:** Managed with the `virtio-blk` driver.
-- **Other block devices:** Managed with the `aio` driver.
-
-#### Prerequisites
-
-- The V2 Data Engine must be enabled. See [V2 Data Engine Quick Start](../../v2-data-engine/quick-start) for details.
-- Longhorn prevents adding block disks that contain an existing file system or partition table. Clean the disk first:
-
-    ```shell
-    wipefs -a /path/to/block/device
-    ```
-
-#### Steps
-
-You can add a block-type disk using the Longhorn UI or `kubectl`.
-
-- **Using the Longhorn UI**
-
-  1. Go to the **Nodes** tab, select a node, and choose **Edit Disks** from the dropdown menu.
-  2. Add the block device path and set the disk type to **Block**.
-
-- **Using `kubectl` Command**
-
-  1. Run `kubectl edit node.longhorn.io <node-name>` to edit the Longhorn node resource.
-  2. Add the block disk to `spec.disks`. For example:
-
-    ```yaml
-    ...
-    spec:
-      ...
-      disks:
-        ...
-        block-disk:
-          allowScheduling: true
-          diskDriver: auto
-          diskType: block
-          evictionRequested: false
-          path: /dev/sdb
-          storageReserved: 0
-          tags: []
-    ...
-    ```
-
-  1. Save and exit the editor.
-
-#### Disk Driver
-
-The `diskDriver` field controls how Longhorn accesses the block device. Setting it to `auto` allows Longhorn to detect the appropriate driver automatically:
-
-- **NVMe disks:** Uses the `nvme` driver. The `path` can be a BDF (Bus Device Function) notation (e.g., `0000:05:00.0`).
-- **VirtIO disks:** Uses the `virtio-blk` driver. The `path` can also be a BDF notation.
-- **Other disks:** Falls back to the `aio` (Linux AIO) driver. The `path` should be a standard device path (e.g., `/dev/sdb`).
-
-After the disk is added, check `node.status.diskStatus` to confirm that Longhorn detected the disk without errors and assigned the expected `diskDriver`.
-
-> **Note**
->
-> When a disk is managed by the `nvme` or `virtio-blk` driver, it is no longer exposed through the original Linux kernel device node such as `/dev/nvmeXnY` or `/dev/vdX`.
-
-##### Using AIO Disks
-
-> **Tip:** Prefer a stable path under `/dev/disk/by-id/` (for example,
-> `/dev/disk/by-id/nvme-...`) rather than kernel-assigned names like `/dev/sdb`
-> or `/dev/nvmeXnY`, which can change across reboots or differ between nodes.
-
-When a block device is neither NVMe nor VirtIO, or when you want to force Linux AIO, configure it with `diskDriver: aio` and use a standard device path.
-
-```yaml
-aio-disk:
-  allowScheduling: true
-  diskDriver: aio
-  diskType: block
-  evictionRequested: false
-  path: /dev/disk/by-id/wwn-0x5000c500a0b1c2d3   # stable; avoid /dev/sdb
-  storageReserved: 0
-  tags: []
-```
-
-> **Notice**:
->
-> 1. Block-type disks are exclusively used by the V2 Data Engine and cannot be used for V1 volumes.
-> 2. The disk must be clean and must not contain an existing file system or partition table before it is added. Use `wipefs -a /path/to/block/device` to clean it.
-> 3. For disk-specific configuration examples, see [Using NVMe Disks](#using-nvme-disks), [Using VirtIO Disks](#using-virtio-disks), and [Using AIO Disks](#using-aio-disks).
-
-##### Using NVMe Disks
-
-> **Warning: Do not rely on kernel NVMe device names such as `/dev/nvmeXnY`.**
->
-> NVMe device names are assigned dynamically by the kernel and are **not
-> guaranteed to be stable** across reboots or consistent across nodes. The same
-> physical disk may appear as `nvme0n1` on one node and `nvme2n1` on another, or
-> change after a reboot.
->
-> - For the `nvme` driver, always add the disk by its **BDF** (for example,
->   `0000:05:00.0`), which is stable.
-> - If you must use a device-path–based driver (such as `aio`), use a persistent
->   symlink under `/dev/disk/by-id/` instead of `/dev/nvmeXnY`.
-
-To let Longhorn use the `nvme` driver, add the disk by its BDF instead of the Linux device path.
-
-1. Identify the available disks on the node. For example:
-
-    ```bash
-    ls -al /sys/block/
-    ```
-
-    Example output:
-
-    ```bash
-    lrwxrwxrwx  1 root root 0 Jul 30 12:20 loop0 -> ../devices/virtual/block/loop0
-    lrwxrwxrwx  1 root root 0 Jul 30 12:20 nvme0n1 -> ../devices/pci0000:00/0000:00:01.2/0000:02:00.0/nvme/nvme0/nvme0n1
-    lrwxrwxrwx  1 root root 0 Jul 30 12:20 nvme1n1 -> ../devices/pci0000:00/0000:00:01.2/0000:05:00.0/nvme/nvme1/nvme1n1
-    ```
-
-2. Find the BDF of the target NVMe disk. In the example above, the BDF of `/dev/nvme1n1` is `0000:05:00.0`.
-
-3. Add the disk to `spec.disks`. For example:
-
-    ```yaml
-    nvme-disk:
-      allowScheduling: true
-      diskType: block
-      diskDriver: auto
-      evictionRequested: false
-      path: 0000:05:00.0
-      storageReserved: 0
-      tags: []
-    ```
-
-If you instead add the same disk using `/dev/nvme1n1`, Longhorn treats it as an `aio` disk instead of an `nvme` disk.
-
-##### Using VirtIO Disks
-
-VirtIO disks follow the same pattern. To let Longhorn use the `virtio-blk` driver, add the disk by its BDF.
-
-1. Identify the available disks on the node. For example:
-
-    ```bash
-    ls -al /sys/block/
-    ```
-
-    Example output:
-
-    ```bash
-    lrwxrwxrwx  1 root root 0 Feb 22 14:04 vda -> ../devices/pci0000:00/0000:00:02.3/0000:04:00.0/virtio2/block/vda
-    lrwxrwxrwx  1 root root 0 Feb 22 14:24 vdb -> ../devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio5/block/vdb
-    ```
-
-2. Find the BDF of the target VirtIO disk. In the example above, the BDF of `/dev/vdb` is `0000:07:00.0`.
-
-3. Add the disk to `spec.disks`. For example:
-
-    ```yaml
-    virtio-disk:
-      allowScheduling: true
-      diskType: block
-      diskDriver: auto
-      evictionRequested: false
-      path: 0000:07:00.0
-      storageReserved: 0
-      tags: []
-    ```
-
-If you instead add the same disk using `/dev/vdb`, Longhorn treats it as an `aio` disk instead of a `virtio-blk` disk.
-
-### Root Disk Reservation
-
-You can use the `Space Reserved` field in the UI or `spec.disks.<disk-name>.storageReserved` to reserve a portion of any disk's space (in bytes) for other purposes. This reserved space will not be used by Longhorn for volume data.
-
-To maintain node stability when compute resources (for example memory or disk) are under pressure, the `kubelet` requires some space to remain free. If these critical resources are exhausted, it can lead to node instability.
-
-For the default filesystem-type disk at `/var/lib/longhorn`, Longhorn **reserves 30% of the root disk space by default** to help prevent issues such as `DiskPressure` conditions from the `kubelet`, particularly after scheduling multiple volumes. This behavior is controlled by the `storage-reserved-percentage-for-default-disk` setting.
-
-This automatic reservation applies only to the default filesystem-type disk created for V1 volumes. Block-type disks for V2 volumes must be configured explicitly, including any `storageReserved` value that you want to apply.
-
-## Remove a Disk
-
-Nodes and disks can be excluded from future scheduling. Note that any storage already scheduled on the node will not be automatically released when scheduling is disabled for the node.
-
-To remove a disk:
-
-- Disable scheduling for the disk.
-- Ensure there are **no replicas or backing images** left on the disk, including any in an error state. For instructions on how to evict replicas from disabled disks, see [Select Disks or Nodes for Eviction](../disks-or-nodes-eviction/#select-disks-or-nodes-for-eviction).
-
-Once the disk is empty and scheduling is disabled, you can safely remove it from the node configuration.
-
-## Disk Scheduling Configuration
-
-There are two global settings that affect disk scheduling.
-
-These settings apply to both filesystem-type and block-type disks. However, the V1 Data Engine uses sparse files for thin provisioning, so over-provisioning behavior is commonly discussed in the context of filesystem-type disks.
-
-- `StorageOverProvisioningPercentage` defines the maximum total storage that can be **scheduled** on a disk, relative to its usable capacity. The formula is:
-
-    ```bash
-    ScheduledStorage / (MaximumStorage - ReservedStorage)
-    ```
-
-    The default is `100` (%).
-
-    On a 200 GiB disk with 50 GiB reserved, Longhorn sees 150 GiB of usable space. With the default setting, it can schedule up to 150 GiB of volume data.
-
-    Since workloads typically do not consume the entire allocated volume size, increasing this setting can help optimize disk utilization. For V1 volumes, higher values are commonly used because the V1 Data Engine uses sparse files for thin provisioning.
-
-- `StorageMinimalAvailablePercentage` specifies the minimum percentage of free space that must remain on a disk in order to schedule new replicas. The formula is:
-
-    ```bash
-    AvailableStorage / MaximumStorage
-    ```
-
-    The default is `25` (%).
-
-    For a 200 GiB disk with 50 GiB reserved, Longhorn will stop scheduling new replicas if available space falls below 37.5 GiB  (25% of 150 GiB). A new volume also will not be scheduled if its size would push available space below that limit.
-
-    This setting helps prevent disks from becoming too full, which could lead to scheduling failures or volume operation issues.
-
-> **Warning**:
->
-> Currently, Longhorn cannot fully enforce the `StorageMinimalAvailablePercentage` limit in all scenarios because:
->
-> - Longhorn volumes may use more space than their requested size, especially when snapshots are taken.
-> - Longhorn allows over-provisioning by default.
-
-
----
-
-## Article: nodes-and-volumes/nodes/node-conditions.md
-
----
-title: Node Conditions
-weight: 7
----
-
-Node conditions describe the status of all worker nodes and are used to check the environment settings of worker nodes to identify potential issues before any system impact.
-
-Node conditions:
-
-- `Ready`:  
-  Indicates that the node is ready for Longhorn operations, including that a `longhorn-manager` pod is running on this node, the Kubernetes node is ready, and there is no physical resources pressure.  
-
-- `Schedulable`:  
-  Indicated that the node is not cordoned and workload can be scheduled to this node.
-
-- `MountPropagation`:  
-  Indicates that the node supports mount propagation. This is necessary for sharing of volumes mounted by a container with other containers in the same Longhorn pod, or to other Longhorn pods on the same node.  
-
-- `Multipathd`:  
-  Confirms if the `multipathd` service is not running on the node, which may affect the pod with the volume startup. See [Troubleshooting: `MountVolume.SetUp failed for volume` due to multipathd on the node](../../../../../kb/troubleshooting-volume-with-multipath).  
-
-- `RequiredPackages`:  
-  Checks if all required packages ([NFS client](../../../deploy/install/#installing-nfsv4-client), [iSCSI tool](../../../deploy/install/#installing-open-iscsi), [cryptsetup](../../../deploy/install/#installing-cryptsetup-and-luks), [dmsetup](../../../deploy/install/#installing-device-mapper-userspace-tool)) exist for Longhorn  
-
-- `NFSClientInstalled`:  
-  Identifies if any of the following NFS clients are supported: `v4.2`, `v4.1`, or `v4.0`. NFS client is required for RWX volume and backup.  
-
-- `KernelModulesLoaded`:  
-  Identifies if the following Kernel modules are loaded:
-  - `dm_crypt`: Is required for the volume and backing image encryption.  
-  - For engine v2 only:
-    - `vfio_pci`: Is required for SPDK and PCI device management
-    - `uio_pci_generic`: Is required for SPDK UIO support
-    - `nvme_tcp`: Is required for NVMe-over-TCP device usage
-
-- `HugePagesAvailable`:
-  Indicates whether the node is properly configured with HugePages (2Mi) as required by the Longhorn v2 data engine. This includes verifying that:
-  - HugePages (2Mi) are registered as a Kubernetes resource (`hugepages-2Mi`).
-  - The configured HugePages capacity meets or exceeds the value defined in the `v2-data-engine-hugepage-limit` setting.
-
-Node conditions do not block the Longhorn deployment but they result in warnings in the Longhorn `Node` resource.
-For more information, see [Longhorn Installation Requirements](../../../deploy/install/#installation-requirements).
-
-
----
-
-## Article: nodes-and-volumes/nodes/node-space-usage.md
-
----
-title: Node Space Usage
-weight: 1
----
-
-In this section, you'll have a better understanding of the space usage info presented by the Longhorn UI. 
-
-
-### Whole Cluster Space Usage
-
-In `Dashboard` page, Longhorn will show you the cluster space usage info:
-
-{{< figure src="/img/screenshots/volumes-and-nodes/space-usage-info-dashboard-page.png" >}}
-
-`Schedulable`: The actual space that can be used for Longhorn volume scheduling.
-
-`Reserved`: The space reserved for other applications and system.
-
-`Used`: The actual space that has been used by Longhorn, system, and other applications.
-
-`Disabled`: The total space of the disks/nodes on which Longhorn volumes are not allowed for scheduling.
-
-### Space Usage of Each Node
-
-In `Node` page, Longhorn will show the space allocation, schedule, and usage info for each node:
-
-{{< figure src="/img/screenshots/volumes-and-nodes/space-usage-info-node-page.png" >}}
-
-`Size` column: The **max actual available space** that can be used by Longhorn volumes. It equals the total disk space of the node minus reserved space. 
-
-`Allocated` column: The left number is the size that has been used for **volume scheduling**, and it does not mean the space has been used for the Longhorn volume data store. The right number is the **max** size for volume scheduling, which the result of `Size` multiplying `Storage Over Provisioning Percentage`. (In the above illustration, `Storage Over Provisioning Percentage` is 500.) Hence, the difference between the 2 numbers (let's call it as the allocable space) determines if a volume replica can be scheduled to this node.
-
-`Used` column: The left part indicates the currently used space of this node. The whole bar indicates the total space of the node.
-
-Notice that the allocable space may be greater than the actual available space of the node when setting `Storage Over Provisioning Percentage` to a value greater than 100. If the volumes are heavily used and lots of historical data will be stored in the volume snapshots, please be careful about using a large value for this setting. For more info about the setting, see [here](../../../references/settings/#storage-over-provisioning-percentage) for details. 
-
-### Disk Schedulability Status and Troubleshooting Message
-
-When a disk becomes **unschedulable**, Longhorn exposes the underlying reason directly in the UI.
-On the **Node** page, if a disk’s internal `Schedulable` condition is `False`, the UI displays the exact message from `node.diskStatus[x].conditions[Schedulable]`.
-This information is essential for diagnosing issues related to space limits or over-provisioning.
-
-**Example Troubleshooting Message:**
-
-```
-Disk default-disk-1030100000000 (/var/lib/longhorn/) on the node ip-192-168-203-144.ap-southeast-1.compute.internal is not schedulable for more replica; Scheduling space condition failed: ScheduledTotal = 4294967296 (Size + StorageScheduled) is greater than ProvisionedLimit = -64504221696 (100% of StorageMax - StorageReserved).
-```
-
-**How to interpret this message:**
-
-- **`ScheduledTotal`**: The total space currently *scheduled* for replicas (both existing and pending) on this disk.
-  > **Note**: This does not represent the actual disk usage.
-
-- **`ProvisionedLimit`**: The **maximum allowed scheduling capacity** for this disk. It is derived from:
-  - the disk’s physical size (`StorageMax`)
-  - its reserved space (`StorageReserved`)
-  - multiplied by the cluster’s `Storage Over Provisioning Percentage`
-
-When `ScheduledTotal` exceeds `ProvisionedLimit`, the disk becomes unschedulable and will not accept new replicas until the disk configuration or cluster settings are adjusted.
-
-
----
-
-## Article: nodes-and-volumes/nodes/scheduling.md
-
----
-title: Scheduling
-weight: 5
----
-
-In this section, you'll learn how Longhorn schedules replicas based on multiple factors.
-
-## Scheduling Policy
-
-Longhorn's scheduling policy has two stages. The scheduler only goes to the next stage if the previous stage is satisfied. Otherwise, the scheduling will fail.
-
-If any tag has been set in order to be selected for scheduling, the node tag and the disk tag have to match when the node or the disk is selected.
-
-The first stage is the **node and zone selection stage.** Longhorn will filter the node and zone based on the `Replica Node Level Soft Anti-Affinity` and `Replica Zone Level Soft Anti-Affinity` settings.
-
-The second stage is the **disk selection stage.** Longhorn will filter the disks that satisfy the first stage based on the `Replica Disk Level Soft Anti-Affinity`, `Storage Minimal Available Percentage`, `Storage Over Provisioning Percentage`, and other disk-related factors like requested disk space.
-
-### The Node and Zone Selection Stage
-
-Longhorn evaluates which **nodes** are suitable for scheduling a new replica based on a series of criteria. The decision-making process follows a specific order to ensure optimal placement for fault tolerance. 
-
-#### 1. Node Tag Matching
-
-Longhorn first checks for node selector tags on the volume.
-- If the volume has node selector tags, only nodes with matching tags are eligible.
-- If the volume has **no node selector**, the behavior depends on the setting **Allow Empty Node Selector Volume**:
-    - `true` (default): Schedules on nodes **with or without tags**.
-    - `false`: Schedules **only** on nodes **without tags**.
-
-#### 2. Cordoned Node Handling
-
-The setting **Disable Scheduling On Cordoned Node** determines whether cordoned nodes are eligible for replica scheduling:
-- `true` (default): Cordoned nodes are **excluded**.
-- `false`: Cordoned nodes are **eligible**.
-
-#### 3.  Anti-Affinity Rules Across Nodes and Zones
-
-Longhorn prioritizes spreading replicas across different **nodes** and **zones** to improve fault tolerance. A **"new"** node or zone is one that does **not** currently host any replica of the volume, while an **"existing"** node or zone already hosts a replica of the volume. The selection logic proceeds in the following order:
-
-The scheduler attempts to place the new replica in the most "isolated" location possible, following this hierarchy of preference:
-1.  **New Node in a New Zone** (most preferred)
-2.  **New Node in an Existing Zone**
-3.  **Existing Node in an Existing Zone** (least preferred)
-
-The following table details the required settings for a replica to be scheduled in each scenario:
-
-| **Scenario** | **Replica Zone Level Soft Anti-Affinity** | **Replica Node Level Soft Anti-Affinity** | **Scheduler Action** |
-| :--- | :--- | :--- | :--- |
-| **New Node in a New Zone** | `false` | `false` | **Schedules** the replica. |
-| | Any other value | Any other value | **Does not** schedule the replica. |
-| **New Node in an Existing Zone** | `true` | `false` | **Schedules** the replica if no new zone is available. |
-| | Any other value | Any other value | **Does not** schedule the replica. |
-| **Existing Node in an Existing Zone** | `true` | `true` | **Schedules** the replica if no other options are available. |
-| | Any other value | Any other value | **Does not** schedule the replica. |
-
-### Disk Selection Stage
-
-Once the node and zone stage is satisfied, Longhorn decides whether it can schedule the replica on any disk of the selected node. It checks the available disks based on matching tags, total disk space, and available disk space. It also considers whether another replica already exists and the anti-affinity settings.
-
-Longhorn checks all available disks on the selected node to ensure they meet the following criteria:
-
-1.  **Disk Tag Matching**:
-    - If the volume has disk tags, the disk must match any specified tags required for the replica.
-    - If the volume has no disk tags, the behavior depends on the setting **Allow Empty Disk Selector Volume**:
-        - `true` (default): Allows scheduling on disks **with or without tags**.
-        - `false`: Only allows scheduling on disks **without tags**.
-2.  **Available Space Check**:
-    - The disk must have sufficient available space based on the configured `Storage Minimal Available Percentage`.
-3.  **Anti-Affinity Settings**:
-    - **Hard Anti-Affinity**: Prevents scheduling a replica on a disk that already hosts another replica of the same volume.
-    - **Soft Anti-Affinity** (when enabled): Prefers scheduling the replica on a disk without an existing replica, even if it’s a less optimal choice in terms of space or other factors.
-4.  **Space Conditions**: Two formulas determine if a disk is schedulable:
-    - **Actual Space Usage Condition**: Ensures sufficient usable storage remains after accounting for currently used space.
-        - Formula: `(Storage Available - Actual Size) > (Storage Maximum × Minimal Available Percentage) / 100`
-    - **Scheduling Space Condition**: Ensures the replica’s size (plus any scheduled but unwritten data) fits within the over-provisioning limit.
-        - Formula: `(Size + Storage Scheduled) ≤ ((Storage Maximum - Storage Reserved) × Over Provisioning Percentage) / 100`
-
-    > **Note:** During disk evaluation, since no specific replica is being scheduled yet, `Actual Size` and `Size` are temporarily treated as `0` in these formulas.
-
-If any of these conditions fail including disk tag, anti-affinity, or space requirements, the disk is marked unschedulable, and Longhorn will not place the replica on it.
-
-If either condition fails or the disk does not meet tag or anti-affinity requirements, it is marked unschedulable, and Longhorn will not place the replica on that disk.
-
-#### Example Scenario
-
-Consider a node (**Node A**) with two disks:
-- **Disk X**: 1 GB available, 4 GB max space
-- **Disk Y**: 2 GB available, 8 GB max space
-
-##### Stage 1: Initial Disk Evaluation
-
-During the initial disk selection stage, Longhorn performs a basic check on all available disks. At this point, no specific replica has been selected, so `Actual Size` and `Size` are treated as `0`.
-
-**Disk X Evaluation**
-- **Available Space**: 1 GB
-- **`Storage Minimal Available Percentage`**: 25% (default)
-- **Minimum required available space**: `(4 GB × 25) / 100 = 1 GB`
-- **Result**: **Disk X** fails the `Actual Space Usage Condition` because its available space (1 GB) is **not greater than** the minimum required (1 GB). Therefore, Disk X is not schedulable unless the `Storage Minimal Available Percentage` is set to 0.
-
-**Disk Y Evaluation**
-- **Available Space**: 2 GB
-- **`Storage Minimal Available Percentage`**: 10%
-- **Minimum required available space**: `(8 GB × 10) / 100 = 0.8 GB`
-- **Result**: **Disk Y** passes the `Actual Space Usage Condition` because its available space (2 GB) is greater than the minimum required (0.8 GB).
-
-Next, we check the **Scheduling Space Condition**:
-- **Scheduled Space**: 2 GB
-- **`Storage Reserved`**: 1 GB
-- **`Over Provisioning Percentage`**: 100% (default)
-- **Max Provisionable Storage**: `(8 GB - 1 GB) × 100 / 100 = 7 GB`
-- **Result**: **Disk Y** passes the `Scheduling Space Condition` because the currently scheduled space (2 GB) is less than the max provisionable storage (7 GB).
-
-Since Disk Y passes all conditions, it is marked as a schedulable disk candidate.
-
-##### Stage 2: Anti-Affinity Rules
-
-Let's assume both Disk X and Disk Y pass the initial space checks and Disk X already hosts a replica for the same volume.
-
-**Hard Anti-Affinity**
-- Longhorn will not schedule the new replica on Disk X. It will instead attempt to schedule it on Disk Y.
-* If Disk Y is not suitable (e.g., mismatched disk tags), scheduling for this replica will fail.
-
-**Soft Anti-Affinity**
-- If **soft anti-affinity** is enabled, Longhorn **prefers** to schedule the replica on Disk Y to avoid co-locating replicas.
-- However, if Disk Y is unsuitable for any reason, Longhorn **may still schedule** the replica on Disk X. This allows for sharing a disk as a fallback option when no other viable candidates are available.
-
-## Schedule Algorithm
-
-After identifying the candidate disks that meet all scheduling requirements, the final step is to select the optimal disk for the replica. This selection is determined using the balance algorithm, which aims to evenly distribute replicas across nodes and disks.
-
-### Balance Factor Formula by Usable Storage: 
-
-- `Disk_Usable_Storage = (Disk.StorageAvailable - Disk.StorageReserved) - Disk.StorageScheduled`
-- Lower score = more balanced distribution.
-
-- **Formula**:
-
-    `BalanceScore(X) = (max(X) - min(X)) / mean(X)`
-
-    Where:
-    - X = set of usable storage values (per node or per disk).
-
-- **Selection process**:
-
-    1. Simulate placing the replica on each candidate node and compute the resulting balance score.
-    → Choose the node with the lowest score (most balanced distribution).
-
-    2. Within the selected node, simulate placement on each candidate disk and compute the balance score again.
-    → Choose the disk with the lowest score among them.
-
-#### Example Scenario
-
-Suppose the cluster has two nodes, and each node contains two candidate disks that are eligible for replica scheduling.
-
-Replica size = 100 GiB.
-
-| Node   | Disk | Usable Storage (GiB) |
-| ------ | ---- | -------------------- |
-| Node A | A1   | 900                  |
-| Node A | A2   | 100                  |
-| Node B | B1   | 600                  |
-| Node B | B2   | 700                  |
-
-***Step 1: Node Selection***
-- Simulate placing on Node A
-    - New totals:
-        - Node A = (900 + 100) − 100 = 900
-        - Node B = (600 + 700) = 1300
-    - Node balance score:
-
-```
-        BalanceScore_NodeA  = (1300 - 900) / ((1300 + 900) / 2)
-                            = 400 / 1100
-                            ≈ 0.364
-```
-
-- Simulate placing on Node B
-    - New totals:
-        - Node A = (900 + 100) = 1000
-        - Node B = (600 + 700) - 1000 = 1200
-    - Node balance score:
-
-```
-        BalanceScore_NodeB  = (1200 - 1000) / ((1200 + 1000) / 2)
-                            = 200 / 1100
-                            ≈ 0.182
-```
-
-Choose Node B (lower score, more balanced).
-
-***Step 2: Disk Selection***
-- Simulate placing on B1 (600 → 500)
-    - New disk usable: B1 = 500, B2 = 700
-    - Disk balance score:
-
-```
-        BalanceScore_DiskB1 = (700 - 500) / ((700 + 500) / 2)
-                            = 200 / 600
-                            ≈ 0.333
-```
-
-- Simulate placing on B2 (700 → 600)
-    - New disk usable: B1 = 600, B2 = 600
-    - Disk balance score:
-
-```
-        BalanceScore_DiskB2 = (600 - 600) / ((600 + 600) / 2)
-                            = 0 / 600
-                            = 0
-```
-
-Choose Disk B2 (perfect balance between B1 and B2).
-
-## Settings
-
-For more information on settings that are relevant to scheduling replicas on nodes and disks, refer to the settings reference:
-
-- [Disable Scheduling On Cordoned Node](../../../references/settings/#disable-scheduling-on-cordoned-node)
-- [Replica Soft Anti-Affinity](../../../references/settings/#replica-node-level-soft-anti-affinity) (also called Replica Node Level Soft Anti-Affinity)
-- [Replica Zone Level Soft Anti-Affinity](../../../references/settings/#replica-zone-level-soft-anti-affinity)
-- [Replica Disk Level Soft Anti-Affinity](../../../references/settings/#replica-disk-level-soft-anti-affinity)
-- [Storage Minimal Available Percentage](../../../references/settings/#storage-minimal-available-percentage)
-- [Storage Over Provisioning Percentage](../../../references/settings/#storage-over-provisioning-percentage)
-- [Allow Empty Node Selector Volume](../../../references/settings/#allow-empty-node-selector-volume)
-- [Allow Empty Disk Selector Volume](../../../references/settings/#allow-empty-disk-selector-volume)
-
-## Notice
-Longhorn relies on label `topology.kubernetes.io/zone=<Zone name of the node>` or `topology.kubernetes.io/region=<Region name of the node>` in the Kubernetes node object to identify the zone/region.
-
-Since these are reserved and used by Kubernetes as [well-known labels](https://kubernetes.io/docs/reference/labels-annotations-taints/#topologykubernetesiozone).
-
-
----
-
-## Article: nodes-and-volumes/nodes/storage-tags.md
-
----
-title: Storage Tags
-weight: 2
----
-
-## Overview
-
-The storage tag feature enables only certain nodes or disks to be used for storing Longhorn volume data. For example, performance-sensitive data can use only the high-performance disks which can be tagged as `fast`, `ssd` or `nvme`, or only the high-performance node tagged as `baremetal`.
-
-This feature supports both disks and nodes. 
-
-## Setup
-
-The tags can be set up using the Longhorn UI:
-
-1. *Node -> Select one node -> Edit Node and Disks*
-2. Click `+New Node Tag` or `+New Disk Tag` to add new tags.
-
-All the existing scheduled replica on the node or disk won't be affected by the new tags.
-
-## Usage
-
-When multiple tags are specified for a volume, the disk and the node (the disk belong to) must have all the specified tags to become usable.
-
-### UI
-
-When creating a volume, specify the disk tag and node tag in the UI.
-
-### Kubernetes
-
-Use Kubernetes StorageClass parameters to specify tags.
-
-You can specify tags in the default Longhorn StorageClass by adding parameter `nodeSelector: "storage,fast"` in the ConfigMap named `longhorn-storageclass`. 
-For example:
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-data:
-  storageclass.yaml: |
-    kind: StorageClass
-    apiVersion: storage.k8s.io/v1
-    metadata:
-      name: longhorn
-      annotations:
-        storageclass.kubernetes.io/is-default-class: "true"
-    provisioner: driver.longhorn.io
-    allowVolumeExpansion: true
-    reclaimPolicy: "Delete"
-    volumeBindingMode: Immediate
-    parameters:
-      numberOfReplicas: "3"
-      staleReplicaTimeout: "480"
-      diskSelector: "ssd"
-      nodeSelector: "storage,fast"
-```
-If Longhorn is installed via Helm, you can achieve that by editing `persistence.defaultNodeSelector` in [values.yaml](https://github.com/longhorn/longhorn/blob/v{{< current-version >}}/chart/values.yaml).
-
-Alternatively, a custom storageClass setting can be used, e.g.:
-```yaml
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: longhorn-fast
-provisioner: driver.longhorn.io
-parameters:
-  numberOfReplicas: "3"
-  staleReplicaTimeout: "480" # 8 hours in minutes
-  diskSelector: "ssd"
-  nodeSelector: "storage,fast"
-```
-
-## History
-* [Original feature request](https://github.com/longhorn/longhorn/issues/311)
-* Available since v0.6.0
-
-
----
-
-## Article: nodes-and-volumes/nodes/topology-aware-provisioning.md
-
----
-title: Topology-Aware Provisioning
-weight: 6
----
-
-Topology-aware provisioning allows you to control the `nodeAffinity` rules that Kubernetes writes into a PersistentVolume (PV) at creation time. This is useful when you want to pin volumes to specific zones or regions so that pods and their data always land in the same failure domain.
-
-Longhorn supports this through two complementary features:
-
-- **`csi-allowed-topology-keys` setting** — Controls which topology keys (for example, `topology.kubernetes.io/zone`) appear in the PV `nodeAffinity`.
-- **`strictTopology` StorageClass parameter** — When enabled, pins the PV to the topology of the exact node selected by the scheduler instead of all matching topologies.
-
-## Prerequisites
-
-1. Nodes in your cluster must be labeled with the topology keys you plan to use. Kubernetes automatically applies the well-known label `topology.kubernetes.io/zone` in most cloud environments. Verify with:
-
-   ```shell
-   kubectl get nodes --label-columns topology.kubernetes.io/zone
-   ```
-
-2. Configure the **CSI Allowed Topology Keys** setting in Longhorn. Set the value to a comma-separated list of topology keys that Longhorn should pass through to Kubernetes.
-
-   - **Longhorn UI**: Go to **Setting > General > CSI Allowed Topology Keys** and enter, for example, `topology.kubernetes.io/zone`.
-   - **Longhorn API / kubectl**:
-     ```shell
-     kubectl -n longhorn-system edit settings.longhorn.io csi-allowed-topology-keys
-     ```
-     Set the `value` field to `topology.kubernetes.io/zone`.
-
-   > **Note:** After changing this setting, you must manually restart the longhorn-csi-plugin DaemonSet for the change to take effect. Topology is applied correctly only after the CSI plugin pod on each node has restarted.
-
-## How It Works
-
-When a PVC is created against a StorageClass that uses the Longhorn CSI driver, several fields interact to determine what `nodeAffinity` the resulting PV receives:
-
-| Field | Role |
-|-------|------|
-| `csi-allowed-topology-keys` (Longhorn setting) | Tells the CSI driver which topology keys to advertise. If empty (the default), no topology information is passed to Kubernetes, and PVs do not receive topology-based `nodeAffinity`. |
-| `allowedTopologies` (StorageClass field) | Restricts which topology values are eligible. For example, you can limit provisioning to zones `a` and `b` out of `a`, `b`, and `c`. |
-| `volumeBindingMode` (StorageClass field) | `WaitForFirstConsumer` (WFFC) delays provisioning until a pod is scheduled, giving the scheduler a preferred node. `Immediate` provisions right away. |
-| `strictTopology` (StorageClass parameter) | When `"true"` and used with `WaitForFirstConsumer`, the PV is pinned to only the zone of the node where the pod was scheduled, rather than all allowed zones. This setting has effect only when `csi-allowed-topology-keys` includes the relevant topology key. |
-
-## Examples
-
-The examples below assume a cluster with six nodes across three zones:
-
-| Node | Zone |
-|------|------|
-| node2 | a |
-| node3 | b |
-| node4 | c |
-| node5 | a |
-| node6 | b |
-| node7 | c |
-
-### Basic Zone-Level Affinity
-
-Use `WaitForFirstConsumer` together with `allowedTopologies` and `csi-allowed-topology-keys` to restrict volumes to specific zones.
-
-**Longhorn setting:**
-
-```
-csi-allowed-topology-keys = topology.kubernetes.io/zone
-```
-
-**StorageClass:**
-
-```yaml
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: longhorn-zone-ab
-provisioner: driver.longhorn.io
-volumeBindingMode: WaitForFirstConsumer
-parameters:
-  numberOfReplicas: "3"
-allowedTopologies:
-  - matchLabelExpressions:
-      - key: topology.kubernetes.io/zone
-        values:
-          - a
-          - b
-```
-
-**Result:** The PV `nodeAffinity` is set to `zone in [a, b]`. The PV can only be attached to nodes in zones `a` or `b`.
-
-### Strict Topology Pinning
-
-Add `strictTopology: "true"` to pin the PV to the exact zone of the scheduled node.
-
-**Longhorn setting:**
-
-```
-csi-allowed-topology-keys = topology.kubernetes.io/zone
-```
-
-**StorageClass:**
-
-```yaml
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: longhorn-strict-zone
-provisioner: driver.longhorn.io
-volumeBindingMode: WaitForFirstConsumer
-parameters:
-  numberOfReplicas: "3"
-  strictTopology: "true"
-allowedTopologies:
-  - matchLabelExpressions:
-      - key: topology.kubernetes.io/zone
-        values:
-          - a
-          - b
-          - c
-```
-
-**Result:** Even though all three zones are listed in `allowedTopologies`, the PV `nodeAffinity` is set to only the zone of the node where the pod was scheduled (for example, `zone in [a]` if the pod lands on `node2` or `node5`).
-
-## Behavior Reference
-
-In the following table, zones `[a, b, c]` represent all zones present in the example cluster above.
-
-| # | `volumeBindingMode` | `allowedTopologies` | `csi-allowed-topology-keys` | `strictTopology` | PV `nodeAffinity` |
-|--:|---|---|---|---|---|
-| 1 | Immediate | None | `""` (empty) | false | None |
-| 2 | Immediate | None | `zone` | false | zone in [a, b, c] |
-| 3 | Immediate | zone: [a, b] | `zone` | false | zone in [a, b] |
-| 4 | WFFC | None | `""` (empty) | false | None |
-| 5 | WFFC | None | `zone` | false | zone in [a, b, c] |
-| 6 | WFFC | None | `zone` | true | zone in [selected] |
-| 7 | WFFC | zone: [a] | `zone` | false | zone in [a] |
-| 8 | WFFC | zone: [a, b, c] | `zone` | true | zone in [selected] |
-
-> In this table, `zone` is shorthand for `topology.kubernetes.io/zone`, and `[selected]` means the zone of the node chosen by the Kubernetes scheduler.
-
-**Key takeaways:**
-
-- Without `csi-allowed-topology-keys`, no topology information is passed and PVs do not receive topology-based `nodeAffinity` (scenarios 1, 4).
-- `strictTopology` only pins the PV to the scheduled Pod’s topology when used with `WaitForFirstConsumer`. With `Immediate`, the PV is created before the Pod is scheduled, so its topology is selected randomly.
-- `allowedTopologies` narrows the set of eligible zones; `strictTopology` further narrows it to the single selected zone.
-
-## Notes and Warnings
-
-- Do **not** use `allowedTopologies` together with `dataLocality: strict-local`. The PV `nodeAffinity` is immutable once set and will conflict with Longhorn's strict-local volume pinning. See [Data Locality](../../../high-availability/data-locality/) for details.
-- The most common configuration for users who do **not** need topology-aware provisioning is to leave `csi-allowed-topology-keys` empty (scenarios 1 and 4). This is the default.
-- For users who **do** want topology-aware provisioning, the recommended configurations are scenarios 7 and 8 — use `WaitForFirstConsumer` together with `allowedTopologies` and `csi-allowed-topology-keys`.
-
-## Related Documentation
-
-- [Storage Class Parameters](../../../references/storage-class-parameters/)
-- [CSI Allowed Topology Keys setting](../../../references/settings/#csi-allowed-topology-keys)
-- [Scheduling](../scheduling)
-
-
----
-
-## Article: nodes-and-volumes/volumes/_index.md
-
----
-title: Volumes
-weight: 2
----
-
----
-
-## Article: nodes-and-volumes/volumes/create-volumes.md
-
----
-title: Create Longhorn Volumes
-weight: 1
----
-
-- [Access Modes](#access-modes)
-- [Create Longhorn Volumes](#create-longhorn-volumes)
-  - [Creating V1 Longhorn Volumes with kubectl](#creating-v1-longhorn-volumes-with-kubectl)
-  - [Creating V2 Longhorn Volumes with kubectl](#creating-v2-longhorn-volumes-with-kubectl)
-  - [Binding Workloads to PVs without a Kubernetes StorageClass](#binding-workloads-to-pvs-without-a-kubernetes-storageclass)
-  - [Creating Longhorn Volumes with the Longhorn UI](#creating-longhorn-volumes-with-the-longhorn-ui)
-  - [PV/PVC Creation for Existing Longhorn Volume](#pvpvc-creation-for-existing-longhorn-volume)
-  - [The Failure of the Longhorn Volume Creation](#the-failure-of-the-longhorn-volume-creation)
-
-In this tutorial, you'll learn how to create Kubernetes persistent storage resources of PersistentVolumes (PVs) and PersistentVolumeClaims (PVCs) that correspond to Longhorn volumes. You will use kubectl to dynamically provision V1 and V2 volumes for workloads using Longhorn storage classes. For help creating volumes from the Longhorn UI, see the Creating Longhorn Volumes with the [Longhorn UI section](#creating-longhorn-volumes-with-the-longhorn-ui).
-
-> This section assumes that you understand how Kubernetes persistent storage works. For more information, see the [Kubernetes documentation.](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
-
-## Access Modes
-
-Longhorn supports the following Kubernetes PersistentVolume access modes:
-
-- **ReadWriteOnce (RWO)**: The volume can be mounted as read-write by a single node. Multiple pods on the same node can access the volume. This is the default and most common access mode.
-- **ReadWriteOncePod (RWOP)**: The volume can be mounted as read-write by a single pod in the entire cluster. This provides the strongest isolation guarantee, ensuring only one pod can access the volume at any time. Ideal for stateful workloads requiring single-writer access.
-- **ReadWriteMany (RWX)**: The volume can be mounted as read-write by many nodes simultaneously, enabling shared access across multiple pods. See [ReadWriteMany (RWX) Volume](../rwx-volumes) for more details.
-
-> **Note**: ReadOnlyMany (ROX) is not supported by Longhorn. For read-only access from multiple pods, consider using ReadWriteMany with read-only mount options in your pod specification.
-
-## Create Longhorn Volumes
-
-### Creating V1 Longhorn Volumes with kubectl
-
-Before creating a V1 volume, ensure that Longhorn has at least one available filesystem-type disk. V1 volumes are scheduled only to filesystem-type disks. For more information, see [Add a Filesystem-Type Disk](../nodes/multidisk/#add-a-filesystem-type-disk).
-
-First, you will create a Longhorn StorageClass. The Longhorn StorageClass contains the parameters to provision PVs.
-
-Next, a PersistentVolumeClaim is created that references the StorageClass. Finally, the PersistentVolumeClaim is mounted as a volume within a Pod.
-
-When the Pod is deployed, the Kubernetes master will check the PersistentVolumeClaim to make sure the resource request can be fulfilled. If storage is available, the Kubernetes master will create the Longhorn volume and bind it to the Pod.
-
-1. Use following command to create a StorageClass called `longhorn`:
-
-    ```shell
-    kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/examples/storageclass.yaml
-    ```
-
-    The following example StorageClass is created:
-
-    ```yaml
-    kind: StorageClass
-    apiVersion: storage.k8s.io/v1
-    metadata:
-      name: longhorn
-    provisioner: driver.longhorn.io
-    allowVolumeExpansion: true
-    parameters:
-      numberOfReplicas: "3"
-      staleReplicaTimeout: "2880" # 48 hours in minutes
-      fromBackup: ""
-      fsType: "ext4"
-    #  backupTargetName: "default"
-    #  mkfsParams: "-I 256 -b 4096 -O ^metadata_csum,^64bit"
-    #  diskSelector: "ssd,fast"
-    #  nodeSelector: "storage,fast"
-    #  recurringJobSelector: '[
-    #   {
-    #     "name":"snap",
-    #     "isGroup":true,
-    #   },
-    #   {
-    #     "name":"backup",
-    #     "isGroup":false,
-    #   }
-    #  ]'
-    ```
-
-    In particular, starting with v1.4.0, the parameter `mkfsParams` can be used to specify filesystem format options for each StorageClass.
-    Starting with v1.8.0, the parameter `backupTargetName` can be used to specify the backup target. The name of the default backup target (`default`) is used if `backupTargetName` is not specified.
-    Parameters may be omitted from the StorageClass specification. When the storage class is used to create a PV and a volume, parameters that are not specified will generally be set using a default value taken from the global settings. See [Storage Class Parameters](../../../references/storage-class-parameters) for the list of storage class parameters, and [Settings](../../../references/settings) for the full list of global settings.
-
-2. Create a Pod that uses Longhorn volumes by running this command:
-
-    ```shell
-    kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/examples/pod_with_pvc.yaml
-    ```
-
-    A Pod named `volume-test` is launched, along with a PersistentVolumeClaim named `longhorn-volv-pvc`. The PersistentVolumeClaim references the Longhorn StorageClass:
-
-    ```yaml
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: longhorn-volv-pvc
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: longhorn
-      resources:
-        requests:
-          storage: 2Gi
-    ```
-
-    The persistentVolumeClaim is mounted in the Pod as a volume:
-
-    ```yaml
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: volume-test
-      namespace: default
-    spec:
-      containers:
-      - name: volume-test
-        image: nginx:stable-alpine
-        imagePullPolicy: IfNotPresent
-        volumeMounts:
-        - name: volv
-          mountPath: /data
-        ports:
-        - containerPort: 80
-      volumes:
-      - name: volv
-        persistentVolumeClaim:
-          claimName: longhorn-volv-pvc
-    ```
-
-### Creating V2 Longhorn Volumes with kubectl
-
-Before creating a V2 volume, ensure that the V2 Data Engine is enabled and Longhorn has available block-type disks. V2 volumes are scheduled only to block-type disks. For more information, see [V2 Data Engine Quick Start](../../v2-data-engine/quick-start) and [Add a Block-Type Disk](../nodes/multidisk/#add-a-block-type-disk).
-
-1. Use the following command to create a StorageClass called `longhorn-v2-data-engine`:
-
-    ```shell
-    kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/examples/v2/storageclass.yaml
-    ```
-
-    The following example StorageClass is created:
-
-    ```yaml
-    kind: StorageClass
-    apiVersion: storage.k8s.io/v1
-    metadata:
-      name: longhorn-v2-data-engine
-    provisioner: driver.longhorn.io
-    allowVolumeExpansion: true
-    reclaimPolicy: Delete
-    volumeBindingMode: Immediate
-    parameters:
-      numberOfReplicas: "3"
-      staleReplicaTimeout: "2880"
-      fsType: "ext4"
-      dataEngine: "v2"
-    ```
-
-    The `dataEngine` parameter must be set to `v2` so Longhorn provisions a V2 volume. See [Storage Class Parameters](../../../references/storage-class-parameters) for the list of supported parameters.
-
-2. Create a Pod that uses a V2 Longhorn volume by running this command:
-
-    ```shell
-    kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/examples/v2/pod_with_pvc.yaml
-    ```
-
-    A Pod named `volume-test` is launched, along with a PersistentVolumeClaim named `longhorn-volv-pvc`. The PersistentVolumeClaim references the V2 StorageClass:
-
-    ```yaml
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: longhorn-volv-pvc
-      namespace: default
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: longhorn-v2-data-engine
-      resources:
-        requests:
-          storage: 2Gi
-    ```
-
-    The PersistentVolumeClaim is mounted in the Pod as a volume:
-
-    ```yaml
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: volume-test
-      namespace: default
-    spec:
-      restartPolicy: Always
-      containers:
-      - name: volume-test
-        image: nginx:stable-alpine
-        imagePullPolicy: IfNotPresent
-        livenessProbe:
-          exec:
-            command:
-              - ls
-              - /data/lost+found
-          initialDelaySeconds: 5
-          periodSeconds: 5
-        volumeMounts:
-        - name: volv
-          mountPath: /data
-        ports:
-        - containerPort: 80
-      volumes:
-      - name: volv
-        persistentVolumeClaim:
-          claimName: longhorn-volv-pvc
-    ```
-
-More examples are available under the [examples section](../../../references/examples).
-
-### Binding Workloads to PVs without a Kubernetes StorageClass
-
-It is possible to use a Longhorn StorageClass to bind a workload to a PV without creating a StorageClass object in Kubernetes.
-
-Since the Storage Class is also a field used to match a PVC with a PV, which doesn't have to be created by a Provisioner, you can create a PV manually with a custom StorageClass name, then create a PVC asking for the same StorageClass name.
-
-When a PVC requests a StorageClass that does not exist as a Kubernetes resource, Kubernetes will try to bind your PVC to a PV with the same StorageClass name. The StorageClass will be used like a label to find the matching PV, and only existing PVs labeled with the StorageClass name will be used.
-
-If the PVC names a StorageClass, Kubernetes will:
-
-1. Look for an existing PV that has the label matching the StorageClass
-2. Look for an existing StorageClass Kubernetes resource. If the StorageClass exists, it will be used to create a PV.
-
-### Creating Longhorn Volumes with the Longhorn UI
-
-Since the Longhorn volume already exists while creating PV/PVC, a StorageClass is not needed for dynamically provisioning Longhorn volume. However, the field `storageClassName` should be set in PVC/PV, to be used for PVC binding purpose. It's unnecessary for users to create the related StorageClass object.
-
-By default the StorageClass for Longhorn created PV/PVC is `longhorn-static`. Users can modify it in `Setting - General - Default Longhorn Static StorageClass Name` as they need.
-
-Users need to manually delete PVC and PV created by Longhorn.
-
-### PV/PVC Creation for Existing Longhorn Volume
-
-Now users can create PV/PVC via our Longhorn UI for the existing Longhorn volumes.
-Only detached volume can be used by a newly created pod.
-
-### The Failure of the Longhorn Volume Creation
-
-Creating a Longhorn volume can fail for different reasons. The issues are categorized into:
-
-- insufficient storage
-- disk not found
-- disks are unavailable
-- tags not fulfilled
-- node not found
-- nodes are unavailable
-- none of the node candidates contains a ready engine image
-- hard affinity cannot be satisfied
-- replica scheduling failed
-- unused failed replica is not supported
-- replica already scheduled
-- longhorn client operation failed
-- incompatible volume size
-
-The failure results in the workload failing to use the provisioned PV and showing a warning message
-```
-# kubectl describe pod workload-test
-
-Events:
-  Type     Reason              Age                From                     Message
-  ----     ------              ----               ----                     -------
-  Warning  FailedAttachVolume  14s (x8 over 82s)  attachdetach-controller  AttachVolume.Attach
-  failed for volume "pvc-e130e369-274d-472d-98d1-f6074d2725e8" : rpc error: code = Aborted
-  desc = volume pvc-e130e369-274d-472d-98d1-f6074d2725e8 is not ready for workloads
-```
-
-In order to help users understand the error causes, Longhorn summarizes them in the PV annotation, `longhorn.io/volume-scheduling-error`. Failures are combined in this annotation and separated by a semicolon, for example, `longhorn.io/volume-scheduling-error: insufficient storage;disks are unavailable`. The annotation can be checked by using `kubectl describe pv <pvc name>`.
-```
-# kubectl describe pv pvc-e130e369-274d-472d-98d1-f6074d2725e8
-Name:            pvc-e130e369-274d-472d-98d1-f6074d2725e8
-Labels:          <none>
-Annotations:     longhorn.io/volume-scheduling-error: insufficient storage
-                 pv.kubernetes.io/provisioned-by: driver.longhorn.io
-
-...
-
-```
-
-
----
-
-## Article: nodes-and-volumes/volumes/delete-volumes.md
-
----
-title: Delete Longhorn Volumes
-weight: 2
----
-Once you are done utilizing a Longhorn volume for storage, there are a number of ways to delete the volume, depending on how you used the volume.
-
-## Deleting Volumes Through Kubernetes
-> **Note:** This method only works if the volume was provisioned by a StorageClass and the PersistentVolume for the Longhorn volume has its Reclaim Policy set to Delete.
-
-You can delete a volume through Kubernetes by deleting the PersistentVolumeClaim that uses the provisioned Longhorn volume. This will cause Kubernetes to clean up the PersistentVolume and then delete the volume in Longhorn.
-
-## Deleting Volumes Through Longhorn
-All Longhorn volumes, regardless of how they were created, can be deleted through the Longhorn UI.
-
-To delete a single volume, go to the Volumes page in the UI. Under the Operation dropdown, select Delete. You will be prompted with a confirmation before deleting the volume.
-
-To delete multiple volumes at the same time, you can check multiple volumes on the Volumes page and select Delete at the top.
-
-> **Note:** If Longhorn detects that a volume is tied to a PersistentVolume or PersistentVolumeClaim, then these resources will also be deleted once you delete the volume. You will be warned in the UI about this before proceeding with deletion. Longhorn will also warn you when deleting an attached volume, since it may be in use.
-
-
----
-
-## Article: nodes-and-volumes/volumes/detaching-volumes.md
-
----
-title: Detach Longhorn Volumes
-weight: 3
----
-
-Shut down all Kubernetes Pods using Longhorn volumes in order to detach the volumes. The easiest way to achieve this is by deleting all workloads and recreate them later after upgrade. If this is not desirable, some workloads may be suspended.
-
-In this section, you'll learn how each workload can be modified to shut down its pods.
-
-#### Deployment
-Edit the deployment with `kubectl edit deploy/<name>`.
-
-Set `.spec.replicas` to `0`.
-
-#### StatefulSet
-Edit the statefulset with `kubectl edit statefulset/<name>`.
-
-Set `.spec.replicas` to `0`.
-
-#### DaemonSet
-Edit the daemonset with `kubectl edit ds/<name>`.
-
-Add a nodeSelector to the pod spec:
-```yaml
-spec:
-  template:
-    spec:
-      nodeSelector:
-        no-schedule: "true"
-```
-
-#### Pod
-Delete the pod with `kubectl delete pod/<name>`.
-
-There is no way to suspend a pod not managed by a workload controller.
-
-#### CronJob
-Edit the cronjob with `kubectl edit cronjob/<name>`.
-
-Set `.spec.suspend` to `true`.
-
-Wait for any currently executing jobs to complete, or terminate them by deleting relevant pods.
-
-#### Job
-Consider allowing the single-run job to complete.
-
-Otherwise, delete the job with `kubectl delete job/<name>`.
-
-#### ReplicaSet
-Edit the replicaset with `kubectl edit replicaset/<name>`.
-
-Set `.spec.replicas` to `0`.
-
-#### ReplicationController
-Edit the replicationcontroller with `kubectl edit rc/<name>`.
-
-Set `.spec.replicas` to `0`.
-
-Wait for the volumes using by the Kubernetes to complete detaching.
-
-Then detach all remaining volumes from Longhorn UI. These volumes were most likely created and attached outside of Kubernetes via Longhorn UI or REST API.
-
----
-
-## Article: nodes-and-volumes/volumes/expansion.md
-
----
-title: Volume Expansion
-weight: 6
----
-
-Volumes are expanded in two stages. First, Longhorn resizes the block device, then it expands the filesystem. 
-
-Since v1.4.0, Longhorn supports online expansion. Most of the time Longhorn can directly expand an attached volumes without limitations, no matter if the volume is being R/W or rebuilding.
-
-If the volume was not expanded though the CSI interface (for example, for Kubernetes older than v1.16), the capacity of the corresponding PVC and PV would not change.
-
-## Prerequisites
-
-- For offline expansion, the Longhorn version must be v0.8.0 or higher.
-- For online expansion (V1 Data Engine), the Longhorn version must be v1.4.0 or higher.
-- For online expansion (V2 Data Engine), the Longhorn version must be v1.10.0 or higher, and the volume must use the **NVMe** (`NVMf`) or **Block Device** frontend. *(Note: The `UBLK` frontend is not supported for online expansion as of v1.10.0).*
-
-## Expand a Longhorn volume
-
-During the expansion process, Longhorn automatically resizes all replicas to match the user-requested size. There are two ways to expand a Longhorn volume: with a PersistentVolumeClaim (PVC) and with the Longhorn UI.
-
-### Via PVC
-
-This method is applied only if:
-
-- The PVC is dynamically provisioned by the Kubernetes with Longhorn StorageClass.
-- The field `allowVolumeExpansion` should be `true` in the related StorageClass.
-
-This method is recommended if it is applicable, because the PVC and PV will be updated automatically and everything is kept consistent after expansion.
-
-#### V1 Data Engine
-
-Find the corresponding PVC for the Longhorn volume, then modify the requested `spec.resources.requests.storage` of the PVC:
-
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{},"name":"longhorn-simple-pvc","namespace":"default"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"1Gi"}},"storageClassName":"longhorn"}}
-    pv.kubernetes.io/bind-completed: "yes"
-    pv.kubernetes.io/bound-by-controller: "yes"
-    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
-  creationTimestamp: "2019-12-21T01:36:16Z"
-  finalizers:
-  - kubernetes.io/pvc-protection
-  name: longhorn-simple-pvc
-  namespace: default
-  resourceVersion: "162431"
-  selfLink: /api/v1/namespaces/default/persistentvolumeclaims/longhorn-simple-pvc
-  uid: 0467ae73-22a5-4eba-803e-464cc0b9d975
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: longhorn
-  volumeMode: Filesystem
-  volumeName: pvc-0467ae73-22a5-4eba-803e-464cc0b9d975
-status:
-  accessModes:
-  - ReadWriteOnce
-  capacity:
-    storage: 1Gi
-  phase: Bound
-```
-
-#### V2 Data Engine
-
-For the V2 Data Engine, ensure your StorageClass has `allowVolumeExpansion: true` and `dataEngine: "v2"`:
-
-```yaml
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-    name: longhorn-v2-data-engine
-provisioner: driver.longhorn.io
-allowVolumeExpansion: true
-reclaimPolicy: Delete
-volumeBindingMode: Immediate
-parameters:
-  numberOfReplicas: "3"
-  staleReplicaTimeout: "2880"
-  fsType: "ext4"
-  dataEngine: "v2"
-```
-
-To expand the volume, edit the corresponding PVC manifest to increase the storage request to a larger size, then apply the updated manifest:
-
-```yaml
-  resources:
-    requests:
-      storage: 3Gi
-```
-
-### Via Longhorn UI
-
-**Usage**: On the **Volumes** page of the Longhorn UI, click **Expand Volume** in the operation menu for the volume, enter the new desired size, and confirm. The expansion will begin automatically.
-*(For V2 Data Engine volumes, verify that the frontend is set to `Block Device` or `NVMf` before expanding)*.
-
-## Filesystem expansion
-
-Longhorn tries to expand the file system only if:
-
-- The expanded size should be greater than the current size.
-- There is a Linux filesystem in the Longhorn volume.
-- The filesystem used in the Longhorn volume is one of the following:
-- ext4
-- xfs
-- The expanded size must be less than the maximum file size allowed by the file system (for example, 16TiB for `ext4`).
-- The Longhorn volume is using the block device frontend.
-
-## Corner cases
-
-### Handling Volume Revert
-
-If a volume is reverted to a snapshot with smaller size, the frontend of the volume is still holding the expanded size. But the filesystem size will be the same as that of the reverted snapshot. In this case, you will need to handle the filesystem manually:
-
-1. Attach the volume to a random node.
-2. Log in to the corresponding node, and expand the filesystem.
-If the filesystem is `ext4`, the volume might need to be [mounted](https://linux.die.net/man/8/mount) and [umounted](https://linux.die.net/man/8/umount) once before resizing the filesystem manually. Otherwise, executing `resize2fs` might result in an error:
-    ```text
-    resize2fs: Superblock checksum does not match superblock while trying to open ......
-    Couldn't find valid filesystem superblock.
-    ```
-
-
-Follow the steps below to resize the filesystem:
-
-```bash
-mount /dev/longhorn/<volume name> <arbitrary mount directory>
-umount /dev/longhorn/<volume name>
-mount /dev/longhorn/<volume name> <arbitrary mount directory>
-resize2fs /dev/longhorn/<volume name>
-umount /dev/longhorn/<volume name>
-```
-
-3. If the filesystem is `xfs`, you can directly mount, then expand the filesystem using:
-
-```bash
-mount /dev/longhorn/<volume name> <arbitrary mount directory>
-xfs_growfs <the mount directory>
-umount /dev/longhorn/<volume name>
-```
-
-### Encrypted volume
-
-Longhorn support for online expansion depends on Kubernetes.
-
-- Kubernetes natively supports [authenticated CSI storage resizing](https://kubernetes.io/blog/2023/12/15/csi-node-expand-secret-support-ga/) starting in v1.29.
-- In [Kubernetes v1.25 to v1.28](https://kubernetes.io/blog/2022/09/21/kubernetes-1-25-use-secrets-while-expanding-csi-volumes-on-node-alpha/), the feature gate `CSINodeExpandSecret` is required.
-You can enable online expansion for encrypted volumes by specifying the following [encryption parameters in the StorageClass](../../../advanced-resources/security/volume-encryption#setting-up-kubernetes-secrets-and-storageclasses):
-    - `csi.storage.k8s.io/node-expand-secret-name`
-    - `csi.storage.k8s.io/node-expand-secret-namespace`
-
-If you cannot enable it but still prefer to do online expansion, you can:
-
-1. Login the node host the encrypted volume is attached to.
-2. Execute `cryptsetup resize <volume name>`. The passphrase this command requires is the field `CRYPTO_KEY_VALUE` of the corresponding secret.
-3. Expand the filesystem.
-
-### RWX volume
-
-From v1.8.0, Longhorn supports fully automatic online expansion of the filesystem (NFS) for RWX volumes. The feature requires the v1.8.0 versions of these components to be running:
-
-- Longhorn-Manager
-- CSI plugin
-- Share Manager, which manages the NFS export
-
-If you have upgraded from a previous version, the Share Manager pods (one for each RWX volume) are not upgraded automatically, to avoid disruption during the upgrade.
-
-After growing the block device, the CSI layer sends a resize command to the Share Manager to grow the filesystem within the block device. With a down-rev share-manager, the command fails with an "unimplemented" error code and so no expansion happens. To get the right image before the expansion, the simplest thing is to force a restart of the pod. Identify the Share Manager pod of the RWX volume (typically named `share-manager-<volume name>`) and delete it:
-
-```shell
-kubectl -n longhorn-system delete pod <the share manager pod>
-```
-
-The pod will automatically be recreated using the appropriate version, and the expansion completes. Further expansions will not require any further intervention.
-
-#### Offline
-
-It is still possible to expand the RWX volume offline using these steps:
-
-1. Detach the RWX volume by scaling down the workload to `replicas=0`. Ensure that the volume is fully detached.
-2. After the scale command returns, run the following command and verify that the state is `detached`.
-    ```shell
-    kubectl -n longhorn-system get volume <volume-name>
-    ```
-3. Expand the block device using either the PVC or the Longhorn UI.
-4. Scale up the workload.
-
-The reattached volume will have the expanded size. Furthermore, the Share Manager pod will be recreated with the current version.
-
-## References
-
-- [[FEATURE] v2 supports volume expansion](https://github.com/longhorn/longhorn/issues/8022)
-
-
----
-
-## Article: nodes-and-volumes/volumes/iscsi.md
-
----
-title: Use Longhorn Volume as an iSCSI Target
-weight: 4
----
-
-Longhorn supports iSCSI target frontend mode. You can connect to it
-through any iSCSI client, including `open-iscsi`, and virtual machine
-hypervisor like KVM, as long as it's in the same network as the Longhorn system.
-
-The Longhorn CSI driver doesn't support iSCSI mode.
-
-To start a volume with the iSCSI target frontend mode, select `iSCSI` as the frontend when [creating the volume.](../create-volumes)
-
-After the volume has been attached, you will see something like the following in the `endpoint` field:
-
-```text
-iscsi://10.42.0.21:3260/iqn.2014-09.com.rancher:testvolume/1
-```
-
-In this example,
-
-- The IP and port is `10.42.0.21:3260`.
-- The target name is `iqn.2014-09.com.rancher:testvolume`.
-- The volume name is `testvolume`.
-- The LUN number is 1. Longhorn always uses LUN 1.
-
-The above information can be used to connect to the iSCSI target provided by Longhorn using an iSCSI client.
-
-
----
-
-## Article: nodes-and-volumes/volumes/pvc-ownership-and-permission.md
-
----
-title: Longhorn PVC Ownership and Permission
-weight: 1
----
-
-Kubernetes supports the 2 [volume modes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode) for PVC: Filesystem and Block.
-When a pod defines the security context and requests a Longhorn PVC, Kubernetes will handle the ownership and permission modification for the PVC differently based on the volume mode.
-
-### Longhorn PVC with Filesystem Volume Mode
-
-Because the Longhorn CSI driver `csiDriver.spec.fsGroupPolicy` is set to `ReadWriteOnceWithFSType`, the Kubelet attempts to change the ownership and permission of a Longhorn PVC in the following manner:
-1. Check `pod.spec.securityContext.fsGroup`.
-* If non-empty, continue to the next step.
-* If empty, the Kubelet doesn't attempt to change the ownership and permission for the volume.
-1. Check `fsType` of the PV and `accessModes` of the PVC.
-* If the PV's `fsType` is defined and the PVC's `accessModes` list contains `ReadWriteOnce`, continue to the next step.
-* Otherwise, the Kubelet doesn't attempt to change the ownership and permission for the volume.
-1. Check `pod.spec.securityContext.fsGroupChangePolicy`.
-* If the `pod.spec.securityContext.fsGroupChangePolicy` is set to `always` or empty, the kubelet performs the following actions:
-  * Ensures that all processes of the containers inside the pod are part of the supplementary group id `pod.spec.securityContext.fsGroup`
-  * Ensures that any new files created in the volume will be in group id `pod.spec.securityContext.fsGroup`
-  * Recursively changes permission and ownership of the volume to have the same group id as `pod.spec.securityContext.fsGroup` every time the volume is mounted
-* If the `pod.spec.securityContext.fsGroupChangePolicy` is set to `OnRootMismatch`:
-  * If the root of the volume already has the correct permissions (i.e., belongs to the group id as `pod.spec.securityContext.fsGroup`) , the recursive permission and ownership change will be skipped.
-  * Otherwise, Kubelet recursively changes permission and ownership of the volume to have the same group id as `pod.spec.securityContext.fsGroup`
-
-For more information, see:
-* https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#configure-volume-permission-and-ownership-change-policy-for-pods
-* https://github.com/longhorn/longhorn/issues/2131#issuecomment-778897129
-
-### Longhorn PVC with Block Volume Mode
-
-For PVC with Block volume mode, Kubelet never attempts to change the permission and ownership of the block device when making it available inside the container.
-You must set the correct group ID in the `pod.spec.securityContext` for the pod to be able to read and write to the block device or run the container as root.
-
-By default, Longhorn puts the block device into group id 6, which is typically associated with the "disk" group.
-Therefore, pods that use Longhorn PVC with Block volume mode must either set the group id 6 in the `pod.spec.securityContext`, or run as root.
-For example:
-1. Pod that sets the group id 6 in the `pod.spec.securityContext`
-    ```yaml
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: longhorn-block-vol
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      volumeMode: Block
-      storageClassName: longhorn
-      resources:
-        requests:
-          storage: 2Gi
-    ---
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: block-volume-test
-      namespace: default
-    spec:
-      securityContext:
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-        supplementalGroups:
-        - 6
-      containers:
-        - name: block-volume-test
-          image: ubuntu:20.04
-          command: ["sleep", "360000"]
-          imagePullPolicy: IfNotPresent
-          volumeDevices:
-            - devicePath: /dev/longhorn/testblk
-              name: block-vol
-      volumes:
-        - name: block-vol
-          persistentVolumeClaim:
-            claimName: longhorn-block-vol
-    ```
-1. Pod that runs as root
-    ```yaml
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: longhorn-block-vol
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      volumeMode: Block
-      storageClassName: longhorn
-      resources:
-        requests:
-          storage: 2Gi
-    ---
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: block-volume-test
-      namespace: default
-    spec:
-      containers:
-        - name: block-volume-test
-          image: ubuntu:20.04
-          command: ["sleep", "360000"]
-          imagePullPolicy: IfNotPresent
-          volumeDevices:
-            - devicePath: /dev/longhorn/testblk
-              name: block-vol
-      volumes:
-        - name: block-vol
-          persistentVolumeClaim:
-            claimName: longhorn-block-vol
-    ```
-
-
----
-
-## Article: nodes-and-volumes/volumes/rwx-volumes.md
-
----
-title: ReadWriteMany (RWX) Volume
-weight: 4
----
-
-- [Introduction](#introduction)
-  - [Generic (Non-Migratable) RWX volumes](#generic-non-migratable-rwx-volumes)
-  - [Migratable RWX volumes](#migratable-rwx-volumes)
-- [Requirements for Generic (Non-Migratable) RWX Volumes](#requirements-for-generic-non-migratable-rwx-volumes)
-- [Creation and Usage of Generic (Non-Migratable) RWX Volumes](#creation-and-usage-of-generic-non-migratable-rwx-volumes)
-- [Configuring Volume Locality for Generic (Non-Migratable) RWX Volumes](#configuring-volume-locality-for-generic-non-migratable-rwx-volumes)
-  - [`shareManagerNodeSelector`](#sharemanagernodeselector)
-  - [`allowedTopologies`](#allowedtopologies)
-  - [`shareManagerTolerations`](#sharemanagertolerations)
-- [Configuring Volume Mount Options for Generic (Non-Migratable) RWX Volumes](#configuring-volume-mount-options-for-generic-non-migratable-rwx-volumes)
-  - [Notes](#notes)
-- [Failure Handling for Generic (Non-Migratable) RWX Volumes](#failure-handling-for-generic-non-migratable-rwx-volumes)
-- [Migration from Previous External Provisioner](#migration-from-previous-external-provisioner)
-- [History](#history)
-
----
-
-Longhorn supports ReadWriteMany (RWX) volumes by exposing regular Longhorn volumes via NFSv4 servers that reside in share-manager pods.
-
-## Introduction
-
-Longhorn provides two types of RWX volumes, each optimized for different workload requirements:
-
-### Generic (Non-Migratable) RWX volumes
-
-Generic RWX volumes provide shared filesystem access across multiple nodes. They use dedicated NFSv4.1 servers that run in `share-manager-<volume-name>` Pods within the `longhorn-system` namespace. Each RWX volume is paired with a corresponding Service that exposes the NFS endpoint to clients.
-
-These volumes are ideal for workloads that need concurrent file access but do not require live migration. Live migration means volumes are only accessible from the source workload during the migration. After migration completes, the destination workload will take over access, and the source workload will be terminated. Workload services continue uninterrupted during this period. 
-
-**Characteristics**:
-
-- Not capable of [live migration](https://kubevirt.io/user-guide/compute/live_migration/).
-- Use NFSv4.1 for filesystem–based sharing.
-- Suitable for general shared storage and multi-node file access workloads.
-
-{{< figure src="/img/diagrams/rwx/rwx-arch.png" >}}
-
-> **Notice: Deferred Share-Manager Pod Image Updates on Active RWX Volumes**
->
-> Following a Longhorn system upgrade, when a Generic (Non-Migratable) RWX volume remains attached, modifications to the `spec.image` of the corresponding `share-manager` pod will not take effect immediately. The updated image is applied only after the volume is detached, at which point the pod is recreated with the new share-manager image. This behavior ensures volume stability and prevents disruption of active I/O operations.
-
-### Migratable RWX volumes
-
-Migratable RWX volumes are designed specifically for virtualized workloads such as KubeVirt VMs that require [live migration](https://kubevirt.io/user-guide/compute/live_migration/) while maintaining ongoing I/O operations. These volumes enable seamless VM movement between nodes during maintenance, failover, or rebalancing operations without service disruption.
-
-**Characteristics**:
-
-- Designed for live migration scenarios.
-- Require `volumeMode: Block` (`Filesystem` mode is not supported).
-- Require ReadWriteMany access mode and a StorageClass with `migratable: "true"` (which sets `volume.spec.migratable=true` on the Longhorn volume).
-- Not intended for general shared filesystem workloads.
-
-> **Note**: You can distinguish migratable RWX volumes from non-migratable ones by checking the `volume.spec.migratable` field in the volume specification.
-
-## Requirements for Generic (Non-Migratable) RWX Volumes
-
-1. Each NFS client node needs to have a NFSv4 client installed.
-
-    Please refer to [Installing NFSv4 client](../../../deploy/install/#installing-nfsv4-client) for more installation details.
-
-      > **Troubleshooting:** If the NFSv4 client is not available on the node, when trying to mount the volume the below message will be part of the error:
-      > ```
-      > for several filesystems (e.g. nfs, cifs) you might need a /sbin/mount.<type> helper program.
-      > ```
-
-2. The hostname of each node is unique in the Kubernetes cluster.
-
-    There is a dedicated recovery backend service for NFS servers in Longhorn system. When a client connects to an NFS server, the client's information, including its hostname, will be stored in the recovery backend. When a share-manager Pod or NFS server is abnormally terminated, Longhorn will create a new one. Within the 90-seconds grace period, clients will reclaim locks using the client information stored in the recovery backend.
-
-## Creation and Usage of Generic (Non-Migratable) RWX Volumes
-
-> **Notice**  
-> An RWX volume must have the access mode set to `ReadWriteMany` and the "migratable" flag disabled (*parameters.migratable: `false`*).
-
-1. For dynamically provisioned Longhorn volumes, the access mode is based on the PVC's access mode.
-2. For manually created Longhorn volumes (restore, DR volume) the access mode can be specified during creation in the Longhorn UI.
-3. When creating a PV/PVC for a Longhorn volume via the UI, the access mode of the PV/PVC will be based on the volume's access mode.
-4. One can change the Longhorn volume's access mode via the UI as long as the volume is not bound to a PVC.
-5. For a Longhorn volume that gets used by an RWX PVC, the volume access mode will be changed to RWX.
-
-## Configuring Volume Locality for Generic (Non-Migratable) RWX Volumes
-
-Longhorn provides new settings that allow you to precisely control the data locality of RWX volumes (through identification of associated Share Manager pods). These granular settings work with related global settings to provide optimal performance, resilience, and adherence to organizational policies or constraints.
-
-### `shareManagerNodeSelector`
-
-You can use the StorageClass parameter `shareManagerNodeSelector` to specify selectors for identifying nodes that RWX volumes can be scheduled on. These selectors are merged with global `system-managed-components-node-selector` settings and then applied to the Share Manager pods of the RWX volumes to provide more control over volume locality.
-
-  Example:
-  ```
-  kind: StorageClass
-  apiVersion: storage.k8s.io/v1
-  metadata:
-    name: longhorn-rwx
-  provisioner: driver.longhorn.io
-  parameters:
-    shareManagerNodeSelector: label-key1:label-value1;label-key2:label-value2
-  ```
-  In this example, RWX volumes provisioned with the specified StorageClass will be scheduled on nodes with the labels `label-key1:label-value1` and `label-key2:label-value2`. 
-
-### `allowedTopologies`
-
-Longhorn converts the `storageClass.allowedTopologies` settings into affinity rules for the Share Manager pods of the RWX volumes. This ensures that the pods are scheduled on nodes that meet the specified topological requirements (such as regions and zones) and align with the RWX volume locality.
-
-  Example:
-  ```
-  kind: StorageClass
-  apiVersion: storage.k8s.io/v1
-  metadata:
-    name: longhorn-rwx
-  provisioner: driver.longhorn.io
-  allowedTopologies:
-  - matchLabelExpressions:
-    - key: topology.kubernetes.io/region
-      values:
-      - us-west-1
-  ```
-  In this example, the Share Manager pods and RWX volumes will be scheduled in the `us-west-1` region.
-
-### `shareManagerTolerations`
-
-You can also use the StorageClass parameter `shareManagerTolerations` to allow more flexible scheduling based on node taints. The defined tolerations are merged with global `taint-toleration` settings and then applied to the Share Manager pods.
-
-  Example:
-  ```
-  kind: StorageClass
-  apiVersion: storage.k8s.io/v1
-  metadata:
-    name: longhorn-rwx
-  provisioner: driver.longhorn.io
-  parameters:
-    shareManagerTolerations: nodetype=storage:NoSchedule
-  ```
-  In this example, the Share Manager pods will tolerate the `nodetype=storage:NoSchedule` taint on nodes, allowing them to be scheduled on those nodes.
-
-## Configuring Volume Mount Options for Generic (Non-Migratable) RWX Volumes
-
-An RWX volume is accessible only when mounted via NFS. By default Longhorn uses NFS version 4.1 with the `softerr` mount option, a `timeo` value of "600", and a `retrans` value of "5".
-
-If the NFS server becomes inaccessible, requests from NFS clients are retried according to the configured `retrans` value. Longer-duration events such as power outages and factors such as network partitions cause the requests to eventually fail. An NFS error (`ETIMEDOUT` for the `softerr` mount option) is returned to the calling application and data loss may occur. If `softerr` is not supported, Longhorn automatically uses the `soft` mount option instead, which returns an `EIO` as the error.
-
-You can use specific mount options for new volumes. First, create a customized StorageClass with an `nfsOptions` parameter, and then create PVCs for RWX volumes using that specific StorageClass.
-
-Example:
-
-  ```yaml
-  kind: StorageClass
-  apiVersion: storage.k8s.io/v1
-  metadata:
-    name: longhorn-test
-  provisioner: driver.longhorn.io
-  allowVolumeExpansion: true
-  reclaimPolicy: Delete
-  volumeBindingMode: Immediate
-  parameters:
-    numberOfReplicas: "3"
-    staleReplicaTimeout: "2880"
-    fromBackup: ""
-    fsType: "ext4"
-    nfsOptions: "vers=4.2,noresvport,softerr,timeo=600,retrans=5"
-  ```
-
-> **Important:**
-> To create PVCs for RWX volumes using the sample StorageClass, replace the `nfsOptions` string with a customized comma-separated list of legal options.
-
-### Notes
-
-1. You must provide the complete set of desired options. Any options not supplied will use the NFS-server side defaults, not Longhorn's own.
-
-2. Longhorn does not validate the `nfsOptions` string, so erroneous values and typographical errors are not flagged. When the string is invalid, the mount is rejected by the NFS server and the volume is not created nor attached.
-
-3. In Longhorn v1.4.0 to 1.4.3 and v1.5.0 to v1.5.1, volumes within a share manager pod (specifically, in the `NodeStageVolume` step) are hard mounted by default by the Longhorn CSI plugin. Hard mounting allows Longhorn to persistently retry sending NFS requests, ensuring that IOs do not fail even when the NFS server becomes inaccessible for some time. IOs resume seamlessly when the server regains connectivity or a replacement server is created.
-
-   This mechanism for guaranteeing data integrity, however, comes with some risk. To maintain stability, the Linux kernel does not allow unmounting of a file system until all pending IOs are completed. This is a concern because the system cannot shut down until all file systems are unmounted. If the NFS server is unable to recover, the client nodes must undergo a forced reboot.
-
-   To mitigate the issue, upgrade to v1.4.4, v1.5.2, or a later version. After upgrading, either `softerr` or `soft` is automatically applied to the `nfsOptions` parameter whenever RWX volumes are reattached (if the default settings are not overridden).
-
-4. You can still use the `hard` mount option (via the `nfsOptions` override mechanism), but hard-mounted volumes are subject to the outlined risks.
-
-For more information, see [#6655](https://github.com/longhorn/longhorn/issues/6655).
-
-## Failure Handling for Generic (Non-Migratable) RWX Volumes
-
-1. share-manager Pod is abnormally terminated
-
-    Client IO will be blocked until Longhorn creates a new share-manager Pod and the associated volume. Once the Pod is successfully created, the 90-seconds grace period for lock reclamation is started, and users would expect
-      - Before the grace period ends, client IO to the RWX volume will still be blocked.
-      - The server rejects READ and WRITE operations and non-reclaim locking requests with an error of NFS4ERR_GRACE.
-      - The grace period can be terminated early if all locks are successfully reclaimed.
-
-    After exiting the grace period, IOs of the clients successfully reclaiming the locks continue without stale file handle errors or IO errors. If a lock cannot be reclaimed within the grace period, the lock is discarded, and the server returns IO error to the client. The client re-establishes a new lock. The application should handle the IO error. Nevertheless, not all applications can handle IO errors due to their implementation. Thus, it may result in the failure of the IO operation and the data loss. Data consistency may be an issue.
-
-    Here is an example of a DaemonSet using an RWX volume.
-
-    Each Pod of the DaemonSet is writing data to the RWX volume. If the node where the share-manager Pod is running is down, a new share-manager Pod is created on another node. Since one of the clients located on the down node has gone, the lock reclaim process cannot be terminated earlier than the 90-second grace period, even though the remaining clients' locks have been successfully reclaimed. The IOs of these clients continue after the grace period has expired.
-
-2. If the Kubernetes DNS service goes down, share-manager Pods will not be able to communicate with longhorn-nfs-recovery-backend
-
-    The NFS-ganesha server in a share-manager Pod communicates with longhorn-nfs-recovery-backend via the service `longhorn-recovery-backend`'s IP. If the DNS service is out of service, the creation and deletion of RWX volumes as well as the recovery of NFS servers will be inoperable. Thus, the high availability of the DNS service is recommended for avoiding the communication failure.
-
-3. Fast failover feature.
-
-    Longhorn supports a feature that can improve availability by shortening the time it takes to recover from a failure of the node on which the volume's share-manager NFS server pod is running.  The feature uses a direct heartbeat to monitor the server. If the server is unresponsive it acts to create a new one faster than the usual sequence. It also configures the NFS server differently, to shorten the recovery grace period from 90 to 30 seconds.  
-    More details are at [RWX Volume Fast Failover](../../../high-availability/rwx-volume-fast-failover).
-
-## Migration from Previous External Provisioner
-
-The below PVC creates a Kubernetes job that can copy data from one volume to another.
-
-- Replace the `data-source-pvc` with the name of the previous NFSv4 RWX PVC that was created by Kubernetes.
-- Replace the `data-target-pvc` with the name of the new RWX PVC that you wish to use for your new workloads.
-
-You can manually create a new RWX Longhorn volume + PVC/PV, or just create an RWX PVC and then have Longhorn dynamically provision a volume for you.
-
-Both PVCs need to exist in the same namespace. If you were using a different namespace than the default, change the job's namespace below.
-
-```yaml
-apiVersion: batch/v1
-kind: Job
-metadata:
-  namespace: default  # namespace where the PVC's exist
-  name: volume-migration
-spec:
-  completions: 1
-  parallelism: 1
-  backoffLimit: 3
-  template:
-    metadata:
-      name: volume-migration
-      labels:
-        name: volume-migration
-    spec:
-      restartPolicy: Never
-      containers:
-        - name: volume-migration
-          image: ubuntu:xenial
-          tty: true
-          command: [ "/bin/sh" ]
-          args: [ "-c", "cp -r -v /mnt/old /mnt/new" ]
-          volumeMounts:
-            - name: old-vol
-              mountPath: /mnt/old
-            - name: new-vol
-              mountPath: /mnt/new
-      volumes:
-        - name: old-vol
-          persistentVolumeClaim:
-            claimName: data-source-pvc # change to data source PVC
-        - name: new-vol
-          persistentVolumeClaim:
-            claimName: data-target-pvc # change to data target PVC
-```
-
-## History
-
-- Available since v1.0.1 [External provisioner](https://github.com/Longhorn/Longhorn/issues/1183)
-- Available since v1.1.0 [Native RWX support](https://github.com/Longhorn/Longhorn/issues/1470)
-
-
----
-
-## Article: nodes-and-volumes/volumes/trim-filesystem.md
-
----
-title: Trim Filesystem
-weight: 7
----
-
-Since v1.4.0, Longhorn supports trimming filesystem inside Longhorn volumes. Trimming will reclaim space wasted by the removed files of the filesystem.
-
-> **Note:**
-> - Trimming removed files in snapshots has no effect on the filesystem because valid snapshots are immutable. However,
-    the filesystem remembers whenever it has trimmed blocks associated with a snapshot. Because of this, you may need to
-    unmount and remount the filesystem before reattempting to trim a snapshot that has been marked as removed.
->
-> - If you allow automatic snapshot removal during filesystem trim, use the mount option `discard` with caution.
-    `discard` frequently triggers snapshot removal and interrupts operations such as backup creation.
-
-## Prerequisites
-
-- The Longhorn version must be v1.4.0 or higher.
-- There is a trimmable filesystem like EXT4 or XFS inside the Longhorn volume.
-- The volume is attached and mounted on a mount point before trimming.
-
-## Trim the filesystem in a Longhorn volume
-
-You can trim a Longhorn volume using either the Longhorn UI or the `fstrim` command.
-
-### Via Longhorn UI
-
-You can directly click volume operation `Trim Filesystem` for attached volumes.
-
-Then Longhorn will **try its best** to figure out the mount point and execute `fstrim <the mount point>`.  If something is wrong or the filesystem does not exist, the UI will return an error.
-
-### Via shell command
-
-When using `fstrim`, you must identify the mount point of the volume and then run the command `fstrim <the mount point>`.
-
-- RWO volume: The mount point is either a pod of the workload or the node to which the volume was manually attached.
-- RWX volume: The mount point is the share manager pod of the volume. The share manager pod contains the NFS server and is typically named `share-manager-<volume name>`.
-
-To trim an RWX volume, perform the following steps:
-
-1. Identify and then open a shell inside the share manager pod of the volume.
-    ```
-    kubectl -n longhorn-system exec -it <the share manager pod> -- bash
-    ```
-1. Identify the work directory of the NFS server (for example, `/export/<volume name>`).
-    ```
-    mount | grep <volume name>
-    /dev/longhorn/<volume name> on /export/<volume name> type ext4 (rw,relatime)
-    ```
-1. Trim the work directory.
-    ```
-    fstrim /export/<volume name>
-    ```
-
-#### Periodically trim the filesystem
-
-You can set up a [RecurringJob](../../../snapshots-and-backups/scheduling-backups-and-snapshots/#set-up-recurring-jobs) to periodically trim the filesystem.
-
-## Automatically Remove Snapshots During Filesystem Trim
-
-By design, valid snapshots of Longhorn volumes are immutable so you can only use the filesystem trim feature with the
-following:
-
-- Volume head
-- Preceding continuous chain of snapshots created by the system or marked as removed
-
-If most of the actual space consumed by a volume is associated with valid snapshots, the trim operation is not very
-effective.
-
-### Global Setting: "Remove Snapshots During Filesystem Trim"
-
-If you want Longhorn to automatically reclaim the maximum amount of space, you can enable the setting
-[_Remove Snapshots During Filesystem Trim_](../../../references/settings/#remove-snapshots-during-filesystem-trim).
-When this global setting is enabled, the latest snapshot and the preceding continuous chain of snapshots are
-automatically marked as removed, allowing Longhorn to reclaim space for as many snapshots as possible. However, the
-setting can cause removal (and eventual purging) of snapshots that you intentionally created.
-
-### The Volume Spec Field "UnmapMarkSnapChainRemoved"
-
-There is a per-volume field `volume.Spec.UnmapMarkSnapChainRemoved` that overwrites the global setting mentioned above.
-
-The options for this volume-specific setting are "disabled", "enabled", and "ignored". When the value is "ignored", the
-global setting takes effect.
-
-You can configure this setting in a StorageClass so that the value is applied to all volumes created using that
-StorageClass.
-
-## Known Issues & Limitations
-
-### Rebuilding Volumes
-
-By design, Longhorn unmaps blocks in the volume head and in the preceding continuous chain of snapshots marked as
-removed. Some of these snapshots may be moved from one replica to another during volume rebuilding, so Longhorn is
-unable to trim the filesystem of affected volumes when rebuilding is in progress.
-
-Because rebuilding may take a long time, Longhorn simply does not unmap blocks during a rebuild instead of returning an
-I/O error to the filesystem. This behavior benefits VM workloads in particular, which respond poorly when repeated
-attempts to complete a trim return errors. See [Issue #7103](https://github.com/longhorn/longhorn/issues/7103) for more
-information.
-
-A trim operation that is started during rebuilding has no effect. Future trim operations on the same mounted volume may
-also have no effect because the filesystem remembers which blocks it has trimmed. You may need to unmount and remount
-the filesystem before attempting to start the trim operation again.
-
-### Expanding Volumes
-
-Longhorn is unable to trim the filesystem during volume expansion. Because expansion is fast, Longhorn returns an I/O
-error whenever the issue is encountered. The filesystem recognizes that blocks were not trimmed and can try again
-without a remount.
-
-### Encrypted Volumes
-
-- By default, TRIM commands are not enabled by the device-mapper. You can check [this doc](https://wiki.archlinux.org/title/Dm-crypt/Specialties#Discard/TRIM_support_for_solid_state_drives_(SSD)) for details.
-
-- If you still want to trim an encrypted Longhorn volume, you can:
-    1. Enter into the node host the volume is attached to.
-    2. Enable flag `discards` for the encrypted volume. The passphrase is recorded in the corresponding secret:
-    ```shell
-    cryptsetup --allow-discards --persistent refresh <Longhorn volume name>
-    ```
-    3. Directly use Longhorn UI to trim the volume or execute `fstrim` for **the mount point** of `/dev/mapper/<volume name>` manually.
-
-
----
-
-## Article: nodes-and-volumes/volumes/volume-conditions.md
-
----
-title: Volume Conditions
-weight: 7
----
-
-## Volume Conditions 
-
-Volume conditions describe the current status of a volume and potential issues that may occur.
-- `Scheduled`: All replicas were scheduled successfully. 
-    If Longhorn was unable to schedule any of the replicas, the condition is set to `false` and error messages are displayed. The condition is set to `true` when the setting [Allow Volume Creation With Degraded Availability](../../../references/settings#allow-volume-creation-with-degraded-availability) is enabled and at least one replica is scheduled.
-- `TooManySnapshots`: This specific volume has more than 100 snapshots.
-    Longhorn allows you to create a maximum of 250 snapshots for each volume. For more information about configuring the maximum snapshot count, see [Snapshot Space Management](../../../snapshots-and-backups/snapshot-space-management).
-- `Restore`: Longhorn is restoring the volume from a backup.
-- `WaitForBackingImage`: The replicas have not started because the backing images must first be synced with their disks.
-- `OfflineRebuildingInProgress`: The volume is being rebuilt using offline rebuilding.
-
-## Engine Conditions
-
-Engine conditions describe the current status of an engine and potential issues that may occur.
-`FilesystemReadOnly`: The state of the current volume mount point has changed to read-only. 
-This change may prevent workloads from writing data to the volume. For troubleshooting information, see [Volume Recovery](../../../high-availability/recover-volume).
-
-
-## Replica Conditions
-
-Replica conditions describe the current status of a replica and potential issues that may occur.
-- `RebuildFailed`: The replica failed to rebuild.
-- `WaitForBackingImage`: The replicas have not started because the backing images must first be synced with their disks.
-
----
-
-## Article: nodes-and-volumes/volumes/volume-size.md
-
----
-title: Volume Size
-weight: 4
----
-
-In this section, you'll have a better understanding of concepts related to volume size.
-
-## Volume `Size`:
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-nominal-size.png" >}}
-
-This value, which you specified during volume creation, represents the amount of space available to the volume when in use. 
-
-The following are other ways of understanding this concept:
-
-- The volume itself is just a Kubernetes CRD object and volume data is stored in replicas. This value represents the nominal size of each replica. 
-- Longhorn replicas use [sparse files](https://wiki.archlinux.org/index.php/Sparse_file) to store data. This value represents the maximum size to which a sparse file may expand.
-
-Replicas are scheduled on nodes with enough allocatable space to cover this nominal size during volume creation. For more information, see [Node Space Usage](../../nodes/node-space-usage).
-
-> **Note**: The maximum volume size is based on the disk's file system (for example, 16383 GiB for `ext4`).
-
-## Volume `Actual Size`
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-actual-size.png" >}}
-
-This value represents the amount of space used by each replica (including the volume head and snapshots) on the node.
-
-Because all historical data (stored in the snapshots) and active data are included in the calculation, this value can exceed the user-defined nominal size.
-
-The Longhorn UI displays this value only when the volume is running.
-
-## Example
-
-In the example, we will explain how volume `size` and `actual size` get changed after a bunch of IO and snapshot related operations.
-
-> The illustration presents the file organization of **one replica**. The volume head and snapshots are actually sparse files, which we mentioned above.
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration.png" >}}
-
-
-1. Create a 12 Gi volume with a single replica, then attach and mount it on a node. See Figure 1 of the illustration.
-    - For the empty volume, the nominal `size` is 12 Gi and the `actual size` is almost 0.
-    - There is some meta info in the volume hence the `actual size` is 260 Mi and is not exactly 0.
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig1.png" >}}
-
-2. Write 4 Gi data (data#0) in the volume mount point. The `actual size` is increased by 4 Gi because of the allocated blocks in the replica for the 4 Gi data. Meanwhile, `df` command in the filesystem also shows the 4 Gi used space. See Figure 2 of the illustration.
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig2.png" >}}
-
-3. Delete the 4 Gi data. Then, `df` command shows that the used space of the filesystem is nearly 0, but the `actual size` is unchanged.
-
-    > Users can see by default the volume `actual size` is not shrunk after deleting the 4 Gi data. Longhorn is a block-level storage system. Therefore, the deletion in the filesystem only marks the blocks that belong to the deleted file as unused. Currently, Longhorn will not apply TRIM/UNMAP operations automatically/periodically. if you want to do filesystem trim, please check [this doc](../trim-filesystem) for details.
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig2.png" >}}
-
-4. Then, rewrite the 4 Gi data (data#1), and the `df` command in the filesystem shows 4 Gi used space again. However, the `actual size` is increased by 4 Gi and becomes 8.25Gi. See Figure 3(a) of the illustration.
-
-     > After deletion, filesystem may or maynot reuse the recently freed blocks from recently deleted files according to the filesystem design and please refer to [Block allocation strategies of various filesystems](https://www.ogris.de/blkalloc). If the volume nominal `size` is 12 Gi, the `actual size` in the end would range from 4 Gi to 8 Gi since the filesystem may or maynot reuse the freed blocks. On the other hand, if the volume nominal `size` is 6 Gi, the `actual size` at the end would range from 4 Gi to 6 Gi, because the filesystem has to reuse the freed blocks in the 2nd round of writing. See Figure 3(b) of the illustration.
-     >
-     > Thus, allocating an appropriate nominal `size` for a volume that holds heavy writing tasks according to the IO pattern would make disk space usage more efficient.
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig3.png" >}}
-
-5. Take a snapshot (snapshot#1). See Figure 4 of the illustration.
-    - Now data#1 is stored in snapshot#1.
-    - The new volume head size is almost 0.
-    - With the volume head and the snapshot included, the `actual size` remains 8.25 Gi.
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig4.png" >}}
-
-6. Delete data#1 from the mount point.
-    - The data#1 filesystem level removal info is stored in current volume head file. For snapshot#1, data#1 is still retained as the historical data.
-    - The `actual size` is still 8.25 Gi.
-
-7. Write 8 Gi data (data#2) in the volume mount, then take one more snapshot (snapshot#2). See Figure 5 of the illustration.
-    - Now the `actual size` is 16.2 Gi, which is greater than the volume nominal `size`.
-    - From a filesystem's perspective, the overlapping part between the two snapshots is considered as the blocks that have to be reused or overwritten. But in terms of Longhorn, these blocks are actually fresh ones held in another snapshot/volume head. See the 2 snapshots in Figure 6.
-
-    > The volume head holds the latest data of the volume only, while each snapshot may store historical data as well as active data, which consumes at most size space. Therefore, the volume `actual size`, which is the size sum of the volume head and all snapshots, is possibly bigger than the size specified by users.
-    >
-    > Even if users will not take snapshots for volumes, there are operations like rebuilding, expansion, or backing up that would lead to system (hidden) snapshot creation. As a result, volume `actual size` being larger than size is unavoidable under some use cases.
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig5.png" >}}
-
-8. Delete snapshot#1 and wait for snapshot purge complete. See Figure 7 of the illustration.
-    - Here Longhorn actually coalesces the snapshot#1 with the snapshot#2.
-    - For the overlapping part during coalescing, the newer data (data#2) will be retained in the blocks. Then some historical data is removed and the volume gets shrunk (from 16.2 Gi to 11.4 Gi in the example).
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig6.png" >}}
-
-9. Delete all existing data (data#2) and write 11.5 Gi data (data#3) in the volume mount. See Figure 8 of the illustration.
-    - this makes the volume head actual size becomes 11.5 Gi and the volume total actual size becomes 22.9 Gi.
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig7.png" >}}
-
-10. Try to delete the only snapshot (snapshot#2) of the volume. See Figure 9 of the illustration.
-    - The snapshot directly behinds the volume head cannot be cleaned up.
-      If users try to delete this kind of snapshot, Longhorn will mark the snapshot as Removing, hide it, then try to free the overlapping part between the volume head and the snapshot for the snapshot file.
-      The last operation is called snapshot prune in Longhorn and is available since v1.3.0.
-    - Since in the example both the snapshot and the volume head use up most of the nominal space, the overlapping part almost equals to the snapshot actual size. After the pruning, the snapshot actual size is down to 259 Mi and the volume gets shrunk from 22.9 Gi to 11.8 Gi.
-
-{{< figure src="/img/screenshots/volumes-and-nodes/volume-size-illustration-fig8.png" >}}
-
-
-Here we summarize the important things related to disk space usage we have in the example:
-
-- Unused blocks are not released
-
-  Longhorn will not issue TRIM/UNMAP operations automatically. Hence deleting files from filesystems will not lead to volume actual size decreasing/shrinking. You may need to check [the doc](../trim-filesystem) and handle it by yourself if needed.
-
-
-- Allocated blocks but unused are not reused
-
-  Deleting then writing new files would lead to the actual size keeps increasing. Since the filesystem may not reuse the recently freed blocks from recently deleted files. Thus, allocating an appropriate nominal size for a volume that holds heavy writing tasks according to the IO pattern would make disk space usage more efficient.
-
-- By deleting snapshots, the overlapping part of the used blocks might be eliminated regardless of whether the blocks are recently released blocks by the filesystem or still contain historical data.
-
-## Space Configuration Suggestions for Volumes
-
-1. Reserve enough free space in disks as buffers in case of the actual size of existing volumes keep growing up.
-    - A general estimation for the maximum space consumption of a volume is
-
-        ```
-        (N + 1) x head/snapshot average actual size
-        ```
-
-        - where `N` is the total number of snapshots the volume contains (including the volume head), and the extra `1` is for the temporary space that may be required by snapshot deletion.
-        - The average actual size of the snapshots varies and depends on the use cases.
-          If snapshots are created periodically for a volume (e.g. by relying on snapshot recurring jobs), the average value would be the average modified data size for the volume in the snapshot creation interval.
-          If there are heavy writing tasks for volumes, the head/snapshot average actual size would be volume the nominal size. In this case, it's better to set [`Storage Over Provisioning Percentage`](../../../references/settings/#storage-over-provisioning-percentage) to be smaller than 100% to avoid disk space exhaustion.
-        - Some extended cases:
-            - There is one snapshot recurring job with retention number is `N`. Then the formula can be extended to:
-
-                ```
-                (M + N + 1 + 1 + 1 + 1) x head/snapshot average actual size
-                ```
-
-                - The explanation of the formula:
-                    - `M` is the snapshots created by users manually. Recurring jobs are not responsible for removing this kind of snapshot. They can be deleted by users only.
-                    - `N` is the snapshot recurring job retain number.
-                    - The 1st `1` means the volume head.
-                    - The 2nd `1` means the extra snapshot created by the recurring job. Since the recurring job always creates a new snapshot then deletes the oldest snapshot when the current snapshots created by itself exceeds the retention number. Before the deletion starts, there is one extra snapshot that can take extra disk space.
-                    - The 3rd `1` is the system snapshot. If the rebuilding is triggered or the expansion is issued, Longhorn will create a system snapshot before starting the operations. And this system snapshot may not be able to get cleaned up immediately.
-                    - The 4th `1` is for the temporary space that may be required by snapshot deletion/purge.
-            - Users don't want snapshot at all. Neither (manually created) snapshot nor recurring job will be launched. Assume [setting _Automatically Cleanup System Generated Snapshot_](../../../references/settings/#automatically-clean-up-system-generated-snapshot) is enabled, then formula would become:
-
-                ```
-                (1 + 1 + 1) x head/snapshot average actual size
-                ```
-
-                - The worst case that leads to so much space usage:
-                    1. At some point the 1st rebuilding/expansion is triggered, which leads to the 1st system snapshot creation.
-                        - The purges before and after the 1st rebuilding does nothing.
-                    2. There is data written to the new volume head, and the 2nd rebuilding/expansion somehow is triggered.
-                        - The snapshot purge before the 2nd rebuilding may lead to the shrink of the 1st system snapshot.
-                        - Then the 2nd system snapshot is created and the rebuilding is started.
-                        - After the rebuilding done, the subsequent snapshot purge would lead to the coalescing of the 2 system snapshots. This coalescing requires temporary space.
-                    3. During the afterward snapshot purging for the 2nd rebuilding, there is more data written to the new volume head.
-                - The explanation of the formula:
-                    - The 1st `1` means the volume head.
-                    - The 2nd `1` is the second system snapshot mentioned in the worst case.
-                    - The 3rd `1` is for the temporary space that may be required by the 2 system snapshot purge/coalescing.
-
-2. Do not retain too many snapshots for the volumes.
-
-3. Cleaning up snapshots will help reclaim disk space. There are two ways to clean up snapshots:
-    - Delete the snapshots manually via Longhorn UI.
-    - Set a snapshot recurring job with retention 1, then the snapshots will be cleaned up automatically.
-
-    Also, notice that the extra space, up to volume nominal `size`, is required during snapshot cleanup and merge.
-
-4. An appropriate the volume nominal `size` according to the workloads.
-
-## Troubleshooting
-
-### Workload is Hitting "no space left on device" Error
-
-To address the "no space left on device" error, you need to understand that the difference between a volume being full and the node disks being full is crucial for proper storage management in Longhorn.
-
-#### Volume Full
-
-A volume is full when the filesystem mounted on it has reached its capacity limit.
-
-- Data writes fail with "no space left on device" errors.
-- The host disk for the replica of the volume may still have available space for other volumes.
-
-- **Characteristics:**
-  - The `df` command shows 100% usage for the mounted filesystem.
-  - Applications cannot write new data to the volume mount point.
-
-- **Example**
-
-    ```bash
-    $ df -h /mnt/longhorn-volume-example-dir
-    Filesystem                    Size  Used Avail Use% Mounted on
-    /dev/longhorn-volume-example   12G   12G    0  100% /mnt/longhorn-volume-example-dir
-    ```
-
-#### Node Disk Full
-
-Node disks do not have enough space to accommodate volume operations because volumes are thin-provisioned and the replica sizes on the disks continue to grow.
-
-- Data writes fail with "no space left on device" errors.
-- Volume operations, such as volume creation/expansion, snapshot creation/deletion, and replica rebuilding, may be limited.
-- Replicas of newly created volumes are prevented from being scheduled to the full disks.
-
-- **Characteristics:**
-  - Applications cannot write new data to the volume mount point even though the volume is not full.
-  - Longhorn operations for volumes on these node disks, such as replica creation, rebuilding, or snapshot operations, may fail.
-  - Volumes with replicas sharing the same node disks are affected.
-
-##### Data Integrity Protection for Disks Out-of-Space Scenarios
-
-When multiple replicas simultaneously encounter "no space left on device" errors, Longhorn implements data integrity protection. If all writable replicas are on disks that are out of space, the system preserves the maximum number of replicas that have written the same amount of data (the highest written bytes count). This ensures data consistency by:
-
-1. **Retaining** the maximum number of replicas that have written the same amount of data.  
-This avoids massive replica rebuilding operations, allows for efficient rebuilding when node disks recover from out-of-space issues and ensures that users can still read data consistently.
-2. **Marking** other replicas as **ERR** to prevent data corruption.  
-This ensures that users can read data consistently from retained replicas, and replicas marked as `ERR` will be rebuilt from retained replicas to maintain data integrity when node disks recover from out-of-space issues.
-3. **Maintaining** volume accessibility even when all underlying disks are full.
-
-For example, if replicas A, B, and C encounter space errors after writing 1MB, 2MB, and 2MB respectively, replicas B and C (having written the most data consistently) will remain active while replica A is marked as **ERR**.
-
-### Solutions
-
-When encountering the `no space left on device` error, first check whether the volume’s filesystem is full, and then check whether the disk hosting the volume replica is full.
-
-- **Check volume filesystem usage**
-
-    If the volume's filesystem usage is 100% using the following command:
-
-    ```bash
-    df -h /mnt/your-volume
-    ```
-
-    Please expand the volume or remove the unnecessary files in the filesystem first.
-
-- **Check Longhorn node disk usage**
-
-    If the disk usage is 100% using the following command or checking the Longhorn UI page `Node > Node Disk`:
-
-    ```bash
-    # Check through Longhorn UI: Node > Node Disk
-    # Or check the data path mount point
-    df -h /var/lib/longhorn # default data path
-    ```
-
-    Please follow the steps to recovery the workloads:
-
-    1. Scale down the workload.
-    2. Expand the disk size, or remove unnecessary files, for example, [orphaned replica directories](../../../advanced-resources/data-cleanup/orphaned-data-cleanup#orphaned-replica-directories) and [used backing images](../../../advanced-resources/backing-image/backing-image#clean-up-backing-images), on the disk.
-    3. Then scale up the workload.
-
-
----
-
-## Article: nodes-and-volumes/volumes/workload-identification.md
-
----
-title: Viewing Workloads that Use a Volume
-weight: 5
----
-
-Now users can identify current workloads or workload history for existing Longhorn persistent volumes (PVs) and their history of being bound to persistent volume claims (PVCs).
-
-From the Longhorn UI, go to the **Volumes** tab. Each Longhorn volume is listed on the page. The **Attached To** column displays the name of the workload using the volume. If you click the workload name, you will be able to see more details, including the workload type, pod name, and status.
-
-Workload information is also available on the Longhorn volume detail page. To see the details, click the volume name:
-
-```
-State: attached
-...
-Namespace:default
-PVC Name:longhorn-volv-pvc
-PV Name:pvc-0edf00f3-1d67-4783-bbce-27d4458f6db7
-PV Status:Bound
-Pod Name:teststatefulset-0
-Pod Status:Running
-Workload Name:teststatefulset
-Workload Type:StatefulSet
-```
-
-## History
-
-After the workload is no longer using the Longhorn volume, the volume detail page shows the historical status of the most recent workload that used the volume:
-
-```
-Last time used by Pod: a few seconds ago
-...
-Last Pod Name: teststatefulset-0
-Last Workload Name: teststatefulset
-Last Workload Type: Statefulset
-```
-
-If these fields are set, they indicate that currently no workload is using this volume.
-
-When a PVC is no longer bound to the volume, the following status is shown:
-
-```
-Last time bound with PVC:a few seconds ago
-Last time used by Pod:32 minutes ago
-Last Namespace:default
-Last Bounded PVC Name:longhorn-volv-pvc
-```
-
-If the `Last time bound with PVC` field is set, it indicates currently there is no bound PVC for this volume. The related fields will show the most recent workload using this volume.
-
-
----
-
-## Article: advanced-resources/_index.md
-
----
-title: Advanced Resources
-weight: 8
----
-
----
-
-## Article: advanced-resources/volumeattachment.md
-
----
-title: Longhorn VolumeAttachment
-weight: 1
----
-
-**Table of Contents**
-- [Kubernetes and Longhorn `VolumeAttachment`](#kubernetes-and-longhorn-volumeattachment)
-- [Longhorn VolumeAttachment](#longhorn-volumeattachment)
-  - [VolumeAttachment CR](#volumeattachment-cr)
-  - [Understanding Attachment Tickets](#understanding-attachment-tickets)
-- [The CSI Attachment and Detachment Workflow](#the-csi-attachment-and-detachment-workflow)
-  - [Core Components in the Workflow](#core-components-in-the-workflow)
-  - [The CSI Volume Attachment Flow](#the-csi-volume-attachment-flow)
-  - [The CSI Volume Detachment Flow](#the-csi-volume-detachment-flow)
-  - [Summary of the Workflow](#summary-of-the-workflow)
-- [Troubleshooting Volume Attachment Issues](#troubleshooting-volume-attachment-issues)
-  - [Volume is Stuck in `Attaching` or `Detaching` State](#volume-is-stuck-in-attaching-or-detaching-state)
-    - [Possible Causes](#possible-causes)
-    - [Resolution Steps](#resolution-steps)
-  - [Case Study](#case-study)
-    - [Case 1: Failure to Attach Volume Due to Unexpected `longhorn-ui` Attachment Ticket](#case-1-failure-to-attach-volume-due-to-unexpected-longhorn-ui-attachment-ticket)
-    - [Case 2: Volume Fails to Attach to New Node Due to Backup Job Stuck in Pending State](#case-2-volume-fails-to-attach-to-new-node-due-to-backup-job-stuck-in-pending-state)
-
----
-
-This document provides a detailed overview of Longhorn's `VolumeAttachment` custom resource, how it integrates with Kubernetes' native `VolumeAttachment`, its operational flow, and common troubleshooting scenarios.
-
-## Kubernetes and Longhorn `VolumeAttachment`
-
-To understand how volume attachments work in Longhorn, it is important to distinguish between the Kubernetes `VolumeAttachment` and Longhorn's custom `VolumeAttachment`:
-
-- **Kubernetes `VolumeAttachment`**: It is a native Kubernetes API resource that is part of the Container Storage Interface (CSI) specification. Its primary role is to signal to a CSI driver that a volume should be attached to a specific node.
-
-- **Longhorn `VolumeAttachment`**: It is a Custom Resource (CR) defined by Longhorn, with the full name `volumeattachment.longhorn.io`. This internal Longhorn resource is used by the Longhorn Manager to track and manage all attachment requests for a volume.
-
-## Longhorn VolumeAttachment
-
-### VolumeAttachment CR
-
-To retrieve a Longhorn `VolumeAttachment`, use the following command:
-
-```bash
-kubectl -n longhorn-system get volumeattachment.longhorn.io <volume-name> -o yaml
-```
-
-Example output:
-
-```bash
-apiVersion: v1
-...
-  spec:
-    attachmentTickets:
-      csi-f0471a334f0b249f964cd1dec461a5eb94c8d268cbbc904c1a8e9a37e2045208:
-        generation: 0
-        id: csi-f0471a334f0b249f964cd1dec461a5eb94c8d268cbbc904c1a8e9a37e2045208
-        nodeID: rancher60-master
-        parameters:
-          disableFrontend: "false"
-          lastAttachedBy: ""
-        type: csi-attacher
-    volume: pvc-b26e9514-aafd-46e0-b70c-4e3f187c7977
-  status:
-    attachmentTicketStatuses:
-      csi-f0471a334f0b249f964cd1dec461a5eb94c8d268cbbc904c1a8e9a37e2045208:
-        conditions:
-        - lastProbeTime: ""
-          lastTransitionTime: "2025-07-05T09:17:27Z"
-          message: ""
-          reason: ""
-          status: "True"
-          type: Satisfied
-        generation: 0
-        id: csi-f0471a334f0b249f964cd1dec461a5eb94c8d268cbbc904c1a8e9a37e2045208
-        satisfied: true
-...
-```
-
-- `spec.attachmentTickets`: A map containing all active attachment requests (also known as **tickets**). Each ticket includes:
-  - `id`: A unique identifier for each attachment ticket.
-  - `nodeID`: The ID of the node where the volume should be attached.
-  - `parameters`: Optional parameters for the attachment, such as `disableFrontend` and `lastAttachedBy`.
-  - `type`: The attacher type, indicating the source of the attachment request.
-
-- `status.attachmentTicketStatuses`: A map containing the current status of each active attachment ticket or request. Each entry includes:
-  - `conditions`: The current condition(s) of the ticket, including whether the request is satisfied or not.
-  - `satisfied`: A boolean value indicating whether the attachment request has been fulfilled or not.
-  - `generation`: The generation number of the ticket, used to track updates.
-
-### Understanding Attachment Tickets
-
-The Longhorn `VolumeAttachment` custom resource (CR) is designed to manage attachment requests from various internal Longhorn system controllers. Each request is represented as an **attachment ticket** within the CR.
-
-All active tickets are stored in the `spec.attachmentTickets` map. The `type` field in each ticket (referred to as the **AttacherType**) identifies the source of the request. The common `AttacherType` values include:
-
-- `csi-attacher`: The most common type which handles standard attachment requests from the Kubernetes CSI plugin, typically when mounting a volume to a pod.
-- `longhorn-api`: Represents a manual attachment request initiated by a user, either through the Longhorn UI or the Longhorn API.
-- `snapshot-controller`: Used when attaching a volume to create or restore a snapshot.
-- `backup-controller`: Used when attaching a volume to perform a backup.
-- `volume-restore-controller`: Used when attaching a volume during a restore operation.
-- `volume-clone-controller`: Used when attaching a volume for cloning from an existing volume.
-- `share-manager-controller`: Manages backend volume attachments for ReadWriteMany (RWX) volumes by attaching them to the share-manager pod.
-- `volume-expansion-controller`: Handles attachments needed for online volume expansion.
-- `volume-rebuilding-controller`: Used when attaching a volume to rebuild a degraded or missing replica.
-- `salvage-controller`: Used during the salvage process when Longhorn attempts to recover and reattach a problematic volume.
-- `volume-eviction-controller`: Handles attachments involved in evicting a replica from a node.
-- `bim-ds-controller`: Used by the Backing Image Data Source controller when creating a volume from a backing image.
-
-## The CSI Attachment and Detachment Workflow
-
-To understand how Longhorn integrates with Kubernetes, it is important to examine how the native Kubernetes `VolumeAttachment` resource and Longhorn’s custom `VolumeAttachment` CR interact through the CSI interface.
-
-### Core Components in the Workflow
-
-In addition to the Kubernetes and Longhorn `VolumeAttachment` objects, several key components work together to manage volume attachment and detachment:
-
-- `external-attacher`: A CSI sidecar container that monitors Kubernetes `VolumeAttachment` objects and triggers `ControllerPublishVolume` or `ControllerUnpublishVolume` gRPC calls to the Longhorn CSI driver.
-- `longhorn-csi-plugin`: The Longhorn CSI driver that implements the required CSI gRPC services.
-- `longhorn-manager`: The central controller in Longhorn that manages the full lifecycle of Longhorn volumes. It includes various sub-controllers, including the volume attachment logic.
-- `longhorn-volume-attachment-controller`: A sub-controller within `longhorn-manager` that monitors the Longhorn `VolumeAttachment` CR and performs attach or detach operations based on its spec.
-
-### The CSI Volume Attachment Flow
-
-When a pod that uses a Longhorn PersistentVolumeClaim (PVC) is scheduled onto a node, the CSI volume attachment workflow is triggered.
-
-1. **kubelet Request**: The kubelet on the target node detects that a Longhorn volume needs to be mounted and notifies the Kubernetes `attach-detach-controller`.
-
-2. **Kubernetes `VolumeAttachment` Creation**: The `attach-detach-controller` creates a Kubernetes `VolumeAttachment` object, specifying the Longhorn CSI driver (`driver.longhorn.io`), the target node name, and the persistent volume name.
-
-3. **`external-attacher` Triggers CSI Call**: The `external-attacher` sidecar container observes the new Kubernetes `VolumeAttachment` object and issues a `ControllerPublishVolume` gRPC call to the `longhorn-csi-plugin`.
-
-4. **Longhorn `VolumeAttachment` CR Creation**: Rather than attaching the volume directly, the `longhorn-csi-plugin` creates a Longhorn `VolumeAttachment` custom resource (CR). It adds an **attachment ticket** to the CR’s spec to represent the attachment request.
-
-5. **Longhorn Controller Reconciliation**: The `longhorn-volume-attachment-controller`, a sub-controller within `longhorn-manager`, detects the new ticket and begins reconciliation. It verifies that the volume is available and updates the corresponding Volume CR’s `spec.nodeID` with the target node name.
-
-6. **`longhorn-manager` Executes Attachment**: After detecting that `spec.nodeID` is set, `longhorn-manager` starts the Longhorn Engine on the specified node to complete the attachment.
-
-7. **Volume Attachment Completion**:
-   - `longhorn-manager` updates the Volume CR’s status to reflect that the volume is attached.
-   - The `longhorn-volume-attachment-controller` updates the Longhorn `VolumeAttachment` CR’s status to indicate success.
-   - The `longhorn-csi-plugin` receives the successful status and responds to the `external-attacher`.
-   - Finally, the `external-attacher` marks the Kubernetes `VolumeAttachment` object’s `status.attached` field as `true`.
-
-8. **kubelet Mounts the Volume**: Once the volume is marked as attached, the kubelet proceeds with the `NodeStageVolume` and `NodePublishVolume` CSI calls to mount the volume into the pod’s container.
-
-### The CSI Volume Detachment Flow
-
-When a pod using a Longhorn volume is deleted or rescheduled, the CSI detachment workflow is triggered.
-
-1. **kubelet Request**: The kubelet signals to the Kubernetes `attach-detach-controller` that the volume is no longer needed on the node.
-
-2. **Kubernetes `VolumeAttachment` Deletion**: The `attach-detach-controller` deletes the corresponding Kubernetes `VolumeAttachment` object.
-
-3. **`external-attacher` Triggers CSI Call**: The `external-attacher` observes the deletion and initiates a `ControllerUnpublishVolume` gRPC call to the `longhorn-csi-plugin`.
-
-4. **Attachment Ticket Removal**: The `longhorn-csi-plugin` processes the request by updating the Longhorn `VolumeAttachment` CR to remove the relevant attachment ticket.
-
-5. **Longhorn Controller Reconciliation**: The `longhorn-volume-attachment-controller` detects that the ticket has been removed. If no other tickets exist for the volume, it clears the `spec.nodeID` field in the Longhorn Volume CR.
-
-6. **`longhorn-manager` Executes Detachment**: With the `spec.nodeID` cleared, `longhorn-manager` initiates the detachment process by stopping the Longhorn Engine on the node.
-
-7. **Volume Detachment Completion**:
-   - `longhorn-manager` updates the Volume CR’s status to indicate that the volume is detached.
-   - The `longhorn-csi-plugin` receives confirmation and responds with success to the `external-attacher`.
-   - The `external-attacher` removes the finalizer from the Kubernetes `VolumeAttachment` object, allowing the API server to fully delete it.
-
-### Summary of the Workflow
-
-Longhorn extends the native volume attachment mechanism of Kubernetes by introducing a custom `VolumeAttachment` CR. This design provides several advantages:
-
-- **Decoupling and Abstraction**: The custom resource encapsulates complex attach or detach logic within Longhorn, reducing the responsibilities of the `longhorn-csi-plugin`.
-- **Fine-Grained Control**: The attachment ticket system enables Longhorn to handle requests from multiple sources (for example, pods, snapshots, backups) while ensuring only one valid attachment per volume at any time.
-- **Observability and Troubleshooting**: The CR gives clear visibility into attachment state and history of the volume, simplifying monitoring and troubleshooting.
-
-In summary, the Kubernetes `VolumeAttachment` object initiates the attachment or detachment process, while Longhorn’s custom `VolumeAttachment` CR orchestrates and manages the actual operations internally.
-
-## Troubleshooting Volume Attachment Issues
-
-This section outlines common issues related to volume attachment and provides recommended resolution steps. Before making any changes, carefully inspect system logs and the relevant custom resources to avoid disrupting active workloads.
-
-### Volume is Stuck in `Attaching` or `Detaching` State
-
-When a volume remains in the `Attaching` or `Detaching` state for an extended period, the cause is often related to stale or conflicting attachment tickets in the Longhorn `VolumeAttachment` CR.
-
-#### Possible Causes
-
-- **Stale or Orphaned Tickets**: A ticket from a previous workload (for example, a deleted pod or completed backup job) was not properly removed and still exists under `spec.attachmentTickets`.
-
-- **Conflicting Tickets**: An existing ticket (for example, from the CSI attacher) blocks a new request (for example, a manual detach or move to a different node).
-
-#### Resolution Steps
-
-1. **Inspect the Longhorn `VolumeAttachment` CR**: Use the following command to view the attachment tickets:
-
-    ```bash
-    kubectl -n longhorn-system get volumeattachment.longhorn.io <volume-name> -o yaml
-    ```
-
-2. **Analyze Ticket Sources**: Look under `spec.attachmentTickets` and check the `type` field for each ticket to identify its source (for example, `csi-attacher`, `backup-controller`, etc.).
-
-3. **Remove Invalid Tickets with Caution**: If you confirm a ticket is no longer needed (for example, its corresponding pod has been deleted), you may remove it by editing the CR.
-
-  > **Warning:**
-  >
-  > Deleting an active ticket can cause serious disruptions. If you remove a ticket still required by a running workload, Longhorn interprets this as a detach request:
-  >
-  > - The volume engine will stop on the node, causing the pod to lose storage access and encounter I/O errors, likely crashing the pod.
-  > - Kubernetes CSI will eventually detect the issue and re-attach the volume, recreating the ticket, but this causes downtime and may require manual pod restart.
-  >
-  > Always verify that the workload related to the ticket is inactive before removing it.
-
-4. **Verify the State**: After removing invalid tickets, Longhorn should be able to complete the attach or detach operation successfully.
-
-### Case Study
-
-#### Case 1: Failure to Attach Volume Due to Unexpected `longhorn-ui` Attachment Ticket
-
-- **Issue**: Longhorn [#8339](https://github.com/longhorn/longhorn/issues/8339)  
-- **Symptom**:  
-  - Workloads using the affected volume remain stuck in `Pending` state.  
-  - The Longhorn `VolumeAttachment` CR contains an unexpected ticket from `longhorn-ui`.  
-- **Workaround**:  
-  - Inspect the `VolumeAttachment` CR:  
-    ```bash
-    kubectl -n longhorn-system get volumeattachment.longhorn.io <volume-name> -o yaml
-    ```  
-  - If you find a `longhorn-ui` attachment ticket, remove the entire ticket block from the CR.
-
-#### Case 2: Volume Fails to Attach to New Node Due to Backup Job Stuck in Pending State
-
-- **Issue**: Longhorn [#10090](https://github.com/longhorn/longhorn/issues/10090)  
-- **Symptom**:  
-  - When a workload is rescheduled to a different node, the volume fails to follow.  
-  - Backup jobs referencing non-existent snapshots remain stuck in `Pending` state, with `status.message` containing `failed to get the snapshot ... not found`.  
-  - These stuck backup jobs hold onto the volume, blocking detach/reattach.  
-- **Workaround**:  
-  1. Check the Longhorn `VolumeAttachment` CR for any tickets locking the volume:  
-      ```bash
-      kubectl -n longhorn-system get volumeattachment.longhorn.io <volume-name> -o yaml
-      ```  
-  2. If you see a ticket from the backup controller, a backup job is locking the volume.  
-  3. **Do not delete the `backup-*` attachment ticket directly**, as Longhorn will recreate it.  
-  4. Instead, resolve the stuck backup job by removing any `Backup` CRs with:  
-       - `status.state = pending`  
-       - `status.message` containing `Failed to get the Snapshot...`
-
-      This releases the volume and allows it to be reattached.
-
-
----
-
-## Article: advanced-resources/support-managed-k8s-service/_index.md
-
----
-title: Support Managed Kubernetes Service
-weight: 4
----
-
-
-
----
-
-## Article: advanced-resources/support-managed-k8s-service/manage-node-group-on-aks.md
-
----
-title:  Manage Node-Group on Azure AKS
-weight: 2
----
-
-See [Create and manage multiple node pools for a cluster in Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/use-multiple-node-pools) for more information.
-
-Following is an example to replace cluster nodes with a new storage size.
-
-
-## Storage Expansion
-
-AKS does not support additional disk in its [template](https://docs.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2022-01-01/managedclusters?tabs=bicep#template-format). It is possible for manual disk attachment. Then raw device needs to be mounted either by manually mounting in VM or during launch with CustomScriptExtension that [is not supported](https://docs.microsoft.com/en-us/azure/aks/support-policies#user-customization-of-agent-nodes) in AKS.
-
-1. In Longhorn, set `replica-replenishment-wait-interval` to `0`.
-
-2. Add a new node-pool. Later Longhorn components will be automatically deployed on the nodes in this pool.
-
-    ```
-    AKS_NODEPOOL_NAME_NEW=<new-nodepool-name>
-    AKS_RESOURCE_GROUP=<aks-resource-group>
-    AKS_CLUSTER_NAME=<aks-cluster-name>
-    AKS_DISK_SIZE_NEW=<new-disk-size-in-gb>
-    AKS_NODE_NUM=<number-of-nodes>
-    AKS_K8S_VERSION=<kubernetes-version>
-
-    az aks nodepool add \
-      --resource-group ${AKS_RESOURCE_GROUP} \
-      --cluster-name ${AKS_CLUSTER_NAME} \
-      --name ${AKS_NODEPOOL_NAME_NEW} \
-      --node-count ${AKS_NODE_NUM} \
-      --node-osdisk-size ${AKS_DISK_SIZE_NEW} \
-      --kubernetes-version ${AKS_K8S_VERSION} \
-      --mode System
-    ```
-
-3. Using Longhorn UI to disable the disk scheduling and request eviction for nodes in the old node-pool.
-
-4. Cordon and drain Kubernetes nodes in the old node-pool.
-    ```
-    AKS_NODEPOOL_NAME_OLD=<old-nodepool-name>
-
-    for n in `kubectl get nodes | grep ${AKS_NODEPOOL_NAME_OLD}- | awk '{print $1}'`; do
-      kubectl cordon $n && \
-      kubectl drain $n --ignore-daemonsets --delete-emptydir-data
-    done
-    ```
-
-5. Delete old node-pool.
-    ```
-    az aks nodepool delete \
-      --cluster-name ${AKS_CLUSTER_NAME} \
-      --name ${AKS_NODEPOOL_NAME_OLD} \
-      --resource-group ${AKS_RESOURCE_GROUP}
-    ```
-
-
----
-
-## Article: advanced-resources/support-managed-k8s-service/manage-node-group-on-eks.md
-
----
-title:  Manage Node-Group on AWS EKS
-weight: 1
----
-
-EKS supports configuring the same launch template. The nodes in the node-group will be recycled by new nodes with new configurations when updating the launch template version.
-
-See [Launch template support](https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html) for more information.
-
-The following is an example to replace cluster nodes with new storage size.
-
-
-## Storage Expansion
-
-1. In Longhorn, set `replica-replenishment-wait-interval` to `0`.
-
-2. Go to the launch template of the EKS cluster node-group. You can find in the EKS cluster tab `Configuration/Compute/<node-group-name>` and click the launch template.
-
-3. Click `Modify template (Create new version)` in the `Actions` drop-down menu.
-
-4. Choose the `Source template version` in the `Launch template name and version description`.
-
-5. Follow steps to [Expand volume](#expand-volume), or [Create additional volume](#create-additional-volume).
-> **Note:** If you choose to expand by [create additional volume](#create-additional-volume), the disks need to be manually added to the disk list of the nodes after the EKS cluster upgrade.
-
-
-### Expand volume
-1. Update the volume size in `Configure storage`.
-
-2. Click `Create template version` to save changes.
-
-3. Go to the EKS cluster node-group and change `Launch template version` in `Node Group configuration`. Track the status in the `Update history` tab.
-
-
-### Create additional volume
-1. Click `Advanced` then `Add new volume` in `Configure storage` and fill in the fields.
-
-2. Adjust the auto-mount script and add to `User data` in `Advanced details`. Make sure the `DEV_PATH` matches the `Device name` of the additional volume.
-    ```
-    MIME-Version: 1.0
-    Content-Type: multipart/mixed; boundary="==MYBOUNDARY=="
-
-    --==MYBOUNDARY==
-    Content-Type: text/x-shellscript; charset="us-ascii"
-
-    #!/bin/bash
-
-    # https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html#launch-template-user-data
-    echo "Running custom user data script"
-
-    DEV_PATH="/dev/sdb"
-    mkfs -t ext4 ${DEV_PATH}
-
-    MOUNT_PATH="/mnt/longhorn"
-    mkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} ${MOUNT_PATH}
-    ```
-
-3. Click `Create template version` to save changes.
-
-4. Go to the EKS cluster node-group and change `Launch template version` in `Node Group configuration`. Track the status in the `Update history` tab.
-
-5. In Longhorn, add the path of the mounted disk into the disk list of the nodes.
-
-
----
-
-## Article: advanced-resources/support-managed-k8s-service/manage-node-group-on-gke.md
-
----
-title:  Manage Node-Group on GCP GKE
-weight: 3
----
-
-See [Migrating workloads to different machine types](https://cloud.google.com/kubernetes-engine/docs/tutorials/migrating-node-pool) for more information.
-
-The following is an example to replace cluster nodes with new storage size.
-
-
-## Storage Expansion
-
-GKE supports adding additional disk with `local-ssd-count`. However, each local SSD is fixed size to 375 GB. We suggest expanding the node size via node pool replacement.
-
-1. In Longhorn, set `replica-replenishment-wait-interval` to `0`.
-
-2. Add a new node-pool. Later Longhorn components will be automatically deployed on the nodes in this pool.
-
-    ```
-    GKE_NODEPOOL_NAME_NEW=<new-nodepool-name>
-    GKE_REGION=<gke-region>
-    GKE_CLUSTER_NAME=<gke-cluster-name>
-    GKE_IMAGE_TYPE=Ubuntu
-    GKE_MACHINE_TYPE=<gcp-machine-type>
-    GKE_DISK_SIZE_NEW=<new-disk-size-in-gb>
-    GKE_NODE_NUM=<number-of-nodes>
-
-    gcloud container node-pools create ${GKE_NODEPOOL_NAME_NEW} \
-      --region ${GKE_REGION} \
-      --cluster ${GKE_CLUSTER_NAME} \
-      --image-type ${GKE_IMAGE_TYPE} \
-      --machine-type ${GKE_MACHINE_TYPE} \
-      --disk-size ${GKE_DISK_SIZE_NEW} \
-      --num-nodes ${GKE_NODE_NUM}
-  
-    gcloud container node-pools list \
-      --zone ${GKE_REGION} \
-      --cluster ${GKE_CLUSTER_NAME} 
-    ```
-
-3. Using Longhorn UI to disable the disk scheduling and request eviction for nodes in the old node-pool.
-
-4. Cordon and drain Kubernetes nodes in the old node-pool.
-    ```
-    GKE_NODEPOOL_NAME_OLD=<old-nodepool-name>
-    for n in `kubectl get nodes | grep ${GKE_CLUSTER_NAME}-${GKE_NODEPOOL_NAME_OLD}- | awk '{print $1}'`; do
-      kubectl cordon $n && \
-      kubectl drain $n --ignore-daemonsets --delete-emptydir-data
-    done
-    ```
-
-5. Delete old node-pool.
-    ```
-    gcloud container node-pools delete ${GKE_NODEPOOL_NAME_OLD}\
-      --zone ${GKE_REGION} \
-      --cluster ${GKE_CLUSTER_NAME}
-    ```
-
-
----
-
-## Article: advanced-resources/support-managed-k8s-service/upgrade-k8s-on-aks.md
-
----
-title:  Upgrade Kubernetes on Azure AKS
-weight: 5
----
-
-AKS provides `az aks upgrade` for in-places nodes upgrade by node reimaged, but this will cause the original Longhorn disks missing, then there will be no disks allowing replica rebuilding in upgraded nodes anymore.
-
-We suggest using node-pool replacement to upgrade the agent nodes but use `az aks upgrade` for control plane nodes to ensure data safety.
-
-1. In Longhorn, set `replica-replenishment-wait-interval` to `0`.
-
-2. Upgrade AKS control plane.
-    ```
-    AKS_RESOURCE_GROUP=<aks-resource-group>
-    AKS_CLUSTER_NAME=<aks-cluster-name>
-    AKS_K8S_VERSION_UPGRADE=<aks-k8s-version>
-
-    az aks upgrade \
-        --resource-group ${AKS_RESOURCE_GROUP} \
-        --name ${AKS_CLUSTER_NAME} \
-        --kubernetes-version ${AKS_K8S_VERSION_UPGRADE} \
-        --control-plane-only
-    ```
-
-3. Add a new node-pool.
-
-    ```
-    AKS_NODEPOOL_NAME_NEW=<new-nodepool-name>
-    AKS_DISK_SIZE=<disk-size-in-gb>
-    AKS_NODE_NUM=<number-of-nodes>
-
-    az aks nodepool add \
-      --resource-group ${AKS_RESOURCE_GROUP} \
-      --cluster-name ${AKS_CLUSTER_NAME} \
-      --name ${AKS_NODEPOOL_NAME_NEW} \
-      --node-count ${AKS_NODE_NUM} \
-      --node-osdisk-size ${AKS_DISK_SIZE} \
-      --kubernetes-version ${AKS_K8S_VERSION_UPGRADE} \
-      --mode System
-    ```
-
-4. Using Longhorn UI to disable the disk scheduling and request eviction for nodes in the old node-pool.
-
-5. Cordon and drain Kubernetes nodes in the old node-pool.
-    ```
-    AKS_NODEPOOL_NAME_OLD=<old-nodepool-name>
-
-    for n in `kubectl get nodes | grep ${AKS_NODEPOOL_NAME_OLD}- | awk '{print $1}'`; do
-      kubectl cordon $n && \
-      kubectl drain $n --ignore-daemonsets --delete-emptydir-data
-    done
-    ```
-
-6. Delete old node-pool.
-    ```
-    az aks nodepool delete \
-      --cluster-name ${AKS_CLUSTER_NAME} \
-      --name ${AKS_NODEPOOL_NAME_OLD} \
-      --resource-group ${AKS_RESOURCE_GROUP}
-    ```
-
-
----
-
-## Article: advanced-resources/support-managed-k8s-service/upgrade-k8s-on-eks.md
-
----
-title: Upgrade Kubernetes on AWS EKS
-weight: 4
----
-
-In Longhorn, set `replica-replenishment-wait-interval` to `0`.
-
-See [Updating a cluster](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html) for instructions.
-
-> **Note:** If you have created [addition disks](../manage-node-group-on-eks#create-additional-volume) for Longhorn, you will need to manually add the path of the mounted disk into the disk list of the upgraded nodes.
-
----
-
-## Article: advanced-resources/support-managed-k8s-service/upgrade-k8s-on-gke.md
-
----
-title: Upgrade Kubernetes on GCP GKE
-weight: 6
----
-
-In Longhorn, set `replica-replenishment-wait-interval` to `0`.
-
-See [Upgrading the cluster](https://cloud.google.com/kubernetes-engine/docs/how-to/upgrading-a-cluster#upgrading_the_cluster) and [Upgrading node pools](https://cloud.google.com/kubernetes-engine/docs/how-to/upgrading-a-cluster#upgrading-nodes) for instructions.
-
-
----
-
-## Article: advanced-resources/deploy/_index.md
-
----
-title: Deploy
-weight: 1
----
-
----
-
-## Article: advanced-resources/deploy/csi-pod-antiaffinity-preset.md
-
----
-title: CSI Component Pod Anti-Affinity
-weight: 5
----
-
-This document describes how to configure pod anti-affinity for Longhorn's CSI components. This feature enhances the resilience of the storage system, particularly in smaller clusters, by preventing multiple replicas of a CSI component from running on the same node and thereby avoiding a single point of failure.
-
-For more information on pod anti-affinity, refer to the official Kubernetes documentation on [Inter-pod affinity and anti-affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity).
-
-## Configuring Pod Anti-Affinity for Longhorn CSI Components
-
-You can configure the pod anti-affinity for the following Longhorn CSI components:
-
-- `csi-attacher`
-- `csi-provisioner`
-- `csi-resizer`
-- `csi-snapshotter`
-
-The `podAntiAffinityPreset` setting has two available values:
-
-- **`soft` (default)**: This is a "best-effort" rule using `preferredDuringSchedulingIgnoredDuringExecution`. The scheduler will try to prevent multiple CSI component replicas from running on the same node, but it is not guaranteed.
-- **`hard`**: This is a "strict" rule using `requiredDuringSchedulingIgnoredDuringExecution`. The scheduler will not schedule a pod on a node if it violates the anti-affinity rule. This may result in pods remaining in a `Pending` state if no suitable nodes are available.
-
-### During Longhorn Installation
-
-You can set the pod anti-affinity for the CSI components during the initial installation of Longhorn using one of the following methods.
-
-#### Using Rancher
-
-When installing Longhorn through Rancher, add the following parameters to the YAML on the Rancher UI (click Edit as YAML during the installation).
-
-```yaml
-csi:
-    podAntiAffinityPreset: "hard"
-```
-
-#### Using Helm
-
-If installing with Helm, set the `csi.podAntiAffinityPreset` value in your `values.yaml` file, and then install the chart as usual.
-
-#### Using Kubectl
-
-If installing Longhorn with `kubectl` and the deployment YAML, you must manually edit the `longhorn-driver-deployer` deployment. Add the following environment variable to the container specification:
-
-```yaml
-- name: CSI_POD_ANTIAFFINITY_PRESET
-  value: hard
-```
-
-### After Longhorn has been installed
-
-> **Warning**:
-> * `longhorn-driver-deployer` and the CSI pods will be redeployed.
-
-Manually edit the `longhorn-driver-deployer` deployment using `kubectl`. Add the following environment variable to the container specification:
-
-```yaml
-- name: CSI_POD_ANTIAFFINITY_PRESET
-  value: hard
-```
-
-## History
-
--  [Original feature request](https://github.com/longhorn/longhorn/issues/11617)
-
-
----
-
-## Article: advanced-resources/deploy/customizing-default-settings.md
-
----
-title: Customizing Default Settings
-weight: 1
----
-
-You may customize Longhorn's default settings while installing or upgrading. You may specify, for example, `Create Default Disk With Node Labeled` and `Default Data Path` before starting Longhorn.
-
-The default settings can be customized in the following ways:
-
-- [Installation](#installation)
-  - [Using the Rancher UI](#using-the-rancher-ui)
-  - [Using the Longhorn Deployment YAML File](#using-the-longhorn-deployment-yaml-file)
-  - [Using Helm](#using-helm)
-  - [Using Helm Controller](#using-helm-controller)
-- [Update Settings](#update-settings)
-  - [Using the Longhorn UI](#using-the-longhorn-ui)
-  - [Using the Rancher UI](#using-the-rancher-ui-1)
-  - [Using Kubectl](#using-kubectl)
-  - [Using Helm](#using-helm-1)
-- [Upgrade](#upgrade)
-  - [Using the Rancher UI](#using-the-rancher-ui-2)
-  - [Using the Longhorn Deployment YAML File](#using-the-longhorn-deployment-yaml-file-1)
-  - [Using Helm](#using-helm-2)
-- [History](#history)
-
-
-> **NOTE:** When using Longhorn Deployment YAML file or Helm for installation, updating or upgrading, if the value of a default setting is an empty string and valid, the default setting will be cleaned up in Longhorn. If not, Longhorn will ignore the invalid values and will not update the default values.
-
-## Installation
-### Using the Rancher UI
-
-From the project view in Rancher, go to **Apps && Marketplace > Longhorn > Install > Next > Edit Options > Longhorn Default Settings > Customize Default Settings** and edit the settings before installing the app.
-
-### Using the Longhorn Deployment YAML File
-
-1. Download the longhorn repo:
-
-    ```shell
-    git clone https://github.com/longhorn/longhorn.git
-    ```
-
-1. Modify the config map named `longhorn-default-setting` in the yaml file `longhorn/deploy/longhorn.yaml`.
-
-    In the below example, users customize the default settings, backup-target, backup-target-credential-secret, and default-data-path.
-    When the setting is absent or has a leading `#` symbol, the default setting will use the default value in Longhorn or the customized values previously configured.
-
-    ```yaml
-    ---
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: longhorn-default-setting
-      namespace: longhorn-system
-    data:
-      default-setting.yaml: |-
-        backup-target: s3://backupbucket@us-east-1/backupstore
-        backup-target-credential-secret: minio-secret
-        #allow-recurring-job-while-volume-detached:
-        #create-default-disk-labeled-nodes:
-        default-data-path: /var/lib/longhorn-example/
-        #replica-soft-anti-affinity:
-        #replica-auto-balance:
-        #storage-over-provisioning-percentage:
-        #storage-minimal-available-percentage:
-        #upgrade-checker:
-        #upgrade-responder-url:
-        #default-replica-count:
-        #default-data-locality:
-        #default-longhorn-static-storage-class:
-        #backupstore-poll-interval:
-        #taint-toleration:
-        #system-managed-components-node-selector:
-        #priority-class:
-        #auto-salvage:
-        #auto-delete-pod-when-volume-detached-unexpectedly:
-        #disable-scheduling-on-cordoned-node:
-        #replica-zone-soft-anti-affinity:
-        #replica-disk-soft-anti-affinity:
-        #node-down-pod-deletion-policy:
-        #node-drain-policy:
-        #replica-replenishment-wait-interval:
-        #concurrent-replica-rebuild-per-node-limit:
-        #disable-revision-counter:
-        #system-managed-pods-image-pull-policy:
-        #allow-volume-creation-with-degraded-availability:
-        #auto-cleanup-system-generated-snapshot:
-        #concurrent-automatic-engine-upgrade-per-node-limit:
-        #backing-image-cleanup-wait-interval:
-        #backing-image-recovery-wait-interval:
-        #guaranteed-instance-manager-cpu:
-        #kubernetes-cluster-autoscaler-enabled:
-        #orphan-resource-auto-deletion:
-        #storage-network:
-        #recurring-successful-jobs-history-limit:
-        #recurring-failed-jobs-history-limit:
-    ---
-    ```
-
-### Using Helm
-
-> **NOTE:**
-> Use Helm 3 when installing and upgrading Longhorn. Helm 2 is [no longer supported](https://helm.sh/blog/helm-2-becomes-unsupported/).
-
-Use the Helm command with the `--set` flag to modify the default settings. For example:
-
-```shell
-helm install longhorn longhorn/longhorn \
-  --namespace longhorn-system \
-  --create-namespace \
-  --set defaultSettings.taintToleration="key1=value1:NoSchedule; key2:NoExecute"
-```
-
-You can also provide a copy of the `values.yaml` file with the default settings modified to the `--values` flag when running the Helm command:
-
-1. Obtain a copy of the `values.yaml` file from GitHub:
-
-    ```shell
-    curl -Lo values.yaml https://raw.githubusercontent.com/longhorn/charts/master/charts/longhorn/values.yaml
-    ```
-
-2. Modify the default settings in the YAML file. The following is an example snippet of `values.yaml`:
-
-   When the setting is absent or has a leading `#` symbol, the default setting will use the default value in Longhorn or the customized values previously configured.
-
-    ```yaml
-    defaultSettings:
-      backupTarget: s3://backupbucket@us-east-1/backupstore
-      backupTargetCredentialSecret: minio-secret
-      createDefaultDiskLabeledNodes: true
-      defaultDataPath: /var/lib/longhorn-example/
-      replicaSoftAntiAffinity: false
-      storageOverProvisioningPercentage: 600
-      storageMinimalAvailablePercentage: 15
-      upgradeChecker: false
-      defaultReplicaCount: 2
-      defaultDataLocality: disabled
-      defaultLonghornStaticStorageClass: longhorn-static-example
-      backupstorePollInterval: 500
-      taintToleration: key1=value1:NoSchedule; key2:NoExecute
-      systemManagedComponentsNodeSelector: "label-key1:label-value1"
-      priorityClass: high-priority
-      autoSalvage: false
-      disableSchedulingOnCordonedNode: false
-      replicaZoneSoftAntiAffinity: false
-      replicaDiskSoftAntiAffinity: false
-      volumeAttachmentRecoveryPolicy: never
-      nodeDownPodDeletionPolicy: do-nothing
-      guaranteedInstanceManagerCpu: 15
-      orphanResourceAutoDeletion: ""
-      orphanResourceAutoDeletionGracePeriod: 300
-    ```
-
-3. Run Helm with `values.yaml`:
-
-   ```shell
-   helm install longhorn longhorn/longhorn \
-     --namespace longhorn-system \
-     --create-namespace \
-     --values values.yaml
-   ```
-
-For more info about using helm, see the section about
-[installing Longhorn with Helm](../../../deploy/install/install-with-helm)
-
-### Using Helm Controller
-
-In the HelmChart YAML file, add lines to spec.set with the desired settings:
-```yaml
-spec:
-  ...
-  set:
-    defaultSettings.priorityClass: system-node-critical
-    defaultSettings.replicaAutoBalance: least-effort
-    defaultSettings.storageOverProvisioningPercentage: "200"
-    persistence.defaultClassReplicaCount: "2"
-
-```
-
-## Update Settings
-
-### Using the Longhorn UI
-
-We recommend using the Longhorn UI to change Longhorn setting on the existing cluster. It would make the setting persistent.
-
-### Using the Rancher UI
-
-From the project view in Rancher, go to **Apps && Marketplace > Longhorn > Upgrade > Next > Edit Options > Longhorn Default Settings > Customize Default Settings** and edit the settings before upgrading the app to the current Longhorn version.
-
-### Using Kubectl
-
-If you prefer to update the setting from the command line, use `kubectl`.
-To avoid collisions with other CRDs, do not use the simple `settings`. Instead, use `settings.longhorn.io` or `lhs`.
-```shell
-kubectl edit settings.longhorn.io <SETTING-NAME> -n longhorn-system
-```
-
-### Using Helm
-
-Modify the default settings in the YAML file as described in [Fresh Installation > Using Helm](#using-helm) and then update the settings using
-```
-helm upgrade longhorn longhorn/longhorn --namespace longhorn-system --values ./values.yaml --version `helm list -n longhorn-system -o json | jq -r .'[0].app_version'`
-```
-
-## Upgrade
-
-### Using the Rancher UI
-
-From the project view in Rancher, go to **Apps && Marketplace > Longhorn > Upgrade > Next > Edit Options > Longhorn Default Settings > Customize Default Settings** and edit the settings before upgrading the app.
-### Using the Longhorn Deployment YAML File
-
-Modify the config map named `longhorn-default-setting` in the yaml file `longhorn/deploy/longhorn.yaml` as described in [Fresh Installation > Using the Longhorn Deployment YAML File](#using-the-longhorn-deployment-yaml-file) and then upgrade the Longhorn system using `kubectl`.
-
-### Using Helm
-
-Modify the default settings in the YAML file as described in [Fresh Installation > Using Helm](#using-helm) and then upgrade the Longhorn system using `helm upgrade`.
-
-## History
-Available since v1.3.0 ([Reference](https://github.com/longhorn/longhorn/issues/2570))
-
-
----
-
-## Article: advanced-resources/deploy/node-selector.md
-
----
-title: Node Selector
-weight: 4
----
-
-If you want to restrict Longhorn components to only run on a particular set of nodes, you can set node selector for all Longhorn components.
-For example, you want to install Longhorn in a cluster that has both Linux nodes and Windows nodes but Longhorn cannot run on Windows nodes.
-In this case, you can set the node selector to restrict Longhorn to only run on Linux nodes.
-
-For more information about how node selector work, refer to the [official Kubernetes documentation.](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
-
-# Setting up Node Selector for Longhorn
-Longhorn consists of user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI) and system-managed components (for example, Instance Manager, Backing Image Manager, Share Manager, CSI Driver, and Engine Image).
-You need to set node selector for both types of components. See more details below.
-
-### Setting up Node Selector During installing Longhorn
-1. Set the node selector for user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI).
-   * If you install Longhorn through Rancher, you must copy and paste the following parameters into the YAML on the Rancher UI (click **Edit as YAML** during the installation) to apply the value to all user-deployed components.
-      ```yaml
-        global:
-          nodeSelector:
-            label-key1: "label-value1"
-      ```
-   * You can also specify the node selector for each user-deployed component and it will orverride the global setting.
-      ```yaml
-        longhornManager:
-          nodeSelector:
-            label-key1: "label-value1"
-        longhornDriver:
-          nodeSelector:
-            label-key1: "label-value1"
-        longhornUI:
-          nodeSelector:
-            label-key1: "label-value1"
-      ```
-   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the node selector section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
-    Then apply the YAMl files.
-   * If you install Longhorn using Helm, you can change the Helm values for `global.nodeSelector`, `longhornManager.nodeSelector`, `longhornUI.nodeSelector`, `longhornDriver.nodeSelector` in the `values.yaml` file before installing the chart.
-
-2. Set the node selector for system-managed components (for example, Instance Manager, Backing Image Manager, Share Manager, CSI Driver, and Engine Image).
-
-   Follow the [Customize default settings](../customizing-default-settings/) to set node selector by changing the value for the `system-managed-components-node-selector` default setting
-   > Note: Because of the limitation of Rancher 2.5.x, if you are using Rancher UI to install Longhorn, you need to click `Edit As Yaml` and add setting `systemManagedComponentsNodeSelector` to `defaultSettings`.
-   >
-   > For example:
-   > ```yaml
-   > defaultSettings:
-   >   systemManagedComponentsNodeSelector: "label-key1:label-value1"
-   >  ```
-
-### Setting up Node Selector After Longhorn has been installed
-
-> **Warning**:
-> * Since all Longhorn components will be restarted, the Longhorn system is unavailable temporarily.
-> * When all Longhorn volumes are detached, the customized settings are immediately applied to the system-managed components (for example, Instance manager, CSI driver and Engine images).
-> * When one or more Longhorn volumes are still attached, the customized setting is applied to the Instance Manager only when no engines and replica instances are running. You are required to reconfigure the setting after detaching the remaining volumes. Alternatively, you can wait for the next setting synchronization, which will occur in an hour.
-> * Don't operate the Longhorn system while node selector settings are updated and Longhorn components are being restarted.
-
-1. Prepare
-   * To ensure that your preferred settings are immediately applied, stop all workloads and detach all Longhorn volumes before applying it.
-
-2. Set the node selector for user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI).
-   * If you install Longhorn through Rancher, you must copy and paste the following parameters into the YAML on the Rancher UI (click **Edit as YAML** during the upgrade) to apply the value to all user-deployed components.
-        ```yaml
-        global:
-          nodeSelector:
-            label-key1: "label-value1"
-        ```
-    * You can also specify the node selector for each user-deployed component and it will override the global setting.
-        ```yaml
-        longhornManager:
-          nodeSelector:
-            label-key1: "label-value1"
-        longhornDriver:
-          nodeSelector:
-            label-key1: "label-value1"
-        longhornUI:
-          nodeSelector:
-            label-key1: "label-value1"
-        ```
-    * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the node selector section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
-      Then reapply the YAMl files.
-    * If you install Longhorn using Helm, you can change the Helm values for `global.nodeSelector`, `longhornManager.nodeSelector`, `longhornUI.nodeSelector`, `longhornDriverDeployer.nodeSelector` in the `values.yaml` file, and then run `helm upgrade` to upgrade to the new version of the chart.
-
-3. Set the node selector for system-managed components (for example, Instance Manager, Backing Image Manager, Share Manager, CSI Driver, and Engine Image).
-
-   The node selector setting can be found at Longhorn UI under **Settings > System Managed Components Node Selector.**
-
-4. Clean up
-
-   If you are changing node selector in a way so that Longhorn cannot run on some nodes that Longhorn is currently running on,
-   those nodes will become `down` state after this process. Verify that there is no replica left on those nodes.
-   Disable scheduling for those nodes, and delete them in Longhorn UI
-
-## History
-Available since v1.1.1
-* [Original feature request](https://github.com/longhorn/longhorn/issues/2199)
-
-
----
-
-## Article: advanced-resources/deploy/priority-class.md
-
----
-title: Priority Class
-weight: 6
----
-The Priority Class setting can be used to set a higher priority on Longhorn workloads in the cluster, preventing them from being the first to be evicted during node pressure situations.
-
-For more information on how pod priority works, refer to the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/).
-
-# Setting Priority Class
-
-Longhorn consists of user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI) and system-managed components (for example, Instance Manager, CSI Driver, and Engine images).
-You need to set Priority Class for both types of components. See more details below.
-
-### Setting Priority Class During Longhorn Installation
-
-Longhorn creates a Priority Class `longhorn-critical` and sets it as default for its user deployed or system managed components if the following actions are not taken.
-
-1. Set taint Priority Class for system managed components: follow the [Customize default settings](../customizing-default-settings/) to set Priority Class by changing the value for the `priority-class` default setting
-1. Set taint Priority Class for user deployed components: modify the Helm chart or deployment YAML file depending on how you deploy Longhorn.
-
-> **Warning:** Longhorn will not start if the Priority Class setting is invalid (such as the Priority Class not existing).
-> You can see if this is the case by checking the status of the longhorn-manager DaemonSet with `kubectl -n longhorn-system describe daemonset.apps/longhorn-manager`.
-> You will need to uninstall Longhorn and restart the installation if this is the case.
-
-### Setting Priority Class After Longhorn Installation
-
-1. Set taint Priority Class for system managed components: The Priority Class setting can be found in the Longhorn UI by clicking **Settings > Priority Class.**
-1. Set taint Priority Class for user deployed components: modify the Helm chart or deployment YAML file depending on how you deploy Longhorn.
-
-Users can update or remove the Priority Class here, but note that this will result in recreation of all the Longhorn system components.
-The Priority Class setting will reject values that appear to be invalid Priority Classes.
-
-# Usage
-
-To ensure that your preferred Priority Class settings are immediately applied, stop all workloads and detach all Longhorn volumes before configuring the settings.
-
-Longhorn temporarily becomes unavailable when all components are restarted.
-Don't operate the Longhorn system after modifying the Priority Class setting, as the Longhorn components will be restarting.
-
-When all Longhorn volumes are detached, the customized setting is immediately applied to the system-managed components.
-When one or more Longhorn volumes are still attached, the customized setting is applied to the Instance Manager only when no engines and replica instances are running. You are required to reconfigure the setting after detaching the remaining volumes. Alternatively, you can wait for the next setting synchronization, which will occur in an hour.
-
-Do not delete the Priority Class in use by Longhorn, as this can cause new Longhorn workloads to fail to come online.
-
-## History
-
-[Original Feature Request](https://github.com/longhorn/longhorn/issues/1487)
-
-Available since v1.0.1
-
-
----
-
-## Article: advanced-resources/deploy/rancher_windows_cluster.md
-
----
-title: Rancher Windows Cluster
-weight: 5
----
-
-Rancher can provision a Windows cluster with combination of Linux worker nodes and Windows worker nodes.
-For more information on the Rancher Windows cluster, see the official [Rancher documentation](https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/windows-clusters/).
-
-In a Rancher Windows cluster, all Linux worker nodes are:
-- Tainted with the taint `cattle.io/os=linux:NoSchedule`
-- Labeled with `kubernetes.io/os:linux`
-
-Follow the below [Deploy Longhorn With Supported Helm Chart](#deploy-longhorn-with-supported-helm-chart) or [Setup Longhorn Components For Existing Longhorn](#setup-longhorn-components-for-existing-longhorn) to know how to deploy or setup Longhorn on a Rancher Windows cluster.
-
-> **Note**: After Longhorn is deployed, you can launch workloads that use Longhorn volumes only on Linux nodes.
-
-## Deploy Longhorn With Supported Helm Chart
-You can update the Helm value `global.cattle.windowsCluster.enabled` to allow Longhorn installation on the Rancher Windows cluster.
-
-When this value is set to `true`, Longhorn will recognize the Rancher Windows cluster then deploy Longhorn components with the correct node selector and tolerations so that all Longhorn workloads can be launched on Linux nodes only.
-
-On the Rancher marketplace, the setting can be customized in `customize Helm options` before installation: \
-`Edit Options` > `Other Settings` > `Rancher Windows Cluster`
-
-Also in: \
-`Edit YAML`
-```
-global:
-  cattle:
-    systemDefaultRegistry: ""
-    windowsCluster:
-      # Enable this to allow Longhorn to run on the Rancher deployed Windows cluster
-      enabled: true
-```
-
-## Setup Longhorn Components For Existing Longhorn
-You can setup the existing Longhorn when its not deployed with the supported Helm chart.
-
-1. Since Longhorn components can only run on Linux nodes,
-   you need to set node selector `kubernetes.io/os:linux` for Longhorn to select the Linux nodes.
-   Please follow the instruction at [Node Selector](../node-selector) to set node selector for Longhorn.
-
-1. Since all Linux worker nodes in Rancher Windows cluster are tainted with the taint `cattle.io/os=linux:NoSchedule`,
-   You need to set the toleration `cattle.io/os=linux:NoSchedule` for Longhorn to be able to run on those nodes.
-   Please follow the instruction at [Taint Toleration](../taint-toleration) to set toleration for Longhorn.
-
-
----
-
-## Article: advanced-resources/deploy/revision_counter.md
-
----
-title: Revision Counter
-weight: 7
----
-
-The revision counter is a mechanism that Longhorn uses to track each replica's updates.
-
-During replica creation, Longhorn will create a 'revision.counter' file with its initial counter set to 0. And for every write to the replica, the counter in 'revision.counter' file will be increased by 1.
-
-The Longhorn engine uses these counters as a heuristic for achieving best-effort consistency among replicas during startup. Note that because the write IOs in Longhorn are parallel, enabling the revision counter does not guarantee data consistency. Longhorn also uses these counters during auto-salvage to identify the replica with the latest update.
-
-Disable Revision Counter is an option in which every write on replicas is not tracked. When this setting is used, performance is improved. This option can be helpful if you prefer higher performance and have a stable network infrastructure (e.g. an internal network) with enough CPU resources. When the revision counter is disabled, the Longhorn Engine skips checking the revision counter for all replicas at startup. However, auto-salvage still functions because Longhorn can use the replica's head file stat to identify the replica to be used for recovery. For more information about how auto-salvage functions without the revision counter, see [Auto-Salvage Support with Revision Counter Disabled](#auto-salvage-support-with-revision-counter-disabled).
-
-By default, the revision counter is disabled.
-
-> **Note:** 'Salvage' is Longhorn trying to recover a volume in a faulted state. A volume is in a faulted state when the Longhorn Engine loses the connection to all the replicas, and all replicas are marked as being in an error state.
-
-# Disable Revision Counter
-
-## Using Longhorn UI
-
-To disable or enable the revision counter from the Longhorn UI, click **Settings > Disable Revision Counter**.
-
-To create individual volumes with settings that are customized against the general settings, go to the **Volumes** page and click **Create Volume**.
-
-## Using a Manifest File
-
-A `StorageClass` can be customized to add a `disableRevisionCounter` parameter.
-
-By default, the `disableRevisionCounter` is false, so the revision counter is enabled.
-
-Set `disableRevisionCounter` to true to disable the revision counter:
-
-```yaml
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: best-effort-longhorn
-provisioner: driver.longhorn.io
-allowVolumeExpansion: true
-parameters:
-  numberOfReplicas: "1"
-  disableRevisionCounter: "true"
-  staleReplicaTimeout: "2880" # 48 hours in minutes
-  fromBackup: ""
-```
-
-## Auto-Salvage Support with Revision Counter Disabled
-
-The logic for auto-salvage is different when the revision counter is disabled.
-
-When revision counter is enabled and all the replicas in the volume are in the 'ERR' state, the engine controller will be in a faulted state, and for engine to recover the volume, it will get the replica with the largest revision counter as 'Source of Truth' to rebuild the rest replicas.
-
-When the revision counter is disabled in this case, the engine controller will get the `volume-head-xxx.img` last modified time and head file size of all replicas. It will also do the following steps:
-1. Identify the replica with the most recent last modified timestamp based on when `volume-head-xxx.img` was last modified
-1. Select all replicas with last modified timestamp within 5s of the above replica's last modified timestamp
-2. From the replica candidates from the above step, compare the head file size of the candidates, and pick the ones with the largest file size
-1. From the replica candidates from the above step, pick the best replica with most recent modified timestamp
-3. Change the best replica to 'RW' mode, and the other replicas are marked as 'ERR' mode. The errored replicas are rebuilt based on the best replica
-
-
----
-
-## Article: advanced-resources/deploy/storage-network.md
-
----
-title: Storage Network
-weight: 8
----
-
-By Default, Longhorn uses the default Kubernetes cluster CNI network that is limited to a single interface and shared with other workloads cluster-wide. In case you have a situation where network segregation is needed, Longhorn supports isolating Longhorn in-cluster data traffic with the Storage Network setting.
-
-The Storage Network setting takes Multus NetworkAttachmentDefinition in `<NAMESPACE>/<NAME>` format.
-
-You can refer to [Comprehensive Document](https://github.com/k8snetworkplumbingwg/multus-cni#comprehensive-documentation) for how to install and set up Multus NetworkAttachmentDefinition.
-
-Applying the setting will add `k8s.v1.cni.cncf.io/networks` annotation and recreate all existing instance-manager, and backing-image-manager pods.
-Longhorn will apply the same annotation to any new instance-manager, backing-image-manager, and backing-image-data-source pods.
-
-> **Important**: To ensure that your preferred settings are immediately applied, stop all workloads and detach all Longhorn volumes before configuring the settings.
->
-> When all volumes are detached, Longhorn attempts to restart all Instance Manager and Backing Image Manager pods to apply the setting.
-> When one or more Longhorn volumes are still attached, the customized setting is applied to the Instance Manager only when no engines and replica instances are running. You are required to reconfigure the setting after detaching the remaining volumes. Alternatively, you can wait for the next setting synchronization, which will occur in an hour.
-
-# Setting Storage Network
-
-## Prerequisite
-
-The Multus NetworkAttachmentDefinition network for the storage network setting must be reachable in pods across different cluster nodes.
-
-You can verify by creating a simple DaemonSet and try ping between pods.
-
-### Setting Storage Network During Longhorn Installation
-Follow the [Customize default settings](../customizing-default-settings/) to set Storage Network by changing the value for the `storage-network` default setting
-
-> **Warning:** Longhorn instance-manager will not start if the Storage Network setting is invalid.
->
-> You can check the events of the instance-manager Pod to see if it is related to an invalid NetworkAttachmentDefinition with `kubectl -n longhorn-system describe pods -l longhorn.io/component=instance-manager`.
->
-> If this is the case, provide a valid `NetworkAttachmentDefinition` and re-run Longhorn install.
-
-### Setting Storage Network After Longhorn Installation
-
-Set the setting [Storage Network](../../../references/settings#storage-network).
-
-> **Warning:** Do not modify the NetworkAttachmentDefinition custom resource after applying it to the setting.
->
-> Longhorn is not aware of the updates. Hence this will cause malfunctioning and error. Instead, you can create a new NetworkAttachmentDefinition custom resource and update it to the setting.
-
-### Setting Endpoint Network For RWX Volumes
-
-Configure the setting [Endpoint Network For RWX Volume](../../../references/settings#endpoint-network-for-rwx-volume).
-
-# Limitation
-
-When an RWX volume is attached with the endpoint network, the NFS mount point connection must be re-established when the CSI plugin pod restarts. Longhorn provides the [Automatically Delete Workload Pod when The Volume Is Detached Unexpectedly](../../../references/settings#automatically-delete-workload-pod-when-the-volume-is-detached-unexpectedly) setting, which automatically deletes RWX volume workload pods when the CSI plugin pod restarts. However, the workload pod's NFS mount point could become unresponsive when the setting is disabled or the pod is not managed by a controller. In such cases, you must manually restart the CSI plugin pod.
-
-For more information, see [Storage Network Support for Read-Write-Many (RWX) Volume](../../../../archives/1.7.0/important-notes/#storage-network-support-for-read-write-many-rwx-volumes) in Important Notes.
-
-# History
-- [Original Feature Request (since v1.3.0)](https://github.com/longhorn/longhorn/issues/2285)
-- [[FEATURE] Support storage network for RWX volumes (since v1.7.0)](https://github.com/longhorn/longhorn/issues/8184)
-- [[FEATURE] Storage network with V2 data engine (since v1.9.0)](https://github.com/longhorn/longhorn/issues/6450)
-- [[FEATURE] Support extra network interface (not only storage network) on the share manager pod (since v1.11.0)](https://github.com/longhorn/longhorn/issues/10269)
-
-
----
-
-## Article: advanced-resources/deploy/taint-toleration.md
-
----
-title: Taints and Tolerations
-weight: 3
----
-
-If users want to create nodes with large storage spaces and/or CPU resources for Longhorn only (to store replica data) and reject other general workloads, they can taint those nodes and add tolerations for Longhorn components. Then Longhorn can be deployed on those nodes.
-
-Notice that the taint tolerations setting for one workload will not prevent it from being scheduled to the nodes that don't contain the corresponding taints.
-
-For more information about how taints and tolerations work, refer to the [official Kubernetes documentation.](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)
-
-# Setting up Taints and Tolerations
-Longhorn consists of user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI) and system-managed components (for example, Instance Manager, Backing Image Manager, Share Manager, CSI Driver, and Engine Image).
-You need to set tolerations for both types of components. See more details below.
-
-### Setting up Taints and Tolerations During installing Longhorn
-1. Set taint tolerations for user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI).
-   * If you install Longhorn through Rancher, you must copy and paste the following parameters into the YAML on the Rancher UI (click **Edit as YAML** during the installation) to apply the value to all user-deployed components.
-     ```yaml
-       global:
-         tolerations:
-         - key: "key"
-           operator: "Equal"
-           value: "value"
-           effect: "NoSchedule"
-    ```
-   * You can also specify the tolerations for each user-deployed component and it will override the global setting.
-     ```yaml
-       longhornManager:
-         tolerations:
-         - key: "key"
-           operator: "Equal"
-           value: "value"
-           effect: "NoSchedule"
-       longhornDriver:
-         tolerations:
-         - key: "key"
-           operator: "Equal"
-           value: "value"
-           effect: "NoSchedule"
-       longhornUI:
-         tolerations:
-         - key: "key"
-           operator: "Equal"
-           value: "value"
-           effect: "NoSchedule"
-     ```
-   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the taint tolerations section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
-    Then apply the YAMl files.
-   * If you install Longhorn using Helm, you can change the Helm values for `global.tolerations`, `longhornManager.tolerations`, `longhornUI.tolerations`, `longhornDriver.tolerations` in the `values.yaml` file before installing the chart.
-
-2. Set taint tolerations for system-managed components (for example, Instance Manager, CSI Driver, and Engine images)
-
-   Follow the [Customize default settings](../customizing-default-settings/) to set taint tolerations by changing the value for the `taint-toleratio` default setting
-   > Note: Because of the limitation of Rancher 2.5.x, if you are using Rancher UI to install Longhorn, you need to click `Edit As Yaml` and add setting `taintToleration` to `defaultSettings`.
-   >
-   > For example:
-   > ```yaml
-   > defaultSettings:
-   >   taintToleration: "key=value:NoSchedule"
-   >  ```
-
-### Setting up Taints and Tolerations After Longhorn has been installed
-
-> **Warning**:
->
-> To ensure that your preferred toleration settings are immediately applied, stop all workloads and detach all Longhorn volumes before configuring the settings.
->
-> Since all Longhorn components will be restarted, the Longhorn system is unavailable temporarily.
->
-> When all Longhorn volumes are detached, the customized setting is immediately applied to the system-managed components.
-> When one or more Longhorn volumes are still attached, the customized setting is applied to the Instance Manager only when no engines and replica instances are running. You are required to reconfigure the setting after detaching the remaining volumes. Alternatively, you can wait for the next setting synchronization, which will occur in an hour.
->
-> Don't operate the Longhorn system while toleration settings are updated and Longhorn components are being restarted.
-
-1. Prepare
-
-   To ensure that your preferred settings are immediately applied, stop all workloads and detach all Longhorn volumes before configuring the settings.
-
-2. Set taint tolerations for user-deployed components (for example, Longhorn Manager, Longhorn Driver, and Longhorn UI).
-   * If you install Longhorn through Rancher, you must copy and paste the following parameters into the YAML on the Rancher UI (click **Edit as YAML** during the upgrade) to apply the value to all user-deployed components.
-     ```yaml
-       global:
-         tolerations:
-         - key: "key"
-           operator: "Equal"
-           value: "value"
-           effect: "NoSchedule"
-    ```
-   * You can also specify the tolerations for each user-deployed component and it will override the global setting.
-     ```yaml
-       longhornManager:
-         tolerations:
-         - key: "key"
-           operator: "Equal"
-           value: "value"
-           effect: "NoSchedule"
-       longhornDriver:
-         tolerations:
-         - key: "key"
-           operator: "Equal"
-           value: "value"
-           effect: "NoSchedule"
-       longhornUI:
-         tolerations:
-         - key: "key"
-           operator: "Equal"
-           value: "value"
-           effect: "NoSchedule"
-     ```
-   * If you install Longhorn by using `kubectl` to apply [the deployment YAML](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn.yaml), you need to modify the taint tolerations section for Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
-  Then reapply the YAMl files.
-   * If you install Longhorn using Helm, you can change the Helm values for `global.tolerations`, `longhornManager.tolerations`, `longhornUI.tolerations`, `longhornDriver.tolerations` in the `values.yaml` file, and then run `helm upgrade` to upgrade to the new version of the chart.
-
-3. Set taint tolerations for system-managed components (for example, Instance Manager, Backing Image Manager, Share Manager, CSI Driver, and Engine Image).
-
-   The taint toleration setting can be found at Longhorn UI under **Settings > Kubernetes Taint Toleration.**
-
-
-## History
-Available since v0.6.0
-* [Original feature request](https://github.com/longhorn/longhorn/issues/584)
-* [Resolve the problem with GitOps](https://github.com/longhorn/longhorn/issues/2120)
-
-
----
-
-## Article: advanced-resources/rebuilding/_index.md
-
----
-title: Replica Rebuilding
-weight: 6
----
-- [Replica Rebuilding Workflow](#replica-rebuilding-workflow)
-  - [Full Replica Rebuilding](#full-replica-rebuilding)
-  - [Delta Replica Rebuilding](#delta-replica-rebuilding)
-  - [Fast Replica Rebuilding](#fast-replica-rebuilding)
-- [Factors That Affect Rebuilding Performance](#factors-that-affect-rebuilding-performance)
-- [Use Cases](#use-cases)
-  - [Node Reboot During Upgrade](#node-reboot-during-upgrade)
-  - [Short-Term Node Drain](#short-term-node-drain)
-- [Relevant Settings](#relevant-settings)
-  - [Settings Trade-Off Analysis](#settings-trade-off-analysis)
-
-When Longhorn detects a failed or deleted replica, it automatically initiates a rebuilding process. This document outlines the replica rebuilding workflow for v1 data engine, including **full**, **delta**, and **fast** rebuilding methods. It also explains the limitations associated with each method.
-
-**Rebuilding will not start in the following scenarios**:
-
-- The volume is migrating to another node.
-- The volume is an old restore/DR volume.
-- The volume is expanding in size.
-
-## Replica Rebuilding Workflow
-
-Replica rebuilding may be triggered in the following scenarios for v1 data engine:
-
-- A node is rebooted, drained or evicted.
-- A replica becomes unhealthy or is deleted.
-
- {{< figure alt="Replica Rebuilding Flow Diagram" src="/img/diagrams/architecture/replica-rebuilding-flow.png" >}}
-
-1. Mark the target replica with `WO` (Write-Only) mode.
-2. Create a new snapshot to serve as the volume head reference point for data integrity checks.
-3. Generate the synchronization file list for the volume head and snapshot files.
-
-- For **V1 Data Engine**:  
-  4. Launch a receiver server on the target replica for each snapshot, then instruct the source replica to begin data synchronization.  
-  5. For each snapshot synchronization:
-    - Check whether the snapshot file exists in the target replica's data directory:
-        - If **NO**, transfer the entire snapshot data from the source replica to the target replica. See [Full Replica Rebuilding](#full-replica-rebuilding)
-        - If **YES**, check whether the snapshot checksum files exist, the modification time and checksums are identical between the target and source replicas:
-            - If **YES**, Longhorn skips transferring that snapshot’s data. This optimization reduces CPU usage, disk I/O, network I/O, and overall rebuild time. See [Fast Replica Rebuilding](#fast-replica-rebuilding)
-            - If **NO**, Longhorn calculates and compares block-by-block checksums for the snapshot file using the SHA-512 algorithm. If mismatches are found, only the differing data blocks are synchronized. See [Delta Replica Rebuilding](#delta-replica-rebuilding)
-- For **V2 Data Engine**:  
-  4. Expose the source and target replicas and prepare shallow copy with the SPDK engine.  
-  5. For each snapshot:
-    - Check if the snapshot timestamp, snapshot actual size, and snapshot checksum match between the source and target snapshots:
-      - If **YES**, Longhorn skips transferring that snapshot’s data.
-      - If **NO**, check if both the source and target snapshot hold ranged checksums
-        - If **YES**, fetching and comparing the entire ranges' checksums of the source and target snapshot. If mismatches are found, only copy mismatched parts. See [Fast Replica Rebuilding](#fast-replica-rebuilding)
-        - If **NO**, delete the existing target snapshot. Then start copying the entire snapshot from the source replica to the target replica. See [Full Replica Rebuilding](#full-replica-rebuilding)
-
-### Full Replica Rebuilding
-
-If the replica is unrecoverable or has no existing data, Longhorn synchronizes all data from a healthy replica. It reconstructs the replica by transferring the full snapshot chain.
-
-Full replica rebuilding consumes significant network bandwidth and results in heavy disk write operations on the target node. However, it is required when the target replica has no usable data.
-
-### Delta Replica Rebuilding
-
-Delta replica rebuilding is only for v1 data engine. It starts with a reusable failed replica, and it checks the data integrity for all snapshots' data block by block.
-
-- This is available for failed replica reuse only, and there is an existing snapshot file (with the same name) in the failed replica data directory
-- When a snapshot has no checksum, Longhorn performs delta replica rebuilding for this snapshot instead.
-
-- **Pros**:
-  - Reduce network bandwidth consumption.
-- **Cons**:
-  - Increased CPU overhead because Longhorn will compute the checksum of the snapshot data block by block for data integrity check.
-  - Rebuilding time is influenced by CPU performance.
-
-### Fast Replica Rebuilding
-
-Fast rebuilding is enabled when:
-
-- The fast replica building setting is enabled:
-  - `fast-replica-rebuild-enabled: true`
-- Snapshot checksum files are created (the snapshot checksums are pre-computed) via one of the following methods:
-  - `snapshot-data-integrity` is set to `enabled`:  scheduled job calculates checksums for all snapshots at a configured interval (default: 7 days), or
-  - `snapshot-data-integrity-immediate-check-after-snapshot-creation` is set to `true`: the snapshot checksum is calculated immediately after snapshot creation.
-
-  > **Note**: These checksum calculations consume storage and computing resources. The calculation time is unpredictable and may negatively impact the storage performance.  
-  > For more details, see [Snapshot Data Integrity](../data-integrity/snapshot-data-integrity-check)
-
-- **Pros**:
-  - Minimize network bandwidth consumption.
-  - Minimize disk IO.
-- **Cons**:
-  - Calculating the snapshot checksum can be time-consuming.
-  - The timing of checksum calculation is unpredictable. It can be triggered even if the node is experiencing heavy IO load.
-
-For more details, see [Fast Replica Rebuilding](./fast-replica-rebuilding).
-
-## Factors That Affect Rebuilding Performance
-
-- **Large volume head**
-  - **Why it matters**:  
-    The volume head is a special file that never has a precomputed checksum. If a replica fails, Longhorn must always synchronize the entire volume head file. The larger the volume head, the longer the rebuild process will take.
-  - **How to prevent**:  
-    Take snapshots regularly to reduce the amount of data in the volume head. Schedule snapshot creation before planned maintenance to minimize rebuild time.
-- **No snapshots exist**
-  - **Why it matters**:  
-    Without snapshots, Longhorn cannot skip data transfer or reuse existing data. If a snapshot of the volume head was just created, but its checksum has not yet been calculated, Longhorn must perform delta rebuilding for that snapshot. This increases CPU load due to block-by-block checksum comparisons.
-  - **How to prevent**:  
-    1. Enable `snapshot-data-integrity-immediate-check-after-snapshot-creation` or `snapshot-data-integrity`, so checksums are precomputed.
-       Trade-off: Increases CPU, disk I/O, and storage usage during checksum computation.
-    2. Use a recurring job to take snapshots regularly.
-- **Snapshot Purged**
-  - **Why it matters**:  
-    When snapshot purging starts, system-generated snapshots are coalesced into the next snapshot. As a result, the checksum of the next snapshot becomes invalid.
-  - **How to prevent**:
-    1. Enable `snapshot-data-integrity-immediate-check-after-snapshot-creation` to ensure the checksums are generated after purging.
-    2. Proactively create a snapshot and allow time for its checksum to be computed before upgrades or rebuilds.
-- **Concurrent rebuilds**
-  - **Why it matters**:  
-    Multiple rebuilds running simultaneously on a node can heavily consume CPU, disk I/O, and network I/O resources, impacting overall performance.
-  - **How to prevent**:  
-    Tune the number of concurrent rebuilds using the `concurrent-replica-rebuild-per-node-limit` setting.
-- **Multiple replica failures**
-  - **Why it matters**:  
-    Increases rebuild complexity and duration. If the `auto-cleanup-system-generated-snapshot` setting is `true` and no user-created snapshots exist, then when two replicas fail before either has been rebuilt, Longhorn must perform at least one **full data transfer** to restore volume health.  
-    For more details, see [Avoid "full data transfer" when rebuilding two failed replicas](https://github.com/longhorn/longhorn/issues/9335)
-  - **How to prevent**:
-    1. Manually disable `auto-cleanup-system-generated-snapshot before doing maintenance` before performing maintenance.
-    2. Take user-created snapshots of all volumes before starting maintenance.
-    3. Use a recurring job to take snapshots regularly.
-- **Scale Replica Rebuilding**
-  - **Why it matters**:  
-    Scale replica rebuilding allows a rebuilding replica to fetch snapshots from multiple healthy replicas concurrently, significantly improving rebuild performance for certain workload patterns.
-  - **How to enable**:  
-    Set `replica-rebuild-concurrent-sync-limit` > 1 to allow multiple healthy replicas to start sync servers. The rebuilding replica then fetches different snapshots from different source replicas simultaneously. This feature is particularly beneficial for volumes with scattered small data chunks and holes in their snapshots.
-    
-    For more details, see [Scale Replica Rebuilding](./scale-replica-rebuilding).
-
-## Use Cases
-
-### Node Reboot During Upgrade
-
-When a worker node with replicas is rebooted as part of a planned upgrade:
-
-1. The replica on that node becomes temporarily unavailable and fails, but read/write operations continue.
-2. If the node recovers within the `replica-replenishment-wait-interval`, Longhorn initiates a rebuild using the reusable failed replica.
-
-During the rebuilding process:
-
-  1. Longhorn selects the latest reusable failed replica if multiple reusable failed replicas are available.
-  2. Based on the rebuild scenario:
-      - **If fast replica rebuilding is enabled and all snapshot checksums exist:**
-        [Fast Replica Rebuilding](#fast-replica-rebuilding) is triggered.
-        - Only changed blocks in the volume head are synced, avoiding both full and delta rebuilding.
-      - **If fast replica rebuilding is enabled but some snapshot checksums are missing:**
-        [Delta Replica Rebuilding](#delta-replica-rebuilding) is used.
-        - Changed blocks from snapshots without checksums are synced, avoiding full rebuilding.
-      - **If fast replica rebuilding is disabled:**
-        - Changed blocks of **all snapshots** are synced (delta rebuilding), avoiding full rebuilding.
-
-### Short-Term Node Drain
-
-If a worker node is drained for short-term maintenance and then quickly restored:
-
-1. The replica on the drained node is marked as failed immediately.
-2. If the node is uncordoned before `replica-replenishment-wait-interval` expires, Longhorn attempts to reuse the failed replica..
-3. Rebuild behavior follows the same logic as described in the previous use case.
-
-## Relevant Settings
-
-| Setting| Default | Description |
-| :--- | :---: | :--- |
-| `fast-replica-rebuild-enabled` | `true` | Enables fast replica rebuilding. Relies on precomputed snapshot checksums. |
-| [snapshot-data-integrity](../data-integrity/snapshot-data-integrity-check) | `fast-check` | Hashes snapshot disk files only if they are unhashed or their modification time has changed. |
-| `snapshot-data-integrity-cronjob` | `0 0 */7 * *` | Cron schedule to compute checksums for all snapshots (default: every 7 days). |
-| `snapshot-data-integrity-immediate-check-after-snapshot-creation` | `false` | If enabled, checksums are computed immediately after snapshot creation. |
-| `replica-replenishment-wait-interval` | `600` |    Time in seconds to wait before creating a new replica, allowing reuse of failed replicas. |
-| `concurrent-replica-rebuild-per-node-limit` | `5` | Limits the number of concurrent replica rebuilds per node. |
-| `replica-rebuild-concurrent-sync-limit` | `1` | Maximum number of healthy replicas that can sync to a rebuilding replica concurrently. Range: 1-5. Setting to 1 disables scale rebuilding. |
-| `offline-replica-rebuilding` | `false` | Determines if degraded replicas are rebuilt while the volume is detached. |
-||||
-
-### Settings Trade-Off Analysis
-
-- **[fast-replica-rebuild-enabled](../../references/settings#fast-replica-rebuild-enabled)**
-  - `enabled`  
-    Skips snapshot data transfer if checksums are up to date — fast rebuild, but data isn't re-validated.
-  - `disabled`  
-    Performs delta rebuilding using block comparisons — slower, but ensures snapshot data integrity.
-- **[snapshot-data-integrity](../data-integrity/snapshot-data-integrity-check)**
-  - `enabled`  
-  By default, computes snapshot checksums every 7 days. This consumes resources and increases processing time.
-- **[snapshot-data-integrity-cronjob](../../references/settings#snapshot-data-integrity-check-cronjob)**
-  - Default: `0 0 */7 * *`  
-  If the `snapshot-data-integrity` setting is `enabled`, it defines when snapshot checksums are recalculated. Snapshots created within this interval may lack precomputed checksums.
-- **[snapshot-data-integrity-immediate-check-after-snapshot-creation](../../references/settings#immediate-snapshot-data-integrity-check-after-creating-a-snapshot)**
-  - `true`  
-  Immediately calculates checksums after snapshot creation, increasing CPU and disk I/O usage. Completes at an unpredictable time.
-  - `false`  
-  Snapshots may not have checksums until the next cron job runs with `snapshot-data-integrity` `enabled`. Delta rebuilding will be used if checksums are missing.
-- **[replica-replenishment-wait-interval](../../references/settings#replica-replenishment-wait-interval)**
-  - Default: `600` seconds
-    - **Short interval**: May skip reusing failed replicas and trigger full rebuilds.
-    - **Long interval**: Waits longer to reuse failed replicas but may delay recovery.
-- **[concurrent-replica-rebuild-per-node-limit](../../references/settings#concurrent-replica-rebuild-per-node-limit)**
-  - Default: `5`
-    - **High limit**: May overload node resources and slow down rebuilds and workloads.
-    - **Low limit**: Reduces resource strain but may increase total rebuild duration due to queuing.
-- **[replica-rebuild-concurrent-sync-limit](../../references/settings#replica-rebuild-concurrent-sync-limit)**
-  - Default: `1`
-    - When set to `1`, scale rebuilding is disabled and only traditional single-source rebuilding is used with minimal resource consumption. When set to values 2-5, enables scale rebuilding with multiple source replicas, providing significant performance improvement for volumes. However, higher values increase CPU consumption on source and destination replicas.
-    - This setting can be overridden by `volume.spec.RebuildConcurrentSyncLimit` on a per-volume basis.
-
-
----
-
-## Article: advanced-resources/rebuilding/fast-replica-rebuilding.md
-
----
-title: Fast Replica Rebuilding
-weight: 5
----
-
-Longhorn supports fast replica rebuilding based on the checksums of snapshot disk files.
-
-## Introduction
-
-The legacy replica rebuilding process walks through all snapshot disk files. For each data block, the client (healthy replica) hashes the local data block as well as requests the checksum of the corresponding data block on the remote side (rebuilt replica). Then, the client compares the two checksums to determine if the data block needs to be sent to the remote side and override the data block. Thus, it is an IO- and computing-intensive process, especially if the volume is large or contains a large number of snapshot files.
-
-If users enable the snapshot data integrity check feature by configuring `snapshot-data-integrity` to `enabled` or `fast-check`, the change timestamps and the checksums of snapshot disk files are recorded. As long as the two below conditions are met, we can skip the synchronization of the snapshot disk file. 
-- The change timestamps on the snapshot disk file and the value recorded are the same.
-- Both the local and remote snapshot disk files have the same checksum.
-
-Then, a reduction in the number of unnecessary computations can speed up the entire process as well as reduce the impact on the system performance.
-
-## Settings
-### Global Settings
-- fast-replica-rebuild-enabled <br>
-
-    The setting enables fast replica rebuilding feature. It relies on the checksums of snapshot disk files, so setting the snapshot-data-integrity to **enable** or **fast-check** is a prerequisite. Please refer to [Snapshot Data Integrity Check](../../data-integrity/snapshot-data-integrity-check).
-
-
-
----
-
-## Article: advanced-resources/rebuilding/offline-replica-rebuilding.md
-
----
-title: Offline Replica Rebuilding
-weight: 5
----
-
-Starting with v1.9.0, Longhorn supports offline replica rebuilding, allowing degraded volumes to automatically rebuild replicas while detached.​
-
-## Global Setting `offline-replica-rebuilding`
-
-- When enabled, Longhorn automatically initiates offline rebuilding for eligible volumes.​
-- For more information, see [settings](../../../references/settings#offline-replica-rebuilding).
-
-## Per-Volume Override
-
-- You can override the global `Offline Replica Rebuilding` setting for each volume individually using the Longhorn UI or by running `kubectl -n longhorn-system edit volume [volume-name]` and modifying the `Spec.OfflineRebuilding` field.
-- When set to `enabled` or `disabled`, this per-volume setting takes precedence over the global configuration. The default value is `ignored`.
-
-| Global Setting (`offline-replica-rebuilding`) | Per-Volume Setting (`spec.offlineRebuilding`) | Offline Rebuilding Enabled |
-| :-------------------------------------------: | :-------------------------------------------: | :------------------------: |
-| `true`                                        | `ignored`                                     | Yes                        |
-| `false`                                       | `ignored`                                     | No                         |
-| `true`                                        | `enabled`                                     | Yes                        |
-| `false`                                       | `enabled`                                     | Yes                        |
-| `true`                                        | `disabled`                                    | No                         |
-| `false`                                       | `disabled`                                    | No                         |
-
-## Rebuilding Process
-
-- When triggered, Longhorn attaches the volume without activating the frontend, rebuilds any missing replicas, and then detaches the volume upon completion.
-- This process can be interrupted if the workload scales up.
-
-## Rebuilding Not Started or Canceled
-
-When offline rebuilding starts, degraded volumes can get stuck in the attached state if rebuilding conditions are not met. To prevent this, if the necessary conditions are not satisfied, offline rebuilding will not start or will be canceled.
-
-- **Benefits:**
-  - It ensures volumes don't remain stuck in the attached state if rebuilding never finishes.
-  - It prevents wasteful rebuilding attempts.
-  - It reduces unnecessary volume attachment and detachment cycles.
-  - It provides predictable rebuilding behavior based on resource availability.
-
-- **Required conditions:**
-
-  Offline rebuilding automatically starts for degraded volumes once the required conditions are met. These conditions include:
-
-  - A reusable failed replica exists, or
-  - A disk candidate exists:
-    - The instance manager on the node hosting the disk must be ready.
-    - The disk's containing node is schedulable.
-    - The disk itself is schedulable.
-
-### Before Offline Rebuilding Starts
-
-When offline rebuilding is enabled, Longhorn determines whether it should start.
-
-1. Longhorn detects a degraded, detached volume.
-2. The system validates whether the required conditions are met before starting the rebuild.
-3. If the conditions are met, rebuilding proceeds. Otherwise, the volume remains detached.
-4. The required conditions are re-evaluated when a node is added, becomes ready, or becomes schedulable.
-
-### During Offline Rebuilding
-
-Longhorn determines if a rebuilding process should be canceled while in progress.
-
-1. Longhorn detects the volume's status when offline rebuilding starts and the volume is attached.
-2. If the volume's `Scheduled` condition status becomes `False`, the offline rebuilding is canceled, and the volume is detached.
-3. If the required conditions are met again, offline rebuilding restarts; otherwise, the volume remains detached.
-
-### Examples
-
-- Successful offline rebuilding:
-  1. A volume is created with 3 replicas in a 3-worker-node cluster.
-  2. Offline rebuilding is enabled.
-  3. The volume is detached and then a replica of the volume is deleted.
-  4. Offline rebuilding begins, and the volume is attached.
-  5. After rebuilding finishes, the volume is detached.
-- Offline rebuilding does not start even when it is enabled:
-  1. A volume is created with 3 replicas in a 3-worker-node (A, B, and C) cluster.
-  2. Offline rebuilding is enabled.
-  3. Worker node A is unschedulable.
-  4. The volume replica on worker node A is deleted.
-  5. Because only two schedulable worker nodes exist, offline rebuilding will not start.
-- A worker node is drained during offline rebuilding:
-  1. A volume is created with 3 replicas in a 3-worker-node (A, B, and C) cluster.
-  2. Offline rebuilding is enabled.
-  3. The volume is detached, and then the volume replica on worker node A is deleted.
-  4. Offline rebuilding begins, and the volume is attached to rebuild a replica on worker node A.
-  5. Worker node A is drained making it unschedulable, and the volume replica on worker node A is deleted.
-  6. The volume remains attached until the volume's `Scheduled` condition status becomes `False`.
-  7. The volume is detached until worker node A is uncordoned or a new schedulable node is added.
-
-## Limitations
-
-Offline rebuilding is not supported for faulted volumes.
-
-
----
-
-## Article: advanced-resources/rebuilding/replica-rebuild-qos.md
-
----
-title: Replica Rebuild QoS
-weight: 5
----
-
-Longhorn supports rebuild bandwidth throttling (QoS) for v2 volumes based on SPDK. This feature allows users to apply bandwidth limits to replicas during rebuilding to avoid overloading the source and destination node’s storage throughput.
-
-## Global Setting: `v2-data-engine-rebuilding-mbytes-per-second`
-
-* A cluster-wide setting that defines the maximum write bandwidth (in MB/s) for rebuilding replicas.
-* When set to `0`, there is no limit.
-* This setting can only be configured via kubectl:
-
-```bash
-kubectl -n longhorn-system patch settings.longhorn.io v2-data-engine-rebuilding-mbytes-per-second \
-  --type=merge -p '{"value":"100"}'
-```
-
-## Per-Volume QoS Override
-
-You can override the global rebuild bandwidth limit per volume by setting `spec.rebuildingMbytesPerSecond` in the `volume` spec:
-
-```yaml
-spec:
-  rebuildingMbytesPerSecond: 50
-```
-
-## Effective QoS Resolution
-
-The effective rebuild bandwidth limit is determined by evaluating both global and volume-specific settings. If the volume-specific value is greater than zero, it overrides the global setting.
-
-| Global Setting | Volume Override | Effective QoS |
-| -------------- | --------------- | ------------- |
-| 0              | 0               | No limit      |
-| 100            | 0               | 100 MB/s      |
-| 0              | 200             | 200 MB/s      |
-| 100            | 200             | 200 MB/s      |
-
-The applied QoS is recorded in the field `status.rebuildStatus[*].appliedRebuildingMbps` in the `engine` status. 
-
-Example of how the applied bandwidth limit appears in the volume engine status:
-
-```yaml
-  Rebuild Status:
-    tcp://172.24.1.95:20001:
-      Error:
-      From Replica Address:  tcp://172.24.8.133:20001
-      Is Rebuilding:         true
-      Progress:              97
-      State:                 in_progress
-      appliedRebuildingMbps: 50
-```
-
-
----
-
-## Article: advanced-resources/rebuilding/scale-replica-rebuilding.md
-
----
-title: Scale Replica Rebuilding
-weight: 6
----
-
-Starting with v1.11.0, Longhorn supports **scale replica rebuilding**, allowing a rebuilding replica to fetch snapshot data from multiple healthy replicas concurrently to improve rebuild performance.
-
-## Introduction
-
-Traditionally, Longhorn rebuilds a failed replica by fetching all snapshot data from a single healthy replica. With scale replica rebuilding, the rebuilding replica can fetch snapshot data from multiple source replicas simultaneously, potentially reducing rebuild time.
-
-This feature is particularly beneficial when volumes contain scattered small data chunks and holes in their snapshots, as it allows better utilization of available network bandwidth and parallel processing.
-
-## How It Works
-
-When scale replica rebuilding is enabled:
-
-1. Multiple healthy replicas start sync servers as snapshot data sources.
-2. The rebuilding replica fetches snapshot data from different snapshots across different source replicas simultaneously.
-3. The number of concurrent source replicas is controlled by the `replica-rebuild-concurrent-sync-limit` setting.
-
-## Settings
-
-### Global Setting: `replica-rebuild-concurrent-sync-limit`
-
-This setting controls the maximum number of healthy replicas that can sync snapshot data to a single rebuilding replica concurrently.
-
-- **Default**: `1` (scale rebuilding disabled)
-- **Range**: `1` to `5`
-
-When set to `1`, only one source replica syncs to the rebuilding replica at a time (traditional behavior). Values greater than `1` enable scale replica rebuilding, allowing multiple source replicas (up to the configured limit) to sync snapshot data to the rebuilding replica simultaneously.
-
-For more information, see [Settings Reference](../../../references/settings#replica-rebuild-concurrent-sync-limit).
-
-### Per-Volume Override
-
-You can override the global `replica-rebuild-concurrent-sync-limit` setting for individual volumes:
-
-- Using the Longhorn UI: Edit the volume and modify the `Rebuild Concurrent Sync Limit` field.
-- Using kubectl: Run `kubectl -n longhorn-system edit volume [volume-name]` and modify the `spec.rebuildConcurrentSyncLimit` field.
-
-When the per-volume setting is set to `0`, the volume uses the global setting. Otherwise, the per-volume setting takes precedence.
-
-## Performance Considerations
-
-### When Scale Rebuilding Helps
-
-Scale replica rebuilding provides significant performance improvements in the following scenarios:
-
-- **Volumes with scattered small data chunks**: When snapshots consist of intermittent small data chunks (e.g., 4K blocks) with holes, scale rebuilding can significantly reduce rebuild time by utilizing multiple source replicas.
-- **Network bandwidth availability**: When network bandwidth is underutilized during traditional rebuilding, adding more source replicas can better utilize available bandwidth.
-
-## Best Practices
-
-1. **Start with the default**: The default value of `1` (scale replica rebuilding disabled) is conservative and suitable for most environments.
-
-2. **Test before increasing**: Before increasing the limit, test in a non-production environment to understand the resource impact on your specific workload.
-
-3. **Consider your workload**:
-   - For volumes with scattered small data chunks: Consider enabling scale replica rebuilding (set to `2` or higher).
-   - For volumes with continuous large data chunks: The performance benefit may be minimal.
-
-4. **Monitor resource usage**: When scale replica rebuilding is enabled, monitor CPU usage on nodes hosting source and destination replicas to ensure sufficient resources are available.
-
-5. **Balance performance and resources**: Higher concurrent sync limits can improve rebuild speed but consume more CPU resources. Consider the trade-off based on your cluster's resource availability and rebuild urgency.
-
-## Limitations
-
-- The maximum number of concurrent source replicas is limited to `5`.
-- Scale replica rebuilding is disabled by default to avoid unexpected high resource consumption.
-- Actual performance improvements depend on factors including disk I/O performance, network bandwidth, data distribution patterns, and available CPU resources.
-
-## References
-
-For more information on related rebuilding features, see [Longhorn #11331](https://github.com/longhorn/longhorn/issues/11331).
-
-
----
-
-## Article: advanced-resources/driver-migration/_index.md
-
----
-title: CSI Driver Migration
-weight: 100
----
-
----
-
-## Article: advanced-resources/driver-migration/migrating-flexvolume.md
-
----
-title: Migrating from the Flexvolume Driver to CSI
-weight: 5
----
-
-As of Longhorn v0.8.0, the Flexvolume driver is no longer supported. This guide will show you how to migrate from the Flexvolume driver to CSI. CSI is the newest out-of-tree Kubernetes storage interface.
-
-> Note that the volumes created and used through one driver won't be recognized by Kubernetes using the other driver. So please don't switch the driver (e.g. during an upgrade) if you have existing volumes created using the old driver.
-
-Ensure your Longhorn App is up to date. Follow the relevant upgrade procedure before proceeding.
-
-The migration path between drivers requires backing up and restoring each volume and will incur both API and workload downtime. This can be a tedious process. Consider deleting unimportant workloads using the old driver to reduce effort.
-
-1. [Back up existing volumes](../../../snapshots-and-backups/backup-and-restore/create-a-backup).
-2. On Rancher UI, navigate to the `Catalog Apps` page, locate the `Longhorn` app and click the `Up to date` button. Under `Kubernetes Driver`, select
-`flexvolume`. We recommend leaving `Flexvolume Path` empty. Click `Upgrade`.
-3. Restore each volume. This [procedure](../../../snapshots-and-backups/backup-and-restore/restore-statefulset) is tailored to the StatefulSet workload, but the process is approximately the same for all workloads.
-
----
-
-## Article: advanced-resources/data-integrity/_index.md
-
----
-title: Data Integrity
-weight: 5
----
-
----
-
-## Article: advanced-resources/data-integrity/on-demand-snapshot-data-integrity.md
-
----
-title: On-Demand Snapshot Checksum Calculation
-weight: 2
----
-
-Longhorn supports **on-demand snapshot checksum** calculation via CR operation and CLI.
-
-## Introduction
-
-In addition to periodic snapshot data integrity checks, Longhorn provides an **on-demand snapshot checksum** mechanism. This feature allows users to manually trigger checksum calculation for all user-created snapshots of a volume without waiting for the scheduled cron job.
-
-On-demand checksum is useful when users need immediate calculation of snapshots for speeding up replica rebuilding.
-
-## Related Custom Resource Information
-
-### Volume
-
-Longhorn uses the following fields to trigger an on-demand snapshot checksum calculation request:
-
-- **Spec.SnapshotHashingRequestedAt**  
-
-	`SnapshotHashingRequestedAt` is the RFC3339 timestamp (e.g., "2026-03-16T10:30:00Z") when an on-demand snapshot checksum calculation is requested. When this value is set and is later than `LastOnDemandSnapshotHashingCompleteAt`, the system will calculate checksums for all user snapshots.
-
-	If `SnapshotHashingRequestedAt` differs from `LastOnDemandSnapshotHashingCompleteAt`, it indicates that a hashing request is still in progress, and a new request will be rejected.
-
-- **Status.LastOnDemandSnapshotHashingCompleteAt**  
-
-	LastOnDemandSnapshotHashingCompleteAt is the RFC3339 timestamp (e.g., "2026-03-16T10:30:00Z") when the most recent on-demand snapshot checksum calculation completed. When this value matches `SnapshotHashingRequestedAt`, the requested on-demand checksum calculation is considered complete.
-
-### Snapshot
-
-Each snapshot records the timestamp of its latest checksum calculation:
-
-- **Status.ChecksumCalculatedAt**  
-
-	ChecksumCalculatedAt is the RFC3339 timestamp indicating when the checksum for this snapshot was last calculated or updated.
-
-## How It Works
-
-When a user triggers an on-demand checksum request, Longhorn performs the following actions:
-
-### 1. User issues an on-demand request
-
-The request is initiated through the Longhorn CLI:
-
-```bash
-./longhornctl checksum volume --name=<volume-name> --namespace=longhorn-system
-```
-
-```bash
-./longhornctl checksum volume --node-id=v<node-name> --namespace=longhorn-system
-```
-
-```bash
-./longhornctl checksum volume --all=true --namespace=longhorn-system
-```
-
-
-### 2. Detects a new request
-
-The **Volume Controller** compares `Spec.SnapshotHashingRequestedAt` with `Status.LastOnDemandSnapshotHashingCompleteAt`. If the requested timestamp is newer, Longhorn triggers the SnapshotMonitor to calculate checksums for all existing **user-created** snapshots that are missing checksum data.
-
-### 3. Calculates snapshot checksums
-
-Performs the checksum calculation using the standard snapshot data integrity logic.
-
-### 4. VolumeController evaluates completion
-
-Longhorn considers the on-demand request completed when all relevant **user-created** snapshots have a checksum
-
-### 5. Completion is recorded
-
-When all snapshots satisfy the criteria above, Longhorn updates `Volume.Status.LastOnDemandChecksumCompletedAt` This indicates that the on-demand checksum request has been processed.
-
-## CLI Usage
-
-Longhorn provides a CLI interface to trigger on-demand snapshot checksum operations through the [longhornctl command-line tool](https://github.com/longhorn/cli).
-
-**Usage**
-
-```bash
-longhornctl checksum volume [flags] [options]
-```
-
-**Options**
-
-`--all`: Apply to all volumes (default: false)
-
-`--name`: Name of the Longhorn volume
-
-`--node-id`: Compute snapshots for all volumes on the specified node
-
-
-> **Note**: This is an asynchronous operation. When the request is marked as complete in the output log, it indicates the trigger was successful. Since there is no dedicated Request CRD, the CLI output confirms the controller has acknowledged the Spec update. Actual computation occurs in the background and duration scales with volume size. You can monitor the progress and check snapshot checksums using `kubectl`
-
-### Example
-
-**Command**:
-
-```bash
-./longhornctl-linux-amd64 checksum volume --all=true
-```
-
-**Output**
-```bash
-INFO[2026-03-18T17:04:27+08:00] Triggering on-demand snapshot checksum calculation 
-INFO[2026-03-18T17:04:27+08:00] Requested on-demand checksum calculation for volume tmp1  volume=tmp1
-INFO[2026-03-18T17:04:27+08:00] Requested on-demand checksum calculation for volume tmp2  volume=tmp2
-INFO[2026-03-18T17:04:27+08:00] Snapshot checksum calculation may take some time. You can check the snapshot checksum via kubectl. 
-INFO[2026-03-18T17:04:27+08:00] Checksum request submitted                   
-INFO[2026-03-18T17:04:27+08:00] Cleaning volume on-demand checksum requester 
-INFO[2026-03-18T17:04:27+08:00] Completed volume on-demand checksum requester 
-```
-
-## Limitations
-
-- On-demand snapshot checksum only applies to volumes with at least `two` replicas, consistent with the behavior of periodic snapshot data integrity checks.
-- The global or per-volume setting **snapshot-data-integrity** must be set to either **enabled** or **fast-check**. The feature is not available when data integrity is **disabled**.
-
-
----
-
-## Article: advanced-resources/data-integrity/snapshot-data-integrity-check.md
-
----
-title: Snapshot Data Integrity Check
-weight: 2
----
-
-Longhorn is capable of hashing snapshot disk files and periodically checking their integrity.
-
-## Introduction
-
-Longhorn system supports volume snapshotting and stores the snapshot disk files on the local disk. However, it is impossible to check the data integrity of snapshots due to the lack of the checksums of the snapshots previously. As a result, when the data is corrupted due to, for example, the bit rot in the underlying storage, there is no way to detect the corruption and repair the replicas. After applying the feature, Longhorn is capable of hashing snapshot disk files and periodically checking their integrity. When a snapshot disk file in one replica is corrupted, Longhorn will automatically start the rebuilding process to fix it.
-
-## Settings
-
-### Global Settings
-
-- **snapshot-data-integrity** <br>
-
-    This setting allows users to enable or disable snapshot hashing and data integrity checking. Available options are:
-
-    - **disabled**: Disable snapshot disk file hashing and data integrity checking.
-    - **enabled**: Enables periodic snapshot disk file hashing and data integrity checking. To detect the filesystem-unaware corruption caused by bit rot or other issues in snapshot disk files, Longhorn system periodically hashes files and finds corrupted ones. Hence, the system performance will be impacted during the periodical checking.
-    - **fast-check**: Enable snapshot disk file hashing and fast data integrity checking. Longhorn system only hashes snapshot disk files if their are not hashed or the modification time are changed. In this mode, filesystem-unaware corruption cannot be detected, but the impact on system performance can be minimized.
-
-- **snapshot-data-integrity-immediate-check-after-snapshot-creation** <br>
-
-    Hashing snapshot disk files impacts the performance of the system. The immediate snapshot hashing and checking can be disabled to minimize the impact after creating a snapshot.
-
-- **snapshot-data-integrity-cronjob** <br>
-
-    A schedule defined using the unix-cron string format specifies when Longhorn checks the data integrity of snapshot disk files.
-
-    > **Warning**
-    > Hashing snapshot disk files impacts the performance of the system. It is recommended to run data integrity checks during off-peak times and to reduce the frequency of checks.
-
-### Per-Volume Settings
-
-Longhorn also supports the per-volume setting by configuring `Volume.Spec.SnapshotDataIntegrity`. The value is `ignored` by default, so data integrity check is determined by the global setting `snapshot-data-integrity`. `Volume.Spec.SnapshotDataIntegrity` supports `ignored`, `disabled`, `enabled` and `fast-check`. Each volume can have its data integrity check setting customized.
-
-## Performance Impact
-
-For detecting data corruption, checksums of snapshot disk files need to be calculated. The calculations consume storage and computation resources. Therefore, the storage performance will be negatively impacted. In order to provide a clear understanding of the impact, we benchmarked storage performance when checksumming disk files. The read IOPS, bandwidth and latency are negatively impacted.
-
-- Environment
-    - Host: AWS EC2 c5d.2xlarge
-    - CPU: Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz
-    - Memory: 16 GB
-    - Network: Up to 10Gbps
-    - Kubernetes: v1.24.4+rke2r1
-- Result
-    - Disk: 200 GiB NVMe SSD as the instance store
-      - 100 GiB snapshot with full random data
-        {{< figure src="/img/diagrams/snapshot/snapshot_hash_ssd_perf.png" >}}
-
-    - Disk: 200 GiB throughput optimized HDD (st1)
-      - 30 GiB snapshot with full random data
-        {{< figure src="/img/diagrams/snapshot/snapshot_hash_hdd_perf.png" >}}
-
-## Recommendation
-
-The feature helps detect the data corruption in snapshot disk files of volumes. However, the checksum calculation negatively impacts the storage performance. To lower down the impact, the recommendations are
-- Checksumming and checking snapshot disk files can be scheduled to off-peak hours by the global setting `snapshot-data-integrity-cronjob`.
-- Disable the global setting `snapshot-data-integrity-immediate-check-after-snapshot-creation`.
-
----
-
-## Article: advanced-resources/system-backup-restore/_index.md
-
----
-title: Longhorn System Backup And Restore
-weight: 10
----
-
-> Before v1.4.0, you can restore Longhorn with third-party tools.
-
-- [Restore to a cluster contains data using Rancher snapshot](./restore-to-a-cluster-contains-data-using-rancher-snapshot)
-- [Restore to a new cluster using Velero](./restore-to-a-new-cluster-using-velero)
-
-> Since v1.4.0, Longhorn introduced out-of-the-box Longhorn system backup and restore.
-> - Longhorn's custom resources will be backed up and bundled into a single system backup file, then saved to the remote backup target.
-> - Later, you can choose a system backup to restore to a new cluster or restore to an existing cluster.
-
-- [Backup Longhorn system](./backup-longhorn-system)
-- [Restore Longhorn system](./restore-longhorn-system)
-
-
----
-
-## Article: advanced-resources/system-backup-restore/backup-longhorn-system.md
-
----
-title: Backup Longhorn System
-weight: 1
----
-
-- [Longhorn System Backup Bundle](#longhorn-system-backup-bundle)
-- [Create Longhorn System Backup](#create-longhorn-system-backup)
-  - [Prerequisite](#prerequisite)
-  - [Configuration](#configuration)
-    - [Volume Backup Policy](#volume-backup-policy)
-  - [Single Execution](#single-execution)
-    - [Create a System Backup Using the Longhorn UI](#create-a-system-backup-using-the-longhorn-ui)
-    - [Create a System Backup Using `kubectl`](#create-a-system-backup-using-kubectl)
-  - [Recurring Job](#recurring-job)
-    - [Create a Recurring Backup Job Using the Longhorn UI](#create-a-recurring-backup-job-using-the-longhorn-ui)
-    - [Create a Recurring Backup Job Using `kubectl`](#create-a-recurring-backup-job-using-kubectl)
-- [Delete Longhorn System Backup](#delete-longhorn-system-backup)
-  - [Delete a System Backup Using the Longhorn UI](#delete-a-system-backup-using-the-longhorn-ui)
-  - [Delete a System Backup Using `kubectl`](#delete-a-system-backup-using-kubectl)
-- [History](#history)
-
-## Longhorn System Backup Bundle
-
-Longhorn system backup creates a resource bundle and uploads it to the remote backup target.
-
-It includes below resources associating with the Longhorn system:
-- BackingImages
-- ClusterRoles
-- ClusterRoleBindings
-- ConfigMaps
-- CustomResourceDefinitions
-- DaemonSets
-- Deployments
-- EngineImages
-- PersistentVolumes
-- PersistentVolumeClaims
-- RecurringJobs
-- Roles
-- RoleBindings
-- Settings
-- Services
-- ServiceAccounts
-- StorageClasses
-- Volumes
-
-> **Note:**
->
-> - The default backup target (`default`) is always used to store system backups.
-> - The Longhorn system backup bundle only includes resources operated by Longhorn.
-> - Longhorn does not back up the `Nodes` resource. The Longhorn Manager on the target cluster is responsible for creating its own Longhorn `Node` custom resources.
-> - Longhorn is unable to back up V2 Data Engine backing images.
->
-> Here is an example of a cluster workload with a bare `Pod` workload. The system backup will collect the `PersistentVolumeClaim`, `PersistentVolume`, and `Volume`. The system backup will exclude the `Pod` during system backup resource collection.
-
-## Create Longhorn System Backup
-
-You can create a Longhorn system backup using the Longhorn UI. Or with the `kubectl` command.
-
-### Prerequisite
-
-- [Set the backup target](../../../snapshots-and-backups/backup-and-restore/set-backup-target). Longhorn saves the system backups to the remote backup store. You will see an error during creation when the backup target is unset.
-
-   > **Note:** Unsetting the backup target clears the existing `SystemBackup` custom resource. Longhorn syncs to the remote backup store after setting the backup target. Another cluster can also sync to the same list of system backups when the backup target is the same.
-
-- Create a backup for all volumes (optional).
-
-  > **Note:** Longhorn system restores volume with the latest backup. We recommend updating the last backup for all volumes. By taking volume backups, you ensure that the data is up-to-date with the system backup. For more information, please refer to the [Configuration - Volume Backup Policy](#volume-backup-policy) section.
-
-### Configuration
-
-#### Volume Backup Policy
-The Longhorn system backup offers the following volume backup policies:
- - `if-not-present`: Longhorn will create a backup for volumes that either lack an existing backup or have an outdated latest backup.
- - `always`: Longhorn will create a backup for all volumes, regardless of their existing backups.
- - `disabled`: Longhorn will not create any backups for volumes.
-
-### Single Execution
-
-#### Create a System Backup Using the Longhorn UI
-
-1. Go to the `System Backups` page in the `Backup and Restore` drop-down list.
-
-1. Click `Create` under `System Backup`.
-
-1. Give a `Name` for the system backup.
-
-1. Select a `Volume Backup Policy` for the system backup.
-
-1. The system backup will be ready to use when the state changes to `Ready`.
-
-#### Create a System Backup Using `kubectl`
-
-1. Execute `kubectl create` to create a Longhorn `SystemBackup` custom resource.
-   ```yaml
-   apiVersion: longhorn.io/v1beta2
-   kind: SystemBackup
-   metadata:
-     name: demo
-     namespace: longhorn-system
-   spec:
-     volumeBackupPolicy: if-not-present
-   ```
-
-1. The system backup will be ready to use when the state changes to `Ready`.
-   ```
-   > kubectl -n longhorn-system get systembackup
-   NAME   VERSION   STATE   CREATED
-   demo   v1.4.0    Ready   2022-11-24T04:23:24Z
-   ```
-
-### Recurring Job
-
-#### Create a Recurring Backup Job Using the Longhorn UI
-
-1. Go to the `Recurring Jobs` page.
-
-1. Click on `Create Recurring Job`.
-
-1. Configure the following settings:
-   - **Name**: Specify a name for the recurring job.
-   - **Task**: Select **System Backup**.
-   - **Retain**: Specify the number of system backups that Longhorn must retain.
-   - **Cron**: Specify the cron expression (a string consisting of fields separated by whitespace characters) that defines the schedule properties.
-   - **Parameters**: Select **volume-backup-policy**.
-
-1. Click **OK**.
-
-Longhorn creates system backups according to the schedule defined in the **Cron** field.
-
-#### Create a Recurring Backup Job Using `kubectl`
-
-Run `kubectl create` to create a Longhorn `RecurringJob` custom resource with the task `system-backup`.
-
-Example:
-   ```yaml
-   apiVersion: longhorn.io/v1beta2
-   kind: RecurringJob
-   metadata:
-     name: demo
-     namespace: longhorn-system
-   spec:
-     task: system-backup
-     cron: '* * * * *'
-     retain: 1
-     parameters:
-       volume-backup-policy: if-not-present
-   ```
-
-Longhorn creates system backup according to the schedule defined in the `cron` field.
-
-## Delete Longhorn System Backup
-
-You can delete the Longhorn system backup in the remote backup target using the Longhorn UI. Or with the `kubectl` command.
-
-### Delete a System Backup Using the Longhorn UI
-
-1. Go to the `System Backup` page in the `Setting` drop-down list.
-
-1. Delete a single system backup in the `Operation` drop-down menu next to the system backup. Or delete in batch with the `Delete` button.
-
-   > **Note:** Deleting the system backup will also make a deletion in the backup store.
-
-### Delete a System Backup Using `kubectl`
-
-1. Execute `kubectl delete` to delete a Longhorn `SystemBackup` custom resource.
-   ```
-   > kubectl -n longhorn-system get systembackup
-   NAME   VERSION   STATE   CREATED
-   demo   v1.4.0    Ready   2022-11-24T04:23:24Z
-
-   > kubectl -n longhorn-system delete systembackup/demo
-   systembackup.longhorn.io "demo" deleted
-   ```
-
-## History
-[Original Feature Request](https://github.com/longhorn/longhorn/issues/1455)
-
-Available since v1.4.0
-
-
----
-
-## Article: advanced-resources/system-backup-restore/restore-longhorn-system.md
-
----
-title: Restore Longhorn System
-weight: 2
----
-
-- [What does the Longhorn system restore rollout to the cluster](#longhorn-system-restore-rollouts)
-- [What are the limitations](#limitations)
-    - [Restore Path](#restore-path)
-- [How to restore from Longhorn system backup](#create-longhorn-system-restore)
-    - [Prerequisite](#prerequisite)
-    - [Using Longhorn UI](#using-longhorn-ui)
-    - [Using kubectl command](#using-kubectl-command)
-- [How to delete Longhorn system restore](#delete-longhorn-system-restore)
-    - [Using Longhorn UI](#using-longhorn-ui-1)
-    - [Using kubectl command](#using-kubectl-command-1)
-- [How to restart Longhorn System Restore](#restart-longhorn-system-restore)
-- [What settings are configurable](#configurable-settings)
-- [How to troubleshoot](#troubleshoot)
-- [History](#history)
-
-## Longhorn System Restore Rollouts
-
-- Longhorn restores the resource from the [Longhorn System Backup Bundle](../backup-longhorn-system#longhorn-system-backup-bundle).
-- Longhorn does not restore existing `Volumes` and their associated `PersistentVolume` and `PersistentVolumeClaim`.
-- Longhorn automatically restores a `Volume` from its latest backup.
-- To prevent overwriting eligible settings, Longhorn does not restore the `ConfigMap/longhorn-default-setting`.
-- Longhorn does not restore [configurable settings](#configurable-settings).
-- Since Longhorn does not back up V2 Data Engine backing images, you must ensure that those images are available in the cluster before you restore the Longhorn system. This allows Longhorn to restore volumes that use V2 Data Engine backing images.
-
-## Limitations
-### Restore Path
-
-Longhorn does not support cross-major/minor version system restore except for upgrade failures, ex: 1.4.x -> 1.5.
-## Create Longhorn System Restore
-
-You can restore the Longhorn system using Longhorn UI. Or with the `kubectl` command.
-
-### Prerequisite
-
-- A running Longhorn cluster for Longhorn to roll out the resources in the system backup bundle.
-- Set up the `Nodes` and disk tags for `StorageClass`.
-- Have a Longhorn system backup.
-
-  See [Backup Longhorn System - Create Longhorn System Backup](../backup-longhorn-system#create-longhorn-system-backup) for instructions.
-- All existing `Volumes` are detached.
-
-### Using Longhorn UI
-
-1. Go to the `System Backups` page in the `Backup and Restore`.
-1. Select a system backup to restore.
-1. Click `Restore` in the `Operation` drop-down menu.
-1. Give a `Name` for the system restore.
-1. The system restore starts and show the `Completed` state when done.
-
-## Using `kubectl` Command
-
-1. Find the Longhorn `SystemBackup` to restore.
-   ```
-   > kubectl -n longhorn-system get systembackup
-   NAME     VERSION   STATE   CREATED
-   demo     v1.4.0    Ready   2022-11-24T04:23:24Z
-   demo-2   v1.4.0    Ready   2022-11-24T05:00:59Z
-   ```
-1. Execute `kubectl create` to create a Longhorn `SystemRestore` of the `SystemBackup`.
-   ```yaml
-   apiVersion: longhorn.io/v1beta2
-   kind: SystemRestore
-   metadata:
-     name: restore-demo
-     namespace: longhorn-system
-   spec:
-     systemBackup: demo
-   ```
-1. The system restore starts.
-1. The `SystemRestore` change to state `Completed` when done.
-   ```
-   > kubectl -n longhorn-system get systemrestore
-   NAME           STATE       AGE
-   restore-demo   Completed   59s
-   ```
-
-## Delete Longhorn System Restore
-
-> **Warning:** Deleting the SystemRestore also deletes the associated job and will abort the remaining resource rollouts. You can [Restart the Longhorn System Restore](#restart-longhorn-system-restore) to roll out the remaining resources.
-
-You can abort or remove a completed Longhorn system restore using Longhorn UI. Or with the `kubectl` command.
-
-### Using Longhorn UI
-
-1. Go to the `System Backups` page in the `Backup and Restore`.
-1. Delete a single system restore in the `Operation` drop-down menu next to the system restore. Or delete in batch with the `Delete` button.
-
-### Using `kubectl` Command
-
-1. Execute `kubectl delete` to delete a Longhorn `SystemRestore`.
-   ```
-   > kubectl -n longhorn-system get systemrestore
-   NAME           STATE       AGE
-   restore-demo   Completed   2m37s
-   
-   > kubectl -n longhorn-system delete systemrestore/restore-demo
-   systemrestore.longhorn.io "restore-demo" deleted
-   ```
-
-## Restart Longhorn System Restore
-
-1. [Delete Longhorn System Restore](#delete-longhorn-system-restore) that is in progress.
-1. [Create Longhorn System Restore](#create-longhorn-system-restore).
-
-## Configurable Settings
-
-Some settings are excluded as configurable before the Longhorn system restore.
-- [Concurrent volume backup restore per node limit](../../../references/settings/#concurrent-volume-backup-restore-per-node-limit)
-- [Concurrent replica rebuild per node limit](../../../references/settings/#concurrent-replica-rebuild-per-node-limit)
-
-## Troubleshoot
-
-### System Restore Hangs
-
-1. Check the longhorn-system-rollout Pod log for any errors.
-```
-> kubectl -n longhorn-system logs --selector=job-name=longhorn-system-rollout-<SYSTEM-RESTORE-NAME>
-```
-1. Resolve if the issue is identifiable, ex: remove the problematic restoring resource.
-1. [Restart the Longhorn system restore](#restart-longhorn-system-restore).
-
-## History
-[Original Feature Request](https://github.com/longhorn/longhorn/issues/1455)
-
-Available since v1.4.0
-
-
----
-
-## Article: advanced-resources/system-backup-restore/restore-to-a-cluster-contains-data-using-Rancher-snapshot.md
-
----
-title: Restore to a cluster contains data using Rancher snapshot
-weight: 4
----
-
-This doc describes what users need to do after restoring the cluster with a Rancher snapshot.
-
-## Assumptions:
-- **Most of the data and the underlying disks still exist** in the cluster before the restore and can be directly reused then.
-- There is a backupstore holding all volume data.
-- The setting [`Disable Revision Counter`](../../../references/settings/#disable-revision-counter) is false. (It's false by default.) Otherwise, users need to manually check if the data among volume replicas are consistent, or directly restore volumes from backup.
-
-## Expectation:
-- All settings and node & disk configs will be restored.
-- As long as the valid data still exists, the volumes can be recovered without using a backup. In other words, we will try to avoid restoring backups, which may help reduce Recovery Time Objective (RTO) as well as save bandwidth.
-- Detect the invalid or out-of-sync replicas as long as the related volume still contains a valid replica after the restore.
-
-## Behaviors & Requirement of Rancher restore
-According to [the Rancher restore article](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup), you have to restart the Kubernetes components on all nodes. Otherwise, there will be tons of resource update conflicts in Longhorn.
-
-## Actions after the restore
-- Restart all Kubernetes components for all nodes. See the above link for more details.
-
-- Kill all longhorn manager pods then Kubernetes will automatically restart them. Wait for conflicts in longhorn manager pods to disappear.
-
-- All volumes may be reattached. If a Longhorn volume is used by a single pod, users need to shut down then recreate it. For Deployments or Statefulsets, Longhorn will automatically kill then restart the related pods.
-
-- If the following happens after the snapshot and before the cluster restore:
-    - A volume is unchanged: Users don't need to do anything.
-    - The data is updated: Users don't need to do anything typically. Longhorn will automatically fail the replicas that don't contain the latest data.
-    - A new volume is created: This volume will disappear after the restore. Users need to recreate a new volume, launch [a single replica volume](../../data-recovery/export-from-replica) based on the replica of the disappeared volume, then transfer the data to the new volume.
-    - A volume is deleted: Since the data is cleaned up when the volume is removed, the restored volume contains no data. Users may need to re-delete it.
-    - For DR volumes: Users don't need to do anything. Longhorn will redo a full restore.
-    - Some operations are applied for a volume:
-        - Backup: The backup info of the volume should be resynced automatically.
-        - Snapshot: The snapshot info of the volume should be resynced once the volume is attached.
-        - Replica rebuilding & replica removal:
-            - If there are new replicas rebuilt, those replicas will disappear from the Longhorn system after the restoring. Users need to clean up the replica data manually, or use the data directories of these replicas to export a single replica volume then do data recovery if necessary.
-            - If there are some failed/removed replicas and there is at least one replica keeping healthy, those failed/removed replicas will be back after the restoration. Then Longhorn can detect these restored replicas do not contain any data, and copy the latest data from the healthy replica to these replicas.
-            - If all replicas are replaced by new replicas after the snapshot, the volume will contain invalid replicas only after the restore. Then users need to export [a single replica volume](../../data-recovery/export-from-replica) for the data recovery.
-        -  Engine image upgrade: Users need to redo the upgrade.
-        - Expansion: The spec size of the volume will be smaller than the current size. This is like someone requesting volume shrinking but actually Longhorn will refuse to handle it internally. To recover the volume, users need to scale down the workloads and re-do the expansion.
-
-    - **Notice**: If users don't know how to recover a problematic volume, the simplest way is always restoring a new volume from backup.
-
-- If the Longhorn system is upgraded after the snapshot, the new settings and the modifications on the node config will disappear. Users need to re-do the upgrade, then re-modify the settings and node configurations.
-
-- If a node is deleted from Longhorn system after the snapshot, the node won't be back, but the pods on the removed node will be restored. Users need to manually clean up them since these pod may get stuck in state `Terminating`.
-- If a node to added to Longhorn system after the snapshot, Longhorn should automatically relaunch all necessary workloads on the node after the cluster restore. But users should be aware that all new replicas or engines on this node will be gone after the restore.
-
-
-## References
-- The related GitHub issue is https://github.com/longhorn/longhorn/issues/2228.
-  In this GitHub post, one user is providing a way that restores the Longhorn to a new cluster that doesn't contain any data.
-
-
----
-
-## Article: advanced-resources/system-backup-restore/restore-to-a-new-cluster-using-velero.md
-
----
-title: Restore to a new cluster using Velero
-weight: 4
----
-
-This doc instructs how users can restore workloads with Longhorn system to a new cluster via Velero.
-
-> **Note:** Need to use [Velero CSI plugin](https://github.com/vmware-tanzu/velero-plugin-for-csi) >= 0.4 to ensure restoring PersistentVolumeClaim successfully. Visit [here](/kb/troubleshooting-restore-pvc-stuck-using-velero-csi-plugin-version-lower-than-0.4) to get more information.
-
-
-## Assumptions:
-- A new cluster means there is **no Longhorn volume data** in it.
-- There is a remote backup target holds all Longhorn volume data.
-- There is a remote backup server that can store the cluster backups created by Velero.
-
-## Expectation:
-- All settings will be restored. But the node & disk configurations won't be applied.
-- All workloads using Longhorn volumes will get started after the volumes are restored from the remote backup target.
-
-## Workflow
-
-### Create backup for the old cluster
-1. Install Velero into a cluster using Longhorn.
-2. Create backups for all Longhorn volumes.
-3. Use Velero to create a cluster backup. Here, some Longhorn resources should be excluded from the cluster backup:
-    ```bash
-    velero backup create lh-cluster --exclude-resources persistentvolumes,persistentvolumeclaims,backuptargets.longhorn.io,backupvolumes.longhorn.io,backups.longhorn.io,nodes.longhorn.io,volumes.longhorn.io,engines.longhorn.io,replicas.longhorn.io,backingimagedatasources.longhorn.io,backingimagemanagers.longhorn.io,backingimages.longhorn.io,sharemanagers.longhorn.io,instancemanagers.longhorn.io,engineimages.longhorn.io
-    ```
-### Restore Longhorn and workloads to a new cluster
-1. Install Velero with the same remote backup sever for the new cluster.
-2. Restore the cluster backup. e.g.,
-    ```bash
-    velero restore create --from-backup lh-cluster
-    ```
-3. Removing all old instance manager pods and backing image manager pods from namespace `longhorn-system`. These old pods should be created by Longhorn rather than Velero and there should be corresponding CRs for them. The pods are harmless but they would lead to the endless logs printed in longhorn-manager pods. e.g.,:
-    ```log
-    [longhorn-manager-q6n7x] time="2021-12-20T10:42:49Z" level=warning msg="Can't find instance manager for pod instance-manager-r-1f19ecb0, may be deleted"
-    [longhorn-manager-q6n7x] time="2021-12-20T10:42:49Z" level=warning msg="Can't find instance manager for pod instance-manager-e-6c3be222, may be deleted"
-    [longhorn-manager-ldlvw] time="2021-12-20T10:42:55Z" level=warning msg="Can't find instance manager for pod instance-manager-e-bbf80f76, may be deleted"
-    [longhorn-manager-ldlvw] time="2021-12-20T10:42:55Z" level=warning msg="Can't find instance manager for pod instance-manager-r-3818fdca, may be deleted"
-    ```
-4. Re-config nodes and disks for the restored Longhorn system if necessary.
-5. Re-create backing images if necessary.
-6. Restore all Longhorn volumes from the remote backup target.
-7. If there are RWX backup volumes, users need to manually update the access mode to `ReadWriteMany` since all restored volumes are mode `ReadWriteOnce` by default.
-8. Create PVCs and PVs with previous names for the restored volumes.
-
-Note: We will enhance Longhorn system so that users don't need to apply step3 and step8 in the future.
-
-## References
-- The related GitHub issue is https://github.com/longhorn/longhorn/issues/3367
-
-
----
-
-## Article: advanced-resources/security/_index.md
-
----
-title: Security
-weight: 7
----
-
-
----
-
-## Article: advanced-resources/security/mtls-support.md
-
----
-title: MTLS Support
-weight: 6
----
-
-Longhorn supports MTLS to secure and encrypt the grpc communication between the control plane (longhorn-manager) and the data plane (instance-managers).
-For Certificate setup we use the Kubernetes secret mechanism in combination with an optional secret mount for the longhorn-manager/instance-manager.
-
-
-# Requirements
-In a default installation mtls is disabled to enable mtls support one needs to create a `longhorn-grpc-tls` secret in the `longhorn-system` namespace before deployment.
-The secret is specified as an optional secret mount for the longhorn-manager/instance-managers so if it does not exist when these
-components are started, mtls will not be used and a restart of the components will be required to enable tls support.
-
-The longhorn-manager has a non tls client fallback for mixed mode setups where there are old instance-managers that were started without tls support.
-
-# Self Signed Certificate Setup
-
-You should create a `ca.crt` with the CA flag set which is then used to sign the `tls.crt` this will allow you to rotate the `tls.crt` in the future without service interruptions.
-You can use [openssl](https://mariadb.com/docs/server/security/securing-mariadb/securing-mariadb-encryption/data-in-transit-encryption/certificate-creation-with-openssl/)
-or [cfssl](https://github.com/cloudflare/cfssl) for the `ca.crt` as well as `tls.crt` certificate generation.
-
-The `tls.crt` certificate should use `longhorn-backend` for the common name and the below list of entries for the Subject Alternative Name.
-```text
-Common Name: longhorn-backend
-Subject Alternative Names: longhorn-backend, longhorn-backend.longhorn-system, longhorn-backend.longhorn-system.svc, longhorn-frontend, longhorn-frontend.longhorn-system, longhorn-frontend.longhorn-system.svc, longhorn-engine-manager, longhorn-engine-manager.longhorn-system, longhorn-engine-manager.longhorn-system.svc, longhorn-replica-manager, longhorn-replica-manager.longhorn-system, longhorn-replica-manager.longhorn-system.svc, longhorn-csi, longhorn-csi.longhorn-system, longhorn-csi.longhorn-system.svc, longhorn-backend, IP Address:127.0.0.1
-```
-
-# Setting up Kubernetes Secrets
-
-The `ca.crt` is the certificate of the certificate authority that was used to sign
-the `tls.crt` which will be used both by the client (longhorn-manager) and the server (instance-manager) for grpc mtls authentication.
-The `tls.key` is associated private key for the created `tls.crt`.
-
-The `longhorn-grpc-tls` yaml looks like the below example,
-If you are having trouble getting your own certificates to work you can base decode the below certificate
-and compare it against your own generated certificates via `openssl x509 -in tls.crt -text -noout`.
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: longhorn-grpc-tls
-  namespace: longhorn-system
-type: kubernetes.io/tls
-data:
-  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUREakNDQWZhZ0F3SUJBZ0lVU2tNdUVEOC9XYXphNmpkb1NiTE1qalFqb3JFd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0h6RWRNQnNHQTFVRUF4TVViRzl1WjJodmNtNHRaM0p3WXkxMGJITXRZMkV3SGhjTk1qSXdNVEV4TWpFeApPVEF3V2hjTk1qY3dNVEV3TWpFeE9UQXdXakFmTVIwd0d3WURWUVFERXhSc2IyNW5hRzl5YmkxbmNuQmpMWFJzCmN5MWpZVENDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFNY2grbTJhUndnNEtBa0EKT0xzdzdScWlWb1VqL2VPbVhuSE9HVE5nWE4rcFh5bDlCdzVDM1J4UDYzU29qaTVvNEhkU1htVmpwZmhmNjh1YwpvNVJJeUtXM1p6cndteDhXZldEc0dNNEtnYXBvMy84N3pVQ00vdGltOHllTzFUbTZlWVhXcWdlZ2JpM1Q1WnlvCmkzRjdteFg3QlU3Z25uWGthVmJ5UU1xRkEyMDJrK25jaVhaUE9iU0tlc1NvZ20wdWsrYXFvY3N1SjJ6dk9tZG0KMXd0a3ZTUklhL3l6T25JRGlmbFRteXNhZ3oxQy9VM1JxbzJ6TjIwbWJNYUJhMmx5anVZWkdWSnNyNGh4dGhqUApIR2x1UUh2QTlKTE9kc2J0T2xmbjRZNlZpUktCSzZWMVpOeVROMVJpN3ArTXZlaWQ3cE9rNHYweC9qVTc1a0N6Clo1cGJHbGtDQXdFQUFhTkNNRUF3RGdZRFZSMFBBUUgvQkFRREFnRUdNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHcKSFFZRFZSME9CQllFRlBGc0xRbmQxOHFUTVd5djh1STk3Z2hnR2djR01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQgpBUUNMcnk5a2xlSElMdDRwbzd4N0hvSldsMEswYjdwV2Y0Y3ZVeHh1bUdTYUpoQmFHNTVlZFNFSVAzajhsRGg1Cm94ZXJlbjNrRUtzeGZiQVQ0RzU3KzBaeExQSkZQcjFMM3JvcmxUVE1DS1QyY2Z1UDJ3SEIzZndWNDJpSHZSUDgKSUVqU041bFNkWjZnN1NjWFZ2RnpZNzlrbVZDQ2RNYlpGcEFuOElyTkh3L0tTUGZUajNob2VyV3ZGL3huaEo3bQpmSzUrcE5TeWR6QTA1K1Y0ODJhWGlvV2NWcWY2UHpSVndmT0tIalUrbUVDQXZMbitNSzRvN1l2VW1iN2tSUGs5CnBjU1A4N2lpN0hwRVhqZUtRaVJhZElXKzMySXp1UTFiOXRYc3BNTGF0UFA5TXNvWmY0M1EyZWw4bWd1RjRxOUcKVmVUZFZaU2hBNWNucmNRZTEySUs1MzAvCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
-  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVqekNDQTNlZ0F3SUJBZ0lVUjZWcGR5U1Z0MGp6bDcwQnIxMmdZOTB0QVNBd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0h6RWRNQnNHQTFVRUF4TVViRzl1WjJodmNtNHRaM0p3WXkxMGJITXRZMkV3SGhjTk1qSXdNVEV4TWpFeApPVEF3V2hjTk1qTXdNVEV4TWpFeE9UQXdXakFiTVJrd0Z3WURWUVFERXhCc2IyNW5hRzl5YmkxaVlXTnJaVzVrCk1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRUxOQVVJZUsvdnppaGc3a1Q5d3E4anU4VU51c24Kc2FzdmlpS1VHQnpkblZndlNSdzNhYzd4RTRSQjlmZytjRnVUenpGaFNHRlVLVUpYaVh5d0FXZ0o4YU9DQXBBdwpnZ0tNTUE0R0ExVWREd0VCL3dRRUF3SUZvREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVICkF3SXdEQVlEVlIwVEFRSC9CQUl3QURBZEJnTlZIUTRFRmdRVXgvaDVCOUFMSExuYWJaNjBzT2dvbnA3YlN0VXcKSHdZRFZSMGpCQmd3Rm9BVThXd3RDZDNYeXBNeGJLL3k0ajN1Q0dBYUJ3WXdnZ0lMQmdOVkhSRUVnZ0lDTUlJQgovb0lRYkc5dVoyaHZjbTR0WW1GamEyVnVaSUlnYkc5dVoyaHZjbTR0WW1GamEyVnVaQzVzYjI1bmFHOXliaTF6CmVYTjBaVzJDSkd4dmJtZG9iM0p1TFdKaFkydGxibVF1Ykc5dVoyaHZjbTR0YzNsemRHVnRMbk4yWTRJUmJHOXUKWjJodmNtNHRabkp2Ym5SbGJtU0NJV3h2Ym1kb2IzSnVMV1p5YjI1MFpXNWtMbXh2Ym1kb2IzSnVMWE41YzNSbApiWUlsYkc5dVoyaHZjbTR0Wm5KdmJuUmxibVF1Ykc5dVoyaHZjbTR0YzNsemRHVnRMbk4yWTRJWGJHOXVaMmh2CmNtNHRaVzVuYVc1bExXMWhibUZuWlhLQ0oyeHZibWRvYjNKdUxXVnVaMmx1WlMxdFlXNWhaMlZ5TG14dmJtZG8KYjNKdUxYTjVjM1JsYllJcmJHOXVaMmh2Y200dFpXNW5hVzVsTFcxaGJtRm5aWEl1Ykc5dVoyaHZjbTR0YzNsegpkR1Z0TG5OMlk0SVliRzl1WjJodmNtNHRjbVZ3YkdsallTMXRZVzVoWjJWeWdpaHNiMjVuYUc5eWJpMXlaWEJzCmFXTmhMVzFoYm1GblpYSXViRzl1WjJodmNtNHRjM2x6ZEdWdGdpeHNiMjVuYUc5eWJpMXlaWEJzYVdOaExXMWgKYm1GblpYSXViRzl1WjJodmNtNHRjM2x6ZEdWdExuTjJZNElNYkc5dVoyaHZjbTR0WTNOcGdoeHNiMjVuYUc5eQpiaTFqYzJrdWJHOXVaMmh2Y200dGMzbHpkR1Z0Z2lCc2IyNW5hRzl5YmkxamMya3ViRzl1WjJodmNtNHRjM2x6CmRHVnRMbk4yWTRJUWJHOXVaMmh2Y200dFltRmphMlZ1WkljRWZ3QUFBVEFOQmdrcWhraUc5dzBCQVFzRkFBT0MKQVFFQWV5UlhCWnI5Z1RmTGlsNGMvZElaSlVYeFh4ckFBQmtJTG55QkdNdkFqaFJoRndLZ09VU0MvMGUyeDYvTQpoTi9SWElYVzdBYUF0a25ZSHFLa3piMDZsbWhxczRHNWVjNkZRZDViSGdGbnFPOHNWNEF6WVFSRWhDZjlrWWhUClVlRnJLdDdOQllHNFNXSnNYK2M0ZzU5RlZGZkIzbTZscStoR3JaY085T2NIQ1NvVDM2SVRPeERDT3lrV002WHcKVW5zYWtaaHRwQ3lxdHlwQXZqaURNM3ZTY2txVTFNSWxLSnA1Z3lGT3k2VHVwQ01tYnRiWlRpSEtaN0ZlcmlmcwoyYng4Z0JmaldFQnEwMEhVWTdyY3RFNzFpVk11WURTczAwYTB2c1ZGQ240akppeWFnM0lHWkdud0FHQk1zR2h3ClFJcndjRHgwdy91NGR1VWRNMzBpaU1WZ0pnPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
-  tls.key: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUwzbjZVZzlhZU1Day9XbkZ2L1pmSTlxMkIyakxnbjFRWGQwcjhIL3k2QkhvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFTE5BVUllSy92emloZzdrVDl3cThqdThVTnVzbnNhc3ZpaUtVR0J6ZG5WZ3ZTUnczYWM3eApFNFJCOWZnK2NGdVR6ekZoU0dGVUtVSlhpWHl3QVdnSjhRPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
-```
-
-For more information on creating a secret, see [the Kubernetes documentation.](https://kubernetes.io/docs/concepts/configuration/secret/#creating-a-secret-manually) The secret must be created in the `longhorn-system` namespace for Longhorn to access it.
-
-> Note: Make sure to use `echo -n` when generating the base64 encoding,
-> otherwise a new line will be added at the end of the string
-> which will cause an error during loading of the certificates.
-
-
-# History
-Available since v1.3.0 [#3839](https://github.com/longhorn/longhorn/issues/3839)
-
-
----
-
-## Article: advanced-resources/security/volume-encryption.md
-
----
-title: Volume Encryption
-weight: 2
----
-
-Longhorn supports volume encryption in both `Filesystem` and `Block` modes, providing protection against unauthorized access, data breaches, and compliance violations. Backups created from encrypted volumes are also encrypted.
-
-Volume encryption is made possible by the Linux kernel module `dm_crypt`, the command-line utility `cryptsetup`, and Kubernetes Secrets. `dm_crypt` and `cryptsetup` handle the creation and management of encrypted devices, while Secrets (and related permissions) facilitate secure storage of encryption keys.
-
-# Requirements
-
-To use encrypted volumes, ensure that the `dm_crypt` kernel module is loaded and that `cryptsetup` is installed on your worker nodes.
-
-# Setting up Kubernetes Secrets and StorageClasses
-
-Longhorn uses Kubernetes Secrets for secure storage of encryption keys. Kubernetes allows usage of template parameters that are resolved during volume creation. To use a Secret with an encrypted volume, you must configure the Secret as a StorageClass parameter.
-
-Template parameters allow you to use Secrets with individual volumes or with a collection of volumes. For more information about template parameters, see [StorageClass Secrets](https://kubernetes-csi.github.io/docs/secrets-and-credentials-storage-class.html) in the Kubernetes CSI Developer Documentation.
-
-In the following example, the encryption key is specified as string data in the `CRYPTO_KEY_VALUE` parameter of the Secret. Using string data eliminates the need for Base64 encoding before the Secret is submitted via kubectl create.
-
-Besides `CRYPTO_KEY_VALUE`, parameters `CRYPTO_KEY_CIPHER`, `CRYPTO_KEY_HASH`, `CRYPTO_KEY_SIZE`, `CRYPTO_PBKDF`, `CRYPTO_PBKDF_FORCE_ITERATIONS`, and `CRYPTO_PBKDF_MEMORY` provide the customization for volume encryption.
-- `CRYPTO_KEY_CIPHER`: Sets the cipher specification algorithm string. The default value is `aes-xts-plain64` for LUKS.
-- `CRYPTO_KEY_HASH`: Specifies the passphrase hash for `open`. The default value is `sha256`.
-- `CRYPTO_KEY_SIZE`: Sets the key size in bits and it must be a multiple of 8. The default value is `256`.
-- `CRYPTO_PBKDF`: Sets Password-Based Key Derivation Function (PBKDF) algorithm for LUKS keyslot. The default value is `argon2i`.
-- `CRYPTO_PBKDF_FORCE_ITERATIONS`: Sets a fixed iteration count for the PBKDF algorithm. When specified, this overrides cryptsetup’s default auto-tuning behavior. In FIPS mode, where PBKDF2 is required, specifying an explicit iteration count (such as `200000`) helps meet security policy requirements and avoids errors like "Not compatible PBKDF2 options". The default value is `200000` (Longhorn default).
-- `CRYPTO_PBKDF_MEMORY`: Sets the memory cost (in KB) for the PBKDF algorithm. This parameter is only applicable to memory-hard algorithms such as Argon2 (`argon2i` or `argon2id`) and has no effect when PBKDF2 is used. In FIPS mode, Argon2 is not allowed and PBKDF2 is used instead, so this parameter is ignored. The default value is `0`.
-
-For more information, see [cryptsetup(8)](https://man7.org/linux/man-pages/man8/cryptsetup.8.html) in the Linux man pages.
-
-- Example of a Secret:
-  ```yaml
-  apiVersion: v1
-  kind: Secret
-  metadata:
-    name: longhorn-crypto
-    namespace: longhorn-system
-  stringData:
-    CRYPTO_KEY_VALUE: "Your encryption passphrase"
-    CRYPTO_KEY_PROVIDER: "secret"
-    CRYPTO_KEY_CIPHER: "aes-xts-plain64"
-    CRYPTO_KEY_HASH: "sha256"
-    CRYPTO_KEY_SIZE: "256"
-    CRYPTO_PBKDF: "argon2i"
-    CRYPTO_PBKDF_FORCE_ITERATIONS: "200000" 
-    CRYPTO_PBKDF_MEMORY: "0" 
-  ```
-
-- Example of a StorageClass with a global Secret:
-  ```yaml
-  kind: StorageClass
-  apiVersion: storage.k8s.io/v1
-  metadata:
-    name: longhorn-crypto-global
-  provisioner: driver.longhorn.io
-  allowVolumeExpansion: true
-  parameters:
-    numberOfReplicas: "3"
-    staleReplicaTimeout: "2880" # 48 hours in minutes
-    fromBackup: ""
-    encrypted: "true"
-    # global secret that contains the encryption key that will be used for all volumes
-    csi.storage.k8s.io/provisioner-secret-name: "longhorn-crypto"
-    csi.storage.k8s.io/provisioner-secret-namespace: "longhorn-system"
-    csi.storage.k8s.io/node-publish-secret-name: "longhorn-crypto"
-    csi.storage.k8s.io/node-publish-secret-namespace: "longhorn-system"
-    csi.storage.k8s.io/node-stage-secret-name: "longhorn-crypto"
-    csi.storage.k8s.io/node-stage-secret-namespace: "longhorn-system"
-    csi.storage.k8s.io/node-expand-secret-name: "longhorn-crypto"
-    csi.storage.k8s.io/node-expand-secret-namespace: "longhorn-system"
-  ```
-
-- Example of a StorageClass with a volume-specific Secret:
-  ```yaml
-  kind: StorageClass
-  apiVersion: storage.k8s.io/v1
-  metadata:
-    name: longhorn-crypto-per-volume
-  provisioner: driver.longhorn.io
-  allowVolumeExpansion: true
-  parameters:
-    numberOfReplicas: "3"
-    staleReplicaTimeout: "2880" # 48 hours in minutes
-    fromBackup: ""
-    encrypted: "true"
-    # per volume secret which utilizes the `pvc.name` and `pvc.namespace` template parameters
-    csi.storage.k8s.io/provisioner-secret-name: ${pvc.name}
-    csi.storage.k8s.io/provisioner-secret-namespace: ${pvc.namespace}
-    csi.storage.k8s.io/node-publish-secret-name: ${pvc.name}
-    csi.storage.k8s.io/node-publish-secret-namespace: ${pvc.namespace}
-    csi.storage.k8s.io/node-stage-secret-name: ${pvc.name}
-    csi.storage.k8s.io/node-stage-secret-namespace: ${pvc.namespace}
-    csi.storage.k8s.io/node-expand-secret-name: ${pvc.name}
-    csi.storage.k8s.io/node-expand-secret-namespace: ${pvc.namespace}
-  ```
-
-# Using an Encrypted Volume
-
-To create an encrypted volume, you must create a PVC using a StorageClass that has been configured for encryption. The above StorageClass examples can be used as a starting point.
-
-After creation of the PVC it will remain in `Pending` state till the associated secret has been created and can be retrieved
-A newly-created PVC remains in the `Pending` state until the associated Secret is created and can be retrieved by the csi `external-provisioner` sidecar. Afterwards, the regular volume creation process continues with encryption taking effect.
-
-# Filesystem Expansion
-
-Longhorn supports [both online and offline expansion](../../../nodes-and-volumes/volumes/expansion/#encrypted-volume) for encrypted volumes.
-
-StorageClass parameters are needed to enable online expansion:
-
-- `csi.storage.k8s.io/node-expand-secret-name`
-- `csi.storage.k8s.io/node-expand-secret-namespace`
-
-> **Notice**  
-> - Longhorn v1.8.0 does not support expansion of V2 volumes.
-
-# History
-
-- Encryption of volumes in `Filesystem` mode available starting v1.2.0 ([#1859](https://github.com/longhorn/longhorn/issues/1859))
-- Encryption of volumes in `Block` mode available starting v1.6.0 ([#4883](https://github.com/longhorn/longhorn/issues/4883))
-
-
----
-
-## Article: advanced-resources/backing-image/_index.md
-
----
-title: Backing Image
-weight: 7
----
-
----
-
-## Article: advanced-resources/backing-image/backing-image-backup.md
-
----
-title: Backing Image Backup
-weight: 2
----
-
-As of v1.6.0, Longhorn supports backing up of backing images.
-
-## Prerequisites
-
-You must first [set up a backup target](../../../snapshots-and-backups/backup-and-restore/set-backup-target). If you skip this crucial step, the missing backup target will prevent Longhorn from creating a backup of the backing image.
-
-## Create a Backup of a Backing Image
-
-Because backing images are globally unique within the Longhorn system, the corresponding backups are also globally unique and are identified using the same name.
-
-### Create a Backup Using YAML
-
-Example of backing image:
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackingImage
-metadata:
-  name: parrot
-  namespace: longhorn-system
-spec:
-  sourceType: download
-  sourceParameters:
-    url: https://longhorn-backing-image.s3-us-west-1.amazonaws.com/parrot.raw
-  checksum: 304f3ed30ca6878e9056ee6f1b02b328239f0d0c2c1272840998212f9734b196371560b3b939037e4f4c2884ce457c2cbc9f0621f4f5d1ca983983c8cdf8cd9a
-```
-
-Example of YAML code used to create a backup of the sample backing image:
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackupBackingImage
-metadata:
-  name: parrot-backup
-  namespace: longhorn-system
-spec:
-  backingImage: parrot
-  backupTargetName: default
-  userCreated: true
-  labels:
-    usecase: test
-    type: raw
-```
-
-> **IMPORTANT:**
-> - `name`: If the names are not unique, Longhorn will not be able to create a backup of the backing image.
-> - `backingImage`: The backing image for the backup.
-> - `backupTargetName`: The backup target that is used to store the backup of the backing image.
-> - `userCreated`: Set the value to `true` to indicate that you created the backup custom resource, which enabled the creation of the backup in the backupstore. The value `false` indicates that the backup custom resource was synced from the backupstore.
-> - `labels`: You can add labels to the backing image backup.
-
-### Create a Backup Using the Longhorn UI
-1. Go to **Setting** > **Backing Image**.
-2. Select the backing image that you want to back up, and then click **Back Up** in the **Operation** menu.
-
-Longhorn creates the backup and adds the details to the **Backing Image Backup** list.
-
-{{< figure src="/img/screenshots/backing-image/backup.png" >}}
-
-
-## Restore a Backing Image from a Backup
-You can restore a backing image in another cluster after creating a backup in the backupstore.
-
-Example of YAML code used to restore a backing image:
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackingImage
-metadata:
-    name: parrot-restore
-    namespace: longhorn-system
-spec:
-    sourceType: restore
-    sourceParameters:
-        # change to your backup URL
-        # backup-url: nfs://longhorn-test-nfs-svc.default:/opt/backupstore?backingImage=parrot
-        backup-url: s3://backupbucket@us-east-1/?backingImage=parrot
-        concurrent-limit: "2"
-    checksum: 304f3ed30ca6878e9056ee6f1b02b328239f0d0c2c1272840998212f9734b196371560b3b939037e4f4c2884ce457c2cbc9f0621f4f5d1ca983983c8cdf8cd9a
-```
-
-> **IMPORTANT:**
-> - `sourceType`: Set the value to `restore`.
-> - `sourceParameters`: Configure the following parameters:
->   - `backup-url`: URL of the backing image resource in the backupstore. You can find this information in the status of the backup custom resource `.Status.URL`.
->   - `concurrent-limit`: Maximum number of worker threads that can concurrently run for each restore operation. When unspecified, Longhorn uses the default value.
-> - `checksum`: You can specify the expected SHA-512 checksum of the backing image file, which Longhorn uses to validate the restored file. When unspecified, Longhorn uses the checksum of the restored file as the truth.
-
-### Restore from a Backup Using the Longhorn UI
-1. Go to **Setting** > **Backing Image**.
-2. Select the backup that you want to use, and then click **Restore** in the **Operation** menu.
-3. Click **OK**.
-
-{{< figure src="/img/screenshots/backing-image/1.8.0/restore.png" >}}
-
-## Volume with a Backing Image
-
-When you create a backup of a volume, Longhorn automatically creates a backup of its backing image.
-
-You can restore a volume with a backing image. If the image already exists in the cluster, Longhorn uses the image directly. If the image exists in the backupstore but not in the cluster, Longhorn automatically restores the backing image.
-
-
----
-
-## Article: advanced-resources/backing-image/backing-image-encryption.md
-
----
-title: Backing Image Encryption
-weight: 2
----
-
-Starting with v1.7.0, Longhorn allows you to encrypt and decrypt a backing image by cloning it. The backing image encryption mechanism utilizes the Linux kernel module `dm_crypt` and the command-line utility `cryptsetup`.
-
-## Clone a Backing Image
-You can clone a backing image using YAML code. Notice that, this will create a whole new backing image with the same content as the original one. The backing image also consumes the disk space.
-
-Example of a downloaded backing image:
-
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackingImage
-metadata:
-  name: parrot
-  namespace: longhorn-system
-spec:
-  sourceType: download
-  sourceParameters:
-    url: https://longhorn-backing-image.s3-us-west-1.amazonaws.com/parrot.raw
-  checksum: 304f3ed30ca6878e9056ee6f1b02b328239f0d0c2c1272840998212f9734b196371560b3b939037e4f4c2884ce457c2cbc9f0621f4f5d1ca983983c8cdf8cd9a
-```
-
-Example of YAML code used to clone the sample backing image:
-
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackingImage
-metadata:
-  name: parrot-cloned
-  namespace: longhorn-system
-spec:
-  sourceType: clone
-  sourceParameters:
-    backing-image: parrot
-    encryption: ignore
-```
-
-> **Important:**
-> - `backing-image`: Specify the name of the backing image to be cloned.
-> - `encryption`: Set the value to `ignore` to directly clone the backing image. If the value is not given, Longhorn use `ignore` as default value.
-
-You can also clone a backing image using the Longhorn UI.
-1. Go to **Setting** > **Backing Image**.
-2. Click **Create Backing Image**.
-3. Configure the following settings:
-  - **Created From**: Select **Clone From Existing Backing Image**.
-  - **Encryption**: Select **Ignore**.
-4. Click **OK**.
-
-{{< figure src="/img/screenshots/backing-image/clone.png" >}}
-
-## Encrypt a Backing Image
-You can enable encryption during cloning of a backing image so that the image can be used with an encrypted volume.
-
-Example of a downloaded backing image:
-
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackingImage
-metadata:
-  name: parrot
-  namespace: longhorn-system
-spec:
-  sourceType: download
-  sourceParameters:
-    url: https://longhorn-backing-image.s3-us-west-1.amazonaws.com/parrot.raw
-  checksum: 304f3ed30ca6878e9056ee6f1b02b328239f0d0c2c1272840998212f9734b196371560b3b939037e4f4c2884ce457c2cbc9f0621f4f5d1ca983983c8cdf8cd9a
-```
-
-Example of YAML code used to clone and encrypt the sample backing image:
-
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackingImage
-metadata:
-  name: parrot-cloned-encrypted
-  namespace: longhorn-system
-spec:
-  sourceType: clone
-  sourceParameters:
-    backing-image: parrot
-    encryption: encrypt
-    secret: longhorn-crypto
-    secret-namespace: longhorn-system
-```
-
-Example of YAML code used to encrypt the backing image:
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: longhorn-crypto
-  namespace: longhorn-system
-stringData:
-  CRYPTO_KEY_VALUE: "Your encryption passphrase"
-  CRYPTO_KEY_PROVIDER: "secret"
-  CRYPTO_KEY_CIPHER: "aes-xts-plain64"
-  CRYPTO_KEY_HASH: "sha256"
-  CRYPTO_KEY_SIZE: "256"
-  CRYPTO_PBKDF: "argon2i"
-```
-
-> **Important:**
-> - `backing-image`: Specify the name of the backing image to be cloned.
-> - `encryption`: Set the value to `encrypt` to encrypt the backing image during cloning.
-> - `secret`: Specify the secret used to encrypt the backing image.
-> - `secret-namespace`: Specify the namespace of the secret used to encrypt the backing image.
-
-You can also create an encrypted copy of a backing image using the Longhorn UI.
-1. Go to **Setting** > **Backing Image**.
-2. Click **Create Backing Image**.
-3. Configure the following settings:
-  - **Created From**: Select **Clone From Existing Backing Image**.
-  - **Encryption**: Select **Encrypt**.
-4. Specify the secret and secret namespace to be used for encryption.
-5. Click **OK**.
-
-{{< figure src="/img/screenshots/backing-image/encrypt.png" >}}
-
-## Decrypt a Backing Image
-You can decrypt an encrypted backing image through cloning.
-
-Example of an encrypted backing image:
-
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackingImage
-metadata:
-  name: parrot-cloned-encrypted
-  namespace: longhorn-system
-spec:
-  sourceType: clone
-  sourceParameters:
-    backing-image: parrot
-    encryption: encrypt
-    secret: longhorn-crypto
-    secret-namespace: longhorn-system
-```
-
-Example of YAML code used to encrypt and decrypt the backing image:
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: longhorn-crypto
-  namespace: longhorn-system
-stringData:
-  CRYPTO_KEY_VALUE: "Your encryption passphrase"
-  CRYPTO_KEY_PROVIDER: "secret"
-  CRYPTO_KEY_CIPHER: "aes-xts-plain64"
-  CRYPTO_KEY_HASH: "sha256"
-  CRYPTO_KEY_SIZE: "256"
-  CRYPTO_PBKDF: "argon2i"
-```
-
-Example of YAML code used to decrypt the backing image:
-
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackingImage
-metadata:
-  name: parrot-cloned-decrypt
-  namespace: longhorn-system
-spec:
-  sourceType: clone
-  sourceParameters:
-    backing-image: parrot-cloned-encrypted
-    encryption: decrypt
-    secret: longhorn-crypto
-    secret-namespace: longhorn-system
-```
-
-> **Important:**
-> - `backing-image`: Specify the name of the backing image to be cloned.
-> - `encryption`: Set the value to `decrypt` to decrypt the backing image during cloning.
-> - `secret`: Specify the secret used to decrypt the backing image.
-> - `secret-namespace`: Specify the namespace of the secret used to decrypt the backing image.
-
-You can also decrypt a backing image (through cloning) using the Longhorn UI.
-1. Go to **Setting** > **Backing Image**.
-2. Click **Create Backing Image**.
-3. Configure the following settings:
-  - **Created From**: Select **Clone From Existing Backing Image**.
-  - **Encryption**: Select **Decrypt**.
-4. Specify the secret and secret namespace to be used for decryption.
-5. Click **OK**.
-
-
-{{< figure src="/img/screenshots/backing-image/decrypt.png" >}}
-
-
-## Use an Encrypted Backing Image with an Encrypted Volume
-The secret used to encrypt the backing image and the volume must be identical. Once the encrypted backing image is ready, you can create the StorageClass with the corresponding backing image and the secret to create the volume for the workload.
-
-Example of YAML code for the encryption secret:
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: longhorn-crypto
-  namespace: longhorn-system
-stringData:
-  CRYPTO_KEY_VALUE: "Your encryption passphrase"
-  CRYPTO_KEY_PROVIDER: "secret"
-  CRYPTO_KEY_CIPHER: "aes-xts-plain64"
-  CRYPTO_KEY_HASH: "sha256"
-  CRYPTO_KEY_SIZE: "256"
-  CRYPTO_PBKDF: "argon2i"
-```
-
-Example of YAML code for the StorageClass:
-```yaml
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: longhorn-crypto-global
-provisioner: driver.longhorn.io
-allowVolumeExpansion: true
-parameters:
-  numberOfReplicas: "3"
-  staleReplicaTimeout: "2880" # 48 hours in minutes
-  fromBackup: ""
-  encrypted: "true"
-  backingImage: "parrot-cloned-encrypted"
-  backingImageDataSourceType: "clone"
-  # global secret that contains the encryption key that will be used for all volumes
-  csi.storage.k8s.io/provisioner-secret-name: "longhorn-crypto"
-  csi.storage.k8s.io/provisioner-secret-namespace: "longhorn-system"
-  csi.storage.k8s.io/node-publish-secret-name: "longhorn-crypto"
-  csi.storage.k8s.io/node-publish-secret-namespace: "longhorn-system"
-  csi.storage.k8s.io/node-stage-secret-name: "longhorn-crypto"
-  csi.storage.k8s.io/node-stage-secret-namespace: "longhorn-system"
-```
-
-For more information, see [Volume Encryption](../../security/volume-encryption).
-
-## Limitations
-- Longhorn is unable to encrypt backing images that are already encrypted, and decrypt backing images that are not encrypted.
-- Longhorn does not allow you to change the encryption key of an encrypted backing image.
-- When encrypting a qcow2 image, Longhorn first creates a raw image from the qcow2 image and then encrypts it. The resulting encrypted raw image temporarily consumes extra space during cloning. For example,
-    1. If we encrypt a 10MiB qcow2 image with a virtual size of 200MiB, we first create the raw image from the qcow2 which will consume 200MiB of the space.
-    2. Longhorn then create the encrypted backing image from that 200MiB raw image which will take another 200MiB of the space.
-    3. After the encrypted backing image is created, the temporary raw image will be cleaned up and free the 200MiB from the space.
-- If the source backing image is a sparse file, the file loses its sparsity after encryption.
-- To allow storage of the LUKS metadata during encryption, the image size is increased by 16 MB. For more information, see the [cryptsetup release notes](https://gitlab.com/cryptsetup/cryptsetup/-/blob/master/docs/v2.1.0-ReleaseNotes#L27).
-
-
----
-
-## Article: advanced-resources/backing-image/backing-image.md
-
----
-title: Backing Image
-weight: 1
----
-
-Longhorn natively supports backing images since v1.1.1.
-
-A QCOW2 or RAW image can be set as the backing/base image of a Longhorn volume, which allows Longhorn to be integrated with a VM like [Harvester](https://github.com/rancher/harvester).
-
-> **Important**:  
-> The image size must be **a multiple of 512 bytes**. Longhorn uses direct I/O, which requires alignment of file sizes with the underlying storage block size.
-
-## Create V1 Data Engine Backing Image
-
-### Parameters during creation
-
-#### The data source of a backing image
-You can prepare a V1 Data Engine backing image using any of the supported data sources.
-1. Download a backing image file (using a URL).
-2. Upload a file from your local machine. This option is available to Longhorn UI users.
-3. Export an existing in-cluster volume as a backing image.
-4. Restore a backing image from the backupstore, For more information, see [Backing Image Backup](../backing-image-backup).
-5. Clone a backing image.
-
-#### Volume exporting
-
-A backing image serves as the initial snapshot in the snapshot chain of a Longhorn volume. When you export a volume with an associated backing image, Longhorn merges that image with the delta changes, resulting in a new consolidated backing image.
-
-#### The checksum of a backing image
-- The checksum of a backing image is **the SHA512 checksum** of the whole backing image **file** rather than that of the actual content.
-  What's the difference? When Longhorn calculates the checksum of a qcow2 file, it will read the file as a raw file instead of using the qcow library to read the correct content. In other words, users always get the correct checksum by executing `shasum -a 512 <the file path>` regardless of the file format.
-- It's recommended to provide the expected checksum during backing image creation.
-  Otherwise, Longhorn will consider the checksum of the first file as the correct one. Once there is something wrong with the first file preparation, which then leads to an incorrect checksum as the expected value, this backing image is probably unavailable.
-
-#### Scheduling
-- Longhorn first prepares and stores the backing image file on a random node and disk, and then duplicates the file to the disks that are storing the replicas.
-- For improved space efficiency, you can add `nodeSelector` and `diskSelector` to force storing of backing image files on a specific set of nodes and disks.
-- The replicas cannot be scheduled on nodes or disks where the backing image cannot be scheduled.
-
-#### Number of copies
-- You can add `minNumberOfCopies` to ensure that multiple backing image files exist in the cluster.
-- You can adjust the `minNumberOfCopies` in the global setting to apply the default value to the BackingImage.
-
-### The way of creating a backing image
-
-#### Create a backing image via Longhorn UI
-On **Advanced > Backing Images** page, users can create backing images with any kinds of data source.
-
-#### Create a V1 Backing Image Using YAML
-You can download a file or export an existing volume as a backing image via YAML.
-It's better not to "upload" a file via YAML. Otherwise, you need to manually handle the data upload via HTTP requests.
-
-Here are some examples:
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackingImage
-metadata:
-  name: bi-download
-  namespace: longhorn-system
-spec:
-  dataEngine: v1
-  minNumberOfCopies: 2
-  nodeSelector:
-    - "node1"
-  diskSelector:
-    - "disk1"
-  sourceType: download
-  sourceParameters:
-    url: https://longhorn-backing-image.s3-us-west-1.amazonaws.com/parrot.raw
-  checksum: 304f3ed30ca6878e9056ee6f1b02b328239f0d0c2c1272840998212f9734b196371560b3b939037e4f4c2884ce457c2cbc9f0621f4f5d1ca983983c8cdf8cd9a
-```
-```yaml
-apiVersion: longhorn.io/v1beta2
-kind: BackingImage
-metadata:
-  name: bi-export
-  namespace: longhorn-system
-spec:
-  dataEngine: v1
-  minNumberOfCopies: 2
-  nodeSelector:
-    - "node1"
-  diskSelector:
-    - "disk1"
-  sourceType: export-from-volume
-  sourceParameters:
-    volume-name: vol-export-src
-    export-type: qcow2
-```
-
-#### Create and use a backing image via StorageClass and PVC
-1. In a Longhorn StorageClass.
-2. Setting parameter `backingImageName` means asking Longhorn to use this backing image during volume creation.
-3. If you want to create the backing image as long as it does not exist during the CSI volume creation, parameters `backingImageDataSourceType` and `backingImageDataSourceParameters` should be set as well. Similar to YAML, it's better not to create a backing image via "upload" in StorageClass. Note that if all of these parameters are set and the backing image already exists, Longhorn will validate if the parameters matches the existing one before using it.
-    - For `download`:
-      ```yaml
-      kind: StorageClass
-      apiVersion: storage.k8s.io/v1
-      metadata:
-        name: longhorn-backing-image-example
-      provisioner: driver.longhorn.io
-      allowVolumeExpansion: true
-      reclaimPolicy: Delete
-      volumeBindingMode: Immediate
-      parameters:
-        numberOfReplicas: "3"
-        staleReplicaTimeout: "2880"
-        backingImage: "bi-download"
-        backingImageDataSourceType: "download"
-        backingImageDataSourceParameters: '{"url": "https://backing-image-example.s3-region.amazonaws.com/test-backing-image"}'
-        backingImageChecksum: "SHA512 checksum of the backing image"
-        backingImageMinNumberOfCopies: "2"
-        backingImageNodeSelector: "node1"
-        backingImageDiskSelector: "disk1"
-        dataEngine: "v1"
-      ```
-    - For `export-from-volume`:
-      ```yaml
-      kind: StorageClass
-      apiVersion: storage.k8s.io/v1
-      metadata:
-        name: longhorn-backing-image-example
-      provisioner: driver.longhorn.io
-      allowVolumeExpansion: true
-      reclaimPolicy: Delete
-      volumeBindingMode: Immediate
-      parameters:
-        numberOfReplicas: "3"
-        staleReplicaTimeout: "2880"
-        backingImage: "bi-export-from-volume"
-        backingImageDataSourceType: "export-from-volume"
-        backingImageDataSourceParameters: '{"volume-name": "vol-export-src", "export-type": "qcow2"}'
-        backingImageMinNumberOfCopies: "2"
-        backingImageNodeSelector: "node1"
-        backingImageDiskSelector: "disk1"
-        dataEngine: "v1"
-      ```
-
-4. Create a PVC with the StorageClass. Then the backing image will be created (with the Longhorn volume) if it does not exist.
-5. Longhorn starts to prepare the backing images to disks for the replicas when a volume using the backing image is attached to a node.
-
-#### Notice:
-- Please be careful of the escape character `\` when you input a download URL in a StorageClass.
-- A backing image that is created using a StorageClass has the same data engine as the volume.
-
-## Utilize a backing image in a volume
-
-Users can [directly create then immediately use a backing image via StorageClass](./#create-and-use-a-backing-image-via-storageclass-and-pvc),
-or utilize an existing backing image as mentioned below.
-
-#### Use an existing backing
-##### Use an existing backing Image during volume creation
-1. Click **Advanced > Backing Images** in the Longhorn UI.
-2. Click **Create Backing Image** to create a backing image with a unique name and a valid URL.
-3. Select a backing image from the list. The volume and the backing image must use the same data engine.
-4. Longhorn starts to download the backing image to disks for the replicas when a volume using the backing image is attached to a node.
-
-##### Use an existing backing Image during volume restore
-1. Click `Backup` and pick up a backup volume for the restore.
-2. As long as the backing image is already set for the backup volume, Longhorn will automatically choose the backing image during the restore.
-3. Longhorn allows you to re-specify/override the backing image during the restore.
-
-#### Download the backing image file to the local machine
-Since v1.3.0, users can download existing backing image files to the local via UI.
-
-#### Notice:
-- Users need to make sure the backing image existence when they use UI to create or restore a volume with a backing image specified.
-- Before downloading an existing backing image file to the local, users need to guarantee there is a ready file for it.
-- Downloading of V2 Data Engine backing images is currently not supported.
-
-## Create a V2 Data Engine Backing Image
-
-Starting v1.8.0, you can create a backing image that is supported by the V2 Data Engine by configuring `Data Engine` in the YAML (through the UI or a StorageClass).
-
-### Parameters During Creation
-
-All parameters are the same as that of the V1 Data Engine backing image, except for `Data Engine`.
-
-#### Backing Image Data Sources
-
-You can prepare a V2 Data Engine backing image using any of the supported data sources.
-- Download a backing image file (using a URL).
-- Upload a file from your local machine. This option is available to Longhorn UI users.
-- Export an existing in-cluster V1 Data Engine volume as a backing image.
-- Restore a backing image from the backupstore. For more information, see [Backing Image Backup](../backing-image-backup).
-- Clone a V1 backing image.
-
-#### Notice
-
-- The following operations are currently not supported:
-  - Exporting from a V2 Data Engine volume
-  - Cloning a V2 backing image
-  - Backing up a V2 backing image
-- Unlike the V1 Data Engine, which is file-based, the V2 Data Engine requires Longhorn to store the backing image data in an SPDK logical volume. As a result, for qcow2 images, Longhorn must first convert the qcow2 image to a raw format before storing the data to the V2 Data Engine backing image, enabling it to read the correct data.
-
-## Clean up backing images
-
-#### Clean up backing images in disks
-- Longhorn automatically cleans up the unused backing image files in the disks based on [the setting `Backing Image Cleanup Wait Interval`](../../../references/settings#backing-image-cleanup-wait-interval). But Longhorn will retain at least one file in a disk for each backing image anyway.
-- You can manually remove backing images from disks using the Longhorn UI. Go to **Setting** > **Backing Image**, and then click the name of a specific backing image. In the window that opens, select one or more disks and then click **Clean Up**.
-- Once there is one replica in a disk using a backing image, no matter what the replica's current state is, the backing image file in this disk cannot be cleaned up.
-
-#### Delete backing images
-- The backing image can be deleted only when there is no volume using it.
-
-## Backing image recovery
-- If there is still a ready backing image file in one disk, Longhorn will automatically clean up the failed backing image files then re-launch these files from the ready one.
-- If somehow all files of a backing image become failed, and the first file is :
-  - downloaded from a URL, Longhorn will restart the downloading.
-  - exported from an existing volume, Longhorn will (attach the volume if necessary then) restart the export.
-  - uploaded from user local env, there is no way to recover it. Users need to delete this backing image then re-create a new one by re-uploading the file.
-- When a node is down or the backing image manager pod on the node is unavailable, all backing image files on the node will become `unknown`. Later on if the node is back and the pod is running, Longhorn will detect then reuse the existing files automatically.
-
-## Backing image eviction
-- You can manually evict all backing image files from a node or disk by setting `Scheduling` to `Disabled` and `Eviction Requested` to `True` on the Longhorn UI.
-- If only one backing image file exists in the cluster, Longhorn first duplicates the file to another disk and then deletes the file.
-- If the backing image file cannot be duplicated to other disks, Longhorn does not delete the file. You can update the settings to resolve the issue.
-
-## Backing image Workflow
-1. To manage all backing image files in a disk, Longhorn will create one backing image manager pod for each disk. Once the disk has no backing image file requirement, the backing image manager will be removed automatically.
-2. Once a backing image file is prepared by the backing image manager for a disk, the file will be shared among all volume replicas in this disk.
-3. When a backing image is created, Longhorn will launch a backing image data source pod to prepare the first file. The file data is from the data source users specified (download from remote/upload from local/export from the volume). After the preparation done, the backing image manager pod in the same disk will take over the file then Longhorn will stop the backing image data source pod.
-4. Once a new backing image is used by a volume, the backing image manager pods in the disks that the volume replicas reside on will be asked to sync the file from the backing image manager pods that already contain the file.
-5. As mentioned in the section [#clean-up-backing-images-in-disks](#clean-up-backing-images-in-disks), the file will be cleaned up automatically if all replicas in one disk do not use one backing image file.
-
-## Concurrent limit of backing image syncing
-- `Concurrent Backing Image Replenish Per Node Limit` in the global settings controls how many backing images copies on a node can be replenished simultaneously.
-- When set to 0, Longhorn won't replenish the copy automatically event it is less than the `minNumberOfCopies`
-
-## Warning
-- The download URL of the backing image should be public. We will improve this part in the future.
-- If there is high memory usage of one backing image manager pod after [file download](#download-the-backing-image-file-to-the-local-machine), this is caused by the system cache/buffer. The memory usage will decrease automatically hence you don't need to worry about it. See [the GitHub ticket](https://github.com/longhorn/longhorn/issues/4055) for more details.
-
-## History
-* Available since v1.1.1 [Enable backing image feature in Longhorn](https://github.com/Longhorn/Longhorn/issues/2006)
-* Support [upload](https://github.com/longhorn/longhorn/issues/2404) and [volume exporting](https://github.com/longhorn/longhorn/issues/2403) since v1.2.0.
-* Support [download to local](https://github.com/longhorn/longhorn/issues/2404) and [volume exporting](https://github.com/longhorn/longhorn/issues/3155) since v1.3.0.
-
-
----
-
-## Article: advanced-resources/os-distro-specific/_index.md
-
----
-title: OS/Distro Specific Configuration
-weight: 2
----
-
-
-
----
-
-## Article: advanced-resources/os-distro-specific/container-optimized-os-support.md
-
----
-title:  Container-Optimized OS (COS) Support
-weight: 5
----
-
-## Requirements
-
-> **Note:**
-> Longhorn currently supports Container-Optimized OS only when used as the base image for Google Kubernetes Engine (GKE), which includes a pre-configured Kubernetes environment. The following information may not apply to manually created Kubernetes environments, including Kubernetes provisioned with other orchestrators.
-
-The [Container-Optimized OS (COS)](https://cloud.google.com/container-optimized-os/docs) does not include a package manager and does not allow non-containerized applications to run. Additionally, its root filesystem is mounted as read-only, which poses a challenge for IO operations.
-
-In GKE, Kubernetes tackles these constraints by housing necessary dependencies in a chroot environment (`/home/kubernetes/containerized_mounter/rootfs`) and mounting directories within it, enabling the execution of required tasks.
-
-Longhorn provides a GKE COS node agent daemonset, which leverages GKE Kubernetes solutions to configure and run necessary dependencies. This agent is responsible for the following operations:
-
-- Mounting the Longhorn data path.
-- Loading the kernel module.
-- Installing and running the iSCSI daemon.
-
-## GKE COS Node Agent Installation
-1. Configure the Longhorn GKE COS node agent. You can use the default settings, if applicable.
-    > **Tip:**
-    > You can use a comma-separated list when specifying values for the `node-agent` container's environment variable (`LONGHORN_DATA_PATHS`).
-    >
-    > Example:
-    >
-    > ```yaml
-    >  containers:
-    >    - name: node-agent
-    >      env:
-    >        - name: LONGHORN_DATA_PATHS
-    >          value: /var/lib/longhorn1,/var/lib/longhorn2
-
-
-1. Install the Longhorn GKE COS node agent.
-    ```
-    kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/prerequisite/longhorn-gke-cos-node-agent.yaml
-    ```
-
-1. Check the agent pod's status.
-    Example:
-    ```
-    $ kubectl -n longhorn-system get pod -l app=longhorn-gke-cos-node
-    NAME                                READY   STATUS    RESTARTS      AGE
-    longhorn-gke-cos-node-agent-222w8   1/1     Running   1 (86m ago)   86m
-    longhorn-gke-cos-node-agent-8r26h   1/1     Running   1 (86m ago)   86m
-    longhorn-gke-cos-node-agent-nwhsw   1/1     Running   1 (86m ago)   86m
-    ```
-
-1. Check the installation result in the agent pod logs.
-    ```
-    Completed!
-    Keep the container running for iscsi daemon
-    ```
-    > **Note:**
-    > The agent installs the iSCSI daemon (iscsid) in a container using a package manager. However, the package manager attempts to initiate iSCSI services through systemd, which the container environment does not fully support. As a result, you will likely see error logs similar to `System has not been booted with systemd as init system (PID 1). Can't operate`. To work around this, the script manually starts the daemon instead of relying on systemd. You can disregard the mentioned errors in this context.
-
-1. Verify that the dependent kernel module is loaded. You must run the command on the host.
-    ```
-    $ lsmod | grep -q iscsi_tcp && echo "The iSCSI module is loaded" || echo "The iSCSI module is NOT loaded"
-    The iSCSI module is loaded
-    ```
-
-1. Verify that the iSCSI daemon is running. You must run the command on the host.
-    ```
-    $ ps aux | grep -q '[i]scsid' && echo "The iSCSI daemon is running" || echo "The iSCSI daemon is NOT running"
-    The iSCSI daemon is running
-    ```
-
-1. Verify that the Longhorn data path (`/var/lib/longhorn`) is mounted on the host. If you specified multiple Longhorn data paths, run the command for each path on the host.
-    ```
-    $ findmnt --noheadings "/var/lib/longhorn"
-    /var/lib/longhorn /dev/sda1[/var/lib/longhorn] ext4   rw,relatime,commit=30
-    ```
-
-## Limitations
-
-- In COS clusters, Longhorn currently supports only V1 data volumes.
-- You can use `pbkdf2` for volume encryption if the built-in `cryptsetup` utility in your COS cluster does not support `argon2i` or `argon2id`. For more information, see [Issue #10049](https://github.com/longhorn/longhorn/issues/10049).
-
-## References
-
-- [[FEATURE] Container-Optimized OS support](https://github.com/longhorn/longhorn/issues/6165)
-
-
----
-
-## Article: advanced-resources/os-distro-specific/csi-on-gke.md
-
----
-title:  Longhorn CSI on GKE
-weight: 3
----
-
-To operate Longhorn on a cluster provisioned with Google Kubernetes Engine, some additional configuration is required.
-
-1. GKE clusters must use the `Ubuntu` OS instead of `Container-Optimized` OS, in order to satisfy Longhorn's `open-iscsi` dependency.
-
-2. GKE requires a user to manually claim themselves as cluster admin to enable role-based access control. Before installing Longhorn, run the following command:
-
-    ```shell
-    kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=<name@example.com>
-    ```
-
-    where `name@example.com` is the user's account name in GCE.  It's case sensitive. See [this document](https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control) for more information.
-
----
-
-## Article: advanced-resources/os-distro-specific/csi-on-k3s.md
-
----
-  title: Longhorn CSI on K3s
-  weight: 1
----
-
-In this section, you'll learn how to install Longhorn on a K3s Kubernetes cluster. [K3s](https://rancher.com/docs/k3s/latest/en/) is a fully compliant Kubernetes distribution that is easy to install, using half the memory, all in a binary of less than 50mb.
-
-## Requirements
-
-  -  Longhorn v0.7.0 or higher.
-  -  `open-iscsi` or `iscsiadm` installed on the node.
-
-## Instruction
-
-  Longhorn v0.7.0 and above support k3s v0.10.0 and above only by default. 
-  
-  If you want to deploy these new Longhorn versions on versions before k3s v0.10.0, you need to set `--kubelet-root-dir` to `<data-dir>/agent/kubelet` for the Deployment `longhorn-driver-deployer` in `longhorn/deploy/longhorn.yaml`. 
-  `data-dir` is a `k3s` arg and it can be set when you launch a k3s server. By default it is `/var/lib/rancher/k3s`.
-
-## Troubleshooting
-
-### Common issues
-
-#### Failed to get arg root-dir: Cannot get kubelet root dir, no related proc for root-dir detection ...
-
-This error is due to Longhorn cannot detect where is the root dir setup for Kubelet, so the CSI plugin installation failed.
-
-You can override the root-dir detection by setting environment variable `KUBELET_ROOT_DIR` in https://github.com/longhorn/longhorn/blob/v{{< current-version >}}/deploy/longhorn.yaml.
-
-#### How to find `root-dir`?
-
-**For K3S prior to v0.10.0**
-
-Run `ps aux | grep k3s` and get argument `--data-dir` or `-d` on k3s node.
-
-e.g.
-```
-$ ps uax | grep k3s
-root      4160  0.0  0.0  51420  3948 pts/0    S+   00:55   0:00 sudo /usr/local/bin/k3s server --data-dir /opt/test/kubelet
-root      4161 49.0  4.0 259204 164292 pts/0   Sl+  00:55   0:04 /usr/local/bin/k3s server --data-dir /opt/test/kubelet
-``` 
-You will find `data-dir` in the cmdline of proc `k3s`. By default it is not set and `/var/lib/rancher/k3s` will be used. Then joining `data-dir` with `/agent/kubelet` you will get the `root-dir`. So the default `root-dir` for K3S is `/var/lib/rancher/k3s/agent/kubelet`.
-
-If K3S is using a configuration file, you would need to check the configuration file to locate the `data-dir` parameter.
-
-**For K3S v0.10.0+**
-
-It is always `/var/lib/kubelet`
-
-## Background 
-#### Longhorn versions before v0.7.0 don't work on K3S v0.10.0 or above
-K3S now sets its kubelet directory to `/var/lib/kubelet`. See [the K3S release comment](https://github.com/rancher/k3s/releases/tag/v0.10.0) for details.
-
-## Reference
-https://github.com/kubernetes-csi/driver-registrar
-
-
----
-
-## Article: advanced-resources/os-distro-specific/csi-on-rke-and-coreos.md
-
----
-  title: Longhorn CSI on RKE and CoreOS
-  weight: 2
----
-
-For minimalist Linux Operating systems, you'll need a little extra configuration to use Longhorn with RKE (Rancher Kubernetes Engine).  This document outlines the requirements for using RKE and CoreOS.
-
-###  Background 
-
-CSI doesn't work with CoreOS + RKE before Longhorn v0.4.1. The reason is that in the case of CoreOS, RKE sets the argument `root-dir=/opt/rke/var/lib/kubelet` for the kubelet , which is different from the default value `/var/lib/kubelet`.
-                                                                             
-**For k8s v1.12+**, the kubelet will detect the `csi.sock` according to argument `<--kubelet-registration-path>` passed in by Kubernetes CSI driver-registrar, and `<drivername>-reg.sock` (for Longhorn, it's `io.rancher.longhorn-reg.sock`) on kubelet path `<root-dir>/plugins`.
-   
-  **For k8s v1.11,** the kubelet will find both sockets on kubelet path `/var/lib/kubelet/plugins`.
-   
-By default, Longhorn CSI driver creates and expose these two sock files on the host path `/var/lib/kubelet/plugins`. Then the kubelet cannot find `<drivername>-reg.sock`, so CSI driver doesn't work.
-
-Furthermore, the kubelet will instruct the CSI plugin to mount the Longhorn volume on `<root-dir>/pods/<pod-name>/volumes/kubernetes.io~csi/<volume-name>/mount`. But this path inside the CSI plugin container won't be bind mounted on the host path. And the mount operation for the Longhorn volume is meaningless.
-
-Therefore, in this case, Kubernetes cannot connect to Longhorn using the CSI driver without additional configuration.
-
-### Requirements
-
-  -  Kubernetes v1.11 or higher.
-  -  Longhorn v0.4.1 or higher.
-
-###  1. Add extra binds for the kubelet
-
-> This step is only required for For CoreOS + and Kubernetes v1.11. It is not needed for Kubernetes v1.12+.
-
-Add extra_binds for kubelet in RKE `cluster.yml`:
-
-```
-
-services:
-  kubelet:
-    extra_binds:
-    - "/opt/rke/var/lib/kubelet/plugins:/var/lib/kubelet/plugins" 
-
-```
-
-This makes sure the kubelet plugins directory is exposed for CSI driver installation.
-
-### 2. Start the iSCSI Daemon
-
-If you want to enable iSCSI daemon automatically at boot, you need to enable the systemd service:
-
-```
-sudo su
-systemctl enable iscsid
-reboot
-```
-
-Or just start the iSCSI daemon for the current session:
-
-```
-sudo su
-systemctl start iscsid
-```
-
-### Troubleshooting
-
-#### Failed to get arg root-dir: Cannot get kubelet root dir, no related proc for root-dir detection ...
-
-This error happens because Longhorn cannot detect the root dir setup for the kubelet, so the CSI plugin installation failed.
-
-You can override the root-dir detection by setting environment variable `KUBELET_ROOT_DIR` in https://github.com/longhorn/longhorn/blob/v{{< current-version >}}/deploy/longhorn.yaml.
-
-#### How to find `root-dir`?
- 
-Run `ps aux | grep kubelet` and get the argument `--root-dir` on host node. 
-
-For example,
-```
-
-$ ps aux | grep kubelet
-root      3755  4.4  2.9 744404 120020 ?       Ssl  00:45   0:02 kubelet --root-dir=/opt/rke/var/lib/kubelet --volume-plugin-dir=/var/lib/kubelet/volumeplugins
-
-```
-You will find `root-dir` in the cmdline of proc `kubelet`. If it's not set, the default value `/var/lib/kubelet` would be used. In the case of CoreOS, the root-dir would be `/opt/rke/var/lib/kubelet` as shown above.
-
-If the kubelet is using a configuration file, you need to check the configuration file to locate the `root-dir` parameter.
-
-### References
-https://github.com/kubernetes-csi/driver-registrar
-
-https://coreos.com/os/docs/latest/iscsi.html
-
-
----
-
-## Article: advanced-resources/os-distro-specific/okd-support.md
-
----
-title:  OCP/OKD Support
-weight: 4
----
-
-To deploy Longhorn on a cluster provisioned with OpenShift 4.x, some additional configurations are required.
-
-> **Note**: OKD currently does not support the ARM platform. For more information, see the [OKD website](https://www.okd.io) and [GitHub issue #1165](https://github.com/okd-project/okd/issues/1165) (*OKD in ARM platform*).
-
-- [Install Longhorn](#install-longhorn)
-  - [Install With Helm](#install-with-helm)
-  - [Install With `oc` Command](#install-with-oc-command)
-- [Prepare A Customized Default Longhorn Disk (Optional)](#prepare-a-customized-default-longhorn-disk-optional)
-  - [Add An Extra Disk to Longhorn Storage](#add-an-extra-disk-to-longhorn-storage)
-    - [Create Filesystem For The Device](#create-filesystem-for-the-device)
-    - [Mounting The Device On Boot with MachineConfig CRD](#mounting-the-device-on-boot-with-machineconfig-crd)
-    - [Label and Annotate The Node](#label-and-annotate-the-node)
-- [Reference](#reference)
-- [Main Contributor](#main-contributor)
-
-## Install Longhorn
-
-### Install With Helm
-
-Please refer to this section [Install with Helm](../../../deploy/install/install-with-helm/) first.
-
-Install Longhorn with the following settings:
-
-| Setting | Value | Example |
-| --- | --- | --- |
-| `openshift.enabled` | `true` | N/A |
-| `image.openshift.oauthProxy.registry` | Container registry | `quay.io` |
-| `image.openshift.oauthProxy.repository` | Upstream image | `openshift/origin-oauth-proxy` |
-| `image.openshift.oauthProxy.tag` | Version 4.1 or later | `4.18` |
-
-```bash
-  helm install longhorn longhorn/longhorn \
-    --namespace longhorn-system \
-    --create-namespace \
-    --set openshift.enabled=true \
-    --set image.openshift.oauthProxy.registry=quay.io \
-    --set image.openshift.oauthProxy.repository=openshift/origin-oauth-proxy \
-    --set image.openshift.oauthProxy.tag=4.18
-```
-
-### Install With `oc` Command
-
-Perform the following steps to install Longhorn on [OKD](https://www.okd.io/) clusters.
-
-1. Download the `longhorn-okd.yaml` file.
-  ```
-  wget https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/deploy/longhorn-okd.yaml
-  ```
-1. Specify the target `oauth-proxy` container image in the `longhorn-okd.yaml` file (for example, `quay.io/openshift/origin-oauth-proxy:4.18`).
-
-1. Run the following command:
-  ```shell
-  oc apply -f longhorn-okd.yaml
-  ```
-
-One way to monitor the progress of the installation is to watch pods being created in the `longhorn-system` namespace:
-
-  ```shell
-    oc get pods \
-    --namespace longhorn-system \
-    --watch
-  ```
-
-For more information, see [Install with Kubectl](../../../deploy/install/install-with-kubectl).
-
-## Prepare A Customized Default Longhorn Disk (Optional)
-
-To understand more about configuring the disks for Longhorn, please refer to the section [Configuring Defaults for Nodes and Disks](../../../nodes-and-volumes/nodes/default-disk-and-node-config/#launch-longhorn-with-multiple-disks)
-
-Longhorn will use the directory `/var/lib/longhorn` as default storage mount point and that means Longhorn use the root device as the default storage. If you don't want to use the root device as the Longhorn storage, set ***defaultSettings.createDefaultDiskLabeledNodes*** true when installing Longhorn by helm:
-
-```txt
---set defaultSettings.createDefaultDiskLabeledNodes=true
-```
-
-And then add another device formatted to Longhorn storage
-
-### Add An Extra Disk to Longhorn Storage
-
-#### Create Filesystem For The Device
-
-Create the filesystem on the device with the label `longhorn` on the storage node. Get into the node by oc command:
-
-```bash
-oc get nodes --no-headers | awk '{print $1}'
-oc debug node/${NODE_NAME} -t -- chroot /host bash
-```
-
-Check if the device is present and format it with Longhorn label:
-
-```bash
-lsblk
-sudo mkfs.ext4 -L longhorn /dev/${DEVICE_NAME}
-```
-
-#### Mounting The Device On Boot with MachineConfig CRD
-
-The secondary drive needs to be mounted automatically when node boots up by the `MachineConfig` that can be created and deployed by:
-
-```bash
-cat <<EOF >>auto-mount-machineconfig.yaml
-apiVersion: machineconfiguration.openshift.io/v1
-kind: MachineConfig
-metadata:
-  labels:
-    machineconfiguration.openshift.io/role: worker
-  name: 71-mount-storage-worker
-spec:
-  config:
-    ignition:
-      version: 3.2.0
-    systemd:
-      units:
-        - name: var-mnt-longhorn.mount
-          enabled: true
-          contents: |
-            [Unit]
-            Before=local-fs.target
-            [Mount]
-            # Example mount point, you can change it to where you like for each device.
-            Where=/var/mnt/longhorn
-            What=/dev/disk/by-label/longhorn
-            Options=rw,relatime,discard
-            [Install]
-            WantedBy=local-fs.target
-EOF
-
-oc apply -f auto-mount-machineconfig.yaml
-```
-
-#### Label and Annotate The Node
-
-Please refer to the section [Customizing Default Disks for New Nodes](../../../nodes-and-volumes/nodes/default-disk-and-node-config/#customizing-default-disks-for-new-nodes) to label and annotate storage node on where your device is by oc commands:
-
-```bash
-oc get nodes --no-headers | awk '{print $1}'
-
-oc annotate node ${NODE_NAME} --overwrite node.longhorn.io/default-disks-config='[{"path":"/var/mnt/longhorn","allowScheduling":true}]'
-oc label node ${NODE_NAME} --overwrite node.longhorn.io/create-default-disk=config
-```
-
-**Note**: You might need to reboot the node to validate the modified configuration.
-
-## Reference
-
-- [OCP/OKD Documentation and Helm Support](https://github.com/longhorn/longhorn/pull/5004)
-- [OKD Official Website](https://www.okd.io/)
-- [OKD Official Documentation Website](https://docs.okd.io/latest/welcome/index.html)
-- [oauth-proxy](https://github.com/openshift/oauth-proxy/blob/master/contrib/sidecar.yaml)
-
-## Main Contributor
-
-- [@ArthurVardevanyan](https://github.com/ArthurVardevanyan)
-
-
----
-
-## Article: advanced-resources/os-distro-specific/talos-linux-support.md
-
----
-title: Talos Linux Support
-weight: 5
----
-
-## Requirements
-
-The following requirements must be met before installing Longhorn on a Talos Linux cluster.
-
-### System Extensions
-
-Some Longhorn-dependent binary executables are not present in the default Talos root filesystem. To have access to these binaries, Talos offers system extension mechanism to extend the installation.
-
-- `siderolabs/iscsi-tools`: this extension enables iscsid daemon and iscsiadm to be available to all nodes for the Kubernetes persistent volumes operations.
-- `siderolabs/util-linux-tools`: this extension enables linux tool to be available to all nodes. For example, the `fstrim` binary is used for Longhorn volume trimming.
-
-The most straightforward method is to patch the extensions onto existing Talos Linux nodes. Alternatively, we can use the [Talos Linux Image Factory](https://factory.talos.dev/) and select the desired extensions under **System Extensions**. This approach is especially useful when combined with Infrastructure as Code (IaC) tools.
-
-```yaml
-customization:
-  systemExtensions:
-    officialExtensions:
-      - siderolabs/iscsi-tools
-      - siderolabs/util-linux-tools
-```
-
-For detailed instructions, see the Talos documentation on [System Extensions](https://www.talos.dev/v1.6/talos-guides/configuration/system-extensions/) and [Boot Assets](https://www.talos.dev/v1.6/talos-guides/install/boot-assets/).
-
-### Pod Security
-
-Longhorn requires pod security `enforce: "privileged"`.
-
-By default, Talos Linux applies a `baseline` pod security profile across namespaces, except for the kube-system namespace. This default setting restricts Longhorn's ability to manage and access system resources. For more information, see [Root and Privileged Permission](../../../deploy/install/#root-and-privileged-permission).
-
-For detailed instructions, see [Pod Security Policies Disabled & Pod Security Admission Introduction](../../../../archives/1.7.0/important-notes/#pod-security-policies-disabled--pod-security-admission-introduction) and the Talos documentation on [Pod Security](https://www.talos.dev/v1.6/kubernetes-guides/configuration/pod-security/).
-
-## From Talos Linux v1.10.x Onwards
-
-### Data Path Mounts
-
-Since Talos Linux deprecated `.machine.disks`, we recommend using `UserVolumeConfig` to mount a disk for Longhorn. See [What's new in Talos v1.10](https://www.talos.dev/v1.10/introduction/what-is-new/#user-volumes) for more details.
-
-Optionally, we can also create a `VolumeConfig` to specify the size of Talos system volumes. This is **recommended**, as it avoids the need to set `defaultSettings.storageReservedPercentageForDefaultDisk`.
-
-> For more disk configuration options, see the [Talos documentation](https://www.talos.dev/v1.10/talos-guides/configuration/disk-management/#disk-layout).
-
-We must provide additional data path mounts to make them accessible to the Kubernetes Kubelet container.
-
-These mounts allow access to host directories and attach the volumes required by Longhorn components.
-
-The [default data path](../../../references/settings#default-data-path) for Longhorn is `/var/lib/longhorn`. To use the configuration below in Talos, first set your default data path to `/var/mnt/longhorn`. The method to do this depends on your [deployment method](../../deploy/customizing-default-settings).
-
-```yaml
-machine:
-  kubelet:
-    extraMounts:
-      - destination: /var/mnt/longhorn
-        type: bind
-        source: /var/mnt/longhorn
-        options:
-          - bind
-          - rshared
-          - rw
-```
-
-Next, create a `UserVolumeConfig` to mount the disk for Longhorn. It will be automatically mounted to `/var/mnt/longhorn` on the configured node.
-
-```yaml
-apiVersion: v1alpha1
-kind: UserVolumeConfig
-name: longhorn # name is used to identify the volume /var/mnt/<name>
-provisioning:
-  diskSelector:
-    match: disk.transport == "nvme"
-  grow: false
-  maxSize: 1700GB
-```
-
-For detailed instructions on `UserVolumeConfig` and `VolumeConfig`, see the Talos documentation on [Block configuration](https://www.talos.dev/v1.10/reference/configuration/block/). Refer to the [Talos API Reference](https://docs.siderolabs.com/talos/v1.11/reference/api) for more configuration details.
-
-## Up to Talos Linux v1.9.x
-
-### Data Path Mounts
-
-We need to provide additional data path mounts to be accessible to the Kubernetes Kubelet container.
-
-These mounts are necessary to provide access to the host directories, and attach volumes required by Longhorn components.
-
-```yaml
-machine:
-  kubelet:
-    extraMounts:
-      - destination: /var/lib/longhorn
-        type: bind
-        source: /var/lib/longhorn
-        options:
-          - bind
-          - rshared
-          - rw
-```
-
-For detailed instructions, see the Talos documentation on [Editing Machine Configuration](https://www.talos.dev/v1.6/talos-guides/configuration/editing-machine-configuration/).
-
-## V2 Data Engine
-
-To use V2 volumes, all nodes must meet the V2 Data Engine [prerequisites](../../../v2-data-engine/prerequisites#prerequisites).
-
-```yaml
-machine:
-  sysctls:
-    vm.nr_hugepages: "1024"
-  kernel:
-    modules:
-      - name: nvme_tcp
-      - name: vfio_pci
-#     - name: uio_pci_generic
-```
-
-> **Note:**
-> Talos Linux v1.7.x and earlier versions do not include the `uio_pci_generic` kernel module. If the system device supports `vfio_pci`, which is the preferred kernel module for SPDK application deployment, we are not required to install and enable the `uio_pci_generic` kernel driver. For more information, see [System Configuration User Guide](https://spdk.io/doc/system_configuration.html) in the SPDK documentation.
->
-> We can use `uio_pci_generic` if `vfio_pci` is incompatible with your system or specific hardware. Future versions of Talos Linux are expected to include native support for `uio_pci_generic`. For more information, see [Issue #9236](https://github.com/siderolabs/talos/issues/9236).
-> Since 1.8.0 `uio_pci_generic` is now supported.
-
-## Talos Linux Upgrades (version <1.8)
-
-### From v1.8.x Onwards
-
-The `--preserve` flag is no longer required. It is now automatically set for the `talosctl` upgrade command, as noted [here](https://www.talos.dev/v1.8/introduction/what-is-new/#upgrades).
-
-### Up to v1.8.x
-
-When [upgrading a Talos Linux node](https://www.talos.dev/v1.7/talos-guides/upgrading-talos/#talosctl-upgrade), always include the `--preserve` option in the command. This option explicitly tells Talos to keep ephemeral data intact.
-
-Example:
-
-```
-talosctl upgrade --nodes 10.20.30.40 --image ghcr.io/siderolabs/installer:v1.7.6 --preserve
-```
-
-> **Caution:**
-> If the `--preserve` option is not included, Talos wipes `/var/lib/longhorn`, destroying all replicas stored on that node.
-
-### Recovering from an Upgraded Node without Preserving Data
-
-If we were unable to include the `--preserve` option in the upgrade command, perform the following steps:
-
-1. On the Longhorn UI, go to the **Nodes** page.
-2. Select the upgraded node, and then select **Edit node and disks** in the **Operation** menu.
-3. On the **Edit Node and Disks** page, set **Scheduling** to **Disable**, delete the disk, and then click **Save**.
-4. Select the upgraded node again, and then select **Edit node and disks** in the **Operation** menu.
-5. On the **Edit Node and Disks** page, add a disk and configure the following settings:
-    - **Path**: Specify `/var/lib/longhorn/`.
-    - **Storage Reserved**: Specify a value that matches your requirements. By default, it is set to 30% of the disk capacity.
-    - **Scheduling**: Select **Enable**.
-6. Click **Save**.
-
-Longhorn synchronizes the replicas based on the configured settings.
-
-## References
-
-- [[FEATURE] Talos support](https://github.com/longhorn/longhorn/issues/3161)
-
-
----
-
-## Article: advanced-resources/v2-data-engine/_index.md
-
----
-title: V2 Data Engine
-weight: 110
----
-
----
-
-## Article: advanced-resources/v2-data-engine/configurable-cpu-cores.md
-
----
-title: Configurable CPU Cores
-weight: 10
-aliases:
-- /spdk/features/configurable-cpu-cores.md
----
-
-Longhorn now supports configurable CPU cores for the V2 data engine through the use of a **CPU Mask**. This mask allows you to define exactly which CPU cores are allocated to the engine, offering both global and per-node configuration options.
-
-## Understanding the CPU Mask
-
-The CPU mask is a **hexadecimal (hex) representation of a binary bitmask**, where each bit corresponds to a specific CPU core.
-
-- A bit set to **1** means the core is enabled for the data engine.
-- A bit set to **0** means the core is skipped.
-
-### How to Calculate the Mask
-
-To determine the correct hex string, visualize your CPU cores as a sequence of bits from right to left:
-
-| Desired No. of Cores | Binary Representation (Cores 3, 2, 1, 0) | Hexadecimal Value |
-| --- | --- | --- |
-| **1 Core**  | `0001` | **0x1** |
-| **2 Cores** | `0011` | **0x3** |
-| **3 Cores** | `0111` | **0x7** |
-| **4 Cores** | `1111` | **0xF** |
-
-**Example for 23 Cores**: To allocate 23 cores, you need 23 bits set to `1`.
-
-- **Binary**: `111 1111 1111 1111 1111 1111`
-- **Hexadecimal**: `0x7FFFFF`
-
-> **Note**: Do not confuse the number of cores with the hex value. For instance, setting `0x4` (Binary `0100`) only enables **one** core (Core #2), whereas `0xF` (Binary `1111`) enables **four** cores.
-
-## Global Configuration
-
-To set CPU cores globally across the cluster, update the [`data-engine-cpu-mask`](../../../references/settings#data-engine-cpu-mask) setting.
-
-1. Navigate to **Settings > General**.
-2. Locate **Data Engine CPU Mask**.
-3. Enter your calculated hex string (for example, `0xF`).
-
-## Per-node Configuration
-
-For node-specific CPU core allocation, update the `spec.dataEngineSpec.v2.cpuMask` field of the instance manager with a hexadecimal encoded string. By default, this value is empty, and the v2 data engine will use the global setting specified by `data-engine-cpu-mask`. When a per-node configuration is set, the v2 data engine will prioritize this value over the global setting for that specific node.
-
-## Calculation Tools
-
-You can use a [Binary to Hex Converter](https://www.rapidtables.com/convert/number/binary-to-hex.html) to help calculate your mask. Type a `1` for every core you wish to allocate and convert the resulting binary string to Hex.
-
-
----
-
-## Article: advanced-resources/v2-data-engine/hugepage-configuration.md
-
----
-title: Huge Page Configuration
-weight: 20
----
-
-The V2 Data Engine uses SPDK, which by default allocates memory through huge pages for better performance. Longhorn allows you to configure the memory allocation size or disable huge pages entirely and use anonymous (legacy) memory instead.
-
-## Settings
-
-- [`data-engine-hugepage-enabled`](../../../references/settings#data-engine-hugepage-enabled)
-- [`data-engine-memory-size`](../../../references/settings#data-engine-memory-size)
-
-## Using Huge Pages (Default)
-
-When huge pages are enabled, you must pre-allocate huge pages on each node that runs V2 volumes.
-
-### Pre-allocate Huge Pages on Nodes
-
-The total huge page allocation on each node must be at least equal to the `data-engine-memory-size` value (default 2048 MiB). For detailed steps on enabling and verifying huge pages, see [Enable HugePages](../../../deploy/install#enable-hugepages).
-
-### Adjust Memory Size
-
-Before adjusting the memory size, ensure that the huge page allocation on each node is sufficient to meet the new memory requirement.
-
-To change the memory allocated to the SPDK target daemon, update the `data-engine-memory-size` setting. For example, set the value of the setting to `{"v2":"4096"}` to allocate 4096 MiB of memory.
-
-> **Note**: Changing this setting requires all V2 volumes to be detached. The instance manager pods will be restarted with the new memory allocation.
-
-## Disabling Huge Pages (Using Anonymous Memory)
-
-If huge pages are not available or not desired on your nodes, you can disable huge pages and use anonymous (legacy) memory instead by setting `data-engine-hugepage-enabled` to `{"v2":"false"}`.
-
-When huge pages are disabled:
-- SPDK uses anonymous (legacy) memory allocation instead of huge pages.
-- No `hugepages-2Mi` resource limit is set on the instance manager container.
-- The `data-engine-memory-size` setting still defines how much memory SPDK preallocates.
-
-> **Note**:
->
-> Disabling huge pages reduces memory pressure on low-spec nodes and increases deployment flexibility. However, performance may be lower compared to running with huge pages.
-
-
----
-
-## Article: advanced-resources/v2-data-engine/interrupt-mode.md
-
----
-title: Interrupt Mode Support
-weight: 40
----
-
-Starting with v1.10.0, Longhorn supports **SPDK interrupt mode** for V2 data engine volumes. Interrupt mode provides an alternative to the default **polling mode**, offering improved CPU efficiency in certain environment.
-
-Interrupt mode is particularly suitable for clusters with limited CPU resources and a relatively small number of volumes. While polling mode maximizes performance by keeping CPU utilization close to 100% on allocated cores, interrupt mode reduces CPU usage by allowing the SPDK reactor to adjust its usage dynamically instead of continuously polling.
-
-## Overview
-
-### Polling Mode vs Interrupt Mode
-
-**Polling Mode (Default)**:
-- Continuously polls for I/O operations
-- Provides the lowest latency
-- Consumes ~100% of the allocated CPU core at all times
-- Best suited for high-performance workloads with frequent I/O
-
-**Interrupt Mode**:
-- Uses interrupt-driven I/O handling
-- CPU consumption scales with the number of attached volumes
-- Better suited for resource-constrained environments
-
-## Prerequisites
-
-- Longhorn v1.10.0 or later
-- V2 data engine enabled
-- No attached v2 volumes when changing the setting
-- For NVMe disks, IOMMU must be enabled. To verify:
-    ```bash
-    find /sys/kernel/iommu_groups/ -type l
-    ```
-    Example output (IOMMU enabled):
-    ```
-    /sys/kernel/iommu_groups/0/devices/0000:e6:0b.1
-    /sys/kernel/iommu_groups/1/devices/0000:34:0a.6
-    /sys/kernel/iommu_groups/2/devices/0000:a0:00.0
-    ```
-    If the command returns no output, IOMMU is not enabled.
-
-    > **Note:** IOMMU support may not be exposed on virtualized instances. If unsure, consider using a bare-metal instance, or consult your cloud provider’s documentation or support team.
-
-    For more information, see the official [SPDK documentation](https://spdk.io/doc/system_configuration.html).
-
-## Configuration
-
-### Global Setting
-
-To enable interrupt mode globally, update the [data-engine-interrupt-mode-enabled](../../../references/settings#data-engine-interrupt-mode-enabled) setting.
-
-### Important Considerations
-
-- **Volume State Requirement**: The setting can only be changed when no V2 volumes are attached. Longhorn blocks updates if any V2 volume is active.
-- **Global Effect**: The setting applies to all V2 volumes.
-
-## Performance Characteristics
-
-### Recommended Use Cases
-
-Enable interrupt mode when:
-- Running in resource-constrained clusters
-- Managing only a small number of volumes
-- CPU resources are limited or shared with other workloads
-- I/O patterns are sporadic rather than continuous
-- Energy efficiency is a priority
-
-## Limitations
-
-### Hybrid Implementation
-
-The current V2 volume interrupt mode uses a hybrid approach for NVMe/TCP transport:
-
-- **Admin Queue Operations**: Still relies on periodic polling for keepalive and controller recovery
-- **I/O Queue Completion**: Uses polling for command completion
-- **Residual CPU Usage**: Results in a small but constant CPU load, even when attach volumes are idle
-
-### Performance Trade-offs
-
-- **Latency**: Slightly higher than polling mode
-
-### Operational Restrictions
-
-- **Setting Changes**: Cannot be modified while V2 volumes are attached
-- **Global Scope**: Applies globally; no per-volume override is available
-
-
----
-
-## Article: advanced-resources/v2-data-engine/selective-v2-data-engine-activation.md
-
----
-title: Selective V2 Data Engine Activation
-weight: 30
----
-
-Starting with v1.6.0, Longhorn allows you to enable or disable the V2 Data Engine on specific cluster nodes. You can choose to enable the V2 Data Engine only on powerful nodes in a cluster with varied power states. This is not possible in v1.5.0, which enables the V2 Data Engine on all nodes.
-
-## Disabling the V2 Data Engine on Specific Nodes
-
-1. Identify the nodes that should not run the V2 Data Engine.
-
-1. Add the label `node.longhorn.io/disable-v2-data-engine: "true"` to the selected nodes.
-
-1. Enable the global setting `v2-data-engine`.
-
-As a result, the following occur only on *nodes without the label*:
-- Instance Manager pods for the V2 Data Engine are spawned.
-- V2 Data Engine functionality remains available.
-
-## Notice
-
-V2 volume creation is possible only on nodes where the V2 Data Engine is enabled. You must schedule workloads that use V2 volumes on such nodes.
-
-## Reference
-
-For more information, see [[FEATURE] Selective V2 Data Engine Activation](https://github.com/longhorn/longhorn/issues/7015).
-
-
----
-
-## Article: advanced-resources/v2-data-engine/ublk-frontend-support.md
-
----
-title: UBLK Frontend Support (Experimental)
-weight: 50
----
-
-> **Note**: This feature is an Experimental feature and is only functional on Linux kernels below v6.17. On kernel v6.17.0 and above, UBLK fails due to upstream UBLK API changes that cause `EINVAL` errors when starting UBLK devices. This issue is being tracked in [GitHub Issue #11977](https://github.com/longhorn/longhorn/issues/11977).
-
-Starting with v1.9.0, Longhorn supports the UBLK frontend for v2 data engine volumes.
-This feature exposes v2 data engine volumes as a block device by using [UBLK SPDK framework](https://spdk.io/doc/ublk.html).
-In certain high-specification environments (for example, machines with fast SSDs capable of millions of IOPS and 32 CPU cores), the UBLK frontend may offer better performance compared to the default NVMe-oF frontend for v2 data engine volumes.
-See the reference [Longhorn-Performance-Investigation](https://github.com/longhorn/longhorn/wiki/Longhorn-Performance-Investigation).
-However, the UBLK frontend is less mature than the default NVMe-oF frontend (see the known limitations below).
-UBLK frontend also has more restriction as mentioned below.
-
-## Prerequisites
-
-1. The kernel version on nodes must be v6.0 or above. The UBLK kernel driver is only available starting from kernel v6.0.
-2. The kernel module `ublk_drv` must be loaded on each node where UBLK volumes are attached. You can load it manually on each volume for testing using: `modprobe ublk_drv`
-
-## How to use
-
-### When creating the v2 volume from UI
-Select `UBLK` as the volume frontend during volume creation.
-
-### When creating the v2 volume from manifest
-1. Create a StorageClass specifies UBLK frontend. For example:
-    ```yaml
-    kind: StorageClass
-    apiVersion: storage.k8s.io/v1
-    metadata:
-      name: my-ublk-frontend-storageclass
-    provisioner: driver.longhorn.io
-    allowVolumeExpansion: true
-    reclaimPolicy: Delete
-    volumeBindingMode: Immediate
-    parameters:
-      numberOfReplicas: "1"
-      staleReplicaTimeout: "2880"
-      fsType: "ext4"
-      dataEngine: "v2"
-      frontend: "ublk"
-    ```
-1. Create a PVC referencing that StorageClass. For example:
-    ```yaml
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: my-ublk-frontend-pvc
-      namespace: default
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: my-ublk-frontend-storageclass
-      resources:
-        requests:
-          storage: 1Gi
-    ```
-2. Longhorn will automatically provision a v2 volume using the UBLK frontend based on the PVC and StorageClass definition
-
-## Known Limitations
-
-When an instance-manager pod crashes, it may leave orphaned UBLK devices on the node.
-Currently, removing these orphan devices manually can be difficult and may sometimes require a node reboot.
-We are investigating this issue further in [GitHub Issue #10738](https://github.com/longhorn/longhorn/issues/10738).
-
-
-## Reference
-
-Original GitHub issue for UBLK frontend support: [GitHub Issue #9456](https://github.com/longhorn/longhorn/issues/9456)
-
-
----
-
-## Article: advanced-resources/data-recovery/_index.md
-
----
-title: Data Recovery
-weight: 12
----
-
-
----
-
-## Article: advanced-resources/data-recovery/corrupted-replica.md
-
----
-title: Identifying Corrupted Replicas
-weight: 3
----
-
-In the case that one of the disks used by Longhorn went bad, you might experience intermittent input/output errors when using a Longhorn volume. 
-
-For example, one file sometimes cannot be read, but later it can. In this scenario, it's likely one of the disks went bad, resulting in one of the replicas returning incorrect data to the user.
-
-To recover the volume, we can identify the corrupted replica and remove it from the volume:
-
-1. Scale down the workload to detach the volume.
-2. Find all the replicas' locations by checking the Longhorn UI. The directories used by the replicas will be shown as a tooltip for each replica in the UI.
-3. Log in to each node that contains a replica of the volume and get to the directory that contains the replica data.
-
-    For example, the replica might be stored at:
-   
-        /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2
-4. Run a checksum for every file under that directory.
-
-    For example:
-    
-    ```
-    # sha512sum /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/*
-    fcd1b3bb677f63f58a61adcff8df82d0d69b669b36105fc4f39b0baf9aa46ba17bd47a7595336295ef807769a12583d06a8efb6562c093574be7d14ea4d6e5f4  /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/revision.counter
-    c53649bf4ad843dd339d9667b912f51e0a0bb14953ccdc9431f41d46c85301dff4a021a50a0bf431a931a43b16ede5b71057ccadad6cf37a54b2537e696f4780  /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/volume-head-000.img
-    f6cd5e486c88cb66c143913149d55f23e6179701f1b896a1526717402b976ed2ea68fc969caeb120845f016275e0a9a5b319950ae5449837e578665e2ffa82d0  /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/volume-head-000.img.meta
-    e6f6e97a14214aca809a842d42e4319f4623adb8f164f7836e07dc8a3f4816a0389b67c45f7b0d9f833d50a731ae6c4670ba1956833f1feb974d2d12421b03f7  /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/volume.meta
-    ```
-
-5. Compare the output of each replica. One of them should fail or have different results compared to the others. This will be the one replica we need to remove from the volume.
-6. Use the Longhorn UI to remove the identified replica from the volume.
-7. Scale up the workload to make sure the error is gone.
-
-
----
-
-## Article: advanced-resources/data-recovery/data-error.md
-
----
-title: Identifying and Recovering from Data Errors
-weight: 1
----
-
-If you've encountered an error message like the following:
-
-    'fsck' found errors on device /dev/longhorn/pvc-6288f5ea-5eea-4524-a84f-afa14b85780d but could not correct them.
-
-Then you have a data corruption situation. This section describes how to address the issue.
-
-## Bad Underlying Disk
-
-To determine if the error is caused because one of the underlying disks went bad, follow [these steps](../corrupted-replica) to identify corrupted replicas.
-
-If most of the replicas on the disk went bad, that means the disk is unreliable now and should be replaced.
-
-If only one replica on the disk went bad, it can be a situation known as `bit rot`. In this case, removing the replica is good enough.
-
-## Recover from a Snapshot
-
-If all the replicas are identical, then the volume needs to be recovered using snapshots.
-
-The reason for this is probably that the bad bit was written from the workload the volume attached to.
-
-To revert to a previous snapshot:
-
-1. In maintenance mode, attach the volume to any node.
-2. Revert to a snapshot. You should start with the latest one.
-3. Detach the volume from maintenance mode to any node.
-4. Re-attach the volume to a node you have access to.
-5. Mount the volume from `/dev/longhorn/<volume_name>` and check the volume content.
-6. If the volume content is still incorrect, repeat from step 1.
-7. Once you find a usable snapshot, make a new snapshot from there and start using the volume as normal.
-
-## Recover from Backup
-
-If all of the methods above failed, use a backup to [recover the volume.](../../../snapshots-and-backups/backup-and-restore/restore-from-a-backup)
-
----
-
-## Article: advanced-resources/data-recovery/export-from-replica.md
-
----
-title: Exporting a Volume from a Single Replica
-weight: 2
----
-
-Each replica of a Longhorn volume contains the full data for the volume.
-
-If the whole Kubernetes cluster or Longhorn system goes offline, the following steps can be used to retrieve the data of the volume.
-
-1. Identify the volume.
-
-    Longhorn uses the disks on the node to store the replica data.
-
-    By default, the data is stored at the directory specified by the setting [`Default Data Path`](https://longhorn.io/docs/0.8.1/references/settings/#default-data-path).
-
-    More disks can be added to a node by either using the Longhorn UI or by using [a node label and annotation](../../../nodes-and-volumes/nodes/default-disk-and-node-config/).
-
-    You can either keep a copy of the path of those disks, or use the following command to find the disks that have been used by Longhorn. For example:
-
-    ```
-    # find / -name longhorn-disk.cfg
-    /var/lib/longhorn/longhorn-disk.cfg
-    ```
-
-    The result above shows that the path `/var/lib/longhorn` has been used by Longhorn to store data.
-
-2. Check the path found in step 1 to see if it contains the data.
-
-    The data will be stored in the `/replicas` directory, for example:
-
-    ```
-    # ls /var/lib/longhorn/replicas/
-    pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2
-    pvc-71a266e0-5db5-44e5-a2a3-e5471b007cc9-fe160a2c
-    ```
-
-    The directory naming pattern is:
-
-    ```
-    <volume_name>-<8 bytes UUID>
-    ```
-
-    So in the example above, there are two volumes stored here, which are `pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc` and `pvc-71a266e0-5db5-44e5-a2a3-e5471b007cc9`.
-
-    The volume name matches the Kubernetes PV name.
-
-3. Use the `lsof` command to make sure no one is currently using the volume, e.g.
-   ```
-   # lsof pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/
-   COMMAND    PID USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME
-   longhorn 14464 root  cwd    DIR    8,0     4096 541456 pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2
-   ```
-   The above result shows that the data directory is still being used, so don't proceed to the next step. If it's not being used, `lsof` command should return empty result.
-4. Check the volume size of the volume you want to restore using the following command inside the directory:
-   ```
-   # cat pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2/volume.meta
-    {"Size":1073741824,"Head":"volume-head-000.img","Dirty":true,"Rebuilding":false,"Parent":"","SectorSize":512,"BackingFileName":""}
-   ```
-   From the result above, you can see the volume size is `1073741824` (1 GiB). Note the size.
-5. To export the content of the volume, follow the instructions below based on your environment:
-
-   Docker (RKE1)
-
-   To export the content of the volume in Docker, use the following command to create a single replica Longhorn volume container:
-
-   ```
-   docker run -v /dev:/host/dev -v /proc:/host/proc -v <data_path>:/volume --privileged longhornio/longhorn-engine:v{{< current-version >}} launch-simple-longhorn <volume_name> <volume_size>
-   ```
-
-   For example, based on the information above, the command should be:
-
-   ```
-   docker run -v /dev:/host/dev -v /proc:/host/proc -v /var/lib/longhorn/replicas/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc-d890efb2:/volume --privileged longhornio/longhorn-engine:v{{< current-version >}} launch-simple-longhorn pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc 1073741824
-   ```
-
-   Containerd (RKE2/k3s)
-
-   To export the content of the volume in RKE2/k3s, you need to create a static pod manifest. This manifest will launch the Longhorn engine and expose the volume.
-
-   Create a file named `longhorn-recovery.yaml` under `/var/lib/rancher/rke2/agent/pod-manifests/` with the following content:
-
-   ```
-   apiVersion: v1
-   kind: Pod
-   metadata:
-     name: longhorn-recovery
-     namespace: longhorn-system
-   spec:
-     nodeName: <node-where-the-replica-is-located>
-     hostPID: true
-     containers:
-     - name: engine
-       image: longhornio/longhorn-engine:v<current-version>
-       securityContext:
-         privileged: true
-       command: ["launch-simple-longhorn"]
-       args: ["<volume-name>", "<volume-size-in-bytes>"]
-       volumeMounts:
-       - name: dev
-         mountPath: /host/dev
-       - name: proc
-         mountPath: /host/proc
-       - name: data
-         mountPath: /volume
-     volumes:
-     - name: dev
-       hostPath:
-         path: /dev
-     - name: proc
-       hostPath:
-         path: /proc
-     - name: data
-       hostPath:
-         path: <host-path-to-replica>
-     restartPolicy: Never
-   ```
-   Replace the placeholders with the following:
-   - `<current-version>`: The version of Longhorn you are using.
-   - `<volume-name>`: The name of the volume you want to recover.
-   - `<host-path-to-replica>`: The path to the replica directory you found in Step 1.
-
-**Result:** Now you should have a block device created on `/dev/longhorn/<volume_name>` for this device, such as `/dev/longhorn/pvc-06b4a8a8-b51d-42c6-a8cc-d8c8d6bc65bc` for the example above. Now you can mount the block device to get the access to the data.
-
-> To avoid accidental change of the volume content, it's recommended to use `mount -o ro` to mount the directory as `readonly`.
-
-After you are done accessing the volume content, use `docker stop` to stop the container. For RKE2, clean up the resources by removing the static pod manifest file `sudo rm /var/lib/rancher/rke2/agent/pod-manifests/longhorn-recovery.yaml`
-
-
----
-
-## Article: advanced-resources/data-recovery/full-disk.md
-
----
-title: Recovering from a Full Disk
-weight: 4
----
-
-If one disk used by one of the Longhorn replicas is full, that replica will go to the error state, and Longhorn will rebuild another replica on another node/disk.
-
-To recover from a full disk,
-
-1. Disable the scheduling for the full disk.
-    
-    Longhorn should have already marked the disk as `unschedulable`.
-    
-    This step is to make sure the disk will not be scheduled to by accident after more space is freed up.
-
-2. Identify the replicas in the error state on the disk using the Longhorn UI's disk page.
-3. Remove the replicas in the error state.
-
-## Recommended after Recovery
-
-We recommend adding more disks or more space to the node that had this situation.
-
----
-
-## Article: advanced-resources/data-recovery/recover-without-system.md
-
----
-title: Recovering from a Longhorn Backup without System Installed
-weight: 5
----
-
-This command gives users the ability to restore a backup to a `raw` image or a `qcow2` image. If the backup is based on a backing file, users should provide the backing file as a `qcow2` image with `--backing file` parameter.
-
-1. Copy the [yaml template](https://github.com/longhorn/longhorn/blob/v{{< current-version >}}/examples/restore_to_file.yaml.template): Make a copy of `examples/restore_to_file.yaml.template` as e.g. `restore.yaml`.
-    
-2. Set the node which the output file should be placed on by replacing `<NODE_NAME>`, e.g. `node1`.
-
-3. Specify the host path of output file by modifying field `hostpath` of volume `disk-directory`. By default the directory is `/tmp/restore/`.
-
-4. Set the first argument (backup url) by replacing `<BACKUP_URL>`, e.g. `s3://<your-bucket-name>@<your-aws-region>/backupstore?backup=<backup-name>&volume=<volume-name>`.
-
-    - `<backup-name>` and `<volume-name>` can be retrieved from backup.cfg stored in the backup destination folder, e.g. `backup_backup-72bcbdad913546cf.cfg`. The content will be like below: 
-
-        ```json
-        {"Name":"backup-72bcbdad913546cf","VolumeName":"volume_1","SnapshotName":"79758033-a670-4724-906f-41921f53c475"}
-        ```
-
-5. Set argument `output-file` by replacing `<OUTPUT_FILE>`, e.g. `volume.raw` or `volume.qcow2`.
-
-6. Set argument `output-format` by replacing `<OUTPUT_FORMAT>`. The supported options are `raw` or `qcow2`.
-
-7. Set argument `longhorn-version` by replacing `<LONGHORN_VERSION>`, e.g. `v{{< current-version >}}`
-
-8. Set the S3 Credential Secret by replacing `<S3_SECRET_NAME>`, e.g. `minio-secret`.  
-
-    - The credential secret can be referenced [here](https://longhorn.io/docs/{{< current-version >}}/snapshots-and-backups/backup-and-restore/set-backup-target/#set-up-aws-s3-backupstore) and must be created in the `longhorn-system' namespace.
-
-9. Execute the yaml using e.g.:
-
-        kubectl create -f restore.yaml
-
-10. Watch the result using:
-
-        kubectl -n longhorn-system get pod restore-to-file -w
-
-After the pod status changed to `Completed`, you should able to find `<OUTPUT_FILE>` at e.g. `/tmp/restore` on the `<NODE_NAME>`.
-
-We also provide a script, [restore-backup-to-file.sh](https://raw.githubusercontent.com/longhorn/longhorn/v{{< current-version >}}/scripts/restore-backup-to-file.sh), to restore a backup. The following parameters should be specified:
-  - `--backup-url`: Specifies the backups S3/NFS URL. e.g., `s3://backupbucket@us-east-1/backupstore?backup=backup-bd326da2c4414b02&volume=volumeexamplename"`
-  
-  - `--output-file`: Set the output file name. e.g, `volume.raw`
-  
-  - `--output-format`: Set the output file format. e.g. `raw` or `qcow2`
-  
-  - `--version`: Specifies the version of Longhorn to use. e.g., `v{{< current-version >}}`
-
-Optional parameters can be specified:
-
-  - `--aws-access-key`: Specifies AWS credentials access key if backups is s3.
-  
-  - `--aws-secret-access-key`: Specifies AWS credentials access secret key if backups is s3.
-  
-  - `--backing-file`: backing image. e.g., `/tmp/backingfile.qcow2`
-
-The output image files can be found in the `/tmp/restore` folder after the script has finished running.
-
----
-
-## Article: advanced-resources/data-cleanup/_index.md
-
----
-title: Data Cleanup
-weight: 6
----
-
----
-
-## Article: advanced-resources/data-cleanup/orphaned-data-cleanup.md
-
----
-title: Orphaned Data Cleanup
-weight: 4
----
-
-Longhorn supports orphaned data cleanup. Currently, Longhorn can identify and clean up the orphaned replica directories on disks.
-
-## Orphaned Replica Directories
-
-When a user introduces a disk into a Longhorn node, it may contain replica directories that are not tracked by the Longhorn system. The untracked replica directories may belong to other Longhorn clusters. Or, the replica CRs associated with the replica directories are removed after the node or the disk is down. When the node or the disk comes back, the corresponding replica data directories are no longer tracked by the Longhorn system. These replica data directories are called orphaned.
-
-Longhorn supports the detection and cleanup of orphaned replica directories. It identifies the directories and gives a list of `orphan` resources that describe those directories. By default, Longhorn does not automatically delete `orphan` resources and their directories. Users can trigger the deletion of orphaned replica directories manually or have it done automatically.
-
-When automatic orphan deletion is enabled, Longhorn automatically deletes orphaned Custom Resources (CRs) and their associated directories after the delay defined by the `orphan-resource-auto-deletion-grace-period` setting. If a user manually deletes an orphaned CR, the deletion occurs immediately and does not respect this grace period.
-
-### Example
-
-In the example, we will explain how to manage orphaned replica directories identified by Longhorn via `kubectl` and Longhorn UI.
-
-#### Manage Orphaned Replica Directories via kubectl
-
-1. Introduce disks containing orphaned replica directories.
-   - Orphaned replica directories on Node `worker1` disks
-    ```
-    # ls /mnt/disk/replicas/
-    pvc-19c45b11-28ee-4802-bea4-c0cabfb3b94c-15a210ed
-    ```
-   - Orphaned replica directories on Node `worker2` disks
-    ```
-    # ls /var/lib/longhorn/replicas/
-    pvc-28255b31-161f-5621-eea3-a1cbafb4a12a-866aa0a5
-
-    # ls /mnt/disk/replicas/
-    pvc-19c45b11-28ee-4802-bea4-c0cabfb3b94c-a86771c0
-    ```
-
-2. Longhorn detects the orphaned replica directories and creates an `orphan` resources describing the directories.
-    ```
-    # kubectl -n longhorn-system get orphans -l "longhorn.io/orphan-type=replica"
-    NAME                                                                      TYPE      NODE
-    orphan-fed8c6c20965c7bdc3e3bbea5813fac52ccd6edcbf31e578f2d8bab93481c272   replica   rancher60-worker1
-    orphan-637f6c01660277b5333f9f942e4b10071d89379dbe7b4164d071f4e1861a1247   replica   rancher60-worker2
-    orphan-6360f22930d697c74bec4ce4056c05ac516017b908389bff53aca0657ebb3b4a   replica   rancher60-worker2
-    ```
-
-3. One can list the `orphan` resources created by Longhorn system by `kubectl -n longhorn-system get orphan`.
-    ```
-    kubectl -n longhorn-system get orphan
-    ```
-
-4. Get the detailed information of one of the orphaned replica directories in `spec.parameters` by `kubcel -n longhorn-system get orphan <name>`.
-   ```
-    # kubectl -n longhorn-system get orphans orphan-fed8c6c20965c7bdc3e3bbea5813fac52ccd6edcbf31e578f2d8bab93481c272 -o yaml
-    apiVersion: longhorn.io/v1beta2
-    kind: Orphan
-    metadata:
-    creationTimestamp: "2022-04-29T10:17:40Z"
-    finalizers:
-    - longhorn.io
-    generation: 1
-    labels:
-        longhorn.io/component: orphan
-        longhorn.io/managed-by: longhorn-manager
-        longhorn.io/orphan-type: replica
-        longhornnode: rancher60-worker1
-
-    ......
-
-    spec:
-    nodeID: rancher60-worker1
-    orphanType: replica
-    parameters:
-        DataName: pvc-19c45b11-28ee-4802-bea4-c0cabfb3b94c-15a210ed
-        DiskName: disk-1
-        DiskPath: /mnt/disk/
-        DiskUUID: 90f00e61-d54e-44b9-a095-35c2b56a0462
-    status:
-    conditions:
-    - lastProbeTime: ""
-        lastTransitionTime: "2022-04-29T10:17:40Z"
-        message: ""
-        reason: ""
-        status: "True"
-        type: DataCleanable
-    - lastProbeTime: ""
-        lastTransitionTime: "2022-04-29T10:17:40Z"
-        message: ""
-        reason: ""
-        status: "False"
-        type: Error
-    ownerID: rancher60-worker1
-   ```
-
-5. One can delete the `orphan` resource by `kubectl -n longhorn-system delete orphan <name>` and then the corresponding orphaned replica directory will be deleted.
-   ```
-    # kubectl -n longhorn-system delete orphan orphan-fed8c6c20965c7bdc3e3bbea5813fac52ccd6edcbf31e578f2d8bab93481c272
-
-    # kubectl -n longhorn-system get orphans -l "longhorn.io/orphan-type=replica"
-    NAME                                                                      TYPE      NODE
-    orphan-637f6c01660277b5333f9f942e4b10071d89379dbe7b4164d071f4e1861a1247   replica   rancher60-worker2
-    orphan-6360f22930d697c74bec4ce4056c05ac516017b908389bff53aca0657ebb3b4a   replica   rancher60-worker2
-   ```
-
-    The orphaned replica directory is deleted.
-    ```
-    # ls /mnt/disk/replicas/
-
-    ```
-
-6. By default, Longhorn will not automatically delete the orphaned replica directory. You can enable automatic deletion by setting the `orphan-resource-auto-deletion` setting.
-    ```
-    # kubectl -n longhorn-system edit settings.longhorn.io orphan-resource-auto-deletion
-    ```
-    Then, add `replica-data` to the list by including it as one of the semicolon-separated items.
-
-    ```
-    # kubectl -n longhorn-system get settings.longhorn.io orphan-resource-auto-deletion
-    NAME                            VALUE          APPLIED   AGE
-    orphan-resource-auto-deletion   replica-data   true      26m
-    ```
-
-7. After enabling the automatic deletion and wait for a while, the `orphan` resources and directories are deleted automatically.
-   ```
-    # kubectl -n longhorn-system get orphans.longhorn.io -l "longhorn.io/orphan-type=replica"
-    No resources found in longhorn-system namespace.
-   ```
-   The orphaned replica directories are deleted.
-   ```
-    # ls /mnt/disk/replicas/
-
-    # ls /var/lib/longhorn/replicas/
-
-   ```
-
-    Additionally, one can delete all orphaned replica directories on the specified node by
-    ```
-    # kubectl -n longhorn-system delete orphan -l "longhorn.io/orphan-type=replica-instance,longhornnode=<node name>”
-    ```
-
-#### Manage Orphaned Replica Directories via Longhorn UI
-
-1. In the top navigation bar, go to `Setting > Orphan Resources > Replica Data`.
-2. Review the list of orphaned replica directories grouped by node and disk.
-3. To delete a directory, click `Operation > Delete`.
-
-By default, Longhorn does not delete orphaned replica directories automatically. To enable automatic deletion, go to `Settings > Orphan`.
-
-### Exception
-Longhorn will not create an `orphan` resource for an orphaned directory when
-
-- The orphaned directory is not an **orphaned replica directory**.
-  - The directory name does not follow the replica directory's naming convention.
-  - The volume volume.meta file is missing.
-- The orphaned replica directory is on an evicted node.
-- The orphaned replica directory is in an evicted disk.
-- The orphaned data cleanup mechanism does not clean up a stale replica, also known as an error replica. Instead, the stale replica is cleaned up according to the [staleReplicaTimeout](../../../nodes-and-volumes/volumes/create-volumes/#creating-longhorn-volumes-with-kubectl) setting.
-
-
----
-
-## Article: advanced-resources/data-cleanup/orphaned-instance-cleanup.md
-
----
-title: Orphaned Instance Cleanup
-weight: 4
----
-
-Longhorn can identify and clean up orphaned instances on each node.
-
-## Orphaned Runtime Instance
-
-When a network outage affects a Longhorn node, it may leave behind engine or replica runtime instances that are no longer tracked by the Longhorn system. The corresponding engine and replica CRs might be removed or rescheduled to another node during the outage. When the node comes back, the Longhorn system no longer tracks the corresponding runtime instances. These runtime instances, such as the engine and replica processes for v1 volumes, are called orphaned instances. Orphaned instances continue to consume CPU and memory.
-
-Longhorn supports the detection and cleanup of orphaned instance. It identifies the instances and gives a list of `orphan` resources that describe those orphans. By default, Longhorn does not automatically delete `orphan` instances. Users can trigger the deletion of orphaned instances manually or have it done automatically.
-
-When automatic orphan deletion is enabled, Longhorn automatically deletes orphaned Custom Resources (CRs) and their associated directories after the delay defined by the `orphan-resource-auto-deletion-grace-period` setting. If a user manually deletes an orphaned CR, the deletion occurs immediately and does not respect this grace period.
-
-### Example
-
-The following example shows how to manage orphaned instances using `kubectl`.
-
-#### Manage Orphaned Instances via kubectl
-
-1. Introduce nodes that orphaned instance processes running on
-    - Orphaned replica instance on Node `worker1`
-     ```
-     # kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker1"
-     Name:         instance-manager-8ff396d6d3744979b32abafc6346781c
-     Namespace:    longhorn-system
-     Kind:         InstanceManager
-     ...
-     Status:
-       Instance Replicas:
-         pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73:
-           Spec:
-             Data Engine:  v1
-             Name:         pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73
-           Status:
-             Conditions:         <nil>
-             Endpoint:
-             Error Msg:
-             Listen:
-             Port End:           10020
-             Port Start:         10011
-             Resource Version:   0
-             State:              running
-             Target Port End:    0
-             Target Port Start:  0
-             Type:               replica
-     ...
-     ```
-    - Orphaned engine instance on Node `worker2`
-     ```
-     # kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker2"
-     Name:         instance-manager-b87f10b867cec1dca2b814f5e78bcc90
-     Namespace:    longhorn-system
-     Kind:         InstanceManager
-     ...
-     Status:
-       Instance Engines:
-         pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0:
-           Spec:
-             Data Engine:  v1
-             Name:         pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0
-           Status:
-             Conditions:
-               Filesystem Read Only:  false
-             Endpoint:
-             Error Msg:
-             Listen:
-             Port End:                10020
-             Port Start:              10020
-             Resource Version:        0
-             State:                   running
-             Target Port End:         10020
-             Target Port Start:       10020
-             Type:                    engine
-     ...
-     ```
-
-2. Longhorn detects the orphaned instances and creates an `orphan` resources describing the instances.
-    ```
-    # kubectl -n longhorn-system get orphan -l "longhorn.io/orphan-type in (engine-instance,replica-instance)"
-    NAME                                                                      TYPE               NODE
-    orphan-1807009489e50534c35c350e22680449c97deca4e5d3b72f4591976145f8bc41   engine-instance    worker2
-    orphan-a91aa42ab5eda6b8b9fe1116d5b5f5673e5108d89be3db6fd18a275913463eef   replica-instance   worker1
-    ```
-
-3. You can view the list of `orphan` resources created by the Longhorn system by running `kubectl -n longhorn-system get orphan`.
-    ```
-    kubectl -n longhorn-system get orphan
-    ```
-
-4. Get the detailed information of one of the orphaned replica instance in `spec.parameters` by `kubectl -n longhorn-system get orphan <name>`.
-    ```
-    # kubectl -n longhorn-system get orphans orphan-a91aa42ab5eda6b8b9fe1116d5b5f5673e5108d89be3db6fd18a275913463eef -o yaml
-    apiVersion: longhorn.io/v1beta2
-    kind: Orphan
-    metadata:
-    creationTimestamp: "2025-05-02T06:07:32Z"
-    finalizers:
-    - longhorn.io
-    generation: 1
-    labels:
-        longhorn.io/component: orphan
-        longhorn.io/managed-by: longhorn-manager
-        longhorn.io/orphan-type: replica-instance
-        longhornnode: worker1
-        longhornreplica: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73
-
-    ......
-
-    spec:
-      dataEngine: v1
-      nodeID: worker1
-      orphanType: replica-instance
-      parameters:
-        InstanceManager: instance-manager-8ff396d6d3744979b32abafc6346781c
-        InstanceName: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-r-05660b73
-    status:
-    conditions:
-    - lastProbeTime: ""
-        lastTransitionTime: "2025-05-02T06:06:39Z"
-        message: ""
-        reason: running
-        status: "True"
-        type: InstanceExist
-    - lastProbeTime: ""
-        lastTransitionTime: "2025-05-02T06:06:39Z"
-        message: ""
-        reason: ""
-        status: "False"
-        type: Error
-    ownerID: worker1
-    ```
-
-5. Get the detailed information of one of the orphaned engine instance in `spec.parameters` by `kubectl -n longhorn-system get orphan <name>`.
-    ```
-    # kubectl -n longhorn-system get orphans orphan-1807009489e50534c35c350e22680449c97deca4e5d3b72f4591976145f8bc41 -o yaml
-    apiVersion: longhorn.io/v1beta2
-    kind: Orphan
-    metadata:
-    creationTimestamp: "2025-05-02T06:47:25Z"
-    finalizers:
-    - longhorn.io
-    generation: 1
-    labels:
-        longhorn.io/component: orphan
-        longhorn.io/managed-by: longhorn-manager
-        longhorn.io/orphan-type: engine-instance
-        longhornengine: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0
-        longhornnode: worker2
-
-    ......
-
-    spec:
-      dataEngine: v1
-      nodeID: worker2
-      orphanType: engine-instance
-      parameters:
-        InstanceManager: instance-manager-b87f10b867cec1dca2b814f5e78bcc90
-        InstanceName: pvc-569e44c0-b352-4aca-bf14-2cf7a6cfe86f-e-0
-    status:
-    conditions:
-    - lastProbeTime: ""
-        lastTransitionTime: "2025-05-02T06:47:25Z"
-        message: ""
-        reason: running
-        status: "True"
-        type: InstanceExist
-    - lastProbeTime: ""
-        lastTransitionTime: "2025-05-02T06:47:25Z"
-        message: ""
-        reason: ""
-        status: "False"
-        type: Error
-    ownerID: worker2
-    ```
-
-6. You can delete an `orphan` resource by running `kubectl -n longhorn-system delete orphan <name>`. The corresponding orphaned instance will also be removed.
-    ```
-    # kubectl -n longhorn-system delete orphan orphan-a91aa42ab5eda6b8b9fe1116d5b5f5673e5108d89be3db6fd18a275913463eef
-
-    # kubectl -n longhorn-system get orphan -l "longhorn.io/orphan-type in (engine-instance,replica-instance)"
-    NAME                                                                      TYPE               NODE
-    orphan-1807009489e50534c35c350e22680449c97deca4e5d3b72f4591976145f8bc41   engine-instance    worker2
-    ```
-
-    The orphaned instance is deleted.
-    ```
-    # kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker1"
-    Name:         instance-manager-8ff396d6d3744979b32abafc6346781c
-    Namespace:    longhorn-system
-    Kind:         InstanceManager
-    ...
-    Status:
-      Instance Replicas:
-    ...
-    ```
-
-7. By default, Longhorn does not automatically delete orphaned instances. You can enable automatic deletion by configuring the `orphan-resource-auto-deletion` setting.
-    ```
-    # kubectl -n longhorn-system edit settings.longhorn.io orphan-resource-auto-deletion
-    ```
-    Then, add `instance` to the list by including it as one of the semicolon-separated items.
-
-    ```
-    # kubectl -n longhorn-system get settings.longhorn.io orphan-resource-auto-deletion
-    NAME                            VALUE      APPLIED   AGE
-    orphan-resource-auto-deletion   instance   true      45h
-    ```
-
-8. After enabling the automatic deletion and wait for a while, the `orphan` resources and processes are deleted automatically.
-    ```
-    # kubectl -n longhorn-system get orphans.longhorn.io -l "longhorn.io/orphan-type in (engine-instance,replica-instance)"
-    No resources found in longhorn-system namespace.
-    ```
-    The orphaned instances are deleted from instance manager.
-    ```
-    # kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker1"
-    Name:         instance-manager-8ff396d6d3744979b32abafc6346781c
-    Namespace:    longhorn-system
-    Kind:         InstanceManager
-    ...
-    Status:
-      Instance Replicas:
-    ...
-
-    # kubectl -n longhorn-system describe instancemanager -l "longhorn.io/node=worker2"
-    Name:         instance-manager-b87f10b867cec1dca2b814f5e78bcc90
-    Namespace:    longhorn-system
-    Kind:         InstanceManager
-    ...
-    Status:
-      Instance Engines:
-    ...
-
-    ```
-
-    Additionally, you can delete all orphaned instances on the specified node by running:
-    ```
-    # kubectl -n longhorn-system delete orphan -l "longhorn.io/orphan-type in (engine-instance,replica-instance),longhornnode=<node name>"
-    ```
-
-#### Manage Orphaned Instances via Longhorn UI
-
-1. In the top navigation bar, go to `Advanced > Orphaned Resources > Instances`.
-2. Review the list of orphaned instances, displaying relevant instance information.
-3. To delete an orphaned instance, click `Operation > Delete`.
-
-By default, Longhorn does not automatically delete orphaned instances. To enable automatic deletion, go to `Settings > Orphan`.
-
-### Exception
-
-Longhorn does not create an orphan resource in the following scenarios:
-
-- The orphaned engine or replica is rescheduled back to the node.
-- The engine or replica is in a migrating, starting, or stopping state.
-- The node is evicted.
-
-
----
-
-## Article: advanced-resources/longhornctl/_index.md
-
----
-title: Command Line Tool (longhornctl)
-description: Command line interface (CLI) for Longhorn operations and troubleshooting.
-weight: 8
----
-
-The `longhornctl` tool is a CLI interface to Longhorn operations. It interacts with Longhorn by creating Kubernetes Custom Resources (CRs) and executing commands inside a dedicated Pod for in-cluster and host operations.
-
-## Common usage scenarios
-
-* **Installation:**
-  * `longhornctl install preflight`: Perform preflight dependencies installation and setup before installing Longhorn.
-* **Operations:**
-  * `longhornctl export replica`: Extract data from a Longhorn replica data directory to a designated directory on its host machine. This is useful for recovering data when Longhorn is unavailable.
-  * `longhornctl trim volume`: Reclaim unused storage space within a Longhorn volume.
-* **Troubleshooting:**
-  * `longhornctl check preflight`: Identifies potential issues before usage.
-  * `longhornctl get replica`: Retrieve details about Longhorn replicas on the host.
-
-## Usage
-
-For more information about the available commands, see [this document](https://github.com/longhorn/cli/tree/v{{< current-version >}}/docs/longhornctl.md) in the GitHub repository, or run `longhornctl help` in your terminal.
-
-
----
-
-## Article: advanced-resources/longhornctl/install-longhornctl.md
-
----
-title: Install longhornctl
-weight: 1
----
-
-## Use the Prebuilt Binary
-
-1. Download the binary:
-   ```bash
-   # Choose your architecture (amd64 or arm64).
-   ARCH="amd64"
-
-   # Download the release binary.
-   curl -LO "https://github.com/longhorn/cli/releases/download/v{{< current-version >}}/longhornctl-linux-${ARCH}"
-   ```
-1. Validate the binary:
-   ```bash
-   # Download the checksum for your architecture.
-   curl -LO "https://github.com/longhorn/cli/releases/download/v{{< current-version >}}/longhornctl-linux-${ARCH}.sha256"
-
-   # Verify the downloaded binary matches the checksum.
-   echo "$(cat longhornctl-linux-${ARCH}.sha256 | awk '{print $1}') longhornctl-linux-${ARCH}" | sha256sum --check
-   ```
-1. Install the binary:
-   ```bash
-   sudo install longhornctl-linux-${ARCH} /usr/local/bin/longhornctl
-   ```
-1. Verify installation:
-   ```bash
-   longhornctl version
-   ```
-
-## Build From Source
-
-See [this document](https://github.com/longhorn/cli/tree/{{< current-version >}}?tab=readme-ov-file#build-from-source) in the GitHub repository.
-
-
----
-
-## Article: advanced-resources/cluster-restore/_index.md
-
----
-title: Cluster Restore
-weight: 11
----
-
----
-
-## Article: advanced-resources/cluster-restore/rancher-cluster-restore.md
-
----
-title: Restore cluster with a Rancher snapshot
-weight: 4
----
-
-This doc describes what users need to do after restoring the cluster with a Rancher snapshot.
-
-## Assumptions:
-- Most of the data and the underlying disks still exist in the cluster before the restore and can be directly reused then.
-- There is a backupstore holding all volume data.
-- The setting [`Disable Revision Counter`](../../../references/settings/#disable-revision-counter) is false. (It's false by default.) Otherwise, users need to manually check if the data among volume replicas are consistent, or directly restore volumes from backup.
-
-## Expectation:
-- All settings and node & disk configs will be restored.
-- As long as the valid data still exists, the volumes can be recovered without using a backup. In other words, we will try to avoid restoring backups, which may help reduce Recovery Time Objective (RTO) as well as save bandwidth.
-- Detect the invalid or out-of-sync replicas as long as the related volume still contains a valid replica after the restore.
-
-## Behaviors & Requirement of Rancher restore
-According to [the Rancher restore article](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup), you have to restart the Kubernetes components on all nodes. Otherwise, there will be tons of resource update conflicts in Longhorn.
-
-## Actions after the restore
-- Restart all Kubernetes components for all nodes. See the above link for more details.
-
-- Kill all longhorn manager pods then Kubernetes will automatically restart them. Wait for conflicts in longhorn manager pods to disappear.
-
-- All volumes may be reattached. If a Longhorn volume is used by a single pod, users need to shut down then recreate it. For Deployments or Statefulsets, Longhorn will automatically kill then restart the related pods.
-
-- If the following happens after the snapshot and before the cluster restore:
-    - A volume is unchanged: Users don't need to do anything.
-    - The data is updated: Users don't need to do anything typically. Longhorn will automatically fail the replicas that don't contain the latest data.
-    - A new volume is created: This volume will disappear after the restore. Users need to recreate a new volume, launch [a single replica volume](../../data-recovery/export-from-replica) based on the replica of the disappeared volume, then transfer the data to the new volume.
-    - A volume is deleted: Since the data is cleaned up when the volume is removed, the restored volume contains no data. Users may need to re-delete it.
-    - For DR volumes: Users don't need to do anything. Longhorn will redo a full restore.
-    - Some operations are applied for a volume:
-        - Backup: The backup info of the volume should be resynced automatically.
-        - Snapshot: The snapshot info of the volume should be resynced once the volume is attached.
-        - Replica rebuilding & replica removal:
-            - If there are new replicas rebuilt, those replicas will disappear from the Longhorn system after the restoring. Users need to clean up the replica data manually, or use the data directories of these replicas to export a single replica volume then do data recovery if necessary.
-            - If there are some failed/removed replicas and there is at least one replica keeping healthy, those failed/removed replicas will be back after the restoration. Then Longhorn can detect these restored replicas do not contain any data, and copy the latest data from the healthy replica to these replicas.
-          - If all replicas are replaced by new replicas after the snapshot, the volume will contain invalid replicas only after the restore. Then users need to export [a single replica volume](../../data-recovery/export-from-replica) for the data recovery.
-        -  Engine image upgrade: Users need to redo the upgrade.
-        - Expansion: The spec size of the volume will be smaller than the current size. This is like someone requesting volume shrinking but actually Longhorn will refuse to handle it internally. To recover the volume, users need to scale down the workloads and re-do the expansion.
-
-    - **Notice**: If users don't know how to recover a problematic volume, the simplest way is always restoring a new volume from backup.
-
-- If the Longhorn system is upgraded after the snapshot, the new settings and the modifications on the node config will disappear. Users need to re-do the upgrade, then re-modify the settings and node configurations.
-
-- If a node is deleted from Longhorn system after the snapshot, the node won't be back, but the pods on the removed node will be restored. Users need to manually clean up them since these pod may get stuck in state `Terminating`.
-- If a node to added to Longhorn system after the snapshot, Longhorn should automatically relaunch all necessary workloads on the node after the cluster restore. But users should be aware that all new replicas or engines on this node will be gone after the restore.
-
-
-## References
-- The related GitHub issue is https://github.com/longhorn/longhorn/issues/2228.
-  In this GitHub post, one user is providing a way that restores the Longhorn to a new cluster that doesn't contain any data.
-
-
----
-
-## Article: advanced-resources/containerized-data-importer/_index.md
-
----
-title: Containerized Data Importer (CDI)
-weight: 8
----
-
----
-
-## Article: advanced-resources/containerized-data-importer/containerized-data-importer.md
-
----
-title: Longhorn with CDI Imports
-weight: 1
----
-
-This document explains how to use the [Containerized Data Importer (CDI)](https://github.com/kubevirt/containerized-data-importer) to import Raw or QCOW2 images into Longhorn. It details the workflow for creating a reusable **Golden Image** and provisioning multiple workloads from it using CSI Volume Cloning.
-
-## Overview
-
-In Kubernetes environments that require pre-populated disk images, CDI enables importing external images into Longhorn-backed PersistentVolumeClaims (PVCs), which serve as the reusable Golden Image for provisioning subsequent workloads.
-
-Technically, the Golden Image acts as a **Base Image PVC**. Longhorn implements this via CSI Volume Cloning, creating a **full, independent copy** for each new claim. This ensures complete data isolation: workloads obtain their own writable volumes, and the original Golden Image remains unchanged and independent of the clones at runtime.
-
-## Workflow
-
-1.  **Import:** CDI pulls an image from an external source (HTTP, S3, or container registry) and populates a Longhorn-backed PVC.
-2.  **Protect:** This PVC functions as the "Golden Image." It is recommended to treat this PVC as **read-only** or immutable to ensure consistency for future clones.
-3.  **Clone:** Workloads create new PVCs referencing the base image as their `dataSource`. Longhorn copies the data from the base image to the new volume.
-
-### Creating a Base Image PVC
-
-A DataVolume manifest specifies the source image and the Longhorn storage class. For example, importing a QCOW2 image via HTTP:
-
-```
-apiVersion: cdi.kubevirt.io/v1beta1
-kind: DataVolume
-metadata:
-  name: golden-base-image
-spec:
-  source:
-    http:
-      url: "https://example.com/images/base-image.qcow2"
-  pvc:
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: 10Gi
-    storageClassName: longhorn
-```
-
-After creation, CDI handles the image import and conversion, resulting in a Longhorn-backed PVC that acts as the base image. It is recommended to treat this PVC as immutable and avoid direct writes from workloads.
-
-### Cloning Base Images
-
-Cloning a base image PVC in Longhorn is performed in full copy mode, creating a complete independent copy of the base image for each cloned PVC. This ensures that each workload has its own isolated volume without relying on the base image for runtime operations. For example:
-
-```
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: cloned-pvc-1
-spec:
-  dataSource:
-    name: golden-base-image
-    kind: PersistentVolumeClaim
-    apiGroup: ""
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
-  storageClassName: longhorn
-```
-
-Multiple clones can be created from the same base image, each as a full independent copy ensuring workload isolation.
-
-## References
-
-- [Containerized Data Importer](https://github.com/kubevirt/containerized-data-importer)
-
----
-
 ## Article: high-availability/_index.md
 
 ---
@@ -17937,241 +18433,6 @@ The Longhorn team has investigated the impact of RWX volumes on resource consump
 | **Share Manager CPU/RAM usage**         | 2.2 GB / 0.235 CPU         | 2.25 GB / 0.26 CPU          | +2.3% RAM / +10.6% CPU |
 
 For detailed screenshots and further context, please refer to the [related issue discussion](https://github.com/longhorn/longhorn/issues/6205#issuecomment-2262625965).
-
-
----
-
-## Article: important-notes/_index.md
-
----
-title: Important Notes
-weight: 1
----
-
-This page summarizes the key notes for Longhorn v{{< current-version >}}.
-For the full release note, see the Longhorn v{{< current-version >}} release notes on GitHub.
-
-- [Removal](#removal)
-- [V2 Data Engine](#v2-data-engine)
-  - [General Availability](#general-availability)
-  - [Notice](#notice)
-    - [Volume Attach Latency at Scale](#volume-attach-latency-at-scale)
-    - [ARM64 NVMe-backed Block-Type Node Disk Limitation](#arm64-nvme-backed-block-type-node-disk-limitation)
-    - [UBLK Frontend Kernel Limitation](#ublk-frontend-kernel-limitation)
-    - [Longhorn System Upgrade](#longhorn-system-upgrade)
-  - [Default CPU Allocation](#default-cpu-allocation)
-  - [IPv6 Support](#ipv6-support)
-  - [Features Planned for Longhorn v1.12.1](#features-planned-for-longhorn-v1121)
-    - [Fast Volume Cloning](#fast-volume-cloning)
-    - [Storage Sharding](#storage-sharding)
-- [Important Fixes](#important-fixes)
-  - [Instance Manager Panic During Replica Rebuild](#instance-manager-panic-during-replica-rebuild)
-  - [Replica Rebuild Progress Reporting](#replica-rebuild-progress-reporting)
-  - [Replica Auto-Balance Scheduling Loop](#replica-auto-balance-scheduling-loop)
-  - [Replica CR Leak During Failed Local Scheduling](#replica-cr-leak-during-failed-local-scheduling)
-  - [CSI Storage Capacity Tracking](#csi-storage-capacity-tracking)
-  - [Encrypted Volume Size Correction](#encrypted-volume-size-correction)
-- [General](#general)
-  - [Kubernetes Version Requirement](#kubernetes-version-requirement)
-  - [Manual Checks Before Upgrade](#manual-checks-before-upgrade)
-- [Scheduling](#scheduling)
-  - [Topology-Aware PV Node Affinity Control](#topology-aware-pv-node-affinity-control)
-- [Stability](#stability)
-  - [Configurable Engine Image Pod Liveness Probe](#configurable-engine-image-pod-liveness-probe)
-- [Resource Efficiency](#resource-efficiency)
-  - [Longhorn Manager Memory Optimization](#longhorn-manager-memory-optimization)
-- [Networking](#networking)
-  - [Dual-Stack Cluster Support](#dual-stack-cluster-support)
-- [Monitoring](#monitoring)
-  - [Toggle Kubernetes Metrics Server Integration](#toggle-kubernetes-metrics-server-integration)
-- [Command-Line Tool](#command-line-tool)
-  - [On-Demand Snapshot Checksum Calculation](#on-demand-snapshot-checksum-calculation)
-
-## Removal
-
-V2 Backing Images are removed in Longhorn v{{< current-version >}}. Use the Containerized Data Importer (CDI) to import images into Longhorn for compatibility with the current engine.
-
-**Migration required for existing V2 volumes with backing images:**
-
-If you have V2 volumes that were created from backing images, you must migrate them before upgrading to v{{< current-version >}}:
-
-1. **Backup and recreate** (recommended): Create a backup of the V2 volume, delete the original volume, then restore from backup. The restored volume will not have a backing image dependency.
-2. **Delete the volume**: If the data is not needed, delete the V2 volume directly.
-
-V2 volumes with backing image dependencies cannot be upgraded in-place. Attempting to upgrade without migration may result in volume attachment failures.
-
-For more information, see [Issue #13181](https://github.com/longhorn/longhorn/issues/13181) and [Longhorn with CDI Imports](../advanced-resources/containerized-data-importer/containerized-data-importer).
-
-## V2 Data Engine
-
-### General Availability
-
-The V2 Data Engine is generally available in Longhorn v{{< current-version >}}. This milestone reflects improvements in stability, operational safety, networking support, and feature maturity, making V2 volumes suitable for production use in supported environments.
-
-For a summary of the current V1 and V2 behavior differences and feature parity, see [V1 and V2 Volume Behavior and Feature Parity](../v1-v2-volume-behavior-and-feature-parity).
-
-For more information, see [Issue #6229](https://github.com/longhorn/longhorn/issues/6229).
-
-### Notice
-
-#### Volume Attach Latency at Scale
-
-In environments with a growing number of attached V2 volumes, increased attach latency has been observed for subsequent volumes. Initial analysis suggests this may be related to NVMe-TCP connection handling at scale, though the precise layer (SPDK user-space or Linux kernel) has not yet been identified. Further investigation is in progress. For follow-up status, see [Issue #13241](https://github.com/longhorn/longhorn/issues/13241).
-
-#### ARM64 NVMe-backed Block-Type Node Disk Limitation
-
-On ARM64 systems, V2 volumes may experience stuck I/O when SPDK is configured with two or more CPU cores and node disks use the NVMe driver. The root cause may lie in either the Linux kernel or SPDK itself, and further investigation is required. As a workaround, use [AIO-backed node disks](../nodes-and-volumes/nodes/multidisk#using-aio-disks) instead of [NVMe-backed node disks](../nodes-and-volumes/nodes/multidisk#using-nvme-disks) on ARM64 systems. For follow-up status, see [Issue #13243](https://github.com/longhorn/longhorn/issues/13243).
-
-#### UBLK Frontend Kernel Limitation
-
-The UBLK frontend for V2 Data Engine volumes is experimental and only functional on Linux kernels below v6.17. On kernel v6.17.0 and above, UBLK fails due to upstream UBLK API changes that cause `EINVAL` errors when starting UBLK devices.
-
-For more information, see [Issue #11977](https://github.com/longhorn/longhorn/issues/11977) and [UBLK Frontend Support](../advanced-resources/v2-data-engine/ublk-frontend-support).
-
-#### Longhorn System Upgrade
-
-V2 volumes do not support live upgrades between Longhorn v1.12 patch releases and must be detached before upgrading. Support is planned when upgrading from a Longhorn v1.12 release to a Longhorn v1.13 release.
-
-### Default CPU Allocation
-
-Longhorn v{{< current-version >}} changes the default `data-engine-cpu-mask` from `0x1` (1 CPU core) to `0x3` (2 CPU cores). V2 Data Engine uses a busy-polling reactor model where the master reactor handles both I/O polling and management RPCs. When only a single core is assigned, heavy I/O workloads can delay or starve RPC processing, resulting in increased latency, timeout events, and operational instability.
-
-Assigning 2 or more cores allows I/O and management tasks to run on separate reactors, improving responsiveness and operational stability.
-
-For more information, see [Issue #13237](https://github.com/longhorn/longhorn/issues/13237) and [Configurable CPU Cores](../advanced-resources/v2-data-engine/configurable-cpu-cores).
-
-### IPv6 Support
-
-V2 volumes now support single-stack IPv6 Kubernetes clusters. For dual-stack cluster support and its limitations, see [Dual-Stack Cluster Support](#dual-stack-cluster-support).
-
-For more information, see [Issue #10928](https://github.com/longhorn/longhorn/issues/10928).
-
-### Features Planned for Longhorn v1.12.1
-
-#### Fast Volume Cloning
-
-Fast volume cloning for the V2 Data Engine is planned for Longhorn v1.12.1. This enhancement is intended to allow the initial `linked-clone` to be created with multiple replicas in parallel instead of being limited to a single replica.
-
-For more information, see [Issue #12552](https://github.com/longhorn/longhorn/issues/12552).
-
-#### Storage Sharding
-
-Storage sharding for the V2 Data Engine is planned as an experimental feature for Longhorn v1.12.1. This capability is intended to address the existing space efficiency limitations caused by replica-based storage overhead.
-
-For more information, see [Issue #1061](https://github.com/longhorn/longhorn/issues/1061).
-
-## Important Fixes
-
-This release includes critical stability fixes.
-
-### Instance Manager Panic During Replica Rebuild
-
-Longhorn v{{< current-version >}} fixes an instance-manager panic that could occur during replica rebuild storms. In affected environments, the panic could terminate all iSCSI targets served by the instance-manager and trigger cascading volume detachments across multiple PVCs.
-
-For more information, see [Issue #13087](https://github.com/longhorn/longhorn/issues/13087).
-
-### Replica Rebuild Progress Reporting
-
-Longhorn v{{< current-version >}} fixes a replica rebuild progress reporting bug that could display values greater than 100% after file-sync retries on unstable networks. Progress accounting is now reset correctly for retried files, so rebuild progress remains within the valid 0% to 100% range.
-
-For more information, see [Issue #12949](https://github.com/longhorn/longhorn/issues/12949).
-
-### Replica Auto-Balance Scheduling Loop
-
-Longhorn v{{< current-version >}} fixes a regression in replica auto-balance that could trigger a repeated replica create-and-delete loop when `Replica Auto Balance` was set to `best-effort`. In affected clusters, Longhorn could keep scheduling an extra replica instead of stabilizing at the configured replica count.
-
-For more information, see [Issue #12926](https://github.com/longhorn/longhorn/issues/12926).
-
-### Replica CR Leak During Failed Local Scheduling
-
-Longhorn v{{< current-version >}} fixes a replica scheduling issue where large numbers of stopped Replica CRs could accumulate when `dataLocality` was set to `best-effort` and the node did not have enough eligible local disk space for another replica. In affected clusters, recurring reconciliation could keep creating placeholder Replica CRs instead of reusing a single failed-schedule placeholder.
-
-For more information, see [Issue #13152](https://github.com/longhorn/longhorn/issues/13152).
-
-### CSI Storage Capacity Tracking
-
-Longhorn v{{< current-version >}} fixes a CSIStorageCapacity scheduling issue that could cause compute nodes without Longhorn disks to report zero capacity and be rejected by `WaitForFirstConsumer` scheduling. In affected clusters with separated compute and storage nodes, new PVCs could remain pending even though eligible storage was available on storage nodes.
-
-For more information, see [Issue #12807](https://github.com/longhorn/longhorn/issues/12807) and [Settings](../references/settings#csi-storage-capacity-tracking).
-
-### Encrypted Volume Size Correction
-
-Longhorn v{{< current-version >}} pre-allocates the 16 MiB LUKS2 header in the replica backend file for encrypted volumes (replica size = requested size + 16 MiB). As a result, the dm-crypt device now exposes the full requested size to workloads.
-
-**Before v1.12**: The 16 MiB LUKS2 header was consumed from the usable volume space. For example, a 1 GiB encrypted volume yielded approximately 1008 MiB to the workload.
-
-**After upgrading to v1.12**: Once the engine image is upgraded for an encrypted volume, Longhorn automatically expands the backend size by 16 MiB. The dm-crypt device then exposes the full requested size (e.g., exactly 1 GiB for a 1 GiB volume). Existing data is not affected.
-
-**Live migration restriction**: Encrypted migratable volumes cannot be live-migrated when using an engine image with a CLI API version older than 12 (pre-v1.12 engine images). Upgrade the engine image to v1.12 or later before attempting live migration of encrypted volumes.
-
-For more information, see [Issue #9205](https://github.com/longhorn/longhorn/issues/9205).
-
-## General
-
-### Kubernetes Version Requirement
-
-Because the CSI external snapshotter is upgraded to v8.2.0, all clusters must be running Kubernetes v1.25 or later before upgrading to Longhorn v{{< current-version >}}.
-
-### Manual Checks Before Upgrade
-
-Automated pre-upgrade checks do not cover all scenarios. Manual checks via kubectl or the UI are recommended:
-
-- Ensure all V2 Data Engine volumes are detached and replicas are stopped. The V2 engine does not support live upgrades.
-- Avoid upgrading when volumes are in the "Faulted" state, as unusable replicas may be deleted, causing permanent data loss if no backups exist.
-- Avoid upgrading if a failed BackingImage exists. See [Backing Image](../advanced-resources/backing-image/backing-image) for details.
-- Creating a [Longhorn system backup](../advanced-resources/system-backup-restore/backup-longhorn-system) before upgrading is recommended to ensure recoverability.
-
-## Scheduling
-
-### Topology-Aware PV Node Affinity Control
-
-Longhorn v{{< current-version >}} adds the `csi-allowed-topology-keys` setting and `strictTopology` StorageClass parameter for more precise control of PV `nodeAffinity`. These options allow users to limit which topology keys are propagated and, with `WaitForFirstConsumer`, pin the PV to the selected node topology when needed.
-
-For more information, see [Issue #12684](https://github.com/longhorn/longhorn/issues/12684) and [Topology-Aware Provisioning](../nodes-and-volumes/nodes/topology-aware-provisioning).
-
-## Stability
-
-### Configurable Engine Image Pod Liveness Probe
-
-Longhorn v{{< current-version >}} adds settings to configure the engine-image DaemonSet liveness probe period, timeout, and failure threshold. These settings help reduce unnecessary engine-image pod restarts on resource-constrained clusters, especially during upgrades or transient CPU spikes.
-
-For more information, see [Issue #12846](https://github.com/longhorn/longhorn/issues/12846) and [Settings](../references/settings#engine-image-pod-liveness-probe-period).
-
-## Resource Efficiency
-
-### Longhorn Manager Memory Optimization
-
-Longhorn v{{< current-version >}} optimizes longhorn-manager informer caching to reduce memory usage, especially in large clusters with high pod counts. This lowers cluster-wide memory overhead caused by repeated caching of non-Longhorn pod data on every manager instance.
-
-For more information, see [Issue #12771](https://github.com/longhorn/longhorn/issues/12771).
-
-## Networking
-
-### Dual-Stack Cluster Support
-
-Longhorn supports dual-stack Kubernetes clusters under a specific requirement: all nodes must be configured with their IP families in the same order (either all IPv4-first, or all IPv6-first). When the order is consistent, Longhorn uses the first IP family of each node and operates correctly. This applies to both the V1 and V2 Data Engines.
-
-> **Warning:** Dual-stack clusters with mixed IP family ordering across nodes are not supported and may result in connectivity failures between replicas and the engine.
-
-For more information, see [Issue #11531](https://github.com/longhorn/longhorn/issues/11531).
-
-## Monitoring
-
-### Toggle Kubernetes Metrics Server Integration
-
-Longhorn v{{< current-version >}} adds the `Kubernetes Metrics Server Metrics Enabled` setting to disable metrics-server-dependent metrics when the Kubernetes Metrics Server API is unavailable. This reduces repeated scrape warnings and unnecessary API calls while preserving other Longhorn metrics.
-
-For more information, see [Issue #13011](https://github.com/longhorn/longhorn/issues/13011) and [Settings](../references/settings#kubernetes-metrics-server-metrics-enabled).
-
-## Command-Line Tool
-
-### On-Demand Snapshot Checksum Calculation
-
-Longhorn v{{< current-version >}} adds `longhornctl` support for triggering on-demand snapshot checksum calculation. This is useful when snapshot checksum recalculation needs to be requested without waiting for the periodic integrity-check schedule.
-
-The command can target a specific volume, all volumes on a specific node, or all volumes in the cluster. The checksum operation runs asynchronously in the background.
-
-For more information, see [Issue #11442](https://github.com/longhorn/longhorn/issues/11442) and [On-Demand Snapshot Checksum Calculation](../advanced-resources/data-integrity/on-demand-snapshot-data-integrity).
 
 
 ---
@@ -19022,264 +19283,3 @@ See [Prometheus - Configuration](https://prometheus.io/docs/alerting/latest/conf
 
     You should see the following dashboard at successful setup:
     ![images](/img/screenshots/monitoring/longhorn-example-grafana-dashboard.png)
-
-
----
-
-## Article: maintenance/_index.md
-
----
-title: Maintenance and Upgrade
-weight: 3
----
-
----
-
-## Article: maintenance/maintenance.md
-
----
-title: Node Maintenance and Kubernetes Upgrade Guide
-weight: 3
----
-
-This section describes how to handle planned node maintenance or upgrading Kubernetes version for the cluster.
-
-- [Updating the Node OS or Container Runtime](#updating-the-node-os-or-container-runtime)
-- [Removing a Disk](#removing-a-disk)
-  - [Reusing the Node Name](#reusing-the-node-name)
-- [Removing a Node](#removing-a-node)
-- [Upgrading Kubernetes](#upgrading-kubernetes)
-  - [In-place Upgrade](#in-place-upgrade)
-  - [Managed Kubernetes](#managed-kubernetes)
-- [Node Drain Policy Recommendations](#node-drain-policy-recommendations)
-  - [Important Notes](#important-notes)
-  - [Block If Contains Last Replica](#block-if-contains-last-replica)
-  - [Allow If Last Replica Is Stopped](#allow-if-last-replica-is-stopped)
-  - [Always Allow](#always-allow)
-  - [Block For Eviction](#block-for-eviction)
-  - [Block For Eviction If Contains Last Replica](#block-for-eviction-if-contains-last-replica)
-
-## Updating the Node OS or Container Runtime
-
-1. Cordon the node. Longhorn will automatically disable the node scheduling when a Kubernetes node is cordoned.
-
-1. Drain the node to move the workload to somewhere else.
-
-   It is necessary to use `--ignore-daemonsets` to drain the node. The `--ignore-daemonsets` is needed because Longhorn
-   deployed some daemonsets such as `Longhorn manager`, `Longhorn CSI plugin`, `engine image`.
-
-   While the drain proceeds, engine processes on the node will be migrated with the workload pods to other nodes.
-
-   > **Note:** Volumes that are not attached through the CSI flow on the node (for example, manually attached using
-   > UI) will not be automatically attached to new nodes by Kubernetes during the draining. Therefore, Longhorn will
-   > prevent the node from completing the drain operation. The user will need to detach these volumes manually to
-   > unblock the draining.
-
-   While the drain proceeds, replica processes on the node will either continue to run or eventually be evicted and
-   stopped based on the [Node Drain Policy](#node-drain-policy-recommendations).
-
-   > **Note:** By default, if there is one last healthy replica for a volume on the node, Longhorn will prevent the node
-   > from completing the drain operation, to protect the last replica and prevent the disruption of the workload. You
-   > can control this behavior with the setting [Node Drain Policy](../../references/settings#node-drain-policy), or
-   > [evict the replica to other nodes before draining](../../nodes-and-volumes/nodes/disks-or-nodes-eviction). See [Node Drain Policy
-   > Recommendations](#node-drain-policy-recommendations) for considerations when selecting a policy.
-
-   After the drain is completed, there should be no engine or replica processes running on the node, as the
-   instance-manager pod that was running them will be stopped. Depending on the [Node Drain
-   Policy](#node-drain-policy-recommendations), replicas scheduled to the node will either appear as `Failed` or be
-   removed in favor of replacements. Workloads using Longhorn volumes will function as expected and enough replicas will
-   be running elsewhere to meet the requirements of the policy.
-
-   > **Note:** Normally you don't need to evict the replicas before the drain operation, as long as you have healthy
-   > replicas on other nodes. The replicas can be reused later, once the node back online and uncordoned. See [Node
-   > Drain Policy](#node-drain-policy-recommendations) for further guidance.
-
-1. Perform the necessary maintenance, including shutting down or rebooting the node.
-1. Uncordon the node. Longhorn will automatically re-enable the node scheduling. If there are existing replicas on the
-   node, Longhorn might use those replicas to speed up the rebuilding process. You can set the [Replica Replenishment
-   Wait Interval](../../references/settings#replica-replenishment-wait-interval) setting to customize how long Longhorn
-   should wait for potentially reusable replica to be available.
-
-## Removing a Disk
-
-To remove a disk:
-
-1. Disable the disk scheduling.
-1. Evict all the replicas on the disk.
-1. Delete the disk.
-
-### Reusing the Node Name
-
-These steps also apply if you've replaced a node using the same node name. Longhorn will recognize that the disks are
-different once the new node is up. You will need to remove the original disks first and add them back for the new node
-if it uses the same name as the previous node.
-
-## Removing a Node
-
-To remove a node:
-
-1. Disable the disk scheduling.
-1. Evict all the replicas on the node.
-1. Detach all the volumes on the node.
-
-   If the node has been drained, all the workloads should be migrated to another node already.
-
-   If there are any other volumes remaining attached, detach them before continuing.
-
-1. Remove the node from Longhorn using the `Delete` in the `Node` tab.
-
-   Or, remove the node from Kubernetes, using:
-
-      kubectl delete node <node-name>
-
-1. Longhorn will automatically remove the node from the cluster.
-
-## Upgrading Kubernetes
-
-### In-place Upgrade
-
-In-place upgrade is upgrading method in which nodes are upgraded without being removed from the cluster. Some example
-solutions that use this upgrade methods are [k3s automated upgrades](https://docs.k3s.io/upgrades/automated), [Rancher's
-Kubernetes upgrade
-guide](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/upgrading-kubernetes/#upgrading-the-kubernetes-version),
-[Kubeadm upgrade](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/), etc...
-
-With the assumption that node and disks are not being deleted/removed, the recommended upgrading guide is:
-
-1. Cordon and drain a node before upgrading Kubernetes components. Draining instructions are similar to the ones at
-   [Updating the Node OS or Container Runtime](#updating-the-node-os-or-container-runtime).
-2. The drain `--timeout` should be big enough so that replica rebuildings on healthy nodes can finish between node
-   upgrades. The more Longhorn replicas you have on the draining node, the more time it takes for the Longhorn replicas
-   to be rebuilt on other healthy nodes. We recommending you to test and select a big enough value or set it to 0 (aka
-   never timeout).
-3. The number of nodes upgrading at a time should be smaller than the number of Longhorn replicas for each volume.
-   This is so that a running Longhorn volume has at least one healthy replica running at a time.
-4. Consider setting the setting [Node Drain Policy](../../references/settings#node-drain-policy) to
-   `allow-if-replica-is-stopped` so that the drain is not blocked by the last healthy replica of a detached volume. See
-   [Node Drain Policy Recommendations](#node-drain-policy-recommendations) for considerations when selecting a policy.
-
-### Managed Kubernetes
-
-See the instruction at [Support Managed Kubernetes Service](../../advanced-resources/support-managed-k8s-service).
-
-## Node Drain Policy Recommendations
-
-There are currently five Node Drain Policies available for selection. Each has its own benefits and drawbacks. This
-section provides general guidance on each and suggests situations in which each might be used.
-
-### Important Notes
-
-Node Drain Policy is intended to govern Longhorn behavior when a node is actively being drained. However, there is no
-way for Longhorn to determine the difference between the cordoning and draining of a node, so, depending on the policy,
-Longhorn may take action any time a node is cordoned, even if it is not being drained.
-
-Node drain policy works to prevent the eviction of an instance-manager pod during a drain until certain conditions are
-met. If the instance-manager pod cannot be evicted, the drain cannot complete. This prevents a user (or automated
-process) from continuing to shut down or restart a node if it is not safe to do so. It may be tempting to ignore the
-drain failure and proceed with maintenance operations if it seems to take too long, but this limits Longhorn's ability
-to protect data. Always look at events and/or logs to try to determine WHY the drain is not progressing and take actions
-to fix the underlying issue.
-
-### Block If Contains Last Replica
-
-This is the default policy. It is intended to provide a good balance between convenience and data protection. While it
-is in effect, Longhorn will prevent the eviction of an instance-manager pod (and the completion of a drain) on a
-cordoned node that contains the last healthy replica of a volume.
-
-Benefits:
-
-- Protects data by preventing the drain operation from completing until there is a healthy replica available for each
-  volume available on another node.
-
-Drawbacks:
-
-- If there is only one replica for the volume, or if its other replicas are unhealthy, the user may need to manually
-  (through the UI) request the eviction of replicas from the disk or node.
-- Volumes may be degraded after the drain is complete. If the node is rebooted, redundancy is reduced until it is
-  running again. If the node is removed, redundancy is reduced until another replica rebuilds.
-
-### Allow If Last Replica Is Stopped
-
-This policy is similar to `Block If Contains Last Replica`. It is inherently less safe, but can allow drains to complete
-more quickly. It only prevents the eviction of an instance-manager pod (and the completion of a drain) on a node that
-contains the last RUNNING healthy replica.
-
-Benefits:
-
-- Allows the drain operation to proceed in situations where the node being drained is expected to come back online
-  (data will not be lost) and the replicas stored on the node's disks are not actively being used.
-
-Drawbacks:
-
-- Similar drawbacks to `Block If Contains Last Replica`.
-- If, for some reason, the node never comes back, data is lost.
-
-### Always Allow
-
-This policy does not protect data in any way, but allows drains to immediately complete. It never prevents the eviction
-of an instance-manager pod (and the completion of a drain). Do not use it in a production environment.
-
-Benefits:
-
-- The drain operation completes quickly without Longhorn getting in the way.
-
-Drawbacks:
-
-- There is no opportunity for Longhorn to protect data.
-
-### Block For Eviction
-
-This policy provides the maximum amount of data protection, but can lead to long drain times and unnecessary data
-movement. It prevents the eviction of an instance-manager pod (and the completion of a drain) as long as any replicas
-remain on a node. In addition, it takes action to automatically evict replicas from the node.
-
-It is not recommended to leave this policy enabled under normal use, as it will trigger replica eviction any time a
-node is cordoned. Only enable it during planned maintenance.
-
-A primary use case for this policy is when automatically upgrading clusters in which volumes have no redundancy
-(`numberOfReplicas == 1`). Other policies will prevent the drain until such replicas are manually evicted, which is
-inconvenient for automation.
-
-Benefits:
-
-- Protects data by preventing the drain operation from completing until all replicas have been relocated.
-- Automatically evicts replicas, so the user does not need to do it manually (through the UI).
-- Maintains replica redundancy at all times.
-
-Drawbacks:
-
-- The drain operation is significantly slower than for other behaviors. Every replica must be rebuilt on another node
-  before it can complete. Drain timeout must be adjusted as appropriate for the amount of data that will move during
-  rebuilding.
-- The drain operation is data-intensive, especially when Replica Auto Balance is enabled, as evicted replicas may be
-  moved back to the drained node when/if it comes back online.
-- Like all of these policies, it triggers on cordon, not on drain. If a user regularly cordons nodes without draining
-  them, replicas will be rebuilt pointlessly.
-
-### Block For Eviction If Contains Last Replica
-
-This policy provides the data protection of the default `Block If Contains Last Replica` with the added convenience of
-automatic eviction. While it is in effect, Longhorn will prevent the eviction of an instance-manager pod (and the
-completion of a drain) on a cordoned node that contains the last healthy replica of a volume. In addition, replicas that
-meet this condition are automatically evicted from the node.
-
-It is not recommended to leave this policy enabled under normal use, as it may trigger replica eviction any time a
-node is cordoned. Only enable it during planned maintenance.
-
-A primary use case for this policy is when automatically upgrading clusters in which volumes have no redundancy
-(`numberOfReplicas == 1`). Other policies will prevent the drain until such replicas are manually evicted, which is
-inconvenient for automation.
-
-Benefits:
-
-- Protects data by preventing the drain operation from completing until there is a healthy replica available for each
-  volume available on another node.
-- Automatically evicts replicas, so the user does not need to do it manually (through the UI).
-- The drain operation is only as slow and data-intensive as is necessary to protect data.
-
-Drawbacks:
-
-- Volumes may be degraded after the drain is complete. If the node is rebooted, redundancy is reduced until it is
-  running again. If the node is removed, redundancy is reduced until another replica rebuilds.
-- Like all of these policies, it triggers on cordon, not on drain. If a user regularly cordons nodes without draining
-  them, replicas will be rebuilt pointlessly.
