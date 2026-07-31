@@ -3161,7 +3161,7 @@ This article details how to enable the `use-forwarded-headers` option in the ing
 
 # How to customise container log rotation in an RKE2 or K3s cluster
 
-**Article Number:** [000020071](https://support.scc.suse.com/s/kb/360051441431)
+**Article Number:** [000020071](https://support.scc.suse.com/s/kb/How-to-customise-container-log-rotation-in-an-RKE2-or-K3s-cluster)
 
 ## **Environment**
 
