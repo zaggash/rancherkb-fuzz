@@ -2818,7 +2818,7 @@ When a new Rancher Hosted Prime environment is created, it will have a default a
 
 # Rancher Upgrade Checklist
 
-**Article Number:** [000020061](https://support.scc.suse.com/s/kb/360051866152)
+**Article Number:** [000020061](https://support.scc.suse.com/s/kb/Rancher-Upgrade-Checklist)
 
 ## **Situation**
 
