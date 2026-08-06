@@ -7554,7 +7554,7 @@ Before you enable the V2 Data Engine, ensure that each Longhorn node that will h
 - Raw block disks for V2 volumes
   - Local NVMe disks are strongly recommended for best performance.
 
-When the V2 Data Engine is enabled, each V2 instance-manager pod typically consumes one dedicated CPU core because the `spdk_tgt` process uses intensive polling.
+When the V2 Data Engine is enabled, each V2 instance-manager pod requires one or more dedicated CPU cores because the `spdk_tgt` process uses intensive polling. It is necessary that the V2 instance manager pod CPU request reserve at least the same number of CPU cores based on the node's allocatable CPU capacity.
 
 After confirming these prerequisites, configure the V2 environment on each node and then enable the V2 Data Engine in Longhorn.
 
@@ -12619,6 +12619,7 @@ For the full release note, see the Longhorn v{{< current-version >}} release not
     - [UBLK Frontend Kernel Limitation](#ublk-frontend-kernel-limitation)
     - [Longhorn System Upgrade](#longhorn-system-upgrade)
   - [Default CPU Allocation](#default-cpu-allocation)
+  - [V2 Dedicated CPU Requirements](#v2-dedicated-cpu-requirements)
   - [IPv6 Support](#ipv6-support)
   - [Features Planned for Longhorn v1.12.1](#features-planned-for-longhorn-v1121)
     - [Fast Volume Cloning](#fast-volume-cloning)
@@ -12698,6 +12699,12 @@ Longhorn v{{< current-version >}} changes the default `data-engine-cpu-mask` fro
 Assigning 2 or more cores allows I/O and management tasks to run on separate reactors, improving responsiveness and operational stability.
 
 For more information, see [Issue #13237](https://github.com/longhorn/longhorn/issues/13237) and [Configurable CPU Cores](../advanced-resources/v2-data-engine/configurable-cpu-cores).
+
+### V2 Dedicated CPU Requirements
+
+When assigning CPU cores to the V2 Data Engine, ensure that the V2 instance-manager pod has enough guaranteed CPU resources to cover the assigned cores. This provides dedicated CPU availability for SPDK reactors, prevents CPU contention, and helps maintain predictable performance and V2 Data Engine stability.
+
+You can verify that the guaranteed CPU resources match the CPU cores specified by `data-engine-cpu-mask` or `data-engine-number-of-cpu-cores`. For more details, see [Guaranteed Instance Manager CPU](../references/settings/#guaranteed-instance-manager-cpu), [Data Engine CPU Mask](../references/settings/#data-engine-cpu-mask), and [Data Engine Number of CPU Cores](../references/settings/#data-engine-number-of-cpu-cores).
 
 ### IPv6 Support
 

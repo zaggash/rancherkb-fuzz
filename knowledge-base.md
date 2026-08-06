@@ -12882,21 +12882,19 @@ for secret in `kubectl -n cattle-global-data get secrets -o name | grep "cluster
 
 ## Article: 000020917.md
 
-# How to fix Azure AD authenication errors when upgrading to new graph endpoint in Rancher v2.6.7+
+# How to fix Azure AD authentication errors  in Rancher
 
-**Article Number:** [000020917](https://support.scc.suse.com/s/kb/How-to-fix-Azure-AD-authenication-errors-when-upgrading-to-new-graph-endpoint-in-Rancher-v2-6-7)
+**Article Number:** [000020917](https://support.scc.suse.com/s/kb/How-to-fix-Azure-AD-authentication-errors-Rancher)
 
 ## **Environment**
 
-If you are using Rancher v2.6.7 and above and wish to set up Azure AD initially, please review our documentation [here](https://ranchermanager.docs.rancher.com/v2.6/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-azure-ad#docusaurus_skipToContent_fallback) and enable Azure AD as your primary authentication method.
-
-For those using Rancher version(s) v2.6.6 and below, please refer to the following messages under the **v2.6.0-v2.6.6** section on our documentation page [here](https://ranchermanager.docs.rancher.com/v2.6/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-azure-ad#docusaurus_skipToContent_fallback).
+If you are configuring or have successfully configured  Azure Entra ID (formerly known as Azure Active Directory or Azure AD) , following the  documentation [here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-azure-ad) , there are some common errors described below that you could be facing.
 
 ## **Situation**
 
 Disclaimer:
 
-There are a few issues that you may encounter when upgrading to the latest Microsoft Graph endpoint when using Azure AD. This KB Article aims to address these particular errors and provide the best solution for each scenario.
+There are a few issues that you may encounter when upgrading to the latest Microsoft Graph endpoint when using Azure AD/Entra ID. This KB Article aims to address these particular errors and provide the best solution for each scenario.
 
 If you are experiencing one of the following error messages, please continue to the corresponding numerical value.
 
