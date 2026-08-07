@@ -8146,34 +8146,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
@@ -8346,59 +8340,67 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# How to test websocket connections to Rancher v2.x
+# [JP] How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
-## **Environment**
-
-Rancher v2.x
-
 ## **Situation**
 
-Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
+### 背景
 
-## **Resolution**
+Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
+ 
 
-## Executing the test
+### 前提条件
 
-First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
+- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
 
-In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
+ 
+
+### テスト実行
+
+まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
+
+テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-Next execute the test using the following command:
+次は以下のコマンドを実行しテストを行います：
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
+```
+WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
 
-The below is an example of the output from the test upon a successfully established websocket:
+以下は、正常に確立されたWebSocketでのテストからの出力の例です。
+```
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Wed, 27 Nov 2024 15:17:15 GMT
+Date: Tue, 21 Jan 2020 04:54:05 GMT
 Connection: upgrade
+Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
-}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
+```
+
+```
+ 
 ```
 
 
@@ -8675,94 +8677,6 @@ The token is not valid for the other available API endpoints or other clusters. 
 ## **Resolution**
 
 Only use a cluster-scoped API token where you wish to restrict usage of the token to the Kubernetes API for that cluster, or the Rancher v3 cluster endpoint. To permit access to other API endpoints, or to use a token for API access to multiple clusters, create a Rancher API token that is not cluster-scoped.
-
-
-
----
-
-## Article: 000020199.md
-
-# How to increase the log level of Kubernetes components in an RKE CLI or Rancher provisioned Kubernetes cluster
-
-**Article Number:** [000020199](https://support.scc.suse.com/s/kb/360038025252)
-
-## **Situation**
-
-##### Task
-
-When troubleshooting an issue with an RKE CLI or Rancher provisioned Kubernetes cluster, it may be helpful to increase the verbosity of logging on one or more of the Kubernetes components, above the default level. This article details the process of increasing logging on both those components that use the Kubernetes hyperkube image (kubelet, kube-apiserver, kube-controller-manager, kube-scheduler, kube-proxy) as well as the etcd component.
-
-##### Pre-requisites
-
-- A Kubernetes cluster provisioned by the RKE CLI or Rancher v2.x
-
-##### Resolution
-
-##### Kubernetes API Server, Controller Manager, Scheduler, Kube Proxy and Kubelet
-
-The Kubernetes core components, which run using the Kubernetes hyperkube image, will log ERROR, WARNING and INFO messages. The verbosity of the INFO level log output is controlled by the `--v` flag, which is set to an integer from 0 to 9. In an RKE CLI or Rancher launched Kubernetes cluster, the `--v` flag is configured to `2` by default. At this level, the components will log `useful steady state information about the service and important log messages that may correlate to significant changes in the system.`
-
-In order to troubleshoot an issue, it may be useful to increase the verbosity flag to one of the following:
-
-VerbosityDescription--v=3Extended information about changes.--v=4Debug level verbosity.--v=6Display requested resources.--v=7Display HTTP request headers.--v=8Display HTTP request contents.--v=9Display HTTP request contents without truncation of contents.
-
-##### Update the `--v` flag in an RKE CLI launched cluster
-
-1. First set the `--v` flag for the desired components within the `cluster.yml`. For each of the services you wish to change the verbosity on, you should add an extra\_args option with `v: "<value>"` in the services block, per the example below. The appropriate name for each service within this block can be found [within the RKE documentation](https://rancher.com/docs/rke/latest/en/config-options/services/). **N.B. Please see the separate section below for updating the log verbosity of the etcd component**
-   
-   ```yaml
-     services:
-       kube-api:
-         extra_args:
-           v: '9'
-   ```
-2. Having set the flag in the cluster.yml, run `rke up --config cluster.yml` to update the cluster with the new configuration.
-
-##### Update the `--v` flag in a Rancher launched cluster
-
-Navigate to the cluster within the Rancher UI and click `Edit Cluster`, then `Edit as YAML`. For each of the services you wish to change the verbosity on, you should add an extra\_args option with `v: "<value>"` in the services block of the cluster, per the example below.
-
-**N.B. Please see the separate section below for updating the log verbosity of the etcd component.**
-
-```yaml
-  services:
-    kube-api:
-      extra_args:
-        v: '9'
-```
-
-The appropriate name for each service within this block can be found [within the RKE documentation](https://rancher.com/docs/rke/latest/en/config-options/services/).
-
-Having set the verbosity flag, click `Save` at the bottom of the page, to update the cluster.
-
-##### etcd
-
-The etcd component is configured to log at an INFO level by default, in an RKE CLI or Rancher launched Kubernetes cluster, but this can be set to DEBUG level by setting the --l`og-level=debug`
-
-##### Update etcd verbosity in an RKE CLI launched cluster
-
-1. First set the --l`og-level=debuge` flag, within the `cluster.yml` cluster configuration file, under `extra_args` for the etcd service, per the following example:
-   
-   ```yaml
-     services:
-       etcd:
-         extra_args:
-          log-level: debug
-   ```
-2. Having set the flag in the cluster.yml, run `rke up --config cluster.yml` to update the cluster with the new configuration.
-
-##### Update etcd verbosity in a Rancher launched cluster
-
-Navigate to the cluster within the Rancher UI and click `Edit Cluster`, then `Edit as YAML`. Set the `log-level=debug` flag under `extra_args`, for the etcd service, per the following example:
-
-```yaml
-  services:
-    etcd:
-      extra_args:
-        log-level: debug
-```
-
-Having set the debug flag, click `Save` at the bottom of the page, to update the cluster.
 
 
 
