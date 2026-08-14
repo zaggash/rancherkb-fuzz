@@ -25060,39 +25060,6 @@ Once the values are updated and the chart is upgraded, you would be able to see 
 
 ---
 
-## Article: 000021992.md
-
-# RKE2/K3S Cluster Support for Mixed Operating Systems
-
-**Article Number:** [000021992](https://support.scc.suse.com/s/kb/RKE2-K3S-Cluster-Support-for-Mixed-Operating-Systems)
-
-## **Environment**
-
-Rancher 2.x
-
-RKE2
-
-K3S
-
-## **Situation**
-
-Creation of RKE2/K3S cluster by using a mix of Linux OS. For instance, using Red Hat OS for master nodes and Ubuntu for worker nodes.
-
-## **Cause**
-
-Using a mixed-OS configuration within a single cluster is not officially supported. This is due to potential issues that can arise from the differences between operating systems. Variations in kernel versions, system libraries, and networking can lead to unpredictable behaviour and make troubleshooting difficult.
-
-## **Resolution**
-
-For a **stable and supported deployment**, a single, **consistent operating system** should be used across all master and worker nodes in a cluster.
-
-- **Unsupported Configuration:** The **SUSE** **engineering** team doesn't test or validate mixed-OS setups for **RKE2 or K3S**.  This means that any problems encountered may be challenging to diagnose and fix, as the root cause could be related to the OS differences rather than a software bug.
-- **Recommendation:** To ensure cluster stability, simplify management, and receive reliable support, always use the same OS for every node in your cluster.
-
-
-
----
-
 ## Article: 000021994.md
 
 # Tigera-operator Pod operations failing due to rancher-webhook unauthorized errors in a Rancher-managed RKE2 cluster
