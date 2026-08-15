@@ -25184,12 +25184,12 @@ When upgrading Rancher in an air-gapped environment, users who previously instal
 
 The standard solution provided in the Rancher documentation is to continue using the `helm template` method for subsequent upgrades. However, you may wish to migrate to the `helm upgrade` workflow, removing the additional step of templating the helm chart, before applying it with kubectl, during upgrades.
 
-`helm upgrade --install` can be used to upgrade the Rancher chart, whilst creating the necessary Helm release record in the cluster. However, attempting to use `helm upgrade --install`without taking ownership of existing resources will result in an error like the following, because the Kubernetes resources (such as PriorityClass) lack the necessary Helm labels (`app.kubernetes.io/managed-by: Helm`) and annotations (`meta.helm.sh/release-name: rancher` and `meta.helm.sh/release-namespace: cattle-system`).
+`helm upgrade --install` can be used to upgrade the Rancher chart, whilst creating the necessary Helm release record in the cluster. However, attempting to use `helm upgrade --install`without taking ownership of existing resources will result in an error like the following, because the Kubernetes resources (such as PriorityClass) lack the necessary Helm labels (`app.​kubernetes.​io/managed-by: Helm`) and annotations (`meta.​helm.​sh/release-name: rancher` and `meta.​helm.​sh/release-namespace: cattle-system`).
 
 ```markup
-helm upgrade --install rancher ./rancher-<VERSION>.tgz --namespace cattle-system --set hostname=<RANCHER.YOURDOMAIN.COM>
+helm upgrade --install rancher ./rancher-<VERSION>.tgz --namespace cattle-system --set hostname=<RANCHER.​EXAMPLE.​COM>
 Release "rancher" does not exist. Installing it now.
-Error: Unable to continue with install: PriorityClass "rancher-critical" in namespace "" exists and cannot be imported into the current release: invalid ownership metadata; label validation error: missing key "app.kubernetes.io/managed-by": must be set to "Helm"; annotation validation error: missing key "meta.helm.sh/release-name": must be set to "rancher"; annotation validation error: missing key "meta.helm.sh/release-namespace": must be set to "cattle-system"
+Error: Unable to continue with install: PriorityClass "rancher-critical" in namespace "" exists and cannot be imported into the current release: invalid ownership metadata; label validation error: missing key "app.​kubernetes.​io/managed-by": must be set to "Helm"; annotation validation error: missing key "meta.​helm.​sh/release-name": must be set to "rancher"; annotation validation error: missing key "meta.​helm.​sh/release-namespace": must be set to "cattle-system"
 ```
 
 To migrate from the `helm template` workflow to the `helm upgrade` workflow, you must run the `helm upgrade --install` command with the `--take-ownership` flag. This flag instructs Helm to take control of existing resources in the cluster that were created by a previous installation of the same chart, even if they lack Helm-specific annotations and labels.
@@ -25202,7 +25202,7 @@ This process essentially "adopts" the existing resources into a new Helm release
 2. Run the `helm upgrade --install`command with the `--take-ownership` flag, along with your original installation values (e.g., `--set hostname`):
    
    ```markup
-   helm upgrade --install rancher ./rancher-<VERSION>.tgz --namespace cattle-system --set hostname=<RANCHER.YOURDOMAIN.COM> --take-ownership
+   helm upgrade --install rancher ./rancher-<VERSION>.tgz --namespace cattle-system --set hostname=<RANCHER.​EXAMPLE.​COM> --take-ownership
    ```
 3. Confirm that the command output shows a successful deployment, with "Rancher Server has been installed":
    
