@@ -15367,15 +15367,15 @@
 <p>When using the Rancher2 Terraform provider to manage GKE clusters, adding a node pool to an existing cluster triggers the recreation of the entire cluster. This behavior is not observed when using the Rancher UI or the Google Cloud Terraform provider.</p>
 <p>Terraform plan output below shows that adding the node_pools block forces the replacement of the rancher2_cluster.gke_cluster resource</p>
 <div class="highlight"><pre><span></span><code>  # rancher2_cluster.gke_cluster must be replaced
--/+ resource &quot;rancher2_cluster&quot; &quot;gke_cluster&quot; {
+-/+ resource "rancher2_cluster" "gke_cluster" {
       ~ annotations                                                = {
 
 
           + node_pools {
               + initial_node_count  = 1
               + max_pods_constraint = 110
-              + name                = &quot;second-pool&quot;
-              + version             = &quot;1.30.11-gke.1157000&quot;
+              + name                = "second-pool"
+              + version             = "1.30.11-gke.1157000"
 
               + autoscaling (known after apply)
 
@@ -15384,8 +15384,8 @@
               + management (known after apply)
 
   # rancher2_cluster_sync.sync must be replaced
--/+ resource &quot;rancher2_cluster_sync&quot; &quot;sync&quot; {
-      ~ cluster_id         = &quot;c-jstj7&quot; -&gt; (known after apply) # forces replacement
+-/+ resource "rancher2_cluster_sync" "sync" {
+      ~ cluster_id         = "c-jstj7" -&gt; (known after apply) # forces replacement
 </code></pre></div>
 <p>Note: Any configuration changes on existing nodepools or removing existing nodepools doesn't initiate cluster recreation</p>
 <h2 id="cause"><strong>Cause</strong></h2>
@@ -15395,18 +15395,18 @@
 <p>Upgrade to these versions to avoid full cluster recreation when adding node pools.</p>
 <p>After the fix is applied, as shown in the output, Terraform detects the addition of a new node pool and performs an in-place modification of the rancher2_cluster.gke_cluster.</p>
 <div class="highlight"><pre><span></span><code>  # rancher2_cluster.gke_cluster will be updated in-place
-  ~ resource &quot;rancher2_cluster&quot; &quot;gke_cluster&quot; {
-        id                         = &quot;c-c7mg5&quot;
-        name                       = &quot;gke-sh&quot;
+  ~ resource "rancher2_cluster" "gke_cluster" {
+        id                         = "c-c7mg5"
+        name                       = "gke-sh"
 
       ~ gke_config_v2 {
-            name                     = &quot;gke-sh&quot;
+            name                     = "gke-sh"
 
           + node_pools {
               + initial_node_count  = 1
               + max_pods_constraint = 110
-              + name                = &quot;second-pool&quot;
-              + version             = &quot;1.30.12-gke.1208000&quot;
+              + name                = "second-pool"
+              + version             = "1.30.12-gke.1208000"
 
               + autoscaling (known after apply)
 

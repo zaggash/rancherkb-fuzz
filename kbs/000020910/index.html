@@ -15366,39 +15366,39 @@
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>After the upgrade of a Rancher v2.5 environment running patch release v2.5.16 or above, to Rancher v2.6 below patch release v2.6.7 (e.g. an upgrade from Rancher v2.5.16 to v2.6.6) downstream clusters are in an unavailable state within Rancher.</p>
 <p>Rancher Pod logs contain error messages of the following format:</p>
-<div class="highlight"><pre><span></span><code>2022/12/17 08:47:18 [ERROR] error syncing &#39;c-ayhjd&#39;: handler cluster-deploy: cluster context c-ayhjd is unavaiblable, requeuing
-2022/12/17 08:47:25 [ERROR] error syncing &#39;_all_&#39;: handler user-controllers-controller: failed to start user controllers for cluster c-ayhjd: ClusterUnavailable 503: cluster not found
+<div class="highlight"><pre><span></span><code>2022/12/17 08:47:18 [ERROR] error syncing 'c-ayhjd': handler cluster-deploy: cluster context c-ayhjd is unavaiblable, requeuing
+2022/12/17 08:47:25 [ERROR] error syncing '_all_': handler user-controllers-controller: failed to start user controllers for cluster c-ayhjd: ClusterUnavailable 503: cluster not found
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>In order to address <a href="https://github.com/rancher/rancher/security/advisories/GHSA-g7j7-h4q8-8w2f">CVE-2021-36782</a> the service account token used by Rancher to connect to the Kubernetes API Server of a downstream cluster was moved from the status.serviceAccountToken field of the cluster.management.cattle.io resource to a secret referenced by the status.serviceAccountTokenSecret field. This fix was introduced to Rancher v2.6 in patch release v2.6.7 and above; and to Rancher v2.5 in patch release v2.5.16 and above. Rancher versions v2.5.0 - v2.5.15 and v2.6.0 - v2.6.6 inclusive use the status.serviceAccountToken field to store and retrieve the service account token for downstream clusters.</p>
 <p>As a result, where a Rancher environment is upgraded from Rancher v2.5 at v2.5.16 or above (containing the fix), to Rancher v2.6 below patch release v2.6.7 (which does not contain the fix), the status.serviceAccountToken field will be missing from the cluster.management.cattle.io resource and Rancher will be unable to connect to existing downstream clusters.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>To resolve the issue it is necessary to set the status.serviceAccountToken field on the cluster.management.cattle.io object for each downstream cluster from the service account token secret for the cluster. This can be done with the following BASH one-liner, with a kubeconfig sourced for the Rancher local cluster:</p>
-<div class="highlight"><pre><span></span><code>for cluster in $(kubectl get clusters.management.cattle.io --field-selector metadata.name!=local -o custom-columns=NAME:.metadata.name --no-headers); do echo $cluster; kubectl patch -v=9 cluster.management.cattle.io $cluster --type=merge -p &quot;{\&quot;status\&quot;:{\&quot;serviceAccountToken\&quot;:\&quot;`kubectl -n cattle-global-data get secret -o jsonpath=\&quot;{.items[?(@.metadata.ownerReferences[0].name==\\&quot;$cluster\\&quot;)].data.credential}\&quot;|base64 -d`\&quot;}}&quot;; done
+<div class="highlight"><pre><span></span><code>for cluster in $(kubectl get clusters.management.cattle.io --field-selector metadata.name!=local -o custom-columns=NAME:.metadata.name --no-headers); do echo $cluster; kubectl patch -v=9 cluster.management.cattle.io $cluster --type=merge -p "{\"status\":{\"serviceAccountToken\":\"`kubectl -n cattle-global-data get secret -o jsonpath=\"{.items[?(@.metadata.ownerReferences[0].name==\\"$cluster\\")].data.credential}\"|base64 -d`\"}}"; done
 </code></pre></div>
 <p>Next, edit the cluster.management.cattle.io resource in the Rancher local cluster, for each downstream cluster, to set the status of the ServiceAccountMigrated condition from True to Unknown. This action is taken to ensure that on upgrade to Rancher v2.6.7+ the secretAccountToken field is again removed and migrated to a secret. With a kubeconfig sourced for the Rancher local cluster, get the cluster IDs for all downstream clusters:</p>
 <div class="highlight"><pre><span></span><code>kubectl get clusters.management.cattle.io --field-selector metadata.name!=local -o custom-columns=NAME:.metadata.name --no-headers
 </code></pre></div>
 <p>One at a time for each cluster ID listed execute `kubectl edit cluster.management.cattle.io &lt;cluster-id&gt;` locate the condition with the type ServiceAccountMigrated in the status.conditions array, and update the status from "True" to "Unknown" per the following example:</p>
 <div class="highlight"><pre><span></span><code>[...]
-  - lastUpdateTime: &quot;2023-01-04T12:11:57Z&quot;
-    status: &quot;True&quot;
+  - lastUpdateTime: "2023-01-04T12:11:57Z"
+    status: "True"
     type: Updated
-  - lastUpdateTime: &quot;2023-01-04T12:11:51Z&quot;
-    status: &quot;Unknown&quot;
+  - lastUpdateTime: "2023-01-04T12:11:51Z"
+    status: "Unknown"
     type: ServiceAccountMigrated
-  - lastUpdateTime: &quot;2023-01-04T12:11:57Z&quot;
-    status: &quot;True&quot;
+  - lastUpdateTime: "2023-01-04T12:11:57Z"
+    status: "True"
     type: GlobalAdminsSynced
-  - lastUpdateTime: &quot;2023-01-04T12:17:40Z&quot;
+  - lastUpdateTime: "2023-01-04T12:17:40Z"
   [...]
 </code></pre></div>
 <p>Finally, take a copy of the service account token secrets and then remove these, as they are no longer used and fresh secrets will be created upon upgrade to Rancher v2.6.7+.</p>
 <p>With a kubeconfig for the Rancher local cluster sourced, first take a copy of the service account token secret manifests, with tthe following bash one-liner:</p>
-<div class="highlight"><pre><span></span><code>for secret in `kubectl -n cattle-global-data get secrets -o name | grep &quot;cluster-serviceaccounttoken-&quot;`; do kubectl -n cattle-global-data get $secret -o yaml &gt;&gt; cluster-serviceaccounttoken-secrets.yaml; echo &quot;---&quot; &gt;&gt; cluster-serviceaccounttoken-secrets.yaml; done
+<div class="highlight"><pre><span></span><code>for secret in `kubectl -n cattle-global-data get secrets -o name | grep "cluster-serviceaccounttoken-"`; do kubectl -n cattle-global-data get $secret -o yaml &gt;&gt; cluster-serviceaccounttoken-secrets.yaml; echo "---" &gt;&gt; cluster-serviceaccounttoken-secrets.yaml; done
 </code></pre></div>
 <p>Then with the Rancher local cluster kubeconfig still sourced, delete the secrets:</p>
-<div class="highlight"><pre><span></span><code>for secret in `kubectl -n cattle-global-data get secrets -o name | grep &quot;cluster-serviceaccounttoken-&quot;`; do kubectl -n cattle-global-data delete $secret; done
+<div class="highlight"><pre><span></span><code>for secret in `kubectl -n cattle-global-data get secrets -o name | grep "cluster-serviceaccounttoken-"`; do kubectl -n cattle-global-data delete $secret; done
 </code></pre></div>
 
 

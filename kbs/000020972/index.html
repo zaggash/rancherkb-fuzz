@@ -15366,7 +15366,7 @@ spec:
 <p>From here, you can allocate IPs per IPPool based on <a href="https://docs.tigera.io/calico/3.25/networking/ipam/assign-ip-addresses-topology">node topology</a>.<br />
 Alternatively, use the annotation below to allocate IPs from a specific IPPool in a workload.</p>
 <div class="highlight"><pre><span></span><code>annotations:
-        &quot;cni.projectcalico.org/ipv4pools&quot;: &quot;[\&quot;new-pool\&quot;]&quot;
+        "cni.projectcalico.org/ipv4pools": "[\"new-pool\"]"
 </code></pre></div>
 <p>For example:</p>
 <div class="highlight"><pre><span></span><code>apiVersion: apps/v1 
@@ -15383,7 +15383,7 @@ spec:
       labels:
         app: nginx
       annotations:
-        &quot;cni.projectcalico.org/ipv4pools&quot;: &quot;[\&quot;new-pool\&quot;]&quot;
+        "cni.projectcalico.org/ipv4pools": "[\"new-pool\"]"
     spec:
       containers:
       - name: nginx

@@ -15420,13 +15420,13 @@ spec:
   valuesContent: |-
     controller:
       config:
-        ssl-protocols: &quot;TLSv1 TLSv1.1 TLSv1.2 TLSv1.3&quot;
+        ssl-protocols: "TLSv1 TLSv1.1 TLSv1.2 TLSv1.3"
 </code></pre></div>
 5. Click <strong>Save</strong> at the bottom of the page
 6. Wait for cluster to finish updating
 7. <strong>Explore</strong> the cluster and launch a kubectl shell.
 8. The ssl protocols and ciphers configuration in the running ingress-nginx Pods can be confirmed by running the below command against the cluster:</p>
-<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app.kubernetes.io/instance=rke2-ingress-nginx -n kube-system --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n kube-system exec &quot;$pod&quot; -- /dbg conf | grep ssl_protocols; done
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app.kubernetes.io/instance=rke2-ingress-nginx -n kube-system --no-headers -o name | awk -F '/' '{print $2}'); do echo -n "Checking $pod .... "; kubectl -n kube-system exec "$pod" -- /dbg conf | grep ssl_protocols; done
 </code></pre></div>
 <h3 id="configuration-for-standalone-rke2-clusters"><strong>Configuration for standalone RKE2 clusters</strong></h3>
 <ol>
@@ -15441,11 +15441,11 @@ spec:
   valuesContent: |-
     controller:
       config:
-        ssl-protocols: &quot;TLSv1 TLSv1.1 TLSv1.2 TLSv1.3&quot;
+        ssl-protocols: "TLSv1 TLSv1.1 TLSv1.2 TLSv1.3"
 </code></pre></div>
 2. Wait for the rke2-ingress-nginx helm chart to finish upgrading
 3. The ssl protocols and ciphers configuration in the running ingress-nginx Pods can be confirmed by running the below command against the cluster:</p>
-<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app.kubernetes.io/instance=rke2-ingress-nginx -n kube-system --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n kube-system exec &quot;$pod&quot; -- /dbg conf | grep ssl_protocols; done
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app.kubernetes.io/instance=rke2-ingress-nginx -n kube-system --no-headers -o name | awk -F '/' '{print $2}'); do echo -n "Checking $pod .... "; kubectl -n kube-system exec "$pod" -- /dbg conf | grep ssl_protocols; done
 </code></pre></div>
 
 

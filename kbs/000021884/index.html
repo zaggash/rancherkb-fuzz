@@ -15365,7 +15365,7 @@
 <p>RKE2 - v1.32.5+rke2r1</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>In an RKE2 setup, the <code>rke2-server</code> service intermittently fails to start with the following error message in the journal logs:</p>
-<div class="highlight"><pre><span></span><code>jun 20 09:04:13 &lt;node&gt; rke2[2524118]: time=&quot;2025-06-20T09:04:13+02:00&quot; level=fatal msg=&quot;Failed to reconcile with temporary etcd: listen tcp 127.0.0.1:2381: bind: address already in use&quot;
+<div class="highlight"><pre><span></span><code>jun 20 09:04:13 &lt;node&gt; rke2[2524118]: time="2025-06-20T09:04:13+02:00" level=fatal msg="Failed to reconcile with temporary etcd: listen tcp 127.0.0.1:2381: bind: address already in use"
 jun 20 09:04:13 &lt;node&gt; systemd[1]: rke2-server.service: Main process exited, code=exited, status=1/FAILURE.
 </code></pre></div>
 <p>The <code>config.yaml</code> includes the following custom etcd configuration:</p>

@@ -15365,9 +15365,9 @@
 <p>A Rancher-provisioned or standalone, RKE2 or K3s cluster</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>In the rke2-server or k3s service logs, errors with "deadline exceeded" are seen when attempting to reconcile and interact with the S3 endpoint for snapshots.</p>
-<div class="highlight"><pre><span></span><code>Jan 27 15:01:46 xxxx rke2[3120757]: time=&quot;2026-01-27T15:01:46+08:00&quot; level=warning msg=&quot;Failed to get object metadata: Head \&quot;https://xxx.yy.org/rancher-downstream/prod-cluster/.metadata/etcd-snapshot-xxxx.yy.org-1753833604.zip\&quot;: context deadline exceeded&quot;
-Jan 27 15:01:46 xxxx rke2[3120757]: time=&quot;2026-01-27T15:01:46+08:00&quot; level=warning msg=&quot;Failed to get object metadata: context deadline exceeded&quot;
-Jan 27 15:01:46 xxxx rke2[3120757]: time=&quot;2026-01-27T15:01:46+08:00&quot; level=error msg=&quot;Error retrieving S3 snapshots for reconciliation: context deadline exceeded&quot;
+<div class="highlight"><pre><span></span><code>Jan 27 15:01:46 xxxx rke2[3120757]: time="2026-01-27T15:01:46+08:00" level=warning msg="Failed to get object metadata: Head \"https://xxx.yy.org/rancher-downstream/prod-cluster/.metadata/etcd-snapshot-xxxx.yy.org-1753833604.zip\": context deadline exceeded"
+Jan 27 15:01:46 xxxx rke2[3120757]: time="2026-01-27T15:01:46+08:00" level=warning msg="Failed to get object metadata: context deadline exceeded"
+Jan 27 15:01:46 xxxx rke2[3120757]: time="2026-01-27T15:01:46+08:00" level=error msg="Error retrieving S3 snapshots for reconciliation: context deadline exceeded"
 </code></pre></div>
 <p>If the network latency is high or the number of objects in the bucket introduces delays, the S3 snapshot handling fails to complete. For a cluster provisioned by Rancher, the dashboard may not show all of the available snapshots in S3.</p>
 <h2 id="cause"><strong>Cause</strong></h2>

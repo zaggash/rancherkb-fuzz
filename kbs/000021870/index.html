@@ -15373,9 +15373,9 @@
 <div class="highlight"><pre><span></span><code>E0514 06:31:06.975972   1 datacenter.go:128] Unable to find VM by UUID. VM UUID: rke2://&lt;NODE_IDENTIFIER&gt;
 E0514 06:31:06.975992   1 search.go:181] Error while looking for vm=rke2://&lt;NODE_IDENTIFIER&gt;(byUUID) in vc=&lt;VSPHERE_VCENTER&gt; and datacenter=&lt;VSPHERE_DATACENTER&gt;: No VM found
 I0514 06:31:06.976000   1 search.go:186] Did not find node rke2://&lt;NODE_IDENTIFIER&gt; in vc=&lt;VSPHERE_VCENTER&gt; and datacenter=&lt;VSPHERE_DATACENTER&gt;
-I0514 06:31:06.983134   1 instances.go:177] instances.InstanceExistsByProviderID() NOT CACHED for node uid &quot;rke2://&lt;NODE_IDENTIFIER&gt;&quot;
+I0514 06:31:06.983134   1 instances.go:177] instances.InstanceExistsByProviderID() NOT CACHED for node uid "rke2://&lt;NODE_IDENTIFIER&gt;"
 I0514 06:31:06.983150   1 node_lifecycle_controller.go:164] deleting node since it is no longer present in cloud provider: &lt;NODE_IDENTIFIER&gt;
-I0514 06:31:06.983268   1 event.go:389] &quot;Event occurred&quot; object=&quot;&lt;NODE_IDENTIFIER&gt;&quot; fieldPath=&quot;&quot; kind=&quot;Node&quot; apiVersion=&quot;&quot; type=&quot;Normal&quot; reason=&quot;DeletingNode&quot; message=&quot;Deleting node &lt;NODE_IDENTIFIER&gt; because it does not exist in the cloud provider&quot;
+I0514 06:31:06.983268   1 event.go:389] "Event occurred" object="&lt;NODE_IDENTIFIER&gt;" fieldPath="" kind="Node" apiVersion="" type="Normal" reason="DeletingNode" message="Deleting node &lt;NODE_IDENTIFIER&gt; because it does not exist in the cloud provider"
 </code></pre></div>
 <p>These messages indicate that the vSphere CPI attempted to locate virtual machines based on the <code>providerID</code> format, and nodes with the <code>rke2://</code> prefix could not be matched to any virtual machines in the vSphere environment.</p>
 <h2 id="cause"><strong>Cause</strong></h2>

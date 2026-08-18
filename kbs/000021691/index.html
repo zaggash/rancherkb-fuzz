@@ -15367,10 +15367,10 @@
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>If you encounter these errors while creating the RKE2 custom cluster, adding new nodes to an existing cluster, or running a pod on the new nodes, you may try the steps mentioned in the checklist below.</p>
 <p><strong>From containerd logs</strong> </p>
-<div class="highlight"><pre><span></span><code>failed, error&quot; error=&quot;failed to create containerd task: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: can&#39;t copy bootstrap data to pipe: write init-p: broken
+<div class="highlight"><pre><span></span><code>failed, error" error="failed to create containerd task: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: can't copy bootstrap data to pipe: write init-p: broken
 </code></pre></div>
 <p><strong>From Rancher pod logs</strong> </p>
-<div class="highlight"><pre><span></span><code>{&quot;Code&quot;:&quot;Forbidden&quot;,&quot;Status&quot;:403},&quot;Message&quot;:&quot;clusters.management.cattle.io \&quot;c-m-f5lgdss6\&quot; is forbidden: User \&quot;u-z72j43l5aq\&quot; cannot get resource \&quot;clusters\&quot; in API group \&quot;management.cattle.io\&quot; at the cluster scope&quot;,&quot;Cause&quot;:null,&quot;FieldName&quot;:&quot;&quot;} (get nodes)
+<div class="highlight"><pre><span></span><code>{"Code":"Forbidden","Status":403},"Message":"clusters.management.cattle.io \"c-m-f5lgdss6\" is forbidden: User \"u-z72j43l5aq\" cannot get resource \"clusters\" in API group \"management.cattle.io\" at the cluster scope","Cause":null,"FieldName":""} (get nodes)
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>Concerning 'runc' container/OCI runtime error typically occurs when there is a problem with the configuration or execution of a container using the 'runc' due to not accessing necessary resources, or experiencing permission errors due to incorrect container image settings or host system configurations or incorrect permissions on container files.</p>

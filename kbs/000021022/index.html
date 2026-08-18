@@ -15356,60 +15356,60 @@
 <div class="highlight"><pre><span></span><code>additionalLoggingSources:
   [...]
   kubeAudit:
-    auditFilename: &#39;audit-log.json&#39;
+    auditFilename: 'audit-log.json'
     enabled: enabled
-    loggingRef: &quot;kubeauditlogging&quot;
+    loggingRef: "kubeauditlogging"
     fluentbit:
-      loggingRef: &quot;kubeauditlogging&quot;
+      loggingRef: "kubeauditlogging"
       logTag: kube-audit
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/controlplane
-          value: &#39;true&#39;
+          value: 'true'
         - effect: NoExecute
           key: node-role.kubernetes.io/etcd
-          value: &#39;true&#39;
-    pathPrefix: &#39;/var/log/kube-audit&#39;
+          value: 'true'
+    pathPrefix: '/var/log/kube-audit'
 [...]
 </code></pre></div>
 <p><strong>RKE2 Clusters</strong></p>
 <div class="highlight"><pre><span></span><code>additionalLoggingSources:
   [...]
   kubeAudit:
-    auditFilename: &#39;audit.log&#39;
+    auditFilename: 'audit.log'
     enabled: enabled
-    loggingRef: &quot;kubeauditlogging&quot;
+    loggingRef: "kubeauditlogging"
     fluentbit:
-      loggingRef: &quot;kubeauditlogging&quot;
+      loggingRef: "kubeauditlogging"
       logTag: kube-audit
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/controlplane
-          value: &#39;true&#39;
+          value: 'true'
         - effect: NoExecute
           key: node-role.kubernetes.io/etcd
-          value: &#39;true&#39;
-    pathPrefix: &#39;/var/lib/rancher/rke2/server/logs&#39;
+          value: 'true'
+    pathPrefix: '/var/lib/rancher/rke2/server/logs'
 [...]
 </code></pre></div>
 <p><strong>K3s Clusters</strong></p>
 <div class="highlight"><pre><span></span><code>additionalLoggingSources:
   [...]
   kubeAudit:
-    auditFilename: &#39;audit.log&#39;
+    auditFilename: 'audit.log'
     enabled: enabled
-    loggingRef: &quot;kubeauditlogging&quot;
+    loggingRef: "kubeauditlogging"
     fluentbit:
-      loggingRef: &quot;kubeauditlogging&quot;
+      loggingRef: "kubeauditlogging"
       logTag: kube-audit
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/controlplane
-          value: &#39;true&#39;
+          value: 'true'
         - effect: NoExecute
           key: node-role.kubernetes.io/etcd
-          value: &#39;true&#39;
-    pathPrefix: &#39;/var/lib/rancher/k3s/server/logs&#39;
+          value: 'true'
+    pathPrefix: '/var/lib/rancher/k3s/server/logs'
 [...]
 </code></pre></div>
 <p><strong>Step 3: Create routing resources (ClusterFlow/ClusterOuput)</strong></p>

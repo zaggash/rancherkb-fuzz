@@ -15372,7 +15372,7 @@ When deploying the Rancher logging chart, Pods will not be scheduled where user-
 <div class="highlight"><pre><span></span><code>Events: 
 Type Reason Age From Message 
 ---- ------ ---- ---- ------- 
-Warning FailedScheduling &lt;unknown&gt; default-scheduler 0/3 nodes are available: 3 node(s) had taints that the pod didn&#39;t tolerate
+Warning FailedScheduling &lt;unknown&gt; default-scheduler 0/3 nodes are available: 3 node(s) had taints that the pod didn't tolerate
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>Nodes with specific taints will deny the scheduling of any pod if no matching toleration is present on the workload.</p>
@@ -15381,12 +15381,12 @@ Warning FailedScheduling &lt;unknown&gt; default-scheduler 0/3 nodes are availab
 <p>For example, if the taint with key=foo, value=bar and effect=NoSchedule is present on nodes within the cluster, the following tolerations should be defined in the values of the rancher-logging Chart:</p>
 <div class="highlight"><pre><span></span><code>tolerations:
   - key: cattle.io/os
-    operator: &quot;Equal&quot;
-    value: &quot;linux&quot;
+    operator: "Equal"
+    value: "linux"
     effect: NoSchedule
   - key: foo
-    operator: &quot;Equal&quot;
-    value: &quot;bar&quot;
+    operator: "Equal"
+    value: "bar"
     effect: NoSchedule
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 

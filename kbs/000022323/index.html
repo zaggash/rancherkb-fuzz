@@ -15323,7 +15323,7 @@ RKE2 v1.x</p>
 <h2 id="procedure"><strong>Procedure</strong></h2>
 <p>This article explains how to obtain RKE2 node bootstrap and join details for downstream clusters using information stored in Rancher-managed Secrets. The command is to be run on the Rancher cluster.</p>
 <p><strong>Command:</strong></p>
-<div class="highlight"><pre><span></span><code>$ kubectl get secrets -n fleet-default -o custom-columns=&quot;NAME:metadata.name,MACHINE_ID:metadata.labels.rke\.cattle\.io/machine-name,INIT_NODE:metadata.labels.rke\.cattle\.io/init-node,JOIN_URL:metadata.annotations.rke\.cattle\.io/join-url,JOINED_TO:metadata.annotations.rke\.cattle\.io/joined-to&quot; | grep -v token
+<div class="highlight"><pre><span></span><code>$ kubectl get secrets -n fleet-default -o custom-columns="NAME:metadata.name,MACHINE_ID:metadata.labels.rke\.cattle\.io/machine-name,INIT_NODE:metadata.labels.rke\.cattle\.io/init-node,JOIN_URL:metadata.annotations.rke\.cattle\.io/join-url,JOINED_TO:metadata.annotations.rke\.cattle\.io/joined-to" | grep -v token
 </code></pre></div>
 <p><strong>Example Output:</strong></p>
 <div class="highlight"><pre><span></span><code>NAME                                                    MACHINE_ID                     INIT_NODE   JOIN_URL                     JOINED_TO

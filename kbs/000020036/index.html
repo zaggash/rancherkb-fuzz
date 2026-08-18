@@ -15421,27 +15421,27 @@
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Get the available template list:
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>python -c &quot;import sys, json; d=json.load(sys.stdin)[&#39;K8sVersionedTemplates&#39;][&#39;coreDNS&#39;]; print (json.dumps(d,indent=4))&quot; &lt;data.json
+<div class="highlight"><pre><span></span><code>python -c "import sys, json; d=json.load(sys.stdin)['K8sVersionedTemplates']['coreDNS']; print (json.dumps(d,indent=4))" &lt;data.json
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 
 </code></pre></div>
 <p>Output:</p>
 <div class="highlight"><pre><span></span><code>{
-    &quot;&gt;=1.16.0-alpha &lt;1.17.0-alpha&quot;: &quot;coredns-v1.16&quot;,
-    &quot;&gt;=1.17.0-alpha &lt;1.20.15-rancher1-2&quot;: &quot;coredns-v1.17&quot;,
-    &quot;&gt;=1.20.15-rancher1-2 &lt;1.21.0-rancher1-1&quot;: &quot;coredns-v1.8.3-rancher2&quot;,
-    &quot;&gt;=1.21.0-rancher1-1 &lt;1.21.9-rancher1-2&quot;: &quot;coredns-v1.8.3&quot;,
-    &quot;&gt;=1.21.9-rancher1-2&quot;: &quot;coredns-v1.8.3-rancher2&quot;,
-    &quot;&gt;=1.8.0-rancher0 &lt;1.16.0-alpha&quot;: &quot;coredns-v1.8&quot;
+    "&gt;=1.16.0-alpha &lt;1.17.0-alpha": "coredns-v1.16",
+    "&gt;=1.17.0-alpha &lt;1.20.15-rancher1-2": "coredns-v1.17",
+    "&gt;=1.20.15-rancher1-2 &lt;1.21.0-rancher1-1": "coredns-v1.8.3-rancher2",
+    "&gt;=1.21.0-rancher1-1 &lt;1.21.9-rancher1-2": "coredns-v1.8.3",
+    "&gt;=1.21.9-rancher1-2": "coredns-v1.8.3-rancher2",
+    "&gt;=1.8.0-rancher0 &lt;1.16.0-alpha": "coredns-v1.8"
 }
 </code></pre></div>
 <p>Translation of one of the entries from the list is as follows:</p>
-<div class="highlight"><pre><span></span><code>&quot;&gt;=1.21.9-rancher1-2&quot;: &quot;coredns-v1.8.3-rancher2&quot;,
+<div class="highlight"><pre><span></span><code>"&gt;=1.21.9-rancher1-2": "coredns-v1.8.3-rancher2",
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 
 </code></pre></div>
 <p>If the Kubernetes version is <strong>greater than or equal to</strong> <em><code>1.21.9-rancher1-2</code></em> , then the CoreDNS key we have to use in the next step is <strong><em><code>coredns-v1.8.3-rancher2.</code></em></strong></p>
-<div class="highlight"><pre><span></span><code>python -c &quot;import sys, json; print (json.load(sys.stdin)[&#39;K8sVersionedTemplates&#39;][&#39;templateKeys&#39;][&#39;coredns-v1.8.3-rancher2&#39;])&quot; &lt;data.json
+<div class="highlight"><pre><span></span><code>python -c "import sys, json; print (json.load(sys.stdin)['K8sVersionedTemplates']['templateKeys']['coredns-v1.8.3-rancher2'])" &lt;data.json
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 
 </code></pre></div>
@@ -15461,7 +15461,7 @@ data:
           lameduck 5s
         }
         ready
-        kubernetes {{.ClusterDomain}} {{ if .ReverseCIDRs }}{{ .ReverseCIDRs }}{{ else }}{{ &quot;in-addr.arpa ip6.arpa&quot; }}{{ end }} {
+        kubernetes {{.ClusterDomain}} {{ if .ReverseCIDRs }}{{ .ReverseCIDRs }}{{ else }}{{ "in-addr.arpa ip6.arpa" }}{{ end }} {
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
         }
@@ -15469,7 +15469,7 @@ data:
     {{- if .UpstreamNameservers }}
         forward . {{range $i, $v := .UpstreamNameservers}}{{if $i}} {{end}}{{.}}{{end}}
     {{- else }}
-        forward . &quot;/etc/resolv.conf&quot;
+        forward . "/etc/resolv.conf"
     {{- end }}
         cache 30
         loop

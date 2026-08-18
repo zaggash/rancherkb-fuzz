@@ -15371,12 +15371,12 @@ deployment.apps/rancher created
 ingress.networking.k8s.io/rancher created
 service/rancher created
 serviceaccount/rancher created
-error: unable to recognize &quot;rancher/templates/issuer-rancher.yaml&quot;: no matches for kind &quot;Issuer&quot; in version &quot;certmanager.k8s.io/v1alpha1
+error: unable to recognize "rancher/templates/issuer-rancher.yaml": no matches for kind "Issuer" in version "certmanager.k8s.io/v1alpha1
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>When the helm template runs, it does not interact with the cluster to determine available CRDs and apiVersions. This in turn means the logic does not select the correct apiVersion for the Issuer object in the rendered template, applying the manifest in this case presents the apiVersion error.</p>
 <p>Below is the snippet of issuer-rancher.yaml file which has the deprecated apiVersion</p>
-<div class="highlight"><pre><span></span><code>cat &quot;rancher/templates/issuer-rancher.yaml&quot;
+<div class="highlight"><pre><span></span><code>cat "rancher/templates/issuer-rancher.yaml"
 ---
 # Source: rancher/templates/issuer-rancher.yaml
 apiVersion: certmanager.k8s.io/v1alpha1

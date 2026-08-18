@@ -15368,14 +15368,14 @@
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>The System-Upgrade-Controller (SUC) uses the wrong kubectl container image while applying plans to a downstream RKE2 or K3s cluster. This causes the apply-job pod launched by the SUC to fail to initialize with the following error:</p>
-<div class="highlight"><pre><span></span><code>ImagePullBackOff (Back-off pulling image &quot;registry.rancher.com/rancher/kubectl:v6.0.0&quot;: ErrImagePull: rpc error: code = NotFound desc = failed to pull and unpack image &quot;registry.rancher.com/rancher/kubectl:v6.0.0&quot;: failed to resolve reference &quot;registry.rancher.com/rancher/kubectl:v6.0.0&quot;: registry.rancher.com/rancher/kubectl:v6.0.0: not found)
+<div class="highlight"><pre><span></span><code>ImagePullBackOff (Back-off pulling image "registry.rancher.com/rancher/kubectl:v6.0.0": ErrImagePull: rpc error: code = NotFound desc = failed to pull and unpack image "registry.rancher.com/rancher/kubectl:v6.0.0": failed to resolve reference "registry.rancher.com/rancher/kubectl:v6.0.0": registry.rancher.com/rancher/kubectl:v6.0.0: not found)
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The rancher/kuberlr-kubectl image has been introduced to replace rancher/kubectl in the SUC; however, the ConfigMap has not been updated accordingly.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>The ConfigMap associated with the system-upgrade-controller deployment must be patched to reference the correct image.</p>
 <p>On the downstream cluster:</p>
-<div class="highlight"><pre><span></span><code>kubectl patch configmap -n cattle-system system-upgrade-controller-config --type=&#39;json&#39; -p &#39;[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/data/SYSTEM_UPGRADE_JOB_KUBECTL_IMAGE&quot;, &quot;value&quot;: &quot;registry.rancher.com/rancher/kuberlr-kubectl:v6.0.0&quot;}]&#39;
+<div class="highlight"><pre><span></span><code>kubectl patch configmap -n cattle-system system-upgrade-controller-config --type='json' -p '[{"op": "replace", "path": "/data/SYSTEM_UPGRADE_JOB_KUBECTL_IMAGE", "value": "registry.rancher.com/rancher/kuberlr-kubectl:v6.0.0"}]'
 </code></pre></div>
 <p>Then, perform a rollout restart of the deployment for the changes to take effect:</p>
 <div class="highlight"><pre><span></span><code>kubectl rollout restart deployment system-upgrade-controller -n cattle-system

@@ -15350,7 +15350,7 @@
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>Admins can delete session tokens for that particular user themselves.</p>
 <div class="highlight"><pre><span></span><code>kubectl get token  \
--o custom-columns=&quot;:metadata.name&quot; \
+-o custom-columns=":metadata.name" \
 -l authn.management.cattle.io/kind=session,authn.management.cattle.io/token-userId=&lt;user name&gt; \
 | xargs kubectl delete token
 </code></pre></div>

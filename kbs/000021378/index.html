@@ -15365,7 +15365,7 @@
 <p>Rancher 2.x</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>The Rancher Monitoring Chart reinstallation is failing with Web-hook errors as below.</p>
-<div class="highlight"><pre><span></span><code>Error: UPGRADE FAILED: failed to create resource: Internal error occurred: failed calling webhook &quot;prometheusrulemutate.monitoring.coreos.com&quot;: failed to call webhook: Post &quot;https://rancher-monitoring-operator.cattle-monitoring-system.svc:443/admission-prometheusrules/validate?timeout=10s&quot;: tls: failed to verify certificate: x509: certificate signed by unknown authority (possibly because of &quot;x509: ECDSA verification failure&quot; while trying to verify candidate authority certificate &quot;nil1&quot;)
+<div class="highlight"><pre><span></span><code>Error: UPGRADE FAILED: failed to create resource: Internal error occurred: failed calling webhook "prometheusrulemutate.monitoring.coreos.com": failed to call webhook: Post "https://rancher-monitoring-operator.cattle-monitoring-system.svc:443/admission-prometheusrules/validate?timeout=10s": tls: failed to verify certificate: x509: certificate signed by unknown authority (possibly because of "x509: ECDSA verification failure" while trying to verify candidate authority certificate "nil1")
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>If the previous Monitoring chart Uninstall was not properly carried out, there would be few CRDs remaining. These CRDs and web hooks will stop the next monitoring chart installations.</p>

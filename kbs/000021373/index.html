@@ -15404,9 +15404,9 @@
     [...]
     machineSelectorConfig
       - config:
-          etcd-arg: &quot;cipher-suites=[TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384]&quot;
+          etcd-arg: "cipher-suites=[TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384]"
         matchLabels:
-          rke.cattle.io/etcd-role: &#39;true&#39;
+          rke.cattle.io/etcd-role: 'true'
 [...]
 </code></pre></div>
 5. Click <strong>Save</strong> to apply the change</p>
@@ -15415,7 +15415,7 @@
 <ol>
 <li>Add the etcd-arg with the desired cipher-suites to the <a href="https://docs.rke2.io/install/configuration">RKE2 configuration file</a> at /etc/rancher/rke2/config.yaml file and save it, per the following example:</li>
 </ol>
-<p><div class="highlight"><pre><span></span><code>etcd-arg: &quot;cipher-suites=[TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384]&quot;
+<p><div class="highlight"><pre><span></span><code>etcd-arg: "cipher-suites=[TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384]"
 </code></pre></div>
 2. Restart the rke2-server service to apply the change:</p>
 <p><div class="highlight"><pre><span></span><code>systemctl restart rke2-server

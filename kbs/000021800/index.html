@@ -15404,9 +15404,9 @@ spec:
     image: rancher/k3s-upgrade
   # Add tolerations for Longhorn tainted nodes
   tolerations:
-    - key: &quot;node.​longhorn.​io/create-default-disk&quot;
-      operator: &quot;Exists&quot;
-      effect: &quot;NoSchedule&quot;
+    - key: "node.​longhorn.​io/create-default-disk"
+      operator: "Exists"
+      effect: "NoSchedule"
     # Add any other specific tolerations your nodes might have
 </code></pre></div>
 <p><strong>Option 2:</strong> Ignore all taints (recommended for mixed workload clusters)<br />
@@ -15432,7 +15432,7 @@ spec:
     - key: node-role.kubernetes.io/control-plane
       operator: NotIn
       values:
-      - &quot;true&quot;
+      - "true"
   prepare:
     args:
     - prepare

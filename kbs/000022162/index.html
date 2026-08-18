@@ -15705,39 +15705,39 @@ RKE2 cluster</p>
 <div class="highlight"><pre><span></span><code>#!/bin/bash
 
 # === CONFIG ===
-IMAGE_LIST=&quot;longhorn-images.txt&quot;
-WORK_DIR=&quot;./longhorn-tars&quot;
-IMAGE_DIR=&quot;/var/lib/rancher/rke2/agent/images&quot;
-CTR=&quot;/var/lib/rancher/rke2/bin/ctr&quot;
-CONTAINERD_SOCK=&quot;/run/k3s/containerd/containerd.sock&quot;
+IMAGE_LIST="longhorn-images.txt"
+WORK_DIR="./longhorn-tars"
+IMAGE_DIR="/var/lib/rancher/rke2/agent/images"
+CTR="/var/lib/rancher/rke2/bin/ctr"
+CONTAINERD_SOCK="/run/k3s/containerd/containerd.sock"
 
 # === SETUP ===
-mkdir -p &quot;$WORK_DIR&quot;
+mkdir -p "$WORK_DIR"
 
 # === PROCESS IMAGES ===
 while read -r image; do
-  [[ -z &quot;$image&quot; || &quot;$image&quot; =~ ^# ]] &amp;&amp; continue
+  [[ -z "$image" || "$image" =~ ^# ]] &amp;&amp; continue
 
-  echo &quot;Pulling image: docker.io/${image}&quot;
-  sudo $CTR --address &quot;$CONTAINERD_SOCK&quot; -n k8s.io images pull &quot;docker.io/${image}&quot;
+  echo "Pulling image: docker.io/${image}"
+  sudo $CTR --address "$CONTAINERD_SOCK" -n k8s.io images pull "docker.io/${image}"
 
-  safe_name=$(echo &quot;$image&quot; | tr &#39;/:@&#39; &#39;_&#39;)
-  tar_file=&quot;${WORK_DIR}/${safe_name}.tar&quot;
+  safe_name=$(echo "$image" | tr '/:@' '_')
+  tar_file="${WORK_DIR}/${safe_name}.tar"
 
-  echo &quot;Exporting to: $tar_file&quot;
-  sudo $CTR --address &quot;$CONTAINERD_SOCK&quot; -n k8s.io images export &quot;$tar_file&quot; &quot;docker.io/${image}&quot;
+  echo "Exporting to: $tar_file"
+  sudo $CTR --address "$CONTAINERD_SOCK" -n k8s.io images export "$tar_file" "docker.io/${image}"
 
-  echo &quot;Compressing: $tar_file&quot;
-  zstd -f &quot;$tar_file&quot;
-  rm -f &quot;$tar_file&quot;
+  echo "Compressing: $tar_file"
+  zstd -f "$tar_file"
+  rm -f "$tar_file"
 
-done &lt; &quot;$IMAGE_LIST&quot;
+done &lt; "$IMAGE_LIST"
 
 # === COPY TO RKE2 IMAGE DIR ===
-echo &quot;Copying compressed tars to: $IMAGE_DIR&quot;
-sudo cp &quot;$WORK_DIR&quot;/*.tar.zst &quot;$IMAGE_DIR/&quot;
+echo "Copying compressed tars to: $IMAGE_DIR"
+sudo cp "$WORK_DIR"/*.tar.zst "$IMAGE_DIR/"
 
-echo &quot;Done...&quot;
+echo "Done..."
 </code></pre></div>
 <p>This script reads longhorn-images.txt, pulls each image using ctr, and exports them to the containerd local store. Perform this steps on all nodes.</p>
 <h3 id="step-3-prepare-helm-chart-for-v180">Step 3: Prepare Helm Chart for v1.8.0</h3>
@@ -15788,7 +15788,7 @@ spec:
 <h3 id="step-5-verify-installation">Step 5: Verify Installation</h3>
 <div class="highlight"><pre><span></span><code>kubectl get helmchart -n kube-system longhorn-install -w
 kubectl get pods -n longhorn-system -w
-kubectl -n longhorn-system get deployment longhorn-manager -o jsonpath=&#39;{.spec.template.spec.containers[0].image}&#39;
+kubectl -n longhorn-system get deployment longhorn-manager -o jsonpath='{.spec.template.spec.containers[0].image}'
 </code></pre></div>
 <h2 id="part-2-upgrading-longhorn-to-v181">Part 2: Upgrading Longhorn to v1.8.1</h2>
 <h3 id="step-1-obtain-longhorn-v181-image-list">Step 1: Obtain Longhorn v1.8.1 Image List</h3>

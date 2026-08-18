@@ -15365,7 +15365,7 @@
 <p>Rancher versions ≤ 2.6.2</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>An upgrade of Rancher or editing roles in Rancher UI fails with the below error.</p>
-<div class="highlight"><pre><span></span><code>Internal error occurred: failed calling webhook &quot;rancherauth.cattle.io&quot;: Post &quot;https://rancher-webhook.cattle-system.svc:443/v1/webhook/validation?timeout=10s&quot;: x509: certificate has expired or is not yet valid: current time 2021-10-25T07:43:50Z is after 2021-10-06T20:20:47Z
+<div class="highlight"><pre><span></span><code>Internal error occurred: failed calling webhook "rancherauth.cattle.io": Post "https://rancher-webhook.cattle-system.svc:443/v1/webhook/validation?timeout=10s": x509: certificate has expired or is not yet valid: current time 2021-10-25T07:43:50Z is after 2021-10-06T20:20:47Z
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>This issue is caused by the expired certificate of the rancher webhook.</p>

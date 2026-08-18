@@ -15393,12 +15393,12 @@
 <p><div class="highlight"><pre><span></span><code>export CATTLE_ACCESS_KEY=token-8jn92
 export CATTLE_SECRET_KEY=l2r4nq9sx6pdhpm4bgwntvgk49qn6rvvmtsvlvkmjk9rjsfd7n65fz
 export RANCHER_URL=rancher.example.com
-curl -k -u &quot;${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot; \
+curl -k -u "${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}" \
 -X POST \
--H &#39;Accept: application/json&#39; \
--H &#39;Content-Type: application/json&#39; \
--d &#39;{&quot;context&quot;:&quot;cluster&quot;,&quot;clusterCreatorDefault&quot;:false,&quot; projectCreatorDefault&quot;:false,&quot;name&quot;:&quot;kube-api metrics&quot;,&quot;rules&quot;:[{&quot;nonResourceURLs&quot;:[&quot;/metrics&quot;],&quot;type&quot;:&quot;/v3/schemas/policyRule&quot;,&quot;verbs&quot;:[&quot;get&quot;]}]}&#39; \
-&quot;https://${RANCHER_URL}/v3/roletemplates&quot;
+-H 'Accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{"context":"cluster","clusterCreatorDefault":false," projectCreatorDefault":false,"name":"kube-api metrics","rules":[{"nonResourceURLs":["/metrics"],"type":"/v3/schemas/policyRule","verbs":["get"]}]}' \
+"https://${RANCHER_URL}/v3/roletemplates"
 </code></pre></div>
 2. After creating the cluster role, you can then grant this for a user or group. To do so, follow the steps in the Rancher documentation on <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/cluster-access/cluster-members/">assigning a cluster role to a user or group</a>.
 3. Once the role is granted to a user, they will be able to test their access to the <code>/metrics</code> endpoint.</p>
@@ -15408,14 +15408,14 @@ export CATTLE_SECRET_KEY=l2r4nq9sx6pdhpm4bgwntvgk49qn6rvvmtsvlvkmjk9rjsfd7n65fz
 export RANCHER_URL=rancher.example.com
 export CLUSTER_ID=c-wwdjc
 curl -k https://${RANCHER_URL}/k8s/clusters/${CLUSTER_ID}/metrics \
--H &quot;Authorization: Bearer ${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot;
+-H "Authorization: Bearer ${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}"
 </code></pre></div>
 <p>For Rancher-provisioned Kubernetes clusters with <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-admin/cluster-access/ace/">Authorized Cluster Endpoint</a> enabled, the user can also query the endpoint by connecting to the Kubernetes API Server on the cluster's control plane nodes directly, using a <a href="https://rancher.com/docs/rancher/v2.x/en/api/api-tokens/">cluster-scoped API token</a>. The user will need to set CATTLE_ACCESS_KEY, CATTLE_SECRET_KEY and AUTHORIZED_ENDPOINT_ADDRESS to reflect the generated API token, and the authorized endpoint address.</p>
 <div class="highlight"><pre><span></span><code>export CATTLE_ACCESS_KEY=token-d6cls
 export CATTLE_SECRET_KEY=b6gk6lmgrhsb4rjccktzkwxn5df7tm87msggq87lpmls2pkbpc5t5r
 export AUTHORIZED_ENDPOINT_ADDRESS=controlplane-01.example.com
 curl -k https://${AUTHORIZED_ENDPOINT_ADDRESS}:6443/metrics \
--H &quot;Authorization: Bearer ${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot;
+-H "Authorization: Bearer ${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}"
 </code></pre></div>
 
 

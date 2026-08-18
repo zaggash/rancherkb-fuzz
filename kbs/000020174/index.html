@@ -15571,7 +15571,7 @@
 <div class="highlight"><pre><span></span><code>  dns:
   [..]
     nodelocal:
-      ip_address: &quot;169.254.20.10&quot;
+      ip_address: "169.254.20.10"
 </code></pre></div>
 <p>The kubelet will be updated to use the new IP address when configuring pod DNS resolution. Pods using the CoreDNS service address (default: 10.43.0.10) as the nameserver in <code>/etc/resolv.conf</code> will still resolve using the node-local-dns pod on the node. This is due to the way node-local-dns manages it's own interface and iptables rules.</p>
 <h3 id="rke2">RKE2</h3>

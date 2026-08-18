@@ -15400,7 +15400,7 @@
 </code></pre></div>
 <p>To persist through reboot, add the tunable to either <code>/etc/sysctl.conf</code>, or a specific config file in <code>/etc/sysctl.d</code>.</p>
 <p>For example, if your Linux distribution follows the /etc/sysctl.d/ directory structure:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;net.netfilter.nf_conntrack_max=&lt;value&gt;&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/sysctl.d/10-conntrack-max.conf
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">"net.netfilter.nf_conntrack_max=&lt;value&gt;"</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/sysctl.d/10-conntrack-max.conf
 sysctl<span class="w"> </span>-p<span class="w"> </span>/etc/sysctl.d/10-conntrack-max.conf
 </code></pre></div>
 <p>This creates a new config file to set the table size at each boot.</p>

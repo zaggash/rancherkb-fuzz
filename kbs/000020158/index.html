@@ -15464,11 +15464,11 @@ metadata:
 <h3 id="3-determine-the-calico-node-version-of-the-cluster">3. Determine the calico-node version of the cluster</h3>
 <p>First get the version of the <code>calico-node</code> container running in the cluster.</p>
 <p>In a cluster with the <em>Canal</em> CNI Network Provider, run the following, with the admin kube config sourced:</p>
-<div class="highlight"><pre><span></span><code>CALICOVERSION=`kubectl -n kube-system get daemonset canal -o yaml | grep &#39;rancher/mirrored-calico-node:v&#39; | tail -n1 | cut -d: -f3`
+<div class="highlight"><pre><span></span><code>CALICOVERSION=`kubectl -n kube-system get daemonset canal -o yaml | grep 'rancher/mirrored-calico-node:v' | tail -n1 | cut -d: -f3`
 echo $CALICOVERSION
 </code></pre></div>
 <p>In a cluster with the <em>Calico</em> CNI Network Provider, run the following, with the admin kube config sourced:</p>
-<div class="highlight"><pre><span></span><code>CALICOVERSION=`kubectl -n kube-system get daemonset calico-node -o yaml | grep &#39;rancher/mirrored-calico-node:v&#39; | tail -n1 | cut -d: -f3`
+<div class="highlight"><pre><span></span><code>CALICOVERSION=`kubectl -n kube-system get daemonset calico-node -o yaml | grep 'rancher/mirrored-calico-node:v' | tail -n1 | cut -d: -f3`
 echo $CALICOVERSION
 </code></pre></div>
 <h3 id="4-run-calicoctl">4. Run <code>calicoctl</code></h3>
@@ -15483,9 +15483,9 @@ echo $CALICOVERSION
 <div class="highlight"><pre><span></span><code>apiVersion: projectcalico.org/v3
 kind: GlobalNetworkPolicy
 metadata:
-  creationTimestamp: &quot;2020-04-08T15:12:45Z&quot;
+  creationTimestamp: "2020-04-08T15:12:45Z"
   name: allow-tcp-port-6379
-  resourceVersion: &quot;9033&quot;
+  resourceVersion: "9033"
   uid: df2875a6-1142-4fe0-9f0c-5dc1372bd2c5
 spec:
   types:

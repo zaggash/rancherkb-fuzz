@@ -15357,7 +15357,7 @@
 <p>Two options available for listing the rolebindings are to use kubectl to get the rolebindings or use a plugin such as <strong>rbac-lookup</strong>.</p>
 <p><strong>Kubectl Commands to get JSON output</strong></p>
 <p>Run the following where $USERID is the ID seen in the Rancher UI as u-xxxx :</p>
-<div class="highlight"><pre><span></span><code>$ kubectl get rolebinding,clusterrolebinding --all-namespaces -o jsonpath=&#39;{range .items[?(@.subjects[0].name==&quot;$USERID&quot;)]}[{.roleRef.kind},{.roleRef.name}]{end}&#39;
+<div class="highlight"><pre><span></span><code>$ kubectl get rolebinding,clusterrolebinding --all-namespaces -o jsonpath='{range .items[?(@.subjects[0].name=="$USERID")]}[{.roleRef.kind},{.roleRef.name}]{end}'
 </code></pre></div>
 <p>This should provide a list of all rolebindings associated with the $USERID in an output like the following: </p>
 <div class="highlight"><pre><span></span><code>[Role,user-global-catalog][Role,r-cluster-local-view][Role,project-member][Role,p-qq8hd-projectmember][Role,edit][Role,project-member][ClusterRole,cattle-globalrole-user][ClusterRole,project-member-promoted][ClusterRole,p-qq8hd-namespaces-edit][ClusterRole,create-ns][ClusterRole,local-clustermember][ClusterRole,u-dlns5-view]

@@ -15369,16 +15369,16 @@
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>The Rancher UI is not accessible and the Rancher pods are in a CrashLoopBackOff state due to a panic, with the log message "panic: indexer conflict: map[byPod:{}]".</p>
 <p>Rancher pods logs contain resource and namespace not found errors related to the forcibly deleted cluster Namespace:</p>
-<div class="highlight"><pre><span></span><code>[ERROR] error syncing &#39;c-g4k52/m-c6n6g&#39;: handler node-controller: namespaces &quot;c-g4k52 &quot; not found, handler node-controller-sync: namespaces &quot;c-g4k52 &quot; not found
-[ERROR] error syncing &#39;c-g4k52/m-6j6pk&#39;: handler node-controller: namespaces &quot;c-g4k52 &quot; not found, handler node-controller-sync: namespaces &quot;c-g4k52 &quot; not found,
-[ERROR] error syncing &#39;c-g4k52/m-zx6qg&#39;: handler node-controller: namespaces &quot;c-g4k52 &quot; not found, handler node-controller-sync: namespaces &quot;c-g4k52 &quot; not found,
+<div class="highlight"><pre><span></span><code>[ERROR] error syncing 'c-g4k52/m-c6n6g': handler node-controller: namespaces "c-g4k52 " not found, handler node-controller-sync: namespaces "c-g4k52 " not found
+[ERROR] error syncing 'c-g4k52/m-6j6pk': handler node-controller: namespaces "c-g4k52 " not found, handler node-controller-sync: namespaces "c-g4k52 " not found,
+[ERROR] error syncing 'c-g4k52/m-zx6qg': handler node-controller: namespaces "c-g4k52 " not found, handler node-controller-sync: namespaces "c-g4k52 " not found,
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>[ERROR] error syncing &#39;c-g4k52/creator-cluster-owner&#39;: handler mgmt-auth-crtb-controller: clusters.management.cattle.io &quot;c-g4k52 &quot; not found, requeuing
-[ERROR] error syncing &#39;p-d6hvn/creator-project-owner&#39;: handler mgmt-auth-prtb-controller: clusters.management.cattle.io &quot;c-g4k52 &quot; not found, requeuing
-[ERROR] error syncing &#39;p-ch66s/creator-project-owner&#39;: handler mgmt-auth-prtb-controller: clusters.management.cattle.io &quot;c-g4k52 &quot; not found, requeuing
+<div class="highlight"><pre><span></span><code>[ERROR] error syncing 'c-g4k52/creator-cluster-owner': handler mgmt-auth-crtb-controller: clusters.management.cattle.io "c-g4k52 " not found, requeuing
+[ERROR] error syncing 'p-d6hvn/creator-project-owner': handler mgmt-auth-prtb-controller: clusters.management.cattle.io "c-g4k52 " not found, requeuing
+[ERROR] error syncing 'p-ch66s/creator-project-owner': handler mgmt-auth-prtb-controller: clusters.management.cattle.io "c-g4k52 " not found, requeuing
 </code></pre></div>
-<div class="highlight"><pre><span></span><code> [ERROR] error syncing &#39;c-g4k52/c-g4k52-fleet-default-owner&#39;: handler mgmt-auth-crtb-controller: failed to remove finalizer on controller.cattle.io/mgmt-auth-crtb-controller, requeuing
- [ERROR] error syncing &#39;c-g4k52/c-g4k52-rl-f62qq&#39;: handler etcdbackup-controller: failed to remove finalizer on controller.cattle.io/etcdbackup-controller, requeuing
+<div class="highlight"><pre><span></span><code> [ERROR] error syncing 'c-g4k52/c-g4k52-fleet-default-owner': handler mgmt-auth-crtb-controller: failed to remove finalizer on controller.cattle.io/mgmt-auth-crtb-controller, requeuing
+ [ERROR] error syncing 'c-g4k52/c-g4k52-rl-f62qq': handler etcdbackup-controller: failed to remove finalizer on controller.cattle.io/etcdbackup-controller, requeuing
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>Orphaned resources within Namespaces for a now-deleted cluster exist as a result of the forced removal of the Kubernetes Namespace, due to the manual removal of the Kubernetes finalizer from the Namespace when it is stuck in a terminating state. The Kubernetes finalizer should never be removed from a Namespace and the following procedure can be used to remove a Namespace stuck in a terminating state: <a href="https://www.suse.com/support/kb/doc/?id=000021065">https://www.suse.com/support/kb/doc/?id=000021065</a></p>

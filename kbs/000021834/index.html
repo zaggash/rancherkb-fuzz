@@ -15346,47 +15346,47 @@
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p><strong>Kubernetes Secrets</strong></p>
 <p>You can run the following command to check your Kubernetes secrets for any expired TLS certificates.</p>
-<div class="highlight"><pre><span></span><code>for ns in $(kubectl get ns -o jsonpath=&#39;{.items[*].metadata.name}&#39;); do
-  for sec in $(kubectl get secrets -n $ns -o json | jq -r &#39;.items[] | select(.type==&quot;kubernetes.io/tls&quot;) | .metadata.name&#39;); do
-    exp=$(kubectl get secret $sec -n $ns -o jsonpath=&quot;{.data[&#39;tls\.crt&#39;]}&quot; | base64 -d | openssl x509 -noout -enddate | cut -d= -f2)
-    if [[ $(date -d &quot;$exp&quot; +%s) -lt $(date +%s) ]]; then
-      echo &quot;Expired certificate: $sec (namespace: $ns, expiry date: $exp)&quot;
+<div class="highlight"><pre><span></span><code>for ns in $(kubectl get ns -o jsonpath='{.items[*].metadata.name}'); do
+  for sec in $(kubectl get secrets -n $ns -o json | jq -r '.items[] | select(.type=="kubernetes.io/tls") | .metadata.name'); do
+    exp=$(kubectl get secret $sec -n $ns -o jsonpath="{.data['tls\.crt']}" | base64 -d | openssl x509 -noout -enddate | cut -d= -f2)
+    if [[ $(date -d "$exp" +%s) -lt $(date +%s) ]]; then
+      echo "Expired certificate: $sec (namespace: $ns, expiry date: $exp)"
     fi
   done
 done
 </code></pre></div>
 <p>If you want to check for certificates expiring within a certain period of time, for example by 30 days, you can increment the date like this: <code>'-d +30 days'</code>. Please note that this is wrapped in single quotes .<br />
 See the example below for reference.</p>
-<div class="highlight"><pre><span></span><code>for ns in $(kubectl get ns -o jsonpath=&#39;{.items[*].metadata.name}&#39;); do
-  for sec in $(kubectl get secrets -n $ns -o json | jq -r &#39;.items[] | select(.type==&quot;kubernetes.io/tls&quot;) | .metadata.name&#39;); do
-    exp=$(kubectl get secret $sec -n $ns -o jsonpath=&quot;{.data[&#39;tls\.crt&#39;]}&quot; | base64 -d | openssl x509 -noout -enddate | cut -d= -f2)
-    if [[ $(date -d &quot;$exp&quot; +%s) -lt $(date -d &#39;+30 days&#39; +%s) ]]; then
-      echo &quot;Expired certificate: $sec (namespace: $ns, expiry date: $exp)&quot;
+<div class="highlight"><pre><span></span><code>for ns in $(kubectl get ns -o jsonpath='{.items[*].metadata.name}'); do
+  for sec in $(kubectl get secrets -n $ns -o json | jq -r '.items[] | select(.type=="kubernetes.io/tls") | .metadata.name'); do
+    exp=$(kubectl get secret $sec -n $ns -o jsonpath="{.data['tls\.crt']}" | base64 -d | openssl x509 -noout -enddate | cut -d= -f2)
+    if [[ $(date -d "$exp" +%s) -lt $(date -d '+30 days' +%s) ]]; then
+      echo "Expired certificate: $sec (namespace: $ns, expiry date: $exp)"
     fi
   done
 done
 </code></pre></div>
 <p><strong>Local Machines</strong></p>
 <p>You can run the following command on your nodes to check for expiring certificates located on the host machine:</p>
-<div class="highlight"><pre><span></span><code>sudo find / -type f -name &quot;*.crt&quot; -exec sh -c &#39;
+<div class="highlight"><pre><span></span><code>sudo find / -type f -name "*.crt" -exec sh -c '
   for cert; do
-    exp=$(openssl x509 -in &quot;$cert&quot; -noout -enddate 2&gt;/dev/null | cut -d= -f2)
-    if [ -n &quot;$exp&quot; ] &amp;&amp; [ &quot;$(date -d &quot;$exp&quot; +%s)&quot; -lt &quot;$(date +%s)&quot; ]; then
-      echo &quot;Expired certificate: $cert (validity period: $exp)&quot;
+    exp=$(openssl x509 -in "$cert" -noout -enddate 2&gt;/dev/null | cut -d= -f2)
+    if [ -n "$exp" ] &amp;&amp; [ "$(date -d "$exp" +%s)" -lt "$(date +%s)" ]; then
+      echo "Expired certificate: $cert (validity period: $exp)"
     fi
   done
-&#39; sh {} + 2&gt;/dev/null
+' sh {} + 2&gt;/dev/null
 </code></pre></div>
 <p>If you want to check for certificates expiring within a certain time frame, for example by 30 days, you can increment the date like this: <code>-d +30 days</code>. Note that single quotes ( ' ) are not needed in this case.</p>
 <p>See the example below for reference.</p>
-<div class="highlight"><pre><span></span><code>sudo find / -type f -name &quot;*.crt&quot; -exec sh -c &#39;
+<div class="highlight"><pre><span></span><code>sudo find / -type f -name "*.crt" -exec sh -c '
   for cert; do
-    exp=$(openssl x509 -in &quot;$cert&quot; -noout -enddate 2&gt;/dev/null | cut -d= -f2)
-    if [ -n &quot;$exp&quot; ] &amp;&amp; [ &quot;$(date -d &quot;$exp&quot; +%s)&quot; -lt &quot;$(date -d +30 days +%s)&quot; ]; then 
-      echo &quot;Expired certificate: $cert (validity period: $exp)&quot;
+    exp=$(openssl x509 -in "$cert" -noout -enddate 2&gt;/dev/null | cut -d= -f2)
+    if [ -n "$exp" ] &amp;&amp; [ "$(date -d "$exp" +%s)" -lt "$(date -d +30 days +%s)" ]; then 
+      echo "Expired certificate: $cert (validity period: $exp)"
     fi
   done
-&#39; sh {} + 2&gt;/dev/null
+' sh {} + 2&gt;/dev/null
 </code></pre></div>
 
 

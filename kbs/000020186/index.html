@@ -15398,7 +15398,7 @@
             fallthrough in-addr.arpa ip6.arpa
           }
           prometheus :9153
-          forward . &quot;/etc/resolv.conf&quot; {
+          forward . "/etc/resolv.conf" {
             policy sequential
           }
           cache 30
@@ -15408,7 +15408,7 @@
       }
 </code></pre></div>
 <p>The lines of note here are the following, which are changed from just <code>forward . "/etc/resolv.conf"</code>.</p>
-<div class="highlight"><pre><span></span><code>          forward . &quot;/etc/resolv.conf&quot; {
+<div class="highlight"><pre><span></span><code>          forward . "/etc/resolv.conf" {
             policy sequential
           }
 </code></pre></div>

@@ -15322,10 +15322,10 @@
 <p>The relevant error message below may appear when running the helm upgrade command to upgrade Rancher.</p>
 <p><strong>Examples:</strong></p>
 <div class="highlight"><pre><span></span><code>helm upgrade rancher rancher-stable/rancher --namespace cattle-system  -f values.yaml --version=2.X.X
-Error: UPGRADE FAILED: unable to build kubernetes objects from current release manifest: resource mapping not found for name: &quot;rancher&quot; namespace: &quot;&quot; from &quot;&quot;: no matches for kind &quot;Issuer&quot; in version &quot;cert-manager.io/v1alpha2&quot;&quot; ensure CRDs are installed first
+Error: UPGRADE FAILED: unable to build kubernetes objects from current release manifest: resource mapping not found for name: "rancher" namespace: "" from "": no matches for kind "Issuer" in version "cert-manager.io/v1alpha2"" ensure CRDs are installed first
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>helm upgrade rancher rancher-stable/rancher --namespace cattle-system -f values.yaml   --version=2.X.X
-Error: UPGRADE FAILED: unable to build kubernetes objects from current release manifest: resource mapping not found for name: &quot;rancher&quot; namespace: &quot;&quot; from &quot;&quot;: no matches for kind &quot;Ingress&quot; in version &quot;networking.k8s.io/v1beta1&quot;
+Error: UPGRADE FAILED: unable to build kubernetes objects from current release manifest: resource mapping not found for name: "rancher" namespace: "" from "": no matches for kind "Ingress" in version "networking.k8s.io/v1beta1"
 </code></pre></div>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>The helm-mapkubeapis plugin can be used to restore your release to a working state. This plugin reads Helm release data and replaces superseded APIs with their new versions or removes resources that refer to APIs that were completely removed from Kubernetes. </p>
@@ -15336,7 +15336,7 @@ Error: UPGRADE FAILED: unable to build kubernetes objects from current release m
 <li>Ensure that Helm is installed by running `helm version`</li>
 </ol>
 <p>You should see an output similar to the following: </p>
-<div class="highlight"><pre><span></span><code>version.BuildInfo{Version:&quot;v3.10.2&quot;, GitCommit:&quot;50f003e5ee8704ec937a756c646870227d7c8b58&quot;, GitTreeState:&quot;clean&quot;, GoVersion:&quot;go1.18.8&quot;} 
+<div class="highlight"><pre><span></span><code>version.BuildInfo{Version:"v3.10.2", GitCommit:"50f003e5ee8704ec937a756c646870227d7c8b58", GitTreeState:"clean", GoVersion:"go1.18.8"} 
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 
 </code></pre></div>
@@ -15387,44 +15387,44 @@ Flags: 
 <p>Output should be similar to:</p>
 <p><div class="highlight"><pre><span></span><code>NOTE: This is in dry-run mode, the following actions will not be executed.
 Run without --dry-run to take the actions described below:
-Release &#39;rancher&#39; will be checked for deprecated or removed Kubernetes APIs and will be updated if necessary to supported API versions.
-Get release &#39;rancher&#39; latest version.
-Check release &#39;rancher&#39; for deprecated or removed APIs...
+Release 'rancher' will be checked for deprecated or removed Kubernetes APIs and will be updated if necessary to supported API versions.
+Get release 'rancher' latest version.
+Check release 'rancher' for deprecated or removed APIs...
 Found 1 instances of deprecated or removed Kubernetes API:
-&quot;apiVersion: networking.k8s.io/v1beta1
+"apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 NOTE: This is in dry-run mode, the following actions will not be executed.
 Run without --dry-run to take the actions described below:
-Release &#39;rancher&#39; will be checked for deprecated or removed Kubernetes APIs and will be updated if necessary to supported API versions.
-Get release &#39;rancher&#39; latest version.
-Check release &#39;rancher&#39; for deprecated or removed APIs...
+Release 'rancher' will be checked for deprecated or removed Kubernetes APIs and will be updated if necessary to supported API versions.
+Get release 'rancher' latest version.
+Check release 'rancher' for deprecated or removed APIs...
 Found 1 instances of deprecated or removed Kubernetes API:
-&quot;apiVersion: networking.k8s.io/v1beta1
+"apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 </code></pre></div>
 3. Perform a full run with helm:</p>
 <div class="highlight"><pre><span></span><code>helm mapkubeapis rancher --namespace cattle-system
 </code></pre></div>
 <p>Output should be similar to:</p>
-<div class="highlight"><pre><span></span><code>     Release &#39;rancher&#39; will be checked for deprecated or removed Kubernetes APIs and will be updated if necessary to supported API versions.
-Get release &#39;rancher&#39; latest version.
-Check release &#39;rancher&#39; for deprecated or removed APIs...
+<div class="highlight"><pre><span></span><code>     Release 'rancher' will be checked for deprecated or removed Kubernetes APIs and will be updated if necessary to supported API versions.
+Get release 'rancher' latest version.
+Check release 'rancher' for deprecated or removed APIs...
 Found 1 instances of deprecated or removed Kubernetes API:
-&quot;apiVersion: networking.k8s.io/v1beta1
+"apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
-&quot;
+"
 Supported API equivalent:
-&quot;apiVersion: networking.k8s.io/v1
+"apiVersion: networking.k8s.io/v1
 kind: Ingress
-&quot;
-Finished checking release &#39;rancher&#39; for deprecated or removed APIs.
+"
+Finished checking release 'rancher' for deprecated or removed APIs.
 Deprecated or removed APIs exist, updating release: rancher.
-Set status of release version &#39;rancher.v1&#39; to &#39;superseded&#39;.
-Release version &#39;rancher.v1&#39; updated successfully.
-Add release version &#39;rancher.v2&#39; with updated supported APIs.
-Release version &#39;rancher.v2&#39; added successfully.
-Release &#39;rancher&#39; with deprecated or removed APIs updated successfully to new version.
-Map of release &#39;rancher&#39; deprecated or removed APIs to supported versions, completed successfully.
+Set status of release version 'rancher.v1' to 'superseded'.
+Release version 'rancher.v1' updated successfully.
+Add release version 'rancher.v2' with updated supported APIs.
+Release version 'rancher.v2' added successfully.
+Release 'rancher' with deprecated or removed APIs updated successfully to new version.
+Map of release 'rancher' deprecated or removed APIs to supported versions, completed successfully.
 </code></pre></div>
 <p>Re-run the helm upgrade command after all deprecated or superseded APIs are removed.</p>
 

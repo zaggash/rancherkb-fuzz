@@ -15367,10 +15367,10 @@ Kubewarden-controller v3.1.0</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>After upgrading Kubewarden and running it on an RKE2 cluster managed by ArgoCD, the TLS certificate rotates, leading to 'unknown issuer' errors.</p>
 <p>At a certain point, ArgoCD detected a change and triggered a controller sync, resulting in the rotation of the secret certificate</p>
-<div class="highlight"><pre><span></span><code>{&quot;level&quot;:&quot;info&quot;,&quot;ts&quot;:&quot;2025-01-17T08:41:25Z&quot;,&quot;logger&quot;:&quot;controller-runtime.certwatcher&quot;,&quot;msg&quot;:&quot;Updated current TLS certificate&quot;}
+<div class="highlight"><pre><span></span><code>{"level":"info","ts":"2025-01-17T08:41:25Z","logger":"controller-runtime.certwatcher","msg":"Updated current TLS certificate"}
 </code></pre></div>
 <p>The kubewarden policy-server doesn't always recognize the certificate rotation, causing discrepancies between the certificate presented by the policy server and the one in the secret.</p>
-<div class="highlight"><pre><span></span><code>Post &quot;https://policy-server-default.kubewarden.svc:8443/validate/clusterwide-fs-group?timeout=30s&quot;: tls: failed to verify certificate: x509: certificate signed by unknown authority (possibly because of &quot;x509: ECDSA verification failure&quot; while trying to verify candidate authority certificate &quot;kubewarden-controller-ca&quot;)
+<div class="highlight"><pre><span></span><code>Post "https://policy-server-default.kubewarden.svc:8443/validate/clusterwide-fs-group?timeout=30s": tls: failed to verify certificate: x509: certificate signed by unknown authority (possibly because of "x509: ECDSA verification failure" while trying to verify candidate authority certificate "kubewarden-controller-ca")
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The issue is caused by dynamically generating certificates during the Helm chart runtime, which ArgoCD detects as changes, triggering a sync and certificate rotation.After deployment, ArgoCD renders the chart again for comparison, which generates new certificates. The comparison detects differences, making the application out-of-sync right away. If auto-sync with self-heal is enabled, ArgoCD forcefully syncs the chart every 24 hours when the rendered chart cache expires. This behaviour can be simulated at any time by performing a hard refresh of the application from the ArgoCD UI. Since the CA certificate changes, the cert-controller has to rotate the policy server certificate after some time, which eventually causes the issue</p>
@@ -15378,28 +15378,28 @@ Kubewarden-controller v3.1.0</p>
 <p>Modify the ArgoCD Application to include <code>ignoreDifferences</code> to prevent ArgoCD from detecting changes in the dynamically generated certificates.</p>
 <p>Add the following configurations to the ArgoCD application, adjusting the namespace as necessary:</p>
 <div class="highlight"><pre><span></span><code>  ignoreDifferences:
-    - group: &quot;&quot;
+    - group: ""
       kind: Secret
       name: kubewarden-ca
       namespace: kubewarden-system
       jsonPointers:
-        - &quot;/data&quot;
-    - group: &quot;&quot;
+        - "/data"
+    - group: ""
       kind: Secret
       name: kubewarden-webhook-server-cert
       namespace: kubewarden-system
       jsonPointers:
-        - &quot;/data&quot;
-    - group: &#39;admissionregistration.k8s.io&#39;
-      kind: &#39;ValidatingWebhookConfiguration&#39;
-      name: &#39;kubewarden-controller-validating-webhook-configuration&#39;
+        - "/data"
+    - group: 'admissionregistration.k8s.io'
+      kind: 'ValidatingWebhookConfiguration'
+      name: 'kubewarden-controller-validating-webhook-configuration'
       jqPathExpressions:
-        - &#39;.webhooks[]?.clientConfig.caBundle&#39;
-    - group: &#39;admissionregistration.k8s.io&#39;
-      kind: &#39;MutatingWebhookConfiguration&#39;
-      name: &#39;kubewarden-controller-mutating-webhook-configuration&#39;
+        - '.webhooks[]?.clientConfig.caBundle'
+    - group: 'admissionregistration.k8s.io'
+      kind: 'MutatingWebhookConfiguration'
+      name: 'kubewarden-controller-mutating-webhook-configuration'
       jqPathExpressions:
-        - &#39;.webhooks[]?.clientConfig.caBundle&#39;
+        - '.webhooks[]?.clientConfig.caBundle'
 </code></pre></div>
 <p>Restart the policy server after applying the <code>ignoreDifferences</code> configuration to ensure it picks up the new certificate.</p>
 

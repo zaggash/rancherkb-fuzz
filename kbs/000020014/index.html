@@ -15460,10 +15460,10 @@
 <h2 id="review-request-times">Review request times</h2>
 <p>To narrow down on which requests are taking the longest, analyzing the ingress-nginx logs is very helpful.</p>
 <p>Retrieve requests with a high (&gt;2s) <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/log-format/"><code>upstream_response_time</code></a>. This log field represents the time taken for the response from the upstream target - the pod endpoint in the service.</p>
-<div class="highlight"><pre><span></span><code>kubectl logs -n ingress-nginx -l app=ingress-nginx -f --tail=2000 | awk &#39;/- -/ &amp;&amp; $(NF-2)&gt;2.0&#39;
+<div class="highlight"><pre><span></span><code>kubectl logs -n ingress-nginx -l app=ingress-nginx -f --tail=2000 | awk '/- -/ &amp;&amp; $(NF-2)&gt;2.0'
 </code></pre></div>
 <p>The same can be done for <code>request_time</code>, this represents the time taken to complete the entire request, including the above <code>upstream_response_time</code>.</p>
-<div class="highlight"><pre><span></span><code>kubectl logs -n ingress-nginx -l app=ingress-nginx -f --tail=2000 | awk &#39;/- -/ &amp;&amp; $(NF-7)&gt;2.0&#39;
+<div class="highlight"><pre><span></span><code>kubectl logs -n ingress-nginx -l app=ingress-nginx -f --tail=2000 | awk '/- -/ &amp;&amp; $(NF-7)&gt;2.0'
 </code></pre></div>
 <p>Please adjust the time to suit, where <code>&gt;2.0</code> will filter for any times greater than 2.0 seconds.</p>
 <p>Comparing the diference in timings between <code>request_time</code> and <code>upstream_response_time</code> can help to understand the issue further:</p>
@@ -15488,12 +15488,12 @@
 <h2 id="check-ingress-nginx-logs">Check ingress-nginx logs</h2>
 <p>With the focus previously on requests themselves, it is also useful to exclude the access logs and ensure there are no fundamental issues with ingress-nginx.</p>
 <p>The following command should exclude all access.log output, retrieving output from the ingress controller and the nginx error.log only.</p>
-<div class="highlight"><pre><span></span><code>kubectl logs -n ingress-nginx -l app=ingress-nginx -f --tail=100 | awk &#39;!/- -/&#39;
+<div class="highlight"><pre><span></span><code>kubectl logs -n ingress-nginx -l app=ingress-nginx -f --tail=100 | awk '!/- -/'
 </code></pre></div>
 <p>Please adjust the <code>--tail</code> flag as needed, this example retrieves the last 100 lines from each ingress-nginx pod.</p>
 <h2 id="real-time-view-of-all-requests">Real-time view of all requests</h2>
 <p>Another option to get a broader overview is using a tool like <a href="https://goaccess.io/">goaccess</a>. After <a href="https://goaccess.io/download#installation">installing the package</a>, the below can be used to feed ingress-nginx logs to goaccess to get a real-time view of the logs.</p>
-<div class="highlight"><pre><span></span><code>kubectl logs -f -n ingress-nginx -l app=ingress-nginx --tail=2000 | goaccess --log-format=&quot;%h - - [%d:%t] \&quot;%m %r %H\&quot; %s %b \&quot;%R\&quot; \&quot;%u\&quot; %^ %T [%v]&quot; --time-format &#39;%H:%M:%S %z&#39; --date-format &quot;%d/%b/%Y&quot;
+<div class="highlight"><pre><span></span><code>kubectl logs -f -n ingress-nginx -l app=ingress-nginx --tail=2000 | goaccess --log-format="%h - - [%d:%t] \"%m %r %H\" %s %b \"%R\" \"%u\" %^ %T [%v]" --time-format '%H:%M:%S %z' --date-format "%d/%b/%Y"
 </code></pre></div>
 <p>Please adjust the history of logs with the <code>--tail</code> flag.</p>
 <h2 id="measure-requests-to-ingress-nginx">Measure requests to ingress-nginx</h2>

@@ -15352,18 +15352,18 @@
 
 Note :  Make sure to replace the ca.pem certificate in the above command
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>B)  Go to Rancher UI -&gt; select the downstream cluster -&gt;  edit the rancher-repo and  &quot;Edit YAML&quot; and add the resulting value from above steps, in &#39;caBundle&#39; section below : 
+<div class="highlight"><pre><span></span><code>B)  Go to Rancher UI -&gt; select the downstream cluster -&gt;  edit the rancher-repo and  "Edit YAML" and add the resulting value from above steps, in 'caBundle' section below : 
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>spec:
-  forceUpdate: &quot;&quot;
+  forceUpdate: ""
   url: https://[url]
-  caBundle: &quot;&lt;add_value_here&gt;&quot;
+  caBundle: "&lt;add_value_here&gt;"
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>C) (Optional) If you do not want to add the custom CA and want to ingore/bypass the error, then add &#39;insecureSkipTLSVerify:true&#39; flag in the clusterepo specification like below : 
+<div class="highlight"><pre><span></span><code>C) (Optional) If you do not want to add the custom CA and want to ingore/bypass the error, then add 'insecureSkipTLSVerify:true' flag in the clusterepo specification like below : 
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>spec:
   clientSecret: null
-  forceUpdate: &quot;2023-08-10T05:42:22Z&quot;
+  forceUpdate: "2023-08-10T05:42:22Z"
   insecureSkipTLSVerify: true              &lt;&lt; Note here 
   url: &lt;URL&gt;
 </code></pre></div>

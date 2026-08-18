@@ -15446,24 +15446,24 @@
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <h2 id="1-identify-the-user-agents-that-will-be-blocked">1. Identify the user agents that will be blocked.</h2>
 <p>There are multiple ways to surface user agents needing to be blocked, the most practical being your nginx ingress controllers' logs. In the logs one would see something similar to the following entries:</p>
-<div class="highlight"><pre><span></span><code>172.16.10.101 - - [02/Jan/2021:21:51:22 +0000] &quot;GET / HTTP/1.1&quot; 200 45 &quot;-&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0&quot; 367 0.001 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 45 0.000 200 1da439122bd7d7014f6627f32e4cefc3
-172.16.10.101 - - [02/Jan/2021:21:51:22 +0000] &quot;GET /favicon.ico HTTP/1.1&quot; 499 0 &quot;http://test.default.54.202.152.214.xip.io/&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0&quot; 341 0.001 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 0 0.000 - 92a1e851206da86fbec0610d346e2ddd
-172.16.10.101 - - [02/Jan/2021:21:51:26 +0000] &quot;GET / HTTP/1.1&quot; 200 45 &quot;-&quot; &quot;curl/7.64.1&quot; 98 0.000 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 45 0.000 200 4c51046660b05cf2703dbedfae2272aa
-172.16.10.101 - - [02/Jan/2021:21:51:29 +0000] &quot;GET / HTTP/1.1&quot; 200 45 &quot;-&quot; &quot;Wget/1.20.3 (darwin19.0.0)&quot; 164 0.001 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 45 0.000 200 5334e799b3268dab31d74a5d2239702b
+<div class="highlight"><pre><span></span><code>172.16.10.101 - - [02/Jan/2021:21:51:22 +0000] "GET / HTTP/1.1" 200 45 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0" 367 0.001 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 45 0.000 200 1da439122bd7d7014f6627f32e4cefc3
+172.16.10.101 - - [02/Jan/2021:21:51:22 +0000] "GET /favicon.ico HTTP/1.1" 499 0 "http://test.default.54.202.152.214.xip.io/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0" 341 0.001 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 0 0.000 - 92a1e851206da86fbec0610d346e2ddd
+172.16.10.101 - - [02/Jan/2021:21:51:26 +0000] "GET / HTTP/1.1" 200 45 "-" "curl/7.64.1" 98 0.000 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 45 0.000 200 4c51046660b05cf2703dbedfae2272aa
+172.16.10.101 - - [02/Jan/2021:21:51:29 +0000] "GET / HTTP/1.1" 200 45 "-" "Wget/1.20.3 (darwin19.0.0)" 164 0.001 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 45 0.000 200 5334e799b3268dab31d74a5d2239702b
 </code></pre></div>
 <p>We can see three unique user agents here; <code>curl</code>, <code>Wget</code>, and <code>Mozilla/5.0</code>.</p>
 <h2 id="2-modify-the-clusteryaml-to-include-the-nginx-option-to-block-user-agents">2. Modify the cluster.yaml to include the Nginx option to block user agents</h2>
 <p>In the example configuration, we'll block connections from curl and Mozilla using regular expressions. It's essential to separate the list of agents we're looking to restrict with commas.</p>
 <div class="highlight"><pre><span></span><code>  ingress:
     options:
-      block-user-agents: &#39;~*curl.*,~*Mozilla.*&#39;
+      block-user-agents: '~*curl.*,~*Mozilla.*'
     provider: nginx
 </code></pre></div>
 <h2 id="3-test-the-configuration">3. Test the configuration</h2>
 <p>Navigating to the workload or service behind the ingress now blocks the agents blacklisted.</p>
-<div class="highlight"><pre><span></span><code>172.16.10.101 - - [02/Jan/2021:22:23:00 +0000] &quot;GET / HTTP/1.1&quot; 200 45 &quot;-&quot; &quot;Wget/1.20.3 (darwin19.0.0)&quot; 164 0.000 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 45 0.004 200 df2b5c3fca1ba33683e8ee6d2708b214
-172.16.10.101 - - [02/Jan/2021:22:23:05 +0000] &quot;GET / HTTP/1.1&quot; 403 153 &quot;-&quot; &quot;curl/7.64.1&quot; 98 0.000 [] [] - - - - 1902bca1f3622bf5374f966358b10463
-172.16.10.101 - - [02/Jan/2021:22:31:56 +0000] &quot;GET / HTTP/1.1&quot; 403 153 &quot;-&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0&quot; 478 0.001 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 0 0.004 304 9e0df037eaea1afedc5d3c93229dca80
+<div class="highlight"><pre><span></span><code>172.16.10.101 - - [02/Jan/2021:22:23:00 +0000] "GET / HTTP/1.1" 200 45 "-" "Wget/1.20.3 (darwin19.0.0)" 164 0.000 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 45 0.004 200 df2b5c3fca1ba33683e8ee6d2708b214
+172.16.10.101 - - [02/Jan/2021:22:23:05 +0000] "GET / HTTP/1.1" 403 153 "-" "curl/7.64.1" 98 0.000 [] [] - - - - 1902bca1f3622bf5374f966358b10463
+172.16.10.101 - - [02/Jan/2021:22:31:56 +0000] "GET / HTTP/1.1" 403 153 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0" 478 0.001 [default-ingress-1db0bf370dd59aa8ff284a4bd4ccdc07-80] [] 10.42.0.10:80 0 0.004 304 9e0df037eaea1afedc5d3c93229dca80
 </code></pre></div>
 
 

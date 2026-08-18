@@ -15718,8 +15718,8 @@ Choose a name for your new Pod Security Admission Configuration and the rules yo
 <p>Verify that other workloads you have in your cluster have also been migrated from PodSecurityPolicies to Pod Security Admission and Standards. You can check which PodSecurityPolicies still exist in your cluster by running kubectl get podsecuritypolicies. Note that the presence of a PodSecurityPolicy resource in a cluster does not mean that there are workloads using it.</p>
 <p>To check which PodSecurityPolicies are still in use, you can run the command below. Be aware that this strategy may miss workloads that are not currently running, such as CronJobs, workloads that are currently scaled to zero or other workloads that have not rolled out: </p>
 <div class="highlight"><pre><span></span><code>kubectl get pods --all-namespaces \ 
-  --output jsonpath=&quot;{.items[*].metadata.annotations.kubernetes\.io\/psp}&quot; \ 
-  | tr &quot; &quot; &quot;\n&quot; | sort -u 
+  --output jsonpath="{.items[*].metadata.annotations.kubernetes\.io\/psp}" \ 
+  | tr " " "\n" | sort -u 
 </code></pre></div>
 <p>To learn more about this strategy for checking for PodSecurityPolicies in use, see section <a href="https://kubernetes.io/docs/tasks/configure-pod-container/migrate-from-psp/#identify-appropriate-level">3.a. Identify an appropriate Pod Security level</a> of the PodSecurityPolicy migration documentation for Kubernetes. </p>
 <h2 id="upgrade-your-cluster-to-kubernetes-v125">Upgrade your cluster to Kubernetes v1.25</h2>
@@ -15748,7 +15748,7 @@ Choose a name for your new Pod Security Admission Configuration and the rules yo
 <ol>
 <li>In your terminal of choice, make sure that Helm is installed by running helm version. You should see an output similar to the following: </li>
 </ol>
-<div class="highlight"><pre><span></span><code>version.BuildInfo{Version:&quot;v3.10.2&quot;, GitCommit:&quot;50f003e5ee8704ec937a756c646870227d7c8b58&quot;, GitTreeState:&quot;clean&quot;, GoVersion:&quot;go1.18.8&quot;} 
+<div class="highlight"><pre><span></span><code>version.BuildInfo{Version:"v3.10.2", GitCommit:"50f003e5ee8704ec937a756c646870227d7c8b58", GitTreeState:"clean", GoVersion:"go1.18.8"} 
 </code></pre></div>
 <!--THE END-->
 

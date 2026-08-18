@@ -15343,7 +15343,7 @@
 <p>Rancher-logging chart in RKE/RKE2,  is installed and configured to send logs to Splunk</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>Getting the following error in fluentd logs:</p>
-<div class="highlight"><pre><span></span><code>#0 [clusterflow:cattle-logging-system:testflow:clusteroutput:cattle-logging-system:testoutput] Fluent::Plugin::SplunkHecOutput: Failed POST to https://X.X.X.X:8088/services/collector, response: {&quot;text&quot;:&quot;Token disabled&quot;,&quot;code&quot;:1}
+<div class="highlight"><pre><span></span><code>#0 [clusterflow:cattle-logging-system:testflow:clusteroutput:cattle-logging-system:testoutput] Fluent::Plugin::SplunkHecOutput: Failed POST to https://X.X.X.X:8088/services/collector, response: {"text":"Token disabled","code":1}
 </code></pre></div>
 <p>Note: fluentd does not log to stdout, but instead to /fluentd/log/out within the container's filesystem.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>

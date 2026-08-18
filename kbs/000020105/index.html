@@ -16196,7 +16196,7 @@ Using the following commands on each cluster, check and confirm for any unexpect
 <ul>
 <li>Check for any unexpected pods running on server nodes:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>for n in $(kubectl get nodes -l node-role.kubernetes.io/master=true --no-headers | cut -d &quot; &quot; -f1)
+<div class="highlight"><pre><span></span><code>for n in $(kubectl get nodes -l node-role.kubernetes.io/master=true --no-headers | cut -d " " -f1)
   do
     kubectl get nodes --field-selector metadata.name=${n} --no-headers
     kubectl get pods --all-namespaces -o wide --field-selector spec.nodeName=${n}; echo
@@ -16208,7 +16208,7 @@ done
 <ul>
 <li>Check for any unexpected pods running on etcd nodes:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>for n in $(kubectl get nodes -l node-role.kubernetes.io/etcd=true --no-headers | cut -d &quot; &quot; -f1)
+<div class="highlight"><pre><span></span><code>for n in $(kubectl get nodes -l node-role.kubernetes.io/etcd=true --no-headers | cut -d " " -f1)
   do
     kubectl get nodes --field-selector metadata.name=${n} --no-headers
     kubectl get pods --all-namespaces -o wide --field-selector spec.nodeName=${n}; echo
@@ -16217,7 +16217,7 @@ done
 <ul>
 <li>Check for any unexpected pods running on control plane nodes:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>for n in $(kubectl get nodes -l node-role.kubernetes.io/controlplane=true --no-headers | cut -d &quot; &quot; -f1)
+<div class="highlight"><pre><span></span><code>for n in $(kubectl get nodes -l node-role.kubernetes.io/controlplane=true --no-headers | cut -d " " -f1)
   do
     kubectl get nodes --field-selector metadata.name=${n} --no-headers
     kubectl get pods --all-namespaces -o wide --field-selector spec.nodeName=${n}; echo
@@ -16294,7 +16294,7 @@ done
 <li><a href="https://www.ibm.com/cloud/blog/using-fio-to-tell-whether-your-storage-is-fast-enough-for-etcd">A benchmark tool like <code>fio</code></a> can be used to accurately test the underlying disk for fsync latency. Alternatively, a basic self-test can be run on RKE and RKE2 with the respective commands below:</li>
 </ul>
 <h5 id="rke">RKE</h5>
-<div class="highlight"><pre><span></span><code>docker exec -e ETCDCTL_ENDPOINTS=$(docker exec etcd etcdctl member list | cut -d, -f5 | sed -e &#39;s/ //g&#39; | paste -sd &#39;,&#39;) etcd etcdctl check perf
+<div class="highlight"><pre><span></span><code>docker exec -e ETCDCTL_ENDPOINTS=$(docker exec etcd etcdctl member list | cut -d, -f5 | sed -e 's/ //g' | paste -sd ',') etcd etcdctl check perf
 </code></pre></div>
 <h5 id="rke2">RKE2</h5>
 <div class="highlight"><pre><span></span><code>export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml

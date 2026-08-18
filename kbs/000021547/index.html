@@ -15448,7 +15448,7 @@ spec:
     matchExpressions:
     - key: k8s-app
       operator: In
-      values: [ &quot;calico-felix&quot;, &quot;calico-typha&quot;,&quot;calico-kube-controllers&quot; ]
+      values: [ "calico-felix", "calico-typha","calico-kube-controllers" ]
 </code></pre></div>
 <p>After both the Service and ServiceMonitors are applied, the target will appear in Prometheus, and the metrics will be scraped. Be aware that it might take a minute for Prometheus to see the new target and scrape the metrics.</p>
 

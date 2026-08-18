@@ -15365,7 +15365,7 @@
 <p>Rancher-logging is installed and configured with Kafka as an output</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>A Clusterflow and an Outpuut or ClusterOutput for rancher-logging are configured to send logs to a Kafka server, fluentd is failing with the following error:</p>
-<div class="highlight"><pre><span></span><code>[error]: fluent/log.rb:372:error: unexpected error error_class=OpenSSL::PKey::PKeyError error=&quot;Could not parse PKey: no start line&quot;
+<div class="highlight"><pre><span></span><code>[error]: fluent/log.rb:372:error: unexpected error error_class=OpenSSL::PKey::PKeyError error="Could not parse PKey: no start line"
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>Invalid client certificate/key is configured on the Output or ClusterOutput for Kafka, while the client certificate secret name is kept blank</p>
@@ -15382,7 +15382,7 @@
     ssl_client_cert_chain:
       mountFrom:
         secretKeyRef:
-          key: &#39;&#39;
+          key: ''
     ssl_client_cert_key:
       mountFrom:
         secretKeyRef:

@@ -15497,21 +15497,21 @@
 <li>Send a POST request to the <code>/v3/clusters</code> API endpoint of your Rancher server:</li>
 </ol>
 <p>To create a cluster with the default cluster configuration:</p>
-<div class="highlight"><pre><span></span><code>curl -u &quot;${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot; \
+<div class="highlight"><pre><span></span><code>curl -u "${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}" \
 -X POST \
--H &#39;Accept: application/json&#39; \
--H &#39;Content-Type: application/json&#39; \
--d &#39;{&quot;name&quot;:&quot;test-cluster&quot;}&#39; \
-&#39;https://&lt;rancher_server&gt;/v3/clusters&#39;
+-H 'Accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{"name":"test-cluster"}' \
+'https://&lt;rancher_server&gt;/v3/clusters'
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>If you are passing in an RKE cluster config file, do so as follows:
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>curl -u &quot;${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}&quot; \
+<div class="highlight"><pre><span></span><code>curl -u "${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}" \
 -X POST \
--H &#39;Accept: application/json&#39; \
--H &#39;Content-Type: application/json&#39; \
+-H 'Accept: application/json' \
+-H 'Content-Type: application/json' \
 -d @&lt;rke_config_file&gt; \
-&#39;https://&lt;rancher_server&gt;/v3/clusters&#39;
+'https://&lt;rancher_server&gt;/v3/clusters'
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 
 </code></pre></div>

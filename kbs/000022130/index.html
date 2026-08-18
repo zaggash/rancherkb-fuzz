@@ -15534,33 +15534,33 @@ Lexicographical sort creates new ordered list:
 <p>Expected: Create one new NEW-POOL pool without modifying control or worker.</p>
 <h2 id="example-terraform-plan-snippet-illustrative">Example Terraform plan snippet (illustrative)</h2>
 <div class="highlight"><pre><span></span><code># rancher2_cluster_v2.cluster_rke2 will be updated in-place
-~ resource &quot;rancher2_cluster_v2&quot; &quot;cluster_rke2&quot; {
+~ resource "rancher2_cluster_v2" "cluster_rke2" {
 ~ rke_config {
-# Index [0]: Existing &quot;control&quot; pool → incorrectly changed to &quot;NEW-POOL&quot;
+# Index [0]: Existing "control" pool → incorrectly changed to "NEW-POOL"
 ~ machine_pools {
-~ name = &quot;control&quot; -&gt; &quot;NEW-POOL&quot;
+~ name = "control" -&gt; "NEW-POOL"
 ~ control_plane_role = true -&gt; false
 ~ etcd_role = true -&gt; false
 ~ worker_role = false -&gt; true
 ~ quantity = 3 -&gt; 1
 ~ machine_labels = {
-~ &quot;nodepool&quot; = &quot;control&quot; -&gt; &quot;worker&quot;
+~ "nodepool" = "control" -&gt; "worker"
 }
 }
-# Index [1]: Existing &quot;worker&quot; pool → incorrectly changed to &quot;control&quot;
+# Index [1]: Existing "worker" pool → incorrectly changed to "control"
 ~ machine_pools {
-~ name = &quot;worker&quot; -&gt; &quot;control&quot;
+~ name = "worker" -&gt; "control"
 ~ control_plane_role = false -&gt; true
 ~ etcd_role = false -&gt; true
 ~ worker_role = true -&gt; false
 ~ quantity = 2 -&gt; 3
 ~ machine_labels = {
-~ &quot;nodepool&quot; = &quot;worker&quot; -&gt; &quot;control&quot;
+~ "nodepool" = "worker" -&gt; "control"
 }
 }
-# Index [2]: New pool created as &quot;worker&quot; (expected &quot;NEW-POOL&quot;)
+# Index [2]: New pool created as "worker" (expected "NEW-POOL")
 + machine_pools {
-+ name = &quot;worker&quot;
++ name = "worker"
 + control_plane_role = false
 + worker_role = true
 + quantity = 2

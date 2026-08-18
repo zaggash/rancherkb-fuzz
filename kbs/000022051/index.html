@@ -15365,10 +15365,10 @@
 <p>Rancher, RKE2, SUSE Application Collection,Helm, OCI chart repository</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>When attempting to automate the deployment of SUSE Application Collection products using the Rancher API object "HelmChart," the deployment fails. The user has configured the Repository Suse App Collection with a Suse service account and is trying to use a HelmChart YAML file to deploy applications. The initial attempt with the oci// scheme fails, indicating that the scheme is not supported. </p>
-<div class="highlight"><pre><span></span><code>Error: looks like &quot;oci://dp.apps.rancher.io/charts&quot; is not a valid chart repository or cannot be reached: failed to perform &quot;FetchReference&quot; on source: invalid reference
+<div class="highlight"><pre><span></span><code>Error: looks like "oci://dp.apps.rancher.io/charts" is not a valid chart repository or cannot be reached: failed to perform "FetchReference" on source: invalid reference
 </code></pre></div>
 <p>Switching to https results in a 401 Unauthorized error. </p>
-<div class="highlight"><pre><span></span><code>Error: looks like &quot;https://dp.apps.rancher.io/charts&quot; is not a valid chart repository or cannot be reached: failed to fetch https://dp.apps.rancher.io/charts/index.yaml : 401 Unauthorized
+<div class="highlight"><pre><span></span><code>Error: looks like "https://dp.apps.rancher.io/charts" is not a valid chart repository or cannot be reached: failed to fetch https://dp.apps.rancher.io/charts/index.yaml : 401 Unauthorized
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The primary cause of the issue is the incorrect configuration of the HelmChart YAML file for deploying applications from the SUSE Application Collection.</p>

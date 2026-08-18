@@ -15370,8 +15370,8 @@
 <div class="highlight"><pre><span></span><code> meshConfig:
     defaultConfig:
       proxyMetadata:
-        ISTIO_META_DNS_CAPTURE: &quot;true&quot;
-        ISTIO_META_DNS_AUTO_ALLOCATE: &quot;true&quot;
+        ISTIO_META_DNS_CAPTURE: "true"
+        ISTIO_META_DNS_AUTO_ALLOCATE: "true"
 </code></pre></div>
 <ul>
 <li>When accessing services, DNS resolves incorrectly, sometimes pointing to another service’s IP or port. This happens particularly when multiple ServiceEntries use the same domain but different ports.</li>
@@ -15379,10 +15379,10 @@
 </ul>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>In rancher-istio v1.26, an upstream change causes each ServiceEntry with the same domain to receive its own VIP, resulting in DNS resolution conflicts.</p>
-<div class="highlight"><pre><span></span><code># kubectl get se local-ssh   -o yaml | yq &#39;.status.addresses&#39;
+<div class="highlight"><pre><span></span><code># kubectl get se local-ssh   -o yaml | yq '.status.addresses'
 - host: sshhttps.test
   value: 240.240.0.5
-# kubectl get se local-https   -o yaml | yq &#39;.status.addresses&#39;
+# kubectl get se local-https   -o yaml | yq '.status.addresses'
 - host: sshhttps.test
   value: 240.240.0.4
 </code></pre></div>
@@ -15394,7 +15394,7 @@ kind: ServiceEntry
 metadata:
   name: local
 spec:
-  hosts: [&quot;sshhttps.test&quot;]
+  hosts: ["sshhttps.test"]
   location: MESH_EXTERNAL
   resolution: DNS
   ports:
@@ -15411,7 +15411,7 @@ kind: ServiceEntry
 metadata:
   name: local-https
 spec:
-  hosts: [&quot;dummy.local&quot;]
+  hosts: ["dummy.local"]
   addresses:
     - 240.240.0.5
   location: MESH_EXTERNAL
@@ -15426,7 +15426,7 @@ kind: ServiceEntry
 metadata:
   name: local-ssh
 spec:
-  hosts: [&quot;dummy.local&quot;]
+  hosts: ["dummy.local"]
   addresses:
     - 240.240.0.5
   location: MESH_EXTERNAL

@@ -15365,7 +15365,7 @@
 <p>RKE2 &lt;v1.25.15, &lt;1.26.10, &lt;1.27.7 and &lt;1.28.3</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>At some point snapshots may start failing to complete. Viewing the logs in <code>rke2-server.service</code> should show:</p>
-<div class="highlight"><pre><span></span><code>level=error msg=&quot;failed to save local snapshot data to configmap: ConfigMap \&quot;rke2-etcd-snapshots\&quot; is invalid: []: Too long: must have at most 1048576 bytes&quot;
+<div class="highlight"><pre><span></span><code>level=error msg="failed to save local snapshot data to configmap: ConfigMap \"rke2-etcd-snapshots\" is invalid: []: Too long: must have at most 1048576 bytes"
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>If the number of etcd nodes and snapshot retention count is too high, the rke2-etcd-snapshots configmap will grow too large and eventually the rke2-server process will be unable to save the configmap as it has grown over 1MB.</p>

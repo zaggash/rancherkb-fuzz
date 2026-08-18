@@ -15348,24 +15348,24 @@
 <p>For example, to inject cluster name, open the Monitoring App in Apps from Cluster explorer. Under "Edit as YAML", add the custom label as below:</p>
 <div class="highlight"><pre><span></span><code>defaultRules:
   additionalRuleLabels:
-    cluster: &quot;My_Test_cluster&quot;
+    cluster: "My_Test_cluster"
 </code></pre></div>
 <p>Then click on "Deploy" or "Upgrade" if App is already installed.</p>
 <p>If your receiver is webhook, then the alerts will have the custom labels as shown in the below example alert.</p>
 <div class="highlight"><pre><span></span><code>...
 ...
-status&quot;:&quot;firing&quot;,
-&quot;labels&quot;:{
-  &quot;alertname&quot;:&quot;NodeClockNotSynchronising&quot;,
-  &quot;cluster&quot;:&quot;My_Test_cluster&quot;, &lt;&lt;&lt;------
-  &quot;container&quot;:&quot;node-exporter&quot;,
-  &quot;endpoint&quot;:&quot;metrics&quot;,
-  &quot;instance&quot;:&quot;192.168.110.157:9796&quot;,
-  &quot;job&quot;:&quot;node-exporter&quot;,
-  &quot;namespace&quot;:&quot;cattle-monitoring-system&quot;,
-  &quot;pod&quot;:&quot;rancher-monitoring-prometheus-node-exporter-lg2g6&quot;,
-  &quot;prometheus&quot;:&quot;cattle-monitoring-system/rancher-monitoring-prometheus&quot;,
-  &quot;service&quot;:&quot;rancher-monitoring-prometheus-node-exporter&quot;,
+status":"firing",
+"labels":{
+  "alertname":"NodeClockNotSynchronising",
+  "cluster":"My_Test_cluster", &lt;&lt;&lt;------
+  "container":"node-exporter",
+  "endpoint":"metrics",
+  "instance":"192.168.110.157:9796",
+  "job":"node-exporter",
+  "namespace":"cattle-monitoring-system",
+  "pod":"rancher-monitoring-prometheus-node-exporter-lg2g6",
+  "prometheus":"cattle-monitoring-system/rancher-monitoring-prometheus",
+  "service":"rancher-monitoring-prometheus-node-exporter",
 ...
 ...
 </code></pre></div>

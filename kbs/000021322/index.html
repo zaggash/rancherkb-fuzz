@@ -15356,7 +15356,7 @@
     extra_args:
       config: /etc/kubernetes/kubeletconfig.yml
     extra_binds:
-      - &quot;/etc/kubernetes/kubeletconfig.yml:/etc/kubernetes/kubeletconfig.yml&quot;
+      - "/etc/kubernetes/kubeletconfig.yml:/etc/kubernetes/kubeletconfig.yml"
 [...]
 </code></pre></div>
 <p>For standalone RKE clusters, define these in the <a href="https://rke.docs.rancher.com/config-options">cluster.yml file</a>, and invoke <code>rke up</code> to apply the changes.</p>

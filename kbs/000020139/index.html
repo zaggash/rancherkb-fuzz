@@ -15412,7 +15412,7 @@ This kubeconfig defines the authentication details to access and interact with y
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>--kubeconfig<span class="w"> </span>/custom/path/rke/kube_config_cluster.yml<span class="w"> </span>get<span class="w"> </span>pods
 </code></pre></div>
 <p>Or you can export the config path into the KUBECONFIG environment variable, removing the requirement to specify the --kubeconfig flag each time you run kubectl:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">KUBECONFIG</span><span class="o">=</span><span class="s2">&quot;/custom/path/rke/kube_config_cluster.yml&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">KUBECONFIG</span><span class="o">=</span><span class="s2">"/custom/path/rke/kube_config_cluster.yml"</span>
 </code></pre></div>
 <h4 id="further-reading">Further Reading</h4>
 <ul>

@@ -15450,72 +15450,72 @@
 <p>For RKE binary versions &lt; 1.4.19 , 1.5.10 or 1.6.0: </p>
 <p>On RKE versions prior to 1.4.19, 1.5.10 or 1.6.10, the Kubernetes Cluster state file (cluster.rkestate) and cluster.yml files are stored as a configmap, under the kube-system namespace.</p>
 <div class="highlight"><pre><span></span><code>#!/bin/bash
-echo &quot;Building cluster_recovery.yml...&quot;
-echo &quot;Working on Nodes...&quot;
-echo &#39;nodes:&#39; &gt; cluster_recovery.yml
-kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | jq -r .desiredState.rkeConfig.nodes | yq -P | sed &#39;s/^/  /&#39; | \
-sed -e &#39;s/internalAddress/internal_address/g&#39; | \
-sed -e &#39;s/hostnameOverride/hostname_override/g&#39; | \
-sed -e &#39;s/sshKeyPath/ssh_key_path/g&#39; &gt;&gt; cluster_recovery.yml
-echo &quot;&quot; &gt;&gt; cluster_recovery.yml
+echo "Building cluster_recovery.yml..."
+echo "Working on Nodes..."
+echo 'nodes:' &gt; cluster_recovery.yml
+kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | jq -r .desiredState.rkeConfig.nodes | yq -P | sed 's/^/  /' | \
+sed -e 's/internalAddress/internal_address/g' | \
+sed -e 's/hostnameOverride/hostname_override/g' | \
+sed -e 's/sshKeyPath/ssh_key_path/g' &gt;&gt; cluster_recovery.yml
+echo "" &gt;&gt; cluster_recovery.yml
 
-echo &quot;Working on services...&quot;
-echo &#39;services:&#39; &gt;&gt; cluster_recovery.yml
-kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | jq -r .desiredState.rkeConfig.services | yq -P | sed &#39;s/^/  /&#39; &gt;&gt; cluster_recovery.yml
-echo &quot;&quot; &gt;&gt; cluster_recovery.yml
+echo "Working on services..."
+echo 'services:' &gt;&gt; cluster_recovery.yml
+kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | jq -r .desiredState.rkeConfig.services | yq -P | sed 's/^/  /' &gt;&gt; cluster_recovery.yml
+echo "" &gt;&gt; cluster_recovery.yml
 
-echo &quot;Working on network...&quot;
-echo &#39;network:&#39; &gt;&gt; cluster_recovery.yml
-kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | jq -r .desiredState.rkeConfig.network | yq -P | sed &#39;s/^/  /&#39; &gt;&gt; cluster_recovery.yml
-echo &quot;&quot; &gt;&gt; cluster_recovery.yml
+echo "Working on network..."
+echo 'network:' &gt;&gt; cluster_recovery.yml
+kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | jq -r .desiredState.rkeConfig.network | yq -P | sed 's/^/  /' &gt;&gt; cluster_recovery.yml
+echo "" &gt;&gt; cluster_recovery.yml
 
-echo &quot;Working on authentication...&quot;
-echo &#39;authentication:&#39; &gt;&gt; cluster_recovery.yml
-kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | jq -r .desiredState.rkeConfig.authentication | yq -P | sed &#39;s/^/  /&#39; &gt;&gt; cluster_recovery.yml
-echo &quot;&quot; &gt;&gt; cluster_recovery.yml
+echo "Working on authentication..."
+echo 'authentication:' &gt;&gt; cluster_recovery.yml
+kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | jq -r .desiredState.rkeConfig.authentication | yq -P | sed 's/^/  /' &gt;&gt; cluster_recovery.yml
+echo "" &gt;&gt; cluster_recovery.yml
 
-echo &quot;Working on systemImages...&quot;
-echo &#39;system_images:&#39; &gt;&gt; cluster_recovery.yml
-kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | jq -r .desiredState.rkeConfig.systemImages | yq -P | sed &#39;s/^/  /&#39; &gt;&gt; cluster_recovery.yml
-echo &quot;&quot; &gt;&gt; cluster_recovery.yml
+echo "Working on systemImages..."
+echo 'system_images:' &gt;&gt; cluster_recovery.yml
+kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | jq -r .desiredState.rkeConfig.systemImages | yq -P | sed 's/^/  /' &gt;&gt; cluster_recovery.yml
+echo "" &gt;&gt; cluster_recovery.yml
 
-echo &quot;Building cluster_recovery.rkestate...&quot;
-kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | jq -r . &gt; cluster_recovery.rkestate
+echo "Building cluster_recovery.rkestate..."
+kubectl -n kube-system get configmap full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | jq -r . &gt; cluster_recovery.rkestate
 </code></pre></div>
 <p>For RKE binary versions  1.4.19+ , 1.5.10+ or 1.6.0+: </p>
 <p>On RKE 1.4.19, 1.5.10 and 1.6.0 or higher, the Kubernetes Cluster state file (cluster.rkestate) and cluster.yml files are stored as a secret, under the kube-system namespace.</p>
 <div class="highlight"><pre><span></span><code>#!/bin/bash
-echo &quot;Building cluster_recovery.yml...&quot;
-echo &quot;Working on Nodes...&quot;
-echo &#39;nodes:&#39; &gt; cluster_recovery.yml
-kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | base64 -d | jq -r .desiredState.rkeConfig.nodes | yq -P | sed &#39;s/^/  /&#39; | \
-sed -e &#39;s/internalAddress/internal_address/g&#39; | \
-sed -e &#39;s/hostnameOverride/hostname_override/g&#39; | \
-sed -e &#39;s/sshKeyPath/ssh_key_path/g&#39; &gt;&gt; cluster_recovery.yml
-echo &quot;&quot; &gt;&gt; cluster_recovery.yml
+echo "Building cluster_recovery.yml..."
+echo "Working on Nodes..."
+echo 'nodes:' &gt; cluster_recovery.yml
+kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | base64 -d | jq -r .desiredState.rkeConfig.nodes | yq -P | sed 's/^/  /' | \
+sed -e 's/internalAddress/internal_address/g' | \
+sed -e 's/hostnameOverride/hostname_override/g' | \
+sed -e 's/sshKeyPath/ssh_key_path/g' &gt;&gt; cluster_recovery.yml
+echo "" &gt;&gt; cluster_recovery.yml
 
-echo &quot;Working on services...&quot;
-echo &#39;services:&#39; &gt;&gt; cluster_recovery.yml
-kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | base64 -d | jq -r .desiredState.rkeConfig.services | yq -P | sed &#39;s/^/  /&#39; &gt;&gt; cluster_recovery.yml
-echo &quot;&quot; &gt;&gt; cluster_recovery.yml
+echo "Working on services..."
+echo 'services:' &gt;&gt; cluster_recovery.yml
+kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | base64 -d | jq -r .desiredState.rkeConfig.services | yq -P | sed 's/^/  /' &gt;&gt; cluster_recovery.yml
+echo "" &gt;&gt; cluster_recovery.yml
 
-echo &quot;Working on network...&quot;
-echo &#39;network:&#39; &gt;&gt; cluster_recovery.yml
-kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | base64 -d | jq -r .desiredState.rkeConfig.network | yq -P | sed &#39;s/^/  /&#39; &gt;&gt; cluster_recovery.yml
-echo &quot;&quot; &gt;&gt; cluster_recovery.yml
+echo "Working on network..."
+echo 'network:' &gt;&gt; cluster_recovery.yml
+kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | base64 -d | jq -r .desiredState.rkeConfig.network | yq -P | sed 's/^/  /' &gt;&gt; cluster_recovery.yml
+echo "" &gt;&gt; cluster_recovery.yml
 
-echo &quot;Working on authentication...&quot;
-echo &#39;authentication:&#39; &gt;&gt; cluster_recovery.yml
-kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | base64 -d | jq -r .desiredState.rkeConfig.authentication | yq -P | sed &#39;s/^/  /&#39; &gt;&gt; cluster_recovery.yml
-echo &quot;&quot; &gt;&gt; cluster_recovery.yml
+echo "Working on authentication..."
+echo 'authentication:' &gt;&gt; cluster_recovery.yml
+kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | base64 -d | jq -r .desiredState.rkeConfig.authentication | yq -P | sed 's/^/  /' &gt;&gt; cluster_recovery.yml
+echo "" &gt;&gt; cluster_recovery.yml
 
-echo &quot;Working on systemImages...&quot;
-echo &#39;system_images:&#39; &gt;&gt; cluster_recovery.yml
-kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | base64 -d | jq -r .desiredState.rkeConfig.systemImages | yq -P | sed &#39;s/^/  /&#39; &gt;&gt; cluster_recovery.yml
-echo &quot;&quot; &gt;&gt; cluster_recovery.yml
+echo "Working on systemImages..."
+echo 'system_images:' &gt;&gt; cluster_recovery.yml
+kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | base64 -d | jq -r .desiredState.rkeConfig.systemImages | yq -P | sed 's/^/  /' &gt;&gt; cluster_recovery.yml
+echo "" &gt;&gt; cluster_recovery.yml
 
-echo &quot;Building cluster_recovery.rkestate...&quot;
-kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | base64 -d | jq -r . &gt; cluster_recovery.rkestate
+echo "Building cluster_recovery.rkestate..."
+kubectl -n kube-system get secret full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | base64 -d | jq -r . &gt; cluster_recovery.rkestate
 </code></pre></div>
 <p>Once the execution is completed, you will find two files in the folder of execution: cluster_recovery.yml and cluster_recovery.rkestate, which correspond to a copy of the Cluster Configuration File and the Kubernetes Cluster State file.</p>
 <h3 id="important-make-sure-you-change-the-keys-in-the-cluster_recoveryyml-to-use-snake-case-instead-of-camel-case"><strong>Important: make sure you change the keys in the cluster_recovery.yml to use snake case instead of camel case.</strong></h3>

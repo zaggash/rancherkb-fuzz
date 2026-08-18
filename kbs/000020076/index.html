@@ -15468,13 +15468,13 @@
 <p><div class="highlight"><pre><span></span><code>  ingress:
     provider: nginx
     options:
-      ssl-protocols: &quot;TLSv1.1 TLSv1.2&quot;
+      ssl-protocols: "TLSv1.1 TLSv1.2"
 </code></pre></div>
 2. Apply the changes to the cluster, by invoking <code>rke up</code>:</p>
 <p><div class="highlight"><pre><span></span><code>rke up --config &lt;cluster configuration yaml file&gt;
 </code></pre></div>
 3. Verify the new configuration:</p>
-<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep ssl_protocols | grep &#39;1.1&#39; &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F '/' '{print $2}'); do echo -n "Checking $pod .... "; kubectl -n ingress-nginx exec "$pod" -- bash -c "cat /etc/nginx/nginx.conf | grep ssl_protocols | grep '1.1' &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo 'Good' || echo 'Bad'"; done
 </code></pre></div>
 <h3 id="configuration-for-rancher-provisioned-rke-clusters"><strong>Configuration for Rancher-provisioned RKE clusters</strong></h3>
 <ol>
@@ -15487,13 +15487,13 @@
 <p><div class="highlight"><pre><span></span><code>ingress:
   provider: nginx
   options:
-    ssl-protocols: &quot;TLSv1.1 TLSv1.2&quot;
+    ssl-protocols: "TLSv1.1 TLSv1.2"
 </code></pre></div>
 6. Click <strong>Save</strong> at the bottom of the page
 7. Wait for cluster to finish upgrading
 8. Explore the cluster and launch a kubectl shell
 9. Run the following inside the kubectl shell to verify the new argument:</p>
-<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep ssl_protocols | grep &#39;1.1&#39; &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F '/' '{print $2}'); do echo -n "Checking $pod .... "; kubectl -n ingress-nginx exec "$pod" -- bash -c "cat /etc/nginx/nginx.conf | grep ssl_protocols | grep '1.1' &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo 'Good' || echo 'Bad'"; done
 </code></pre></div>
 
 

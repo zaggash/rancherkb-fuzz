@@ -15420,7 +15420,7 @@
 <p><div class="highlight"><pre><span></span><code>kubectl logs -n cattle-system --tail=-1 -f &lt;LEADER_POD_NAME&gt; &gt; rancher.log
 </code></pre></div>
 4. In the other shell, send a SIGABRT signal to the rancher process in the leader pod, with the command below, to trigger a stacktrace, replacing with the pod name identified in step 2.:</p>
-<p><div class="highlight"><pre><span></span><code>kubectl -n cattle-system exec &lt;LEADER_POD_NAME&gt; -- bash -c &#39;kill -SIGABRT  $(pgrep -x rancher)&#39;
+<p><div class="highlight"><pre><span></span><code>kubectl -n cattle-system exec &lt;LEADER_POD_NAME&gt; -- bash -c 'kill -SIGABRT  $(pgrep -x rancher)'
 </code></pre></div>
 5. 1. When the stacktrace generation is complete the Rancher leader pod will restart and the <code>kubectl logs</code> command in step 3. will exit. You can then provide the <code>rancher.log</code> file, containing the trace, to Rancher Support.</p>
 <h3 id="validating-the-success-of-the-stacktrace">Validating the success of the stacktrace</h3>

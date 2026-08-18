@@ -15396,7 +15396,7 @@
 <p><div class="highlight"><pre><span></span><code>Get-CustomAttribute
 </code></pre></div>
 - Run the command below to get a specific attribute. Replace <code>Owner</code>with any custom attribute defined in your vSphere environment:</p>
-<p><div class="highlight"><pre><span></span><code>Get-CustomAttribute -Name &quot;Owner&quot;
+<p><div class="highlight"><pre><span></span><code>Get-CustomAttribute -Name "Owner"
 </code></pre></div>
 - Note the ID mentioned in <code>Key</code> column for the attribute.
 - Edit the resource <code>vmwarevsphereconfigs.rke-machine-config.cattle.io</code> in the Rancher management cluster (local cluster) for the specific downstream cluster. Run the first command to get the resource name for the desired downstream cluster. Below is an example shown for a customAttribute <code>Owner</code>:</p>
@@ -15408,7 +15408,7 @@ kubectl -n fleet-default edit vmwarevsphereconfigs.rke-machine-config.cattle.io 
 - 1234=user1
 </code></pre></div>
 - Verify the custom attribute in the vSphere client under 'Tags &amp; Custom Attributes' or run the below command from PowerCLI:</p>
-<div class="highlight"><pre><span></span><code>Get-VM -Name &quot;&lt;VM_NAME&gt;&quot; | Get-Annotation
+<div class="highlight"><pre><span></span><code>Get-VM -Name "&lt;VM_NAME&gt;" | Get-Annotation
 </code></pre></div>
 
 

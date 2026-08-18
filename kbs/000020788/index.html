@@ -15366,12 +15366,12 @@
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>In some cases there may be orphaned cluster objects left behind after the in-proper deletion of a downstream cluster in Rancher. These orphaned objects could introduce a condition that causes the leader Rancher pod to enter a CrashLoop state.</p>
 <p>Examples of errors from the Rancher pod logs.</p>
-<div class="highlight"><pre><span></span><code>[ERROR] failed to call leader func: namespaces &quot;c-xxxxx&quot; not found
+<div class="highlight"><pre><span></span><code>[ERROR] failed to call leader func: namespaces "c-xxxxx" not found
 fatal error: concurrent map read and map write
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>[ERROR] error syncing ‘c-xxxx/p-xxxx’: handler mgmt-project-rbac-remove: failed to remove finalizer on controller.cattle.io/mgmt-project-rbac-remove, requeuing
 [ERROR] error syncing ‘c-xxxxx/p-xxxxx’: handler mgmt-project-rbac-remove: failed to remove finalizer on controller.cattle.io/mgmt-project-rbac-remove, requeuing
-[ERROR] error syncing ‘c-xxxxx/p-xxxxx’: handler cluster-registration-token: clusters.management.cattle.io &quot;c-xxxxx&quot; not found, requeuing
+[ERROR] error syncing ‘c-xxxxx/p-xxxxx’: handler cluster-registration-token: clusters.management.cattle.io "c-xxxxx" not found, requeuing
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>It is important to delete downstream clusters in a process to allow Rancher to delete clusters and clean nodes that are in an Active state.</p>
@@ -15380,15 +15380,15 @@ fatal error: concurrent map read and map write
 <p>Find the objects under the deleted cluster namespaces and manually delete each objects. Make sure there are no such orphaned objects or namespaces left in the local cluster.</p>
 <p>1. Set a kubeconfig for the Rancher (local) management cluster to be used with the following steps</p>
 <p>2. Verify the Active downstream clusters</p>
-<div class="highlight"><pre><span></span><code>kubectl get clusters.management.cattle.io -o custom-columns=&quot;ID:.metadata.name,NAME:.spec.displayName,K8S_VERSION:.status.version.gitVersion,CREATED:.metadata.creationTimestamp,DELETED:.metadata.deletionTimestamp,LAST_READY:.status.conditions[?(@.type == &#39;Ready&#39;)].lastUpdateTime,READY:.status.conditions[?(@.type == &#39;Ready&#39;)].status&quot; --sort-by=.metadata.creationTimestamp
+<div class="highlight"><pre><span></span><code>kubectl get clusters.management.cattle.io -o custom-columns="ID:.metadata.name,NAME:.spec.displayName,K8S_VERSION:.status.version.gitVersion,CREATED:.metadata.creationTimestamp,DELETED:.metadata.deletionTimestamp,LAST_READY:.status.conditions[?(@.type == 'Ready')].lastUpdateTime,READY:.status.conditions[?(@.type == 'Ready')].status" --sort-by=.metadata.creationTimestamp
 </code></pre></div>
 <p>3. Cross verify with the Rancher pod logs to get the deleted downstream cluster namespace and collect the details. Compare with the active list of clusters versus the cluster namespaces.</p>
 <div class="highlight"><pre><span></span><code>kubectl logs -n cattle-system -l app=rancher -c rancher
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>kubectl get ns -A |grep &quot;c-&quot;
+<div class="highlight"><pre><span></span><code>kubectl get ns -A |grep "c-"
 </code></pre></div>
 <p>4. If there is a cluster that is stuck deleting, this may not complete. In this case, the finalizer object can be removed from the cluster.management.cattle.io object. Please note the <strong>c-xxxxx</strong> needs to be replaced with the cluster ID that is stuck deleting.</p>
-<div class="highlight"><pre><span></span><code>kubectl patch clusters.management.cattle.io &lt;c-xxxxx&gt; -p &#39;{&quot;metadata&quot;:{&quot;finalizers&quot;:[]}}&#39; --type=merge
+<div class="highlight"><pre><span></span><code>kubectl patch clusters.management.cattle.io &lt;c-xxxxx&gt; -p '{"metadata":{"finalizers":[]}}' --type=merge
 </code></pre></div>
 <p>5. If there is a namespace for a cluster that no longer exists, get the orphaned object details under the deleted cluster namespace.</p>
 <div class="highlight"><pre><span></span><code>kubectl api-resources --verbs=list --namespaced -o name  | xargs -n 1 kubectl get --show-kind --ignore-not-found -n &lt;c-xxxxx&gt;
@@ -15407,7 +15407,7 @@ fatal error: concurrent map read and map write
 <ul>
 <li>Remove the finalizer to unblock the deletion of the objects. The command needs to be run for each object.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>kubectl -n &lt;c-xxxxx&gt; patch &lt;resource type&gt; &lt;name of object&gt; -p &#39;{&quot;metadata&quot;:{&quot;finalizers&quot;:[]}}&#39; --type=merge
+<div class="highlight"><pre><span></span><code>kubectl -n &lt;c-xxxxx&gt; patch &lt;resource type&gt; &lt;name of object&gt; -p '{"metadata":{"finalizers":[]}}' --type=merge
 </code></pre></div>
 <ul>
 <li>Make sure there are no objects left in the namespace.</li>

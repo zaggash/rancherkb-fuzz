@@ -15356,7 +15356,7 @@
 <p>This problem manifests in clients unable to authenticate against the Kubernetes API, for both pods within the cluster, or system components like the controller-manager or kube-proxy. A telling sign would be errors in these clients of the format <code>connect: connection refused</code> or within the Kubernetes API Server logs, showing a large number of clients failing TLS authentication.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>With an admin kubeconfig sourced for the cluster facing issues, run the command below, to generate the list of kubectl commands required to delete all Service Account token secrets. After running the provided kubectl commands from the output, you will need to recreate pods, e.g. by deleting them, in order to regenerate the Service Account token.</p>
-<div class="highlight"><pre><span></span><code># kubectl get secret --all-namespaces | awk &#39;{ if ($3 == &quot;kubernetes.io/service-account-token&quot;) print &quot;kubectl -n&quot;, $1 &quot; delete secret&quot;, $2 }&#39;
+<div class="highlight"><pre><span></span><code># kubectl get secret --all-namespaces | awk '{ if ($3 == "kubernetes.io/service-account-token") print "kubectl -n", $1 " delete secret", $2 }'
 </code></pre></div>
 
 

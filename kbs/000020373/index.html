@@ -15367,16 +15367,16 @@
 <p>Need a way to cordon or drain a node when OS patching is automated, and the automation doesn't have access to the Rancher API.</p>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>Attempting to drain nodes using the kubeconfig file "<em>/etc/kubernetes/ssl/kubecfg-kube-node.yaml"</em> will result in errors like below, since the "<em>system:node"</em> role is not authorized to access the needed API groups.</p>
-<div class="highlight"><pre><span></span><code>cannot delete daemonsets.apps &quot;nginx-ingress-controller&quot; is forbidden: User &quot;system:node&quot; cannot get resource &quot;daemonsets&quot; in API group &quot;apps&quot; in the namespace &quot;ingress-nginx&quot;
+<div class="highlight"><pre><span></span><code>cannot delete daemonsets.apps "nginx-ingress-controller" is forbidden: User "system:node" cannot get resource "daemonsets" in API group "apps" in the namespace "ingress-nginx"
 </code></pre></div>
 <p>But this kubeconfig file can access the secret/config-map <em>"full-cluster-state</em>" in the "<em>kube-system</em>" namespace, containing the kubeconfig file that has the privilege to do the drain operation.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>Integrate the below command in the automation to drain the node in the OS patching workflow.</p>
 <p>Rancher v2.7.14+/Rancher v2.8.5+, RKE v1.4.19+/RKE v1.5.10+ :</p>
-<div class="highlight"><pre><span></span><code>docker exec kubelet bash -c &#39;kubectl --kubeconfig &lt;(kubectl --kubeconfig /etc/kubernetes/ssl/kubecfg-kube-node.yaml get secret -n kube-system full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | base64 -d | jq -r .currentState.certificatesBundle.\&quot;kube-admin\&quot;.config | sed -e &quot;/^[[:space:]]*server:/ s_:.*_: \&quot;https://127.0.0.1:6443\&quot;_&quot;) drain $(hostname -s) --delete-local-data=true --force=true --grace-period=60 --ignore-daemonsets=true --timeout=120s&#39;
+<div class="highlight"><pre><span></span><code>docker exec kubelet bash -c 'kubectl --kubeconfig &lt;(kubectl --kubeconfig /etc/kubernetes/ssl/kubecfg-kube-node.yaml get secret -n kube-system full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | base64 -d | jq -r .currentState.certificatesBundle.\"kube-admin\".config | sed -e "/^[[:space:]]*server:/ s_:.*_: \"https://127.0.0.1:6443\"_") drain $(hostname -s) --delete-local-data=true --force=true --grace-period=60 --ignore-daemonsets=true --timeout=120s'
 </code></pre></div>
 <p>Earlier versions of Rancher and RKE:</p>
-<div class="highlight"><pre><span></span><code>docker exec kubelet bash -c &#39;kubectl --kubeconfig &lt;(kubectl --kubeconfig /etc/kubernetes/ssl/kubecfg-kube-node.yaml get configmap -n kube-system full-cluster-state -o json | jq -r .data.\&quot;full-cluster-state\&quot; | jq -r .currentState.certificatesBundle.\&quot;kube-admin\&quot;.config | sed -e &quot;/^[[:space:]]*server:/ s_:.*_: \&quot;https://127.0.0.1:6443\&quot;_&quot;) drain $(hostname -s) --delete-local-data=true --force=true --grace-period=60 --ignore-daemonsets=true --timeout=120s&#39;
+<div class="highlight"><pre><span></span><code>docker exec kubelet bash -c 'kubectl --kubeconfig &lt;(kubectl --kubeconfig /etc/kubernetes/ssl/kubecfg-kube-node.yaml get configmap -n kube-system full-cluster-state -o json | jq -r .data.\"full-cluster-state\" | jq -r .currentState.certificatesBundle.\"kube-admin\".config | sed -e "/^[[:space:]]*server:/ s_:.*_: \"https://127.0.0.1:6443\"_") drain $(hostname -s) --delete-local-data=true --force=true --grace-period=60 --ignore-daemonsets=true --timeout=120s'
 </code></pre></div>
 <p>Please note that the below flags need to be changed according to your requirements.</p>
 <div class="highlight"><pre><span></span><code>--delete-local-data=true 

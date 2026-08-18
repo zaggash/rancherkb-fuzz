@@ -15573,7 +15573,7 @@
 <div class="highlight"><pre><span></span><code>services:
   kubeproxy:
     extra_args:
-      conntrack-max-per-core: &#39;16384&#39;
+      conntrack-max-per-core: '16384'
 </code></pre></div>
 <blockquote>
 <p><strong>Note</strong>: When using the RKE CLI, an rke up command will put the changes into effect.</p>
@@ -15597,7 +15597,7 @@ spec:
   valuesContent: |-
     controller:
       config:
-        worker-processes: &quot;8&quot;
+        worker-processes: "8"
 </code></pre></div>
 <p><strong>Standalone cluster</strong></p>
 <p>Add the HelmChartConfig as a YAML file to the /var/lib/rancher/rke2/server/manifests directory on all rke2-server nodes.</p>
@@ -15609,7 +15609,7 @@ spec:
 <div class="highlight"><pre><span></span><code>ingress:
   provider: nginx
   options:
-    worker-processes: &quot;8&quot;
+    worker-processes: "8"
 </code></pre></div>
 
 

@@ -15376,8 +15376,8 @@
 <p><div class="highlight"><pre><span></span><code>kubectl apply -f https://raw.githubusercontent.com/rancherlabs/support-tools/master/collection/rancher/v2.x/systems-information-v2/deploy.yaml
 </code></pre></div>
 2. Wait for the pod to execute and reach a Succeeded status:</p>
-<p><div class="highlight"><pre><span></span><code>while [[ $(kubectl get pod rancher-systems-summary-pod -n cattle-system -o &#39;jsonpath={..status.phase}&#39;) != &quot;Succeeded&quot; ]]; do
-  echo &quot;Waiting for rancher-systems-summary-pod to complete...&quot;
+<p><div class="highlight"><pre><span></span><code>while [[ $(kubectl get pod rancher-systems-summary-pod -n cattle-system -o 'jsonpath={..status.phase}') != "Succeeded" ]]; do
+  echo "Waiting for rancher-systems-summary-pod to complete..."
   sleep 5
 done
 </code></pre></div>

@@ -15439,15 +15439,15 @@ spec:
   containers:
   - name: logger
     image: busybox
-    command: [&quot;/bin/sh&quot;]
+    command: ["/bin/sh"]
     args:
       - -c
       - |
         counter=1
         while true; do
-          echo &quot;INFO: Test log message #$counter from Kubernetes pod - $(date)&quot;
-          echo &quot;WARN: Warning message #$counter&quot;
-          echo &quot;ERROR: Error message #$counter&quot;
+          echo "INFO: Test log message #$counter from Kubernetes pod - $(date)"
+          echo "WARN: Warning message #$counter"
+          echo "ERROR: Error message #$counter"
           counter=$((counter+1))
           sleep 10
         done

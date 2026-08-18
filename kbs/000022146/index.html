@@ -15369,7 +15369,7 @@
 
 OR
 
-Ssh: handshake failed: knownhosts: key is unknown:failed to clone repo from branch repo=&quot;git@...&quot; branch=&quot;main&quot; revision=&quot;&quot; path=&quot;/workspace&quot;: ssh: handshake failed: knownhosts: key is unknown
+Ssh: handshake failed: knownhosts: key is unknown:failed to clone repo from branch repo="git@..." branch="main" revision="" path="/workspace": ssh: handshake failed: knownhosts: key is unknown
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The issue is caused by a security enhancement in Fleet v0.13, which enforces SSH host key verification. This change requires users to explicitly trust the host key of their Git repositories, preventing potential man-in-the-middle attacks.</p>

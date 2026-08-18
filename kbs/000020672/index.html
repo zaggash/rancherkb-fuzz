@@ -15321,20 +15321,20 @@
 <p>Defining multiple rules within a single role template.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>To define multiple rules for a single role template, set multiple rule blocks as per the following example:</p>
-<div class="highlight"><pre><span></span><code>resource &quot;rancher2_role_template&quot; &quot;foo&quot; {
-  name = &quot;foo&quot;
-  context = &quot;project&quot;
+<div class="highlight"><pre><span></span><code>resource "rancher2_role_template" "foo" {
+  name = "foo"
+  context = "project"
   default_role = false
-  description = &quot;Terraform role template acceptance test&quot;
+  description = "Terraform role template acceptance test"
   rules {
-    api_groups = [&quot;*&quot;]
-    resources = [&quot;secrets&quot;]
-    verbs = [&quot;create&quot;]
+    api_groups = ["*"]
+    resources = ["secrets"]
+    verbs = ["create"]
   }
   rules {
-    api_groups = [&quot;*&quot;]
-    resources = [&quot;namespaces&quot;]
-    verbs = [&quot;create&quot;]
+    api_groups = ["*"]
+    resources = ["namespaces"]
+    verbs = ["create"]
   }
 }
 </code></pre></div>

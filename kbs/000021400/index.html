@@ -15369,10 +15369,10 @@ Rancher 2.8.x</p>
 <p>There are some cases where customers and users have their own custom charts and they would prefer to add them and use them in Rancher Server.<br />
 The UI has a section called "Repositories" where they simply add the repository in question and then it will become available in the Charts tab under the given name of that repository.<br />
 While adding the repository an error related to the invalidity of the certificate can appear like the following</p>
-<div class="highlight"><pre><span></span><code>&quot;fatal: unable to access &#39;https://url.chart.repo/some-path/repo.git/&#39;: SSL certificate problem: unable to get local issuer certificate&quot;
+<div class="highlight"><pre><span></span><code>"fatal: unable to access 'https://url.chart.repo/some-path/repo.git/': SSL certificate problem: unable to get local issuer certificate"
 </code></pre></div>
 <p>or</p>
-<div class="highlight"><pre><span></span><code>Get &quot;https://docker.repo.local/chart/repo/index.yaml&quot;: x509: certificate signed by unknown authority
+<div class="highlight"><pre><span></span><code>Get "https://docker.repo.local/chart/repo/index.yaml": x509: certificate signed by unknown authority
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>missing CA certificate when adding a custom or private chart repository.</p>

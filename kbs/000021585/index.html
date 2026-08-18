@@ -15372,7 +15372,7 @@
 <div class="highlight"><pre><span></span><code>machineSelectorFiles:
     - fileSources:
       - configMap:
-          name: &quot;&quot;
+          name: ""
         secret:
           items:
           - hash: LW5oTV9pmpX7+xWMjgC3IgbHtLkSMlCgyaKXG13CihA=
@@ -15381,12 +15381,12 @@
           name: &lt;cluster-name&gt;-admission-configuration-psact
       machineLabelSelector:
         matchLabels:
-          rke.cattle.io/control-plane-role: &quot;true&quot; 
+          rke.cattle.io/control-plane-role: "true" 
 </code></pre></div>
 <p>These blocks are not overwritten, instead, a new one is added each time. Thus, subsequent changes to the cluster result in multiple blocks, per the following example:</p>
 <div class="highlight"><pre><span></span><code>    - fileSources:
       - configMap:
-          name: &quot;&quot;
+          name: ""
         secret:
           items:
           - dynamic: true
@@ -15396,10 +15396,10 @@
           name: &lt;cluster-name&gt;-admission-configuration-psact
       machineLabelSelector:
         matchLabels:
-          rke.cattle.io/control-plane-role: &quot;true&quot;
+          rke.cattle.io/control-plane-role: "true"
     - fileSources:
       - configMap:
-          name: &quot;&quot;
+          name: ""
         secret:
           items:
           - hash: LW5oTV9pmpX7+xWMjgC3IgbHtLkSMlCgyaKXG13CihA=
@@ -15408,7 +15408,7 @@
           name: &lt;cluster-name&gt;-admission-configuration-psact
       machineLabelSelector:
         matchLabels:
-          rke.cattle.io/control-plane-role: &quot;true&quot;
+          rke.cattle.io/control-plane-role: "true"
 </code></pre></div>
 <p>The issue arises when there is a change on the "defaultPodSecurityAdmissionConfigurationTemplateName" parameter, which changes the hash of this block. Having multiple identical blocks pointing at the same secret under "machineSelectorFiles", but with different hashes, causes Rancher to error out and blocks sending the plan to the downstream cluster with the following error:</p>
 <div class="highlight"><pre><span></span><code>Secret &lt;cluster-name&gt;-admission-configuration-psact does not contain the expected content
@@ -15423,7 +15423,7 @@
 <div class="highlight"><pre><span></span><code>machineSelectorFiles:
       - fileSources:
           - configMap:
-              name: &#39;&#39;
+              name: ''
             secret:
               items:
                 - hash: OBe4tz0Nne3By2yPn/e6L/FC3QzGlllyoYTPU/b8eeQ=
@@ -15432,7 +15432,7 @@
               name: &lt;cluster-name&gt;-admission-configuration-psact
         machineLabelSelector:
           matchLabels:
-            rke.cattle.io/control-plane-role: &#39;true&#39; 
+            rke.cattle.io/control-plane-role: 'true' 
 </code></pre></div>
 
 

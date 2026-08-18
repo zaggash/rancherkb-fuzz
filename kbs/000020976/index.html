@@ -15343,7 +15343,7 @@
         resources:
           requests:
             storage: 40Gi
-        storageClassName: &quot;&lt;STORAGE_CLASS_NAME&gt;&quot;
+        storageClassName: "&lt;STORAGE_CLASS_NAME&gt;"
         volumeMode: Filesystem
 </code></pre></div>
 <ol>
@@ -15373,7 +15373,7 @@ rancher-logging-root-fluentd-buffer   Bound    pvc-4b78c686-7b68-4f7d-a40f-32
 </ul>
 <div class="highlight"><pre><span></span><code>      - name: rancher-logging-root-fluentd-buffer
         persistentVolumeClaim:
-          claimName: &quot;rancher-logging-root-fluentd-buffer&quot;
+          claimName: "rancher-logging-root-fluentd-buffer"
 </code></pre></div>
 <ol>
 <li>Finally, click on save, and a new fluentd pod will be scheduled with to use PV for buffer volume.</li>
@@ -15393,7 +15393,7 @@ rancher-logging-root-fluentd-buffer   Bound    pvc-4b78c686-7b68-4f7d-a40f-32
 <li>If fluentd is using EmptyDir for buffer volume, the output will be:</li>
 </ul>
 <div class="highlight"><pre><span></span><code>  rancher-logging-root-fluentd-buffer:
-    Type:       EmptyDir (a temporary directory that shares a pod&#39;s lifetime)
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
     Medium:     
     SizeLimit:  &lt;unset&gt;
 </code></pre></div>

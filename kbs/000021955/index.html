@@ -15366,7 +15366,7 @@
 RKE2 imported cluster</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>When attempting to restore <code>etcd</code> on an imported RKE2 cluster using the command "<code>rke2 server --cluster-reset --cluster-reset-restore-path=&lt;PATH-TO-SNAPSHOT&gt;"</code>, as the root user, the operation fails with the following error messages from the etcd container:</p>
-<div class="highlight"><pre><span></span><code>failed to verify flags&quot;, &quot;error&quot;:&quot;open /var/lib/rancher/rke2/server/db/etcd/config: permission denied&quot;
+<div class="highlight"><pre><span></span><code>failed to verify flags", "error":"open /var/lib/rancher/rke2/server/db/etcd/config: permission denied"
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>A more restrictive <code>umask</code> of <code>0027</code> sets the default permissions to <code>rwxr-x---</code>, which means files and directories are not writable by the group or others, which is required by etcd to be able to read/write it's config and data.</p>

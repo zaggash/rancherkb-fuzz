@@ -15569,7 +15569,7 @@ EOF
 <h2 id="additional-steps-for-existing-clusters">Additional steps for existing clusters</h2>
 <h3 id="recreate-the-default-ipv4-ippool">Recreate the default IPv4 IPPool</h3>
 <p>If switching the mode to BGP on an existing cluster, the tigera-operator pod may show the following logs:</p>
-<div class="highlight"><pre><span></span><code>{&quot;level&quot;:&quot;error&quot;,&quot;ts&quot;:&quot;2025-09-09T04:29:36Z&quot;,&quot;logger&quot;:&quot;controller_ippool&quot;,&quot;msg&quot;:&quot;Unable to modify IP pools while Calico API server is unavailable&quot;,&quot;Request.Namespace&quot;:&quot;&quot;,&quot;Request.Name&quot;:&quot;periodic-5m0s-reconcile-event&quot;,&quot;reason&quot;:&quot;ResourceNotReady&quot;,&quot;stacktrace&quot;:&quot;github.com/tigera/operator/pkg/controller/status.(*statusManager).SetDegraded\n\t/go/src/github.com/tigera/operator/pkg/controller/status/status.go:356\ngithub.com/tigera/operator/pkg/controller/ippool.(*Reconciler).Reconcile\n\t/go/src/github.com/tigera/operator/pkg/controller/ippool/pool_controller.go:325\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).Reconcile\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:118\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).reconcileHandler\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:314\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).processNextWorkItem\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:265\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).Start.func2.2\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:226&quot;}
+<div class="highlight"><pre><span></span><code>{"level":"error","ts":"2025-09-09T04:29:36Z","logger":"controller_ippool","msg":"Unable to modify IP pools while Calico API server is unavailable","Request.Namespace":"","Request.Name":"periodic-5m0s-reconcile-event","reason":"ResourceNotReady","stacktrace":"github.com/tigera/operator/pkg/controller/status.(*statusManager).SetDegraded\n\t/go/src/github.com/tigera/operator/pkg/controller/status/status.go:356\ngithub.com/tigera/operator/pkg/controller/ippool.(*Reconciler).Reconcile\n\t/go/src/github.com/tigera/operator/pkg/controller/ippool/pool_controller.go:325\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).Reconcile\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:118\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).reconcileHandler\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:314\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).processNextWorkItem\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:265\nsigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).Start.func2.2\n\t/go/pkg/mod/sigs.k8s.io/controller-runtime@v0.15.3/pkg/internal/controller/controller.go:226"}
 </code></pre></div>
 <p>So you need to manually recreate the <code>default-ipv4-ippool</code>:</p>
 <div class="highlight"><pre><span></span><code>kubectl get ippools.crd.projectcalico.org default-ipv4-ippool -oyaml &gt; default-ipv4-ippool-backup.yaml
@@ -15596,7 +15596,7 @@ spec:
 </code></pre></div>
 <p>Once all Pods are running, check whether any tunnel interfaces still exist:</p>
 <div class="highlight"><pre><span></span><code># If there are still residual tunnel interfaces, you can try manually deleting them or rebooting the host.
-ip link show | grep -E &quot;tunl0|vxlan&quot;
+ip link show | grep -E "tunl0|vxlan"
 </code></pre></div>
 <h2 id="check-bgp-sessions-are-established">Check BGP sessions are established</h2>
 <p>The <code>calicoctl</code> CLI can be used to verify BGP sessions between nodes in the cluster have been successfully established:</p>
@@ -15675,7 +15675,7 @@ Content-Type: text/html
 Content-Length: 615
 Last-Modified: Wed, 02 Oct 2024 15:13:19 GMT
 Connection: keep-alive
-ETag: &quot;66fd630f-267&quot;
+ETag: "66fd630f-267"
 Accept-Ranges: bytes
 
 root@test-0:~# kubectl exec -it nginx-f69bc9b4f-7h56l -- curl -I 10.42.5.197
@@ -15686,7 +15686,7 @@ Content-Type: text/html
 Content-Length: 615
 Last-Modified: Wed, 02 Oct 2024 15:13:19 GMT
 Connection: keep-alive
-ETag: &quot;66fd630f-267&quot;
+ETag: "66fd630f-267"
 Accept-Ranges: bytes
 
 root@test-0:~# kubectl exec -it nginx-f69bc9b4f-7h56l -- curl -I 10.42.139.194
@@ -15697,7 +15697,7 @@ Content-Type: text/html
 Content-Length: 615
 Last-Modified: Wed, 02 Oct 2024 15:13:19 GMT
 Connection: keep-alive
-ETag: &quot;66fd630f-267&quot;
+ETag: "66fd630f-267"
 Accept-Ranges: bytes
 </code></pre></div>
 

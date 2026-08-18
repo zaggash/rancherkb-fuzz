@@ -15344,7 +15344,7 @@
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>After upgrading directly from Rancher v2.12.1 to v2.13.1, new Rancher v2.13.1 Pods crashloop, with error messages of the following format:</p>
 <div class="highlight"><pre><span></span><code>2026/01/14 15:07:28 [ERROR] Failed to connect to peer wss://10.42.0.90/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
-E0114 15:07:32.031893      43 reflector.go:205] &quot;Failed to watch&quot; err=&quot;failed to list *v1.Token: object *v1.TokenList does not implement the protobuf marshalling interface and cannot be encoded to a protobuf message&quot; logger=&quot;UnhandledError&quot; reflector=&quot;/root/.cache/go/modcache/k8s.io/client-go@v0.34.2/tools/cache/reflector.go:290&quot; type=&quot;*v1.Token&quot;
+E0114 15:07:32.031893      43 reflector.go:205] "Failed to watch" err="failed to list *v1.Token: object *v1.TokenList does not implement the protobuf marshalling interface and cannot be encoded to a protobuf message" logger="UnhandledError" reflector="/root/.cache/go/modcache/k8s.io/client-go@v0.34.2/tools/cache/reflector.go:290" type="*v1.Token"
 2026/01/14 15:07:33 [ERROR] Failed to connect to peer wss://10.42.0.93/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
 2026/01/14 15:07:33 [ERROR] Failed to connect to peer wss://10.42.0.90/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
 2026/01/14 15:07:38 [ERROR] Failed to connect to peer wss://10.42.0.93/v3/connect [local ID=10.42.0.110]: websocket: bad handshake

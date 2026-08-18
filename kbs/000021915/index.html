@@ -15356,15 +15356,15 @@ items:
 - apiVersion: longhorn.io/v1beta2
   kind: RecurringJob
   metadata:
-    creationTimestamp: &quot;2025-07-11T08:08:14Z&quot;
+    creationTimestamp: "2025-07-11T08:08:14Z"
     generation: 3
     name: c-mptbs9
     namespace: longhorn-system
-    resourceVersion: &quot;1247498&quot;
+    resourceVersion: "1247498"
     uid: 6d88a149-1ca9-489e-a358-7f2b0d326610
   spec:
     concurrency: 1
-    cron: &#39;*/2 * * * *&#39;
+    cron: '*/2 * * * *'
     groups:
     - test-group
     labels: {}
@@ -15377,7 +15377,7 @@ items:
     ownerID: node-xxxxx
 kind: List
 metadata:
-  resourceVersion: &quot;&quot;
+  resourceVersion: ""
 </code></pre></div>
 <p>Above example creates a recurring job for filesystem-trim on the volumes from group <code>test-group</code>. Alternatively, it can be created via the UI: <code>Longhorn UI &gt;&gt; Recurring Job &gt;&gt; Create Recurring Job</code>.
    2. Label the PVC with the following labels:</p>
@@ -15387,18 +15387,18 @@ test-pvc              Bound    pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f   1Gi   
    3. Verify in the longhorn-manager pod logs that the PVC is added to the recurring job:</p>
 <p><div class="highlight"><pre><span></span><code>kubectl -n longhorn-system logs -l app=longhorn-manager
 
-time=&quot;2025-07-11T09:25:34Z&quot; level=info msg=&quot;Adding Volume pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f recurring job label recurring-job-group.longhorn.io/test-group: enabled&quot; func=controller.syncRecurringJobLabelsToTargetResource file=&quot;recurring_job_controller.go:604&quot; controller=longhorn-volume node=node-xxxx
+time="2025-07-11T09:25:34Z" level=info msg="Adding Volume pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f recurring job label recurring-job-group.longhorn.io/test-group: enabled" func=controller.syncRecurringJobLabelsToTargetResource file="recurring_job_controller.go:604" controller=longhorn-volume node=node-xxxx
 </code></pre></div>
    4. Confirm that the cronjob executed <code>fstrim</code> from the job pod logs:</p>
 <div class="highlight"><pre><span></span><code>kubectl -n longhorn-system logs -l job-name=&lt;job_name&gt;
 
-time=&quot;2025-07-11T09:26:01Z&quot; level=info msg=&quot;Found 1 volumes with recurring job c-mptbs9&quot; func=app.recurringJob file=&quot;recurring_job.go:156&quot;
+time="2025-07-11T09:26:01Z" level=info msg="Found 1 volumes with recurring job c-mptbs9" func=app.recurringJob file="recurring_job.go:156"
 Fri, Jul 11 2025 2:56:01 pm
-time=&quot;2025-07-11T09:26:01Z&quot; level=info msg=&quot;Creating job&quot; func=app.startVolumeJob file=&quot;recurring_job.go:195&quot; concurrent=1 executionCount=23 groups=test-group job=c-mptbs9 labels=&quot;{\&quot;RecurringJob\&quot;:\&quot;c-mptbs9\&quot;}&quot; parameters=&quot;map[]&quot; retain=0 task=filesystem-trim volume=pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f
+time="2025-07-11T09:26:01Z" level=info msg="Creating job" func=app.startVolumeJob file="recurring_job.go:195" concurrent=1 executionCount=23 groups=test-group job=c-mptbs9 labels="{\"RecurringJob\":\"c-mptbs9\"}" parameters="map[]" retain=0 task=filesystem-trim volume=pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f
 Fri, Jul 11 2025 2:56:01 pm
-time=&quot;2025-07-11T09:26:01Z&quot; level=info msg=&quot;job starts running&quot; func=&quot;app.(*Job).run&quot; file=&quot;recurring_job.go:294&quot; executionCount=23 labels=&quot;map[RecurringJob:c-mptbs9]&quot; namespace=longhorn-system retain=0 snapshotName=c-mptbs9-588e71a7-9e9e-4756-b0ce-34875f8d4575 task=filesystem-trim volumeName=pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f
+time="2025-07-11T09:26:01Z" level=info msg="job starts running" func="app.(*Job).run" file="recurring_job.go:294" executionCount=23 labels="map[RecurringJob:c-mptbs9]" namespace=longhorn-system retain=0 snapshotName=c-mptbs9-588e71a7-9e9e-4756-b0ce-34875f8d4575 task=filesystem-trim volumeName=pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f
 Fri, Jul 11 2025 2:56:01 pm
-time=&quot;2025-07-11T09:26:01Z&quot; level=info msg=&quot;Running recurring filesystem trim for volume pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f&quot; func=&quot;app.(*Job).run&quot; file=&quot;recurring_job.go:321&quot; executionCount=23 labels=&quot;map[RecurringJob:c-mptbs9]&quot; namespace=longhorn-system retain=0 snapshotName=c-mptbs9-588e71a7-9e9e-4756-b0ce-34875f8d4575 task=filesystem-trim volumeName=pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f
+time="2025-07-11T09:26:01Z" level=info msg="Running recurring filesystem trim for volume pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f" func="app.(*Job).run" file="recurring_job.go:321" executionCount=23 labels="map[RecurringJob:c-mptbs9]" namespace=longhorn-system retain=0 snapshotName=c-mptbs9-588e71a7-9e9e-4756-b0ce-34875f8d4575 task=filesystem-trim volumeName=pvc-646002c0-9fc7-4940-90b9-fdeffdaba44f
 </code></pre></div>
 <p>Additional Details of recurring jobs are explained <a href="https://github.com/longhorn/longhorn/issues/7109">here</a>. Once the source label on the PVC is enabled, Longhorn starts to sync the recurring-job label from PVC to Longhorn Volume, since Volume is the real resource that Longhorn manages. So, Longhorn needs to sync the label from PVCs to Volumes and further use these labels to select Volumes to do recurring jobs.</p>
 </li>

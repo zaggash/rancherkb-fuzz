@@ -15368,10 +15368,10 @@
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>When attempting to add a node to your RKE1 cluster using the <strong>rke up</strong> command, a failure in establishing the necessary SSH tunnel will prevent the node from being added. This scenario is often indicated by the following error messages in the output:</p>
 <p><strong>Error Messages Indicating SSH Tunneling Failure:</strong></p>
-<div class="highlight"><pre><span></span><code>time=&quot;2025-04-10T11:34:52+05:30&quot; level=warning msg=&quot;Failed to set up SSH tunneling for host [10.232.xxx.xxx]: Can&#39;t retrieve Docker Info: error during connect: Get \&quot;http://%2Fvar%2Frun%2Fdocker.sock/v1.24/info\&quot;: Unable to access the s
-Unable to access the service on /var/run/docker.sock. The service might be still starting up. Error: ssh: rejected: connect failed (open failed)&quot;
-time=&quot;2025-04-10T11:34:52+05:30&quot; level=warning msg=&quot;Removing host [10.232.xxx.xxx] from node lists&quot;
-time=&quot;2025-04-10T11:36:46+05:30&quot; level=fatal msg=&quot;cannot proceed with upgrade of controlplane since 1 host(s) cannot be reached prior to upgrade”
+<div class="highlight"><pre><span></span><code>time="2025-04-10T11:34:52+05:30" level=warning msg="Failed to set up SSH tunneling for host [10.232.xxx.xxx]: Can't retrieve Docker Info: error during connect: Get \"http://%2Fvar%2Frun%2Fdocker.sock/v1.24/info\": Unable to access the s
+Unable to access the service on /var/run/docker.sock. The service might be still starting up. Error: ssh: rejected: connect failed (open failed)"
+time="2025-04-10T11:34:52+05:30" level=warning msg="Removing host [10.232.xxx.xxx] from node lists"
+time="2025-04-10T11:36:46+05:30" level=fatal msg="cannot proceed with upgrade of controlplane since 1 host(s) cannot be reached prior to upgrade”
 </code></pre></div>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>To permit TCP forwarding and enable the creation of SSH tunnels, it is necessary to modify the SSH daemon configuration file located at <strong><code>/etc/ssh/sshd_config</code></strong> . Within this file, locate the <code>AllowTcpForwarding</code> parameter and set its value to <code>yes</code>.</p>

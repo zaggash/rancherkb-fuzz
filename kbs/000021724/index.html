@@ -15365,7 +15365,7 @@
 <p>Rancher 2.8+</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>You have applied a CIS profile to an RKE2 Rancher local cluster, and your Rancher and Fleet deployments are unable to scale pods, displaying this error message:</p>
-<div class="highlight"><pre><span></span><code>Error creating: pods &quot;rancher-677d78b948-d7m9s&quot; is forbidden: violates PodSecurity &quot;restricted:latest&quot;: allowPrivilegeEscalation != false (containers &quot;rancher&quot;, &quot;rancher-audit-log&quot; must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (containers &quot;rancher&quot;, &quot;rancher-audit-log&quot; must set securityContext.capabilities.drop=[&quot;ALL&quot;]), runAsNonRoot != true (pod or containers &quot;rancher&quot;, &quot;rancher-audit-log&quot; must set securityContext.runAsNonRoot=true), seccompProfile (pod or containers &quot;rancher&quot;, &quot;rancher-audit-log&quot; must set securityContext.seccompProfile.type to &quot;RuntimeDefault&quot; or &quot;Localhost&quot;).
+<div class="highlight"><pre><span></span><code>Error creating: pods "rancher-677d78b948-d7m9s" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (containers "rancher", "rancher-audit-log" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (containers "rancher", "rancher-audit-log" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or containers "rancher", "rancher-audit-log" must set securityContext.runAsNonRoot=true), seccompProfile (pod or containers "rancher", "rancher-audit-log" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost").
 </code></pre></div>
 <p>Another detected symptom is the impossibility to connect on the local cluster through the Kubectl UI shell.</p>
 <h2 id="cause"><strong>Cause</strong></h2>
@@ -15376,7 +15376,7 @@ You can find in the <a href="https://ranchermanager.docs.rancher.com/reference-g
 <p>RKE2 configuration file will then looks like this:</p>
 <div class="highlight"><pre><span></span><code># cat /etc/rancher/rke2/config.yaml
 profile: cis
-pod-security-admission-config-file: &quot;/etc/rancher/rke2/rke2-pss_rancher.yaml&quot;
+pod-security-admission-config-file: "/etc/rancher/rke2/rke2-pss_rancher.yaml"
 </code></pre></div>
 <p>Restart <code>rke2-server</code> systemd service for this new configuration to take effect:</p>
 <div class="highlight"><pre><span></span><code>systemctl restart rke2-server
@@ -15392,7 +15392,7 @@ root        3633    3580  6 09:44 ?        00:02:28 kube-apiserver --admission-c
 <ul>
 <li>Create a dummy pod in the <code>cattle-system</code> namespace:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>$ kubectl run dummy-pod --image=&#39;busybox&#39; -n cattle-system
+<div class="highlight"><pre><span></span><code>$ kubectl run dummy-pod --image='busybox' -n cattle-system
 pod/dummy-pod created
 </code></pre></div>
 <p>If the correct PSA is not applied, pod creation in the <code>cattle-system</code> namespace will be forbidden.</p>

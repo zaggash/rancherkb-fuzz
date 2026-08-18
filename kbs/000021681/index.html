@@ -15357,7 +15357,7 @@
           supervisor-metrics: true
         machineLabelSelector:
           matchLabels:
-            rke.cattle.io/control-plane-role: &#39;true&#39;
+            rke.cattle.io/control-plane-role: 'true'
 </code></pre></div>
 2. Per, the <a href="https://docs.k3s.io/installation/registry-mirror#enabling-registry-mirroring">K3s</a> and <a href="https://docs.rke2.io/install/registry_mirror#enabling-registry-mirroring">RKE2</a> documentation, "Enabling mirroring for a registry allows a node to both pull images from that registry from other nodes, and share the registry's images with other nodes." Therefore, if a registry that you wish to use with the Embedded Registry Mirror is not already defined in the cluster's registry mirror configuration, you will need to add it. You can add the registry without any endpoints, per the following example for docker.io (Docker Hub):</p>
 <p><div class="highlight"><pre><span></span><code>    registries:
@@ -15374,34 +15374,34 @@ $ alias kubectl=/var/lib/rancher/rke2/bin/kubectl
 $ kubectl get --server https://&lt;node-ip&gt;:9345 --raw /metrics | grep spegel
 # HELP spegel_advertised_image_digests Number of image digests advertised to be available.
 # TYPE spegel_advertised_image_digests gauge
-spegel_advertised_image_digests{registry=&quot;docker.io&quot;} 25
+spegel_advertised_image_digests{registry="docker.io"} 25
 # HELP spegel_advertised_image_tags Number of image tags advertised to be available.
 # TYPE spegel_advertised_image_tags gauge
-spegel_advertised_image_tags{registry=&quot;docker.io&quot;} 25
+spegel_advertised_image_tags{registry="docker.io"} 25
 # HELP spegel_advertised_images Number of images advertised to be available.
 # TYPE spegel_advertised_images gauge
-spegel_advertised_images{registry=&quot;docker.io&quot;} 50
+spegel_advertised_images{registry="docker.io"} 50
 # HELP spegel_advertised_keys Number of keys advertised to be available.
 # TYPE spegel_advertised_keys gauge
-spegel_advertised_keys{registry=&quot;docker.io&quot;} 218
+spegel_advertised_keys{registry="docker.io"} 218
 </code></pre></div>
 <h2 id="query-the-spegel-metrics-for-a-k3s-cluster-node">Query the Spegel metrics for a K3s cluster node</h2>
 <p>The Spegel metrics will be exposed via the K3s supervisor metrics for each cluster node, on port 6443. The example below shows how to query the Spegel metrics for a node from a K3s cluster server node:</p>
 <div class="highlight"><pre><span></span><code>kubectl get --server https://&lt;node-ip&gt;:6443 --raw /metrics | grep spegel
-libp2p_rcmgr_streams{dir=&quot;inbound&quot;,protocol=&quot;/spegel/kad/1.0.0&quot;,scope=&quot;protocol&quot;} 1
-libp2p_rcmgr_streams{dir=&quot;outbound&quot;,protocol=&quot;/spegel/kad/1.0.0&quot;,scope=&quot;protocol&quot;} 1
+libp2p_rcmgr_streams{dir="inbound",protocol="/spegel/kad/1.0.0",scope="protocol"} 1
+libp2p_rcmgr_streams{dir="outbound",protocol="/spegel/kad/1.0.0",scope="protocol"} 1
 # HELP spegel_advertised_image_digests Number of image digests advertised to be available.
 # TYPE spegel_advertised_image_digests gauge
-spegel_advertised_image_digests{registry=&quot;docker.io&quot;} 9
+spegel_advertised_image_digests{registry="docker.io"} 9
 # HELP spegel_advertised_image_tags Number of image tags advertised to be available.
 # TYPE spegel_advertised_image_tags gauge
-spegel_advertised_image_tags{registry=&quot;docker.io&quot;} 9
+spegel_advertised_image_tags{registry="docker.io"} 9
 # HELP spegel_advertised_images Number of images advertised to be available.
 # TYPE spegel_advertised_images gauge
-spegel_advertised_images{registry=&quot;docker.io&quot;} 18
+spegel_advertised_images{registry="docker.io"} 18
 # HELP spegel_advertised_keys Number of keys advertised to be available.
 # TYPE spegel_advertised_keys gauge
-spegel_advertised_keys{registry=&quot;docker.io&quot;} 92
+spegel_advertised_keys{registry="docker.io"} 92
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>
 </code></pre></div>

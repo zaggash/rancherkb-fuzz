@@ -15557,28 +15557,28 @@
 <p>First, note at the time of this writing, v0.5.0 is the latest version of the driver. If there is a newer version available, you can replace this in the chart and version tags. See the <a href="https://github.com/kubernetes-sigs/aws-ebs-csi-driver">AWS EBS CSI readme</a> for documentation on the versions currently available. Second, you can customize the <code>enableVolumeScheduling</code>, <code>enableVolumeResizing</code>, <code>enableVolumeSnaphost</code>, and <code>extraVolumeTags</code> based on your needs. These parameters and others are documented in the <a href="https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/aws-ebs-csi-driver/values.yaml">Helm chart</a>.</p>
 <p>Next, you need to give the driver IAM permissions to manage EBS volumes. This can be done one of two ways. You can either feed your AWS access key and secret key as a Kubernetes secret, or use an AWS instance profile. Since the first option involves passing sensitive keys in clear text and storing them directly in Kubernetes, the second option is usually preferred. I will go over both options. For either option, make sure your access keys or instance profile has the following permissions set in IAM:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Statement&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;ec2:AttachVolume&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:CreateSnapshot&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:CreateTags&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:CreateVolume&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:DeleteSnapshot&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:DeleteTags&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:DeleteVolume&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:DescribeAvailabilityZones&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:DescribeInstances&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:DescribeSnapshots&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:DescribeTags&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:DescribeVolumes&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:DescribeVolumesModifications&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:DetachVolume&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ec2:ModifyVolume&quot;</span>
+<span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">"ec2:AttachVolume"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:CreateSnapshot"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:CreateTags"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:CreateVolume"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:DeleteSnapshot"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:DeleteTags"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:DeleteVolume"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:DescribeAvailabilityZones"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:DescribeInstances"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:DescribeSnapshots"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:DescribeTags"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:DescribeVolumes"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:DescribeVolumesModifications"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:DetachVolume"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"ec2:ModifyVolume"</span>
 <span class="w">      </span><span class="p">],</span>
-<span class="w">      </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<span class="w">      </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"*"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -15592,8 +15592,8 @@
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-secret</span>
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kube-system</span>
 <span class="nt">stringData</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AKI**********&quot;</span>
-<span class="w">  </span><span class="nt">access_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;**********&quot;</span>
+<span class="w">  </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">"AKI**********"</span>
+<span class="w">  </span><span class="nt">access_key</span><span class="p">:</span><span class="w"> </span><span class="s">"**********"</span>
 </code></pre></div>
 <h5 id="option-2-instance-profile">Option 2: Instance Profile</h5>
 <p>This option to more secure and should not expose your keys in clear text or in a Kubernetes secret object. You'll need to make sure when your EC2 instances are launched, you've attached an <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html">instance profile</a> that has the permissions defined above in the JSON block.</p>
@@ -15626,10 +15626,10 @@ ebs-csi-controller-6f799b5548-h4nbb      6/6     Running   0          15m
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">storage-test</span>
 <span class="nt">spec</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">containers</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;storage-test&quot;</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ubuntu:latest&quot;</span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;/bin/sleep&quot;</span><span class="p p-Indicator">]</span>
-<span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;infinity&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"storage-test"</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">"ubuntu:latest"</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"/bin/sleep"</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"infinity"</span><span class="p p-Indicator">]</span>
 <span class="w">    </span><span class="nt">volumeMounts</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myebs</span>
 <span class="w">        </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/mnt/test</span>

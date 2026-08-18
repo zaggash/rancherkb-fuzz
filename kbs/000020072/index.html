@@ -15406,46 +15406,46 @@
 <h4 id="resolution">Resolution</h4>
 <p>RKE cluster templates can be created using the Rancher2 Terraform Provider per the <a href="https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster_template">documentation on the <code>rancher2_cluster_template</code> resource</a>.</p>
 <p>An example of this resource can be found below:</p>
-<div class="highlight"><pre><span></span><code>resource &quot;rancher2_cluster_template&quot; &quot;foo&quot; {
-  name = &quot;foo&quot;
+<div class="highlight"><pre><span></span><code>resource "rancher2_cluster_template" "foo" {
+  name = "foo"
   members {
-    access_type = &quot;owner&quot;
-    user_principal_id = &quot;local://user-XXXXX&quot;
+    access_type = "owner"
+    user_principal_id = "local://user-XXXXX"
   }
   template_revisions {
-    name = &quot;V1&quot;
+    name = "V1"
     cluster_config {
       rke_config {
         network {
-          plugin = &quot;canal&quot;
+          plugin = "canal"
         }
         services {
           etcd {
-            creation = &quot;6h&quot;
-            retention = &quot;24h&quot;
+            creation = "6h"
+            retention = "24h"
           }
         }
       }
     }
     default = true
   }
-  description = &quot;Terraform cluster template foo&quot;
+  description = "Terraform cluster template foo"
 }
 </code></pre></div>
 <p>Having configured the Rancher2 Terraform Provider and added the above example resource, adjusting as desired and replacing <code>local://user-XXXXX</code> with a valid user prinical ID, run <code>terraform apply</code> to create the RKE template.</p>
 <p><strong>N.B.</strong> the <code>default = true</code> flag, which will specify this <code>V1</code> revision as the the default revision.</p>
 <p>To add additional revisions, each one will be nested as a new <code>template_revisions</code> block for that resource. Here is an example <code>V2</code> revision:</p>
 <div class="highlight"><pre><span></span><code>template_revisions {
-  name = &quot;V2&quot;
+  name = "V2"
   cluster_config {
     rke_config {
       network {
-        plugin = &quot;canal&quot;
+        plugin = "canal"
       }
       services {
         etcd {
-          creation = &quot;3h&quot;
-          retention = &quot;12h&quot;
+          creation = "3h"
+          retention = "12h"
         }
       }
     }
@@ -15453,23 +15453,23 @@
 }
 </code></pre></div>
 <p>So, the full resource block would now look like this:</p>
-<div class="highlight"><pre><span></span><code>resource &quot;rancher2_cluster_template&quot; &quot;foo&quot; {
-  name = &quot;foo&quot;
+<div class="highlight"><pre><span></span><code>resource "rancher2_cluster_template" "foo" {
+  name = "foo"
   members {
-    access_type = &quot;owner&quot;
-    user_principal_id = &quot;local://user-XXXXX&quot;
+    access_type = "owner"
+    user_principal_id = "local://user-XXXXX"
   }
   template_revisions {
-    name = &quot;V1&quot;
+    name = "V1"
     cluster_config {
       rke_config {
         network {
-          plugin = &quot;canal&quot;
+          plugin = "canal"
         }
         services {
           etcd {
-            creation = &quot;6h&quot;
-            retention = &quot;24h&quot;
+            creation = "6h"
+            retention = "24h"
           }
         }
       }
@@ -15478,22 +15478,22 @@
 
   }
   template_revisions {
-    name = &quot;V2&quot;
+    name = "V2"
     cluster_config {
       rke_config {
         network {
-          plugin = &quot;canal&quot;
+          plugin = "canal"
         }
         services {
           etcd {
-            creation = &quot;3h&quot;
-            retention = &quot;12h&quot;
+            creation = "3h"
+            retention = "12h"
           }
         }
       }
     }
   }
-  description = &quot;Terraform cluster template foo&quot;
+  description = "Terraform cluster template foo"
 }
 </code></pre></div>
 <p>Run <code>terraform apply</code> and observe this second <code>V2</code> revision created for the RKE template.</p>

@@ -15357,7 +15357,7 @@ rancher-stable  https://releases.rancher.com/server-charts/stable
 rancher-latest  https://releases.rancher.com/server-charts/latest
 </code></pre></div>
 <p>You can list the <strong>final releases</strong> with</p>
-<div class="highlight"><pre><span></span><code>$ helm search repo &quot;rancher-latest&quot; --versions
+<div class="highlight"><pre><span></span><code>$ helm search repo "rancher-latest" --versions
 NAME                    CHART VERSION   APP VERSION DESCRIPTION
 rancher-latest/rancher  2.6.6           v2.6.6      Install Rancher Server to manage Kubernetes clu...
 rancher-latest/rancher  2.6.5           v2.6.5      Install Rancher Server to manage Kubernetes clu...
@@ -15366,7 +15366,7 @@ rancher-latest/rancher  2.6.4           v2.6.4      Install Rancher Server to ma
 rancher-latest/rancher  2.0.4           v2.0.4      Install Rancher Server to manage Kubernetes clu...
 </code></pre></div>
 <p>To list the RC versions, you can use the <strong>--devel</strong> argument.</p>
-<div class="highlight"><pre><span></span><code>helm search repo &quot;rancher-latest&quot; --versions --devel
+<div class="highlight"><pre><span></span><code>helm search repo "rancher-latest" --versions --devel
 NAME                    CHART VERSION       APP VERSION         DESCRIPTION
 rancher-latest/rancher  2.6.7-rc7           v2.6.7-rc7          Install Rancher Server to manage Kubernetes clu...
 rancher-latest/rancher  2.6.7-rc6           v2.6.7-rc6          Install Rancher Server to manage Kubernetes clu...

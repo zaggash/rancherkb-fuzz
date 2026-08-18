@@ -15365,7 +15365,7 @@
 <p>An RKE2 cluster with a version &lt;1.27.12, &lt;1.28.8 and &lt;1.29.4</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>As a result of <a href="https://github.com/rancher/rke2/issues/4864">a bug affecting RKE2</a> clusters with a version &lt;1.27.12, &lt;1.28.8 and &lt;1.29.4, during an upgrade the kube-proxy containers are not correctly upgraded and remain on the pre-upgrade version. Errors of the following format are observed in the kubelet logs:</p>
-<div class="highlight"><pre><span></span><code>&quot;Unable to attach or mount volumes for pod; skipping pod&quot; err=&quot;unmounted volumes=[file0 file1 file2 file3], unattached volumes=[file0 file1 file2 file3]: timed out waiting for the condition&quot; pod=&quot;kube-system/kube-proxy-test-00865632-02&quot;
+<div class="highlight"><pre><span></span><code>"Unable to attach or mount volumes for pod; skipping pod" err="unmounted volumes=[file0 file1 file2 file3], unattached volumes=[file0 file1 file2 file3]: timed out waiting for the condition" pod="kube-system/kube-proxy-test-00865632-02"
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>This bug was tracked in <a href="https://github.com/rancher/rke2/issues/4864">https://github.com/rancher/rke2/issues/4864</a> and fixed in RKE2 1.27.12, 1.28.8, 1.29.4 and above.</p>

@@ -15323,7 +15323,7 @@
 <p>This article provides commonly used <code>kubectl</code> commands to list and inspect Rancher management API objects, including clusters, nodes, users, and tokens. These resources are stored as custom resources in the Rancher management cluster and can be queried directly using <code>kubectl</code>. The commands shown here present the information in a clear, human-readable format, which is useful for troubleshooting, auditing, and verifying Rancher configuration.</p>
 <p><strong>Clusters information:</strong> <br />
 Command:</p>
-<div class="highlight"><pre><span></span><code>kubectl get clusters.management.cattle.io -o custom-columns=&quot;ID:.metadata.name,NAME:.spec.displayName,DRIVER:.status.driver,K8S_VERSION:.status.version.gitVersion,CREATED:.metadata.creationTimestamp,DELETED:.metadata.deletionTimestamp,LAST_READY:.status.conditions[?(@.type == &#39;Ready&#39;)].lastUpdateTime,READY:.status.conditions[?(@.type == &#39;Ready&#39;)].status&quot; --sort-by=.metadata.creationTimestamp
+<div class="highlight"><pre><span></span><code>kubectl get clusters.management.cattle.io -o custom-columns="ID:.metadata.name,NAME:.spec.displayName,DRIVER:.status.driver,K8S_VERSION:.status.version.gitVersion,CREATED:.metadata.creationTimestamp,DELETED:.metadata.deletionTimestamp,LAST_READY:.status.conditions[?(@.type == 'Ready')].lastUpdateTime,READY:.status.conditions[?(@.type == 'Ready')].status" --sort-by=.metadata.creationTimestamp
 </code></pre></div>
 <p>Example Output:</p>
 <div class="highlight"><pre><span></span><code>ID             NAME         DRIVER     K8S_VERSION      CREATED                DELETED   LAST_READY             READY
@@ -15332,7 +15332,7 @@ c-m-g2zxtbrm   test-rke2    imported   v1.34.3+rke2r1   2026-02-03T02:14:16Z   &
 </code></pre></div>
 <p><strong>Nodes Information</strong><br />
 Command:</p>
-<div class="highlight"><pre><span></span><code>kubectl get nodes.management.cattle.io -A -o custom-columns=&quot;NAMESPACE:.metadata.namespace,ID:.metadata.name,NAME:.status.nodeName,K8S:status.internalNodeStatus.nodeInfo.kubeletVersion,CP:spec.controlPlane,ETCD:spec.etcd,WORKER:spec.worker,OS:status.internalNodeStatus.nodeInfo.osImage,KERNEL:.status.internalNodeStatus.nodeInfo.kubeletVersion&quot;
+<div class="highlight"><pre><span></span><code>kubectl get nodes.management.cattle.io -A -o custom-columns="NAMESPACE:.metadata.namespace,ID:.metadata.name,NAME:.status.nodeName,K8S:status.internalNodeStatus.nodeInfo.kubeletVersion,CP:spec.controlPlane,ETCD:spec.etcd,WORKER:spec.worker,OS:status.internalNodeStatus.nodeInfo.osImage,KERNEL:.status.internalNodeStatus.nodeInfo.kubeletVersion"
 </code></pre></div>
 <p>Example Output:</p>
 <div class="highlight"><pre><span></span><code>NAMESPACE      ID              NAME                           K8S              CP      ETCD    WORKER   OS                   KERNEL
@@ -15344,7 +15344,7 @@ local          machine-fcmmf   ip-172-31-21-69                v1.34.2+rke2r1   t
 </code></pre></div>
 <p><strong>Users Information</strong><br />
 Command:</p>
-<div class="highlight"><pre><span></span><code>kubectl get users.management.cattle.io -A -o custom-columns=ID:&#39;{.metadata.name},Name:&#39;{.username},DisplayName:&#39;{.displayName}&#39;
+<div class="highlight"><pre><span></span><code>kubectl get users.management.cattle.io -A -o custom-columns=ID:'{.metadata.name},Name:'{.username},DisplayName:'{.displayName}'
 </code></pre></div>
 <p>Example Output:</p>
 <div class="highlight"><pre><span></span><code>ID             Name     DisplayName
@@ -15356,7 +15356,7 @@ user-kxdgm     admin    Default Admin
 </code></pre></div>
 <p><strong>Tokens Information</strong><br />
 Command:</p>
-<div class="highlight"><pre><span></span><code>kubectl get tokens.management.cattle.io -o custom-columns=Name:&#39;{.metadata.name}&#39;,ID:&#39;{.userId}&#39;,DisplayName:&#39;{.userPrincipal.displayName}&#39;,User:&#39;{.userPrincipal.loginName}&#39;,Created:&#39;{.metadata.creationTimestamp}&#39;
+<div class="highlight"><pre><span></span><code>kubectl get tokens.management.cattle.io -o custom-columns=Name:'{.metadata.name}',ID:'{.userId}',DisplayName:'{.userPrincipal.displayName}',User:'{.userPrincipal.loginName}',Created:'{.metadata.creationTimestamp}'
 </code></pre></div>
 <p>Example Output:</p>
 <div class="highlight"><pre><span></span><code>Name           ID             DisplayName     User     Created

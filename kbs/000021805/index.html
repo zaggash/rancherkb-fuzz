@@ -15347,12 +15347,12 @@
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>The cluster is stuck in an Updating state, with a status message of the format "waiting for [rke2-win-pnm94-pqhb5] certificate rotation", after the execution of <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/rotate-certificates#certificate-rotation">Certification Rotation,</a> waiting for the certificates to be rotated in Windows nodes.</p>
 <p>The rancher-wins service (rancher-system-agent) on the affected Windows node(s) fails with the error: " <strong>{error executing instruction 0: exec:/bin/sh":  executable file not found in %PATH%}</strong></p>
-<div class="highlight"><pre><span></span><code>PS C:\Windows&gt; Get-EventLog -LogName Application -Source &#39;rancher-wins&#39; -Newest 50 | format-table -Property TimeGenerated, ReplacementStrings -Wrap
+<div class="highlight"><pre><span></span><code>PS C:\Windows&gt; Get-EventLog -LogName Application -Source 'rancher-wins' -Newest 50 | format-table -Property TimeGenerated, ReplacementStrings -Wrap
 
 TimeGenerated         ReplacementStrings
 -------------         ------------------
 4/25/2025 10:22:46 AM {[K8s] updated plan secret fleet-default/rke2-win-pnm94-pqhb5-machine-plan with feedback}
-4/25/2025 10:22:46 AM  {error executing instruction 0: exec: &quot;/bin/sh&quot;:  executable file not found in %PATH%}
+4/25/2025 10:22:46 AM  {error executing instruction 0: exec: "/bin/sh":  executable file not found in %PATH%}
 4/25/2025 10:22:46 AM {[Applyinator] Running command: /bin/sh [-x /var/lib/rancher/capr/idempotence/idempotent.sh
                       certificate-rotation/restart-reset-failed
                       6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b
@@ -15364,7 +15364,7 @@ TimeGenerated         ReplacementStrings
 4/25/2025 10:22:46 AM {[Applyinator] Applying one-time instructions for plan with checksum
                       e6cc55ca9f306482c21ae53e9090c85730d4509b6dd5aa7882538cbc703acb2b}
 4/25/2025 10:22:16 AM {[K8s] updated plan secret fleet-default/rke2-win-pnm94-pqhb5-machine-plan with feedback}
-4/25/2025 10:22:16 AM {error executing instruction 0: exec: &quot;/bin/sh&quot;: executable file not found in %PATH%}
+4/25/2025 10:22:16 AM {error executing instruction 0: exec: "/bin/sh": executable file not found in %PATH%}
 4/25/2025 10:22:16 AM {[Applyinator] Running command: /bin/sh [-x /var/lib/rancher/capr/idempotence/idempotent.sh
                       certificate-rotation/restart-reset-failed
                       6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b

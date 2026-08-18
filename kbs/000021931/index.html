@@ -15377,10 +15377,10 @@
 <ul>
 <li><strong>Incorrect quoting:</strong> Using triple single quotes instead of one.</li>
 </ul>
-<p><div class="highlight"><pre><span></span><code>field.cattle.io/resourceQuota: &#39;&#39;&#39;{&quot;limit&quot;:{&quot;pods&quot;:&quot;30&quot;, ... }}&#39;&#39;&#39;
+<p><div class="highlight"><pre><span></span><code>field.cattle.io/resourceQuota: '''{"limit":{"pods":"30", ... }}'''
 </code></pre></div>
 - <strong>Missing characters:</strong> A missing double quote on a value.</p>
-<div class="highlight"><pre><span></span><code>field.cattle.io/resourceQuota: &#39;{&quot;limit&quot;:{ ... &quot;limitsCpu&quot;:1600m&quot;, ... }}&#39; 
+<div class="highlight"><pre><span></span><code>field.cattle.io/resourceQuota: '{"limit":{ ... "limitsCpu":1600m", ... }}' 
 </code></pre></div>
 <p><em>(Note the missing quote before <code>1600m</code>)</em></p>
 <h2 id="resolution"><strong>Resolution</strong></h2>

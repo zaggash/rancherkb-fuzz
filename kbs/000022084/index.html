@@ -15393,9 +15393,9 @@ spec:
    controller:
      config:
        # Configures client_max_body_size (e.g., to prevent 413 errors)
-       proxy-body-size: &quot;5m&quot; 
+       proxy-body-size: "5m" 
        # Configures client_body_buffer_size (e.g., to prevent disk buffering warnings)
-       client-body-buffer-size: &quot;5m&quot; 
+       client-body-buffer-size: "5m" 
 </code></pre></div>
 <p>If the warning persists, ensure the new configurations have been correctly applied and loaded by the NGINX process.<br />
 Confirm that the NGINX configuration has been reloaded, sometimes requiring a manual restart of the rke2-ingress-nginx-controller DaemonSet.</p>

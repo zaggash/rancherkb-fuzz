@@ -15446,12 +15446,12 @@
 </code></pre></div>
 6. The results of the testing will be stored in the <code>/tmp/reports</code> directory.</p>
 <h4 id="faq">FAQ</h4>
-<div class="highlight"><pre><span></span><code>Errors: [config reading error: decoding failed: error unmarshaling JSON: while decoding JSON: json: cannot unmarshal number -4611686018427388 into Go struct field Phase.Steps.Phases.ReplicasPerNamespace of type int32]&quot;
+<div class="highlight"><pre><span></span><code>Errors: [config reading error: decoding failed: error unmarshaling JSON: while decoding JSON: json: cannot unmarshal number -4611686018427388 into Go struct field Phase.Steps.Phases.ReplicasPerNamespace of type int32]"
 </code></pre></div>
 <ul>
 <li>Change the value of <code>{{$NODES_PER_NAMESPACE := DefaultParam .NODES_PER_NAMESPACE 1}}</code> to match the number of the nodes in the config.yaml file</li>
 </ul>
-<div class="highlight"><pre><span></span><code>level=warning msg=&quot;Got errors during step execution: [measurement call APIResponsiveness - APIResponsiveness error: unexpected response: \&quot;# HELP aggregator_openapi_v2_regeneration_count [ALPHA] Counter of OpenAPI v2 spec regeneration count broken down by causing APIService name and reason.
+<div class="highlight"><pre><span></span><code>level=warning msg="Got errors during step execution: [measurement call APIResponsiveness - APIResponsiveness error: unexpected response: \"# HELP aggregator_openapi_v2_regeneration_count [ALPHA] Counter of OpenAPI v2 spec regeneration count broken down by causing APIService name and reason.
 </code></pre></div>
 <ul>
 <li>Comment out the APIResponsiveness section in config.yaml:</li>

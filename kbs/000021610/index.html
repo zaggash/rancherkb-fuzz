@@ -15367,7 +15367,7 @@
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>When trying to install Istio from "Apps" in the Rancher UI the installation fails with the below error.</p>
 <div class="highlight"><pre><span></span><code>Ingress gateways encountered an error: failed to update resource with server-side apply for obj Service/istio-system/istio-ingressgateway:
-Service &quot;istio-ingressgateway&quot; is invalid: spec.ports[1].nodePort: Invalid value: 31380: provided port is already allocated
+Service "istio-ingressgateway" is invalid: spec.ports[1].nodePort: Invalid value: 31380: provided port is already allocated
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The is caused by another application that is currently using the default port of Istio. Which is causing a conflict with the default port.</p>

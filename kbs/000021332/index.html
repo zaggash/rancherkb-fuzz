@@ -15346,14 +15346,14 @@
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>The Prometheus server is unstable, with storage-related errors in the Prometheus Pod logs:</p>
-<div class="highlight"><pre><span></span><code>2022-05-26T07:15:19.251601279Z level=error ts=2022-05-26T07:15:19.251Z caller=db.go:745 component=tsdb msg=&quot;compaction failed&quot; err=&quot;plan compaction: open /prometheus/01F8Q3MT8CJXMNMPKW7G86M6M5/meta.json: no such file or directory&quot;
+<div class="highlight"><pre><span></span><code>2022-05-26T07:15:19.251601279Z level=error ts=2022-05-26T07:15:19.251Z caller=db.go:745 component=tsdb msg="compaction failed" err="plan compaction: open /prometheus/01F8Q3MT8CJXMNMPKW7G86M6M5/meta.json: no such file or directory"
 </code></pre></div>
 <p>and/or a warning about NFS storage not being supported:</p>
-<div class="highlight"><pre><span></span><code>2022-05-25T10:15:40.601740700Z level=warn ts=2022-05-25T10:15:40.601Z caller=main.go:756 fs_type=NFS_SUPER_MAGIC msg=&quot;This filesystem is not supported and may lead to data corruption and data loss. Please carefully read https://prometheus.io/docs/prometheus/latest/storage/ to learn more about supported filesystems.&quot;
+<div class="highlight"><pre><span></span><code>2022-05-25T10:15:40.601740700Z level=warn ts=2022-05-25T10:15:40.601Z caller=main.go:756 fs_type=NFS_SUPER_MAGIC msg="This filesystem is not supported and may lead to data corruption and data loss. Please carefully read https://prometheus.io/docs/prometheus/latest/storage/ to learn more about supported filesystems."
 </code></pre></div>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>As described in the <a href="https://prometheus.io/docs/prometheus/latest/storage/">Prometheus docs</a>, NFS is not a supported filesystem for Prometheus database storage:</p>
-<div class="highlight"><pre><span></span><code>CAUTION: Non-POSIX compliant filesystems are not supported for Prometheus&#39; local storage as unrecoverable corruptions may happen. NFS filesystems (including AWS&#39;s EFS) are not supported. NFS could be POSIX-compliant, but most implementations are not. It is strongly recommended to use a local filesystem for reliability.
+<div class="highlight"><pre><span></span><code>CAUTION: Non-POSIX compliant filesystems are not supported for Prometheus' local storage as unrecoverable corruptions may happen. NFS filesystems (including AWS's EFS) are not supported. NFS could be POSIX-compliant, but most implementations are not. It is strongly recommended to use a local filesystem for reliability.
 </code></pre></div>
 <p>You should therefore remove the persistent storage configuration using NFS in the rancher-monitoring chart options or switch to a supported persistent storage type, such as a block storage volume provisioned (e.g. AWS EBS, Longhorn, vSphere volumes).</p>
 

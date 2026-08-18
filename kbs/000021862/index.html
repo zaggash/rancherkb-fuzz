@@ -15374,12 +15374,12 @@
 <p>You can use the following environment variables to set the desired timezone in the various pods by editing the cluster YAML:</p>
 <div class="highlight"><pre><span></span><code>    machineSelectorConfig:
       - config:
-            kube-apiserver-extra-env: &quot;TZ=&lt;timezone&gt;&quot;
-            kube-scheduler-extra-env: &quot;TZ=&lt;timezone&gt;&quot;
-            kube-controller-manager-extra-env: &quot;TZ=&lt;timezone&gt;&quot;
-            kube-proxy-extra-env: &quot;TZ=&lt;timezone&gt;&quot;
-            etcd-extra-env: &quot;TZ=&lt;timezone&gt;&quot;
-            cloud-controller-manager-extra-env: &quot;TZ=&lt;timezone&gt;&quot;
+            kube-apiserver-extra-env: "TZ=&lt;timezone&gt;"
+            kube-scheduler-extra-env: "TZ=&lt;timezone&gt;"
+            kube-controller-manager-extra-env: "TZ=&lt;timezone&gt;"
+            kube-proxy-extra-env: "TZ=&lt;timezone&gt;"
+            etcd-extra-env: "TZ=&lt;timezone&gt;"
+            cloud-controller-manager-extra-env: "TZ=&lt;timezone&gt;"
 </code></pre></div>
 <p>This assumes the tzdb package is present on the nodes. Rancher started including this in their k8s releases from January 2025 onwards.</p>
 <p>For other non-static pods and workloads you may have, you can consider using k8tz that creates a admission controller that injects the timezones into any pods created. <br />

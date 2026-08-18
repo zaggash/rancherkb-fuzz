@@ -15353,10 +15353,10 @@
 <li>The default log format for the "ingress-controller-log" is below.  Refer to the official doc <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/log-format/">here</a> for more details on the parameters.</li>
 </ul>
 <div class="highlight"><pre><span></span><code>log_format upstreaminfo
-    &#39;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#39;
-    &#39;$status $body_bytes_sent &quot;$http_referer&quot; &quot;$http_user_agent&quot; &#39;
-    &#39;$request_length $request_time [$proxy_upstream_name] [$proxy_alternative_upstream_name] $upstream_addr &#39;
-    &#39;$upstream_response_length $upstream_response_time $upstream_status $req_id&#39;;
+    '$remote_addr - $remote_user [$time_local] "$request" '
+    '$status $body_bytes_sent "$http_referer" "$http_user_agent" '
+    '$request_length $request_time [$proxy_upstream_name] [$proxy_alternative_upstream_name] $upstream_addr '
+    '$upstream_response_length $upstream_response_time $upstream_status $req_id';
 </code></pre></div>
 <ul>
 <li>If you want to modify the default log format, you can use any one of the methods below :</li>
@@ -15371,7 +15371,7 @@
 
  #kubectl get cm -n kube-system rke2-ingress-nginx-controller -o yaml &gt;&gt; rke2-ingress-nginx-controller_backup.yaml
 
-b) modify or add &quot;log-format-upstream&quot; : 
+b) modify or add "log-format-upstream" : 
 
  #kubectl edit cm -n kube-system rke2-ingress-nginx-controller -o yaml
 
@@ -15379,7 +15379,7 @@ c) Verfiy changes :
 
  #kubectl get cm -n kube-system rke2-ingress-nginx-controller -o yaml  | grep -i data -A2
  data:
-  allow-snippet-annotations: &quot;false&quot;
+  allow-snippet-annotations: "false"
   log-format-upstream: $status $request $remote_addr - $remote_user [$time_local]
   
 d) (Optional) Rollout restart : 
@@ -15390,11 +15390,11 @@ d) (Optional) Rollout restart :
 <ul>
 <li>Making the changes using "HelmChartConfig" is recommended since the changes will be persisted during the upgrade.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>A) Take the backup of &quot;rke2-ingress-nginx&quot; helmchartconfigs : 
+<div class="highlight"><pre><span></span><code>A) Take the backup of "rke2-ingress-nginx" helmchartconfigs : 
 
 #kubectl get helmchartconfigs.helm.cattle.io rke2-ingress-nginx -n kube-system -o yaml &gt; rke2-ingress-nginx_helmchartconfig_backup.yaml
 
-B) Edit and add &quot;log-format-upstream&quot; to the rke2-ingress-nginx helmchartconfigs : 
+B) Edit and add "log-format-upstream" to the rke2-ingress-nginx helmchartconfigs : 
 
 #kubectl edit helmchartconfigs.helm.cattle.io rke2-ingress-nginx -n kube-system -o yaml 
 

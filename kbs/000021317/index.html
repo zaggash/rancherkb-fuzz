@@ -15375,7 +15375,7 @@ spec:
   match:
     - select:
         labels:
-          logging-test: &#39;true&#39;
+          logging-test: 'true'
 </code></pre></div>
 3. Next, a dummy pod will be deployed to generate log messages with which to test the Flow and Output. In this example the swiss-army-knife debug image created by Rancher Support is used, but you can replace this as required by your testing. You can create this Pod via the <strong>Import YAML</strong> function at the top-right of Rancher the UI or via the kubectl CLI:</p>
 <p><div class="highlight"><pre><span></span><code>apiVersion: v1
@@ -15384,7 +15384,7 @@ metadata:
   name: test-logging-pod
   namespace: cattle-logging-system
   labels:
-    logging-test: &quot;true&quot;
+    logging-test: "true"
 spec:
   containers:
   - name: sak
@@ -15392,7 +15392,7 @@ spec:
 </code></pre></div>
 4. With the Output, Flow, and Pod in place, you can now test the setup by executing a shell in the test pod and sending any desired test log messages to STDOUT (before doing this, be sure that the fluentd-configcheck pod in the cattle-logging-system Namespace is in status Completed):</p>
 <p><div class="highlight"><pre><span></span><code>$ kubectl -n cattle-logging-system exec -it test-logging-pod -- /bin/bash
-# echo &#39;Hello World from Rancher Logging!&#39; &gt; /proc/1/fd/1
+# echo 'Hello World from Rancher Logging!' &gt; /proc/1/fd/1
 </code></pre></div>
 5. To view the results, you have to go to the /tmp/logs folder that will be created in the Fluentd pod (you might have to wait up to a few minutes for the log file to be populated, due to container log scraping and buffering by Fluent Bit). Inside the /tmp/logs directory will be a directory for the test Pod, and the log file will be in a child directory under the day, month and year:
 6. ```

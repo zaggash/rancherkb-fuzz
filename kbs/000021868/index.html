@@ -15366,7 +15366,7 @@
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>After expanding the disk space on a Kubernetes node, Longhorn fails to recognize and update the new disk capacity. The <code>node.longhorn.io</code> object for the affected node does not reflect the expanded size, even though the disk expansion was successful at the operating system level.</p>
 <p>Upon reviewing the <code>longhorn-manager</code> pod logs, the following recurring error is observed:</p>
-<div class="highlight"><pre><span></span><code>2025-05-24T10:27:50.565235147+02:00 time=&quot;2025-05-24T08:27:50Z&quot; level=error msg=&quot;Dropping Longhorn node out of the queue&quot; func=controller.handleReconcileErrorLogging file=&quot;utils.go:79&quot; LonghornNode=longhorn-system/node01 controller=longhorn-node error=&quot;failed to sync node for longhorn-system/node01: no node name provided to check node down or deleted&quot; node=node01
+<div class="highlight"><pre><span></span><code>2025-05-24T10:27:50.565235147+02:00 time="2025-05-24T08:27:50Z" level=error msg="Dropping Longhorn node out of the queue" func=controller.handleReconcileErrorLogging file="utils.go:79" LonghornNode=longhorn-system/node01 controller=longhorn-node error="failed to sync node for longhorn-system/node01: no node name provided to check node down or deleted" node=node01
 </code></pre></div>
 <p>This error indicates that the <code>node.spec.name</code> field is missing from the respective <code>node.longhorn.io</code> object, preventing the Longhorn node controller from properly syncing the node's status, including disk information.</p>
 <h2 id="cause"><strong>Cause</strong></h2>
@@ -15401,14 +15401,14 @@ metadata:
   generation: 1
   name: node01
   namespace: longhorn-system
-  resourceVersion: &quot;12713&quot;
+  resourceVersion: "12713"
   uid: 3c11b55d-e0633-47a2f-a525-a2f98e96df66
 spec:
   allowScheduling: true
   disks:
     default-disk-697367c0672dc2af:
       allowScheduling: true
-      diskDriver: &quot;&quot;
+      diskDriver: ""
       diskType: filesystem
       evictionRequested: false
       path: /var/lib/longhorn/

@@ -15405,8 +15405,8 @@ kubectl get mutatingwebhookconfiguration -o yaml &gt; all-mutating.yaml
 <p><strong>Option A: Targeted Deletion (Recommended)</strong></p>
 <p>Modify the script below by replacing the placeholder names in the <code>TARGET_WEBHOOKS</code> array with the specific webhooks identified from your logs:</p>
 <div class="highlight"><pre><span></span><code>#!/bin/bash
-# Add specific webhook names here (e.g., &quot;kyverno-resource-validating-webhook-configuration&quot;)
-TARGET_WEBHOOKS=(&quot;webhook-name-1&quot; &quot;webhook-name-2&quot;)
+# Add specific webhook names here (e.g., "kyverno-resource-validating-webhook-configuration")
+TARGET_WEBHOOKS=("webhook-name-1" "webhook-name-2")
 
 # Identify kubectl and KUBECONFIG path
 if [ -f /etc/rancher/rke2/rke2.yaml ]; then
@@ -15414,26 +15414,26 @@ if [ -f /etc/rancher/rke2/rke2.yaml ]; then
     KUBECTL=/var/lib/rancher/rke2/bin/kubectl
 elif [ -f /etc/rancher/k3s/k3s.yaml ]; then
     export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-    KUBECTL=&quot;/usr/local/bin/k3s kubectl&quot;
+    KUBECTL="/usr/local/bin/k3s kubectl"
 else
     KUBECTL=$(which kubectl)
 fi
 
-echo &quot;Using kubectl at: $KUBECTL&quot;
-echo &quot;Using KUBECONFIG at: $KUBECONFIG&quot;
-echo &quot;Monitoring and removing specific blocking webhooks...&quot;
+echo "Using kubectl at: $KUBECTL"
+echo "Using KUBECONFIG at: $KUBECONFIG"
+echo "Monitoring and removing specific blocking webhooks..."
 
 while true; do
-  for name in &quot;${TARGET_WEBHOOKS[@]}&quot;; do
+  for name in "${TARGET_WEBHOOKS[@]}"; do
     # Check Validating
-    if kubectl get validatingwebhookconfiguration &quot;$name&quot; &amp;&gt;/dev/null; then
-        echo &quot;Deleting validating webhook: $name&quot;
-        kubectl delete validatingwebhookconfiguration &quot;$name&quot; --timeout=5s
+    if kubectl get validatingwebhookconfiguration "$name" &amp;&gt;/dev/null; then
+        echo "Deleting validating webhook: $name"
+        kubectl delete validatingwebhookconfiguration "$name" --timeout=5s
     fi
     # Check Mutating
-    if kubectl get mutatingwebhookconfiguration &quot;$name&quot; &amp;&gt;/dev/null; then
-        echo &quot;Deleting mutating webhook: $name&quot;
-        kubectl delete mutatingwebhookconfiguration &quot;$name&quot; --timeout=5s
+    if kubectl get mutatingwebhookconfiguration "$name" &amp;&gt;/dev/null; then
+        echo "Deleting mutating webhook: $name"
+        kubectl delete mutatingwebhookconfiguration "$name" --timeout=5s
     fi
   done
   sleep 2
@@ -15449,26 +15449,26 @@ if [ -f /etc/rancher/rke2/rke2.yaml ]; then
     KUBECTL=/var/lib/rancher/rke2/bin/kubectl
 elif [ -f /etc/rancher/k3s/k3s.yaml ]; then
     export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-    KUBECTL=&quot;/usr/local/bin/k3s kubectl&quot;
+    KUBECTL="/usr/local/bin/k3s kubectl"
 else
     KUBECTL=$(which kubectl)
 fi
 
-echo &quot;Using kubectl at: $KUBECTL&quot;
-echo &quot;Using KUBECONFIG at: $KUBECONFIG&quot;
-echo &quot;Monitoring and removing webhooks to allow restoration...&quot;
+echo "Using kubectl at: $KUBECTL"
+echo "Using KUBECONFIG at: $KUBECONFIG"
+echo "Monitoring and removing webhooks to allow restoration..."
 
 while true; do
   # Delete Mutating Webhooks
   for hook in $(kubectl get mutatingwebhookconfiguration -o name 2&gt;/dev/null); do
-    echo &quot;Deleting $hook&quot;
-    kubectl delete &quot;$hook&quot; --timeout=5s
+    echo "Deleting $hook"
+    kubectl delete "$hook" --timeout=5s
   done
 
   # Delete Validating Webhooks
   for hook in $(kubectl get validatingwebhookconfiguration -o name 2&gt;/dev/null); do
-    echo &quot;Deleting $hook&quot;
-    kubectl delete &quot;$hook&quot; --timeout=5s
+    echo "Deleting $hook"
+    kubectl delete "$hook" --timeout=5s
   done
 
   sleep 2

@@ -15339,23 +15339,23 @@ data:
     #!/bin/bash
     TIMEOUT_SEC=1
 
-    echo &quot;Starting nc listener with $TIMEOUT_SEC second timeout...&quot;
+    echo "Starting nc listener with $TIMEOUT_SEC second timeout..."
 
     while true; do
-      REQUEST_FILE=&quot;/tmp/request.log&quot;
+      REQUEST_FILE="/tmp/request.log"
 
-      echo &quot;Waiting for connection...&quot;
+      echo "Waiting for connection..."
 
       # Reads the HTTP POST request and prints it to a file.
       (
-        printf &quot;HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/plain\r\n\r\nRequest successfully logged.\n&quot;
+        printf "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/plain\r\n\r\nRequest successfully logged.\n"
       ) | nc -l -p 8080 -w $TIMEOUT_SEC &gt; $REQUEST_FILE
 
 
       # Prints to stdout
-      echo -e &quot;\n--- RECEIVED FULL REQUEST ---\n&quot;
+      echo -e "\n--- RECEIVED FULL REQUEST ---\n"
       cat $REQUEST_FILE
-      echo -e &quot;\n--- END OF REQUEST ---\n&quot;
+      echo -e "\n--- END OF REQUEST ---\n"
 
       # Erases the temp file to end the loop
       rm -f $REQUEST_FILE
@@ -15374,7 +15374,7 @@ spec:
   containers:
   - name: receiver-container
     image: rancherlabs/swiss-army-knife:latest
-    command: [&quot;/bin/bash&quot;, &quot;/script/receiver.sh&quot;]
+    command: ["/bin/bash", "/script/receiver.sh"]
     ports:
     - containerPort: 8080
     volumeMounts:
@@ -15455,7 +15455,7 @@ User-Agent: Alertmanager/0.28.1
 Content-Length: 1214
 Content-Type: application/json
 
-{&quot;receiver&quot;:&quot;cattle-monitoring-system/webhook-receiver-am-config/webhook-receiver-pod&quot;,&quot;status&quot;:&quot;firing&quot;,&quot;alerts&quot;:[{&quot;status&quot;:&quot;firing&quot;,&quot;labels&quot;:{&quot;alertname&quot;:&quot;test-alert&quot;,&quot;namespace&quot;:&quot;cattle-monitoring-system&quot;,&quot;prometheus&quot;:&quot;cattle-monitoring-system/rancher-monitoring-prometheus&quot;,&quot;severity&quot;:&quot;critical&quot;},&quot;annotations&quot;:{},&quot;startsAt&quot;:&quot;2025-10-14T09:04:11.437Z&quot;,&quot;endsAt&quot;:&quot;0001-01-01T00:00:00Z&quot;,&quot;generatorURL&quot;:&quot;https://142.93.230.60.nip.io/k8s/clusters/c-m-d2xdbdjr/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/graph?g0.expr=vector%281%29\u0026g0.tab=1&quot;,&quot;fingerprint&quot;:&quot;163a7e819a18ef74&quot;}],&quot;groupLabels&quot;:{&quot;namespace&quot;:&quot;cattle-monitoring-system&quot;},&quot;commonLabels&quot;:{&quot;alertname&quot;:&quot;test-alert&quot;,&quot;namespace&quot;:&quot;cattle-monitoring-system&quot;,&quot;prometheus&quot;:&quot;cattle-monitoring-system/rancher-monitoring-prometheus&quot;,&quot;severity&quot;:&quot;critical&quot;},&quot;commonAnnotations&quot;:{},&quot;externalURL&quot;:&quot;https://142.93.230.60.nip.io/k8s/clusters/c-m-d2xdbdjr/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy&quot;,&quot;version&quot;:&quot;4&quot;,&quot;groupKey&quot;:&quot;{}/{namespace=\&quot;cattle-monitoring-system\&quot;}/{severity=\&quot;critical\&quot;}:{namespace=\&quot;cattle-monitoring-system\&quot;}&quot;,&quot;truncatedAlerts&quot;:0}
+{"receiver":"cattle-monitoring-system/webhook-receiver-am-config/webhook-receiver-pod","status":"firing","alerts":[{"status":"firing","labels":{"alertname":"test-alert","namespace":"cattle-monitoring-system","prometheus":"cattle-monitoring-system/rancher-monitoring-prometheus","severity":"critical"},"annotations":{},"startsAt":"2025-10-14T09:04:11.437Z","endsAt":"0001-01-01T00:00:00Z","generatorURL":"https://142.93.230.60.nip.io/k8s/clusters/c-m-d2xdbdjr/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/graph?g0.expr=vector%281%29\u0026g0.tab=1","fingerprint":"163a7e819a18ef74"}],"groupLabels":{"namespace":"cattle-monitoring-system"},"commonLabels":{"alertname":"test-alert","namespace":"cattle-monitoring-system","prometheus":"cattle-monitoring-system/rancher-monitoring-prometheus","severity":"critical"},"commonAnnotations":{},"externalURL":"https://142.93.230.60.nip.io/k8s/clusters/c-m-d2xdbdjr/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy","version":"4","groupKey":"{}/{namespace=\"cattle-monitoring-system\"}/{severity=\"critical\"}:{namespace=\"cattle-monitoring-system\"}","truncatedAlerts":0}
 
 --- END OF REQUEST ---
 </code></pre></div>

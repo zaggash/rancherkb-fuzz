@@ -15370,21 +15370,21 @@
 <p><strong>Observed Error in Rancher UI (After enabling Fleet Debug Log):</strong></p>
 <p><strong><img alt="" src="https://suse.file.force.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&amp;versionId=068Tr00000Sb10D&amp;operationContext=DELIVERY&amp;contentId=05TTr00000ceVYf&amp;page=0&amp;d=%2Fa%2FTr00000DueGE%2FVKyTcSI5PrIyX89XT5GspZy.scbLfbcZHd8uLrQW3Eg&amp;oid=00D1i000000gLOd&amp;dpt=null&amp;viewId=" /></strong></p>
 <div class="highlight"><pre><span></span><code>Job Failed. failed: 1/1
-time=&quot;2025-04-30T09:58:25.679769+0000&quot; level=info msg=&quot;Using in-cluster namespace&quot; namespace=fleet-default
-time=&quot;2025-04-30T09:58:25.680059+0000&quot; level=info msg=&quot;Using in-cluster configuration&quot;
-time=&quot;2025-04-30T09:58:25.681524+0000&quot; level=debug msg=&quot;Request Body&quot; body=&quot;{\&quot;kind\&quot;:\&quot;DeleteOptions\&quot;,\&quot;apiVersion\&quot;:\&quot;fleet.cattle.io/v1alpha1\&quot;}&quot;
-time=&quot;2025-04-30T09:58:25.681699+0000&quot; level=debug msg=&quot;curl -v -XDELETE -H \&quot;Accept: application/json,*/*\&quot; -H \&quot;Content-Type: application/json\&quot; -H \&quot;Authorization: Bearer &lt;masked&gt;\&quot; -H \&quot;User-Agent: fleet/v0.0.0 (linux/amd64) kubernetes/$Format\&quot; https://10.43.0.1:443/api/v1/namespaces/fleet-default/secrets/ocx-xx-xxxx-001-xx-xxx-t-001-xxxxxxxx-web-ui&quot;
-time=&quot;2025-04-30T09:58:25.682309+0000&quot; level=debug msg=&quot;HTTP Trace: Dial to tcp: 10.43.0.1:443 succeed&quot;
-time=&quot;2025-04-30T09:58:25.686097+0000&quot; level=debug msg=&quot;DELETE https://10.43.0.1:443/api/v1/namespaces/fleet-default/secrets/ocx-xx-xxxx-001-xx-xxx-t-001-xxxxxxxx-web-ui 401 Unauthorized in 4 milliseconds&quot;
-time=&quot;2025-04-30T09:58:25.686143+0000&quot; level=debug msg=&quot;HTTP Statistics: DNSLookup 0 ms Dial 0 ms TLSHandshake 2 ms ServerProcessing 1 ms Duration 4 ms&quot;
-time=&quot;2025-04-30T09:58:25.686149+0000&quot; level=debug msg=&quot;Response Headers:&quot;
-time=&quot;2025-04-30T09:58:25.686156+0000&quot; level=debug msg=&quot;Audit-Id: fe86d238-783-4232-a646-8bb165dbfa3&quot;
-time=&quot;2025-04-30T09:58:25.686161+0000&quot; level=debug msg=&quot;Cache-Control: no-cache, private&quot;
-time=&quot;2025-04-30T09:58:25.686165+0000&quot; level=debug msg=&quot;Content-Type: application/json&quot;
-time=&quot;2025-04-30T09:58:25.686173+0000&quot; level=debug msg=&quot;Content-Length: 129&quot;
-time=&quot;2025-04-30T09:58:25.686182+0000&quot; level=debug msg=&quot;Date: Wed, 30 Apr 2025 09:56:58 GMT&quot;
-time=&quot;2025-04-30T09:58:25.686226+0000&quot; level=debug msg=&quot;Response Body&quot; body=&quot;{\&quot;kind\&quot;:\&quot;Status\&quot;,\&quot;apiVersion\&quot;:\&quot;v1\&quot;,\&quot;metadata\&quot;:{},\&quot;status\&quot;:\&quot;Failure\&quot;,\&quot;message\&quot;:\&quot;Unauthorized\&quot;,\&quot;reason\&quot;:\&quot;Unauthorized\&quot;,\&quot;code\&quot;:401}&quot;
-time=&quot;2025-04-30T09:58:25Z&quot; level=fatal msg=Unauthorized
+time="2025-04-30T09:58:25.679769+0000" level=info msg="Using in-cluster namespace" namespace=fleet-default
+time="2025-04-30T09:58:25.680059+0000" level=info msg="Using in-cluster configuration"
+time="2025-04-30T09:58:25.681524+0000" level=debug msg="Request Body" body="{\"kind\":\"DeleteOptions\",\"apiVersion\":\"fleet.cattle.io/v1alpha1\"}"
+time="2025-04-30T09:58:25.681699+0000" level=debug msg="curl -v -XDELETE -H \"Accept: application/json,*/*\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer &lt;masked&gt;\" -H \"User-Agent: fleet/v0.0.0 (linux/amd64) kubernetes/$Format\" https://10.43.0.1:443/api/v1/namespaces/fleet-default/secrets/ocx-xx-xxxx-001-xx-xxx-t-001-xxxxxxxx-web-ui"
+time="2025-04-30T09:58:25.682309+0000" level=debug msg="HTTP Trace: Dial to tcp: 10.43.0.1:443 succeed"
+time="2025-04-30T09:58:25.686097+0000" level=debug msg="DELETE https://10.43.0.1:443/api/v1/namespaces/fleet-default/secrets/ocx-xx-xxxx-001-xx-xxx-t-001-xxxxxxxx-web-ui 401 Unauthorized in 4 milliseconds"
+time="2025-04-30T09:58:25.686143+0000" level=debug msg="HTTP Statistics: DNSLookup 0 ms Dial 0 ms TLSHandshake 2 ms ServerProcessing 1 ms Duration 4 ms"
+time="2025-04-30T09:58:25.686149+0000" level=debug msg="Response Headers:"
+time="2025-04-30T09:58:25.686156+0000" level=debug msg="Audit-Id: fe86d238-783-4232-a646-8bb165dbfa3"
+time="2025-04-30T09:58:25.686161+0000" level=debug msg="Cache-Control: no-cache, private"
+time="2025-04-30T09:58:25.686165+0000" level=debug msg="Content-Type: application/json"
+time="2025-04-30T09:58:25.686173+0000" level=debug msg="Content-Length: 129"
+time="2025-04-30T09:58:25.686182+0000" level=debug msg="Date: Wed, 30 Apr 2025 09:56:58 GMT"
+time="2025-04-30T09:58:25.686226+0000" level=debug msg="Response Body" body="{\"kind\":\"Status\",\"apiVersion\":\"v1\",\"metadata\":{},\"status\":\"Failure\",\"message\":\"Unauthorized\",\"reason\":\"Unauthorized\",\"code\":401}"
+time="2025-04-30T09:58:25Z" level=fatal msg=Unauthorized
 </code></pre></div>
 <p><strong>Observations:</strong></p>
 <ul>
@@ -15392,10 +15392,10 @@ time=&quot;2025-04-30T09:58:25Z&quot; level=fatal msg=Unauthorized
 <li>The debug log indicates a successful initial connection to the Kubernetes API server (10.43.0.1:443)</li>
 </ul>
 <p><strong>Error in Gitjob Pod (Triggered by Force Update):</strong></p>
-<div class="highlight"><pre><span></span><code>{&quot;level&quot;:&quot;error&quot;,&quot;ts&quot;:&quot;2025-03-27T07:22:02Z&quot;,&quot;logger&quot;:&quot;gitops-status&quot;,&quot;msg&quot;:&quot;Reconcile failed update to git repo status&quot;,&quot;controller&quot;:&quot;GitRepoStatus&quot;,&quot;controllerGroup&quot;:&quot;fleet.cattle.io&quot;,&quot;controllerKind&quot;:&quot;GitRepo&quot;,&quot;GitRepo&quot;:{&quot;name&quot;:&quot;xxx-xx-test-001&quot;,&quot;namespace&quot;:&quot;fleet-default&quot;},&quot;namespace&quot;:&quot;fleet-default&quot;,&quot;name&quot;:&quot;xxx-xx-test-001&quot;,&quot;reconcileID&quot;:&quot;8e6da18a-e838-4be8-8855-692aec99eb89&quot;,&quot;generation&quot;:15,&quot;commit&quot;:&quot;2ce6239c21fa08a9d8746dd6c812f45xxxxxxxxx&quot;,&quot;conditions&quot;:[{&quot;type&quot;:&quot;Ready&quot;,&quot;status&quot;:&quot;True&quot;,&quot;lastUpdateTime&quot;:&quot;2025-03-27T06:26:03Z&quot;},{&quot;type&quot;:&quot;GitPolling&quot;,&quot;status&quot;:&quot;True&quot;,&quot;lastUpdateTime&quot;:&quot;2025-03-25T09:35:15Z&quot;},{&quot;type&quot;:&quot;Reconciling&quot;,&quot;status&quot;:&quot;False&quot;,&quot;lastUpdateTime&quot;:&quot;2025-02-21T20:44:49Z&quot;},{&quot;type&quot;:&quot;Stalled&quot;,&quot;status&quot;:&quot;True&quot;,&quot;lastUpdateTime&quot;:&quot;2025-03-27T07:20:05Z&quot;,&quot;reason&quot;:&quot;Stalled&quot;,&quot;message&quot;:&quot;Job Failed. failed: 1/1time=\&quot;2025-03-27T07:20:02Z\&quot; level=fatal msg=Unauthorized\n&quot;}]}
+<div class="highlight"><pre><span></span><code>{"level":"error","ts":"2025-03-27T07:22:02Z","logger":"gitops-status","msg":"Reconcile failed update to git repo status","controller":"GitRepoStatus","controllerGroup":"fleet.cattle.io","controllerKind":"GitRepo","GitRepo":{"name":"xxx-xx-test-001","namespace":"fleet-default"},"namespace":"fleet-default","name":"xxx-xx-test-001","reconcileID":"8e6da18a-e838-4be8-8855-692aec99eb89","generation":15,"commit":"2ce6239c21fa08a9d8746dd6c812f45xxxxxxxxx","conditions":[{"type":"Ready","status":"True","lastUpdateTime":"2025-03-27T06:26:03Z"},{"type":"GitPolling","status":"True","lastUpdateTime":"2025-03-25T09:35:15Z"},{"type":"Reconciling","status":"False","lastUpdateTime":"2025-02-21T20:44:49Z"},{"type":"Stalled","status":"True","lastUpdateTime":"2025-03-27T07:20:05Z","reason":"Stalled","message":"Job Failed. failed: 1/1time=\"2025-03-27T07:20:02Z\" level=fatal msg=Unauthorized\n"}]}
 </code></pre></div>
 <p><strong>kube-apiserver Logs (During Force Update):</strong></p>
-<div class="highlight"><pre><span></span><code>E0430 10:07:19.141522       1 authentication.go:73] &quot;Unable to authenticate the request&quot; err=&quot;[invalid bearer token, service account token is not valid yet]&quot;
+<div class="highlight"><pre><span></span><code>E0430 10:07:19.141522       1 authentication.go:73] "Unable to authenticate the request" err="[invalid bearer token, service account token is not valid yet]"
 </code></pre></div>
 <p>The "<strong>Unauthorized</strong>" error in Rancher UI for the Git Repo and the kube-apiserver logs, specifically the message "service account token is not valid yet", strongly suggests an issue with token validity, likely due to time synchronisation problems between the upstream Rancher cluster and the downstream clusters managed by Fleet.</p>
 <p><strong>Verification:</strong></p>

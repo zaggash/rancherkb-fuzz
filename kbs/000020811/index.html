@@ -15352,13 +15352,13 @@
 <p>The <code>rke-metadata-config</code> can be configured via the Rancher environment variable <code>CATTLE_RKE_METADATA_CONFIG</code>.</p>
 <p>In order to configure this environment variable on the Rancher Helm chart, follow the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#setting-extra-environment-variables">Rancher documentation for setting extra environment variables</a>.</p>
 <p>An example of the Helm values updating the <code>rke-metadata-config</code> URL to <a href="https://releases.example.com/kontainer-driver-metadata/release-v2.12/data.json">https://releases.example.com/kontainer-driver-metadata/release-v2.12/data.json</a> is as follows:</p>
-<div class="highlight"><pre><span></span><code>--set &#39;extraEnv[0].name=CATTLE_RKE_METADATA_CONFIG&#39;
---set &#39;extraEnv[0].value=\{\&quot;refresh-interval-minutes\&quot;:\&quot;1450&quot;\,\&quot;url&quot;\:\&quot;https://releases.example.com/kontainer-driver-metadata/release-v2.12/data.json\&quot;}&#39;
+<div class="highlight"><pre><span></span><code>--set 'extraEnv[0].name=CATTLE_RKE_METADATA_CONFIG'
+--set 'extraEnv[0].value=\{\"refresh-interval-minutes\":\"1450"\,\"url"\:\"https://releases.example.com/kontainer-driver-metadata/release-v2.12/data.json\"}'
 </code></pre></div>
 <p><strong>Resetting the <code>rke-metadata-config</code> setting to the default</strong></p>
 <p>As noted above, if you have set a value for the <code>rke-metadata-config</code> setting - even if that value matched the default at the time - the URL will <strong>no longer</strong> be updated automatically during Rancher upgrades.</p>
 <p>If you would like to revert to the default <code>rke-metadata-config</code> behavior (pulling from releases.rancher.com with the URL automatically tracking your Rancher version), run the following command in the Rancher local cluster to remove the custom value:</p>
-<div class="highlight"><pre><span></span><code>kubectl patch setting.management.cattle.io rke-metadata-config --type=&#39;merge&#39; -p &#39;{&quot;value&quot;:&quot;&quot;}&#39;
+<div class="highlight"><pre><span></span><code>kubectl patch setting.management.cattle.io rke-metadata-config --type='merge' -p '{"value":""}'
 </code></pre></div>
 
 

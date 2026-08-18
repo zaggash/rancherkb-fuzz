@@ -15369,12 +15369,12 @@ Kubernetes v1.20+</p>
 Kubelet pod is in <code>Restarting</code> state on the new node.</p>
 <div class="highlight"><pre><span></span><code>$ docker ps -a |grep kubelet
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>66bd40b36e76 rancher/hyperkube:v1.20.4-rancher1 &quot;/opt/rke-tools/entr…&quot; 7 minutes ago Restarting (255) 32 seconds ago kubelet
+<div class="highlight"><pre><span></span><code>66bd40b36e76 rancher/hyperkube:v1.20.4-rancher1 "/opt/rke-tools/entr…" 7 minutes ago Restarting (255) 32 seconds ago kubelet
 </code></pre></div>
 <p>The kubelet is failing with below error.</p>
 <div class="highlight"><pre><span></span><code>$ docker logs kubelet
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>&quot;2021-07-26T11:13:48.270162766Z F0726 11:13:48.270086   40730 docker_service.go:415] Streaming server stopped unexpectedly: listen tcp 27.0.0.1:0: bind: cannot assign requested address&quot;
+<div class="highlight"><pre><span></span><code>"2021-07-26T11:13:48.270162766Z F0726 11:13:48.270086   40730 docker_service.go:415] Streaming server stopped unexpectedly: listen tcp 27.0.0.1:0: bind: cannot assign requested address"
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>File /etc/hosts in the new node had below incorrect entry.</p>

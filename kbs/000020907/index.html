@@ -15328,7 +15328,7 @@
 <h1 id="the-provisioning-of-an-rke-downstream-cluster-fails-after-adding-extra_args-for-the-kubelet-service-to-a-new-rke-template-and-using-this-newly-created-template-to-provision-the-rke-cluster">The provisioning of an RKE downstream cluster fails after adding extra_args for the kubelet service to a new RKE template and using this newly created template to provision the RKE cluster.</h1>
 <p><strong><em>Error:</em></strong></p>
 <div class="highlight"><pre><span></span><code>Error message while creating a new RKE cluster from the new RKE Template:
-Unable to validate S3 backup target configuration: Get http://169.254.169.254/latest/meta-data/iam/security-credentials/&quot;: dial tcp 169.254.169.254:80: i/o timeout
+Unable to validate S3 backup target configuration: Get http://169.254.169.254/latest/meta-data/iam/security-credentials/": dial tcp 169.254.169.254:80: i/o timeout
 </code></pre></div>
 <p>Configuration:</p>
 <div class="highlight"><pre><span></span><code>E.g. extra_args for the kubelet added to the RKE Template:
@@ -15337,8 +15337,8 @@ Unable to validate S3 backup target configuration: Get http://169.254.169.254/l
       ...
       extra_args:
         ...
-        image-gc-high-threshold: &#39;80&#39;
-        image-gc-low-threshold: &#39;75&#39;
+        image-gc-high-threshold: '80'
+        image-gc-low-threshold: '75'
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 
 </code></pre></div>

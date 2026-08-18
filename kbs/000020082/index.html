@@ -15429,14 +15429,14 @@
 <p>By default, K3s uses Traefik as the ingress controller for your cluster. The decision to use Traefik over NGINX was based on multi-architecture support across x86 and ARM based platforms. Normally Traefik meets the needs of most Kubernetes clusters. However, there are unique use cases where NGINX may be required or preferred. If you don't think you need NGINX, it's recommended to stick with Traefik.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>The first step to using NGINX or any alternative ingress controller is to tell K3s that you do not want to deploy Traefik. When installing K3s add the following <code>--no-deploy traefik</code> flag to the <code>INSTALL_K3S_EXEC</code> environment variable.  Or in some cases, you may need a --disable traefik option instead:</p>
-<div class="highlight"><pre><span></span><code>curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC=&quot;--no-deploy traefik&quot; sh -s -
+<div class="highlight"><pre><span></span><code>curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-deploy traefik" sh -s -
 or
-curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC=&quot;--disable traefik&quot; sh -s -
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable traefik" sh -s -
 </code></pre></div>
 <p>If you have already downloaded the k3s.sh install script, you can run the following:</p>
-<div class="highlight"><pre><span></span><code>INSTALL_K3S_EXEC=&quot;--no-deploy traefik&quot; k3s.sh
+<div class="highlight"><pre><span></span><code>INSTALL_K3S_EXEC="--no-deploy traefik" k3s.sh
 or
-INSTALL_K3S_EXEC=&quot;--disable traefik&quot; k3s.sh
+INSTALL_K3S_EXEC="--disable traefik" k3s.sh
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 
 </code></pre></div>
@@ -15495,7 +15495,7 @@ spec:
         serviceMonitor:
           enabled: false
       config:
-        use-forwarded-headers: &quot;true&quot;
+        use-forwarded-headers: "true"
 EOF
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 

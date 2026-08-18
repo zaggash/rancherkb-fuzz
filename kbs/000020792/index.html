@@ -15367,14 +15367,14 @@
 
 #  these outline the url speaking to, and the authorization token 
 
-variable &quot;api_url&quot; {
-  description = &quot;rancher api url&quot;
-  default     = &quot;https://urlto.rancher-fqdn.com&quot;
+variable "api_url" {
+  description = "rancher api url"
+  default     = "https://urlto.rancher-fqdn.com"
 }
 
-variable &quot;token_key&quot; {
-  description = &quot;api key to use for tf&quot;
-  default     = &quot;token-nameid:jwt-long-hash-string&quot;
+variable "token_key" {
+  description = "api key to use for tf"
+  default     = "token-nameid:jwt-long-hash-string"
 }
 
 
@@ -15382,7 +15382,7 @@ variable &quot;token_key&quot; {
 
 # use the variables from the earlier section to define the provider
 
-provider &quot;rancher2&quot; {
+provider "rancher2" {
   api_url   = var.api_url
   token_key = var.token_key
   insecure  = true
@@ -15396,11 +15396,11 @@ provider &quot;rancher2&quot; {
 terraform {
   required_providers {
     rancher2 = {
-      source  = &quot;rancher/rancher2&quot;
-      version = &quot;&gt;= 6.0.0&quot;
+      source  = "rancher/rancher2"
+      version = "&gt;= 6.0.0"
     }
   }
-  required_version = &quot;&gt;= 1.5.7&quot;
+  required_version = "&gt;= 1.5.7"
 }
 
 
@@ -15408,11 +15408,11 @@ terraform {
 
 ## hard-coded example, read cluster info for local 
 
-data &quot;rancher2_cluster&quot; &quot;local&quot; {
-  name = &quot;local&quot;
+data "rancher2_cluster" "local" {
+  name = "local"
 }
 
-output &quot;cluster_labels&quot; {
+output "cluster_labels" {
   value     = data.rancher2_cluster.local.labels
 }
 </code></pre></div>

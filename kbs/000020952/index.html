@@ -15440,7 +15440,7 @@
 <p>To interact with the Rancher API, you need to use cURL to make an HTTP request. The request must include the authentication token, the URL of the Rancher API endpoint, and any other parameters specific to your request.</p>
 <p>The root of the Rancher API endpoint is: <strong>https://YOUR_RANCHER_URL/v3</strong></p>
 <p>For example, if you want to list all the users in your Rancher infrastructure, you would use the following cURL command:</p>
-<div class="highlight"><pre><span></span><code>curl -u &quot;$access_key:$secret_key&quot; -X GET &quot;https://YOUR_RANCHER_URL/v3/users&quot;
+<div class="highlight"><pre><span></span><code>curl -u "$access_key:$secret_key" -X GET "https://YOUR_RANCHER_URL/v3/users"
 </code></pre></div>
 <p>The variables in this command, should be replaced with your Access Key and Secret Key. These can be created in the <strong>Account and API Keys</strong> section of the Rancher UI.</p>
 <h2 id="conclusion">Conclusion</h2>

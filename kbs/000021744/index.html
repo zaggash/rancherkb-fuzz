@@ -15424,34 +15424,34 @@ alias kubectl=/var/lib/rancher/rke2/bin/kubectl
 kubectl get --server https://&lt;node-ip&gt;:9345 --raw /metrics | grep load
 # HELP rke2_loadbalancer_dial_duration_seconds Time taken to dial a connection to a backend server
 # TYPE rke2_loadbalancer_dial_duration_seconds histogram
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.001&quot;} 13
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.002&quot;} 22
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.004&quot;} 51
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.008&quot;} 79
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.016&quot;} 123
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.032&quot;} 154
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.064&quot;} 163
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.128&quot;} 163
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.256&quot;} 163
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.512&quot;} 163
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;1.024&quot;} 163
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;2.048&quot;} 163
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;4.096&quot;} 163
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;8.192&quot;} 163
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;16.384&quot;} 163
-rke2_loadbalancer_dial_duration_seconds_bucket{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;+Inf&quot;} 163
-rke2_loadbalancer_dial_duration_seconds_sum{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;} 1.7390672159999991
-rke2_loadbalancer_dial_duration_seconds_count{name=&quot;rke2-etcd-server-load-balancer&quot;,status=&quot;success&quot;} 163
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="0.001"} 13
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="0.002"} 22
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="0.004"} 51
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="0.008"} 79
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="0.016"} 123
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="0.032"} 154
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="0.064"} 163
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="0.128"} 163
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="0.256"} 163
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="0.512"} 163
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="1.024"} 163
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="2.048"} 163
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="4.096"} 163
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="8.192"} 163
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="16.384"} 163
+rke2_loadbalancer_dial_duration_seconds_bucket{name="rke2-etcd-server-load-balancer",status="success",le="+Inf"} 163
+rke2_loadbalancer_dial_duration_seconds_sum{name="rke2-etcd-server-load-balancer",status="success"} 1.7390672159999991
+rke2_loadbalancer_dial_duration_seconds_count{name="rke2-etcd-server-load-balancer",status="success"} 163
 # HELP rke2_loadbalancer_server_connections Count of current connections to loadbalancer server
 # TYPE rke2_loadbalancer_server_connections gauge
-rke2_loadbalancer_server_connections{name=&quot;rke2-etcd-server-load-balancer&quot;,server=&quot;24.199.104.66:2379&quot;} 0
-rke2_loadbalancer_server_connections{name=&quot;rke2-etcd-server-load-balancer&quot;,server=&quot;24.199.96.251:2379&quot;} 0
-rke2_loadbalancer_server_connections{name=&quot;rke2-etcd-server-load-balancer&quot;,server=&quot;64.23.213.163:2379&quot;} 153
+rke2_loadbalancer_server_connections{name="rke2-etcd-server-load-balancer",server="24.199.104.66:2379"} 0
+rke2_loadbalancer_server_connections{name="rke2-etcd-server-load-balancer",server="24.199.96.251:2379"} 0
+rke2_loadbalancer_server_connections{name="rke2-etcd-server-load-balancer",server="64.23.213.163:2379"} 153
 # HELP rke2_loadbalancer_server_health Current health value of loadbalancer server
 # TYPE rke2_loadbalancer_server_health gauge
-rke2_loadbalancer_server_health{name=&quot;rke2-etcd-server-load-balancer&quot;,server=&quot;24.199.104.66:2379&quot;} 5
-rke2_loadbalancer_server_health{name=&quot;rke2-etcd-server-load-balancer&quot;,server=&quot;24.199.96.251:2379&quot;} 5
-rke2_loadbalancer_server_health{name=&quot;rke2-etcd-server-load-balancer&quot;,server=&quot;64.23.213.163:2379&quot;} 7
+rke2_loadbalancer_server_health{name="rke2-etcd-server-load-balancer",server="24.199.104.66:2379"} 5
+rke2_loadbalancer_server_health{name="rke2-etcd-server-load-balancer",server="24.199.96.251:2379"} 5
+rke2_loadbalancer_server_health{name="rke2-etcd-server-load-balancer",server="64.23.213.163:2379"} 7
 </code></pre></div>
 <h2 id="k3s">K3s</h2>
 <p>In a K3s cluster the loadbalancer metrics are exposed on agent (worker role only) nodes via the kubelet metrics port (10250) and on server nodes via the kube-apiserver port (6443).</p>
@@ -15479,30 +15479,30 @@ supervisor-metrics: true
 <div class="highlight"><pre><span></span><code>kubectl get --server https://&lt;node-ip&gt;:&lt;port&gt; --raw /metrics |grep -i k3s_load
 # HELP k3s_loadbalancer_dial_duration_seconds Time taken to dial a connection to a backend server
 # TYPE k3s_loadbalancer_dial_duration_seconds histogram
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.001&quot;} 218
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.002&quot;} 239
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.004&quot;} 253
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.008&quot;} 264
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.016&quot;} 278
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.032&quot;} 290
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.064&quot;} 293
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.128&quot;} 294
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.256&quot;} 294
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;0.512&quot;} 294
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;1.024&quot;} 294
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;2.048&quot;} 294
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;4.096&quot;} 294
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;8.192&quot;} 294
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;16.384&quot;} 294
-k3s_loadbalancer_dial_duration_seconds_bucket{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;,le=&quot;+Inf&quot;} 294
-k3s_loadbalancer_dial_duration_seconds_sum{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;} 0.8818124119999996
-k3s_loadbalancer_dial_duration_seconds_count{name=&quot;k3s-etcd-server-load-balancer&quot;,status=&quot;success&quot;} 294
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="0.001"} 218
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="0.002"} 239
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="0.004"} 253
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="0.008"} 264
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="0.016"} 278
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="0.032"} 290
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="0.064"} 293
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="0.128"} 294
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="0.256"} 294
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="0.512"} 294
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="1.024"} 294
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="2.048"} 294
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="4.096"} 294
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="8.192"} 294
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="16.384"} 294
+k3s_loadbalancer_dial_duration_seconds_bucket{name="k3s-etcd-server-load-balancer",status="success",le="+Inf"} 294
+k3s_loadbalancer_dial_duration_seconds_sum{name="k3s-etcd-server-load-balancer",status="success"} 0.8818124119999996
+k3s_loadbalancer_dial_duration_seconds_count{name="k3s-etcd-server-load-balancer",status="success"} 294
 # HELP k3s_loadbalancer_server_connections Count of current connections to loadbalancer server
 # TYPE k3s_loadbalancer_server_connections gauge
-k3s_loadbalancer_server_connections{name=&quot;k3s-etcd-server-load-balancer&quot;,server=&quot;164.92.125.58:2379&quot;} 102
+k3s_loadbalancer_server_connections{name="k3s-etcd-server-load-balancer",server="164.92.125.58:2379"} 102
 # HELP k3s_loadbalancer_server_health Current health value of loadbalancer server
 # TYPE k3s_loadbalancer_server_health gauge
-k3s_loadbalancer_server_health{name=&quot;k3s-etcd-server-load-balancer&quot;,server=&quot;164.92.125.58:2379&quot;} 7
+k3s_loadbalancer_server_health{name="k3s-etcd-server-load-balancer",server="164.92.125.58:2379"} 7
 </code></pre></div>
 
 

@@ -15546,7 +15546,7 @@ Enter<span class="w"> </span>your<span class="w"> </span>passphrase<span class="
 <ul>
 <li>Run the following command to verify the new certificate. (Replace Rancher with your Rancher URL):</li>
 </ul>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>--insecure<span class="w"> </span>-v<span class="w"> </span>https://&lt;&lt;Rancher&gt;&gt;<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }&#39;</span>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>--insecure<span class="w"> </span>-v<span class="w"> </span>https://&lt;&lt;Rancher&gt;&gt;<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'</span>
 </code></pre></div>
 <!--THE END-->
 

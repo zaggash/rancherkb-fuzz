@@ -15426,9 +15426,9 @@
 <p><div class="highlight"><pre><span></span><code>services:
   kubelet:
     extra_args:
-      root-dir: &quot;/my/new/folder&quot;
+      root-dir: "/my/new/folder"
     extra_binds:
-    - &quot;/my/new/folder:/my/new/folder:shared,z&quot;
+    - "/my/new/folder:/my/new/folder:shared,z"
 </code></pre></div>
 3. After configuring other cluster options as desired, click <code>Create</code> or <code>Next</code>, respectively for <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/node-pools/">Node Driver</a> or <a href="https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/custom-nodes/">Custom</a> clusters, to save the new cluster configuration.</p>
 <h4 id="provisioning-via-the-rke-cli"><strong>Provisioning via the RKE CLI</strong></h4>
@@ -15439,9 +15439,9 @@
 <p><div class="highlight"><pre><span></span><code>services:
   kubelet:
     extra_args:
-      root-dir: &quot;/my/new/folder&quot;
+      root-dir: "/my/new/folder"
     extra_binds:
-    - &quot;/my/new/folder:/my/new/folder:shared,z&quot;
+    - "/my/new/folder:/my/new/folder:shared,z"
 </code></pre></div>
 3. After configuring other cluster options as desired, provision the cluster by invoking <code>rke up --config &lt;cluster configuration YAML file&gt;</code>.</p>
 

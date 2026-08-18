@@ -15350,16 +15350,16 @@
   extraAnnotations:
     cert-manager.io/secret-template: |
       {
-        &quot;annotations&quot;: {
-          &quot;reflector.v1.k8s.emberstack.com/reflection-allowed&quot;: &quot;true&quot;,
-          &quot;reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces&quot;: &quot;cattle-fleet-system&quot;,
-          &quot;reflector.v1.k8s.emberstack.com/reflection-auto-enabled&quot;: &quot;true&quot;,
-          &quot;reflector.v1.k8s.emberstack.com/reflection-auto-namespaces&quot;: &quot;cattle-fleet-system&quot;
+        "annotations": {
+          "reflector.v1.k8s.emberstack.com/reflection-allowed": "true",
+          "reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces": "cattle-fleet-system",
+          "reflector.v1.k8s.emberstack.com/reflection-auto-enabled": "true",
+          "reflector.v1.k8s.emberstack.com/reflection-auto-namespaces": "cattle-fleet-system"
         }
       }
 </code></pre></div>
 <p>If you pass the Helm values to <code>helm upgrade</code> directly via the CLI, add the annotation with <code>--set-json</code> (requires Helm 3.10+):</p>
-<p><div class="highlight"><pre><span></span><code>--set-json &#39;ingress.extraAnnotations={&quot;cert-manager.io/secret-template&quot;:&quot;{\&quot;annotations\&quot;:{\&quot;reflector.v1.k8s.emberstack.com/reflection-allowed\&quot;:\&quot;true\&quot;,\&quot;reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces\&quot;:\&quot;cattle-fleet-system\&quot;,\&quot;reflector.v1.k8s.emberstack.com/reflection-auto-enabled\&quot;:\&quot;true\&quot;,\&quot;reflector.v1.k8s.emberstack.com/reflection-auto-namespaces\&quot;:\&quot;cattle-fleet-system\&quot;}}&quot;}&#39;
+<p><div class="highlight"><pre><span></span><code>--set-json 'ingress.extraAnnotations={"cert-manager.io/secret-template":"{\"annotations\":{\"reflector.v1.k8s.emberstack.com/reflection-allowed\":\"true\",\"reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces\":\"cattle-fleet-system\",\"reflector.v1.k8s.emberstack.com/reflection-auto-enabled\":\"true\",\"reflector.v1.k8s.emberstack.com/reflection-auto-namespaces\":\"cattle-fleet-system\"}}"}'
 </code></pre></div>
 3. <strong>Delete existing tls-rancher-ingress Certificate</strong></p>
 <p>After upgrading Rancher with the required <code>ingress.extraAnnotations</code> value, delete the existing <code>tls-rancher-ingress</code> Certificate, to trigger re-creation with the secretTemplate:</p>

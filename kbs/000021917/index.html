@@ -15405,8 +15405,8 @@ metadata:
   name: nfs-backup-target  # Choose a descriptive name for your backup target
   namespace: longhorn-system
 spec:
-  backupTargetURL: &quot;nfs://&lt;nfs-server-ip&gt;:/opt/longhorn-backupstore?nfsOptions=soft,timeo=330,retrans=3&quot;
-  credentialSecret: &quot;&quot; # Leave empty if no credentials are required
+  backupTargetURL: "nfs://&lt;nfs-server-ip&gt;:/opt/longhorn-backupstore?nfsOptions=soft,timeo=330,retrans=3"
+  credentialSecret: "" # Leave empty if no credentials are required
   pollInterval: 5m0s # How often Longhorn checks the backup target for new backups
 </code></pre></div>
 2. Apply the resource:</p>

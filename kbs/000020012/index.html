@@ -15431,7 +15431,7 @@
 <li>Replace the data source variable with <code>Prometheus</code> in the downloaded file</li>
 </ul>
 <p>For example:</p>
-<div class="highlight"><pre><span></span><code>sed &#39;s/${DS_PROMETHEUS}/Prometheus/&#39; logging-dashboard_rev4.json &gt; logging.json
+<div class="highlight"><pre><span></span><code>sed 's/${DS_PROMETHEUS}/Prometheus/' logging-dashboard_rev4.json &gt; logging.json
 </code></pre></div>
 <ul>
 <li>Create and label the ConfigMap using the updated <code>logging.json</code> file</li>

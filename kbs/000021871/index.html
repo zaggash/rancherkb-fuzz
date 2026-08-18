@@ -15384,21 +15384,21 @@
 <li>You can manually edit the project hanging in Terminating status, and remove the finalizer <strong>clusterscoped.controller.cattle.io/project-precan-alert-controller</strong>.</li>
 <li>There is a sample script that can help locating projects with the finalizer <strong>clusterscoped.controller.cattle.io/project-precan-alert-controller</strong>, and delete them (to be executed in the  Rancher local cluster), but please use it with caution: </li>
 </ul>
-<div class="highlight"><pre><span></span><code>namespaces=$(kubectl get ns --no-headers -o custom-columns=NAME:.metadata.name | grep &quot;c-&quot; | grep -v cluster-fleet)
+<div class="highlight"><pre><span></span><code>namespaces=$(kubectl get ns --no-headers -o custom-columns=NAME:.metadata.name | grep "c-" | grep -v cluster-fleet)
 
 for n in $namespaces; do
-  echo &quot;Namespace: $n&quot;
+  echo "Namespace: $n"
   projects=$(kubectl get project -n $n --no-headers -o name)
 
   for p in $projects; do
-    echo &quot;Project: $p&quot;
-    finalizers=$(kubectl get $p -n $n -o json | jq -r &#39;.metadata.finalizers[]&#39;)
+    echo "Project: $p"
+    finalizers=$(kubectl get $p -n $n -o json | jq -r '.metadata.finalizers[]')
 
     for i in $finalizers; do
       if [[ $i == clusterscoped.controller.cattle.io/project-precan-alert-controller* ]]; then
-        echo &quot;Removing finalizer from $p: $i&quot;
-        index=$(kubectl get $p -n $n -o json | jq -r &quot;.metadata.finalizers | index(\&quot;$i\&quot;)&quot;)
-        kubectl patch $p -n $n --type=&#39;json&#39; -p=&quot;[{\&quot;op\&quot;: \&quot;remove\&quot;, \&quot;path\&quot;: \&quot;/metadata/finalizers/$index\&quot;}]&quot;
+        echo "Removing finalizer from $p: $i"
+        index=$(kubectl get $p -n $n -o json | jq -r ".metadata.finalizers | index(\"$i\")")
+        kubectl patch $p -n $n --type='json' -p="[{\"op\": \"remove\", \"path\": \"/metadata/finalizers/$index\"}]"
       fi
     done
   done

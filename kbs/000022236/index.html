@@ -15365,7 +15365,7 @@
 <p>Helm chart upgrade to Rancher Prime v2.13.1 in a cluster utilizing the <code>ingress-nginx</code> ingress controller.</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>When performing a Helm chart upgrade of a Rancher instance to Rancher Prime v2.13.1 in a cluster with the <code>ingress-nginx</code> ingress controller, the upgrade fails with an error of the following format:</p>
-<div class="highlight"><pre><span></span><code>Error: UPGRADE FAILED: failed to create resource: admission webhook &quot;validate.nginx.ingress.kubernetes.io&quot; denied the request: host &quot;&lt;rancher-hostname&gt;&quot; and path &quot;/&quot; is already defined in ingress cattle-system/rancher
+<div class="highlight"><pre><span></span><code>Error: UPGRADE FAILED: failed to create resource: admission webhook "validate.nginx.ingress.kubernetes.io" denied the request: host "&lt;rancher-hostname&gt;" and path "/" is already defined in ingress cattle-system/rancher
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>In Rancher Prime v2.13.1, the Helm chart name was changed from <code>rancher</code> to <code>rancher-prime</code>. Because the Rancher Helm chart templates its resource names based on the chart name by default, the upgrade process attempts to create new resources (suffixed with <code>rancher-prime</code>) before the existing resources (named <code>rancher</code>) are fully removed.</p>

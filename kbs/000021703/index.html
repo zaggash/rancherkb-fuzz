@@ -15394,7 +15394,7 @@ data:
       plugins:
         preScore:
           disabled:
-          - name: &#39;*&#39;
+          - name: '*'
             score:
 </code></pre></div>
 <ol>
@@ -15406,17 +15406,17 @@ data:
       items:
        - key: config
         path: /kube-scheduler-config
-        permissions: &#39;644&#39;
+        permissions: '644'
       name: kube-scheduler-config
    machineLabelSelector:
     matchLabels:
-     rke.cattle.io/control-plane-role: &#39;true&#39;
+     rke.cattle.io/control-plane-role: 'true'
  machineSelectorConfig:
   - config:
-    kube-scheduler-arg: &#39;config=/kube-scheduler-config&#39;
+    kube-scheduler-arg: 'config=/kube-scheduler-config'
    machineLabelSelector:
     matchLabels:
-     rke.cattle.io/control-plane-role: &#39;true&#39;
+     rke.cattle.io/control-plane-role: 'true'
 </code></pre></div>
 <p>Note: The <code>/kube-scheduler-config</code> path is arbitrary and was used for testing purposes</p>
 <div class="highlight"><pre><span></span><code>

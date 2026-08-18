@@ -15359,8 +15359,8 @@
 <li>Configure the kubelet's <code>container-log-max-files</code> and <code>container-log-max-size</code> arguments in the the <a href="https://docs.rke2.io/install/configuration">RKE2</a> or <a href="https://docs.k3s.io/installation/configuration#configuration-file">K3s</a> configuration file (<code>/etc/rancher/rke2/config.yaml</code> or <code>/etc/rancher/k3s/config.yaml</code>) per the following example:</li>
 </ol>
 <p><div class="highlight"><pre><span></span><code>kubelet-arg:
-  - &quot;container-log-max-files=4&quot;
-  - &quot;container-log-max-size=50Mi&quot;
+  - "container-log-max-files=4"
+  - "container-log-max-size=50Mi"
 </code></pre></div>
 2. After updating the configuration file, you will need to restart the RKE2/K3s service to apply the changes:</p>
 <ul>

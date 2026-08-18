@@ -15380,7 +15380,7 @@
 <div class="highlight"><pre><span></span><code>kubectl get settings.management.cattle.io ui-brand
 </code></pre></div>
 <p>&gt;&gt;  Update the UI brand value as <strong>suse</strong> using the below command. </p>
-<div class="highlight"><pre><span></span><code>kubectl patch settings.management.cattle.io ui-brand --type merge -p &#39;{&quot;default&quot;:&quot;suse&quot;}&#39; 
+<div class="highlight"><pre><span></span><code>kubectl patch settings.management.cattle.io ui-brand --type merge -p '{"default":"suse"}' 
 </code></pre></div>
 <p><strong>2. Using Rancher UI</strong> </p>
 <p>Global settings &gt; settings &gt; ui-brand &gt; make sure the value is set as <strong>suse</strong> </p>

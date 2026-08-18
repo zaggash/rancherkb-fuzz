@@ -15393,7 +15393,7 @@
 <ol>
 <li>Add the DEBUG environment variable to the Registration command, by setting CATTLE_AGENT_LOGLEVEL=debug when running the registration command on RKE2 and K3s Linux hosts, e.g.:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nx">curl</span><span class="w"> </span><span class="o">-</span><span class="nx">fL</span><span class="w"> </span><span class="nx">https</span><span class="o">:</span><span class="c1">//&lt;RANCHER_FQDN&gt;/system-agent-install.sh | sudo CATTLE_AGENT_LOGLEVEL=debug sh -s - --server https://&lt;RANCHER_FQDN&gt; --label &#39;cattle.io/os=linux&#39; --token &lt;RANCHER_TOEKN&gt; --ca-checksum &lt;RANCHER_CA_CHECKSUM&gt; --etcd --controlplane --worker</span>
+<div class="highlight"><pre><span></span><code><span class="nx">curl</span><span class="w"> </span><span class="o">-</span><span class="nx">fL</span><span class="w"> </span><span class="nx">https</span><span class="o">:</span><span class="c1">//&lt;RANCHER_FQDN&gt;/system-agent-install.sh | sudo CATTLE_AGENT_LOGLEVEL=debug sh -s - --server https://&lt;RANCHER_FQDN&gt; --label 'cattle.io/os=linux' --token &lt;RANCHER_TOEKN&gt; --ca-checksum &lt;RANCHER_CA_CHECKSUM&gt; --etcd --controlplane --worker</span>
 </code></pre></div>
 <h2 id="enable-debug-for-running-clusters">Enable debug for running clusters</h2>
 <ol>

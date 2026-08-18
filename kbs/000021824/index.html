@@ -15377,7 +15377,7 @@ We observed this behavior on Kubernetes <strong>v1.28.11+rke2r1</strong>, partic
 </ul>
 <p>Given the PDB setting of <code>minAvailable: 50%</code> and a total of three replicas, only one pod can be voluntarily disrupted at any time. Draining the node with two replicas causes more than one pod to be unavailable, thereby violating the PDB policy. As a result, the remaining pods may be stuck in the <strong>Terminating</strong> state and not clean up properly.<br />
 This behaviour is not reflected in the pod or deployment logs. The only observable clue is found in the <strong><code>kube-controller-manager</code></strong>  logs, where the following error message typically appears:</p>
-<div class="highlight"><pre><span></span><code>kube-system-kube-controller-manager-k00m01.nve90.rpt.idia:E0131 10:37:43.721229 1 disruption.go:626] Error syncing PodDisruptionBudget &lt;namespace&gt;/&lt;deployment&gt;, requeuing: Operation cannot be fulfilled on poddisruptionbudgets.policy &quot;&lt;deployment&gt;&quot;: the object has been modified; please apply your changes to the latest version and try again
+<div class="highlight"><pre><span></span><code>kube-system-kube-controller-manager-k00m01.nve90.rpt.idia:E0131 10:37:43.721229 1 disruption.go:626] Error syncing PodDisruptionBudget &lt;namespace&gt;/&lt;deployment&gt;, requeuing: Operation cannot be fulfilled on poddisruptionbudgets.policy "&lt;deployment&gt;": the object has been modified; please apply your changes to the latest version and try again
 </code></pre></div>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>The permanent fix would be to upgrade to <strong>v1.30.9+rke2r1</strong>.<br />

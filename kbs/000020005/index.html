@@ -15406,10 +15406,10 @@
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>Remove the ingress container image from the node(s), using the following commands:</p>
 <div class="highlight"><pre><span></span><code># Find the name of the nginx-ingress-controller pod
-NGINX_INGRESS_CONTROLLER=&quot;$(kubectl get pods -n ingress-nginx | awk &#39;/nginx-ingress-controller/ { print $1 }&#39;)&quot;
+NGINX_INGRESS_CONTROLLER="$(kubectl get pods -n ingress-nginx | awk '/nginx-ingress-controller/ { print $1 }')"
 
 # Remove nginx-ingress-controller pod and then clean up the container image
-docker rm -f &quot;${NGINX_INGRESS_CONTROLLER}&quot; &amp;&amp; \
+docker rm -f "${NGINX_INGRESS_CONTROLLER}" &amp;&amp; \
 docker system prune -af
 </code></pre></div>
 

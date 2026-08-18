@@ -15372,9 +15372,9 @@
 Starting Rancher Kubernetes Engine v2 (server)...
 sh[26475]: + /usr/bin/systemctl is-enabled --quiet nm-cloud-setup.service
 sh[26475]: /bin/sh: 1: /usr/bin/systemctl: not found
-rke2[26486]: time=&quot;2023-01-23T12:11:54Z&quot; level=fatal msg=&quot;--protect-kernel-defaults must be true when using --profile=cis-1.6&quot;
+rke2[26486]: time="2023-01-23T12:11:54Z" level=fatal msg="--protect-kernel-defaults must be true when using --profile=cis-1.6"
 Jsystemd[1]: rke2-server.service: Main process exited, code=exited, status=1/FAILURE
- systemd[1]: rke2-server.service: Failed with result &#39;exit-code&#39;
+ systemd[1]: rke2-server.service: Failed with result 'exit-code'
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>When  RKE2 starts with the "profile" flag set to <strong>cis-1.6</strong>, "<code>protect-kernel-defaults"</code> is exposed as a configuration flag for RKE2. This flag has to be set to "true" when provisioning the cluster.</p>

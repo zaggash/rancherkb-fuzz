@@ -15575,7 +15575,7 @@ systemctl<span class="w"> </span>start<span class="w"> </span>haproxy
 <li>Follow Rancher install doc <a href="https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/">https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/</a></li>
 <li>Verify Rancher URL works when connecting directly to a Rancher node. For example:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>--header<span class="w"> </span><span class="s2">&quot;Host: rancher.example.com&quot;</span><span class="w"> </span>https://192.168.1.103/ping
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>--header<span class="w"> </span><span class="s2">"Host: rancher.example.com"</span><span class="w"> </span>https://192.168.1.103/ping
 </code></pre></div>
 <!--THE END-->
 
@@ -15632,7 +15632,7 @@ server rancher03 192.168.1.105:443 check weight 1 maxconn 1024 ssl verify none
 <li>Follow Rancher install doc https://rancher.com/docs/rancher/v2.x/en/installation/options/chart-options/#external-tls-termination</li>
 <li>Verify Rancher URL works went connecting directly to a Rancher node. For example:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>--header<span class="w"> </span><span class="s2">&quot;Host: rancher.example.com&quot;</span><span class="w"> </span>http://192.168.1.103/ping
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>--header<span class="w"> </span><span class="s2">"Host: rancher.example.com"</span><span class="w"> </span>http://192.168.1.103/ping
 </code></pre></div>
 <!--THE END-->
 
@@ -15682,7 +15682,7 @@ server rancher03 192.168.1.105:80 check weight 1 maxconn 1024
 <li>Follow Rancher install doc <a href="https://rancher.com/docs/rancher/v2.x/en/installation/options/chart-options/#external-tls-termination">https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/</a></li>
 <li>Verify Rancher URL works when connecting directly to a Rancher node. For example:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>--header<span class="w"> </span><span class="s2">&quot;Host: rancher.example.com&quot;</span><span class="w"> </span>https://192.168.1.103/ping
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>--header<span class="w"> </span><span class="s2">"Host: rancher.example.com"</span><span class="w"> </span>https://192.168.1.103/ping
 </code></pre></div>
 <!--THE END-->
 

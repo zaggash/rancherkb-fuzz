@@ -15598,10 +15598,10 @@ ingress:
   tls:
     source: secret
   extraAnnotations:
-    cert-manager.io/cluster-issuer: &quot;letsencrypt-prod&quot;
-    cert-manager.io/private-key-algorithm: &quot;ECDSA&quot;
-    cert-manager.io/private-key-size: &quot;384&quot;
-    cert-manager.io/private-key-rotation-policy: &quot;Always&quot;
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/private-key-algorithm: "ECDSA"
+    cert-manager.io/private-key-size: "384"
+    cert-manager.io/private-key-rotation-policy: "Always"
 privateCA: true
 </code></pre></div>
 <blockquote>
@@ -15641,9 +15641,9 @@ ingress:
   tls:
     source: secret
   extraAnnotations:
-    cert-manager.io/cluster-issuer: &quot;letsencrypt-prod&quot;
-    cert-manager.io/private-key-algorithm: &quot;ECDSA&quot;
-    cert-manager.io/private-key-size: &quot;384&quot;
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/private-key-algorithm: "ECDSA"
+    cert-manager.io/private-key-size: "384"
 privateCA: true
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>helm upgrade --install rancher rancher-prime/rancher --namespace cattle-system --set hostname=my_rancher.example.com -f values.yaml -f ingress_letsencrypt.yaml --version=2.10.1

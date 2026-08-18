@@ -15538,7 +15538,7 @@
 <p>You need to add the option <code>--set tls=external</code> to your Rancher install, per the following example: <code>helm install rancher rancher-latest/rancher --namespace cattle-system --set hostname=mmattox-example.support.rancher.space --version 2.3.6 --set tls=external</code></p>
 <h5 id="verification">Verification</h5>
 <p>Run the following command to verify new certificate:</p>
-<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>--insecure<span class="w"> </span>-v<span class="w"> </span>https://&lt;&lt;Rancher<span class="w"> </span>Hostname&gt;&gt;<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }&#39;</span>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>--insecure<span class="w"> </span>-v<span class="w"> </span>https://&lt;&lt;Rancher<span class="w"> </span>Hostname&gt;&gt;<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'BEGIN { cert=0 } /^\* SSL connection/ { cert=1 } /^\*/ { if (cert) print }'</span>
 </code></pre></div>
 <p>Example output:</p>
 <div class="highlight"><pre><span></span><code>* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384

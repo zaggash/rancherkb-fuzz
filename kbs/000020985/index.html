@@ -15341,7 +15341,7 @@
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/LDAP-TLS-login-error-after-upgrading-Rancher">000020985</a></p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>After upgrading Rancher to version 2.6.9 or higher, the following error is seen after logging into the Rancher UI:</p>
-<div class="highlight"><pre><span></span><code>ldap error Error creating ssl connection: LDAP Result Code 200 &quot;Network Error&quot;: tls: server selected unsupported protocol version 301
+<div class="highlight"><pre><span></span><code>ldap error Error creating ssl connection: LDAP Result Code 200 "Network Error": tls: server selected unsupported protocol version 301
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>This problem happens when the LDAP server used for authentication with Rancher uses a version of TLS lower than 1.2.<br />

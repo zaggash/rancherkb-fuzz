@@ -15368,7 +15368,7 @@
 <div class="highlight"><pre><span></span><code>+ CATTLE_AGENT_VAR_DIR=/var/lib/rancher/agent
 + TMPDIRBASE=/var/lib/rancher/agent/tmp
 + mkdir -p /host/var/lib/rancher/agent/tmp
-mkdir: cannot create directory &#39;/host/var/lib/rancher&#39;: File exists
+mkdir: cannot create directory '/host/var/lib/rancher': File exists
 </code></pre></div>
 <p>It indicates that the directory /host/var/lib/rancher cannot be created because the file already exists. This occurs because /var/lib/rancher is a symlink on the host.</p>
 <h2 id="cause"><strong>Cause</strong></h2>

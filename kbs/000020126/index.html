@@ -15363,7 +15363,7 @@ nginx-ingress-controller-n4p22          1/1     Running   0          5d
 <p>/dbg general will show the count of running controllers.</p>
 <div class="highlight"><pre><span></span><code>&gt; kubectl exec -n ingress-nginx $NGINX_POD /dbg  general
 {
-  &quot;controllerPodsCount&quot;: 3
+  "controllerPodsCount": 3
 }
 </code></pre></div>
 <p><strong>Viewing backend configuration</strong></p>
@@ -15379,7 +15379,7 @@ nginx-ingress-controller-n4p22          1/1     Running   0          5d
 </code></pre></div>
 <p><strong>Viewing dynamically generated nginx configuration</strong></p>
 <p>/dbg conf will dump the dynamically generated nginx configuration. To view the configuration for a specific ingress hostname, you could run /dbg conf and then grep for the server_name:</p>
-<div class="highlight"><pre><span></span><code>&gt; kubectl exec -n ingress-nginx $NGINX_POD /dbg conf | grep &quot;server_name example.com&quot; -B2 -A20
+<div class="highlight"><pre><span></span><code>&gt; kubectl exec -n ingress-nginx $NGINX_POD /dbg conf | grep "server_name example.com" -B2 -A20
 </code></pre></div>
 
 

@@ -15408,18 +15408,18 @@ K3s cluster</p>
 </ul>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>There could be a situation while using an encrypted volume for a pod where the pod fails to start, indicating volume mount failure. The following error is seen in longhorn-csi-plugin logs:</p>
-<div class="highlight"><pre><span></span><code>2025-08-18T11:17:22.978803544+10:00 time=&quot;2025-08-18T01:17:22Z&quot; level=error msg=&quot;NodeStageVolume: err: rpc error: code = Internal desc = format of disk \&quot;/dev/mapper/pvc-xxxxx-xxxx-xxxx-x
-xxx-xxxxxxxx\&quot; failed: type:(\&quot;ext4\&quot;) target:(\&quot;/var/lib/kubelet/plugins/kubernetes.io/csi/driver.longhorn.io/1f3db0f37bxxxxxbd43c85397bd005d208xxxxx1f413ff5294a9635b9e3/globalmoun
-t\&quot;) options:(\&quot;defaults\&quot;) errcode:(exit status 1) output:(mke2fs 1.46.4 (18-Aug-2021)\n/dev/mapper/pvc-xxxxx-xxxx-xxxx-x
+<div class="highlight"><pre><span></span><code>2025-08-18T11:17:22.978803544+10:00 time="2025-08-18T01:17:22Z" level=error msg="NodeStageVolume: err: rpc error: code = Internal desc = format of disk \"/dev/mapper/pvc-xxxxx-xxxx-xxxx-x
+xxx-xxxxxxxx\" failed: type:(\"ext4\") target:(\"/var/lib/kubelet/plugins/kubernetes.io/csi/driver.longhorn.io/1f3db0f37bxxxxxbd43c85397bd005d208xxxxx1f413ff5294a9635b9e3/globalmoun
+t\") options:(\"defaults\") errcode:(exit status 1) output:(mke2fs 1.46.4 (18-Aug-2021)\n/dev/mapper/pvc-xxxxx-xxxx-xxxx-x
 xxx-xxxxxxxx is apparently in use by the system; will not mak
-e a filesystem here!\n) &quot; func=csi.logGRPC file=&quot;server.go:138&quot;
+e a filesystem here!\n) " func=csi.logGRPC file="server.go:138"
 </code></pre></div>
 <p>Messages on the node also show that the disk format also failed:</p>
-<div class="highlight"><pre><span></span><code>Aug 13 13:11:42 example-node1 k3s[417005]: E0813 13:11:42.819061  417005 nestedpendingoperations.go:348] Operation for &quot;{volumeName:kubernetes.io/csi/driver.longhorn.io^pvc-f1b45c27-e434-40cf
--9a5d-874f452db250 podName: nodeName:}&quot; failed. No retries permitted until 2025-08-13 13:13:44.819036862 +1000 AEST m=+577.297768151 (durationBeforeRetry 2m2s). Error: MountVolume.MountDevic
-e failed for volume &quot;pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx&quot; (UniqueName: &quot;kubernetes.io/csi/driver.longhorn.io^pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx&quot;) pod &quot;test-xxxx-xxxx&quot; (
-UID: &quot;xxxxxx-xxxxx-xxxxx-xxxx-xxxxxxxx&quot;) : rpc error: code = Internal desc = format of disk &quot;/dev/mapper/pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx&quot; failed: type:(&quot;ext4&quot;) target:(&quot;/var/lib
-/kubelet/plugins/kubernetes.io/csi/driver.longhorn.io/1f3db0f37bxxxxxbd43c85397bd005d208xxxxx1f413ff5294a9635b9e3/globalmount&quot;) options:(&quot;defaults&quot;) errcode:(exit status 1) output:(mke2
+<div class="highlight"><pre><span></span><code>Aug 13 13:11:42 example-node1 k3s[417005]: E0813 13:11:42.819061  417005 nestedpendingoperations.go:348] Operation for "{volumeName:kubernetes.io/csi/driver.longhorn.io^pvc-f1b45c27-e434-40cf
+-9a5d-874f452db250 podName: nodeName:}" failed. No retries permitted until 2025-08-13 13:13:44.819036862 +1000 AEST m=+577.297768151 (durationBeforeRetry 2m2s). Error: MountVolume.MountDevic
+e failed for volume "pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx" (UniqueName: "kubernetes.io/csi/driver.longhorn.io^pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx") pod "test-xxxx-xxxx" (
+UID: "xxxxxx-xxxxx-xxxxx-xxxx-xxxxxxxx") : rpc error: code = Internal desc = format of disk "/dev/mapper/pvc-xxxxx-xxxx-xxxx-xxxx-xxxxxxxx" failed: type:("ext4") target:("/var/lib
+/kubelet/plugins/kubernetes.io/csi/driver.longhorn.io/1f3db0f37bxxxxxbd43c85397bd005d208xxxxx1f413ff5294a9635b9e3/globalmount") options:("defaults") errcode:(exit status 1) output:(mke2
 fs 1.46.4 (18-Aug-2021)
 Aug 13 13:11:42 example-node1 k3s[417005]: Warning: could not erase sector 2: Input/output error
 Aug 13 13:11:42 example-node1 k3s[417005]: Creating filesystem with 10481664 4k blocks and 2621440 inodes

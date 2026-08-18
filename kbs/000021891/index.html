@@ -15361,19 +15361,19 @@ spec:
       listener:
         filterChain:
           filter:
-            name: &quot;envoy.filters.network.http_connection_manager&quot;
+            name: "envoy.filters.network.http_connection_manager"
     patch:
       operation: MERGE
       value:
         typed_config:
-          &quot;@type&quot;: &quot;type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager&quot;
+          "@type": "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager"
           server_header_transformation: PASS_THROUGH
   - applyTo: ROUTE_CONFIGURATION
     patch:
       operation: MERGE
       value:
         response_headers_to_remove:
-        - &quot;server&quot;
+        - "server"
 </code></pre></div>
 <ul>
 <li>Ensure this filter is applied in the <code>istio-system</code> namespace or where your ingress gateway is running, depending on your specific deployment setup.</li>

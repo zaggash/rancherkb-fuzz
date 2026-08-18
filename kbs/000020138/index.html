@@ -15557,13 +15557,13 @@
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>auth<span class="w"> </span>can-i<span class="w"> </span>&lt;verb&gt;<span class="w"> </span>&lt;resource&gt;<span class="w"> </span>--as<span class="w"> </span>account<span class="w"> </span>--namespace<span class="o">=</span>&lt;namespace&gt;<span class="w"> </span>
 </code></pre></div>
 <h5 id="can-my-user-perform-all-verbs-on-all-resources-am-i-an-admin">Can my user perform all verbs on all resources? Am I an admin?</h5>
-<div class="highlight"><pre><span></span><code>kuboectl<span class="w"> </span>auth<span class="w"> </span>can-i<span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<div class="highlight"><pre><span></span><code>kuboectl<span class="w"> </span>auth<span class="w"> </span>can-i<span class="w"> </span><span class="s2">"*"</span><span class="w"> </span><span class="s2">"*"</span>
 </code></pre></div>
 <h5 id="can-the-helm-serviceaccount-delete-pods-in-the-current-namespace-or-cluster-wide">Can the helm serviceaccount delete pods in the current namespace or cluster-wide?</h5>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>auth<span class="w"> </span>can-i<span class="w"> </span>delete<span class="w"> </span>pods<span class="w"> </span>--as<span class="w"> </span>helm<span class="w"> </span>
 </code></pre></div>
 <h5 id="is-user1234-an-admin-in-the-testing-namespace-can-they-perform-all-verbs-on-all-resources">Is user1234 an admin in the "testing" namespace? Can they perform all verbs on all resources?</h5>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>auth<span class="w"> </span>can-i<span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="w"> </span>--namespace<span class="o">=</span>testing<span class="w"> </span>--as<span class="w"> </span>user1234
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>auth<span class="w"> </span>can-i<span class="w"> </span><span class="s2">"*"</span><span class="w"> </span><span class="s2">"*"</span><span class="w"> </span>--namespace<span class="o">=</span>testing<span class="w"> </span>--as<span class="w"> </span>user1234
 </code></pre></div>
 <h5 id="list-option-gives-insight-into-permissions-for-a-user-or-account">List option gives insight into permissions for a user or account</h5>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>auth<span class="w"> </span>can-i<span class="w"> </span>--list<span class="w"> </span>--namespace<span class="o">=</span>testing<span class="w"> </span>--as<span class="w"> </span>user1234

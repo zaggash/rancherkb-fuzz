@@ -15599,10 +15599,10 @@
 </code></pre></div>
 <h5 id="step-1-validate-the-cluster-is-quorate-and-confirm-the-unresponsive-node">Step 1. Validate the cluster is quorate and confirm the unresponsive node</h5>
 <p>On the control plane / etcd nodes perform the following command, per the <a href="https://rancher.com/docs/rancher/v2.x/en/troubleshooting/kubernetes-components/etcd/#check-endpoint-health">Rancher Troubleshooting Documentation</a> to determine etcd endpoint health:</p>
-<div class="highlight"><pre><span></span><code>docker exec -e ETCDCTL_ENDPOINTS=$(docker exec etcd /bin/sh -c &quot;etcdctl member list | cut -d, -f5 | sed -e &#39;s/ //g&#39; | paste -sd &#39;,&#39;&quot;) etcd etcdctl endpoint health
+<div class="highlight"><pre><span></span><code>docker exec -e ETCDCTL_ENDPOINTS=$(docker exec etcd /bin/sh -c "etcdctl member list | cut -d, -f5 | sed -e 's/ //g' | paste -sd ','") etcd etcdctl endpoint health
 </code></pre></div>
 <p>On the unresponsive node the command may fail to execute, on the healthy nodes you should see output of the following format indicating the health status of each node:</p>
-<div class="highlight"><pre><span></span><code>{&quot;level&quot;:&quot;warn&quot;,&quot;ts&quot;:&quot;2020-12-31T12:11:41.840Z&quot;,&quot;caller&quot;:&quot;clientv3/retry_interceptor.go:62&quot;,&quot;msg&quot;:&quot;retrying of unary invoker failed&quot;,&quot;target&quot;:&quot;endpoint://client-c65a15b4-9646-4c71-914d-f3c892c04c2f/1.2.3.3:2379&quot;,&quot;attempt&quot;:0,&quot;error&quot;:&quot;rpc error: code = DeadlineExceeded desc = latest balancer error: all SubConns are in TransientFailure, latest connection error: connection error: desc = \&quot;transport: Error while dialing dial tcp 1.2.3.3:2379: connect: connection refused\&quot;&quot;}
+<div class="highlight"><pre><span></span><code>{"level":"warn","ts":"2020-12-31T12:11:41.840Z","caller":"clientv3/retry_interceptor.go:62","msg":"retrying of unary invoker failed","target":"endpoint://client-c65a15b4-9646-4c71-914d-f3c892c04c2f/1.2.3.3:2379","attempt":0,"error":"rpc error: code = DeadlineExceeded desc = latest balancer error: all SubConns are in TransientFailure, latest connection error: connection error: desc = \"transport: Error while dialing dial tcp 1.2.3.3:2379: connect: connection refused\""}
 https://1.2.3.1:2379 is healthy: successfully committed proposal: took = 13.442336ms
 https://1.2.3.2:2379 is healthy: successfully committed proposal: took = 18.227226ms
 https://1.2.3.3:2379 is unhealthy: failed to commit proposal: context deadline exceeded

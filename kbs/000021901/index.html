@@ -15364,7 +15364,7 @@ profiles:
 <p>This configuration sets default constraints for the <code>PodTopologySpread</code> plugin, ensuring pods are spread across different <code>topology.kubernetes.io/region</code> with a maximum skew of 1. The configuration can be modified as per requirement.</p>
 <p>2] Edit the RKE2 configuration file, located at <code>/etc/rancher/rke2/config.yaml</code>, and add the following argument under <code>kube-scheduler-arg:</code></p>
 <div class="highlight"><pre><span></span><code>kube-scheduler-arg:
-  - &quot;config=/var/lib/rancher/rke2/server/manifests/scheduler.config&quot;
+  - "config=/var/lib/rancher/rke2/server/manifests/scheduler.config"
 </code></pre></div>
 <p>This tells the <code>kube-scheduler</code> to use the custom configuration file.</p>
 <p>3] Apply the changes by restarting the <code>rke2-server</code> service:</p>
@@ -15405,8 +15405,8 @@ spec:
         - containerPort: 80
         resources:
           requests:
-            cpu: &quot;100m&quot;
-            memory: &quot;100Mi&quot;
+            cpu: "100m"
+            memory: "100Mi"
 </code></pre></div>
 <p>7] Topology spread constraints rely on node labels to identify the topology domains that each node is in. Hence, its important to label the nodes accordingly.</p>
 

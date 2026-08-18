@@ -15368,7 +15368,7 @@ AKS 1.22+</p>
 <p>After upgrading AKS to version 1.22+ users may experience a situation where the Downstream clusters show as unavailable on Rancher.<br />
 Testing the Websocket using these <a href="https://www.suse.com/support/kb/doc/?id=000020189">instructions</a> will show the following error:</p>
 <div class="highlight"><pre><span></span><code>Bad Request
-{&quot;baseType&quot;:&quot;error&quot;,&quot;code&quot;:&quot;ServerError&quot;,&quot;message&quot;:&quot;websocket: the client is not using the websocket protocol: &#39;upgrade&#39; token not found in &#39;Connection&#39; header&quot;,&quot;status&quot;:400,&quot;type&quot;:&quot;error&quot;}
+{"baseType":"error","code":"ServerError","message":"websocket: the client is not using the websocket protocol: 'upgrade' token not found in 'Connection' header","status":400,"type":"error"}
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>Kubernetes version 1.22 <a href="https://kubernetes.io/blog/2021/07/26/update-with-ingress-nginx/">deprecated versions</a> of the Ingress APIs in favor of the stable <code>networking.k8s.io/v1</code> API. That leads to this <a href="https://github.com/kubernetes/ingress-nginx/blob/main/docs/index.md#i-have-only-one-ingress-controller-in-my-cluster-what-should-i-do">scenario,</a> where we update the controller.watchIngressWithoutClass tag.</p>

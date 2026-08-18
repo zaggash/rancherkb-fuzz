@@ -15635,8 +15635,8 @@ kubectl create secret docker-registry application-collection --docker-server=dp.
 </code></pre></div>
 <h4 id="installing-kiali"><strong>Installing Kiali</strong></h4>
 <p>The next step is to install Kiali using Helm. You can follow the documentation from upstream, which can be found <a href="https://kiali.io/docs/installation/quick-start/">here</a>, and the compatibility matrix can be found <a href="https://kiali.io/docs/installation/installation-guide/prerequisites/#version-compatibility%29.">here</a> You also need to provide the correct value in the external_services field. i.e:</p>
-<div class="highlight"><pre><span></span><code>helm install kiali oci://dp.apps.rancher.io/charts/kiali --version 2.3.0 --set global.imagePullSecrets={application-collection} -n istio-system --set external_services.prometheus.custom_metrics_url=&quot;http://prometheus-server.istio-system.svc.cluster.local&quot; \
---set external_services.prometheus.url=&quot;http://prometheus-server.istio-system.svc.cluster.local&quot; --wait
+<div class="highlight"><pre><span></span><code>helm install kiali oci://dp.apps.rancher.io/charts/kiali --version 2.3.0 --set global.imagePullSecrets={application-collection} -n istio-system --set external_services.prometheus.custom_metrics_url="http://prometheus-server.istio-system.svc.cluster.local" \
+--set external_services.prometheus.url="http://prometheus-server.istio-system.svc.cluster.local" --wait
 </code></pre></div>
 <h4 id="installing-istio"><strong>Installing Istio</strong></h4>
 <p>Now you can install <a href="https://apps.rancher.io/applications/istio">Istio</a>. </p>
@@ -15660,7 +15660,7 @@ helm install cert-manager oci://dp.apps.rancher.io/charts/cert-manager --namespa
 <div class="highlight"><pre><span></span><code>kubectl create sa jaeger-test-sa -n istio-system
 </code></pre></div>
 <p>Now you need to add your Application Collection token to the service account:</p>
-<div class="highlight"><pre><span></span><code>kubectl patch serviceaccount -n istio-system jaeger-test-sa -p &#39;{&quot;imagePullSecrets&quot;: [{&quot;name&quot;: &quot;application-collection&quot;}]}&#39;
+<div class="highlight"><pre><span></span><code>kubectl patch serviceaccount -n istio-system jaeger-test-sa -p '{"imagePullSecrets": [{"name": "application-collection"}]}'
 </code></pre></div>
 <p>The next step is to create the Jaeger resource:</p>
 <div class="highlight"><pre><span></span><code>kubectl apply -f - &lt;&lt;EOF

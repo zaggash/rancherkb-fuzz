@@ -15491,11 +15491,11 @@
 <h5 id="use-an-internal-load-balancer">Use an internal Load Balancer</h5>
 <p>When editing the Istio Ingress Gateway, click the drop down for Custom Answers.</p>
 <p>Paste the below in the Variable field, this will automatically populate the value:</p>
-<div class="highlight"><pre><span></span><code>gateways.istio-ingressgateway.serviceAnnotations.&quot;service\.beta\.kubernetes\.io/aws-load-balancer-internal&quot; = &quot;true&quot;
+<div class="highlight"><pre><span></span><code>gateways.istio-ingressgateway.serviceAnnotations."service\.beta\.kubernetes\.io/aws-load-balancer-internal" = "true"
 </code></pre></div>
 <h5 id="use-an-nlb">Use an NLB</h5>
 <p>To use an NLB, click 'Add Answer' and paste the below in the Variable field:</p>
-<div class="highlight"><pre><span></span><code>gateways.istio-ingressgateway.serviceAnnotations.&quot;service\.beta\.kubernetes\.io/aws-load-balancer-type&quot; = nlb
+<div class="highlight"><pre><span></span><code>gateways.istio-ingressgateway.serviceAnnotations."service\.beta\.kubernetes\.io/aws-load-balancer-type" = nlb
 </code></pre></div>
 <p><strong>Note:</strong> An NLB can be used as an internet-facing loadbancer by using only the above annotation, without adding the aws-load-balancer-internal annotation.</p>
 <h4 id="references">References</h4>

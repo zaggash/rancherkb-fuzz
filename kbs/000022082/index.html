@@ -15444,12 +15444,12 @@ Engine logs for affected components may display synchronization errors indicatin
 <p><strong>1. Identify the Correct Application Label</strong></p>
 <p>Determine the actual application label used by your Rancher pods (this is usually your Helm release name, e.g., `rancher-stable`):</p>
 <div class="highlight"><pre><span></span><code># Replace &lt;RANCHER_RELEASE_NAME&gt; with your actual Helm release name
-kubectl get deployment &lt;RANCHER_RELEASE_NAME&gt; -n cattle-system -o yaml | grep &#39;app:&#39;
+kubectl get deployment &lt;RANCHER_RELEASE_NAME&gt; -n cattle-system -o yaml | grep 'app:'
 </code></pre></div>
 <p><strong>2. Patch the Imperative API Extension Service</strong></p>
 <p>Patch the Service in the `cattle-system` namespace, replacing `&lt;ACTUAL_APP_LABEL&gt;` with the value found in the previous step:</p>
 <div class="highlight"><pre><span></span><code>kubectl patch svc imperative-api-extension -n cattle-system \
--p &#39;{&quot;spec&quot;:{&quot;selector&quot;:{&quot;app&quot;:&quot;&lt;ACTUAL_APP_LABEL&gt;&quot;}}}&#39;
+-p '{"spec":{"selector":{"app":"&lt;ACTUAL_APP_LABEL&gt;"}}}'
 </code></pre></div>
 <h3 id="cleanup-after-rollback-if-applicable">### Cleanup after Rollback (If applicable)</h3>
 <p>If this issue occurs after rolling back from Rancher v2.11 to a prior version, the `imperative-api-extension` service may persist. <br />

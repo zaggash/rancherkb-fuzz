@@ -15376,7 +15376,7 @@
 - Upon further investigation, rancher-logging-root-fluentbit pod shows below errors: </p>
 <div class="highlight"><pre><span></span><code>[2025/03/04 11:01:38] [error] [net] TCP connection failed: rancher-logging-root-fluentd.cattle-logging-system.svc.cluster.local:24240 (Connection refused)
 [2025/03/04 11:01:38] [error] [output:forward:forward.0] no upstream connections available
-[2025/03/04 11:01:38] [ warn] [engine] failed to flush chunk &#39;1-1741004097.135890300.flb&#39;, retry in 320 seconds: task_id=147, input=tail.0 &gt; output=forward.0 (out_id=0)
+[2025/03/04 11:01:38] [ warn] [engine] failed to flush chunk '1-1741004097.135890300.flb', retry in 320 seconds: task_id=147, input=tail.0 &gt; output=forward.0 (out_id=0)
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <ul>
@@ -15408,8 +15408,8 @@
 <li>Furthermore, login to Rancher &gt;&gt; explore the desired cluster &gt;&gt; Apps &gt;&gt; Installed Apps &gt;&gt; Rancher-Logging &gt;&gt; Click on "Edit/Upgrade" and review if the 'Buffer_Chunk_Size' and 'Buffer_Max_Size' mentioned below can be tuned further with a value that best suits the cluster needs as per <a href="https://github.com/rancher/rancher-docs/issues/90">https://github.com/rancher/rancher-docs/issues/90</a></li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="nl">inputTail</span><span class="p">:</span>
-<span class="w">    </span><span class="nl">Buffer_Chunk_Size</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;&#39;</span>
-<span class="w">    </span><span class="nl">Buffer_Max_Size</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;&#39;</span>
+<span class="w">    </span><span class="nl">Buffer_Chunk_Size</span><span class="p">:</span><span class="w"> </span><span class="err">''</span>
+<span class="w">    </span><span class="nl">Buffer_Max_Size</span><span class="p">:</span><span class="w"> </span><span class="err">''</span>
 </code></pre></div>
 <ul>
 <li>Observe that the pod rancher-logging-root-fluentd-0 does not restart anymore and logs are sent successfully.</li>

@@ -15380,7 +15380,7 @@ kubectl access to the cluster with a kubeconfig sourced for a global admin or cl
 <h4 id="by-default-calico-reports-anonymous-telemetry-data-containing-the-calico-version-number-and-cluster-size-to-an-endpoint-at-projectcalicoorg-this-article-provides-details-on-how-to-disable-this-reporting">By default, Calico reports anonymous telemetry data, containing the Calico version number and cluster size, to an endpoint at projectcalico.org. This article provides details on how to disable this reporting.</h4>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>To disable the Calico telemetry reporting, execute the following command against the cluster:</p>
-<div class="highlight"><pre><span></span><code>kubectl patch felixconfigurations.crd.projectcalico.org default  -p &#39;{&quot;spec&quot;:{&quot;usageReportingEnabled&quot;: false}}&#39; --type=merge
+<div class="highlight"><pre><span></span><code>kubectl patch felixconfigurations.crd.projectcalico.org default  -p '{"spec":{"usageReportingEnabled": false}}' --type=merge
 </code></pre></div>
 
 

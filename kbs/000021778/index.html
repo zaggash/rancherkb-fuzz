@@ -15365,7 +15365,7 @@
 <p>A Rancher v2.x instance, managing multiple clusters, and a cluster-scoped <a href="https://ranchermanager.docs.rancher.com/reference-guides/user-settings/api-keys">Rancher API token</a></p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>When you try to access a Rancher-managed Kubernetes cluster using <code>kubectl</code>, the command fails with a 403 Forbidden error. The error message indicates an authentication failure from <code>User "system:unauthenticated":</code></p>
-<div class="highlight"><pre><span></span><code>User \\\&quot;system:unauthenticated\\\&quot; cannot get resource \\\&quot;clusters\\\&quot; in API group \\\&quot;management.cattle.io\\\&quot; at the cluster scope
+<div class="highlight"><pre><span></span><code>User \\\"system:unauthenticated\\\" cannot get resource \\\"clusters\\\" in API group \\\"management.cattle.io\\\" at the cluster scope
 </code></pre></div>
 <p>This typically happens when you use a <code>kubeconfig</code> file downloaded from one cluster (Cluster A) to access a different cluster (Cluster B), where Cluster A has the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/access-clusters/authorized-cluster-endpoint">Authorized Cluster Endpoint (ACE)</a> enabled.</p>
 <h2 id="cause"><strong>Cause</strong></h2>

@@ -15369,7 +15369,7 @@ Eg: See the below example for Kubernetes 1.24.6 using runc 1.1.1<br />
 <a href="https://github.com/kubernetes/kubernetes/blob/v1.24.6/go.mod#L66">https://github.com/kubernetes/kubernetes/blob/v1.24.6/go.mod#L66</a></p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>The <strong>Kubelet</strong> on the node report the following error message</p>
-<div class="highlight"><pre><span></span><code>kubelet_getters.go:300] &quot;Path does not exist&quot; path=&quot;/var/lib/kubelet/pods/&lt;ID_NUMBER&gt;/volumes&quot;
+<div class="highlight"><pre><span></span><code>kubelet_getters.go:300] "Path does not exist" path="/var/lib/kubelet/pods/&lt;ID_NUMBER&gt;/volumes"
 </code></pre></div>
 <p>These lines fill up the kubelet log ending up in gigabyte of logs.<br />
 This can also cause high CPU usage.</p>

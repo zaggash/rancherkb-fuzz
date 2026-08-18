@@ -15452,7 +15452,7 @@
 <p><div class="highlight"><pre><span></span><code>rke up --config &lt;cluster configuration yaml file&gt;
 </code></pre></div>
 3. Verify the new configuration:</p>
-<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep use_forwarded_headers | grep true &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F '/' '{print $2}'); do echo -n "Checking $pod .... "; kubectl -n ingress-nginx exec "$pod" -- bash -c "cat /etc/nginx/nginx.conf | grep use_forwarded_headers | grep true &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo 'Good' || echo 'Bad'"; done
 </code></pre></div>
 <h5 id="configuration-for-rancher-v2x-provisioned-clusters">Configuration for Rancher v2.x provisioned clusters</h5>
 <ol>
@@ -15471,7 +15471,7 @@
 7. Wait for cluster to finish upgrading.
 8. Go back to the Cluster Dashboard and click "Launch kubectl".
 9. Run the following inside the kubectl CLI to verify the new argument:</p>
-<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep use_forwarded_headers | grep true &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F '/' '{print $2}'); do echo -n "Checking $pod .... "; kubectl -n ingress-nginx exec "$pod" -- bash -c "cat /etc/nginx/nginx.conf | grep use_forwarded_headers | grep true &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo 'Good' || echo 'Bad'"; done
 </code></pre></div>
 
 

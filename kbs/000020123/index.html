@@ -15463,9 +15463,9 @@
 <div class="highlight"><pre><span></span><code>services:
   etcd:
     extra_args:
-      cipher-suites: &quot;TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384&quot;
-      election-timeout: &quot;5000&quot;
-      heartbeat-interval: &quot;500&quot;
+      cipher-suites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+      election-timeout: "5000"
+      heartbeat-interval: "500"
 </code></pre></div>
 <h4 id="note">Note:</h4>
 <p>The cipher suites defined in the example could trade off speed for stronger encryption. Consider the level of ciphers in use and how they could impact the performance of an etcd cluster. Testing should be done to factor in the spec of your hosts (CPU, memory, disk, network, etc...) and the typical types of interacting with Kubernetes as well as the number of resources under management within the k8s cluster.</p>

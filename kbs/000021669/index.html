@@ -15368,7 +15368,7 @@
 </ul>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>Following an RKE2 upgrade, the helm-install-rke2-calico Job, in the kube-system Namespace, fails with the error '<strong>cannot re-use a name that is still in use</strong>', per the following example from the Pod logs:</p>
-<div class="highlight"><pre><span></span><code>+ echo &#39;Installing helm chart&#39;
+<div class="highlight"><pre><span></span><code>+ echo 'Installing helm chart'
 + helm install --set-string global.cattle.systemDefaultRegistry=docker.io --set-string global.clusterCIDR=10.42.0.0/16 --set-string global.clusterCIDRv4=10.42.0.0/16 --set-string global.clusterDNS=10.43.0.10 --set-string global.clusterDomain=cluster.local --set-string global.rke2DataDir=/var/lib/rancher/rke2 --set-string global.serviceCIDR=10.43.0.0/16 --set-string global.systemDefaultIngressClass=ingress-nginx --set-string global.systemDefaultRegistry=docker.io rke2-calico /tmp/rke2-calico.tgz --values /config/values-10_HelmChartConfig.yaml
 Error: INSTALLATION FAILED: cannot re-use a name that is still in use
 </code></pre></div>
@@ -15385,7 +15385,7 @@ REVISION        UPDATED                         STATUS          CHART           
 <ol>
 <li>Get the list of current rke2-calico helm release secrets from the kube-system Namespace, which will be in a superseded status, e.g.:</li>
 </ol>
-<p><div class="highlight"><pre><span></span><code>kubectl -n kube-system get secrets --field-selector type=helm.sh/release.v1 -o custom-columns=&#39;NAME:.metadata.name,STATUS:.metadata.labels.status&#39; -l name=rke2-calico 
+<p><div class="highlight"><pre><span></span><code>kubectl -n kube-system get secrets --field-selector type=helm.sh/release.v1 -o custom-columns='NAME:.metadata.name,STATUS:.metadata.labels.status' -l name=rke2-calico 
 NAME                                STATUS
 sh.helm.release.v1.rke2-calico.v1   superseded
 sh.helm.release.v1.rke2-calico.v2   superseded

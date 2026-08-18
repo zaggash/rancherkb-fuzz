@@ -15369,10 +15369,10 @@ Rancher 2.10.5+</p>
 <div class="highlight"><pre><span></span><code>After upgrading to Rancher 2.9.9+ or  2.10.5+, there are insufficient permissions on the Role for the ServiceAccount in charge of updating each GitRepo. 
 You might see errors like the following one:
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Job Failed. failed: 1/1time=&quot;YYYY-MM-DDThh:mm:ssZ&quot; level=fatal msg=&quot;secrets \&quot;sample-git-repo-sa-secret\&quot; is forbidden: User \&quot;system:serviceaccount:fleet-default:git-repo-sample-name\&quot; cannot delete resource \&quot;secrets\&quot; in API group \&quot;\&quot; in the namespace \&quot;fleet-default\&quot;&quot;
+<div class="highlight"><pre><span></span><code>Job Failed. failed: 1/1time="YYYY-MM-DDThh:mm:ssZ" level=fatal msg="secrets \"sample-git-repo-sa-secret\" is forbidden: User \"system:serviceaccount:fleet-default:git-repo-sample-name\" cannot delete resource \"secrets\" in API group \"\" in the namespace \"fleet-default\""
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>This issue affects anyone with GitRepos that are upgrading to Rancher version v2.9.9+ or Rancher version v2.10.5+. 
-Rancher v2.11.1+ is not affected since the newer Fleet versions automatically resolves the Role&#39;s permissions.
+Rancher v2.11.1+ is not affected since the newer Fleet versions automatically resolves the Role's permissions.
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <div class="highlight"><pre><span></span><code>There are insufficient permissions on the Role for the ServiceAccount in charge of updating each GitRepo.
@@ -15395,7 +15395,7 @@ Rancher v2.11.1+ is not affected since the newer Fleet versions automatically re
 <li>Add the following section at the bottom of the role, under the rules section:</li>
 </ul>
 <div class="highlight"><pre><span></span><code>- apiGroups:
-  - &quot;&quot;
+  - ""
   resources:
   - secrets
   verbs:

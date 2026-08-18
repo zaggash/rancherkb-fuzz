@@ -15392,10 +15392,10 @@ PORT     STATE SERVICE
 Nmap done: 1 IP address (1 host up) scanned in 0.46 seconds
 </code></pre></div>
 <p>Or check the <code>TLS_CIPHER_SUITES</code> environment variable defined in the Calico Pods. For example, for Calico Typha:</p>
-<div class="highlight"><pre><span></span><code>kubectl get pods -n calico-system -l k8s-app=calico-typha -o jsonpath=&#39;{.items[0].spec.containers[0].env}&#39; | jq | grep -i TLS
+<div class="highlight"><pre><span></span><code>kubectl get pods -n calico-system -l k8s-app=calico-typha -o jsonpath='{.items[0].spec.containers[0].env}' | jq | grep -i TLS
 
-&quot;name&quot;: &quot;TLS_CIPHER_SUITES&quot;,
-&quot;value&quot;: &quot;TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256,TLS_AES_256_GCM_SHA384,TLS_CHACHA20_POLY1305_SHA256&quot;
+"name": "TLS_CIPHER_SUITES",
+"value": "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256,TLS_AES_256_GCM_SHA384,TLS_CHACHA20_POLY1305_SHA256"
 </code></pre></div>
 
 

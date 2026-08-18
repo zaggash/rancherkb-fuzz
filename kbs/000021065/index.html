@@ -15368,10 +15368,10 @@ v1beta1.custom.metrics.k8s.io          cattle-monitoring-system/rancher-monitori
 <ol>
 <li>Find all resources that still exist where &lt;namespace&gt; is the Namespace stuck in a terminating state:</li>
 </ol>
-<p><div class="highlight"><pre><span></span><code>kubectl api-resources --verbs=list --namespaced -o name | xargs -I {} sh -c &#39;echo &quot;Checking for {} resources&quot;; kubectl get {} -n &lt;namespace&gt;;&#39;
+<p><div class="highlight"><pre><span></span><code>kubectl api-resources --verbs=list --namespaced -o name | xargs -I {} sh -c 'echo "Checking for {} resources"; kubectl get {} -n &lt;namespace&gt;;'
 </code></pre></div>
 2. Remove the finalizers from any resources within the Namespace identified from the output of the command above:</p>
-<div class="highlight"><pre><span></span><code>kubectl -n &lt;namespace&gt; patch &lt;kind&gt; &lt;name&gt; -p &#39;{&quot;metadata&quot;:{&quot;finalizers&quot;:null}}&#39; --type=merge
+<div class="highlight"><pre><span></span><code>kubectl -n &lt;namespace&gt; patch &lt;kind&gt; &lt;name&gt; -p '{"metadata":{"finalizers":null}}' --type=merge
 </code></pre></div>
 
 

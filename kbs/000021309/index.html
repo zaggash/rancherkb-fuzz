@@ -15365,7 +15365,7 @@
 <p>A Kubernetes cluster with the ingress-nginx ingress controller</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>The ingress-nginx controller in Kubernetes may return a 413 response code (Request Entity Too Large) when attempting to upload or send large files. This error occurs because ingress-nginx imposes a default limit of 1MB on the request body size.</p>
-<div class="highlight"><pre><span></span><code>192.168.1.10 - - [22/Aug/2025:15:10:25 +0000] &quot;POST /upload HTTP/1.1&quot; 413 583 &quot;-&quot; &quot;curl/7.68.0&quot; 10485760 0.000 [-] - - - - a1b2c3d4-e5f6-7890-1234-567890abcdef
+<div class="highlight"><pre><span></span><code>192.168.1.10 - - [22/Aug/2025:15:10:25 +0000] "POST /upload HTTP/1.1" 413 583 "-" "curl/7.68.0" 10485760 0.000 [-] - - - - a1b2c3d4-e5f6-7890-1234-567890abcdef
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The ingress-nginx controller imposes a limit on the size of the client request body it will accept, with a default of 1MB. When a client attempts to send a request with a body larger than this limit, ingress-nginx responds with a 413 Request Entity Too Large response code.</p>
@@ -15373,7 +15373,7 @@
 <p>The allowed maximum size of the client request body can be set at either the individual Ingress level, or of the default value for all Ingresses can be set in the ingress-nginx controller ConfigMap.</p>
 <p><strong>Updating the maximum request body size at the Ingress level</strong></p>
 <p>Adjust the <code>proxy-body-size</code> setting using the <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#custom-max-body-size"><code>nginx.ingress.kubernetes.io/proxy-body-size</code> annotation</a> in the Ingress resource. This setting determines the maximum allowed size of the request body for requests to this individual Ingress. For example, set the following annotation on the Ingress to set a maximum allowed size of 4096MB.</p>
-<div class="highlight"><pre><span></span><code>  nginx.ingress.kubernetes.io/proxy-body-size: &quot;4096m&quot;
+<div class="highlight"><pre><span></span><code>  nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
 </code></pre></div>
 <p><strong>Updating the default request maximum body size in the ingress-nginx configuration</strong><br />
 Adjust the <code>proxy-body-size</code> in the <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#proxy-body-size">ingress-nginx controller's ConfigMap</a>.</p>

@@ -15351,7 +15351,7 @@
 <ul>
 <li><strong>Networking failures:</strong> When the kubelet fails to set up the pod network, you may see an error like this:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>Failed to create sandbox for pod&quot; err=&quot;rpc error: code = Unknown desc = failed to setup network for sandbox ... plugin type=&quot;loopback&quot; failed (add): netplugin failed with no error message: fork/exec /opt/cni/bin/loopback: too many open files&quot;
+<div class="highlight"><pre><span></span><code>Failed to create sandbox for pod" err="rpc error: code = Unknown desc = failed to setup network for sandbox ... plugin type="loopback" failed (add): netplugin failed with no error message: fork/exec /opt/cni/bin/loopback: too many open files"
 </code></pre></div>
 <ul>
 <li><strong>Ingress  failures:</strong> The Ingress controller is unable to accept new connections, logging a fatal error such as:</li>
@@ -15361,7 +15361,7 @@
 <ul>
 <li><strong>Container runtime failures:</strong> The container runtime itself cannot open a necessary file to manage the container lifecycle. This can manifest as an error like:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>Status from runtime service failed&quot; err=&quot;rpc error: code = Unknown desc = open /var/lib/rancher/rke2/agent/containerd/io.containerd.grpc.v1.introspection/uuid: too many open files&quot;
+<div class="highlight"><pre><span></span><code>Status from runtime service failed" err="rpc error: code = Unknown desc = open /var/lib/rancher/rke2/agent/containerd/io.containerd.grpc.v1.introspection/uuid: too many open files"
 </code></pre></div>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <h1 id="rke2-and-k3s">RKE2 and K3s</h1>
@@ -15419,11 +15419,11 @@ LimitNOFILE=infinity
 </ul>
 <p><code>/etc/docker/daemon.json</code>:</p>
 <div class="highlight"><pre><span></span><code>{
-  &quot;default-ulimits&quot;: {
-    &quot;nofile&quot;: {
-      &quot;Name&quot;: &quot;nofile&quot;,
-      &quot;Soft&quot;: 64000,
-      &quot;Hard&quot;: 64000
+  "default-ulimits": {
+    "nofile": {
+      "Name": "nofile",
+      "Soft": 64000,
+      "Hard": 64000
     }
   }
 }

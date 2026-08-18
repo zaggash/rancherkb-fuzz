@@ -15365,7 +15365,7 @@
 <p>A Rancher v2.x instance running in an RKE or RKE2 cluster</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>The <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades#steps-to-upgrade-rancher">Rancher helm chart upgrade</a> is launched immediately after upgrading the underlying Kubernetes cluster and fails with an error of the following format:</p>
-<div class="highlight"><pre><span></span><code>Internal error occurred: failed calling webhook &quot;validate.nginx.ingress.kubernetes.io&quot;: Post &quot;https://rke2-ingress-nginx-controller-admission.kube-system.svc:443/networking/v1/ingresses?time=10s&quot;: no endpoint available for service &quot;rke2-ingress-nginx-controller-admission&quot;
+<div class="highlight"><pre><span></span><code>Internal error occurred: failed calling webhook "validate.nginx.ingress.kubernetes.io": Post "https://rke2-ingress-nginx-controller-admission.kube-system.svc:443/networking/v1/ingresses?time=10s": no endpoint available for service "rke2-ingress-nginx-controller-admission"
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The 'helm upgrade --install' task for Rancher is invoked before the ingress-nginx pods in the cluster are running, following the cluster upgrade. As a result, the ingress-nginx validating webhook cannot be satisfied, resulting in errors when helm attempts to patch the Rancher ingress resource.</p>

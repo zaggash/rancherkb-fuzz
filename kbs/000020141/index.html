@@ -15521,10 +15521,10 @@ Docker</p>
 </code></pre></div>
 2. Add the following lines to the file, to configure a maximum container log file size of 10MB and maintain only 10 of these before deleting the oldest:</p>
 <p><div class="highlight"><pre><span></span><code>{  
-  &quot;log-driver&quot;: &quot;json-file&quot;,  
-  &quot;log-opts&quot;: {
-    &quot;max-size&quot;: &quot;10m&quot;,
-    &quot;max-file&quot;: &quot;10&quot;  
+  "log-driver": "json-file",  
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "10"  
   }
 }
 </code></pre></div>

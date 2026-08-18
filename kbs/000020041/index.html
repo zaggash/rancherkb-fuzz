@@ -15518,7 +15518,7 @@ NAME           POD-SELECTOR   AGE
 web-deny-all   app=web        13m
 
 $ illuminatio clean run
-Starting cleaning resources with policies [&#39;on-request&#39;, &#39;always&#39;]
+Starting cleaning resources with policies ['on-request', 'always']
 Finished cleanUp
 Starting test generation and run.
 Generated 1 cases in 0.0616 seconds
@@ -15561,7 +15561,7 @@ api-allow      app=bookstore,role=api   5s
 web-deny-all   app=web                  18m
 
 $ illuminatio clean run
-Starting cleaning resources with policies [&#39;on-request&#39;, &#39;always&#39;]
+Starting cleaning resources with policies ['on-request', 'always']
 Finished cleanUp
 Starting test generation and run.
 Generated 5 cases in 0.0594 seconds
@@ -15608,10 +15608,10 @@ web-allow-all   app=web                  32s
 web-deny-all    app=web                  39m
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>$ illuminatio clean run
-Starting cleaning resources with policies [&#39;on-request&#39;, &#39;always&#39;]
+Starting cleaning resources with policies ['on-request', 'always']
 Finished cleanUp
 Starting test generation and run.
-Not generating negative tests for host ClusterHost(namespace=default, podLabels={&#39;app&#39;: &#39;web&#39;})as all connecti
+Not generating negative tests for host ClusterHost(namespace=default, podLabels={'app': 'web'})as all connecti
 ons to it are allowed
 Generated 5 cases in 0.0551 seconds
 
@@ -15653,7 +15653,7 @@ spec:
     - podSelector: {}
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>$ kubectl apply -f deny-from-other-namespaces.yaml
-networkpolicy &quot;deny-from-other-namespaces&quot; created&quot;
+networkpolicy "deny-from-other-namespaces" created"
 
 $ kubectl get netpol -n secondary
 NAME                         POD-SELECTOR   AGE
@@ -15666,10 +15666,10 @@ web-allow-all   app=web                  24m
 web-deny-all    app=web                  63m
 
 $ illuminatio clean run
-Starting cleaning resources with policies [&#39;on-request&#39;, &#39;always&#39;]
+Starting cleaning resources with policies ['on-request', 'always']
 Finished cleanUp
 Starting test generation and run.
-Not generating negative tests for host ClusterHost(namespace=default, podLabels={&#39;app&#39;: &#39;web&#39;})as all connecti
+Not generating negative tests for host ClusterHost(namespace=default, podLabels={'app': 'web'})as all connecti
 ons to it are allowed
 Generated 7 cases in 0.0621 seconds
 
@@ -15722,14 +15722,14 @@ spec:
           purpose: production
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>$ kubectl apply -f web-allow-prod.yaml
-networkpolicy &quot;web-allow-prod&quot; created
+networkpolicy "web-allow-prod" created
 
 $ kubectl get netpol -A
 NAMESPACE   NAME             POD-SELECTOR   AGE
 default     web-allow-prod   app=web        44s
 
 $ illuminatio clean run
-Starting cleaning resources with policies [&#39;on-request&#39;, &#39;always&#39;]
+Starting cleaning resources with policies ['on-request', 'always']
 Finished cleanUp
 Starting test generation and run.
 Generated 2 cases in 0.0645 seconds
@@ -15758,19 +15758,19 @@ data:
   results: |
     illuminatio-inverted-purposeproduction:illuminatio-dummy-nqtc7:
       10.43.168.221:
-        &#39;-80&#39;:
+        '-80':
           nmap-state: filtered
-          string: &#39;Test 10.43.168.221:-80 succeeded
+          string: 'Test 10.43.168.221:-80 succeeded
 
-            Couldn&#39;&#39;t reach 10.43.168.221 on port 80. Expected target to not be reachable&#39;
+            Couldn''t reach 10.43.168.221 on port 80. Expected target to not be reachable'
           success: true
     prod:illuminatio-dummy-tc5v9:
       10.43.168.221:
-        &#39;80&#39;:
+        '80':
           nmap-state: open
-          string: &#39;Test 10.43.168.221:80 succeeded
+          string: 'Test 10.43.168.221:80 succeeded
 
-            Could reach 10.43.168.221 on port 80. Expected target to be reachable&#39;
+            Could reach 10.43.168.221 on port 80. Expected target to be reachable'
           success: true
   runtimes: |
     overall: error
@@ -15781,7 +15781,7 @@ data:
         10.43.168.221: 0.2853882312774658
 kind: ConfigMap
 metadata:
-  creationTimestamp: &quot;2020-11-23T21:47:53Z&quot;
+  creationTimestamp: "2020-11-23T21:47:53Z"
   labels:
     illuminatio-cleanup: always
   managedFields:
@@ -15798,10 +15798,10 @@ metadata:
           f:illuminatio-cleanup: {}
     manager: Swagger-Codegen
     operation: Update
-    time: &quot;2020-11-23T21:47:53Z&quot;
+    time: "2020-11-23T21:47:53Z"
   name: illuminatio-runner-s87rw-results
   namespace: illuminatio
-  resourceVersion: &quot;906614&quot;
+  resourceVersion: "906614"
   selfLink: /api/v1/namespaces/illuminatio/configmaps/illuminatio-runner-s87rw-results
   uid: 2c2f7434-d1ee-49c0-b77d-c11b7848f4da
 </code></pre></div>

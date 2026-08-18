@@ -15413,7 +15413,7 @@
 <h4 id="in-windows-kubernetes-clusters-the-rancher-wins-service-provides-a-method-for-rancher-to-operate-the-windows-host-whilst-troubleshooting-a-windows-cluster-issue-it-may-be-necessary-to-pull-the-logs-from-this-service-as-documented-in-this-article">In <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/use-windows-clusters">Windows Kubernetes clusters</a> the <code>rancher-wins</code> service provides a method for Rancher to operate the Windows host. Whilst troubleshooting a Windows cluster issue it may be necessary to pull the logs from this service, as documented in this article.</h4>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <h4 id="to-pull-the-logs-from-the-rancher-wins-service-execute-the-following-command-in-a-powershell-session-on-the-node">To pull the logs from the <code>rancher-wins</code> service, execute the following command in a Powershell session on the node:</h4>
-<div class="highlight"><pre><span></span><code>Get-EventLog -LogName Application -Source &#39;rancher-wins&#39; | format-table  -Property TimeGenerated, ReplacementStrings -Wrap &gt; wins.log
+<div class="highlight"><pre><span></span><code>Get-EventLog -LogName Application -Source 'rancher-wins' | format-table  -Property TimeGenerated, ReplacementStrings -Wrap &gt; wins.log
 </code></pre></div>
 <p>This will write the logs to the file <code>wins.log</code> in the working directory, which you can then provide in your Rancher Support Ticket, for analysis.</p>
 

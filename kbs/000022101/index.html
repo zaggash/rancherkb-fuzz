@@ -15346,14 +15346,14 @@ metadata:
 spec:
   filters:
     - record_transformer:
-        remove_keys: &quot;$.kubernetes.annotations&quot;
+        remove_keys: "$.kubernetes.annotations"
   globalOutputRefs:
     - test-output
 </code></pre></div>
 <ul>
 <li>Verify that the annotations are not collected from the Fluentd logs. In the example shown above, the logs from path /tmp/logs/ stored inside rancher-logging-root-fluentd-0 pod can be reviewed. Below is an example of such log snippet that does not collect annotation:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>2025-10-14T08:48:45+00:00       kubernetes.var.log.containers.test-logging-pod_cattle-logging-system_sak-8ee60280b8735d9f14f81a7ce3fb4e58985da1cc419d2feb6ec0b1b8320b43a6.log   {&quot;time&quot;:&quot;2025-10-14T08:48:45.108926277Z&quot;,&quot;stream&quot;:&quot;stdout&quot;,&quot;logtag&quot;:&quot;F&quot;,&quot;message&quot;:&quot;Hello World from Rancher Logging!&quot;,&quot;kubernetes&quot;:{&quot;pod_name&quot;:&quot;test-logging-pod&quot;,&quot;namespace_name&quot;:&quot;cattle-logging-system&quot;,&quot;pod_id&quot;:&quot;f4f2e04c-8fdf-4564-aad9-992071724ef2&quot;,&quot;labels&quot;:{&quot;logging-test&quot;:&quot;true&quot;,&quot;objectset.rio.cattle.io/hash&quot;:&quot;a933de1454495e4c5d41a35ca4b9cb9caf7f1181&quot;},&quot;host&quot;:&quot;abhishekh-do-abhishekh-do-rn7hx-9xwxt&quot;,&quot;container_name&quot;:&quot;sak&quot;,&quot;docker_id&quot;:&quot;8ee60280b8735d9f14f81a7ce3fb4e58985da1cc419d2feb6ec0b1b8320b43a6&quot;,&quot;container_hash&quot;:&quot;docker.io/rancherlabs/swiss-army-knife@sha256:af25a3ace6269adb9e494b693644bc2f897ec872076d78f78bc5ded69f2ee222&quot;,&quot;container_image&quot;:&quot;docker.io/rancherlabs/swiss-army-knife:latest&quot;},&quot;kubernetes_namespace&quot;:{&quot;name&quot;:&quot;cattle-logging-system&quot;,&quot;labels&quot;:{&quot;kubernetes.io/metadata.name&quot;:&quot;cattle-logging-system&quot;}}}
+<div class="highlight"><pre><span></span><code>2025-10-14T08:48:45+00:00       kubernetes.var.log.containers.test-logging-pod_cattle-logging-system_sak-8ee60280b8735d9f14f81a7ce3fb4e58985da1cc419d2feb6ec0b1b8320b43a6.log   {"time":"2025-10-14T08:48:45.108926277Z","stream":"stdout","logtag":"F","message":"Hello World from Rancher Logging!","kubernetes":{"pod_name":"test-logging-pod","namespace_name":"cattle-logging-system","pod_id":"f4f2e04c-8fdf-4564-aad9-992071724ef2","labels":{"logging-test":"true","objectset.rio.cattle.io/hash":"a933de1454495e4c5d41a35ca4b9cb9caf7f1181"},"host":"abhishekh-do-abhishekh-do-rn7hx-9xwxt","container_name":"sak","docker_id":"8ee60280b8735d9f14f81a7ce3fb4e58985da1cc419d2feb6ec0b1b8320b43a6","container_hash":"docker.io/rancherlabs/swiss-army-knife@sha256:af25a3ace6269adb9e494b693644bc2f897ec872076d78f78bc5ded69f2ee222","container_image":"docker.io/rancherlabs/swiss-army-knife:latest"},"kubernetes_namespace":{"name":"cattle-logging-system","labels":{"kubernetes.io/metadata.name":"cattle-logging-system"}}}
 </code></pre></div>
 
 

@@ -15479,14 +15479,14 @@
 <p><div class="highlight"><pre><span></span><code>rke up --config &lt;cluster configuration yaml file&gt;
 </code></pre></div>
 - Recycle the nginx pods in-order to pick up new argument:</p>
-<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name); do kubectl delete $pod -n ingress-nginx; echo &quot;Sleeping for 5 seconds&quot;; sleep 5; done
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name); do kubectl delete $pod -n ingress-nginx; echo "Sleeping for 5 seconds"; sleep 5; done
 </code></pre></div>
 <!--THE END-->
 
 <ul>
 <li>Verify the new configuration:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep underscores_in_headers | grep on &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F '/' '{print $2}'); do echo -n "Checking $pod .... "; kubectl -n ingress-nginx exec "$pod" -- bash -c "cat /etc/nginx/nginx.conf | grep underscores_in_headers | grep on &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo 'Good' || echo 'Bad'"; done
 </code></pre></div>
 <h5 id="configuration-for-rancher-provisioned-clusters"><strong>Configuration for Rancher provisioned clusters</strong></h5>
 <ul>
@@ -15509,12 +15509,12 @@
 <li>Go back to the Cluster Dashboard and click "Launch kubectl".</li>
 <li>Run the following inside the kubectl CLI to recycle the nginx pods in-order to pick up new argument:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name); do kubectl delete $pod -n ingress-nginx; echo &quot;Sleeping for 5 seconds&quot;; sleep 5; done
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name); do kubectl delete $pod -n ingress-nginx; echo "Sleeping for 5 seconds"; sleep 5; done
 </code></pre></div>
 <ul>
 <li>Run the following inside the kubectl CLI to verify the new argument:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F &#39;/&#39; &#39;{print $2}&#39;); do echo -n &quot;Checking $pod .... &quot;; kubectl -n ingress-nginx exec &quot;$pod&quot; -- bash -c &quot;cat /etc/nginx/nginx.conf | grep underscores_in_headers | grep on &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo &#39;Good&#39; || echo &#39;Bad&#39;&quot;; done
+<div class="highlight"><pre><span></span><code>for pod in $(kubectl get pods -l app=ingress-nginx -n ingress-nginx --no-headers -o name | awk -F '/' '{print $2}'); do echo -n "Checking $pod .... "; kubectl -n ingress-nginx exec "$pod" -- bash -c "cat /etc/nginx/nginx.conf | grep underscores_in_headers | grep on &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo 'Good' || echo 'Bad'"; done
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 
 </code></pre></div>

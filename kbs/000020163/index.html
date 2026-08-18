@@ -15354,7 +15354,7 @@
 <div class="highlight"><pre><span></span><code>POD_NAME=&lt;pod name&gt;
 NAMESPACE=&lt;namespace for pod&gt;
 </code></pre></div>
-<p><div class="highlight"><pre><span></span><code>kubectl describe pod -n $NAMESPACE $POD_NAME | awk -F&#39;//&#39; &#39;/containerd:/ {print $2}&#39;
+<p><div class="highlight"><pre><span></span><code>kubectl describe pod -n $NAMESPACE $POD_NAME | awk -F'//' '/containerd:/ {print $2}'
 </code></pre></div>
 - Copy and save the container ID for later. Next, identify the node that the pod is on</p>
 <div class="highlight"><pre><span></span><code>kubectl get pod -n $NAMESPACE $POD_NAME -o wide
@@ -15363,13 +15363,13 @@ NAMESPACE=&lt;namespace for pod&gt;
 <p><strong>Using crictl</strong></p>
 <p>When using <code>critcl</code> in an RKE2 setup, you may need to run the following commands before using crictl</p>
 <div class="highlight"><pre><span></span><code>export CRI_CONFIG_FILE=/var/lib/rancher/rke2/agent/etc/crictl.yaml
-PATH=&quot;$PATH:/var/lib/rancher/rke2/bin&quot;
+PATH="$PATH:/var/lib/rancher/rke2/bin"
 </code></pre></div>
 <ul>
 <li>From the node where the pod is deployed, run the following command to get the PID of a container from the setup steps</li>
 </ul>
 <div class="highlight"><pre><span></span><code>CONTAINER_ID=&lt;container ID&gt;
-PID=$(crictl inspect -o go-template --template &#39;{{.info.pid}}&#39; $CONTAINER_ID)
+PID=$(crictl inspect -o go-template --template '{{.info.pid}}' $CONTAINER_ID)
 </code></pre></div>
 <p><strong>nsenter</strong></p>
 <ul>
@@ -15405,7 +15405,7 @@ PID=$(crictl inspect -o go-template --template &#39;{{.info.pid}}&#39; $CONTAINE
 <p><div class="highlight"><pre><span></span><code>ID=&lt;container ID or name&gt;
 </code></pre></div>
 - Obtain the first process in the container (PID 1):</p>
-<p><div class="highlight"><pre><span></span><code>PID=$(docker inspect --format &#39;{{ .State.Pid }}&#39; $ID)
+<p><div class="highlight"><pre><span></span><code>PID=$(docker inspect --format '{{ .State.Pid }}' $ID)
 </code></pre></div>
 - Run commands from the node within the network namespace context of the container/Pod with nsenter:</p>
 <p><div class="highlight"><pre><span></span><code>nsenter -n -t $PID &lt;command&gt;

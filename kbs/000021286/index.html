@@ -15379,7 +15379,7 @@
 <p><strong>Inability to detach/attach CNS block volumes:</strong></p>
 <p>Customers can create CNS block volumes in the RKE1/RKE2 cluster using the Vsphere CSI.</p>
 <p>However, when scaling down a workload (deployment,statefulset), the block volume does not get detached automatically from the nodes. Scaling up the workload, the following error appears in the cluster events:</p>
-<div class="highlight"><pre><span></span><code>rpc error: code = Internal desc = queryVolume failed for volumeID: &quot;5db7cc3c-62b9-427d-823b-87729fcef771&quot; with err=ServerFaultCode: NoPermission 
+<div class="highlight"><pre><span></span><code>rpc error: code = Internal desc = queryVolume failed for volumeID: "5db7cc3c-62b9-427d-823b-87729fcef771" with err=ServerFaultCode: NoPermission 
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The user account within vSphere must be granted the following permissions:<br />

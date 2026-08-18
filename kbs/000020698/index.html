@@ -15322,18 +15322,18 @@
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p>To do this import the k3s cluster into the Terraform configuration, then upgrade the cluster via Terraform. </p>
 <p>Firstly, with the Rancher2 Terraform Provider configured (<a href="https://registry.terraform.io/providers/rancher/rancher2/latest/docs">https://registry.terraform.io/providers/rancher/rancher2/latest/docs</a>), define a rancher2_cluster resource for your k3s cluster, per the following example:</p>
-<div class="highlight"><pre><span></span><code>resource &quot;rancher2_cluster&quot; &quot;k3s&quot; {
-    name = &quot;k3s&quot;
+<div class="highlight"><pre><span></span><code>resource "rancher2_cluster" "k3s" {
+    name = "k3s"
 }
 </code></pre></div>
 <p>Then use the `terraform import` command to import the k3s cluster into your Terraform configuration (<a href="https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster#import">https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster#import</a>), e.g.:</p>
 <div class="highlight"><pre><span></span><code>terraform import rancher2_cluster.k3s c-m-h6xkkkvs
 </code></pre></div>
 <p>Finally with the cluster imported, set the Kubernetes version in the k3s_config block to upgrade the cluster via a `terraform apply` operation, e.g.:</p>
-<div class="highlight"><pre><span></span><code>resource &quot;rancher2_cluster&quot; &quot;k3s&quot; {
-    name = &quot;k3s&quot;
+<div class="highlight"><pre><span></span><code>resource "rancher2_cluster" "k3s" {
+    name = "k3s"
     k3s_config {
-        version = &quot;v1.23.7+k3s1&quot;
+        version = "v1.23.7+k3s1"
     }
 }
 </code></pre></div>

@@ -15370,7 +15370,7 @@
 <p>After <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/migrate-rancher-to-new-cluster">migrating a Rancher instance</a> using the rancher-backup operator, with a backup created using rancher-backup operator 105.0.0+up6.0.0 or &lt; 104.1.0+up5.0.4, Rancher-provisioned RKE2 or K3s clusters, with a Pod Security Admission Configuration Template configured, are in an error state with the following message:</p>
 <div class="highlight"><pre><span></span><code>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Error retrieving secret fleet-default/&lt;cluster-name&gt;-admission-configuration-psact while rendering files: secrets &quot;&lt;cluster-name&gt;-admission-configuration-psact&quot; not found
+<div class="highlight"><pre><span></span><code>Error retrieving secret fleet-default/&lt;cluster-name&gt;-admission-configuration-psact while rendering files: secrets "&lt;cluster-name&gt;-admission-configuration-psact" not found
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>The issue is caused by the failure of the rancher-backup operator to back up admission-configuration-psact secrets in backup-operator 105.0.0+up6.0.0 or &lt; 104.1.0+up5.0.4</p>

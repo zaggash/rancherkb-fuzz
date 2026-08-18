@@ -15373,7 +15373,7 @@ Keycloak v25+</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
 <p><strong>1. Generate the Certificate Pair</strong></p>
 <p>Rancher requires a matching X.509 certificate and private key. Use OpenSSL to generate a self-signed pair:</p>
-<div class="highlight"><pre><span></span><code>openssl req -x509 -newkey rsa:4096 -keyout rancher_auth.key -out rancher_auth.cert -days 3650 -nodes -subj &quot;/CN=rancher-saml&quot;
+<div class="highlight"><pre><span></span><code>openssl req -x509 -newkey rsa:4096 -keyout rancher_auth.key -out rancher_auth.cert -days 3650 -nodes -subj "/CN=rancher-saml"
 </code></pre></div>
 <p><strong>2. Keycloak Client Configuration</strong></p>
 <p>In the Keycloak Admin Console, navigate to <strong>Clients &gt; [Your Rancher Client]</strong> and apply the following settings:</p>

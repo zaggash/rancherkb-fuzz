@@ -15366,7 +15366,7 @@
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>Rancher upgrade is failing due to the deprecated apiVersion for the cert-manager CRD. This affects cert-manager upgrades from an earlier release, for example upgrading cert-manager from 0.12 to 1.7.1, which in turn has the potential to create a deprecated apiVersion within the existing Rancher release manifest.</p>
 <p>The relevant error message may appear as below and occurs when running the helm upgrade command to upgrade Rancher.</p>
-<div class="highlight"><pre><span></span><code>Error: UPGRADE FAILED: unable to build kubernetes objects from current release manifest: resource mapping not found for name: &quot;rancher&quot; namespace: &quot;&quot; from &quot;&quot;: no matches for kind &quot;Issuer&quot; in version &quot;cert-manager.io/v1alpha2&quot; ensure CRDs are installed first
+<div class="highlight"><pre><span></span><code>Error: UPGRADE FAILED: unable to build kubernetes objects from current release manifest: resource mapping not found for name: "rancher" namespace: "" from "": no matches for kind "Issuer" in version "cert-manager.io/v1alpha2" ensure CRDs are installed first
 </code></pre></div>
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>Old CRD's are not deleted properly after the upgrade of cert-manager, this may cause a deprecated apiVersion to be used in the Rancher release manifest.</p>
@@ -15379,16 +15379,16 @@
 <div class="highlight"><pre><span></span><code>kubectl get secret sh.helm.release.v1.rancher.v1 -n cattle-system -o yaml &gt; helm-rancher-config.yaml 
 </code></pre></div>
 <p>3. Decode the data.release field and save the output to yaml (jq must be installed before executing the below steps)</p>
-<div class="highlight"><pre><span></span><code>kubectl get secrets sh.helm.release.v1.rancher.v1 -n cattle-system -o json | jq .data.release | tr -d &#39;&quot;&#39; | base64 -d | base64 -d | gzip -d &gt; helm-rancher-config-data-decoded.yaml 
+<div class="highlight"><pre><span></span><code>kubectl get secrets sh.helm.release.v1.rancher.v1 -n cattle-system -o json | jq .data.release | tr -d '"' | base64 -d | base64 -d | gzip -d &gt; helm-rancher-config-data-decoded.yaml 
 </code></pre></div>
 <p>4. Change the apiVersion from v1/alpha2 to v1.</p>
-<div class="highlight"><pre><span></span><code>sed -e &#39;s/cert-manager.io\/v1alpha2/cert-manager.io\/v1/&#39; helm-rancher-config-data-decoded.yaml &gt; helm-rancher-config-data-decoded-replaced.yaml
+<div class="highlight"><pre><span></span><code>sed -e 's/cert-manager.io\/v1alpha2/cert-manager.io\/v1/' helm-rancher-config-data-decoded.yaml &gt; helm-rancher-config-data-decoded-replaced.yaml
 </code></pre></div>
 <p>5. Store the encoded data in a variable to reuse in the next step</p>
-<div class="highlight"><pre><span></span><code>releaseData=$(cat helm-rancher-config-data-decoded-replaced.yaml | gzip | base64 | base64 | tr -d &quot;\n&quot;)
+<div class="highlight"><pre><span></span><code>releaseData=$(cat helm-rancher-config-data-decoded-replaced.yaml | gzip | base64 | base64 | tr -d "\n")
 </code></pre></div>
 <p>6. Replace the release data</p>
-<div class="highlight"><pre><span></span><code>sed &#39;s/^\(\s*release\s*:\s*\).*/\1&#39;$releaseData&#39;/&#39; helm-rancher-config.yaml &gt; helm-rancher-config-final.yaml
+<div class="highlight"><pre><span></span><code>sed 's/^\(\s*release\s*:\s*\).*/\1'$releaseData'/' helm-rancher-config.yaml &gt; helm-rancher-config-final.yaml
 </code></pre></div>
 <p>7. Apply the yaml</p>
 <div class="highlight"><pre><span></span><code>kubectl apply -f helm-rancher-config-final.yaml -n cattle-system

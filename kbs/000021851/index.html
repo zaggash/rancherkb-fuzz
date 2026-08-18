@@ -15442,7 +15442,7 @@
 <ul>
 <li><strong>Check current time:</strong></li>
 </ul>
-<div class="highlight"><pre><span></span><code>date +&quot;%T.%N&quot;
+<div class="highlight"><pre><span></span><code>date +"%T.%N"
 </code></pre></div>
 <p>Execute this command simultaneously on all etcd nodes to quickly spot any significant differences. Even differences of a few seconds can be critical for etcd.
 - <strong>Check the status of your NTP client.</strong> E.g., for <code>chrony</code>:</p>

@@ -15390,12 +15390,12 @@ export FQDN=&lt;your Rancher fully qualified domain name here&gt;
 <p>次は以下のコマンドを実行しテストを行います：</p>
 <div class="highlight"><pre><span></span><code>curl -s -i -N \
   --http1.1 \
-  -H &quot;Connection: Upgrade&quot; \
-  -H &quot;Upgrade: websocket&quot; \
-  -H &quot;Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==&quot; \
-  -H &quot;Sec-WebSocket-Version: 13&quot; \
-  -H &quot;Authorization: Bearer $TOKEN&quot; \
-  -H &quot;Host: $FQDN&quot; \
+  -H "Connection: Upgrade" \
+  -H "Upgrade: websocket" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Version: 13" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
@@ -15409,7 +15409,7 @@ Server: openresty/1.15.8.1
 Upgrade: websocket
 Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
 
-{&quot;name&quot;:&quot;resource.change&quot;,&quot;data&quot;:{&quot;baseType&quot;:&quot;listenConfig&quot;,&quot;created&quot;:&quot;2020-01-04T22:34:26Z&quot;,&quot;createdTS&quot;:1578177266000,&quot;creatorId&quot;:null,&quot;enabled&quot;:true,&quot;generatedCerts&quot;:{&quot;local/10.42.0.7&quot;:&quot;*CERT_CONTENTS_REDACTED*&quot;},&quot;id&quot;:&quot;cli-config&quot;,&quot;keySize&quot;:0,&quot;knownIps&quot;:[&quot;10.42.0.7&quot;,&quot;10.42.0.8&quot;],&quot;labels&quot;:{&quot;cattle.io/creator&quot;:&quot;norman&quot;&quot;},&quot;links&quot;:{&quot;remove&quot;:&quot;https://yourdomain.example.com/v3/listenConfigs/cli-config&quot;,&quot;self&quot;:&quot;https://yourdomain.example.com/v3/listenConfigs/cli-config&quot;,&quot;update&quot;:&quot;https://yourdomain.example.com/v3/listenConfigs/cli-config&quot;},&quot;mode&quot;:&quot;https&quot;,&quot;tos&quot;:&quot;auto&quot;,&quot;type&quot;:&quot;listenConfig&quot;,&quot;uuid&quot;:&quot;511129ca-aa2c-4d16-a8e5-2d77cb171d61&quot;,&quot;version&quot;:0}
+{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
 </code></pre></div>
 <div class="highlight"><pre><span></span><code> 
 </code></pre></div>
