@@ -6621,28 +6621,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pre-requisites
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Steps
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -14723,34 +14701,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000022276/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Upgrade directly from Rancher v2.12.1 to v2.13.1 fails
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000022284/" class="md-nav__link">
         
   
@@ -15314,28 +15264,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pre-requisites
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Steps
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -15356,47 +15284,48 @@
 <h1 id="how-to-recover-an-rke-cluster-when-all-control-plane-nodes-have-failed">How to recover an RKE cluster when all control plane nodes have failed</h1>
 <p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/How-to-recover-a-cluster-when-all-control-plane-nodes-have-failed">000020695</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
-<p>A Rancher-provisioned RKE cluster</p>
+<p>Rancher-provisioned RKE1, RKE2 or K3s cluster</p>
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>In a disaster recovery scenario, the control plane and etcd nodes managed by Rancher in a downstream cluster may no longer be available or functioning. The cluster can be rebuilt by adding control plane and etcd nodes again, followed by restoring from an available snapshot.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<h2 id="pre-requisites">Pre-requisites</h2>
+<p><strong>Pre-requisites</strong></p>
 <ul>
 <li>Nodes to add to the cluster with control plane and etcd roles with adequate resources</li>
-<li>An offline copy of a snapshot to be used as the recovery point, often stored in S3 or copied off node filesystems to a backup location</li>
+<li>An offline copy of a snapshot to be used as the recovery point, often stored in S3 or copied off node filesystems to a backup location<br />
+<strong>Note:</strong> This article assumes that all control plane and etcd nodes are no longer functional and/or cannot be repaired via any other means, such as a VM snapshot restore.</li>
 </ul>
-<blockquote>
-<p><strong>Note:</strong> This article assumes that all control plane and etcd nodes are no longer functional and/or cannot be repaired via any other means, like a VM snapshot restore.</p>
-</blockquote>
-<h2 id="steps">Steps</h2>
-<p>To recover the downstream cluster, any existing nodes with the control plane and/or etcd roles must be removed. Worker nodes can remain in the cluster, and these may continue to operate with running workloads.</p>
-<p>Please use the following steps as a guideline to recover the cluster, from this point the cluster that has experienced the disaster will be referred to as the downstream cluster.</p>
+<p><strong>Steps</strong><br />
+To recover the downstream cluster, any existing nodes with the control plane and/or etcd roles must be removed. Worker nodes can remain in the cluster, and these may continue to operate with running workloads.<br />
+Please use the following steps as a guideline to recover the cluster; from this point, the cluster that has experienced the disaster will be referred to as the downstream cluster.</p>
 <ol>
-<li>As a precaution, it's recommended to take a snapshot of the Rancher local cluster. Please see the documentation (<a href="https://rke.docs.rancher.com/etcd-snapshots/one-time-snapshots">RKE</a>, <a href="https://docs.rke2.io/backup_restore/#creating-snapshots">RKE2</a>, <a href="https://docs.k3s.io/datastore/backup-restore">K3s</a>) for the appropriate way to take a snapshot for the Rancher installation.</li>
+<li>As a precaution, it's recommended to take a snapshot of the Rancher management (local) cluster. Please see the documentation (<a href="https://rke.docs.rancher.com/etcd-snapshots/one-time-snapshots">RKE</a>, <a href="https://docs.rke2.io/datastore/backup_restore#creating-snapshots">RKE2</a>, <a href="https://docs.k3s.io/datastore/backup-restore">K3s</a> (etcd)) for the appropriate distribution used for the local cluster.<br />
+   Alternatively, <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher">the <code>rancher-backup</code> operator</a> can be used to back up all the related objects for restoration. This is useful when Rancher is deployed on a hosted provider (eg, EKS, GKE) or an external datastore is used with K3s.</li>
+<li>
+<p>For the downstream cluster with the issue, delete all nodes with the control plane and/or etcd roles from Cluster Management in the Rancher dashboard.<br />
+   The delete action can fail when the downstream cluster is in this condition. If nodes do not get removed, follow the steps below to remove them from the cluster:</p>
+</li>
+<li>
+<p>Click on the node and select <code>View in API</code>, click the delete button for the object</p>
+</li>
+<li>If this does not succeed, use <code>kubectl</code> or the Cluster Explorer for the Rancher local cluster, edit the corresponding <code>nodes.management.cattle.io</code> object in the namespace that matches the downstream cluster ID to remove the <code>finalizers</code> field</li>
+<li>Add a clean node back to the cluster with the <code>all</code> role (control plane, etcd, worker). The IP address does not have to match any of the previous nodes. If the node has previously been used in a cluster, use the appropriate clean-up step to remove any previous configuration from <a href="https://support.scc.suse.com/s/kb/360042000771?language=en_US">How to remove all Kubernetes components from nodes</a>.</li>
+<li>The newly added node will fail to successfully register to the downstream cluster; it won't proceed past "Waiting to register with Kubernetes". This is normal.</li>
+<li>
+<p>Copy the snapshot into place on the new node. The filename must match a snapshot name in the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup#viewing-available-snapshots">list of snapshots in the Rancher dashboard</a> for the downstream cluster. Any snapshot should be usable; if the name is different, rename the file to match one of the known snapshots in the list. Default locations for each distribution are:</p>
+</li>
+<li>
+<p>RKE1 <code>/opt/rke/etcd-snapshots</code></p>
+</li>
+<li>RKE2 <code>/var/lib/rancher/rke2/db/snapshots</code></li>
+<li>K3s <code>/var/lib/rancher/k3s/db/snapshots</code></li>
+<li>Initiate a <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup#restoring-a-cluster-from-a-snapshot">snapshot restore from the Rancher dashboard</a> using the same snapshot name used in the previous step.</li>
+<li>Monitor the Rancher pod logs for progress.<br />
+   To follow all pod logs at once, a kubeconfig for the Rancher local cluster can be used with this kubectl command:</li>
 </ol>
-<p>Alternatively <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher">the <code>rancher-backup</code> operator</a> can be used to backup all of the related objects for restoration.
-2. Delete all nodes with the control plane and/or etcd roles from the downstream cluster in the Rancher UI.</p>
-<blockquote>
-<p>The delete action can fail when the downstream cluster is in this condition, if nodes do not get removed, follow the below to remove it from the cluster:</p>
-<ol>
-<li>Click on the node and select <code>View in API</code>, click the delete button for the object</li>
-<li>If this does not succeed, using <code>kubectl</code> or the Cluster Explorer for the Rancher local cluster, edit the corresponding <code>nodes.management.cattle.io</code> object in the namespace that matches the downstream cluster ID to remove the <code>finalizers</code> field</li>
-<li>Add a clean node back to the cluster with the <code>all</code> role (control plane, etcd, worker). The IP address does not have to match any of the previous nodes. If the node has previously been used in a cluster, use the <a href="https://support.scc.suse.com/s/kb/360042000771?language=en_US">extended cleanup script steps</a> to remove any previous configuration.</li>
-</ol>
-</blockquote>
-<p>The newly added node will fail to successfully register to the downstream cluster, it won't proceed past "Waiting to register with Kubernetes", this is normal.
-4. Copy the snapshot into place on the new node, under the <code>/opt/rke/etcd-snapshots</code> directory structure.</p>
-<p>The filename must match a snapshot name in the <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup#viewing-available-snapshots">list of snapshots in the Rancher UI</a> for the downstream cluster, any snapshot should be usable, if the name is different, rename the file to match one of the known snapshots in the list.
-5. Initiate a <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup#restoring-a-cluster-from-a-snapshot">snapshot restore from Rancher UI</a> using the same snapshot name used in the previous step.
-6. Monitor the Rancher pod logs for progress.</p>
-<blockquote>
-<p>To follow all pod logs at once, a kubeconfig for the Rancher local cluster can be used with this kubectl command:</p>
-<ul>
-<li><code>kubectl logs -n cattle-system -l app=rancher -f -c rancher</code></li>
-<li>Once the new node reaches the active state, check the cluster and add additional nodes by repeating step 3 when ready, the additional nodes can be added with only the control plane and etcd roles if desired.</li>
-</ul>
-</blockquote>
-<p>As a follow up, once all desired nodes are added and the cluster is healthy, the control plane and etcd node roles can be configured as needed. For example, if the <code>all</code> role is not needed, update the the node by <a href="https://www.suse.com/support/kb/doc/?id=000020084">removing and adding the node again in a rolling fashion</a> .</p>
+<p><div class="highlight"><pre><span></span><code>kubectl logs -n cattle-system -l app=rancher -f -c rancher
+</code></pre></div>
+8. Once the new node reaches the active state, check the cluster and add additional nodes by repeating step 3. When ready, the additional nodes can be added with only the control plane and etcd roles if desired.</p>
+<p>As a follow-up, once all desired nodes are added and the cluster is healthy, the control plane and etcd node roles can be configured as needed. For example, if the <code>all</code> role is not needed, update the node by <a href="https://www.suse.com/support/kb/doc/?id=000020084">removing and adding the node again in a rolling fashion</a>.</p>
 
 
 

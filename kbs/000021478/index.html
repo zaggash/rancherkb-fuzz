@@ -14762,34 +14762,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000022276/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Upgrade directly from Rancher v2.12.1 to v2.13.1 fails
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000022284/" class="md-nav__link">
         
   
@@ -15436,8 +15408,8 @@
 <h2 id="environment"><strong>Environment</strong></h2>
 <p>Rancher 2.7.x, 2.8.x</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>After accidentally deleting the cattle-system Namespace of a downstream-cluster, the cluster is no longer accesible in Rancher UI due to the cluster agent being removed. To recover it, the cluster agent must be manually recreated and the cluster service account token updated.<br />
-<img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&amp;feoid=00N1i000002LdMP&amp;refid=0EMTr000004SwMx" /></p>
+<p>After accidentally deleting the cattle-system Namespace of a downstream-cluster, the cluster is no longer accessible in Rancher UI due to the cluster agent being removed. To recover it, the cluster agent must be manually recreated and the cluster service account token updated.<br />
+<img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&amp;feoid=00N1i000002LdMP&amp;refid=0EMTr000004SwMx" /></p>
 <p><strong>Requierements</strong></p>
 <ul>
 <li>
@@ -15450,7 +15422,7 @@
 <p><strong>Downstream cluster</strong></p>
 </li>
 <li>
-<p>SSH acces to controlplane.</p>
+<p>SSH access to controlplane.</p>
 </li>
 <li>Kubectl CLI and kubeconfig file.</li>
 </ul>
@@ -15478,15 +15450,15 @@ kubectl delete validatingwebhookconfigurations rancher.cattle.io
 <li><a href="https://ranchermanager.docs.rancher.com/v2.10/getting-started/installation-and-upgrade/resources/update-rancher-certificate#method-3-manually-redeploy-the-rancher-agents">https://ranchermanager.docs.rancher.com/v2.10/getting-started/installation-and-upgrade/resources/update-rancher-certificate#method-3-manually-redeploy-the-rancher-agents</a></li>
 </ul>
 <p>The namespace cattle-system and the cluster agent will be recreated:<br />
-<img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr000004Tc2n" /><br />
-<img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr000004TbWY" /></p>
+<img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr000004Tc2n" /><br />
+<img alt="image.png" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr000004TbWY" /></p>
 <h3 id="13-force-a-cluster-reconciliation-apply-a-minor-change-in-the-cluster-configuration-such-as-changing-the-snap-retention-for-etcd">1.3 Force a cluster reconciliation Apply a minor change in the cluster configuration, such as changing the snap retention for etcd.</h3>
 <ol>
 <li>Click <strong>☰ &gt; Cluster Management</strong>.</li>
 <li>Go to the cluster you want to configure and click <strong>⋮ &gt; Edit Config</strong>.</li>
 <li><strong>Cluster Configuration</strong> &gt; etcd &gt; Increase the number of <strong>Snapshots per node</strong>.</li>
 </ol>
-<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000CLUp0" /></p>
+<p><img alt="" src="https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&amp;feoid=00N1i000002LdMN&amp;refid=0EMTr00000CLUp0" /></p>
 
 
 
