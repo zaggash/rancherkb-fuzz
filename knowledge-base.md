@@ -10978,7 +10978,7 @@ Please, refer to the RKE2 support matrix for details: [https://www.suse.com/sus
 
 ## **Environment**
 
-A Rancher-provisioned RKE cluster
+Rancher-provisioned RKE1, RKE2 or K3s cluster
 
 ## **Situation**
 
@@ -10986,43 +10986,40 @@ In a disaster recovery scenario, the control plane and etcd nodes managed by Ran
 
 ## **Resolution**
 
-## Pre-requisites
+**Pre-requisites**
 
 - Nodes to add to the cluster with control plane and etcd roles with adequate resources
-- An offline copy of a snapshot to be used as the recovery point, often stored in S3 or copied off node filesystems to a backup location
+- An offline copy of a snapshot to be used as the recovery point, often stored in S3 or copied off node filesystems to a backup location  
+  **Note:** This article assumes that all control plane and etcd nodes are no longer functional and/or cannot be repaired via any other means, such as a VM snapshot restore.
 
-> **Note:** This article assumes that all control plane and etcd nodes are no longer functional and/or cannot be repaired via any other means, like a VM snapshot restore.
+**Steps**  
+To recover the downstream cluster, any existing nodes with the control plane and/or etcd roles must be removed. Worker nodes can remain in the cluster, and these may continue to operate with running workloads.  
+Please use the following steps as a guideline to recover the cluster; from this point, the cluster that has experienced the disaster will be referred to as the downstream cluster.
 
-## Steps
-
-To recover the downstream cluster, any existing nodes with the control plane and/or etcd roles must be removed. Worker nodes can remain in the cluster, and these may continue to operate with running workloads.
-
-Please use the following steps as a guideline to recover the cluster, from this point the cluster that has experienced the disaster will be referred to as the downstream cluster.
-
-1. As a precaution, it's recommended to take a snapshot of the Rancher local cluster. Please see the documentation ([RKE](https://rke.docs.rancher.com/etcd-snapshots/one-time-snapshots), [RKE2](https://docs.rke2.io/backup_restore/#creating-snapshots), [K3s](https://docs.k3s.io/datastore/backup-restore)) for the appropriate way to take a snapshot for the Rancher installation.
+1. As a precaution, it's recommended to take a snapshot of the Rancher management (local) cluster. Please see the documentation ([RKE](https://rke.docs.rancher.com/etcd-snapshots/one-time-snapshots), [RKE2](https://docs.rke2.io/datastore/backup_restore#creating-snapshots), [K3s](https://docs.k3s.io/datastore/backup-restore) (etcd)) for the appropriate distribution used for the local cluster.  
+   Alternatively, [the `rancher-backup` operator](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher) can be used to back up all the related objects for restoration. This is useful when Rancher is deployed on a hosted provider (eg, EKS, GKE) or an external datastore is used with K3s.
+2. For the downstream cluster with the issue, delete all nodes with the control plane and/or etcd roles from Cluster Management in the Rancher dashboard.  
+   The delete action can fail when the downstream cluster is in this condition. If nodes do not get removed, follow the steps below to remove them from the cluster:
    
-   Alternatively [the `rancher-backup` operator](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-rancher) can be used to backup all of the related objects for restoration.
-2. Delete all nodes with the control plane and/or etcd roles from the downstream cluster in the Rancher UI.
+   1. Click on the node and select `View in API`, click the delete button for the object
+   2. If this does not succeed, use `kubectl` or the Cluster Explorer for the Rancher local cluster, edit the corresponding `nodes.management.cattle.io` object in the namespace that matches the downstream cluster ID to remove the `finalizers` field
+3. Add a clean node back to the cluster with the `all` role (control plane, etcd, worker). The IP address does not have to match any of the previous nodes. If the node has previously been used in a cluster, use the appropriate clean-up step to remove any previous configuration from [How to remove all Kubernetes components from nodes](https://support.scc.suse.com/s/kb/360042000771?language=en_US).
+4. The newly added node will fail to successfully register to the downstream cluster; it won't proceed past "Waiting to register with Kubernetes". This is normal.
+5. Copy the snapshot into place on the new node. The filename must match a snapshot name in the [list of snapshots in the Rancher dashboard](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup#viewing-available-snapshots) for the downstream cluster. Any snapshot should be usable; if the name is different, rename the file to match one of the known snapshots in the list. Default locations for each distribution are:
    
-   > The delete action can fail when the downstream cluster is in this condition, if nodes do not get removed, follow the below to remove it from the cluster:
-   > 
-   > 1. Click on the node and select `View in API`, click the delete button for the object
-   > 2. If this does not succeed, using `kubectl` or the Cluster Explorer for the Rancher local cluster, edit the corresponding `nodes.management.cattle.io` object in the namespace that matches the downstream cluster ID to remove the `finalizers` field
-3. Add a clean node back to the cluster with the `all` role (control plane, etcd, worker). The IP address does not have to match any of the previous nodes. If the node has previously been used in a cluster, use the [extended cleanup script steps](https://support.scc.suse.com/s/kb/360042000771?language=en_US) to remove any previous configuration.
+   - RKE1 `/opt/rke/etcd-snapshots`
+   - RKE2 `/var/lib/rancher/rke2/db/snapshots`
+   - K3s `/var/lib/rancher/k3s/db/snapshots`
+6. Initiate a [snapshot restore from the Rancher dashboard](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup#restoring-a-cluster-from-a-snapshot) using the same snapshot name used in the previous step.
+7. Monitor the Rancher pod logs for progress.  
+   To follow all pod logs at once, a kubeconfig for the Rancher local cluster can be used with this kubectl command:
    
-   The newly added node will fail to successfully register to the downstream cluster, it won't proceed past "Waiting to register with Kubernetes", this is normal.
-4. Copy the snapshot into place on the new node, under the `/opt/rke/etcd-snapshots` directory structure.
-   
-   The filename must match a snapshot name in the [list of snapshots in the Rancher UI](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup#viewing-available-snapshots) for the downstream cluster, any snapshot should be usable, if the name is different, rename the file to match one of the known snapshots in the list.
-5. Initiate a [snapshot restore from Rancher UI](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/restore-rancher-launched-kubernetes-clusters-from-backup#restoring-a-cluster-from-a-snapshot) using the same snapshot name used in the previous step.
-6. Monitor the Rancher pod logs for progress.
-   
-   > To follow all pod logs at once, a kubeconfig for the Rancher local cluster can be used with this kubectl command:
-   > 
-   > - `kubectl logs -n cattle-system -l app=rancher -f -c rancher`
-7. Once the new node reaches the active state, check the cluster and add additional nodes by repeating step 3 when ready, the additional nodes can be added with only the control plane and etcd roles if desired.
+   ```markup
+   kubectl logs -n cattle-system -l app=rancher -f -c rancher
+   ```
+8. Once the new node reaches the active state, check the cluster and add additional nodes by repeating step 3. When ready, the additional nodes can be added with only the control plane and etcd roles if desired.
 
-As a follow up, once all desired nodes are added and the cluster is healthy, the control plane and etcd node roles can be configured as needed. For example, if the `all` role is not needed, update the the node by [removing and adding the node again in a rolling fashion](https://www.suse.com/support/kb/doc/?id=000020084) .
+As a follow-up, once all desired nodes are added and the cluster is healthy, the control plane and etcd node roles can be configured as needed. For example, if the `all` role is not needed, update the node by [removing and adding the node again in a rolling fashion](https://www.suse.com/support/kb/doc/?id=000020084).
 
 
 
@@ -18119,8 +18116,8 @@ Rancher 2.7.x, 2.8.x
 
 ## **Situation**
 
-After accidentally deleting the cattle-system Namespace of a downstream-cluster, the cluster is no longer accesible in Rancher UI due to the cluster agent being removed. To recover it, the cluster agent must be manually recreated and the cluster service account token updated.  
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&feoid=00N1i000002LdMP&refid=0EMTr000004SwMx)
+After accidentally deleting the cattle-system Namespace of a downstream-cluster, the cluster is no longer accessible in Rancher UI due to the cluster agent being removed. To recover it, the cluster agent must be manually recreated and the cluster service account token updated.  
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&feoid=00N1i000002LdMP&refid=0EMTr000004SwMx)
 
 **Requierements**
 
@@ -18129,7 +18126,7 @@ After accidentally deleting the cattle-system Namespace of a downstream-cluster,
   - Kubectl CLI and kubeconfig file.
 - **Downstream cluster**
   
-  - SSH acces to controlplane.
+  - SSH access to controlplane.
   - Kubectl CLI and kubeconfig file.
 
 ## **Resolution**
@@ -18167,8 +18164,8 @@ Follow the steps described in this section to redeploy the Rancher agents:
 
    
 The namespace cattle-system and the cluster agent will be recreated:  
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&feoid=00N1i000002LdMN&refid=0EMTr000004Tc2n)  
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&feoid=00N1i000002LdMN&refid=0EMTr000004TbWY)
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&feoid=00N1i000002LdMN&refid=0EMTr000004Tc2n)  
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&feoid=00N1i000002LdMN&refid=0EMTr000004TbWY)
 
 ### 1.3 Force a cluster reconciliation Apply a minor change in the cluster configuration, such as changing the snap retention for etcd.
 
@@ -18176,7 +18173,7 @@ The namespace cattle-system and the cluster agent will be recreated:
 2. Go to the cluster you want to configure and click **⋮ &gt; Edit Config**.
 3. **Cluster Configuration** &gt; etcd &gt; Increase the number of **Snapshots per node**.
 
-![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000tKxe&feoid=00N1i000002LdMN&refid=0EMTr00000CLUp0)
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&feoid=00N1i000002LdMN&refid=0EMTr00000CLUp0)
 
 
 
@@ -29819,46 +29816,6 @@ This behavior is driven by the `rancher.fullname` logic within the [Rancher Helm
 ## **Resolution**
 
 To mitigate this behaviour, a Helm chart with the existing naming convention (`rancher)` was additionally released. This existing naming convention has also been maintained in v2.13.2.
-
-
-
----
-
-## Article: 000022276.md
-
-# Upgrade directly from Rancher v2.12.1 to v2.13.1 fails
-
-**Article Number:** [000022276](https://support.scc.suse.com/s/kb/Upgrade-directly-from-Rancher-v2-12-1-to-v2-13-1-fails)
-
-## **Environment**
-
-A SUSE Rancher v2.12.1 instance upgraded directly to v2.13.1
-
-## **Situation**
-
-After upgrading directly from Rancher v2.12.1 to v2.13.1, new Rancher v2.13.1 Pods crashloop, with error messages of the following format:
-
-```markup
-2026/01/14 15:07:28 [ERROR] Failed to connect to peer wss://10.42.0.90/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
-E0114 15:07:32.031893      43 reflector.go:205] "Failed to watch" err="failed to list *v1.Token: object *v1.TokenList does not implement the protobuf marshalling interface and cannot be encoded to a protobuf message" logger="UnhandledError" reflector="/root/.cache/go/modcache/k8s.io/client-go@v0.34.2/tools/cache/reflector.go:290" type="*v1.Token"
-2026/01/14 15:07:33 [ERROR] Failed to connect to peer wss://10.42.0.93/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
-2026/01/14 15:07:33 [ERROR] Failed to connect to peer wss://10.42.0.90/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
-2026/01/14 15:07:38 [ERROR] Failed to connect to peer wss://10.42.0.93/v3/connect [local ID=10.42.0.110]: websocket: bad handshake
-```
-
-## **Resolution**
-
-Upgrading directly from v2.12.1 to v2.13.1 is against the recommended and supported upgrade path for Rancher. Rancher should be upgraded to the latest patch release of the currently running minor version, before upgrading to the latest patch release of the next minor version. At the time of writing, this means upgrading a SUSE Rancher Prime v2.12.1 instance to v2.12.6, before the upgrade to v2.13.1. With this supported upgrade path the issue is not encountered.
-
-If it is not possible to rollback the upgrade, you can workaround the issue by scaling down the Rancher Deployment to zero Pods, and then scaling it up again, using the following commands in the Rancher local cluster:
-
-```
-kubectl -n cattle-system scale deployment rancher --replicas=0
-# Wait until all Rancher Pods are terminated
-kubectl -n cattle-system scale deployment rancher --replicas=3
-```
-
-This workaround ensures a set of three v2.13.1 Pods only is running, versus a rolling update of the existing v2.12.1 Pods, and prevents the errors that occur whilst both versions are running.
 
 
 

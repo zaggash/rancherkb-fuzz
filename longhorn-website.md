@@ -1803,6 +1803,9 @@ Longhorn v1.12.1 enables ingress `NetworkPolicy` resources for internal componen
 
 The [CNI Plugin Compatibility](../best-practices#cni-plugin-compatibility) table lists the Kubernetes distribution and CNI combinations that the Longhorn project has validated with `networkPolicies.restrictInternalTraffic` enabled. If your CNI enforces `NetworkPolicy` but your distribution and CNI combination is not listed, test the policies in your target environment before upgrading. For policy behavior and configuration details, see [Network Policies](../advanced-resources/security/network-policy).
 
+> **Note:**
+> ServiceMonitor discovery does not automatically authorize network traffic. Cross-namespace Prometheus scrapers might be blocked by the Longhorn Manager's network policy. To allow this traffic, apply a scoped additive policy as detailed in the [Prometheus and Grafana setup](../monitoring/prometheus-and-grafana-setup) guide.
+
 For Helm installations, `networkPolicies.restrictInternalTraffic` controls the internal policies and defaults to `true`. Leave this setting enabled unless the policies block traffic required by your environment or you manage the policies separately. To disable the policies, set `networkPolicies.restrictInternalTraffic=false` in the values file or pass `--set networkPolicies.restrictInternalTraffic=false` when running or retrying `helm upgrade`. Use `--reuse-values` with `helm upgrade` when appropriate to retain previous release settings. This setting is independent of `networkPolicies.enabled`, which controls only the Longhorn UI frontend policy.
 
 After a successful upgrade with `networkPolicies.restrictInternalTraffic=false`, the six internal `NetworkPolicy` templates are omitted from the rendered output, and policies owned by the Helm release are removed. Preview the rendered output with `helm upgrade --dry-run` or `helm template`; do not add `--reuse-values` to `helm template`. If installed, `helm diff` can optionally compare the changes.
@@ -16275,6 +16278,12 @@ Create a ServiceMonitor for Longhorn Manager.
 
 Longhorn ServiceMonitor is a [Prometheus Operator](https://prometheus-operator.dev/) custom resource. This setup allows the Prometheus server to discover all Longhorn Manager pods and their respective endpoints.
 
+> **Note:** ServiceMonitor provides endpoint discovery, but does not automatically authorize network traffic to Longhorn Manager pods.
+>
+> **Important changes in v1.12.1:**
+> - `networkPolicies.restrictInternalTraffic` operates independently and defaults to `true` (which may block monitoring traffic if not explicitly permitted).
+> - `networkPolicies.enabled` now controls *only* the UI frontend policy.
+
 You can use the label selector `app: longhorn-manager` to select the longhorn-backend service, which points to the set of Longhorn Manager pods.
 
 ### Install and configure Prometheus AlertManager
@@ -16317,7 +16326,7 @@ See [Prometheus - Configuration](https://prometheus.io/docs/alerting/latest/conf
             *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
             *Description:* {{ .Annotations.description }}
             *Details:*
-            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+            {{ range .Labels.SortedPairs }} - *{{ .Name }}:* `{{ .Value }}`
             {{ end }}
           {{ end }}
       slack_configs:
@@ -16328,7 +16337,7 @@ See [Prometheus - Configuration](https://prometheus.io/docs/alerting/latest/conf
             *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
             *Description:* {{ .Annotations.description }}
             *Details:*
-            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+            {{ range .Labels.SortedPairs }} - *{{ .Name }}:* `{{ .Value }}`
             {{ end }}
           {{ end }}
     ```
@@ -16452,6 +16461,9 @@ See [Prometheus - Configuration](https://prometheus.io/docs/alerting/latest/conf
       namespace: default
     spec:
       replicas: 2
+      podMetadata:
+        labels:
+          longhorn.io/metrics-scraper: "true"
       serviceAccountName: prometheus
       alerting:
         alertmanagers:
@@ -16466,6 +16478,12 @@ See [Prometheus - Configuration](https://prometheus.io/docs/alerting/latest/conf
           prometheus: longhorn
           role: alert-rules
     ```
+
+1. **The Issue:** When `networkPolicies.restrictInternalTraffic` is enabled, Longhorn restricts ingress traffic to `longhorn-manager` to specific Longhorn components allowed by its NetworkPolicy. Prometheus and other monitoring agents are not included in this allow-list, so scraping Longhorn Manager pods on TCP port 9500 is blocked by default. ServiceMonitor discovers endpoints but does not authorize network traffic to Longhorn Manager pods.
+
+    **The Solution:** Apply a narrowly scoped NetworkPolicy in `longhorn-system` that allows your monitoring pods to access Longhorn Manager pods on TCP port 9500. Follow the inline comments in the [scoped additive NetworkPolicy example](https://github.com/longhorn/longhorn/blob/master/examples/network-policy/allow-prometheus-to-longhorn-manager.yaml) to customize the namespace and pod selectors for your monitoring environment.
+
+    > **Warning:** The example combines `namespaceSelector` and `podSelector` in one `from` item so both selectors must match. Port 9500 also serves the Longhorn API, so do not replace the combined selectors with a namespace-only allowance unless that broader API access is intended. See the [Network Policy guide](../../advanced-resources/security/network-policy) for details.
 
 1. To be able to view the web UI of the Prometheus server, expose it through a Service. A simple way to do this is to use a Service of type NodePort.
 
