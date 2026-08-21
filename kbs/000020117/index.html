@@ -15403,7 +15403,7 @@
 <p>These steps should work for any cluster running CoreDNS where the <code>coredns</code> ConfigMap is used.</p>
 <h4 id="steps">Steps</h4>
 <p>There are two approaches to achieve this, please read through both to understand which is best for your environment.</p>
-<p>Both approaches require editting the <code>coredns</code> ConfigMap, specifically the <code>Corefile</code> key. This can be done in the UI by clicking View/Edit YAML, Edit, or on the command line with kubectl.</p>
+<p>Both approaches require editing the <code>coredns</code> ConfigMap, specifically the <code>Corefile</code> key. This can be done in the UI by clicking View/Edit YAML, Edit, or on the command line with kubectl.</p>
 <p>Along with these options, both plugins covered provide other features, like adjusting the TTL for records, see the documentation links for more information.</p>
 <h5 id="rewrite"><a href="https://coredns.io/plugins/rewrite/">Rewrite</a></h5>
 <p>The rewrite plugin will perform a rewritten query to the upstream nameserver, and respond to the query with the results. The outcome would be similar to configuring a CNAME for the domain.</p>
