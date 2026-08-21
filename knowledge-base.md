@@ -5367,7 +5367,7 @@ These steps should work for any cluster running CoreDNS where the `coredns` Conf
 
 There are two approaches to achieve this, please read through both to understand which is best for your environment.
 
-Both approaches require editting the `coredns` ConfigMap, specifically the `Corefile` key. This can be done in the UI by clicking View/Edit YAML, Edit, or on the command line with kubectl.
+Both approaches require editing the `coredns` ConfigMap, specifically the `Corefile` key. This can be done in the UI by clicking View/Edit YAML, Edit, or on the command line with kubectl.
 
 Along with these options, both plugins covered provide other features, like adjusting the TTL for records, see the documentation links for more information.
 
@@ -8029,7 +8029,7 @@ systemctl start haproxy
 
 When troubleshooting an issue that is reproducible in a browser, it is sometimes necessary to have additional information about the requests and responses. You may be requested to generate a HAR file recording to capture this and attach this to a ticket for analysis.
 
-> Please note, the information collected in a HAR file can contain sensitive data like content, headers, and cookies. This is not always the case, and some information is transient only. However, please check and santise the information as necessary before uploading.
+> Please note, the information collected in a HAR file can contain sensitive data like content, headers, and cookies. This is not always the case, and some information is transient only. However, please check and sanitise the information as necessary before uploading.
 
 ## **Resolution**
 
@@ -8047,7 +8047,7 @@ Using the F12 button you can quickly open the Developer Tools on FireFox and Chr
 - Follow any steps needed to reproduce the issue during the recording
 - Note: immediately before triggering the action that reproduces the issue, also reload the page (eg. via CTRL+R). For example, if the issue manifests when navigating to a page, then go to the the page containing the link leading to it, first reload the page, and then click to reproduce the issue.
 - Once the issue has occurred, click the "export HAR (sanitized)" button , top right, in the second row of icons. You can no choose a name and location for the file.  
-  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000w2xV&feoid=00N1i000002LdMN&refid=0EMTr00000GWwSg)
+  ![](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004GLB3&feoid=00N1i000002LdMN&refid=0EMTr00000GWwSg)
 
 **Firefox**
 
@@ -8057,7 +8057,7 @@ Using the F12 button you can quickly open the Developer Tools on FireFox and Chr
 - Follow any steps needed to reproduce the issue with the network pane open
 - Note: immediately before triggering the action that reproduces the issue, also reload the page (eg. via CTRL+R). For example, if the issue manifests when navigating to a page, then go to the the page containing the link leading to it, first reload the page, and then click to reproduce the issue.
 - Once the issue has occurred, right click in the pane and select **Save all as HAR**  
-  **![](https://suse.file.force.com/servlet/rtaImage?eid=ka0Tr000000w2xV&feoid=00N1i000002LdMN&refid=0EMTr00000GWoer)**
+  **![](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004GLB3&feoid=00N1i000002LdMN&refid=0EMTr00000GWoer)**
 
 **Upload the HAR file**
 
