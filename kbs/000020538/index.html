@@ -2000,7 +2000,7 @@
   <span class="md-ellipsis">
     
   
-    How to confirm a version upgrade of Rancher v2.x is completed successfully
+    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
   
 
     
@@ -3981,34 +3981,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020172/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to setup Rancher 2.x with Active Directory external authentication
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020174/" class="md-nav__link">
         
   
@@ -4437,34 +4409,6 @@
     
   
     Users assigned the Project Owner or Member role on a project are able to create namespaces on any project, in the same cluster, to which they have access
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../000020217/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How to install or upgrade to a specific Rancher v2.x version
   
 
     
@@ -15266,7 +15210,7 @@
 <p>This is a follow-up to the Rancher Operational Advisory that was sent on this topic in <a href="https://www.suse.com/support/kb/doc/?id=000020536">December 2020</a>.</p>
 <p>In the latest <a href="https://kubernetes.io/blog/2021/11/12/are-you-ready-for-dockershim-removal/">announcement</a> from the Kubernetes blog, it has been notified that dockershim removal has been planned in Kubernetes v1.24, slated for release around April 2022.</p>
 <h2 id="what-are-suses-plans-to-ensure-on-going-container-runtime-support-in-future-kubernetes-releases">What are SUSE's plans to ensure on-going container runtime support in future Kubernetes releases?</h2>
-<p>Starting with Kubernetes v1.21, RKE added support for CRI plugin cri-dockerd, see <a href="https://rancher.com/docs/rancher/v2.6/en/installation/requirements/dockershim/">here</a> instructions to enable. All RKE clusters will need to leverage this CRI plugin before upgrading to Kubernetes v1.24. Future updates beyond Kubernetes v1.24 RKE will rely on the cri-dockerd shim.</p>
+<p>Starting with Kubernetes v1.21, RKE added support for CRI plugin cri-dockerd, see <a href="https://ranchermanager.docs.rancher.com/v2.11/getting-started/installation-and-upgrade/installation-requirements/dockershim">here</a> instructions to enable. All RKE clusters will need to leverage this CRI plugin before upgrading to Kubernetes v1.24. Future updates beyond Kubernetes v1.24 RKE will rely on the cri-dockerd shim.</p>
 <p>For more information on the dockershim removal schedule, you can check the upstream Kubernetes Enhancement Proposal (KEP) <a href="https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/2221-remove-dockershim/README.md">2221</a>.</p>
 <p>K3s and RKE2 are not impacted by the removal of dockershim and use the CRI plugin containerd. We expect to deliver a migration path from RKE to RKE2 in the future.</p>
 <p>SUSE will continue to keep you updated with related news on the roadmap from our product management</p>
