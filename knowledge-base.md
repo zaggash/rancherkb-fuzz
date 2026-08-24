@@ -3697,26 +3697,26 @@ An RKE Kubernetes cluster provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
 ## Article: 000020078.md
 
-# How to confirm a version upgrade of Rancher v2.x is completed successfully
+# [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
 
 **Article Number:** [000020078](https://support.scc.suse.com/s/kb/360050943312)
 
 ## **Environment**
 
-- A Rancher v2.x instance, either a [single Docker container](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker) or a [Highly Available (HA) installation in Kubernetes](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster).
-- A Rancher version upgrade performed per the [Rancher upgrade documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades).
+- Rancher v2.xインスタンス（[単一のDockerコンテナ](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/) または[Kubernetes上にデプロイした高可用性（HA）のインストール](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/) ）
+- Rancherの[アップグレードドキュメント](https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/upgrades/) に従って実行されるRancherバージョンのアップグレード
 
 ## **Situation**
 
-This article details how to confirm that a Rancher version upgrade has successfully completed.
+この記事では、Rancherのバージョンアップが正常に完了したことを確認する方法について詳しく説明します。
 
 ## **Resolution**
 
-The following can be verified to confirm that the Rancher component containers have all been successfully upgrade to the newer version:
+Rancherコンポーネントコンテナがすべて新しいバージョンに正常にアップグレードされていることを確認するために、以下のことが実施できます。
 
-- Within the Rancher UI, confirm the version in the bottom-left corner displays the newer version.
-- For a HA installation, confirm the rancher Deployment Pods within the cattle-system namespace of the Rancher cluster have all been updated to the newer version.
-- Confirm that the Rancher agent workloads (the cattle-node-agent DaemonSet and cattle-cluster-agent Deployment in the cattle-system namespace) in all of the Rancher managed clusters have been updated to the newer version.
+- Rancher UI内で、左下に表示されているバージョンが新しいバージョンになっていることを確認
+- HA インストールの場合、Rancher クラスタの cattle-system 名前空間内の rancher Deployment Pods がすべて新しいバージョンに更新されていることを確認
+- すべてのRancher管理クラスタ内のRancherエージェントワークロード（cattle-system名前空間内のcattle-node-agent DaemonSetとcattle-cluster-agent Deployment）が新しいバージョンに更新されていることを確認
 
 
 
@@ -7561,66 +7561,6 @@ Please consider the key details and provide as much information as possible abou
 
 ---
 
-## Article: 000020172.md
-
-# How to setup Rancher 2.x with Active Directory external authentication
-
-**Article Number:** [000020172](https://support.scc.suse.com/s/kb/360039796732)
-
-## **Situation**
-
-##### Overview and Intention
-
-This is a quick guide aiming to get Rancher v2.x using external authentication via Active Directory with the least amount of effort. Of course there is much more to consider and configure in a production enterprise environment. For more detail on this function please refer to this Rancher article and fine tune as required. [Configuring Active Directory](https://rancher.com/docs/rancher/v2.x/en/admin-settings/authentication/ad/)
-
-##### Pre-requisites
-
-- A running instance of Rancher v2.x, either [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) or [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/).
-- Local account to log onto the Rancher Server (usually admin)
-- A Windows Server running Active Directory
-- Name of the domain you wish to join
-- A restricted account that Rancher can use to bind and query the Directory with (Security Recommendations at the bottom of article)
-- A standard user account that will be used to test and enable the authentication (i.e your domain account)
-- Knowledge of where the users are in the Active Directory OU (Organisational Unit) structure
-- Network connectivity from the Rancher worker nodes to the Active Directory Servers (There is probably more than one, run nslookup on the domain name)
-- Also good to test ports 389 or 636 (TLS) as these need to be allowed
-
-##### Steps on How To Get Rancher Talking to AD Quickly
-
-##### (Tested with AD running Windows Server 2016/2019)
-
-In this example I have used the below examples (yours will be different):
-
-- my domain is **'rancher.local'**
-- All or my users are located under the **Users** OU in AD
-- my bind account is **'svc-rancher'**
-
-For more detail refer to [Configuring Active Directory](https://rancher.com/docs/rancher/v2.x/en/admin-settings/authentication/ad/):
-
-1. Log into the Rancher UI using the initial local admin account.
-2. From the Global view, navigate to Security &gt; Authentication
-3. Select Active Directory. The Configure an AD server form will be displayed.
-4. Add in the Hostname or IP address into the Hostname field
-5. Add **'rancher/svc-rancher'** to the Service Account Username field
-6. Add **'cn=users,dc=rancher,dc=local'** to the User Search Base
-7. Goto Section 3 add your domain account username and password
-8. Click 'Authenticate with Active Directory'
-
-##### Security tips and Best Practices
-
-WARNING: Once enabled all users in the Search base will be able to log into Rancher.
-
-1. Once auth is configured in Rancher change the relaxed default setting from 'Allow any valid Users' to login to 'only allow members of Cluster, Projects' to login. Access must now be specified instead of allowing any User onto the cluster.
-2. Under 'Global, Security, Roles' It is best to drop 'New User Default' setting from 'User' to 'User Base' which provide less privleges to new users and must increased as required not as a default.
-3. The bind account is critical for ongoing authentication so locking the account will break functionality.
-   
-   - If this account gets locked or the password changes your AD authentication will be broken. Setting the account and the password not to expire and removing lockout policies prevent disruption.
-   - Remove interactive logon abilites as this account doesn't need to logon to a server and control it
-
-
-
----
-
 ## Article: 000020174.md
 
 # How to setup Nodelocal DNS cache with Rancher, RKE1 and RKE2
@@ -8702,53 +8642,6 @@ For example, if a user has been granted the Project Member role on a Project nam
 Per the caveat explanation in the [Rancher v2.x documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles#project-roles):
 
 > Users assigned the Owner or Member role for a project automatically inherit the namespace creation role. However, this role is a [Kubernetes ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole), meaning its scope extends to all projects in the cluster. Therefore, users explicitly assigned the owner or member role for a project can create namespaces in other projects they’re assigned to, even with only the Read Only role assigned.
-
-
-
----
-
-## Article: 000020217.md
-
-# How to install or upgrade to a specific Rancher v2.x version
-
-**Article Number:** [000020217](https://support.scc.suse.com/s/kb/360034528871)
-
-## **Environment**
-
-Rancher v2.x
-
-## **Situation**
-
-By default the [installation and upgrade documentation](https://ranchermanager.docs.rancher.com/pages-for-subheaders/installation-and-upgrade) references the installation of, or upgrade to, the most recently released latest or stable tagged version of Rancher. This article details how to install a specific version, both in a single node and high availability installation.
-
-Please reference the [Rancher Upgrade Checklist](https://support.scc.suse.com/s/kb/360051866152), when planning upgrades, to ensure that a supported upgrade path is followed.
-
-> **N.B.** Rancher Prime users should install Rancher from the Prime repository. For other users, we would recommend that you only run product releases tagged “Stable” in your production and any other critical environments. Any product release with the “Latest” tag should only be used for testing the latest releases.
-
-## **Resolution**
-
-**Single Node Docker Install**
-
-To [install](https://ranchermanager.docs.rancher.com/pages-for-subheaders/rancher-on-a-single-node-with-docker) or [upgrade](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/upgrade-docker-installed-rancher) to a specific Rancher version in a single node install, you can specify the exact version number of the image to run, `rancher/rancher:vX.X.X`, i.e.:
-
-```
-docker run -d --restart=unless-stopped \
-  -p 80:80 -p 443:443 \
-  --privileged \
-  rancher/rancher:latest  or rancher/rancher:v2.13.2
-```
-
-**High Availability (HA) Install**
-
-To [install](https://ranchermanager.docs.rancher.com/pages-for-subheaders/install-upgrade-on-a-kubernetes-cluster) or [upgrade](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/upgrades) to a specific version in a High Availability install, you can specify the `--version X.X.X` parameter when running the `helm install` or `helm upgrade` command, i.e.:
-
-```
-helm install rancher rancher-<CHART_REPO>/rancher \
-  --namespace cattle-system \
-  --set hostname=rancher.my.org \
-  --set bootstrapPassword=admin \
-  --version 2.13.2
-```
 
 
 
@@ -10495,7 +10388,7 @@ In the latest [announcement](https://kubernetes.io/blog/2021/11/12/are-you-ready
 
 ## What are SUSE's plans to ensure on-going container runtime support in future Kubernetes releases?
 
-Starting with Kubernetes v1.21, RKE added support for CRI plugin cri-dockerd, see [here](https://rancher.com/docs/rancher/v2.6/en/installation/requirements/dockershim/) instructions to enable. All RKE clusters will need to leverage this CRI plugin before upgrading to Kubernetes v1.24. Future updates beyond Kubernetes v1.24 RKE will rely on the cri-dockerd shim.
+Starting with Kubernetes v1.21, RKE added support for CRI plugin cri-dockerd, see [here](https://ranchermanager.docs.rancher.com/v2.11/getting-started/installation-and-upgrade/installation-requirements/dockershim) instructions to enable. All RKE clusters will need to leverage this CRI plugin before upgrading to Kubernetes v1.24. Future updates beyond Kubernetes v1.24 RKE will rely on the cri-dockerd shim.
 
 For more information on the dockershim removal schedule, you can check the upstream Kubernetes Enhancement Proposal (KEP) [2221](https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/2221-remove-dockershim/README.md).
 
