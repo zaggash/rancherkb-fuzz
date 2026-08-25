@@ -2808,7 +2808,7 @@ If you wish to use a separate filesystem for the kubelet root directory, you wil
 
 ## **Resolution**
 
-When a new Rancher Hosted Prime environment is created, it will have a default admin account, and a password will be provided to you for that account. You'll be asked to change the admin password when logging in for the first time. It is the customer's responsibility to create new user accounts. Most customers leverage Rancher's [external authentication provider](https://ranchermanager.docs.rancher.com/pages-for-subheaders/authentication-config).
+When a new Rancher Hosted Prime environment is created, it will have a default admin account, and a password will be provided to you for that account. You'll be asked to change the admin password when logging in for the first time. It is the customer's responsibility to create new user accounts. Most customers leverage Rancher's [external authentication provider](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/) support.
 
 
 
@@ -7475,37 +7475,6 @@ rancher_kubernetes_engine_config:
       extra_args:
         node-cidr-mask-size: 25
 ```
-
-
-
----
-
-## Article: 000020170.md
-
-# How to upgrade Docker using Rancher's install script
-
-**Article Number:** [000020170](https://support.scc.suse.com/s/kb/360040967512)
-
-## **Environment**
-
-- A supported node with a version of Docker needing to be upgraded
-- Curl or Wget installed
-
-## **Situation**
-
-Rancher provides quick scripts for installing Docker, which are available for the most recent versions of Docker [https://rancher.com/docs/rancher/v2.x/en/installation/requirements/installing-docker/](https://rancher.com/docs/rancher/v2.x/en/installation/requirements/installing-docker/)  Upgrading Docker on your machine using these scripts is equally as simple.
-
-## **Resolution**
-
-Just run the script with the version number you are trying to upgrade to. Let's say you're running 18.09 and want to upgrade to 19.03. Simply provide the version number as the name of the script to run. For example:
-
-`curl https://releases.rancher.com/install-docker/27.2.sh | sh`
-
-or
-
-`wget -O- https://releases.rancher.com/install-docker/27.2.sh | sh`
-
-This will throw a warning that Docker is already installed, stop the running Docker engine, and upgrade your version. Note that restarting Docker will also stop any running container or workloads running on this host.
 
 
 
