@@ -359,66 +359,6 @@ kubectl apply -f https://raw.githubusercontent.com/rancherlabs/support-tools/mas
 
 ---
 
-## Article: 000020012.md
-
-# How to add a Grafana Dashboard for Logging v2
-
-**Article Number:** [000020012](https://support.scc.suse.com/s/kb/360059661652)
-
-## **Environment**
-
-A cluster managed by Rancher v2.5.x+ with Monitoring and Logging v2 apps installed
-
-## **Situation**
-
-#### Vistualising Logging statistics can be useful for troubleshooting and capacity planning, this article demonstrates how to add a Logging Dashboard to Grafana with persistence throughout pod restarts.
-
-The article focusses on a Logging Dashboard, however these same steps can be adapted to suit other Dashboards.
-
-## **Resolution**
-
-- Upgrade the Logging v2 app to enable the service monitor by clicking 'Chart Options' and 'Edit as YAML', below is an example showing the `monitoring.serviceMonitorsection.enabled` field set to `true`:
-
-```
-monitoring:
-  serviceMonitor:
-    enabled: true
-```
-
-Once complete, the target (`cattle-logging-system/rancher-logging`) should show up in the Prometheus Targets list with an `UP` state - this can take a few minutes
-
-Add a logging dashboard to Grafana by adding the JSON to a [ConfigMap for persistence](https://ranchermanager.docs.rancher.com/v2.8/how-to-guides/advanced-user-guides/monitoring-alerting-guides/create-persistent-grafana-dashboard) . In this example, the [Logging Dashboard](https://grafana.com/grafana/dashboards/7752) is used
-
-- Click the 'Download JSON' button for the Dashboard
-
-<!--THE END-->
-
-- Replace the data source variable with `Prometheus` in the downloaded file
-
-For example:
-
-```
-sed 's/${DS_PROMETHEUS}/Prometheus/' logging-dashboard_rev4.json > logging.json
-```
-
-- Create and label the ConfigMap using the updated `logging.json` file
-
-```
-kubectl create configmap --from-file logging.json logging -n cattle-dashboards
-kubectl label configmap  -n cattle-dashboards logging grafana_dashboard=1
-```
-
-- Visit the Grafana UI, the Dashboard should now be available
-
-#### Further reading
-
-- [Monitoring in Rancher](https://ranchermanager.docs.rancher.com/v2.8/how-to-guides/advanced-user-guides/monitoring-alerting-guides)
-- [Logging in Rancher](https://ranchermanager.docs.rancher.com/integrations-in-rancher/logging)
-
-
-
----
-
 ## Article: 000020013.md
 
 # Configuring a buffer with total_limit_size in Logging v2
@@ -8055,34 +7995,28 @@ measurements:
 
 ## Article: 000020180.md
 
-# [JP] How do I edit my cluster using RKE Templates?
+# How do I edit or upgrade clusters created via RKE Templates?
 
-**Article Number:** [000020180](https://support.scc.suse.com/s/kb/360039668151)
+**Article Number:** [000020180](https://support.scc.suse.com/s/kb/How-do-I-edit-or-upgrade-clusters-created-via-RKE-Templates)
+
+## **Environment**
+
+- RKE1 cluster managed via RKE templates on Rancher 2.x.
 
 ## **Situation**
 
-### 質問
+- #### Unable to change certain Kubernetes Cluster Options under the Cluster Management -&gt; Cluster -&gt; Edit config when managing clusters via RKE templates.
 
-RKEテンプレートを使用してクラスターを変換/管理した後、\[クラスターの編集]で変更を加えようとすると、\[編集]ボタンが消え、Kubernetesバージョンのドロップダウンメニューなどの機能が削除されます。 これはどこに行きましたか？
+## **Resolution**
 
-### 前提条件
+#### If you need to make changes or upgrade your clusters managed via RKE templates, you need to perform the following steps:
 
-RKEテンプレート機能によって管理されるKubernetesクラスター  
- 
-
-### 回答
-
-KubernetesクラスターにRKEテンプレートがattachされている場合は、RKEテンプレートセクションでクラスターに変更を加える必要があります。
-
-1. \[グローバル] -&gt; \[ツール] -&gt; \[RKEテンペート]に移動します
-2. 3ドットメニューをクリックして、新しいリビジョンを作成します
-3. ここで、クラスター構成を変更し、新しいバージョンとして保存します。 ただし、すぐには有効になりません。
-
-リビジョンを保存した後、クラスターに戻り、\[編集]をクリックします。 \[クラスターオプション]の下に、使用するテンプレートのバージョンを選択するためのドロップダウンメニューがあります。 新しいバージョンを選択して保存してください。
-
-### 参考
-
-https://rancher.com/docs/rancher/v2.x/en/admin-settings/rke-templates/
+- Navigate to Cluster management -&gt; RKE1 Configuration -&gt; RKE templates.
+- Click the three-dot menu to make a new revision of your existing template (select Clone revision).
+- Add the revision name, make the required changes, and save it.
+- After saving the revision, navigate back to Cluster management -&gt; Select the cluster -&gt; Edit config. Under "Cluster Options", there will be a drop-down menu to select the version of the template you want to use.
+- Select your new version and Save.
+- Once saved, your cluster will be updated with the changes you have made.
 
 
 
