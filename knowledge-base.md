@@ -7320,7 +7320,7 @@ The output should show **1**, for enabled.
 #### Pre-requisites
 
 - A Kubernetes cluster with a CNI (Container Network Interface) plugin configure, e.g. an RKE (Rancher Kubernetes Engine) or Rancher launched cluster.
-- The systctl net.ipv4.ip\_forward set to 0 (disabled) on the cluster hosts.
+- The sysctl net.ipv4.ip\_forward set to 0 (disabled) on the cluster hosts.
 
 #### Resolution
 
@@ -7594,269 +7594,108 @@ Remove the additional manifest in the Rancher dashboard, or delete the manifest 
 
 # How to setup HAProxy for Rancher v2.x
 
-**Article Number:** [000020175](https://support.scc.suse.com/s/kb/360040208571)
+**Article Number:** [000020175](https://support.scc.suse.com/s/kb/How-to-setup-HAProxy-for-Rancher-v2-x360040208571)
+
+## **Environment**
+
+- Rancher v2.x
+- HAProxy
+- Ubuntu / CentOS / RedHat Enterprise Linux
 
 ## **Situation**
 
-#### Task
+**Install HAProxy**  
+Update your system package index and install HAProxy using the appropriate commands for your OS:
 
-Setup HAProxy as a frontend load balancer for Rancher v2.x.
-
-#### Overview
-
-![Overview](https://support.rancher.com/hc/article_attachments/360050574312/overview.png)
-
-#### Install HAProxy
-
-##### Ubuntu
-
-```bash
-apt update
-apt install -y haproxy
-systemctl enable haproxy
-systemctl start haproxy
-```
-
-##### CentOS / RedHat
-
-```bash
-yum update
-yum install haproxy -y
-systemctl enable haproxy
-systemctl start haproxy
-```
-
-#### Example HAProxy Config
-
-##### Option A - Full SSL
-
-- Follow Rancher install doc [https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/](https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/)
-- Verify Rancher URL works when connecting directly to a Rancher node. For example:
-  
-  ```bash
-  curl -k --header "Host: rancher.example.com" https://192.168.1.103/ping
-  ```
+- Ubuntu:`sudo apt update sudo apt install -y haproxy sudo systemctl enable haproxy sudo systemctl start haproxy`
 
 <!--THE END-->
 
-- Copy cert and key into a single file called /etc/haproxy/cert.pem
-- Add frontend to /etc/haproxy/haproxy.cfg:
-  
-  ```plaintext
-  frontend www-http
-  bind *:80
-  reqadd X-Forwarded-Proto:\ http
-  default_backend rancher-http
-  ```
-  
-  ```plaintext
-  frontend www-https
-  bind *:443 ssl crt /etc/haproxy/cert.pem
-  reqadd X-Forwarded-Proto:\ https
-  default_backend rancher-https
-  ```
+- CentOS / RedHat`sudo yum update sudo yum install -y haproxy sudo systemctl enable haproxy sudo systemctl start haproxy`
 
-<!--THE END-->
+**Select and Configure a TLS Routing Strategy**  
+Choose one of the following deployment options based on your security and SSL termination requirements.
 
-- Add backends to /etc/haproxy/haproxy.cfg:
-  
-  ```plaintext
-  backend rancher-http
-  mode http
-  option httpchk HEAD /healthz HTTP/1.0
-  server rancher01 192.168.1.103:80 check weight 1 maxconn 1024
-  server rancher02 192.168.1.104:80 check weight 1 maxconn 1024
-  server rancher03 192.168.1.105:80 check weight 1 maxconn 1024
-  ```
-  
-  ```plaintext
-  backend rancher-https
-  mode http
-  option httpchk HEAD /healthz HTTP/1.0
-  server rancher01 192.168.1.103:443 check weight 1 maxconn 1024 ssl verify none
-  server rancher02 192.168.1.104:443 check weight 1 maxconn 1024 ssl verify none
-  server rancher03 192.168.1.105:443 check weight 1 maxconn 1024 ssl verify none
-  ```
+**Option A: Full SSL Termination and Re-encryption**  
+**Use this option when HAProxy handles SSL termination and re-encrypts traffic to the upstream Rancher nodes.**
 
-<!--THE END-->
+1. Install Rancher by following the instructions in the documentation - [https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/#\_install\_the\_rancher\_helm\_chart](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/#_install_the_rancher_helm_chart)
+2. Verify Rancher URL works when connecting directly to a Rancher node. For example:`curl -k --header "Host: <RANCHER_DOMAIN>" https://<RANCHER_NODE_IP>/ping`
+3. Combine your SSL certificate and private key into a single file at `/etc/haproxy/cert.pem`:
+   
+   ```markup
+   cat example.crt example.key > /etc/haproxy/cert.pem
+   ```
+4. Update the `/etc/haproxy/haproxy.cfg` file with the folllowing backend configurations:  
+   `frontend www-https     bind *:443 ssl crt /etc/haproxy/cert.pem     reqadd X-Forwarded-Proto:\ https     default_backend rancher-https`  
+   `frontend www-http     bind *:80     reqadd X-Forwarded-Proto:\ http     default_backend rancher-http`
+5. Update the `/etc/haproxy/haproxy.cfg` file with the folllowing backend configurations:`backend rancher-http     mode http     option httpchk HEAD /healthz HTTP/1.0     server rancher01 <RANCHER_NODE_1_IP>:80 check weight 1 maxconn 1024     server rancher02 <RANCHER_NODE_2_IP>:80 check weight 1 maxconn 1024     server rancher03 <RANCHER_NODE_3_IP>:80 check weight 1 maxconn 1024` `backend rancher-https     mode http     option httpchk HEAD /healthz HTTP/1.0     server rancher01 <RANCHER_NODE_1_IP>:443 check weight 1 maxconn 1024 ssl verify none     server rancher02 <RANCHER_NODE_2_IP>:443 check weight 1 maxconn 1024 ssl verify none     server rancher03 <RANCHER_NODE_3_IP>:443 check weight 1 maxconn 1024 ssl verify none`
+6. Test the configuration:`haproxy -f /etc/haproxy/haproxy.cfg -c`
+7. Reload HAProxy:`systemctl reload haproxy`
 
-- Test the configuration:
-  
-  ```bash
-  haproxy -f /etc/haproxy/haproxy.cfg -c
-  ```
+**Option B: External TLS Termination**  
+*Use this option when HAProxy terminates SSL and forwards plain HTTP traffic to the Rancher backend nodes.*
 
-<!--THE END-->
+1. Configure Rancher according to the [https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#\_external\_tls\_termination](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#_external_tls_termination).
+2. Verify HTTP connectivity directly to a Rancher node:`curl --header "Host: <RANCHER_DOMAIN>" http://<RANCHER_NODE_IP>/ping`
+3. Combine your SSL certificate and private key into a single file at `/etc/haproxy/cert.pem`:
+   
+   ```markup
+   cat example.crt example.key > /etc/haproxy/cert.pem
+   ```
+4. Update `/etc/haproxy/haproxy.cfg` with the following frontend configurations:`frontend www-http     bind *:80     reqadd X-Forwarded-Proto:\ http     default_backend rancher-http` `frontend www-https     bind *:443 ssl crt /etc/haproxy/cert.pem     reqadd X-Forwarded-Proto:\ https     default_backend rancher-https`
+5. Update `/etc/haproxy/haproxy.cfg` with the following backend configurations:`backend rancher-http     mode http     option httpchk HEAD /healthz HTTP/1.0     server rancher01 <RANCHER_NODE_1_IP>:80 check weight 1 maxconn 1024     server rancher02 <RANCHER_NODE_2_IP>:80 check weight 1 maxconn 1024     server rancher03 <RANCHER_NODE_3_IP>:80 check weight 1 maxconn 1024`
+6. Test the configuration:`haproxy -f /etc/haproxy/haproxy.cfg -c`
+7. Reload HAProxy:
+   
+   `systemctl reload haproxy`
 
-- Reload HAProxy:
-  
-  ```bash
-  systemctl reload haproxy
-  ```
+**Option C - TCP pass-through**
 
-[Example config](https://support.rancher.com/hc/article_attachments/360050685331/haproxy-full-ssl.cfg)
+1. Install Rancher by following the instructions in the documentation - [https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/#\_install\_the\_rancher\_helm\_chart](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/install-upgrade-on-a-kubernetes-cluster/#_install_the_rancher_helm_chart)
+2. Verify Rancher URL works when connecting directly to a Rancher node. For example:
+   
+   ```bash
+   curl -k --header "Host: <RANCHER_DOMAIN>" https://<RANCHER_NODE_IP>/ping
+   ```
+   
+   NOTE: The default gateway for all 3 Rancher nodes must be the load balancer. Doc: [https://www.haproxy.com/blog/howto-transparent-proxying-and-binding-with-haproxy-and-aloha-load-balancer/](https://www.haproxy.com/blog/howto-transparent-proxying-and-binding-with-haproxy-and-aloha-load-balancer/)
+3. Update `/etc/haproxy/haproxy.cfg` with the following frontend configurations::
+   
+   `frontend www-http     bind *:80     mode tcp     option tcplog     tcp-request inspect-delay 5s     default_backend rancher-http`
+   
+   ```markup
+   frontend www-https
+       bind *:443
+       mode tcp
+       option tcplog
+       tcp-request inspect-delay 5s
+       default_backend rancher-https
+   ```
+4. Update `/etc/haproxy/haproxy.cfg` with the following backend configurations::
+   
+   `backend rancher-http     mode tcp     balance roundrobin     source 0.0.0.0 usesrc client     server rancher01 <RANCHER_NODE_1_IP>:80     server rancher02 <RANCHER_NODE_2_IP>:80     server rancher03 <RANCHER_NODE_3_IP>:80`
+   
+   `backend rancher-https     mode tcp     balance roundrobin     source 0.0.0.0 usesrc client     server rancher01 <RANCHER_NODE_1_IP>:443     server rancher02 <RANCHER_NODE_2_IP>:443     server rancher03 <RANCHER_NODE_3_IP>:443`
+5. Validate HAProxy Configuration  
+   Test the syntax of `/etc/haproxy/haproxy.cfg` before applying changes:`haproxy -f /etc/haproxy/haproxy.cfg -c`
+6. Reload HAProxy  
+   Apply the new configuration by reloading the systemd service:`systemctl reload haproxy`
 
-##### Option B - External TLS Termination
+**(Optional) Enable HAProxy Statistics for Troubleshooting**
 
-- Follow Rancher install doc https://rancher.com/docs/rancher/v2.x/en/installation/options/chart-options/#external-tls-termination
-- Verify Rancher URL works went connecting directly to a Rancher node. For example:
-  
-  ```bash
-  curl --header "Host: rancher.example.com" http://192.168.1.103/ping
-  ```
+To monitor load balancer health, add a `stats` listener block above the frontend configurations in `/etc/haproxy/haproxy.cfg`:
 
-<!--THE END-->
-
-- Copy cert and key into a single file called /etc/haproxy/cert.pem
-- Create frontends:
-  
-  ```plaintext
-  frontend www-http
-  bind *:80
-  reqadd X-Forwarded-Proto:\ http
-  default_backend rancher-http
-  ```
-  
-  ```plaintext
-  frontend www-https
-  bind *:443 ssl crt /etc/haproxy/cert.pem
-  reqadd X-Forwarded-Proto:\ https
-  default_backend rancher-http
-  ```
-
-<!--THE END-->
-
-- Create backends:
-  
-  ```plaintext
-  backend rancher-http
-  mode http
-  option httpchk HEAD /healthz HTTP/1.0
-  server rancher01 192.168.1.103:80 check weight 1 maxconn 1024
-  server rancher02 192.168.1.104:80 check weight 1 maxconn 1024
-  server rancher03 192.168.1.105:80 check weight 1 maxconn 1024
-  ```
-
-<!--THE END-->
-
-- Test the configuration:
-  
-  ```bash
-  haproxy -f /etc/haproxy/haproxy.cfg -c
-  ```
-
-<!--THE END-->
-
-- Reload HAProxy:
-  
-  ```bash
-  systemctl reload haproxy
-  ```
-
-[Example config](https://support.rancher.com/hc/article_attachments/360050574252/haproxy-external-termination.cfg)
-
-##### Option C - TCP pass-through
-
-- Follow Rancher install doc [https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/](https://rancher.com/docs/rancher/v2.x/en/installation/options/chart-options/#external-tls-termination)
-- Verify Rancher URL works when connecting directly to a Rancher node. For example:
-  
-  ```bash
-  curl -k --header "Host: rancher.example.com" https://192.168.1.103/ping
-  ```
-
-<!--THE END-->
-
-- NOTE: The default gateway for all 3 Rancher nodes must be the load balancer. Doc: [https://www.haproxy.com/blog/howto-transparent-proxying-and-binding-with-haproxy-and-aloha-load-balancer/](https://www.haproxy.com/blog/howto-transparent-proxying-and-binding-with-haproxy-and-aloha-load-balancer/)
-- Create frontends:
-  
-  ```plaintext
-  frontend www-http
-  bind *:80
-  mode tcp
-  option tcplog
-  tcp-request inspect-delay 5s
-  default_backend rancher-http
-  ```
-  
-  ```plaintext
-  frontend www-https
-  bind *:443
-  mode tcp
-  option tcplog
-  tcp-request inspect-delay 5s
-  default_backend rancher-https
-  ```
-
-<!--THE END-->
-
-- Create backends:
-  
-  ```plaintext
-  backend rancher-http
-  mode tcp
-  balance roundrobin
-  source 0.0.0.0 usesrc client
-  server rancher01 192.168.1.103:80
-  server rancher02 192.168.1.104:80
-  server rancher03 192.168.1.105:80
-  ```
-  
-  ```plaintext
-  backend rancher-https
-  mode tcp
-  balance roundrobin
-  source 0.0.0.0 usesrc client
-  server rancher01 192.168.1.103:443
-  server rancher02 192.168.1.104:443
-  server rancher03 192.168.1.105:443
-  ```
-
-<!--THE END-->
-
-- Test the configuration:
-  
-  ```bash
-  haproxy -f /etc/haproxy/haproxy.cfg -c
-  ```
-
-<!--THE END-->
-
-- Reload HAProxy:
-  
-  ```bash
-  systemctl reload haproxy
-  ```
-
-[Example config](https://support.rancher.com/hc/article_attachments/360050685371/haproxy-tcp-mode.cfg)
-
-#### Troubleshooting
-
-- Add the following to /etc/haproxy/haproxy.cfg before the frontend section.
-  
-  ```plaintext
-  listen stats
-  bind :9000
-  mode http
-  stats enable
-  stats hide-version
-  stats realm Haproxy\ Statistics
-  stats uri /
-  stats auth admin:admin
-  ```
-
-<!--THE END-->
-
-- Go to http://load01.example.com:9000/
-- Username/Password: admin/admin
-- If there are firewall rules blocking port 9000, use ssh tunneling to proxy the connection:
-  
-  ```bash
-  ssh -f -N -L 9000:127.0.0.1:9000 root@192.168.1.101
-  ```
-
-<!--THE END-->
-
-- Go to http://localhost:9000/
+1. Add the following to `/etc/haproxy/haproxy.cfg` before the frontend section.
+   
+   `listen stats     bind :9000     mode http     stats enable     stats hide-version     stats realm Haproxy\ Statistics     stats uri /     stats auth <ADMIN_USERNAME>:<ADMIN_PASSWORD>`
+2. Direct Access: Navigate to`http://<LOAD_BALANCER_DOMAIN>:9000/` and log in with your configured credentials.
+3. Firewalled Environment (SSH Tunnel): If port 9000 is blocked by a firewall, open an SSH tunnel from your local machine:
+   
+   ```markup
+   ssh -f -N -L 9000:127.0.0.1:9000 <USER>@<LOAD_BALANCER_IP>
+   ```
+4. Then, access the dashboard at `http://<LOAD_BALANCER_DOMAIN>:9000/`
 
 
 
@@ -9423,25 +9262,6 @@ There is currently no validated path that is officially covered by Rancher Suppo
 
 Where scale and performance criteria are well understood to be critical, Customers are recommended to set up Rancher in a high availability configuration, right from the outset.  
 Running a single node installation might lead to unrecoverable circumstances, and it is highly recommended that production clusters run in a high availability configuration.
-
-
-
----
-
-## Article: 000020446.md
-
-# [Rancher] Does Rancher Support cover single node installations?
-
-**Article Number:** [000020446](https://support.scc.suse.com/s/kb/Rancher-Does-Rancher-Support-cover-single-node-installations)
-
-## **Resolution**
-
-Rancher Support can cover single node installations only for support tickets that are NOT related to (a) scale and performance and (b) recovery of data and software (embedded etc.).
-
-Customer environments in need of scale and performance and meeting recovery criteria should be set up as high-availability installations.
-
-Refer to this [Rancher docs page](https://rancher.com/docs/rancher/v2.6/en/installation/) for single node installation versus high availability installation. Rancher recommends high-availability installations in production environments, where the customer's user base requires 24⁄7 access to running applications.  
-Single-node installations will be supported on a best-effort basis.
 
 
 
