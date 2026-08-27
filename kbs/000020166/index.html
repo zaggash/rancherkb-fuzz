@@ -5058,34 +5058,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020446/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    [Rancher] Does Rancher Support cover single node installations?
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020449/" class="md-nav__link">
         
   
@@ -15215,7 +15187,7 @@ As a result, on a Kubernetes nodes this will prevent Pod networking from functio
 <h4 id="pre-requisites">Pre-requisites</h4>
 <ul>
 <li>A Kubernetes cluster with a CNI (Container Network Interface) plugin configure, e.g. an RKE (Rancher Kubernetes Engine) or Rancher launched cluster.</li>
-<li>The systctl net.ipv4.ip_forward set to 0 (disabled) on the cluster hosts.</li>
+<li>The sysctl net.ipv4.ip_forward set to 0 (disabled) on the cluster hosts.</li>
 </ul>
 <h4 id="resolution">Resolution</h4>
 <p>Check if the kernel parameter <code>net.ipv4.ip_forward</code> is set to <strong>1</strong> with:</p>
