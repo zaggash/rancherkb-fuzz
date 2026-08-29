@@ -705,34 +705,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../000020015/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    What is the difference between Cluster registry and Global registry?
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../000020016/" class="md-nav__link">
         
   
@@ -1972,7 +1944,7 @@
   <span class="md-ellipsis">
     
   
-    [JP] How to confirm a version upgrade of Rancher v2.x is completed successfully
+    How to confirm a version upgrade of Rancher v2.x is completed successfully
   
 
     
@@ -4044,7 +4016,7 @@
   <span class="md-ellipsis">
     
   
-    How do I edit or upgrade clusters created via RKE Templates?
+    [JP] How do I edit my cluster using RKE Templates?
   
 
     
@@ -4184,7 +4156,7 @@
   <span class="md-ellipsis">
     
   
-    How to test websocket connections to Rancher v2.x
+    [JP] How to test websocket connections to Rancher v2.x
   
 
     
@@ -15168,23 +15140,155 @@
 <h2 id="environment"><strong>Environment</strong></h2>
 <p>Any Rancher-managed downstream cluster.</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>The cattle-cluster-agent is seen flapping between versions, appearing as pods restarting frequently, alternating between new and old versions. You will also notice that the cattle-cluster-agent deployment will have a high revision count (ex. deployment.kubernetes.io/revision: 31736 ) and you will see multiple replica set with active pods:</p>
-<div class="highlight"><pre><span></span><code> kubectl get -n cattle-system replicasets -o custom-columns=NAME:.metadata.name,READY_REPLICAS:.status.readyReplicas,TOTAL_REPLICAS:.status.replicas,IMAGE:.spec.template.spec.containers[*].image
-NAME                               READY_REPLICAS   TOTAL_REPLICAS   IMAGE
-cattle-cluster-agent-59854fg9cf    1                 1                registry.rancher.com/rancher/rancher-agent:v2.10.1
-cattle-cluster-agent-673596d4q5    1                 2                registry.rancher.com/rancher/rancher-agent:v2.10.4
+<p>A Rancher-managed downstream Kubernetes cluster shows the cattle-cluster-agent repeatedly being recreated or changing between different rancher/rancher-agent image versions.</p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system get deployment cattle-cluster-agent -o jsonpath='{.spec.template.spec.containers[0].image}{"\n"}'
 </code></pre></div>
+<p>may show an agent image that does not match the expected Rancher version, or the image may change repeatedly between versions.</p>
+<p>The cluster may also intermittently report connectivity problems in Rancher while the agent is being replaced.</p>
 <h2 id="cause"><strong>Cause</strong></h2>
-<p>If the cluster is being managed by two Rancher instances and they are running different versions of Rancher, the cattle-cluster-agent will constantly flip between the versions that each Rancher cluster expects.</p>
+<p>The <code>cattle-cluster-agent</code> deployment is managed by Rancher. Changes made directly to the Deployment in the downstream cluster are therefore not authoritative and may be overwritten when Rancher reconciles the agent configuration.</p>
+<p>When the <code>cattle-cluster-agent</code> repeatedly alternates between different <code>rancher/rancher-agent</code> image versions, the important diagnostic step is to determine which component is updating the Deployment and why different desired configurations are being applied.</p>
+<p>This behavior can occur when the downstream cluster receives or retains conflicting Rancher agent configuration. Scenarios that should be investigated include:</p>
+<ul>
+<li>A Rancher upgrade, rollback, restore, or migration that did not complete cleanly.</li>
+<li>The downstream cluster retaining connectivity or configuration associated with a previous Rancher management environment.</li>
+<li>DNS, proxy, ingress, or load-balancer configuration routing Rancher agent traffic to unintended Rancher endpoints.</li>
+<li>An explicit <code>CATTLE_AGENT_IMAGE</code> override that does not match the currently running Rancher version.</li>
+<li>Rancher management resources retaining agent configuration associated with a previous Rancher version.</li>
+</ul>
+<p>To identify the actual cause, determine which component is modifying the <code>cattle-cluster-agent</code> Deployment when the image changes. Review the Deployment's <code>managedFields</code>, ReplicaSet history, events, <code>CATTLE_SERVER</code>, <code>CATTLE_SERVER_VERSION</code>, and Rancher agent logs.</p>
+<p>Do not assume that the Rancher agent image itself is the root cause. The changing image is generally a symptom of the Deployment being reconciled with different configurations. The component or configuration responsible for those changes must be identified before applying a permanent resolution.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p><strong>Enable Audit Logs:</strong> Enable audit logs to trace which calls are triggering the update in your cluster [1]. This will help track which calls are updating the cattle-cluster-agent deployment and identify what is making those changes. Use the following REGEX string to find the updates:</p>
-<div class="highlight"><pre><span></span><code>deployments/cattle-cluster-agent.*patch.*&lt;UNEXPECTED_RANCHER_VERSION&gt;
+<p><strong>1. Determine the currently deployed agent version</strong></p>
+<p>On the downstream cluster:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system get deployment cattle-cluster-agent -o jsonpath='{.spec.template.spec.containers[0].image}{"\n"}'
 </code></pre></div>
-<p><strong>Analyze the Logs:</strong> you will see results similar to the following:</p>
-<div class="highlight"><pre><span></span><code>"{""kind"":""Event"",""apiVersion"":""audit.k8s.io/v1"",""level"":""RequestResponse"",""auditID"":""2270172f-4d8e-4a71-b6d0-d8847d1159a5"",""stage"":""ResponseComplete"",""requestURI"":""/apis/apps/v1/namespaces/cattle-system/deployments/cattle-cluster-agent?fieldManager=kubectl-client-side-apply\u0026fieldValidation=Strict"",""verb"":""patch"",""user"":{""username"":""system:serviceaccount:cattle-impersonation-system:cattle-impersonation-u-ezg219c4qv"",""uid"":""1f59bb08-6b81-488a-al31-b3439235e3c6"",""groups"":[""system:serviceaccounts"",""system:serviceaccounts:cattle-impersonation-system"",""system:authenticated""]},""impersonatedUser"":{""username"":""u-ezg22196cxl"",""groups"":[""system:authenticated"",""system:cattle:authenticated""],""extra"":{""principalid"":[""system://c-r7x6s"",""local://u-ezg22196cxl""],""username"":[""System account for Cluster c-r7x6s""]}},""sourceIPs"":[""127.0.0.1"",""10.0.41.7""],""userAgent"":""kubectl/v1.28.6+k3s2 (linux/amd64) kubernetes/c9f49a3"",""objectRef"":{""resource"":""deployments"",""namespace"":""cattle-system"",""name"":""cattle-cluster-agent"",""apiGroup"":""apps"",""apiVersion"":""v1""},""responseStatus"":{""metadata"":{},""code"":200},""requestObject"":{""metadata"":{""annotations"":{""kubectl.kubernetes.io/last-applied-configuration"":""{\""apiVersion\"":\""apps/v1\"",\""kind\"":\""Deployment\"",\""metadata\"":{\""annotations\"":{\""management.cattle.io/scale-available\"":\""2\""},\""name\"":\""cattle-cluster-agent\"",\""namespace\"":\""cattle-system\""},\""spec\"":{\""selector\"":{\""matchLabels\"":{\""app\"":\""cattle-cluster-agent\""}},\""strategy\"":{\""rollingUpdate\"":{\""maxSurge\"":1,\""maxUnavailable\"":0},\""type\"":\""RollingUpdate\""},\""template\"":{\""metadata\"":{\""labels\"":{\""app\"":\""cattle-cluster-agent\""}},\""spec\"":{\""affinity\"":{\""nodeAffinity\"":{\""preferredDuringSchedulingIgnoredDuringExecution\"":[{\""preference\"":{\""matchExpressions\"":[{\""key\"":\""node-role.kubernetes.io/controlplane\"",\""operator\"":\""In\"",\""values\"":[\""true\""]}]},\""weight\"":100},{\""preference\"":{\""matchExpressions\"":[{\""key\"":\""node-role.kubernetes.io/control-plane\"",\""operator\"":\""In\"",\""values\"":[\""true\""]}]},\""weight\"":100},{\""preference\"":{\""matchExpressions\"":[{\""key\"":\""node-role.kubernetes.io/master\"",\""operator\"":\""In\"",\""values\"":[\""true\""]}]},\""weight\"":100},{\""preference\"":{\""matchExpressions\"":[{\""key\"":\""cattle.io/cluster-agent\"",\""operator\"":\""In\"",\""values\"":[\""true\""]}]},\""weight\"":1}],\""requiredDuringSchedulingIgnoredDuringExecution\"":{\""nodeSelectorTerms\"":[{\""matchExpressions\"":[{\""key\"":\""beta.kubernetes.io/os\"",\""operator\"":\""NotIn\"",\""values\"":[\""windows\""]}]}]}},\""podAntiAffinity\"":{\""preferredDuringSchedulingIgnoredDuringExecution\"":[{\""podAffinityTerm\"":{\""labelSelector\"":{\""matchExpressions\"":[{\""key\"":\""app\"",\""operator\"":\""In\"",\""values\"":[\""cattle-cluster-agent\""]}]},\""topologyKey\"":\""kubernetes.io/hostname\""},\""weight\"":100}]}},\""containers\"":[{\""env\"":[{\""name\"":\""CATTLE_FEATURES\"",\""value\"":\""embedded-cluster-api=false,fleet=false,monitoringv1=false,multi-cluster-management=false,multi-cluster-management-agent=true,provisioningv2=false,rke2=false\""},{\""name\"":\""CATTLE_IS_RKE\"",\""value\"":\""false\""},{\""name\"":\""CATTLE_SERVER\"",\""value\"":\""https://k8s.weg.net\""},{\""name\"":\""CATTLE_CA_CHECKSUM\"",\""value\"":\""REDACTED\""},{\""name\"":\""CATTLE_CLUSTER\"",\""value\"":\""true\""},{\""name\"":\""CATTLE_K8S_MANAGED\"",\""value\"":\""true\""},{\""name\"":\""CATTLE_CLUSTER_REGISTRY\"",\""value\"":\""registry.rancher.com\""},{\""name\"":\""CATTLE_SERVER_VERSION\"",\""value\"":\""v2.10.1\""},{\""name\"":\""CATTLE_INSTALL_UUID\"",\""value\"":\""REDACTED\""},{\""name\"":\""CATTLE_INGRESS_IP_DOMAIN\"",\""value\"":\""sslip.io\""}],\""image\"":\""registry.rancher.com/rancher/rancher-agent:v2.10.1\"",\""imagePullPolicy\"":\""IfNotPresent\"",\""name\"":\""cluster-register\"",\""volumeMounts\"":[{\""mountPath\"":\""/cattle-credentials\"",\""name\"":\""cattle-credentials\"",\""readOnly\"":true}]}],\""serviceAccountName\"":\""cattle\"",\""tolerations\"":[{\""effect\"":\""NoSchedule\"",\""key\"":\""node-role.kubernetes.io/controlplane\"",\""value\"":\""true\""},{\""effect\"":\""NoSchedule\"",\""key\"":\""node-role.kubernetes.io/control-plane\"",\""operator\"":\""Exists\""},{\""effect\"":\""NoSchedule\"",\""key\"":\""node-role.kubernetes.io/master\"",\""operator\"":\""Exists\""}],\""volumes\"":[{\""name\"":\""cattle-credentials\"",\""secret\"":{\""defaultMode\"":320,\""secretName\"":\""cattle-credentials-998877ccbbaa\""}}]}}}}
+<p>Also inspect the Rancher server information provided to the agent:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system get deployment cattle-cluster-agent -o jsonpath='{range .spec.template.spec.containers[0].env[*]}{.name}={.value}{"\n"}{end}' | grep -E 'CATTLE_SERVER=|CATTLE_SERVER_VERSION='
 </code></pre></div>
-<p><strong>Identify the Source:</strong> In the example above, a patch request was made on the cattle-cluster-agent resource, updating the cattle-cluster-agent image version to 2.10.1. The source IP that initiated this call is shown as 10.0.41.7. This IP can be traced to identify the host responsible for making the call. If it is not a node that is a part of your local cluster where you made the update to 2.10.4, then that means that this downstream cluster is managed by another cluster as well. You will need to remove the association to the other cluster so that it is only managed by one Rancher instance.</p>
-<p>[1] <a href="https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log-in-downstream-clusters">https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/enable-api-audit-log-in-downstream-clusters</a></p>
+<p>The output should identify the Rancher server URL and Rancher server version that the agent expects to use.</p>
+<p><strong>2. Check whether the Deployment is actually being replaced</strong></p>
+<p>Run:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system get deployment cattle-cluster-agent -w
+</code></pre></div>
+<p>In another terminal:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system get rs -l app=cattle-cluster-agent --sort-by=.metadata.creationTimestamp
+</code></pre></div>
+<p>Check the images used by the ReplicaSets:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system get rs -l app=cattle-cluster-agent -o custom-columns='NAME:.metadata.name,IMAGE:.spec.template.spec.containers[0].image,CREATED:.metadata.creationTimestamp'
+</code></pre></div>
+<p>If ReplicaSets containing different Rancher agent versions are continually being created, determine what is updating the Deployment before attempting to force an image manually.</p>
+<p><strong>3. Inspect the Deployment history and metadata</strong></p>
+<p>Run:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system describe deployment cattle-cluster-agent
+</code></pre></div>
+<p>and:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system get deployment cattle-cluster-agent -o yaml
+</code></pre></div>
+<p>Review:</p>
+<ul>
+<li>container image</li>
+<li>CATTLE_SERVER</li>
+<li>CATTLE_SERVER_VERSION</li>
+<li>annotations</li>
+<li>labels</li>
+<li>ReplicaSet history</li>
+<li>recent events</li>
+</ul>
+<p>These values can help determine whether Rancher is continuously reconciling the Deployment.</p>
+<p><strong>4. Verify that the Rancher endpoint resolves consistently</strong></p>
+<p>From the downstream cluster, verify the Rancher hostname:</p>
+<div class="highlight"><pre><span></span><code>getent hosts &lt;RANCHER_FQDN&gt;
+</code></pre></div>
+<p>or:</p>
+<div class="highlight"><pre><span></span><code>nslookup &lt;RANCHER_FQDN&gt;
+</code></pre></div>
+<p>If multiple addresses are returned, confirm that all addresses belong to the intended Rancher environment.</p>
+<p>Also verify connectivity:</p>
+<div class="highlight"><pre><span></span><code>curl -vk https://&lt;RANCHER_FQDN&gt;/ping
+</code></pre></div>
+<p>A successful Rancher endpoint normally returns: pong</p>
+<p>If Rancher was recently migrated, restored, or moved to another cluster, verify that DNS, load balancers, proxies, and ingress configuration no longer route traffic to the previous Rancher environment.</p>
+<p><strong>5. Check the cattle-cluster-agent logs</strong></p>
+<p>Run:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system logs deployment/cattle-cluster-agent
+</code></pre></div>
+<p>If the pod has restarted, also inspect the previous container:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system logs deployment/cattle-cluster-agent --previous
+</code></pre></div>
+<p>Look for messages showing:</p>
+<ul>
+<li>Rancher agent version</li>
+<li>Rancher server URL</li>
+<li>connection or WebSocket failures</li>
+<li>TLS/CA validation failures</li>
+<li>authentication or registration failures</li>
+</ul>
+<p>For example, the startup log normally identifies the agent version:</p>
+<div class="highlight"><pre><span></span><code>Rancher agent version &lt;VERSION&gt; is starting
+</code></pre></div>
+<p>Compare this with the expected Rancher version.</p>
+<p><strong>6. Check for an explicit Rancher agent image override</strong></p>
+<p>If Rancher is installed with Helm, review its configured values:</p>
+<div class="highlight"><pre><span></span><code>helm get values rancher -n cattle-system
+</code></pre></div>
+<p>Check for an environment variable such as:</p>
+<div class="highlight"><pre><span></span><code>CATTLE_AGENT_IMAGE5
+</code></pre></div>
+<p>An agent image override should only be retained when it is required for the Rancher version andconfiguration in use.</p>
+<p>If an override was introduced as a temporary workaround for an earlier Rancher release, verify whether it isstill required before removing it.</p>
+<p><strong>7. Allow Rancher to regenerate the agent configuration</strong></p>
+<p>After correcting the underlying Rancher, DNS, load-balancer, migration, or image-override problem, force Rancher to redeploy the downstream cluster agent.</p>
+<p>First identify the downstream cluster ID from the Rancher management cluster:</p>
+<div class="highlight"><pre><span></span><code>kubectl get clusters.management.cattle.io
+</code></pre></div>
+<p>Then annotate the appropriate cluster:</p>
+<div class="highlight"><pre><span></span><code>kubectl annotate clusters.management.cattle.io &lt;CLUSTER_ID&gt;io.cattle.agent.force.deploy=true --overwrite
+</code></pre></div>
+<p>This command must be run against the Rancher local/management cluster, not the downstream cluster.</p>
+<p>Monitor the downstream cluster:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system rollout status deployment/cattle-cluster-agent
+</code></pre></div>
+<p>Then verify the resulting image:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system get deployment cattle-cluster-agent -o jsonpath='{.spec.template.spec.containers[0].image}{"\n"}'
+</code></pre></div>
+<p><strong>8. Verify that the version remains stable</strong></p>
+<p>Monitor the Deployment and pods:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system get deployment,pods -l app=cattle-cluster-agent -w
+</code></pre></div>
+<p>The cattle-cluster-agent should remain on the version managed by the current Rancher server and should no longer alternate between versions.</p>
+<p><strong>Important</strong></p>
+<p>Do not use a manual modification of the downstream cattle-cluster-agent Deployment as the permanent resolution.</p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code>kubectl set image deployment/cattle-cluster-agent ...
+</code></pre></div>
+<p>or:</p>
+<div class="highlight"><pre><span></span><code>kubectl edit deployment cattle-cluster-agent
+</code></pre></div>
+<p>may temporarily change the running agent, but Rancher manages this Deployment and can reconcile the modification.</p>
+<p>The underlying Rancher-side configuration or connectivity issue should be corrected instead.</p>
+<p><strong>Additional troubleshooting</strong></p>
+<p>If the agent continues to alternate between versions, collect the following information:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n cattle-system get deployment cattle-cluster-agent -o yaml
+
+kubectl -n cattle-system get rs -l app=cattle-cluster-agent -o yaml
+
+kubectl -n cattle-system get pods -l app=cattle-cluster-agent -o wide
+
+kubectl -n cattle-system logs deployment/cattle-cluster-agent
+</code></pre></div>
+<p>Also collect:</p>
+<ul>
+<li>Rancher version</li>
+<li>Rancher installation method</li>
+<li>Rancher Helm values, if applicable</li>
+<li>downstream Kubernetes distribution and version</li>
+<li>Rancher server URL</li>
+<li>whether Rancher was recently upgraded, rolled back, restored, or migrated</li>
+<li>DNS resolution for the Rancher server hostname</li>
+<li>load-balancer or ingress configuration in front of Rancher</li>
+</ul>
 
 
 
