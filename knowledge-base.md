@@ -8004,67 +8004,59 @@ You can access the alerts by going to `Tools -> Alerts` at the cluster level. Fr
 
 ## Article: 000020189.md
 
-# [JP] How to test websocket connections to Rancher v2.x
+# How to test websocket connections to Rancher v2.x
 
 **Article Number:** [000020189](https://support.scc.suse.com/s/kb/360038717532)
 
+## **Environment**
+
+Rancher v2.x
+
 ## **Situation**
 
-### 背景
+Rancher depends heavily on websocket support for UI and CLI features within Rancher as well as managing and interacting with downstream clusters. This article provides a quick test to determine if websocket connections are working from a potential downstream node or client to the Rancher server cluster.
 
-Rancherは、UI、CLI機能およびダウンストリームクラスターの管理のために、WebSocketのサポートに大きく依存しています。 この記事では、ダウンストリームのノードまたはクライアントからRancherサーバーへのWebSocket接続が機能しているかどうかを判断するための簡単なテストを提供します。  
- 
+## **Resolution**
 
-### 前提条件
+## Executing the test
 
-- [a single node instance](https://rancher.com/docs/rancher/v2.x/en/installation/single-node/) または [High Availability (HA) cluster](https://rancher.com/docs/rancher/v2.x/en/installation/ha/) で実行しているv2.x のRancherサーバー
+First you will need to create an API token to authenticate against Rancher. Start by logging into the Rancher UI. Once logged in, navigate to the API &amp; Keys section by clicking the user icon in the top right of the pane, then click on the API &amp; Keys menu item. Generate a new "no scope" key by clicking the Add Key button, providing a name for the token and clicking Create. Copy the bearer token to a safe location.
 
- 
-
-### テスト実行
-
-まず、RancherにアクセスするためのAPIトークンを作成します。 Rancher UIにログインし、右上にあるユーザーアイコンをクリックして、\[APIとキー]セクションに移動し、\[APIとキー]メニュー項目をクリックします。 \[キーの追加]ボタンをクリックし、トークンの名前を指定して\[作成]をクリックして、新しいキーを生成します。生成された Bearer トークンを安全な場所にコピーします。
-
-テストノードのLinuxシェルで以下を実行し、BearerトークンとRancherのドメイン名を環境変数に設定します。
+In a Linux shell from the desired test node execute the following, substituting the bearer token and fully qualified domain name of your Rancher endpoint with these environmental variables:
 
 ```
 export TOKEN=<your token here>
 export FQDN=<your Rancher fully qualified domain name here>
 ```
 
-次は以下のコマンドを実行しテストを行います：
+Next execute the test using the following command:
 
 ```
 curl -s -i -N \
   --http1.1 \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+  -H "Sec-WebSocket-Key: SGVsbG8sIG15IHdvcmxkIQ==" \
   -H "Sec-WebSocket-Version: 13" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Host: $FQDN" \
   -k https://$FQDN/v3/subscribe
 ```
 
-```
-WebSocketが正常に機能する場合、Rancherサーバーに正常に接続し、サーバーから送信される構成アイテムを反映するjsonの内容が標準出力に出力されます。 接続が失敗した場合、クライアントとRancherサーバーの間でのWebSocket接続が失敗になるエラーが出力されます。
+If websockets work this will successfully connect to the Rancher server and print a steady stream of json output reflecting configuration items being sent from the server. In the event of a failed connection this should print a meaningful error you can act upon to get websockets working between your client and Rancher server.
 
-以下は、正常に確立されたWebSocketでのテストからの出力の例です。
-```
+The below is an example of the output from the test upon a successfully established websocket:
 
 ```
 HTTP/1.1 101 Switching Protocols
-Date: Tue, 21 Jan 2020 04:54:05 GMT
+Date: Wed, 27 Nov 2024 15:17:15 GMT
 Connection: upgrade
-Server: openresty/1.15.8.1
 Upgrade: websocket
-Sec-WebSocket-Accept: qGEgH3En71di5rrssAZTmtRTyFk=
+Sec-WebSocket-Accept: XOGNqi8tcvor2gv8PhnKsmWD8xs=
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-{"name":"resource.change","data":{"baseType":"listenConfig","created":"2020-01-04T22:34:26Z","createdTS":1578177266000,"creatorId":null,"enabled":true,"generatedCerts":{"local/10.42.0.7":"*CERT_CONTENTS_REDACTED*"},"id":"cli-config","keySize":0,"knownIps":["10.42.0.7","10.42.0.8"],"labels":{"cattle.io/creator":"norman""},"links":{"remove":"https://yourdomain.example.com/v3/listenConfigs/cli-config","self":"https://yourdomain.example.com/v3/listenConfigs/cli-config","update":"https://yourdomain.example.com/v3/listenConfigs/cli-config"},"mode":"https","tos":"auto","type":"listenConfig","uuid":"511129ca-aa2c-4d16-a8e5-2d77cb171d61","version":0}
-```
-
-```
- 
+{"name":"resource.change","data":{"baseType":"userAttribute","created":"2024-11-13T16:27:15Z","createdTS":1731515235000,"creatorId":null,"id":"user-xxxxx","labels":{"cattle.io/creator":"norman"},"lastLogin":"2024-11-27T08:35:36Z","lastLoginTS":1732696536000,"links":{"self":"https://yourdomain.example.com/v3/userAttributes/user-xxxxx"},"name":"user-xxxxx","needsRefresh":false,"ownerReferences":[{"apiVersion":"management.cattle.io/v3","kind":"User","name":"user-xxxxx","type":"/v3/schemas/ownerReference","uid":"4c8e2f11-abd0-4a87-b273-76179ad8ffe2"}],"type":"userAttribute","uuid":"d31b7e9a-3c1f-4f2a-b4bd-5397f873a802"}
+}
 ```
 
 
@@ -9630,30 +9622,6 @@ For industry-reported vulnerabilities in Rancher, RKE, RKE2, K3s, Harvester, Lon
 
 - **Critical:** Immediate engagement to remediate the issue in code, and/or coordinate with upstream and/or third-party entities to deliver the remediation in the shortest timeline available. This includes creating an emergency release patch version when an existing one is not readily available.
 - **High:** Prioritized engagement to align the delivery of the remediation with our next available release cycle. Emergency releases should only be needed unless the timing is such that the next available security release cycle is not in a reasonable timeline.
-
-
-
----
-
-## Article: 000020477.md
-
-# Can we run Antivirus on our cluster nodes?
-
-**Article Number:** [000020477](https://support.scc.suse.com/s/kb/Rancher-We-need-to-run-Antivirus-on-our-cluster-nodes-Would-that-impact-the-terms-of-service-of-our-Rancher-Support-SLA)
-
-## **Resolution**
-
-**Antivirus in Kubernetes: A Balancing Act**
-
-Running antivirus software on Kubernetes nodes introduces complexity. Traditional antivirus solutions may not be optimized for containerized environments like Kubernetes, and a lack of CNCF certification raises compatibility concerns. In some cases, Rancher has observed antivirus interfering with core functionalities like Docker, leading to issues.
-
-**Resolving Third-Party Tool Conflicts:**
-
-When troubleshooting issues in Kubernetes, consider if disabling antivirus software restores normal operation. This could indicate a conflict with essential system calls used by Docker or Kubernetes.
-
-**Certified Configurations: The Foundation for Stability**
-
-Published, certified configurations in the product [support matrices](https://www.suse.com/suse-rancher/support-matrix/all-supported-versions) provide a baseline for supported components in Kubernetes. Deviating from these configurations might require reverting back to a certified setup to ensure compatibility and resolve issues.
 
 
 
@@ -27626,68 +27594,6 @@ release "rancher" uninstalled
 ## Resolution
 
 A GitHub pull request has been submitted to fix this issue permanently in Rancher version 2.13.0 and 2.12.4 releases. Pull Request: [https://github.com/rancher/rancher/pull/52277](https://github.com/rancher/rancher/pull/52277)
-
-
-
----
-
-## Article: 000022119.md
-
-# How to configure system-default-registry with a registry namespace in RKE2 and K3s clusters
-
-**Article Number:** [000022119](https://support.scc.suse.com/s/kb/How-to-configure-system-default-registry-with-a-registry-namespace-in-RKE2-and-K3s-clusters)
-
-## **Environment**
-
-- Rancher v2.6+
-- A Rancher-provisioned RKE2 or K3s cluster
-- A private registry with Rancher images under a registry namespace, e.g. registry.example.com/docker.io
-
-## **Procedure**
-
-This article details how to configure the system-default-registry settings, for Rancher-provisioned RKE2 and K3s clusters, if you have a private registry where the rancher images from a public repo, e.g. DockerHub or other, are mirrored under a registry namespace, for example docker.io (registry.example.com/docker.io/rancher/hardened-kubernetes:v1.33.5-rke2r1-build20250910), i.e. your global system-default-registry setting within Rancher is registry.example.com/docker.io
-
-This is necessary, as the Rancher global system-default-registry setting will accept a registry hostname with a namespace, but the RKE2/K3s system-default-registry setting accepts a hostname only.
-
-**The Rancher and cluster-level system-default-registry setting**
-
-The [system-default-registry setting within Rancher](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/global-default-private-registry#set-a-private-registry-with-no-credentials-as-the-default-registry) is used to configure the registry for all Rancher-deployed images (e.g., cattle-cluster-agent, fleet-agent, etc.), as well as the default system-default-registry parameter for all Rancher-provisioned [RKE2](https://docs.rke2.io/reference/server_config#agentruntime) and [K3s](https://docs.k3s.io/cli/server#k3s-server-cli-help) clusters that do not have a cluster-level system-default-registry configured.
-
-**How to configure a system-default-registry with a registry namespace**
-
-To use a private registry with a namespace (e.g. registry.example.com/docker.io) as the system-default-registry in an RKE2 or K3s cluster you need to configure a registry rewrite rule. The cluster-level system-default-registry for the RKE2 or K3s clusters is set to the registry hostname only (e.g. registry.example.com), a registry mirror configuration is then defined, to rewrite the registry path for rancher images in this private registry to the required namespace (docker.io in this example).
-
-The following snippet from a cluster.provisioning.cattle.io resource configures a private repository available under [registry.example.com/docker.io](), as the system-default-registry for a cluster. 
-
-```markup
-    machine_selector_config {
-      config = {
-        system-default-registry: "registry.example.com"
-      }
-    }
-
-    registries {
-      mirrors {
-        endpoints = ["https://registry.example.com:443"]
-        hostname  = "registry.example.com"
-        rewrites  = {
-          "^rancher/(.*)" = "/docker.io/$1"
-        }
-      }
-    }
-```
-
-These options can be configured by navigating to **Cluster Management**, selecting **Edit Config** for a cluster, then clicking on the **Registries** tab:
-
-1. Under **Container Registry** enter the private registry hostname (e.g. registry.example.com)
-2. Click **Show Advanced**
-3. In **Registry Hostname** enter the private registry hostname (e.g. registry.example.com)
-4. In **Mirror Endpoints** enter the private registry with the protocol and port (e.g. https://registry.example.com:433). **N.B.** The port is required, even if this is the default HTTPS port of 443, to ensure that the Registry Hostname and Mirror Endpoint fields are not identical. If these two fields match, the rewrite will be ignored, as detailed in the RKE2 and K3s [rewrites documentation](https://docs.rke2.io/install/private_registry#rewrites).
-5. Click **Add Rewrite Config**
-6. In **Rewrite pattern** enter ^rancher/(.\*)
-7. In **Rewrite replacement** enter /&lt;namespace&gt;/$1 (e.g. /docker.io/$1)
-
-After setting up this configuration, any Rancher-deployed workload images (e.g. the cluster-agent) are pulled according to the Rancher global system-default-registry setting (e.g. registry.example.com/docker.io), without any rewriting, whilst RKE2/K3s images use the cluster-level system-default-registry (e.g. registry.example.com) and are rewritten (e.g. under registry.example.com/docker.io).
 
 
 
