@@ -218,6 +218,23 @@ cloud-provider-config: "/etc/rancher/rke2/cloud.conf"
 
 5. Validate successful installation by confirming the existence of AWS metadata on cluster node labels with `kubectl get nodes --show-labels`
 
+## Passing Extra Arguments to etcd
+
+Use `etcd-arg` (CLI flag `--etcd-arg`, env `RKE2_ETCD_ARG`) to pass additional flags through to the embedded etcd process. It works like other RKE2 flags: set it on the CLI, as an environment variable, or as a list in the config file. See the [server configuration reference](reference/server_config.md#flags) for the full flag list.
+
+```yaml
+# /etc/rancher/rke2/config.yaml
+etcd-arg:
+  - "heartbeat-interval=500"
+  - "election-timeout=5000"
+```
+
+```sh
+rke2 server --etcd-arg=heartbeat-interval=500 --etcd-arg=election-timeout=5000
+```
+
+Do not change etcd's data directory or WAL directory via extra args; RKE2 manages the data path under `/var/lib/rancher/rke2/server/db`. Pointing etcd elsewhere is unsupported and can break backup, restore, and cluster-reset flows.
+
 ## Control Plane Component Resource Requests/Limits
 
 The following options are available under the `server` sub-command for RKE2. The options allow for specifying CPU requests and limits for the control plane components within RKE2.
@@ -1630,7 +1647,7 @@ The following options must be set to the same value on all servers in the cluste
 ### Components
 | Flag | Description | Default | Environment Variable |
 | --- | --- | --- | --- |
-| disable | Do not deploy packaged components and delete any deployed components (valid items: rke2-coredns, rke2-metrics-server, rke2-snapshot-controller, rke2-snapshot-controller-crd, rke2-snapshot-validation-webhook) |  |  |
+| disable | Do not deploy packaged components and delete any deployed components (valid items: rke2-coredns, rke2-metrics-server, rke2-snapshot-controller, rke2-snapshot-controller-crd, rke2-snapshot-validation-webhook, rke2-security-responder, rke2-gateway-api-crd) |  |  |
 | disable-scheduler | Disable Kubernetes default scheduler  | false |  |
 | disable-cloud-controller | Disable rke2 default cloud controller manager  | false |  |
 | disable-kube-proxy | Disable running kube-proxy  | false |  |
@@ -1929,6 +1946,34 @@ RKE2 supports replicating etcd snapshots to and restoring etcd snapshots from S3
 | `--etcd-s3-insecure` | Disables S3 over HTTPS |
 | `--etcd-s3-timeout` | S3 timeout (default: `5m0s`) |
 | `--etcd-s3-config-secret` | Name of secret in the kube-system namespace used to configure S3, if etcd-s3 is enabled and no other etcd-s3 options are set |
+
+### S3 IAM / bucket policy
+
+When using AWS S3 (or an S3-compatible store with IAM-style policies), the credentials configured for RKE2 need permission to list the bucket and to read, write, and delete snapshot objects. A minimal bucket policy looks like:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RKE2EtcdSnapshots",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::YOUR_BUCKET_NAME",
+        "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+      ]
+    }
+  ]
+}
+```
+
+Replace `YOUR_BUCKET_NAME` with the bucket passed to `--etcd-s3-bucket`. If you use `--etcd-s3-folder`, objects are written under that prefix, but `ListBucket` still applies to the bucket itself. For non-AWS endpoints the action names may differ; grant the equivalent list/get/put/delete permissions for your provider.
 
 For example, this is how the creation and deletion of on-demand etcd snapshots in S3 would work:
 
@@ -14169,6 +14214,111 @@ kubelet-arg:
 
 ```
 
+#### Customizing the NodeLocal DNS Corefile
+
+:::info Version Gate
+This feature is available starting from the September 2026 releases: v1.34.12+rke2r1, v1.35.9+rke2r1, v1.36.5+rke2r1 and v1.37.1+rke2r1.
+:::
+
+:::warning
+Using this feature can break DNS resolution in your rke2 cluster. Please be aware that we only test and support the default Corefile. If you customize it, you are responsible for making sure that the resulting configuration is correct.
+:::
+
+The Corefile used by the NodeLocal DNS cache is generated from four zones: `cluster` (your cluster domain), `reverse` (`in-addr.arpa`), `ipv6Reverse` (`ip6.arpa`) and `catchAll` (`.`). You can customize it at three increasing levels of control through the `nodelocal.corefile` values.
+
+:::note
+The `bind` and `health` directives are always managed by RKE2 based on the `use_cilium_lrp` setting and cannot be overridden. The `prometheus :9253`, `errors`, `reload` and `loop` directives are also fixed. When using a full `override` together with `use_cilium_lrp: true`, you are responsible for making the `bind`/`health` directives match the DaemonSet networking mode.
+:::
+
+<Tabs>
+<TabItem value="level1" label="Level 1 — customPlugins">
+
+Add extra CoreDNS plugins to one or more zones. Plugins are appended after the `forward` directive and before `prometheus`. Each entry requires a `name` and accepts optional `parameters` and `configBlock` fields.
+
+```yaml
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    nodelocal:
+      enabled: true
+      corefile:
+        customPlugins:
+          cluster:
+            - name: log
+            - name: rewrite
+              configBlock: |
+                name example.com internal.local
+          catchAll:
+            - name: log
+```
+
+</TabItem>
+<TabItem value="level2" label="Level 2 — pluginOverrides">
+
+Replace the `cache` or `forward` plugin configuration for a given zone. Each entry accepts `parameters` (inline) and/or `configBlock` (braced block).
+
+```yaml
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    nodelocal:
+      enabled: true
+      corefile:
+        pluginOverrides:
+          cache:
+            cluster:
+              configBlock: |
+                success 9984 60
+                denial 9984 20
+                prefetch 10 60s 30%
+                serve_stale 5s
+                size 10000
+            reverse:
+              parameters: "60"
+          forward:
+            catchAll:
+              parameters: ". 8.8.8.8 8.8.4.4"
+```
+
+</TabItem>
+<TabItem value="level3" label="Level 3 — override">
+
+Provide a complete Corefile verbatim. When `override` is set, all other `corefile` fields are ignored and you own the full config, including `bind`/`health` correctness.
+
+```yaml
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-coredns
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    nodelocal:
+      enabled: true
+      corefile:
+        override: |
+          cluster.local:53 {
+            errors
+            cache 30
+            bind 169.254.20.10
+            forward . 10.43.0.10
+          }
+```
+
+</TabItem>
+</Tabs>
+
 ### NodeLocal DNS Cache with Cilium in kube-proxy replacement mode
 This feature is available starting from versions v1.28.13+rke2r1, v1.29.8+rke2r1 and v1.30.4+rke2r1.
 
@@ -14216,12 +14366,16 @@ This is done in 2 steps:
 <TabItem value="ingress-nginx">
 
 :::warning ingress-nginx EOL
-[ingress-nginx becomes EOL](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/) in March 2026. RKE2 will still include ingress-nginx in v1.36 but with a deprecated status. No new images with fixes should be expected after March 2026. Please switch to Traefik or become a [Rancher Prime user](https://www.suse.com/products/rancher/) for an extended support period. 
+[ingress-nginx becomes EOL](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/) in March 2026. RKE2 still includes ingress-nginx in v1.36 but with a deprecated status. In v1.37 ingress-nginx is removed and unavailable for new clusters. No new images with fixes should be expected after March 2026. Please switch to Traefik or become a [Rancher Prime user](https://www.suse.com/products/rancher/) for an extended support period. 
 :::
 
 [ingress-nginx](https://github.com/kubernetes/ingress-nginx) is an Ingress controller powered by NGINX that uses a ConfigMap to store the NGINX configuration.
 
 `ingress-nginx` is deployed by default when starting the server. Ports 80 and 443 will be bound by the ingress controller in its default configuration, making these unusable for HostPort or NodePort services in the cluster.
+
+:::info Version Gate
+In RKE2 v1.36, Traefik is deployed by default. To deploy ingress-nginx use `ingress-controller: ingress-nginx`.
+::: 
 
 Configuration options can be specified by creating a [HelmChartConfig manifest](../add-ons/helm.md#customizing-packaged-components-with-helmchartconfig) to customize the `rke2-ingress-nginx` HelmChart values. For example, a HelmChartConfig at `/var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml` with the following contents sets `use-forwarded-headers` to `"true"` in the ConfigMap storing the NGINX config:
 ```yaml
@@ -14246,6 +14400,10 @@ For more information, refer to the official [ingress-nginx Helm configuration pa
 [traefik](https://doc.traefik.io/traefik/) is a modern HTTP reverse proxy and load balancer made to deploy microservices with ease. It simplifies networking complexity while designing, deploying, and running applications.
 
 To use traefik, start each server with the `ingress-controller: traefik` option in your configuration file.
+
+:::info Version Gate
+Starting with RKE2 v1.36 Traefik is deployed by default
+::: 
 
 Configuration options can be specified by creating a [HelmChartConfig manifest](../add-ons/helm.md#customizing-packaged-components-with-helmchartconfig) to customize the `rke2-traefik` HelmChart values. For example, a HelmChartConfig at `/var/lib/rancher/rke2/server/manifests/rke2-traefik-config.yaml` with the following contents changes the log level to "DEBUG":
 

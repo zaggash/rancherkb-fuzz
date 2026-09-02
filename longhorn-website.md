@@ -4266,7 +4266,7 @@ spec:
 >    - Set the `cloneMode` parameter to either `full-copy` or `linked-clone`.
 >    - If `cloneMode` is not specified, the default is `full-copy`.
 >
->    For more information, see [the V2 Volume Clone Support documentation](../../../v2-data-engine/features/volume-clone).
+>    For more information, see [the V2 Volume Clone Support documentation](../../snapshots-and-backups/csi-volume-clone#v2-data-engine).
 
 
 ---
@@ -6173,7 +6173,7 @@ For detailed instructions, see the Talos documentation on [Editing Machine Confi
 
 ## V2 Data Engine
 
-To use V2 volumes, all nodes must meet the V2 Data Engine [prerequisites](../../../v2-data-engine/prerequisites#prerequisites).
+To use V2 volumes, all nodes must meet the V2 Data Engine [prerequisites](../../deploy/install/_index#v2-data-engine-requirements).
 
 ```yaml
 machine:
@@ -15691,7 +15691,6 @@ A list of recurring jobs that are to be run on a volume.
   - Specify "v2" to enable the V2 Data Engine. When unspecified, Longhorn uses the default value ("v1").
 
 > Global setting: [V2 Data Engine](../settings#v2-data-engine).
-> More details in [V2 Data Engine Quick Start](../../v2-data-engine/quick-start#create-a-storageclass).
 
 #### Data Layout Type *(field: `parameters.dataLayout.type`)*
 
@@ -17025,7 +17024,7 @@ Longhorn supports several ways to manage block-type disks on a node:
 
 #### Prerequisites
 
-- The V2 Data Engine must be enabled. See [V2 Data Engine Quick Start](../../v2-data-engine/quick-start) for details.
+- The V2 Data Engine must be enabled. See [V2 Data Engine Prerequisites](../../deploy/install/_index#v2-data-engine-requirements) for details.
 - Longhorn prevents adding block disks that contain an existing file system or partition table. Clean the disk first:
 
     ```shell
@@ -17981,7 +17980,7 @@ When the Pod is deployed, the Kubernetes master will check the PersistentVolumeC
 
 ### Creating V2 Longhorn Volumes with kubectl (replication)
 
-Before creating a V2 volume, ensure that the V2 Data Engine is enabled and Longhorn has available block-type disks. V2 volumes are scheduled only to block-type disks. For more information, see [V2 Data Engine Quick Start](../../v2-data-engine/quick-start) and [Add a Block-Type Disk](../nodes/multidisk/#add-a-block-type-disk).
+Before creating a V2 volume, ensure that the V2 Data Engine is enabled and Longhorn has available block-type disks. V2 volumes are scheduled only to block-type disks. For more information, see [V2 Data Engine](../../deploy/install/_index#v2-data-engine-requirements) and [Add a Block-Type Disk](../nodes/multidisk/#add-a-block-type-disk).
 
 1. Use the following command to create a StorageClass called `longhorn-v2-replicated`:
 
