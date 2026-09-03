@@ -684,7 +684,7 @@
   <span class="md-ellipsis">
     
   
-    Troubleshooting high ingress request times
+    Troubleshooting high ingress-nginx request times
   
 
     
@@ -15062,15 +15062,13 @@
 <h2 id="environment"><strong>Environment</strong></h2>
 <p>Rancher 2.6.x, 2.7.x and 2.8.x</p>
 <h2 id="situation"><strong>Situation</strong></h2>
-<p>- In the Rancher airgap environment, all the images including rancher-shell should get pulled from the default private registry, but there are some situations where few images are getting pulled from the external docker hub instead of the default private registry.</p>
+<p>In a Rancher airgap environment, all the images including rancher-shell should get pulled from the default private registry, but there are some situations where a few images are pulled from the external docker hub instead of the default private registry.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>- Verify the rancher <strong>"system-default-registry"</strong> property is correctly configured using the below command. If it's not, then follow the document [1] and re-configure the registry with the Rancher server.<br />
-</p>
+<p>- Verify the rancher <strong>"system-default-registry"</strong> property is correctly configured using the below command. If it's not, then follow the <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#_advanced_options">documentation</a> and re-configure the registry with the Rancher server.</p>
 <div class="highlight"><pre><span></span><code>&gt; kubectl get settings.management.cattle.io | grep -i system-default-registry
 system-default-registry  &lt;registery URL here&gt;
 </code></pre></div>
-<p>- If the registry is correctly configured, then verify the '<strong>shell-image</strong>' and correct the repo value accordingly using below commands : <br />
-</p>
+<p>- If the registry is correctly configured, then verify the '<strong>shell-image</strong>' and correct the repo value accordingly using below commands:</p>
 <div class="highlight"><pre><span></span><code>a) kubectl edit settings shell-image
 
 b) modify the value section : 
@@ -15088,7 +15086,6 @@ b) modify the value section :
   source: ""
   value: "&lt;add_value_here&gt;"
 </code></pre></div>
-<p>[1] <a href="https://ranchermanager.docs.rancher.com/v2.6/getting-started/installation-and-upgrade/installation-references/helm-chart-options#advanced-options">https://ranchermanager.docs.rancher.com/v2.6/getting-started/installation-and-upgrade/installation-references/helm-chart-options#advanced-options</a></p>
 
 
 

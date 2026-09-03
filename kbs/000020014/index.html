@@ -25,7 +25,7 @@
     
     
       
-        <title>Troubleshooting high ingress request times - SUSE KBs</title>
+        <title>Troubleshooting high ingress-nginx request times - SUSE KBs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#troubleshooting-high-ingress-request-times" class="md-skip">
+        <a href="#troubleshooting-high-ingress-nginx-request-times" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Troubleshooting high ingress request times
+              Troubleshooting high ingress-nginx request times
             
           </span>
         </div>
@@ -693,7 +693,7 @@
   <span class="md-ellipsis">
     
   
-    Troubleshooting high ingress request times
+    Troubleshooting high ingress-nginx request times
   
 
     
@@ -711,7 +711,7 @@
   <span class="md-ellipsis">
     
   
-    Troubleshooting high ingress request times
+    Troubleshooting high ingress-nginx request times
   
 
     
@@ -763,61 +763,6 @@
     <span class="md-ellipsis">
       
         Resolution
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#review-request-times" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Review request times
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#review-request-details" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Review request details
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#check-ingress-nginx-logs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Check ingress-nginx logs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#real-time-view-of-all-requests" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Real-time view of all requests
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#measure-requests-to-ingress-nginx" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Measure requests to ingress-nginx
       
     </span>
   </a>
@@ -15095,61 +15040,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#review-request-times" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Review request times
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#review-request-details" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Review request details
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#check-ingress-nginx-logs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Check ingress-nginx logs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#real-time-view-of-all-requests" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Real-time view of all requests
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#measure-requests-to-ingress-nginx" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Measure requests to ingress-nginx
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -15167,8 +15057,8 @@
 
 
 
-<h1 id="troubleshooting-high-ingress-request-times">Troubleshooting high ingress request times</h1>
-<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360059524571">000020014</a></p>
+<h1 id="troubleshooting-high-ingress-nginx-request-times">Troubleshooting high ingress-nginx request times</h1>
+<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/Troubleshooting-high-ingress-nginx-request-times">000020014</a></p>
 <h2 id="environment"><strong>Environment</strong></h2>
 <ul>
 <li>An RKE or RKE2 cluster</li>
@@ -15177,7 +15067,7 @@
 <h2 id="situation"><strong>Situation</strong></h2>
 <p>This article aims to provide steps to gather and analyse data to help troubleshoot ingress performance issues.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<h2 id="review-request-times">Review request times</h2>
+<p><strong>Review request times</strong></p>
 <p>To narrow down on which requests are taking the longest, analyzing the ingress-nginx logs is very helpful.</p>
 <p>Retrieve requests with a high (&gt;2s) <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/log-format/"><code>upstream_response_time</code></a>. This log field represents the time taken for the response from the upstream target - the pod endpoint in the service.</p>
 <div class="highlight"><pre><span></span><code>kubectl logs -n ingress-nginx -l app=ingress-nginx -f --tail=2000 | awk '/- -/ &amp;&amp; $(NF-2)&gt;2.0'
@@ -15198,25 +15088,25 @@
 <li>If the <code>upstream_response_time</code> is much lower than <code>request_time</code>, the time is being spent elsewhere, check any tuning, performance or resource issues on the nodes</li>
 </ul>
 <blockquote>
-<p><strong>Note</strong>: The <code>request_time</code> metric is also used to create the ingress controller graphs when <a href="https://rancher.com/docs/rancher/v2.x/en/monitoring-alerting/v2.0.x-v2.4.x/cluster-monitoring/cluster-metrics/#kubernetes-components-metrics">Cluster Monitoring</a> is enabled.</p>
+<p><strong>Note</strong>: The <code>request_time</code> metric is also used to create the ingress controller graphs when <a href="https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/">Cluster Monitoring</a> is enabled.</p>
 </blockquote>
-<h2 id="review-request-details">Review request details</h2>
+<p><strong>Review request details</strong></p>
 <p>Along with the output in the previous step, it is also useful to analyse the request details, such as the request itself, source/destination IP address, response code, user agent, and the unique name for the ingress for common patterns.</p>
 <p>You may need to review these with the related application teams. For example, a request to retrieve a large amount of data, or perform a complex query may genuinely take a long time, these can potentially be ignored.</p>
 <p>Some requests may be opening a websocket, and in the scenario that the service scales up/down regularly, a small number of upstream targets could have a long-running connection creating an unfair distribution to occur on these targets.</p>
 <p>It's also worthwhile to consider the time when the issue occurs, the number of pods in the service, performance metrics, and requests/limits in place. For example, do the requests occur during a peak load time? Is HPA configured to scale the deployment? Is monitoring data available to identify trends and correlate with the logs?</p>
-<h2 id="check-ingress-nginx-logs">Check ingress-nginx logs</h2>
+<p><strong>Check ingress-nginx logs</strong></p>
 <p>With the focus previously on requests themselves, it is also useful to exclude the access logs and ensure there are no fundamental issues with ingress-nginx.</p>
 <p>The following command should exclude all access.log output, retrieving output from the ingress controller and the nginx error.log only.</p>
 <div class="highlight"><pre><span></span><code>kubectl logs -n ingress-nginx -l app=ingress-nginx -f --tail=100 | awk '!/- -/'
 </code></pre></div>
 <p>Please adjust the <code>--tail</code> flag as needed, this example retrieves the last 100 lines from each ingress-nginx pod.</p>
-<h2 id="real-time-view-of-all-requests">Real-time view of all requests</h2>
+<p><strong>Real-time view of all requests</strong></p>
 <p>Another option to get a broader overview is using a tool like <a href="https://goaccess.io/">goaccess</a>. After <a href="https://goaccess.io/download#installation">installing the package</a>, the below can be used to feed ingress-nginx logs to goaccess to get a real-time view of the logs.</p>
 <div class="highlight"><pre><span></span><code>kubectl logs -f -n ingress-nginx -l app=ingress-nginx --tail=2000 | goaccess --log-format="%h - - [%d:%t] \"%m %r %H\" %s %b \"%R\" \"%u\" %^ %T [%v]" --time-format '%H:%M:%S %z' --date-format "%d/%b/%Y"
 </code></pre></div>
 <p>Please adjust the history of logs with the <code>--tail</code> flag.</p>
-<h2 id="measure-requests-to-ingress-nginx">Measure requests to ingress-nginx</h2>
+<p><strong>Measure requests to ingress-nginx</strong></p>
 <p>If you have isolated all areas so far, it might be worthwhile to focus on the Load Balancer or network devices that provide client access to ingress-nginx.</p>
 <p>The following articles contain curl commands to perform SNI-compliant requests and measure statistics, these requests could also be compared from the ingress-nignx logs (as above) to understand what portion of the time was spend with ingress-nginx handling the request.</p>
 <p>You may also be able to obtain metrics from your Load Balancer or infrastructure to troubleshoot this further.</p>

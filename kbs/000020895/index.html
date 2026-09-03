@@ -684,7 +684,7 @@
   <span class="md-ellipsis">
     
   
-    Troubleshooting high ingress request times
+    Troubleshooting high ingress-nginx request times
   
 
     
@@ -15097,7 +15097,7 @@ Warning FailedScheduling &lt;unknown&gt; default-scheduler 0/3 nodes are availab
 <h2 id="cause"><strong>Cause</strong></h2>
 <p>Nodes with specific taints will deny the scheduling of any pod if no matching toleration is present on the workload.</p>
 <h2 id="resolution"><strong>Resolution</strong></h2>
-<p>If there are user-added <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">taints</a> on nodes within the cluster, <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">tolerations</a> for these taints must be added in the rancher-logging chart via the tolerations value, alongside the default <a href="https://cattle.io/os=linux">cattle.io/os=linux</a> NoSchedule toleration.</p>
+<p>If there are user-added <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">taints</a> on nodes within the cluster, <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">tolerations</a> for these taints must be added in the rancher-logging chart via the tolerations value, alongside the default cattle.io/os=linux NoSchedule toleration.</p>
 <p>For example, if the taint with key=foo, value=bar and effect=NoSchedule is present on nodes within the cluster, the following tolerations should be defined in the values of the rancher-logging Chart:</p>
 <div class="highlight"><pre><span></span><code>tolerations:
   - key: cattle.io/os
@@ -15109,7 +15109,7 @@ Warning FailedScheduling &lt;unknown&gt; default-scheduler 0/3 nodes are availab
     value: "bar"
     effect: NoSchedule
 </code></pre></div>
-<div class="highlight"><pre><span></span><code> 
+<div class="highlight"><pre><span></span><code>
 </code></pre></div>
 
 

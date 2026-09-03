@@ -684,7 +684,7 @@
   <span class="md-ellipsis">
     
   
-    Troubleshooting high ingress request times
+    Troubleshooting high ingress-nginx request times
   
 
     
@@ -1717,6 +1717,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1725,32 +1736,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Task
-      
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
       
-        Pre-requisites
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1758,11 +1746,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -15025,6 +15008,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#situation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -15033,32 +15027,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Situation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Task
-      
-    </span>
-  </a>
-  
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
       
-        Pre-requisites
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+        <li class="md-nav__item">
   <a href="#resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -15066,11 +15037,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -15092,21 +15058,19 @@
 
 
 <h1 id="how-to-rotate-the-rancher-ssl-certificate-with-a-single-node-docker-installation">How to rotate the Rancher SSL certificate with a single node Docker installation</h1>
-<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/360051866132">000020062</a></p>
-<h2 id="situation"><strong>Situation</strong></h2>
-<h4 id="task">Task</h4>
-<p>One installation method for Rancher 2.x is to run Rancher in a <a href="https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/">Docker container on a single node</a>. This approach is designed for a short-lived development/test environment and bundles a minimal footprint of all the components needed by Rancher into the container image.</p>
-<p>When the default self-signed SSL certificate option is used, the lifetime of the SSL certificate is 1 year. If the container is run for a long period the certificate will need to be rotated. The below sections provide steps needed to rotate the certificate for different versions of Rancher.</p>
-<h4 id="pre-requisites">Pre-requisites</h4>
+<p><strong>Article Number:</strong> <a href="https://support.scc.suse.com/s/kb/How-to-rotate-the-Rancher-SSL-certificate-with-a-single-node-Docker-installation">000020062</a></p>
+<h2 id="environment"><strong>Environment</strong></h2>
 <ul>
 <li>A Rancher v2.x single node Docker installation</li>
 <li>Access to the node where Rancher is running to run Docker commands</li>
-<li>A <a href="https://rancher.com/docs/rancher/v2.x/en/backups/v2.0.x-v2.4.x/backup/docker-backups/">backup of the Rancher container</a></li>
+<li>A <a href="https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-docker-installed-rancher">backup of the Rancher container</a></li>
 </ul>
-<h4 id="resolution">Resolution</h4>
+<h2 id="situation"><strong>Situation</strong></h2>
+<p>One installation method for Rancher v2.x is to run Rancher in a <a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/">Docker container on a single node</a>. This approach is designed for a short-lived development/test environment and bundles a minimal footprint of all the components needed by Rancher into the container image.</p>
+<p>When the default self-signed SSL certificate option is used, the lifetime of the SSL certificate is 1 year. If the container is run for a long period the certificate will need to be rotated. The below sections provide steps needed to rotate the certificate for different versions of Rancher.</p>
+<h2 id="resolution"><strong>Resolution</strong></h2>
 <p>To perform the certificate rotation, please ensure a backup of the Rancher container has been completed, this can be used as a rollback in the event any previous data needs to be restored.</p>
-<p>The process is different between different versions of Rancher, please select your version below as needed and set the container ID of the Rancher container.<br />
-</p>
+<p>The process is different between different versions of Rancher, please select your version below as needed and set the container ID of the Rancher container.</p>
 <p><strong>Rancher v2.4.x and above</strong></p>
 <p>If the certificate is expiring in less than 90 days, certificate rotation occurs automatically. When expiry falls within this period, certificates will be rotated on the next start of the Rancher container.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">rancher_container_id</span><span class="o">=</span>xxx
