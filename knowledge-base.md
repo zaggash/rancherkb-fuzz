@@ -419,9 +419,9 @@ As stated in the pre-reqs, this is only possible on the V2 Logging App which is 
 
 ## Article: 000020014.md
 
-# Troubleshooting high ingress request times
+# Troubleshooting high ingress-nginx request times
 
-**Article Number:** [000020014](https://support.scc.suse.com/s/kb/360059524571)
+**Article Number:** [000020014](https://support.scc.suse.com/s/kb/Troubleshooting-high-ingress-nginx-request-times)
 
 ## **Environment**
 
@@ -434,7 +434,7 @@ This article aims to provide steps to gather and analyse data to help troublesho
 
 ## **Resolution**
 
-## Review request times
+**Review request times**
 
 To narrow down on which requests are taking the longest, analyzing the ingress-nginx logs is very helpful.
 
@@ -463,9 +463,9 @@ Comparing the diference in timings between `request_time` and `upstream_response
 
 - If the `upstream_response_time` is much lower than `request_time`, the time is being spent elsewhere, check any tuning, performance or resource issues on the nodes
 
-> **Note**: The `request_time` metric is also used to create the ingress controller graphs when [Cluster Monitoring](https://rancher.com/docs/rancher/v2.x/en/monitoring-alerting/v2.0.x-v2.4.x/cluster-monitoring/cluster-metrics/#kubernetes-components-metrics) is enabled.
+> **Note**: The `request_time` metric is also used to create the ingress controller graphs when [Cluster Monitoring](https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/) is enabled.
 
-## Review request details
+**Review request details**
 
 Along with the output in the previous step, it is also useful to analyse the request details, such as the request itself, source/destination IP address, response code, user agent, and the unique name for the ingress for common patterns.
 
@@ -475,7 +475,7 @@ Some requests may be opening a websocket, and in the scenario that the service s
 
 It's also worthwhile to consider the time when the issue occurs, the number of pods in the service, performance metrics, and requests/limits in place. For example, do the requests occur during a peak load time? Is HPA configured to scale the deployment? Is monitoring data available to identify trends and correlate with the logs?
 
-## Check ingress-nginx logs
+**Check ingress-nginx logs**
 
 With the focus previously on requests themselves, it is also useful to exclude the access logs and ensure there are no fundamental issues with ingress-nginx.
 
@@ -487,7 +487,7 @@ kubectl logs -n ingress-nginx -l app=ingress-nginx -f --tail=100 | awk '!/- -/'
 
 Please adjust the `--tail` flag as needed, this example retrieves the last 100 lines from each ingress-nginx pod.
 
-## Real-time view of all requests
+**Real-time view of all requests**
 
 Another option to get a broader overview is using a tool like [goaccess](https://goaccess.io/). After [installing the package](https://goaccess.io/download#installation), the below can be used to feed ingress-nginx logs to goaccess to get a real-time view of the logs.
 
@@ -497,7 +497,7 @@ kubectl logs -f -n ingress-nginx -l app=ingress-nginx --tail=2000 | goaccess --l
 
 Please adjust the history of logs with the `--tail` flag.
 
-## Measure requests to ingress-nginx
+**Measure requests to ingress-nginx**
 
 If you have isolated all areas so far, it might be worthwhile to focus on the Load Balancer or network devices that provide client access to ingress-nginx.
 
@@ -1199,11 +1199,11 @@ Navigating to the workload or service behind the ingress now blocks the agents b
 
 # How to remove and replace an unresponsive control plane / etcd node in the local Rancher server cluster, provisioned by the Rancher Kubernetes Engine (RKE) CLI
 
-**Article Number:** [000020033](https://support.scc.suse.com/s/kb/360055096171)
+**Article Number:** [000020033](https://support.scc.suse.com/s/kb/How-to-remove-and-replace-an-unresponsive-control-plane-etcd-node-in-the-local-Rancher-server-cluster-provisioned-by-the-Rancher-Kubernetes-Engine-RKE-CLI)
 
 ## **Environment**
 
-#### A Rancher Kubernetes Engine (RKE) CLI provisioned cluster
+A Rancher Kubernetes Engine (RKE) CLI provisioned cluster
 
 - A Highly Available control plane / etcd configuration, with [an odd number of mixed role control plane / etcd nodes](https://rancher.com/docs/rancher/v2.x/en/installation/resources/k8s-tutorials/infrastructure-tutorials/infra-for-ha/#why-three-nodes), commonly 3 or 5
 - The cluster is quorate, i.e. with 3 control plane / etcd nodes only a single node is unresponsive, or with 5 control plane / etcd nodes upto two nodes are unresponsive
@@ -1212,11 +1212,13 @@ Navigating to the workload or service behind the ingress now blocks the agents b
 
 ## **Situation**
 
-#### This article details how to remove and replace an unresponsive control plane / etcd node from a local Rancher server cluster, provisioned via the Rancher Kubernetes Engine (RKE) CLI.
+This article details how to remove and replace an unresponsive control plane / etcd node from a local Rancher server cluster, provisioned via the Rancher Kubernetes Engine (RKE) CLI.
+
+<!--THE END-->
 
 ## **Resolution**
 
-#### This operation is relatively simple, and uses the example `cluster.yaml` below for demonstration purposes.
+This operation is relatively simple, and uses the example `cluster.yaml` below for demonstration purposes.
 
 > **N.B.** Be sure to use your `cluster.yaml` and matching `cluster.rkestate` for the relevant cluster.
 
@@ -1242,9 +1244,9 @@ nodes:
 [...] # rest of cluster.yaml except control plane / etcd nodes restracted
 ```
 
-##### Step 1. Validate the cluster is quorate and confirm the unresponsive node
+**Step 1. Validate the cluster is quorate and confirm the unresponsive node**
 
-On the control plane / etcd nodes perform the following command, per the [Rancher Troubleshooting Documentation](https://rancher.com/docs/rancher/v2.x/en/troubleshooting/kubernetes-components/etcd/#check-endpoint-health) to determine etcd endpoint health:
+On the control plane / etcd nodes perform the following command, per the [Rancher Troubleshooting Documentation](https://ranchermanager.docs.rancher.com/troubleshooting/kubernetes-components/troubleshooting-etcd-nodes#_check_endpoint_health) to determine etcd endpoint health:
 
 ```
 docker exec -e ETCDCTL_ENDPOINTS=$(docker exec etcd /bin/sh -c "etcdctl member list | cut -d, -f5 | sed -e 's/ //g' | paste -sd ','") etcd etcdctl endpoint health
@@ -1259,7 +1261,7 @@ https://1.2.3.2:2379 is healthy: successfully committed proposal: took = 18.2272
 https://1.2.3.3:2379 is unhealthy: failed to commit proposal: context deadline exceeded
 ```
 
-##### Step 2. Remove the unresponsive node
+**Step 2. Remove the unresponsive node**
 
 Having confirmed which node is unresponsive in the cluster, remove this from the nodes block in the cluster configuration file (`cluster.yaml`), per the example of `1.2.3.3` removed below:
 
@@ -1287,7 +1289,7 @@ rke up --config cluster.yaml
 
 The above action will remove the problematic and unresponsive control plane / etcd node.
 
-##### Step 3. Clean and add the removed node back to the cluster
+**Step 3. Clean and add the removed node back to the cluster**
 
 Once the `rke up` invocation has run through without any errors, and you can see the node removed from the Rancher UI or `kubectl get nodes` output, it is safe to move onto adding the node back in.
 
@@ -1321,22 +1323,17 @@ And run the rke up command again:
 rke up --config cluster.yaml
 ```
 
-##### Step 4. Validate final cluster state
+**Step 4. Validate final cluster state**
 
 Once the `rke up` command has completed, without errors, you can now verify the node is visible and ready via `kubectl get nodes` and the Rancher UI.
 
-The [etcd endpoint health](https://rancher.com/docs/rancher/v2.x/en/troubleshooting/kubernetes-components/etcd/#check-endpoint-health) commands on the control plane / etcd nodes should also show each endpoint as healthy, per the following example output:
+The [etcd endpoint health](https://ranchermanager.docs.rancher.com/troubleshooting/kubernetes-components/troubleshooting-etcd-nodes#_check_endpoint_health) commands on the control plane / etcd nodes should also show each endpoint as healthy, per the following example output:
 
 ```
 https://1.2.3.1:2379 is healthy: successfully committed proposal: took = 13.442336ms
 https://1.2.3.2:2379 is healthy: successfully committed proposal: took = 18.227226ms
 https://1.2.3.3:2379 is healthy: successfully committed proposal: took = 22.065616ms
 ```
-
-#### Further reading
-
-- [Extended Rancher 2 Cleanup script](https://github.com/rancherlabs/support-tools/tree/master/extended-rancher-2-cleanup)
-- [RKE Documentation on cluster state files (.rkestate)](https://rancher.com/docs/rke/latest/en/installation/#save-your-files)
 
 
 
@@ -2524,7 +2521,7 @@ Kubernetesクラスタ内のクラスタ監視とGrafanaグラフを表示する
 
 RancherやKubernetesでのRBACの動作方法の詳細については、以下のリンクを参照してください。
 
-- [Role-Based Access Control (RBAC) in Rancher](https://rancher.com/docs/rancher/v2.x/en/admin-settings/rbac/)
+- [Role-Based Access Control (RBAC) in Rancher](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/)
 - [Using RBAC Authorization in Kubernetes](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
 
 
@@ -2868,28 +2865,25 @@ The Rancher rollback process is detailed in the [Rancher documentation](https://
 
 # How to rotate the Rancher SSL certificate with a single node Docker installation
 
-**Article Number:** [000020062](https://support.scc.suse.com/s/kb/360051866132)
+**Article Number:** [000020062](https://support.scc.suse.com/s/kb/How-to-rotate-the-Rancher-SSL-certificate-with-a-single-node-Docker-installation)
 
-## **Situation**
-
-#### Task
-
-One installation method for Rancher 2.x is to run Rancher in a [Docker container on a single node](https://rancher.com/docs/rancher/v2.x/en/installation/other-installation-methods/single-node-docker/). This approach is designed for a short-lived development/test environment and bundles a minimal footprint of all the components needed by Rancher into the container image.
-
-When the default self-signed SSL certificate option is used, the lifetime of the SSL certificate is 1 year. If the container is run for a long period the certificate will need to be rotated. The below sections provide steps needed to rotate the certificate for different versions of Rancher.
-
-#### Pre-requisites
+## **Environment**
 
 - A Rancher v2.x single node Docker installation
 - Access to the node where Rancher is running to run Docker commands
-- A [backup of the Rancher container](https://rancher.com/docs/rancher/v2.x/en/backups/v2.0.x-v2.4.x/backup/docker-backups/)
+- A [backup of the Rancher container](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery/back-up-docker-installed-rancher)
 
-#### Resolution
+## **Situation**
+
+One installation method for Rancher v2.x is to run Rancher in a [Docker container on a single node](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/rancher-on-a-single-node-with-docker/). This approach is designed for a short-lived development/test environment and bundles a minimal footprint of all the components needed by Rancher into the container image.
+
+When the default self-signed SSL certificate option is used, the lifetime of the SSL certificate is 1 year. If the container is run for a long period the certificate will need to be rotated. The below sections provide steps needed to rotate the certificate for different versions of Rancher.
+
+## **Resolution**
 
 To perform the certificate rotation, please ensure a backup of the Rancher container has been completed, this can be used as a rollback in the event any previous data needs to be restored.
 
-The process is different between different versions of Rancher, please select your version below as needed and set the container ID of the Rancher container.  
- 
+The process is different between different versions of Rancher, please select your version below as needed and set the container ID of the Rancher container.
 
 **Rancher v2.4.x and above**
 
@@ -3384,23 +3378,21 @@ The process is largely the same as the Rancher process above, but the configurat
 
 # How to increase the log level for Canal components in a Rancher Kubernetes Engine (RKE) or Rancher v2.x provisioned Kubernetes cluster
 
-**Article Number:** [000020075](https://support.scc.suse.com/s/kb/360050943392)
+**Article Number:** [000020075](https://support.scc.suse.com/s/kb/How-to-increase-the-log-level-for-Canal-components-in-a-Rancher-Kubernetes-Engine-RKE-or-Rancher-v2-x-provisioned-Kubernetes-cluster)
+
+## **Environment**
+
+A Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster with the Canal Network Provider
 
 ## **Situation**
 
-#### Task
+During network troubleshooting it may be useful to increase the log level of the Canal components. This article details how to set verbose debug-level Canal component logging, in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters.[](https://coreos.com/flannel/docs/latest/troubleshooting.html)
 
-During network troubleshooting it may be useful to increase the log level of the Canal components. This article details how to set verbose debug-level Canal component logging, in Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes clusters.
-
-#### Pre-requisites
-
-- A Rancher Kubernetes Engine (RKE) CLI or Rancher v2.x provisioned Kubernetes cluster with the Canal Network Provider
-
-#### Resolution
+## **Resolution**
 
 > **N.B.** As these instructions involve editing the Canal DaemonSet directly, the change will not persist cluster update events, i.e. invocations of `rke up` for RKE CLI provisioned clusters, or changes to the cluster configuration for a Rancher provisioned cluster. As a result cluster updates should be avoided whilst collecting the debug level logs for troubleshooting.
 
-##### Via the Rancher UI
+**Via the Rancher UI**
 
 For a Rancher v2.x managed cluster, the Canal component log level can be adjusted via the Rancher UI, per the following process:
 
@@ -3483,7 +3475,7 @@ For a Rancher v2.x managed cluster, the Canal component log level can be adjuste
                - '--v=10'
    ```
 
-##### Via kubectl
+**Via kubectl**
 
 With a Kube Config file sourced for the relevant cluster, for a user with permission to edit the System project, the Canal component log level can be adjusted via kubectl, per the following process:
 
@@ -3526,11 +3518,6 @@ After Setting up the Debug log level, it can be checked viewing the 'Canal' pod 
 2024-07-10 07:11:15.483 [DEBUG][9] startup/customresource.go 216: Get custom Kubernetes resource by name Key=ClusterInformation(default) Name="default" Namespace="" Resource="ClusterInformations" Revision=""
 2024-07-10 07:11:15.487 [DEBUG][9] startup/migrate.go 820: major version is already >= 3: v3.22.0
 ```
-
-#### Further reading
-
-- [Calico configuration documentation](https://docs.projectcalico.org/reference/node/configuration)
-- [Flannel troubleshooting documentation](https://coreos.com/flannel/docs/latest/troubleshooting.html)
 
 
 
@@ -3911,26 +3898,18 @@ You'll also see a `helm-install-ingress-nginx` pod in your environment. K3s uses
 
 # How to deploy the AWS EBS CSI driver on K3s
 
-**Article Number:** [000020083](https://support.scc.suse.com/s/kb/360050138172)
+**Article Number:** [000020083](https://support.scc.suse.com/s/kb/How-to-deploy-the-AWS-EBS-CSI-driver-on-K3s)
 
-## **Situation**
-
-#### Task
-
-This knowledge base article will provide the directions for deploying and testing the AWS EBS CSI driver and storage class on K3s.
-
-#### Requirements
+## **Environment**
 
 - K3s 1.18+ (may apply to other versions)
 - Amazon Web Services (AWS) account with privileges to launch EC2 instances and create IAM policies.
 
-#### Background
+## **Situation**
 
-K3s has all in-tree storage providers removed since Kubernetes is shifting to out of tree providers for Container Storage Interface (CSI) and Cloud Provider Interface (CPI). While in-tree providers are convenient, they add a lot of bloat to Kubernetes and will eventually be removed from upstream Kubernetes, possibly in 2021.
+This how-to guide will instruct you on installing and configuring the AWS EBS CSI driver and storage class on K3s. This will allow you to dynamically provision and attach an EBS volume to your pod without having to manually create a persistent volume (PV) and EBS volume in advance. In the event that your node crashes and your pod is re-launched on another node, your pod will be reattached to the volume assuming that node is running in the same availability zone used by the defunct node.[](https://kubernetes.github.io/ingress-nginx/)
 
-This how-to guide will instruct you on installing and configuring the AWS EBS CSI driver and storage class. This will allow you to dynamically provision and attach an EBS volume to your pod without having to manually create a persistent volume (PV) and EBS volume in advance. In the event that your node crashes and your pod is re-launched on another node, your pod will be reattached to the volume assuming that node is running in the same availability zone used by the defunct node.
-
-#### Solution
+## **Resolution**
 
 Assuming you want the CSI and storage class automatically deployed by K3s, copy the following YAML to a file in your manifests folder on one or all of your K3s servers. For example, `/var/lib/rancher/k3s/server/manifests/aws-ebs-csi.yaml`:
 
@@ -3960,7 +3939,7 @@ provisioner: ebs.csi.aws.com
 volumeBindingMode: WaitForFirstConsumer
 ```
 
-First, note at the time of this writing, v0.5.0 is the latest version of the driver. If there is a newer version available, you can replace this in the chart and version tags. See the [AWS EBS CSI readme](https://github.com/kubernetes-sigs/aws-ebs-csi-driver) for documentation on the versions currently available. Second, you can customize the `enableVolumeScheduling`, `enableVolumeResizing`, `enableVolumeSnaphost`, and `extraVolumeTags` based on your needs. These parameters and others are documented in the [Helm chart](https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/aws-ebs-csi-driver/values.yaml).
+First, note at the time of this writing, v0.5.0 is the latest version of the driver. If there is a newer version available, you can replace this in the chart and version tags. See the [AWS EBS CSI readme](https://github.com/kubernetes-sigs/aws-ebs-csi-driver) for documentation on the versions currently available. Second, you can customize the `enableVolumeScheduling`, `enableVolumeResizing`, `enableVolumeSnaphost`, and `extraVolumeTags` based on your needs. These parameters and others are documented in the [Helm chart](https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/charts/aws-ebs-csi-driver/values.yaml).
 
 Next, you need to give the driver IAM permissions to manage EBS volumes. This can be done one of two ways. You can either feed your AWS access key and secret key as a Kubernetes secret, or use an AWS instance profile. Since the first option involves passing sensitive keys in clear text and storing them directly in Kubernetes, the second option is usually preferred. I will go over both options. For either option, make sure your access keys or instance profile has the following permissions set in IAM:
 
@@ -3995,7 +3974,7 @@ Next, you need to give the driver IAM permissions to manage EBS volumes. This ca
 
 Reference: [https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/docs/example-iam-policy.json](https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/docs/example-iam-policy.json)
 
-##### Option 1: Kubernetes Secret
+**Option 1: Kubernetes Secret**
 
 You can place your AWS access key and secret key into a Kubernetes secret. Create a YAML file with the following contents and run a kubectl apply. You can also place this inside your `/var/lib/rancher/k3s/server/manifests/aws-ebs-csi.yaml` file. Keep in mind this is not a terribly secure option and anyone with access to these files or secrets in the kube-system namespace will be able to obtain your AWS access keys.
 
@@ -4010,11 +3989,11 @@ stringData:
   access_key: "**********"
 ```
 
-##### Option 2: Instance Profile
+**Option 2: Instance Profile**
 
 This option to more secure and should not expose your keys in clear text or in a Kubernetes secret object. You'll need to make sure when your EC2 instances are launched, you've attached an [instance profile](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html) that has the permissions defined above in the JSON block.
 
-##### Verifying and Testing
+**Verifying and Testing**
 
 You can now check your pods to see if the CSI pods are running. You should see something like this:
 
@@ -4080,7 +4059,7 @@ tmpfs           3.8G     0  3.8G   0% /proc/scsi
 tmpfs           3.8G     0  3.8G   0% /sys/firmware
 ```
 
-##### Cleaning Up
+**Cleaning Up**
 
 Remove the test pod by running the following:
 
@@ -4095,11 +4074,6 @@ kubectl delete pvc myclaim
 ```
 
 Check the AWS console and you should see your EBS volume has been removed automatically by the AWS EBS CSI driver.
-
-#### Reference
-
-- [K3s documentation](https://rancher.com/docs/k3s/latest/en/)
-- [AWS EBS CSI documentation](https://kubernetes.github.io/ingress-nginx/)
 
 
 
@@ -9184,7 +9158,7 @@ Any technical support that is offered for tickets stemming from this scenario sh
 The customers should be aware that Rancher Support Engineers might ask them to separate the workloads as part of the troubleshooting. 
 
 **Note:**  
-Run Rancher on a Separate Cluster is also one of the top items called out in our docs page on [Tips for Running Rancher](https://rancher.com/docs/rancher/v2.6/en/best-practices/rancher-server/deployment-types/#run-rancher-on-a-separate-cluster).
+Run Rancher on a Separate Cluster is also one of the top items called out in our docs page on [Tips for Running Rancher](https://ranchermanager.docs.rancher.com/reference-guides/best-practices/rancher-server/tips-for-running-rancher#run-rancher-on-a-separate-cluster).
 
 
 
@@ -12065,7 +12039,7 @@ Nodes with specific taints will deny the scheduling of any pod if no matching to
 
 ## **Resolution**
 
-If there are user-added [taints](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) on nodes within the cluster, [tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) for these taints must be added in the rancher-logging chart via the tolerations value, alongside the default [cattle.io/os=linux](https://cattle.io/os=linux) NoSchedule toleration.
+If there are user-added [taints](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) on nodes within the cluster, [tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) for these taints must be added in the rancher-logging chart via the tolerations value, alongside the default cattle.io/os=linux NoSchedule toleration.
 
 For example, if the taint with key=foo, value=bar and effect=NoSchedule is present on nodes within the cluster, the following tolerations should be defined in the values of the rancher-logging Chart:
 
@@ -12083,7 +12057,6 @@ tolerations:
 
 ```
 
- 
 ```
 
 
@@ -15585,20 +15558,18 @@ Rancher 2.6.x, 2.7.x and 2.8.x
 
 ## **Situation**
 
-\- In the Rancher airgap environment, all the images including rancher-shell should get pulled from the default private registry, but there are some situations where few images are getting pulled from the external docker hub instead of the default private registry.
+In a Rancher airgap environment, all the images including rancher-shell should get pulled from the default private registry, but there are some situations where a few images are pulled from the external docker hub instead of the default private registry.
 
 ## **Resolution**
 
-\- Verify the rancher **"system-default-registry"** property is correctly configured using the below command. If it's not, then follow the document \[1] and re-configure the registry with the Rancher server.  
- 
+\- Verify the rancher **"system-default-registry"** property is correctly configured using the below command. If it's not, then follow the [documentation](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/helm-chart-options#_advanced_options) and re-configure the registry with the Rancher server.
 
 ```
 > kubectl get settings.management.cattle.io | grep -i system-default-registry
 system-default-registry  <registery URL here>
 ```
 
-\- If the registry is correctly configured, then verify the '**shell-image**' and correct the repo value accordingly using below commands :   
- 
+\- If the registry is correctly configured, then verify the '**shell-image**' and correct the repo value accordingly using below commands:
 
 ```
 a) kubectl edit settings shell-image
@@ -15618,8 +15589,6 @@ b) modify the value section :
   source: ""
   value: "<add_value_here>"
 ```
-
-\[1] [https://ranchermanager.docs.rancher.com/v2.6/getting-started/installation-and-upgrade/installation-references/helm-chart-options#advanced-options](https://ranchermanager.docs.rancher.com/v2.6/getting-started/installation-and-upgrade/installation-references/helm-chart-options#advanced-options)
 
 
 
@@ -17685,7 +17654,7 @@ Rancher 2.7.x, 2.8.x
 ## **Situation**
 
 After accidentally deleting the cattle-system Namespace of a downstream-cluster, the cluster is no longer accessible in Rancher UI due to the cluster agent being removed. To recover it, the cluster agent must be manually recreated and the cluster service account token updated.  
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&feoid=00N1i000002LdMP&refid=0EMTr000004SwMx)
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004HAgb&feoid=00N1i000002LdMP&refid=0EMTr000004SwMx)
 
 **Requierements**
 
@@ -17701,11 +17670,11 @@ After accidentally deleting the cattle-system Namespace of a downstream-cluster,
 
 ## **RKE2 custom and node-driver clusters**
 
-### **Redeploy the Rancher agents**
+### Redeploy the Rancher agents
 
 ### Steps     1.1 Connect to the affected downstream cluster.
 
-- Backup the  [rancher.cattle.io](https://rancher.cattle.io/) validating and mutating webhooks
+- Back up the  [rancher.cattle.io](https://rancher.cattle.io/) validating and mutating webhooks
 
 ```
 kubectl get  mutatingwebhookconfigurations rancher.cattle.io -oyaml > backup-mutatingwebhookconfigurations.yaml
@@ -17728,20 +17697,22 @@ Note: these objects will be recreated once the cluster is connected again.
 
 Follow the steps described in this section to redeploy the Rancher agents:
 
-- [https://ranchermanager.docs.rancher.com/v2.10/getting-started/installation-and-upgrade/resources/update-rancher-certificate#method-3-manually-redeploy-the-rancher-agents](https://ranchermanager.docs.rancher.com/v2.10/getting-started/installation-and-upgrade/resources/update-rancher-certificate#method-3-manually-redeploy-the-rancher-agents)
+- [https://ranchermanager.docs.rancher.com/v2.14/getting-started/installation-and-upgrade/resources/update-rancher-certificate#\_4\_reconfigure\_rancher\_agents\_to\_trust\_the\_private\_ca](https://ranchermanager.docs.rancher.com/v2.14/getting-started/installation-and-upgrade/resources/update-rancher-certificate#_4_reconfigure_rancher_agents_to_trust_the_private_ca)
 
    
 The namespace cattle-system and the cluster agent will be recreated:  
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&feoid=00N1i000002LdMN&refid=0EMTr000004Tc2n)  
-![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&feoid=00N1i000002LdMN&refid=0EMTr000004TbWY)
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004HAgb&feoid=00N1i000002LdMN&refid=0EMTr000004Tc2n)  
+![image.png](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004HAgb&feoid=00N1i000002LdMN&refid=0EMTr000004TbWY)
 
-### 1.3 Force a cluster reconciliation Apply a minor change in the cluster configuration, such as changing the snap retention for etcd.
+### 1.3 Force a cluster reconciliation
+
+Apply a minor change to the cluster configuration, such as adjusting the etcd snap retention.
 
 1. Click **☰ &gt; Cluster Management**.
 2. Go to the cluster you want to configure and click **⋮ &gt; Edit Config**.
 3. **Cluster Configuration** &gt; etcd &gt; Increase the number of **Snapshots per node**.
 
-![](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004G9pp&feoid=00N1i000002LdMN&refid=0EMTr00000CLUp0)
+![](https://suse.file.force.com/servlet/rtaImage?eid=ka0bG000004HAgb&feoid=00N1i000002LdMN&refid=0EMTr00000CLUp0)
 
 
 
